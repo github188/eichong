@@ -1,0 +1,88 @@
+package com.wanma.ims.controller.user;
+
+/**
+ * 用戶管理-普通用戶管理 
+ */
+public class UserNormalController {
+   
+	/** 
+	 * 普通用戶列表
+	 * @param
+	 * @param
+	 * */
+	public String getUserNormalListPage(){
+		return null;
+	}
+	/** 
+	 * 新增View
+	 * @param
+	 * @param
+	 * */
+	public String addUserNormalView(){
+		return null;
+	}
+	/** 
+	 * 新增
+	 * @param
+	 * @param
+	 * */
+	public String addUserNormal(){
+	    return null;	
+	}
+	/** 
+	 * 编辑View
+	 * @param
+	 * @param
+	 * */
+	public String modifyUserNormalView(){
+	    return null;	
+	}
+	/** 
+	 * 编辑
+	 * @param
+	 * @param
+	 * */
+	public String modifyUserNormal(){
+	    return null;	
+	}
+	/** 
+	 * 删除
+	 * @param
+	 * @param
+	 * */
+	public String removeUserNormal(){
+	    return null;	
+	}
+	/** 
+	 * 审批（批量审批）
+	 * @param
+	 * @param
+	 * */
+	public String verifyUserNormal(){
+	    return null;	
+	}
+	/** 
+	 * 冻结（批量冻结）
+	 * @param
+	 * @param
+	 * */
+	public String freezeUserNormal(){
+	    return null;	
+	}
+	/** 
+	 * 冻结（批量冻结）
+	 * @param
+	 * @param
+	 * */
+	public String unfreezeUserNormal(){
+	    return null;	
+	}
+	/** 
+	 * 绑定
+	 * @param
+	 * @param
+	 * */
+	public String bindUserNormal(){
+	    return null;	
+	}
+}

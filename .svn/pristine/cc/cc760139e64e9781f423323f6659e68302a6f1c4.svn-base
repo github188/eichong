@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+			
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="blank" />
+		<meta name="format-detection" content="telephone=no" />
+		<title>单一桩详情</title>
+		<!--<link rel="stylesheet" type="text/css" href="dist/css/bootstrap.min.css"/>-->
+		<link rel="stylesheet" type="text/css" href="dist/css/bootstrap.css"/>
+		<link rel="stylesheet" type="text/css" href="css/mui.css"/>
+		<link rel="stylesheet" type="text/css" href="css/app.css"/>
+		<link rel="stylesheet" type="text/css" href="css/pileDetail.css"/>
+		<link rel="stylesheet" type="text/css" href="css/common.css"/>
+		<link rel="stylesheet" type="text/css" href="css/base.css"/>
+		<link rel="stylesheet" type="text/css" href="css/rateInfoDetail.css"/>
+		<link rel="stylesheet" type="text/css" href="css/iconfont.css"/>
+		<!--[if lt IE 9]>
+			<script src="dist/js/html5shiv.min.js"></script>
+			<script src="dist/js/respond.min.js"></script>
+		<![endif]-->
+	</head>
+	<body>
+	<!--主要模块=====-->
+	<div id="mainDiv">
+		<!--头部=============================================================================================-->
+		<header class="navbar-fixed-top">
+			<div class="col-xs-2 headLeft" onclick="toOrderDetailFinally()">
+				<img src="img/nav_btn_back.png"/>
+			</div>
+			<div class="col-xs-7 headCenter">
+				
+			</div>
+			<div class="col-xs-3 headRight">
+				<span class="share" onclick="shareHref()">
+					<!--<img src="img/nav_btn_link.png"/>-->
+				</span>
+				<!--我的收藏-->
+				<!--<span class="noCollect collectBtn">
+					
+				</span>-->
+				
+			</div>
+		</header>
+		<div class="threeFloor">
+			<!--第二块充电点详情===第一块===============================================================================-->
+		<section>
+			<div class="col-xs-3 detailLeft">
+				<img src="" class="powerStationImageS" onerror="javascript:this.src='img/tab_order_p.png';"/>
+				<p><span id="electricPileCommentStar">0.0</span>分<br />(<span id="electricPileCommentSum">0</span>)评论</p>
+				<!--<p><span id="electricPileCommentStar">0.0</span>分<br />(<span id="electricPileCommentSum" onclick="toPowerCommentList()">0</span>)评论</p>-->
+				
+			</div>
+			<div class="col-xs-9 detailRight">
+				<!--名字距离-->
+				<div class="stationDot">
+					<div class="powerStationName left" id="electricPileName">
+					</div>
+					<div class="distanceDot right">
+						<span id="distance">0</span>km
+					</div>
+				</div>
+				<!--提示按钮===-->
+				<div class="buttonTip">
+					<button type="button" class="mui-btn num-btn">
+						<span class="text">快充</span>
+						<span class="mui-badge typeNum"></span>
+						<t class="freeCount">
+							<span>空闲</span>
+							<span class="mui-badge mui-badge1 FreeHeadNum"></span>
+						</t>
+					</button>
+				</div>
+				<!--地址地图导航====-->
+				<div class="powerAddress">
+					<div class="col-xs-10 powerStationAddress" id="electricPileAdress">
+					</div>
+					<div class="col-xs-2 navImg" onclick="toNavigate()">
+						<img src="img/bg_map_navigation.png"/>
+						
+					</div>
+				</div>
+				<!--费率简介==-->
+				<div class="rateIntr">
+					￥<span id="">0.00</span>元/度
+					<a onclick="showRateinfo()"><img src="img/bg_map_question.png" class="question"/></a>
+				</div>
+			</div>
+			
+		</section>
+		
+		<!--第二块===============================================================================================-->
+		<div class="openTime">
+			<div class="openTip left">
+				<p>开放时间：<span id="onlineTime"></span></p>
+				<p>服务电话：<span id="electricPileTell"></span></p>
+			</div>
+			<!--<div class="checkError right">
+				纠错
+			</div>-->
+		</div>
+		<!--第三块按钮组   快充慢充==========================================================================================-->
+		<div class="pile">
+			<ul class="pileGroup" id="pileGroup">
+				<!--<li data-value = "123">快充</li>-->
+			</ul>
+		
+		</div>
+		<!--第四块=尖角号图片效果=========================================================================================================-->
+		<div class="pileTable">
+			<img src="img/bg_map_line.png"/>
+		</div>
+		<!--列表部分=============================================================================================================-->
+		<div class="tableHead" id="tableHead">
+			<div class="col-xs-4 parameter ownerCompanyImg" id="ownerCompanyImg">
+				<span id="ownerCompany" class="ownerCompanyColor" data-value = "1">
+				</span>
+			</div>
+			<div class="col-xs-4 parameter">
+				接口：<span id="electricPowerInterface" class="elpiPowerinterface" data-value = "7"></span>
+			</div>
+			<div class="col-xs-4 parameter">
+				功率：<span class="elpiPowersize" id="electricPowerSize"></span>
+			</div>
+		</div>
+		<!--动态列表展示部分====================================================================================================-->
+		<div class="dynamicList">
+			<!--第一块===================================================-->
+			<!--<div class="dynamicRow">
+				<div class="col-xs-3 gunpoint">
+					枪口A
+				</div>
+				<div class="col-xs-3 gunpoint parkNum">
+					车位号
+				</div>
+				<div class="col-xs-3 gunpoint pileHeadState">
+					空闲中
+				</div>
+				<div class="col-xs-3 gunpoint isAppoint">
+					 预约
+				</div>
+			</div>
+			<div class="dynamicRow">
+				<div class="col-xs-3 gunpoint">
+					枪口A
+				</div>
+				<div class="col-xs-3 gunpoint parkNum">
+					车位号
+				</div>
+				<div class="col-xs-3 gunpoint pileHeadState">
+					空闲中
+				</div>
+				<div class="col-xs-3 gunpoint isAppoint">
+					 预约
+				</div>
+			</div>-->
+			<!--第二块===================================================-->
+			<!--<div class="dynamicRow">
+				<div class="col-xs-3 gunpoint">
+					枪口A
+				</div>
+				<div class="col-xs-3 gunpoint parkNum">
+					车位号
+				</div>
+				<div class="col-xs-3 gunpoint pileHeadState1">
+					空闲中
+				</div>
+				<div class="col-xs-3 gunpoint noAppoint">
+					 预约
+				</div>
+			</div>-->
+			
+			
+		</div>
+		</div>
+		
+	</div>
+	
+	<!--显示费率信息div处理==rateInfoDiv=====================================================================================-->	
+	<div id="rateInfoDiv" style="display: none;">
+		<!--头部==================================================================================-->
+		<header class="navbar-fixed-top">
+		<div class="col-xs-2 headLeft">
+		
+		</div>
+		<div class="col-xs-7 headCenter">
+			费率详情
+		</div>
+		<div class="col-xs-3 headRight" id="closeThisDiv" onclick="showMainDiv()">
+			关闭
+		</div>
+		</header>
+		<div class="occupied">
+		
+		</div>
+		<h1 class="colorA">当前充电费用：<t id="totalPrice"></t>元/度</h1>
+		<dl class="feilv">
+		<dt>充电费用包含</dt>
+		<dd class="OneText">充电服务费：<t id="raInServiceCharge"></t>元/度</dd>
+		<dd class="TwoText">充电电费费率：<t id="raInReservationRate"></t>元/度</dd>
+		</dl>
+		<br />
+		
+		<h1>费率详情</h1>
+		<ul id="content">
+		  <!--<li><span class="feilvA">尖</span><span class="feilvB">12:01--15:00</span><span class="feilvC">1.20元/度</span></li>
+		  <li><span class="feilvA">尖</span><span class="feilvB">12:01--15:00</span><span class="feilvC">1.20元/度</span></li>
+		  <li><span class="feilvA">尖</span><span class="feilvB">12:01--15:00</span><span class="feilvC">1.20元/度</span></li>
+		  <li><span class="feilvA">尖</span><span class="feilvB">12:01--15:00</span><span class="feilvC">1.20元/度</span></li>
+		  <li><span class="feilvA">尖</span><span class="feilvB">12:01--15:00</span><span class="feilvC">1.20元/度</span></li>
+		  <li><span class="feilvA">尖</span><span class="feilvB">12:01--15:00</span><span class="feilvC">1.20元/度</span></li>
+		  <li><span class="feilvA">尖</span><span class="feilvB">12:01--15:00</span><span class="feilvC">1.20元/度</span></li>
+		  <li><span class="feilvA">尖</span><span class="feilvB">12:01--15:00</span><span class="feilvC">1.20元/度</span></li>  -->
+		</ul>
+	</div>
+	</body>
+	<script type="text/javascript" src="dist/js/jquery-1.11.0.js" ></script>
+	<script type="text/javascript">
+		var rateinfoId=2;
+//		var options={
+//			remote:"rateInfoDetail.html"
+//		}
+		
+	
+//		var shares=null,bhref=false;
+//		var Intent=null,File=null,Uri=null,main=null;
+//		// H5 plus事件处理
+//		function plusReady(){
+//			updateSerivces();
+//			if(plus.os.name=="Android"){
+//				Intent = plus.android.importClass("android.content.Intent");
+//				File = plus.android.importClass("java.io.File");
+//				Uri = plus.android.importClass("android.net.Uri");
+//				main = plus.android.runtimeMainActivity();
+//			}
+//		}
+//		if(window.plus){
+//			plusReady();
+//		}else{
+//			document.addEventListener("plusready",plusReady,false);
+//		}
+//		
+//		/**
+//		 * 更新分享服务
+//		 */
+//		function updateSerivces(){
+//			plus.share.getServices( function(s){
+//				shares={};
+//				for(var i in s){
+//					var t=s[i];
+//					shares[t.id]=t;
+//				}
+//			}, function(e){
+//				mui.toast( "获取分享服务列表失败："+e.message );
+//			} );
+//		}
+//		
+//		/**
+//		   * 分享操作
+//		   * @param {String} id
+//		   */
+//		function shareAction(id,ex) {
+//			var s=null;
+//			mui.toast( "分享操作：" );
+//			if(!id||!(s=shares[id])){
+//				mui.toast( "无效的分享服务！" );
+//				return;
+//			}
+//			if ( s.authenticated ) {
+//				mui.toast( "---已授权---" );
+//				shareMessage(s,ex);
+//			} else {
+//				mui.toast( "---未授权---" );
+//				s.authorize( function(){
+//						shareMessage(s,ex);
+//					},function(e){
+//					mui.toast( "认证授权失败："+e.code+" - "+e.message );
+//				});
+//			}
+//		}
+//		
+//		
+//		/**
+//		   * 发送分享消息
+//		   * @param {plus.share.ShareService} s
+//		   */
+//		function shareMessage(s,ex){
+//			var msg={content:sharecontent.value,extra:{scene:ex}};
+//			if(bhref){
+//				msg.href=sharehref.value;
+//				if(sharehrefTitle&&sharehrefTitle.value!=""){
+//					msg.title=sharehrefTitle.value;
+//				}
+//				if(sharehrefDes&&sharehrefDes.value!=""){
+//					msg.content=sharehrefDes.value;
+//				}
+//				msg.thumbs=["_www/logo.png"];
+//				msg.pictures=["_www/logo.png"];
+//			}else{
+//				if(pic&&pic.realUrl){
+//					msg.pictures=[pic.realUrl];
+//				}
+//			}
+//			mui.toast(JSON.stringify(msg));
+//			s.send( msg, function(){
+//				mui.toast( "分享到\""+s.description+"\"成功！ " );
+//			}, function(e){
+//				mui.toast( "分享到\""+s.description+"\"失败: "+e.code+" - "+e.message );
+//			} );
+//		}
+//		
+//		// 分析链接
+//		function shareHref(){
+//			bhref=true;
+//			var ids=[{id:"weixin",ex:"WXSceneSession"},{id:"weixin",ex:"WXSceneTimeline"},{id:"qq"}],
+//			bts=[{title:"发送给微信好友"},{title:"分享到微信朋友圈"},{title:"分享到QQ"}];
+//			plus.nativeUI.actionSheet({cancel:"取消",buttons:bts},
+//				function(e){
+//					var i=e.index;
+//					if(i>0){
+//						shareAction(ids[i-1].id,ids[i-1].ex);
+//					}
+//				}
+//			);
+//		}
+		
+		$(function() {
+		    FastClick.attach(document.body);
+		});
+		
+		
+		function showRateinfo(){
+//			alert("显示信息。。。");
+			$("#mainDiv").hide();
+			$("#rateInfoDiv").show();
+			 infoDetails(rateinfoId);
+		}
+		function showMainDiv(){
+			$("#mainDiv").show();
+			$("#rateInfoDiv").hide();
+		}
+		function infoDetails(id) {
+			$.ajax({
+			         type: 'get',
+			         url: getRootPath()+'/itf/rateinfo/'+id,
+			         dataType: "json",
+			         success: function(datas){
+			        	 if(datas.status==100){
+				        	 var data=datas.data;
+				        	 //充电服务费
+				        	 $("#raInServiceCharge").innerHTML=data.raInServiceCharge;
+				        	 //当前时间值(分钟),去循环中赋值
+				        	 var currentDate=new Date();
+				        	 var timeInt=currentDate.getHours()*60+currentDate.getMinutes();
+				        	 //尖峰平谷显示
+				        	 var obj=JSON.parse(data.raInQuantumDate);
+				        	 var rateArr=obj.data;
+				        	 var st,stStr,et,etStr,mark,markContent,markPrice;
+				        	 var content="";
+				        	 for(var i=0;i<rateArr.length;i++){
+				        		 st=parseInt(rateArr[i].st);
+				        		 stStr=formateTime(st);
+				        		 et=parseInt(rateArr[i].et);
+				        		 etStr=formateTime(et);
+				        		 mark=parseInt(rateArr[i].mark);
+				        		 switch(mark)
+				        		 {
+				        		 case 1:
+				        			 markContent="尖";
+				        			 markPrice=data.raInTipTimeTariff;
+				        			 break;
+				        		 case 2:
+				        			 markContent="峰";
+				        			 markPrice=data.raInPeakElectricityPrice;
+				        		   break;
+				        		 case 3:
+				        			 markContent="平";
+				        			 markPrice=data.raInUsualPrice;
+				        		   break; 
+				        		 case 4:
+				        			 markContent="谷";
+				        			 markPrice=data.raInValleyTimePrice;
+				        		   break; 
+				        		 default:
+				        		 }
+				        		 content+=' <li><span class="feilvA">'+markContent+'</span><span class="feilvB">'+stStr+'--'+etStr+'</span><span class="feilvC">'+markPrice+'元/度</span></li>'
+				        		 if(timeInt>=st&&timeInt<=et){
+				        			 $("#raInReservationRate").html(markPrice);
+				        			 $("#raInServiceCharge").html(data.raInServiceCharge);
+				        			 $("#totalPrice").html(markPrice+data.raInServiceCharge);
+				        		 }
+				        	 }
+				        	 $("#content").html(content);
+			        	 }else{
+			        		 alert(datas.msg);
+			        	 }	 
+			         }	         
+			    });
+		}
+
+		function formateTime(time){
+			var hour=Math.floor(time/60);
+			var min=time%60;
+			var hourStr=hour;
+			var minStr=min;
+			if(hour<10){
+				hourStr="0"+hour;
+			}
+			if(min<10){
+				minStr="0"+min;
+			}
+			return hourStr+":"+minStr;
+		}
+
+	</script>
+	<!--<script src="dist/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>-->
+	<script src="js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript" src="dist/js/bootstrap.js" ></script>
+	<script src="js/userinfo.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/url.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/pileDetail.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+	
+	
+</html>

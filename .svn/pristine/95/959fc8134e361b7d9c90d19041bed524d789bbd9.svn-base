@@ -1,0 +1,151 @@
+package com.wanma.ims.service.impl;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Maps;
+import com.wanma.ims.common.domain.*;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.mapper.CompanyChargeRelaMapper;
+import com.wanma.ims.mapper.ElectricPileMapper;
+import com.wanma.ims.service.CompanyChargeRelaService;
+import com.wanma.ims.service.InitialService;
+import com.wanma.ims.service.PowerStationService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
+
+/**
+ * Created by xyc on 2017/7/25.
+ * 充电范围逻辑处理接口
+ */
+@Service
+public class CompanyChargeRelaServiceImpl implements CompanyChargeRelaService {
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+
+    @Autowired
+    private CompanyChargeRelaMapper companyChargeRelaMapper;
+    @Autowired
+    private PowerStationService powerStationService;
+    @Autowired
+    private ElectricPileMapper electricPileMapper;
+    @Autowired
+    private InitialService initialService;
+
+    @Override
+    public List<Integer> companyIndexChargeRela(CompanyChargeRelaDO searchModel) {
+        List<Integer> result = new ArrayList<>();
+        List<CompanyChargeRelaDO> relaList = companyChargeRelaMapper.getCompanyChargeRelaList(searchModel);
+        Set<Long> powerStationIdSet = new HashSet<>();
+        Set<Long> electricPileIdSet = new HashSet<>();
+
+        for (CompanyChargeRelaDO rela : relaList) {
+            powerStationIdSet.add(rela.getPowerStationId());
+            electricPileIdSet.add(rela.getElectricPileId());
+        }
+
+        result.add(powerStationIdSet.size());
+        result.add(electricPileIdSet.size());
+
+        return result;
+    }
+
+    @Override
+    public List<CityDO> getStationAndPile(Long cpyId, UserDO loginUser) {
+        List<PowerStationDO> powerStationList = powerStationService.getPowerStationList(new PowerStationDO());
+
+        Map<Long, PowerStationDO> powerStationMap = Maps.uniqueIndex(powerStationList, new Function<PowerStationDO, Long>() {
+            @Override
+            public Long apply(PowerStationDO input) {
+                return input.getPowerstationId();
+            }
+        });
+        List<ElectricPileDO> electricPileList = electricPileMapper.selectByPowerStationIds(new ArrayList<>(powerStationMap.keySet()));
+        CompanyChargeRelaDO relaSearchModel = new CompanyChargeRelaDO();
+        relaSearchModel.setCpyId(cpyId);
+        List<CompanyChargeRelaDO> relaList = companyChargeRelaMapper.getCompanyChargeRelaList(relaSearchModel);
+        Map<Long, CompanyChargeRelaDO> relaMap = Maps.uniqueIndex(relaList, new Function<CompanyChargeRelaDO, Long>() {
+            @Override
+            public Long apply(CompanyChargeRelaDO input) {
+                return input.getElectricPileId();
+            }
+        });
+
+        for (ElectricPileDO electricPile : electricPileList) {
+            PowerStationDO powerStation = powerStationMap.get(electricPile.getPowerStationId());
+            List<ElectricPileDO> electricPiles = powerStation.getList();
+            if (electricPiles == null) {
+                electricPiles = new ArrayList<>();
+                powerStation.setList(electricPiles);
+            }
+            electricPiles.add(electricPile);
+
+            if (relaMap.get(electricPile.getId()) == null) {
+                electricPile.setIsSelected(false);
+                continue;
+            }
+
+            electricPile.setIsSelected(true);
+
+            Long selectedElectricPileNum = powerStation.getSelectedElectricPileNum() == null ? 1L : powerStation.getSelectedElectricPileNum() + 1L;
+            powerStation.setSelectedElectricPileNum(selectedElectricPileNum);
+            if (Objects.equals(powerStation.getElectricPileNum(), powerStation.getSelectedElectricPileNum())) {
+                powerStation.setIsSelected(true);
+            } else {
+                powerStation.setIsSelected(false);
+            }
+        }
+
+        List<CityDO> resultList = new ArrayList<>();
+        Map<String, CityDO> cityMap = new HashMap<>();
+
+        for (Long powerStationId : powerStationMap.keySet()) {
+            PowerStationDO powerStation = powerStationMap.get(powerStationId);
+            powerStation.setName(powerStation.getPowerstationName());
+            CityDO city = cityMap.get(powerStation.getCityCode());
+            if (city == null) {
+                city = new CityDO();
+                city.setCityId(powerStation.getCityCode());
+                city.setList(new ArrayList<PowerStationDO>());
+                city.setIsSelected(true);
+                cityMap.put(powerStation.getCityCode(), city);
+                resultList.add(city);
+            }
+
+            if (city.getIsSelected() && (powerStation.getIsSelected() == null || !powerStation.getIsSelected())) {
+                powerStation.setIsSelected(false);
+                city.setIsSelected(false);
+            }
+
+            city.getList().add(powerStation);
+        }
+
+        List<CityDO> cityList = initialService.getCityListByIds(new ArrayList<>(cityMap.keySet()));
+        for (CityDO city : cityList) {
+            cityMap.get(city.getCityId()).setName(city.getCityName());
+        }
+
+        return resultList;
+    }
+
+    @Override
+    public BaseResultDTO setCompanyChargeRela(Long cpyId, List<CompanyChargeRelaDO> relaList, UserDO loginUser) throws Exception {
+        BaseResultDTO result = new BaseResultDTO();
+
+        //删除旧的范围数据
+        companyChargeRelaMapper.deleteByCpyId(cpyId);
+
+        for (CompanyChargeRelaDO real : relaList) {
+            real.setCpyId(cpyId);
+            real.setCreator(loginUser.getUserAccount());
+            real.setModifier(loginUser.getUserAccount());
+            if (companyChargeRelaMapper.insertCompanyChargeRela(real) < 1) {
+                LOGGER.warn(this.getClass() + "-setCompanyChargeRela is failed, insertCompanyChargeRela is error|companyChargeRela={}|loginUser={}", real, loginUser);
+                throw new Exception("setCompanyChargeRela is failed, insertCompanyChargeRela is error");
+            }
+        }
+
+        return result;
+    }
+}

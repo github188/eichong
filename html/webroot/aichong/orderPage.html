@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="blank" />
+		<meta name="format-detection" content="telephone=no" />
+		<title>预约</title>
+		<!--<link rel="stylesheet" type="text/css" href="dist/css/bootstrap.min.css"/>-->
+		<link rel="stylesheet" type="text/css" href="css/common.css"/>
+		<link rel="stylesheet" type="text/css" href="dist/css/bootstrap.css" />
+		<link rel="stylesheet" type="text/css" href="css/base.css" />
+		<link rel="stylesheet" type="text/css" href="css/setPaymentCode.css" />
+		<link rel="stylesheet" type="text/css" href="css/orderPage.css" />
+		<link rel="stylesheet" type="text/css" href="css/mui.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/app.css" />
+		<style>
+			h5{
+		        padding-top: 15px;
+		    }
+		
+		    .field-contain label{
+		        width: auto;
+		        padding-right: 0;
+		    }
+			.mui-input-range input[type=range] {
+			    position: relative;
+			    width: 100%;
+			    height: 20px;
+			    margin: 17px 0;
+			    padding: 0;
+			    cursor: pointer;
+			    border: 0;
+			    border-radius: 8px;
+			    outline: 0;
+			    background-color: #ccc;
+			    -webkit-appearance: none!important;
+			}
+		    .field-contain input[type='text']{
+		        width: 40px;
+		        height: 30px;
+		        padding: 5px 0;
+		        float: none;
+		        text-align: center;
+		        
+		    }
+		    .mui-input-range input[type=range]::-webkit-slider-thumb{
+		    	background-color:#fff;
+		    	border: 1px solid #CCCCCC;
+		    }
+		    .mui-input-row.mui-input-range {
+			    overflow: visible;
+			    padding: 0 30px;
+			}
+		</style>
+		<!--[if lt IE 9]>
+			<script src="dist/js/html5shiv.min.js"></script>
+			<script src="dist/js/respond.min.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+	<!--第一块头部================================================================-->
+	<!--<div class="waitLoad" id="waitLoad" style="display: none;">
+		<img src="img/load.gif"/>
+	</div>-->
+		<div id="mainDiv">
+			<header>
+				<div class="col-xs-2 headLeft" onclick="toHistory()">
+					<img src="img/nav_btn_back.png" />
+				</div>
+				<div class="col-xs-8 col-xs-offset-2 headCenter" id="pileHeadNameText">
+					枪口A
+				</div>
+
+			</header>
+			<!--请选择预约时间================================================-->
+			<div class="importTip" id="importTip">
+				请选择<t class="yuyueDiv">预约</t>时间
+			</div>
+			<div class="importTip importTipTime" id="importTipTime" style="display: none;">
+				<t class="yuyueDiv">预约</t>时间：<span id='inline-range-val'>0</span> 小时
+			</div>
+			<!--拉动的滚动条=======================================================-->
+			<div class="mui-content">
+				<div class="mui-content-padded">
+					<div class="mui-input-row mui-input-range">
+						<input type="range" id='inline-range' value="0" min="0" max="6" step="0.5" class="rangeValue">
+					</div>
+				</div>
+			</div>
+			<!--预约费用==============================================================-->
+			<div class="importTip">
+				<t class="yuyueDiv">预约</t>费用：<span id='orderFree'>0.0</span> 元
+				<!--<img src="img/bg_map_question.png" style="width: 3rem; height: 3rem;" />-->
+			</div>
+			<!--预约按钮=============================================================-->
+			<a class="btn btn-block orderBtn" style="display: block; width: 80%;height: 4rem; line-height: 3rem;"  id="orderBtn" onclick="toOrder()" >
+				<t class="yuyueDiv">预约</t>
+			</a>
+
+			
+		</div>
+		<!--设置支付密码===================================-->
+		<div id="paymentPasswordDiv" style="display:none;">
+			<!--标题提示=======occupied是占位的作用===================================-->
+			<div class="occupied" style="width: 100%; height: 7rem;"></div>
+
+			<div class="header">
+				<div class="col-xs-4 headLeft">
+					关闭
+				</div>
+				<div class="col-xs-8 headRight">
+					设置支付密码
+				</div>
+			</div>
+			<!--两个密码框============================================-->
+			<div class="passBlock">
+				<input type="password" id="paymentPassword" value="" placeholder="设置支付密码" class="passWord" />
+			</div>
+			<div class="passBlock repassBlock">
+				<input type="password" name="" id="rePaymentPassword" value="" placeholder="确认支付密码" class="passWord" />
+			</div>
+			<a class="btn sure" data-target="#myModal" data-backdrop="static" id="sure" onclick="checkPaymentPassword()" style="background: #FF7D00;">确定</a>
+			<div class="footer header">
+				<div class="col-xs-8 tip">
+					忘记支付密码？
+				</div>
+				<div class="col-xs-4 headRight">
+
+				</div>
+			</div>
+			<!--模态框==============================================================================================-->
+			<div class="modal" id="payInfoModal" tabindex="-2" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h4 class="pay-modal-title" id="myModalLabel" style="display: none;">
+		               		两次输入的密码不一致，请重新输入！
+		            </h4>
+							<h4 class="pay-modal-title2">
+		               		设置完成，立即去支付
+		            </h4>
+						</div>
+						<!--<div class="modal-body">
+		         </div>-->
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary certain" style="background: #FF7D00;" onclick="toMainPage()">
+								确定
+							</button>
+						</div>
+					</div>
+					<!-- /.modal-content -->
+				</div>
+				<!-- /.modal -->
+			</div>
+
+		</div>
+		<!--模态框=================================================================-->
+		<div class="modal" id="payModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title" id="myModalLabel">
+	               		支付：<span id="payBalance"></span>元<br />
+	               		<span class="balance">账户余额：<span id="accountBalance"></span>元</span>
+	            </h4>
+
+					</div>
+					<div class="modal-body">
+						<div class="putCharge">
+							请输入支付密码
+						</div>
+						<input type="password" name="" id="payPassValue" value="" class="pass"/>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary certain" id="finishPayment"  onclick="finishPayment()">
+							确定
+						</button>
+						<button type="button" class="btn btn-default return" data-dismiss="modal" style="margin-left: 3rem;">取消
+						</button>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal -->
+		</div>
+	
+	</body>
+	<script type="text/javascript" src="dist/js/jquery-1.11.0.js"></script>
+	<!--<script src="dist/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>-->
+	<script type="text/javascript" src="dist/js/bootstrap.js"></script>
+	<script src="js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/url.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/userinfo.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/setPaymentCode.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/orderPage.js" type="text/javascript" charset="utf-8"></script>
+
+</html>

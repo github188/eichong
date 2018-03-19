@@ -1,0 +1,109 @@
+package com.wanma.ims.service.impl;
+
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.domain.bo.SimCardBO;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.core.GlobalSystem;
+import com.wanma.ims.mapper.SimCardMapper;
+import com.wanma.ims.service.SimCardService;
+import com.wanma.ims.util.ApiUtil;
+import com.wanma.ims.util.HttpsUtil;
+
+@Service
+public class SimCardServiceImpl implements SimCardService{
+
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	
+	@Autowired
+	private SimCardMapper simCardMapper;
+
+	@Override
+	public long getSimCardListCount(SimCardBO simCard) {
+		return simCardMapper.getSimCardListCount(simCard);
+	}
+
+	@Override
+	public List<SimCardBO> getSimCardList(SimCardBO simCard) {
+		return simCardMapper.getSimCardList(simCard);
+	}
+
+	@Override
+	public int findSimCardCount(String elpiElectricpilecode) {
+		return simCardMapper.findSimCardCount(elpiElectricpilecode);
+	}
+
+	@Override
+	public int findSimOperatorCount(String elpiElectricpilecode) {
+		return simCardMapper.findSimOperatorCount(elpiElectricpilecode);
+	}
+
+	@Override
+	public void insertSimCard(SimCardBO simCard) {
+		simCardMapper.insertSimCard(simCard);
+	}
+
+	@Override
+	public void insertSimOperator(SimCardBO simCard) {
+		simCardMapper.insertSimOperator(simCard);
+	}
+
+	@Override
+	public void updateSimCard(SimCardBO simCard) {
+		simCardMapper.updateSimCard(simCard);
+	}
+	
+	@Override
+	public BaseResultDTO modifySimCard(SimCardBO simCard, UserDO loginUser) throws Exception{
+		BaseResultDTO baseResultDTO = new BaseResultDTO();
+		if (simCard == null || simCard.getElpiElectricpilecode() == null || "".equals(simCard.getElpiElectricpilecode())) {
+			log.error(this.getClass() + ".modifySimCard() error : Sim卡对象不允许为空！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("Sim卡对象不允许为空！");
+			return baseResultDTO;
+		}
+		
+		String apiBaseUrl = GlobalSystem.getConfig("apiRoot");
+		String elpiElectricpilecode[] = simCard.getElpiElectricpilecode().split(",");
+		for (int i = 0; i < elpiElectricpilecode.length; i++) {
+			simCard.setElpiElectricpilecode(elpiElectricpilecode[i]);
+			simCard.setOperator(loginUser.getUserId().toString());
+			// 获取sim卡编码的数量
+			int sum = simCardMapper.findSimCardCount(elpiElectricpilecode[i]);
+			// 获取sim卡运营商的数量
+			int sum1 = simCardMapper.findSimOperatorCount(elpiElectricpilecode[i]);
+			// 增加sim卡编码的记录
+			if (sum == 0) {
+				simCardMapper.insertSimCard(simCard);
+			} else {
+				simCardMapper.updateSimCard(simCard);
+			}
+			// 增加sim卡运营商的记录
+			if (sum1 == 0) {
+				simCardMapper.insertSimOperator(simCard);
+			} else {
+				simCardMapper.updateSimCard(simCard);
+			}
+		}
+		String sendStr = "";
+		for (String code : elpiElectricpilecode) {
+			sendStr += code.trim() + ",";
+		}
+		if (sendStr.length() > 0) {
+			sendStr = sendStr.substring(0, sendStr.length() - 1);
+			sendStr += ":10317";
+			String token = ApiUtil.getToken();
+			// 调用接口定sim
+			HttpsUtil.getResponseParam(apiBaseUrl
+					+ "/app/net/sendChargeSet.do?paramStrs=" + sendStr + "&t="
+					+ token, "status");
+		}
+		return baseResultDTO;
+	}
+}

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.CardApplicationFormMapper">
+
+    <resultMap id="BaseResultMap" type="CardApplicationFormDO">
+        <id column="pk_CardApplicationForm" property="id"/>
+        <result column="caf_user_id" property="userId"/>
+        <result column="caf_phone" property="phone"/>
+        <result column="caf_real_name" property="realName"/>
+        <result column="caf_address" property="address"/>
+        <result column="caf_email" property="email"/>
+        <result column="caf_idcard" property="idCard"/>
+        <result column="caf_sex" property="sex"/>
+        <result column="caf_birthday" property="birthday"/>
+        <result column="caf_car_company_id" property="carCompanyId"/>
+        <result column="caf_car_type_id" property="carTypeId"/>
+        <result column="caf_vehicle_number" property="vehicleNumber"/>
+        <result column="caf_plate_num" property="plateNum"/>
+        <result column="caf_usercard" property="userCard"/>
+        <result column="caf_Status" property="status"/>
+        <result column="createdate" property="gmtCreate"/>
+        <result column="updatedate" property="gmtModified"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        pk_CardApplicationForm, caf_user_id, caf_phone, caf_real_name, caf_address, caf_email,
+        caf_idcard, caf_sex, caf_birthday, caf_car_company_id, caf_car_type_id, caf_vehicle_number,
+        caf_plate_num, caf_usercard, caf_Status, createdate, updatedate
+    </sql>
+
+    <select id="selectCardApplicationFormById" parameterType="Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tbl_cardapplicationform
+        where pk_CardApplicationForm = #{id}
+    </select>
+
+    <sql id="condition">
+        <where>
+            <if test="id != null">
+                and pk_CardApplicationForm = #{id}
+            </if>
+            <if test="userId != null">
+                and caf_user_id = #{userId}
+            </if>
+            <if test="userAccount != null and userAccount != ''">
+                and tbUser.user_account like "%"#{userAccount}"%"
+            </if>
+            <if test="status != null">
+                and caf_Status = #{status}
+            </if>
+            <if test="applicationStartTime != null and applicationStartTime !=''">
+                <![CDATA[and date_format(createdate,'%Y-%m-%d') >= #{applicationStartTime} ]]>
+            </if>
+            <if test="applicationEndTime != null and applicationEndTime !=''">
+                <![CDATA[and date_format(createdate,'%Y-%m-%d') <= #{applicationEndTime} ]]>
+            </if>
+        </where>
+    </sql>
+
+    <select id="selectCardApplicationForm" parameterType="Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tbl_cardapplicationform card INNER JOIN tbl_user tbUser ON card.caf_user_id = tbUser.user_id
+        <include refid="condition"/>
+        <if test="pager!=null">
+            limit #{pager.offset},#{pager.pageSize}
+        </if>
+    </select>
+
+    <select id="countCardApplicationForm" parameterType="Map" resultType="long">
+        SELECT count(1)
+        <include refid="Base_Column_List"/>
+        from tbl_cardapplicationform card INNER JOIN tbl_user tbUser ON card.caf_user_id = tbUser.user_id
+        <include refid="condition"/>
+    </select>
+
+    <delete id="deleteCardApplicationFormById" parameterType="Long">
+        DELETE FROM tbl_cardapplicationform
+        WHERE pk_CardApplicationForm = #{id}
+    </delete>
+
+    <insert id="insertCardApplicationForm" parameterType="CardApplicationFormDO">
+        INSERT INTO tbl_cardapplicationform (pk_CardApplicationForm, caf_user_id,
+                                             caf_phone, caf_real_name, caf_address,
+                                             caf_email, caf_idcard, caf_sex,
+                                             caf_birthday, caf_car_company_id, caf_car_type_id,
+                                             caf_vehicle_number, caf_plate_num, caf_usercard,
+                                             caf_Status, createdate, updatedate
+        )
+        VALUES (#{id}, #{userId},
+                #{phone}, #{realName}, #{address},
+                #{email}, #{idCard}, #{sex},
+                #{birthday}, #{carCompanyId}, #{carTypeId},
+                #{vehicleNumber}, #{plateNum}, #{userCard},
+                #{status}, now(), now()
+        )
+    </insert>
+
+    <update id="updateCardApplicationFormSelective" parameterType="CardApplicationFormDO">
+        update tbl_cardapplicationform
+        <set>
+            <if test="userId != null">
+                caf_user_id = #{userId},
+            </if>
+            <if test="phone != null">
+                caf_phone = #{phone},
+            </if>
+            <if test="realName != null">
+                caf_real_name = #{realName},
+            </if>
+            <if test="address != null">
+                caf_address = #{address},
+            </if>
+            <if test="email != null">
+                caf_email = #{email},
+            </if>
+            <if test="idCard != null">
+                caf_idcard = #{idCard},
+            </if>
+            <if test="sex != null">
+                caf_sex = #{sex},
+            </if>
+            <if test="birthday != null">
+                caf_birthday = #{birthday},
+            </if>
+            <if test="carCompanyId != null">
+                caf_car_company_id = #{carCompanyId},
+            </if>
+            <if test="carTypeId != null">
+                caf_car_type_id = #{carTypeId},
+            </if>
+            <if test="vehicleNumber != null">
+                caf_vehicle_number = #{vehicleNumber},
+            </if>
+            <if test="plateNum != null">
+                caf_plate_num = #{plateNum},
+            </if>
+            <if test="userCard != null">
+                caf_usercard = #{userCard},
+            </if>
+            <if test="status != null">
+                caf_Status = #{status},
+            </if>
+            <if test="gmtCreate != null">
+                createdate = #{gmtCreate},
+            </if>
+            <if test="gmtModified != null">
+                updatedate = #{gmtModified},
+            </if>
+        </set>
+        where pk_CardApplicationForm = #{id}
+    </update>
+
+</mapper>

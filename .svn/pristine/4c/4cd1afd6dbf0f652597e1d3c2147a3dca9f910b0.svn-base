@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no"/>
+    <title>账单</title>
+    <script>
+        (function(){
+            var html = document.documentElement;
+            var hWidth = html.getBoundingClientRect().width;
+            html.style.fontSize = hWidth/15 + "px";
+        })()
+    </script>
+    <link rel="stylesheet" href="../../css/common.css">
+    <link rel="stylesheet" href="../../css/accountDetail.css">
+</head>
+<body>
+<ul class="detailList" id="detailList">
+    <!--<li>-->
+        <!--<div><span>11月17日</span>&nbsp;&nbsp;<span class="font28">11:28</span></div>-->
+        <!--<div>结算退款</div>-->
+        <!--<div>+20.00</div>-->
+    <!--</li>-->
+    <!--<li>-->
+        <!--<div><span>11月17日</span>&nbsp;&nbsp;<span class="font28">11:28</span></div>-->
+        <!--<div>充电冻结</div>-->
+        <!--<div>-10.00</div>-->
+    <!--</li>-->
+</ul>
+
+</body>
+</html>
+<script src="../../js/common.js"></script>
+<script src="../../js/jquery-2.1.0.js"></script>
+<script src="../../lib/layer_mobile/layer.js"></script>
+<script src="../../js/accountDetail.js"></script>

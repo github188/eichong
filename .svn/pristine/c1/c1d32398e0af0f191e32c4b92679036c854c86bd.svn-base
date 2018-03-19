@@ -1,0 +1,54 @@
+var electricPileId=getUrlParam('electricPileId');
+//拿到electricPileId，查看单个电桩详情
+getElectricDetail();
+function getElectricDetail(){
+    $.ajax({
+        type: "post",
+        url: basePath + getElectricDetailUrl,
+        async: true,
+        data: {
+            electricPileId: electricPileId
+        },
+        success: function (data) {
+            $('#code').html(data.code);
+            $('#chChargingMethod').html(data.chChargingMethod);
+            $('#chPower').html(data.chPower);
+            $('#ownerShip').html(data.ownerShip);
+            $('#productModel').html(data.productModel);
+            $('#company').html(data.company);
+            $('#province').html(data.province);
+            $('#area').html(data.area);
+            $('#longitude').html(data.longitude);
+            $('#muzzleNumber').html(data.muzzleNumber);
+            $('#simName').html(data.simName);
+            $('#maxVoltage').html(data.maxVoltage);
+            //创建时间
+            var gmtCreate=data.gmtCreate.time;
+            var dateTime=new Date(gmtCreate).format("yyyy-MM-dd")
+            $('#gmtCreate').html(dateTime);
+
+            $('#num').html(data.num);
+            $('#chStatus').html(data.chStatus);
+            $('#type').html(data.type);
+            $('#pileMaker').html(data.pileMaker);
+            $('#rateInformationId').html(data.rateInformationId);
+            $('#city').html(data.city);
+            $('#address').html(data.address);
+            $('#latitude').html(data.latitude);
+            $('#interfaceStandard').html(data.interfaceStandard);
+            $('#simMac').html(data.simMac);
+            $('#maxElectricity').html(data.maxElectricity);
+            $('#remark').html(data.remark);
+
+        }
+    });
+
+}
+//点击编辑按钮，获取单个电桩详情electricPileId
+$('body').on('click','#editBtn',function(){
+    window.location.href='electricPile_edit.html?electricPileId='+electricPileId;
+})
+//返回电桩列表页面
+$('body').on('click','#toPileList',function(){
+    window.location.href='electricPile_list.html';
+})

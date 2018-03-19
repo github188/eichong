@@ -1,0 +1,115 @@
+@charset "utf-8";
+body{
+	background: #EBECED;
+}
+a:link,a:visited,a:hover,a:active{
+	text-decoration: none;
+}
+.occupied{
+	width: 100%;
+	height: 5rem;
+}
+section{
+	width: 100%;
+	min-height: 8rem;
+	background: #FFFFFF;
+	margin: 1rem auto;
+	border-bottom: 0.1rem solid #B2B2B2;
+	border-top: 0.1rem solid #B2B2B2;
+}
+.content{
+	width: 100%;
+	min-height: 6rem;
+	
+}
+.container{
+	margin: 0;
+	padding: 0.4rem 1.4rem;
+	min-height: 2rem;
+	width: 100%;
+	-background: #008000;
+	font-size: 1.4rem;
+	border-bottom: 0.1rem solid #DCDCDC;
+}
+section .container .stationName{
+	color: #666666;
+	min-height: 2rem;
+	word-wrap: break-word;
+	word-break: break-all;
+	/*line-height: 2rem;*/
+	font-size: 1.6rem;
+	font-family: "微软雅黑";
+}
+section .container .distance{
+	text-align: right;
+	line-height: 2rem;
+	font-size: 1.6rem;
+	color: #666666;
+	display: inline-block;
+}
+.detailAddress{
+	padding-right: 2rem;
+	/*background: url(../img/btn_map_arrow.png) no-repeat right center;*/
+	background-size:5% 90%;
+	color: #666666;
+}
+.container2{
+	width: 100%;
+	padding-right: 0;
+}
+.container3{
+	padding: 0 1.4rem;
+	padding-right: 0;
+	border-bottom: 0;
+}
+.gunNum{
+	min-height: 3rem;
+	color: #747474;
+	padding-top: 0.5rem;
+}
+.gunNum .num-btn{
+	border-radius: 3rem;
+	width: 44%;
+	min-height: 2rem;
+	padding: 0;
+	color: #666666;
+	padding-right: 0.5rem;
+	padding-top: 0.2rem;
+	font-size: 1rem;
+}
+.gunNum .num-btn .mui-badge{
+	background: #666666;
+	color: #FFFFFF;
+	margin-left: 0;
+}
+.navBtn,.orderBtn{
+	height: 3rem;
+	border-left: 0.1rem solid #C7C7CC;
+	color: #FF7D00;
+	text-align: center;
+	line-height: 3rem;
+	padding-left: 1rem;
+}
+.navBtn{
+	background: url(../img/btn_help_navigation.png) no-repeat 5% center;
+	background-size:34% 70%;
+}
+
+.orderBtn{
+	background: url(../img/bg_map_appointment1.png) no-repeat 5% center;
+	background-size:34% 70%;
+	color: #FF7D00;
+}
+.orderBtn a{
+	color: #FF7D00;
+}
+.noOrderBtn{
+	height: 3rem;
+	border-left: 0.1rem solid #C7C7CC;
+	text-align: center;
+	line-height: 3rem;
+	padding-left: 1rem;
+	background: url(../img/bg_map_appointment2.png) no-repeat 5% center;
+	background-size:34% 70%;
+	color: #666;
+}

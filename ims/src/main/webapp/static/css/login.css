@@ -1,0 +1,209 @@
+html {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-image: url(../images/index_bg_1920.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+a:link, a:visited {
+    color: #FFF;
+    text-decoration: underline;
+}
+
+a:hover {
+    color: #CCC;
+}
+
+a:active {
+    color: #FFF;
+}
+
+.Mean_Box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -170px;
+    margin-left: -370px;
+    width: 740px;
+    height: 340px;
+}
+
+.Guanggaoyu {
+    margin-top: 100px;
+}
+
+.Guanggaoyu img {
+    border: 0;
+}
+
+.Denlu_Box {
+    position: fixed;
+    width: 300px;
+    height: 340px;
+    top: 50%;
+    left: 50%;
+    margin-top: -170px;
+    margin-left: 70px;
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.Denlu_Main {
+    position: fixed;
+    width: 300px;
+    height: 340px;
+    top: 50%;
+    left: 50%;
+    margin-top: -170px;
+    margin-left: 70px;
+    z-index: 1050;
+}
+
+.Denlu_Main ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.Denlu_Main ul li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    height: 50px;
+    padding: 0 24px;
+}
+
+.Denlu_Main ul li.tiele {
+    font-size: 18px;
+    color: #FFF;
+    border-bottom: 1px #FFFFFF solid;
+    height: 54px;
+    line-height: 54px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.Denlu_Main ul li.caozuo {
+}
+
+.yonghuming {
+    display: block;
+    width: 250px;
+    height: 40px;
+    background-color: #FFF;
+    border: 0px;
+    outline: none;
+    background-image: url(../images/user.png);
+    background-repeat: no-repeat;
+    background-position: 10px 8px;
+}
+
+.mima {
+    display: block;
+    width: 250px;
+    height: 40px;
+    background-color: #FFF;
+    border: 0px;
+    outline: none;
+    background-image: url(../images/padlock.png);
+    background-repeat: no-repeat;
+    background-position: 10px 8px;
+}
+
+.yonghuming input, .mima input {
+    width: 200px;
+    height: 38px;
+    line-height: 38px;
+    font-size: 18px;
+    color: #666;
+    margin-left: 40px;
+    border: 0px;
+    outline: none;
+}
+
+.yanzheng {
+    display: block;
+    float: left;
+    width: 80px;
+    height: 40px;
+}
+
+.yanzheng input {
+    display: block;
+    width: 80px;
+    height: 36px;
+    line-height: 36px;
+    font-size: 18px;
+    color: #666;
+    background-color: #FFF;
+    border: 0px;
+    padding-left: 5px;
+    outline: none;
+}
+
+.yanzhengma {
+    display: block;
+    width: 80px;
+    height: 40px;
+    float: left;
+    margin-left: 16px;
+}
+
+.huanyizhang {
+    display: block;
+    width: 60px;
+    height: 40px;
+    line-height: 40px;
+    font-size: 14px;
+    float: left;
+    margin-left: 16px;
+}
+
+.tijiao {
+    display: block;
+    width: 250px;
+    height: 38px;
+    margin-top: 10px;
+    color: #FFF;
+    font-size: 18px;
+    border: 0px;
+    outline: none;
+    background-color: #fca729;
+    border-radius: 10px;
+    line-height: 38px;
+    text-align: center;
+}
+.tijiao:hover{
+    background-color:#ff9900;
+    cursor: pointer;
+}
+
+/*.tijiao input{
+    width:250px;
+    height:38px;
+    color:#FFF;
+    font-size:18px;
+    border:0px;
+    outline:none;
+    background-color:#fca729;
+    border-radius:10px;
+    }
+.tijiao input:hover{ background-color:#ff9900;}	*/
+.BanQuan {
+    position: fixed;
+    width: 700px;
+    height: 40px;
+    top: 96%;
+    left: 50%;
+    margin-left: -350px;
+    font-size: 12px;
+    text-align: center;
+    color: #FFF;
+}
+

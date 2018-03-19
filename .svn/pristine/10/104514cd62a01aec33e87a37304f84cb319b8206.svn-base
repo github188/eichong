@@ -1,0 +1,60 @@
+package com.wanma.app.controller;
+
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.bluemobi.product.utils.AccessErrorResult;
+import com.bluemobi.product.utils.AccessSuccessResult;
+import com.wanma.app.service.TblRateinformationService;
+import com.wanma.model.TblRateinformation;
+
+/**
+ * @Description: 费率信息控制器
+ * @author songjf
+ * @createTime：2015-4-10 下午04:05:09
+ * @updator：
+ * @updateTime：
+ * @version：V1.0
+ */
+@Controller
+@RequestMapping("/app/rateinformation")
+public class TblRateinformationController extends BaseController {
+	private static Log log = LogFactory
+			.getLog(TblRateinformationController.class);
+	// 费率信息处理对象
+	@Autowired
+	private TblRateinformationService rateinformationService;
+
+	/**
+	 * @Title: findRateInfo
+	 * @Description: 根据电桩id获取电桩费率信息  此方法用于将数据返给app
+	 * @param params
+	 * @return
+	 */
+	@RequestMapping("/findRateInfo")
+	@ResponseBody
+	public String findRateInfo(@RequestParam Map<String, Object> params) {
+		log.info("******************根据电桩id获取电桩费率信息-begin************************");
+		// 根据电桩id获取电桩费率信息
+		TblRateinformation rateinformation = null;
+		try {
+			rateinformation = rateinformationService.findRateInfo(params);
+		} catch (Exception e) {
+			// 保存错误LOG
+			log.error(e.getLocalizedMessage());
+			log.error("根据电桩id获取电桩费率信息错误", e);
+			return new AccessErrorResult(2004,"error.msg.invalid.parameter")
+					.toString();
+		}
+		log.info("******************根据电桩id获取电桩费率信息-end************************");
+		return new AccessSuccessResult(rateinformation).toString();
+	}
+
+}

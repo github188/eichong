@@ -1,0 +1,32 @@
+/**     
+ * @Title:  TblElectricpileService.java   
+ * @Package com.wanma.service   
+ * @Description:    TODO  
+ * @author: Android_Robot     
+ * @date:   2015年11月19日 下午4:24:10   
+ * @version V1.0     
+ */  
+package com.wanma.service;
+
+import java.util.List;
+import java.util.Map;
+
+import com.wanma.model.TblElectricpile;
+import com.wanma.model.TcbElectric;
+
+/**
+ * @author bc
+ *
+ */
+public interface TblElectricpileService {
+	
+	public TblElectricpile getElectricpileDetail(TblElectricpile tblElectricpile);
+	public List<TblElectricpile> getElectricpileList(TblElectricpile tblElectricpile);
+	public List<TblElectricpile> getElectricpileListForMap(TblElectricpile tblElectricpile);
+	public Integer getElectricpileCountForMap(TblElectricpile tblElectricpile);
+	public void update(TblElectricpile tblElectricpile);
+	public void updateByCode(TblElectricpile tblElectricpile);
+	public List<Map<String,Object>> selectDetailList(Map<String, Object> data);
+	public TblElectricpile selectOne(TblElectricpile model);
+	public List<TcbElectric> getElectricpileListByPsId(Integer pkPowerstation);
+}

@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dubbox.dao.TblPurchasehistoryMapper">
+
+	<resultMap id="tblPurchasehistoryResultMap" type="TblPurchasehistory">
+		<id property="id" column="pk_PurchaseHistory" />
+		<result property="type" column="puHi_Type" />
+		<result property="time" column="puHi_PurchaseHistoryTime" />
+		<result property="mntry" column="puHi_Monetary" />
+		<result property="remark" column="puHi_ConsumerRemark" />
+		<result property="cdate" column="puHi_Createdate" />
+		<result property="udate" column="puHi_Updatedate" />
+		<result property="content" column="puHi_PurchaseContent" />
+		<result property="uid" column="puHi_UserId" />
+		<result property="cgType" column="puhi_ChargeType" />
+		<result property="uogin" column="puHi_UserOrigin" />
+		<result property="ecd" column="puHi_ElectricPileCode" />
+		<result property="ecNum" column="puHi_ExternalCardNumber" />
+		<result property="trsNum" column="puHi_TransactionNumber" />
+		<result property="bpkNum" column="puHi_BespokeNumber" />
+		<result property="pmtNum" column="puHi_PaymentNumber" />
+		<result property="ivcSts" column="puhi_InvoiceStatus" />
+		<result property="ivcId" column="pk_Invoice" />
+	</resultMap>
+
+	<select id="getCount" parameterType="TblPurchasehistory"
+		resultType="int">
+		SELECT count(1)
+		FROM
+		tbl_purchasehistory ph
+		where 1=1
+		<if test="slcBgDate !=null and slcBgDate !=''">
+			<![CDATA[AND TO_DAYS(puHi_PurchaseHistoryTime) >= TO_DAYS(#{slcBgDate})]]>
+		</if>
+		<if test="slcEdDate !=null and slcEdDate !=''">
+			<![CDATA[AND TO_DAYS(puHi_PurchaseHistoryTime) <= TO_DAYS(#{slcEdDate})]]>
+		</if>
+		<if test="bslev != null">
+			and exists (select 1 from tbl_user u where u.user_id =
+			ph.puHi_UserId and u.user_leval = #{bslev})
+		</if>
+		<if test="pkIds != null">
+			and pk_PurchaseHistory in
+			<foreach item="item" index="index" collection="pkIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="userIds != null">
+			and puHi_UserId in
+			<foreach item="item1" index="index" collection="userIds"
+				open="(" separator="," close=")">
+				#{item1}
+			</foreach>
+		</if>
+		<if test="bpkNums != null">
+			and puHi_BespokeNumber in
+			<foreach item="item2" index="index" collection="bpkNums"
+				open="(" separator="," close=")">
+				#{item2}
+			</foreach>
+		</if>
+		<if test="trsNums != null">
+			and puHi_TransactionNumber in
+			<foreach item="item3" index="index" collection="trsNums"
+				open="(" separator="," close=")">
+				#{item3}
+			</foreach>
+		</if>
+		<if test="ecds != null">
+			and puHi_ElectricPileCode in
+			<foreach item="item4" index="index" collection="ecds" open="("
+				separator="," close=")">
+				#{item4}
+			</foreach>
+		</if>
+		<if test="uid != null">
+			and ph.puHi_UserId=#{uid}
+		</if>
+		<if test="type != null">
+			and ph.puHi_Type=#{type}
+		</if>
+		<if test="ivcSts != null">
+			and ph.puhi_InvoiceStatus=#{ivcSts}
+		</if>
+	</select>
+
+	<select id="getList" parameterType="TblPurchasehistory"
+		resultMap="tblPurchasehistoryResultMap">
+		SELECT ${rtColumns}
+		FROM
+		tbl_purchasehistory ph
+		where 1=1
+		<if test="slcBgDate !=null and slcBgDate !=''">
+			<![CDATA[AND TO_DAYS(puHi_PurchaseHistoryTime) >= TO_DAYS(#{slcBgDate})]]>
+		</if>
+		<if test="slcEdDate !=null and slcEdDate !=''">
+			<![CDATA[AND TO_DAYS(puHi_PurchaseHistoryTime) <= TO_DAYS(#{slcEdDate})]]>
+		</if>
+		<if test="bslev != null">
+			and exists (select 1 from tbl_user u where u.user_id =
+			ph.puHi_UserId and u.user_leval = #{bslev})
+		</if>
+		<if test="pkIds != null">
+			and pk_PurchaseHistory in
+			<foreach item="item" index="index" collection="pkIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="userIds != null">
+			and puHi_UserId in
+			<foreach item="item1" index="index" collection="userIds"
+				open="(" separator="," close=")">
+				#{item1}
+			</foreach>
+		</if>
+		<if test="bpkNums != null">
+			and puHi_BespokeNumber in
+			<foreach item="item2" index="index" collection="bpkNums"
+				open="(" separator="," close=")">
+				#{item2}
+			</foreach>
+		</if>
+		<if test="trsNums != null">
+			and puHi_TransactionNumber in
+			<foreach item="item3" index="index" collection="trsNums"
+				open="(" separator="," close=")">
+				#{item3}
+			</foreach>
+		</if>
+		<if test="ecds != null">
+			and puHi_ElectricPileCode in
+			<foreach item="item4" index="index" collection="ecds" open="("
+				separator="," close=")">
+				#{item4}
+			</foreach>
+		</if>
+		<if test="uid != null">
+			and ph.puHi_UserId=#{uid}
+		</if>
+		<if test="type != null">
+			and ph.puHi_Type=#{type}
+		</if>
+		<if test="ivcSts != null">
+			and ph.puhi_InvoiceStatus=#{ivcSts}
+		</if>
+		order by
+		ph.puHi_Createdate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<!-- 更新 -->
+	<update id="update" parameterType="TblPurchasehistory">
+		update tbl_purchasehistory set
+		<if test="ivcSts != null">
+			puhi_InvoiceStatus=#{ivcSts},
+		</if>
+		puHi_Createdate=sysdate()
+		where
+		pk_PurchaseHistory=#{id}
+	</update>
+
+
+</mapper> 

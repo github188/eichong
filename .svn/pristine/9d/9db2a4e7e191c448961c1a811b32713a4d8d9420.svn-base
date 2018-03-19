@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/style.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../js/lib/layer/skin/layer.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/integral/integralActivityList/integralActivity_dailyCollection.css"/>
+    <title>每日领取</title>
+</head>
+<body>
+<div class="col-sm-12">
+    <div class="ibox float-e-margins" style="margin: 0">
+        <div class="userBaseInfo col-sm-12 clearfix">
+            <div class="form-group col-xs-10 button-state">
+                <div class="col-sm-2 queryParam">
+                    状态：
+                </div>
+                <label class="radio-inline log" state="1">
+                    <input type="radio" name="state" checked="checked" value="0"/> 开启
+                </label>
+                <label class="radio-inline" state="2">
+                    <input type="radio" name="state" value="1"/> 关闭
+                </label>
+            </div>
+            <div class="form-group col-xs-10">
+                <div class="col-sm-2 queryParam">
+                    活动名称：
+                </div>
+                <div class="col-sm-3 userAccount queryParam">
+                    <input type="text" name="dailyCollecction" class="userAccountInput" value="每日领取" disabled>
+                </div>
+            </div>
+            <div class="form-group col-xs-10">
+                <div class="col-sm-2 queryParam">
+                    积分方法：
+                </div>
+                <div class="col-sm-3 virtual-word integralMethod">
+                    获取
+                </div>
+            </div>
+            <div class="form-group col-xs-10">
+                <div class="col-sm-2 queryParam">
+                    时间选择：
+                </div>
+                <div class="col-sm-3 userAccount queryParam">
+                    <input type="text" name="" value="" class="userAccountInput" id="datePicker"/>
+                    <input type="text" name="startDay" value="" class="userAccountInput" hidden="hidden" style="display: none;"/>
+                    <input type="text" name="endDay" value="" class="userAccountInput" hidden="hidden" style="display: none;"/>
+                </div>
+            </div>
+            <div class="form-group col-xs-10">
+                <div class="col-sm-2 queryParam">
+                    分值设置：
+                </div>
+                <div class="col-sm-1 virtual-word">
+                    固定分值
+                </div>
+                <div class="col-sm-1 userAccount queryParam">
+                    <input type="text" name="fixed-score" class="userAccountInput" value="50"/>
+                </div>
+                <div class="col-sm-3 virtual-word">
+                    请输入正整数，不包含小数。
+                </div>
+            </div>
+            <div class="col-xs-10 saveBtn form-group" id="saveBtn">
+                确定
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/layDate-v5.0.4/laydate/laydate.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/apiAddress.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/integral/integralActivityList/integralActivity_dailyCollection.js" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>

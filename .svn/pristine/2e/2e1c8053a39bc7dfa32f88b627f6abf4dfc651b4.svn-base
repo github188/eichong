@@ -1,0 +1,22 @@
+package com.wanma.service;
+
+import com.wanma.model.TblRateInformation;
+
+
+/**
+ * @Description 费率信息Service Interface
+ * @author Dongyu
+ * @createTime 2015/12/08 12:43
+ * @updater 
+ * @updateTime    
+ * @version v1.0
+ */
+public interface TblRateInformationService {
+
+	/**
+	 * 通过主键id查询记录
+	 */
+	public TblRateInformation getById(Long pkRateInformation);
+
+	public Double selectMinPriceByPsId(Integer pkPowerstation);
+}

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dubbox.dao.TblProvinceMapper">
+
+	<resultMap id="tblProvinceResultMap" type="TblProvince">
+		<id property="id" column="PROVINCE_ID" />
+		<result property="name" column="PROVINCE_NAME" />
+		<result property="cdate" column="CREATE_DATE" />
+		<result property="creUser" column="CREATE_USER" />
+		<result property="udate" column="LAST_UPDATE_DATE" />
+		<result property="luUser" column="LAST_UPDATE_USER" />
+		<result property="jdEty" column="Tip_Electricity" />
+		<result property="fdEty" column="Peak_Electricity" />
+		<result property="pdEty" column="Flat_Electricity" />
+		<result property="gdEty" column="Valley_Electricity" />
+	</resultMap>
+
+	<!-- 新增 -->
+	<insert id="insert" parameterType="TblProvince">
+		insert into tb_m_province (
+		PROVINCE_NAME,
+		CREATE_DATE,
+		CREATE_USER,
+		LAST_UPDATE_DATE,
+		LAST_UPDATE_USER,
+		Tip_Electricity,
+		Peak_Electricity,
+		Flat_Electricity,
+		Valley_Electricity
+		)values (
+		#{name},
+		#{cdate},
+		#{creUser},
+		#{udate},
+		#{luUser},
+		#{jdEty},
+		#{fdEty},
+		#{pdEty},
+		#{gdEty}
+		)
+	</insert>
+		
+	<!-- 更新 -->
+	<update id="update" parameterType="TblProvince">
+		update tb_m_province set
+		<if test="name != null">
+			PROVINCE_NAME=#{name},
+		</if>
+		<if test="cdate != null">
+			CREATE_DATE=#{cdate},
+		</if>
+		<if test="creUser != null">
+			CREATE_USER=#{creUser},
+		</if>
+		<if test="luUser != null">
+			LAST_UPDATE_USER=#{luUser},
+		</if>
+		<if test="jdEty != null">
+			Tip_Electricity=#{jdEty},
+		</if>
+		<if test="fdEty != null">
+			Peak_Electricity=#{fdEty},
+		</if>
+		<if test="pdEty != null">
+			Flat_Electricity=#{pdEty},
+		</if>
+		<if test="gdEty != null">
+			Valley_Electricity=#{gdEty},
+		</if>
+		LAST_UPDATE_DATE=sysdate()
+		where
+		PROVINCE_ID=#{id}
+	</update>
+
+	<!-- 获取单条数据 -->
+	<select id="selectOne" parameterType="TblProvince" resultMap="tblProvinceResultMap">
+		select
+		${rtColumns}
+		from tb_m_province
+		where
+		PROVINCE_ID=#{id}
+	</select>
+
+	<!-- 获取列表数量 -->
+	<select id="getCount" parameterType="TblProvince" resultType="int">
+		select count(1)
+		from tb_m_province c
+		order by LAST_UPDATE_DATE desc
+	</select>
+
+	<!-- 获取列表 -->
+	<select id="getList" parameterType="TblProvince" resultMap="tblProvinceResultMap">
+		select ${rtColumns}
+		from tb_m_province c
+		order by LAST_UPDATE_DATE desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+</mapper> 

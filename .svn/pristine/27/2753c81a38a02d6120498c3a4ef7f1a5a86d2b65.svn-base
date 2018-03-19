@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/statistics/stationStatistics.css"/>
+    <title>渠道分站点统计报表</title>
+</head>
+<body>
+<div class="container animated fadeInRight">
+    <div class="row">
+        <div class="formBlock clearfix">
+            <form id="cpyStatisticsListForm">
+                <div class="col-xs-12 col-sm-11 col-md-11 col-lg-11">
+                    <div class="userListSelect row">
+                        <div class="col-sm-8 col-xs-12">
+                            <div class="col-sm-1 queryParam">
+                                地区
+                            </div>
+                            <div class=" col-sm-3 col-xs-12 model-select-box">
+                                <div class="model-select-text provinceBlock" data-value="" id="provinceCode">请选择省</div>
+                                <span class="downRow provinceBlock"></span>
+                                <ul class="model-select-option provinceUl">
+
+                                </ul>
+                            </div>
+                            <div class="col-sm-offset-1 col-xs-12 col-sm-3  model-select-box">
+                                <div class="model-select-text cityBlock" data-value="" id="cityCode">请选择市</div>
+                                <span class="downRow cityBlock"></span>
+                                <ul class="model-select-option cityUl">
+
+                                </ul>
+                            </div>
+                            <div class="col-sm-offset-1 col-xs-12 col-sm-3  model-select-box">
+                                <div class="model-select-text cpyBlock" data-value="" id="companyCode">请选择公司</div>
+                                <span class="downRow cpyBlock"></span>
+                                <input type="text" name="cpyNumber" hidden="hidden" id="cpyId" value="" />
+                                <ul class="model-select-option cpyNumberUl">
+
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-xs-12 col-sm-offset-1">
+                            <div class="col-sm-9 col-xs-12 model-select-box">
+                                <div class="model-select-text userBlock" data-value="" id="tagHtml">请选择</div>
+                                <span class="downRow userBlock"></span>
+                                <input type="text" name="tagId" hidden="hidden" id="" value="" />
+                                <ul class="model-select-option tagUl">
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12" style="background: #FFFFFF;height: 20px;"></div>
+                    <div class="userListSelect row">
+                        <div class="col-sm-3 col-xs-12">
+                            <div class="col-sm-4 queryParam">
+                                充电点名称
+                            </div>
+                            <div class="col-sm-8 userAccount">
+                                <input type="text" name="powerStationName" value="" class="userAccountInput" id="powerStationName"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-3  col-xs-12">
+                            <div class="col-sm-4 queryParam">
+                                时间选择
+                            </div>
+                            <div class="col-sm-8 userAccount">
+                                <input type="text" name="" value="" class="userAccountInput" id="datePicker"/>
+                                <input type="text" name="startServiceTime" value="" class="userAccountInput"
+                                       hidden="hidden" style="display: none;" />
+                                <input type="text" name="endServiceTime" value="" class="userAccountInput" hidden="hidden"
+                                       style="display: none;"  />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-1 col-md-1 col-lg-1" style="position: relative;">
+                    <div class="queryBtn" onclick="statisticsListSearch()">
+                        查询
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!--按钮部分开始==========================================================-->
+        <div class="btnBlock">
+            <div class="col-sm-10 col-xs-12 col-md-10" style="">
+                <div class="col-sm-2 col-xs-2 btnStyle showBtn" id="showSet" style="display: none;">
+                    显示
+                </div>
+                <ul class="checkList animated fadeInDown col-sm-3 col-xs-3" style="display: none;">
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name="" data-state="0" value="" disabled="disabled"
+                                   checked="checked" data-flag="statisticsList_date"/>
+                        </div>
+                        <label>时间</label>
+                    </li>
+                    <!--<li>-->
+                        <!--<div class="checkboxActiveStyle">-->
+                            <!--<input type="checkbox" name="" data-state="0" value="" disabled="disabled"-->
+                                   <!--checked="checked" data-flag="statisticsList_city"/>-->
+                        <!--</div>-->
+                        <!--<label>城市</label>-->
+
+                    <!--</li>-->
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name="" data-state="0" value="" disabled="disabled"
+                                checked="checked" data-flag="statisticsList_company"/>
+                        </div>
+                        <label>渠道名称</label>
+                    </li>
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name="" data-state="0" value="" disabled="disabled"
+                                   checked="checked" data-flag="statisticsList_station"/>
+                        </div>
+                        <label>充电点名称</label>
+                    </li>
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name="" data-state="0" value="" disabled="disabled"
+                                checked="checked" data-flag="statisticsList_payType"/>
+                        </div>
+                        <label>付费策略</label>
+                    </li>
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name="" data-state="0" value="" disabled="disabled"
+                                   checked="checked" data-flag="statisticsList_totalMoney"/>
+                        </div>
+                        <label>总金额(元)</label>
+                    </li>
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name="" data-state="0" value="" disabled="disabled"
+                                   checked="checked" data-flag="statisticsList_totalElectric"/>
+                        </div>
+                        <label>总电量(kwh)</label>
+                    </li>
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name="" data-state="0" value="" disabled="disabled"
+                                   checked="checked" data-flag="statisticsList_totalCost"/>
+                        </div>
+                        <label>总电费(元)</label>
+                    </li>
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name="" data-state="0" value="" disabled="disabled"
+                                   checked="checked" data-flag="statisticsList_totalServiceCost"/>
+                        </div>
+                        <label>总服务费(元)</label>
+                    </li>
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name="" data-state="0" value="" disabled="disabled"
+                                   checked="checked" data-flag="statisticsList_totalDiscounts"/>
+                        </div>
+                        <label>总优惠金额(元)</label>
+                    </li>
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name="" data-state="0" value=""
+                                   data-flag="statisticsList_electricJFPG"/>
+                        </div>
+                        <label>电量按尖峰平谷拆分(kwh)</label>
+                    </li>
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name="" data-state="0" value=""
+                                   data-flag="statisticsList_costJFPG"/>
+                        </div>
+                        <label>电费按尖峰平谷拆分(元)</label>
+                    </li>
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name="" data-state="0" value=""
+                                   data-flag="statisticsList_serviceJFPG"/>
+                        </div>
+                        <label>服务费按尖峰平谷拆分(元)</label>
+                    </li>
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name="" data-state="0" value=""
+                                   data-flag="statisticsList_favTotalMoney"/>
+                        </div>
+                        <label>优惠后总金额(元)</label>
+                    </li>
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name="" data-state="0" value=""
+                                   data-flag="statisticsList_favMoney"/>
+                        </div>
+                        <label>优惠后电费(元)</label>
+                    </li>
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name="" data-state="0" value=""
+                                   data-flag="statisticsList_favServiceMoney"/>
+                        </div>
+                        <label>优惠后服务费(元)</label>
+                    </li>
+
+                </ul>
+                <div class="col-sm-2 col-xs-2 col-sm-offset-1 col-xs-offset-1 btnStyle" id="dataExport" style="display: none;">
+                    导出
+                </div>
+            </div>
+            <div class="col-sm-2 col-md-2"></div>
+        </div>
+        <!--表格部分开始==========================================================-->
+        <div class="showSet table-responsive">
+            <div class="commonDiv">
+                <table class=" table table-bordered text-center" style="border: 1px solid #DCDCDC;">
+                    <thead>
+                    <tr>
+                        <!--<th style="min-width: 60px;" class="">选择</th>-->
+                        <th style="min-width: 80px;" class="statisticsList_date">时间</th>
+                        <th style="min-width: 120px;" class="statisticsList_company">渠道名称</th>
+                        <th style="min-width: 150px;" class="statisticsList_station">充电点名称</th>
+                        <!--<th style="min-width: 90px;" class="statisticsList_city">城市</th>-->
+                        <th style="min-width: 120px;" class="statisticsList_payType">付费策略</th>
+                        <th style="min-width: 80px;" class="statisticsList_totalMoney">总金额(元)</th>
+                        <th style="min-width: 80px;" class="statisticsList_totalElectric">总电量(kwh)</th>
+                        <th style="min-width: 80px;" class="statisticsList_totalCost">总电费(元)</th>
+                        <th style="min-width: 80px;" class="statisticsList_totalServiceCost">总服务费(元)</th>
+                        <th style="min-width: 80px;" class="statisticsList_totalDiscounts">总优惠金额(元)</th>
+                        <th style="min-width: 80px;" class="statisticsList_electricJFPG">尖电量(kwh)</th>
+                        <th style="min-width: 80px;" class="statisticsList_electricJFPG">峰电量(kwh)</th>
+                        <th style="min-width: 80px;" class="statisticsList_electricJFPG">平电量(kwh)</th>
+                        <th style="min-width: 80px;" class="statisticsList_electricJFPG">谷电量(kwh)</th>
+                        <th style="min-width: 80px;" class="statisticsList_costJFPG">尖电费(元)</th>
+                        <th style="min-width: 80px;" class="statisticsList_costJFPG">峰电费(元)</th>
+                        <th style="min-width: 80px;" class="statisticsList_costJFPG">平电费(元)</th>
+                        <th style="min-width: 80px;" class="statisticsList_costJFPG">谷电费(元)</th>
+                        <th style="min-width: 80px;" class="statisticsList_serviceJFPG">尖服务费(元)</th>
+                        <th style="min-width: 80px;" class="statisticsList_serviceJFPG">峰服务费(元)</th>
+                        <th style="min-width: 80px;" class="statisticsList_serviceJFPG">平服务费(元)</th>
+                        <th style="min-width: 80px;" class="statisticsList_serviceJFPG">谷服务费(元)</th>
+                        <th style="min-width: 80px;" class="statisticsList_favTotalMoney">优惠后总金额(元)</th>
+                        <th style="min-width: 80px;" class="statisticsList_favMoney">优惠后电费(元)</th>
+                        <th style="min-width: 80px;" class="statisticsList_favServiceMoney">优惠后服务费(元)</th>
+                    </tr>
+                    </thead>
+                    <tbody id="myTbogy">
+
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="cpyStatisticsListPage" class="pagination">
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layDate-v5.0.4/laydate/laydate.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="../../js/contabs.min.js"></script>
+<script src="../../js/statistics/cpyStationStatistics.js" type="text/javascript" charset="utf-8"></script>
+</html>

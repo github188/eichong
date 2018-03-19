@@ -1,0 +1,1107 @@
+{
+  "dataObject": [
+    {
+      "contents": "配置管理",
+      "imageUrl": "",
+      "isSelected": "",
+      "menuId": "gX1ihA6Py0",
+      "menuList": [
+        {
+          "buttonList": [
+            {
+              "contents": "省份电费设置电费编辑",
+              "isSelected": "1",
+              "menuId": "hsXGPxnXpkERGZfNKJM",
+              "parentMenuId": "4Ey9xGVn9D",
+              "sort": "1"
+            }
+          ],
+          "contents": "省份电费设置",
+          "isSelected": "1",
+          "menuId": "4Ey9xGVn9D",
+          "parentMenuId": "gX1ihA6Py0",
+          "sort": "2",
+          "url": ""
+        },
+        {
+          "buttonList": [
+            {
+              "contents": "服务费率上限维护费率编辑",
+              "isSelected": "1",
+              "menuId": "6OuSAEHJT9NQrEYDp8m",
+              "parentMenuId": "Uqsvo73hv0",
+              "sort": "1"
+            }
+          ],
+          "contents": "服务费率上限维护",
+          "isSelected": "1",
+          "menuId": "Uqsvo73hv0",
+          "parentMenuId": "gX1ihA6Py0",
+          "sort": "3",
+          "url": ""
+        },
+        {
+          "buttonList": [
+            {
+              "contents": "电桩制造厂商新增",
+              "isSelected": "1",
+              "menuId": "GEJQW9ILRWNvmnim56B",
+              "parentMenuId": "dMSK2hm1Lx",
+              "sort": "1"
+            },
+            {
+              "contents": "电桩制造厂商编辑",
+              "isSelected": "1",
+              "menuId": "VjvU4WWthetqN501E1g",
+              "parentMenuId": "dMSK2hm1Lx",
+              "sort": "2"
+            },
+            {
+              "contents": "电桩制造厂商删除",
+              "isSelected": "1",
+              "menuId": "Ot6W3sIx7WknbTp5H4x",
+              "parentMenuId": "dMSK2hm1Lx",
+              "sort": "3"
+            }
+          ],
+          "contents": "电桩制造厂商",
+          "isSelected": "1",
+          "menuId": "dMSK2hm1Lx",
+          "parentMenuId": "gX1ihA6Py0",
+          "sort": "4",
+          "url": ""
+        },
+        {
+          "buttonList": [
+            {
+              "contents": "费率设置新增",
+              "isSelected": "1",
+              "menuId": "GAwwkEqg2UlE1UzeqKc",
+              "parentMenuId": "zJe5f5zvQS",
+              "sort": "1"
+            },
+            {
+              "contents": "费率设置编辑",
+              "isSelected": "1",
+              "menuId": "GoS5IhotXPeJS521vVT",
+              "parentMenuId": "zJe5f5zvQS",
+              "sort": "2"
+            },
+            {
+              "contents": "费率设置删除",
+              "isSelected": "1",
+              "menuId": "RJYU1LvkpDV86m26UgA",
+              "parentMenuId": "zJe5f5zvQS",
+              "sort": "3"
+            }
+          ],
+          "contents": "费率设置",
+          "isSelected": "1",
+          "menuId": "zJe5f5zvQS",
+          "parentMenuId": "gX1ihA6Py0",
+          "sort": "5",
+          "url": ""
+        },
+        {
+          "buttonList": [
+            {
+              "contents": "新增大账户预警",
+              "isSelected": "1",
+              "menuId": "vdhj7xNnixlWlFbvCBs",
+              "parentMenuId": "eBuHAuuk0Pnvv16d6Q8",
+              "sort": "1"
+            },
+            {
+              "contents": "大账户预警删除",
+              "isSelected": "1",
+              "menuId": "ajGcJ0hkkx6iAWMvzGK",
+              "parentMenuId": "eBuHAuuk0Pnvv16d6Q8",
+              "sort": "2"
+            }
+          ],
+          "contents": "大账户预警",
+          "isSelected": "1",
+          "menuId": "eBuHAuuk0Pnvv16d6Q8",
+          "parentMenuId": "gX1ihA6Py0",
+          "sort": "9",
+          "url": ""
+        },
+        {
+          "buttonList": [],
+          "contents": "定Soc充电设置",
+          "isSelected": "1",
+          "menuId": "JXEmaCsUtS9GyOG9cPF",
+          "parentMenuId": "gX1ihA6Py0",
+          "sort": "12",
+          "url": ""
+        },
+        {
+          "buttonList": [],
+          "contents": "定时充电设置",
+          "isSelected": "1",
+          "menuId": "MpKCzLMBwSJEu3sykfX",
+          "parentMenuId": "gX1ihA6Py0",
+          "sort": "13",
+          "url": ""
+        }
+      ],
+      "sort": "0"
+    },
+    {
+      "contents": "桩体管理",
+      "imageUrl": "",
+      "isSelected": "",
+      "menuId": "IsAKXBa8hO",
+      "menuList": [
+        {
+          "buttonList": [],
+          "contents": "电桩管理",
+          "isSelected": "1",
+          "menuId": "2469sK5xBm",
+          "parentMenuId": "IsAKXBa8hO",
+          "sort": "0",
+          "url": ""
+        },
+        {
+          "buttonList": [],
+          "contents": "充电点管理",
+          "isSelected": "1",
+          "menuId": "XASpCKd5Q6",
+          "parentMenuId": "IsAKXBa8hO",
+          "sort": "1",
+          "url": ""
+        },
+        {
+          "buttonList": [],
+          "contents": "集中器管理",
+          "isSelected": "1",
+          "menuId": "V2pmoJVJtHGx7MgiNIx",
+          "parentMenuId": "IsAKXBa8hO",
+          "sort": "2",
+          "url": ""
+        },
+        {
+          "buttonList": [],
+          "contents": "联营充电桩过滤",
+          "isSelected": "1",
+          "menuId": "4xgcfkDQSgfEmjIs5Mg",
+          "parentMenuId": "IsAKXBa8hO",
+          "sort": "4",
+          "url": ""
+        }
+      ],
+      "sort": "1"
+    },
+    {
+      "contents": "订单管理",
+      "imageUrl": "",
+      "isSelected": "",
+      "menuId": "N59o3Xr7b9",
+      "menuList": [
+        {
+          "buttonList": [],
+          "contents": "普通用户订单",
+          "isSelected": "1",
+          "menuId": "SbKm3n3zgO",
+          "parentMenuId": "N59o3Xr7b9",
+          "sort": "0",
+          "url": ""
+        },
+        {
+          "buttonList": [],
+          "contents": "纯商家用户订单",
+          "isSelected": "1",
+          "menuId": "iPD4JA835x",
+          "parentMenuId": "N59o3Xr7b9",
+          "sort": "1",
+          "url": ""
+        },
+        {
+          "buttonList": [],
+          "contents": "个人商家用户订单",
+          "isSelected": "1",
+          "menuId": "btNA71tako",
+          "parentMenuId": "N59o3Xr7b9",
+          "sort": "2",
+          "url": ""
+        },
+        {
+          "buttonList": [],
+          "contents": "合作商用户订单",
+          "isSelected": "1",
+          "menuId": "Tlq9CRp9Xq0YsywcKum",
+          "parentMenuId": "N59o3Xr7b9",
+          "sort": "3",
+          "url": ""
+        }
+      ],
+      "sort": "3"
+    },
+    {
+      "contents": "反馈管理",
+      "imageUrl": "",
+      "isSelected": "",
+      "menuId": "FEEDBACK",
+      "menuList": [
+        {
+          "buttonList": [],
+          "contents": "意见反馈",
+          "isSelected": "1",
+          "menuId": "FEEDBACKLIST",
+          "parentMenuId": "FEEDBACK",
+          "sort": "0",
+          "url": ""
+        },
+        {
+          "buttonList": [],
+          "contents": " 桩体分享",
+          "isSelected": "1",
+          "menuId": "d3TidX45ud",
+          "parentMenuId": "FEEDBACK",
+          "sort": "2",
+          "url": ""
+        }
+      ],
+      "sort": "7"
+    },
+    {
+      "contents": "财务报表",
+      "imageUrl": "",
+      "isSelected": "",
+      "menuId": "qQxTb5mb8ngzzNH5p2J",
+      "menuList": [
+        {
+          "buttonList": [],
+          "contents": "个体商家",
+          "isSelected": "1",
+          "menuId": "K4TpnDkmW4g0eEpGoKD",
+          "parentMenuId": "qQxTb5mb8ngzzNH5p2J",
+          "sort": "1",
+          "url": ""
+        },
+        {
+          "buttonList": [],
+          "contents": "纯商家",
+          "isSelected": "1",
+          "menuId": "IMep3n2FTckeptt4Cjr",
+          "parentMenuId": "qQxTb5mb8ngzzNH5p2J",
+          "sort": "2",
+          "url": ""
+        },
+        {
+          "buttonList": [],
+          "contents": "发票管理",
+          "isSelected": "1",
+          "menuId": "6sWq1mnh00zSfLY64hX",
+          "parentMenuId": "qQxTb5mb8ngzzNH5p2J",
+          "sort": "3",
+          "url": ""
+        }
+      ],
+      "sort": "7"
+    },
+    {
+      "contents": "系统管理",
+      "imageUrl": "",
+      "isSelected": "",
+      "menuId": "sysManage",
+      "menuList": [
+        {
+          "buttonList": [
+            {
+              "contents": "角色新增",
+              "isSelected": "1",
+              "menuId": "VLmbn8KNPjyjvpr5nth",
+              "parentMenuId": "roleManage",
+              "sort": "1"
+            },
+            {
+              "contents": "角色编辑",
+              "isSelected": "1",
+              "menuId": "O7sZGNYldLYYiT0h4g3",
+              "parentMenuId": "roleManage",
+              "sort": "2"
+            },
+            {
+              "contents": "角色删除",
+              "isSelected": "1",
+              "menuId": "X7hhrSbCb2eYH2pUyDX",
+              "parentMenuId": "roleManage",
+              "sort": "3"
+            }
+          ],
+          "contents": "角色管理",
+          "isSelected": "1",
+          "menuId": "roleManage",
+          "parentMenuId": "sysManage",
+          "sort": "0",
+          "url": ""
+        },
+        {
+          "buttonList": [
+            {
+              "contents": "公司新增",
+              "isSelected": "1",
+              "menuId": "Re8Al4CkL15772AoADR",
+              "parentMenuId": "G0y1B66b2l",
+              "sort": "1"
+            },
+            {
+              "contents": "公司编辑",
+              "isSelected": "1",
+              "menuId": "ybbV8to9U7sEL4njIUr",
+              "parentMenuId": "G0y1B66b2l",
+              "sort": "2"
+            },
+            {
+              "contents": "公司删除",
+              "isSelected": "1",
+              "menuId": "Wyq5BAEzNrtoHE7Hmuk",
+              "parentMenuId": "G0y1B66b2l",
+              "sort": "3"
+            },
+            {
+              "contents": "公司查看",
+              "isSelected": "1",
+              "menuId": "ylZKqhbfUgz7PH5bRv3",
+              "parentMenuId": "G0y1B66b2l",
+              "sort": "4"
+            }
+          ],
+          "contents": "公司管理",
+          "isSelected": "1",
+          "menuId": "G0y1B66b2l",
+          "parentMenuId": "sysManage",
+          "sort": "1",
+          "url": ""
+        },
+        {
+          "buttonList": [
+            {
+              "contents": "菜单新增",
+              "isSelected": "1",
+              "menuId": "r041nwMQFIV4q9UgMTA",
+              "parentMenuId": "menuManage",
+              "sort": "1"
+            },
+            {
+              "contents": "菜单编辑",
+              "isSelected": "1",
+              "menuId": "ziXWyONqZqEkDnONv9i",
+              "parentMenuId": "menuManage",
+              "sort": "2"
+            },
+            {
+              "contents": "菜单删除",
+              "isSelected": "1",
+              "menuId": "Yj6ikrEWnOxwYtL1VTL",
+              "parentMenuId": "menuManage",
+              "sort": "3"
+            }
+          ],
+          "contents": "菜单管理",
+          "isSelected": "1",
+          "menuId": "menuManage",
+          "parentMenuId": "sysManage",
+          "sort": "2",
+          "url": ""
+        },
+        {
+          "buttonList": [
+            {
+              "contents": "公司标识管理编辑",
+              "isSelected": "1",
+              "menuId": "drZJa5uEMB5FaRXHc8S",
+              "parentMenuId": "Qi3Dc8es9KikEJLP3G4",
+              "sort": "0"
+            },
+            {
+              "contents": "删除公司标识",
+              "isSelected": "1",
+              "menuId": "NGcXhggEBZaTO37fUGl",
+              "parentMenuId": "Qi3Dc8es9KikEJLP3G4",
+              "sort": "1"
+            }
+          ],
+          "contents": "公司标识管理",
+          "isSelected": "1",
+          "menuId": "Qi3Dc8es9KikEJLP3G4",
+          "parentMenuId": "sysManage",
+          "sort": "3",
+          "url": ""
+        },
+        {
+          "buttonList": [
+            {
+              "contents": "新增离线充电次数",
+              "isSelected": "1",
+              "menuId": "l2alhJF4LpcEzOO5Zx4",
+              "parentMenuId": "3j7g1yOLKBRl9t7occ5",
+              "sort": "1"
+            },
+            {
+              "contents": "编辑离线充电次数",
+              "isSelected": "1",
+              "menuId": "x0SQPgJ0C1KWvo1fvAb",
+              "parentMenuId": "3j7g1yOLKBRl9t7occ5",
+              "sort": "2"
+            },
+            {
+              "contents": "删除离线充电次数",
+              "isSelected": "1",
+              "menuId": "Bdf5uGsIcKDfsQyXQd6",
+              "parentMenuId": "3j7g1yOLKBRl9t7occ5",
+              "sort": "3"
+            }
+          ],
+          "contents": "离线充电次数管理",
+          "isSelected": "1",
+          "menuId": "3j7g1yOLKBRl9t7occ5",
+          "parentMenuId": "sysManage",
+          "sort": "4",
+          "url": ""
+        }
+      ],
+      "sort": "7"
+    },
+    {
+      "contents": "用户管理",
+      "imageUrl": "",
+      "isSelected": "",
+      "menuId": "S34siD2wpW",
+      "menuList": [
+        {
+          "buttonList": [],
+          "contents": "普通用户管理",
+          "isSelected": "1",
+          "menuId": "1XuzBif98Q",
+          "parentMenuId": "S34siD2wpW",
+          "sort": "0",
+          "url": ""
+        },
+        {
+          "buttonList": [],
+          "contents": "商家用户管理",
+          "isSelected": "1",
+          "menuId": "4ifF9SMfY1",
+          "parentMenuId": "S34siD2wpW",
+          "sort": "0",
+          "url": ""
+        },
+        {
+          "buttonList": [],
+          "contents": "管理员管理",
+          "isSelected": "1",
+          "menuId": "tfV7mN2i6F",
+          "parentMenuId": "S34siD2wpW",
+          "sort": "0",
+          "url": ""
+        },
+        {
+          "buttonList": [],
+          "contents": "用户优惠券管理",
+          "isSelected": "1",
+          "menuId": "KFhgJIRYqhD1NTSh4Iv",
+          "parentMenuId": "S34siD2wpW",
+          "sort": "4",
+          "url": ""
+        }
+      ],
+      "sort": "9"
+    },
+    {
+      "contents": "广告管理",
+      "imageUrl": "",
+      "isSelected": "",
+      "menuId": "T3F9vE6i9o",
+      "menuList": [
+        {
+          "buttonList": [],
+          "contents": "首页广告栏",
+          "isSelected": "1",
+          "menuId": "SNNWwTfjkg",
+          "parentMenuId": "T3F9vE6i9o",
+          "sort": "1",
+          "url": ""
+        },
+        {
+          "buttonList": [],
+          "contents": "消息推送",
+          "isSelected": "1",
+          "menuId": "0o4J5aiz84",
+          "parentMenuId": "T3F9vE6i9o",
+          "sort": "2",
+          "url": ""
+        },
+        {
+          "buttonList": [],
+          "contents": "新闻管理",
+          "isSelected": "1",
+          "menuId": "mp1bb76MC6",
+          "parentMenuId": "T3F9vE6i9o",
+          "sort": "3",
+          "url": ""
+        },
+        {
+          "buttonList": [],
+          "contents": "新闻浏览统计",
+          "isSelected": "1",
+          "menuId": "3hdYKDfjXr1TO3CioPs",
+          "parentMenuId": "T3F9vE6i9o",
+          "sort": "4",
+          "url": ""
+        },
+        {
+          "buttonList": [
+            {
+              "contents": "闪屏新增",
+              "isSelected": "1",
+              "menuId": "h4HQcK29m5EHUhlXZOM",
+              "parentMenuId": "svdJZ6jetF5iacJgflT",
+              "sort": "1"
+            }
+          ],
+          "contents": "闪屏管理",
+          "isSelected": "1",
+          "menuId": "svdJZ6jetF5iacJgflT",
+          "parentMenuId": "T3F9vE6i9o",
+          "sort": "5",
+          "url": ""
+        },
+        {
+          "buttonList": [
+            {
+              "contents": "插屏新增",
+              "isSelected": "1",
+              "menuId": "B8c97JUtsgktucaOghA",
+              "parentMenuId": "hiBpAL6V1NUBNJQRTN2",
+              "sort": "1"
+            }
+          ],
+          "contents": "插屏管理",
+          "isSelected": "1",
+          "menuId": "hiBpAL6V1NUBNJQRTN2",
+          "parentMenuId": "T3F9vE6i9o",
+          "sort": "6",
+          "url": ""
+        },
+        {
+          "buttonList": [
+            {
+              "contents": "banner新增",
+              "isSelected": "1",
+              "menuId": "0YUJgZytlO0LGg5DP4N",
+              "parentMenuId": "pA1ogE9BZ6EjBWBLFNu",
+              "sort": "1"
+            },
+            {
+              "contents": "编辑banner",
+              "isSelected": "1",
+              "menuId": "NoVl4bnuo4jfs9pF4u8",
+              "parentMenuId": "pA1ogE9BZ6EjBWBLFNu",
+              "sort": "2"
+            },
+            {
+              "contents": "删除banner",
+              "isSelected": "1",
+              "menuId": "unDP4fWY3D2QkDrdiSe",
+              "parentMenuId": "pA1ogE9BZ6EjBWBLFNu",
+              "sort": "3"
+            },
+            {
+              "contents": "下架banner",
+              "isSelected": "1",
+              "menuId": "koPoGVEIKOF5wk2pYpU",
+              "parentMenuId": "pA1ogE9BZ6EjBWBLFNu",
+              "sort": "4"
+            }
+          ],
+          "contents": "首页banner",
+          "isSelected": "1",
+          "menuId": "pA1ogE9BZ6EjBWBLFNu",
+          "parentMenuId": "T3F9vE6i9o",
+          "sort": "11",
+          "url": ""
+        }
+      ],
+      "sort": "9"
+    },
+    {
+      "contents": "日志管理",
+      "imageUrl": "",
+      "isSelected": "",
+      "menuId": "W77puJ87k8",
+      "menuList": [
+        {
+          "buttonList": [],
+          "contents": "日志管理",
+          "isSelected": "1",
+          "menuId": "JmKW9VmEg5",
+          "parentMenuId": "W77puJ87k8",
+          "sort": "0",
+          "url": ""
+        }
+      ],
+      "sort": "9"
+    },
+    {
+      "contents": "版本管理",
+      "imageUrl": "",
+      "isSelected": "",
+      "menuId": "4Fhvp1Ta8u",
+      "menuList": [
+        {
+          "buttonList": [],
+          "contents": "版本管理",
+          "isSelected": "1",
+          "menuId": "VC537zA0QF",
+          "parentMenuId": "4Fhvp1Ta8u",
+          "sort": "1",
+          "url": ""
+        }
+      ],
+      "sort": "11"
+    },
+    {
+      "contents": "图表中心",
+      "imageUrl": "",
+      "isSelected": "",
+      "menuId": "754JR67666",
+      "menuList": [
+        {
+          "buttonList": [],
+          "contents": "收支列表",
+          "isSelected": "1",
+          "menuId": "MfwBbA2zeR",
+          "parentMenuId": "754JR67666",
+          "sort": "0",
+          "url": ""
+        },
+        {
+          "buttonList": [],
+          "contents": "图表统计",
+          "isSelected": "1",
+          "menuId": "sri7gLbcbn",
+          "parentMenuId": "754JR67666",
+          "sort": "0",
+          "url": ""
+        },
+        {
+          "buttonList": [],
+          "contents": "监控首页",
+          "isSelected": "1",
+          "menuId": "zQ2lPukbyJLCt2wL19j",
+          "parentMenuId": "754JR67666",
+          "sort": "3",
+          "url": ""
+        },
+        {
+          "buttonList": [],
+          "contents": "活动统计",
+          "isSelected": "1",
+          "menuId": "fVN7xBwN9HWCc3DExGY",
+          "parentMenuId": "754JR67666",
+          "sort": "4",
+          "url": ""
+        },
+        {
+          "buttonList": [],
+          "contents": "合作商收支列表",
+          "isSelected": "1",
+          "menuId": "UJ9G3LHVXYsJWL1JCkg",
+          "parentMenuId": "754JR67666",
+          "sort": "5",
+          "url": ""
+        }
+      ],
+      "sort": "15"
+    },
+    {
+      "contents": "充电卡管理",
+      "imageUrl": "",
+      "isSelected": "",
+      "menuId": "Y4zF40bmyXLp1oyiorE",
+      "menuList": [
+        {
+          "buttonList": [
+            {
+              "contents": "绑定卡号",
+              "isSelected": "1",
+              "menuId": "yM6oEZkyPLFoGhWaIcO",
+              "parentMenuId": "MUgA4vsjD98FB9AL2mF",
+              "sort": "0"
+            },
+            {
+              "contents": "充电卡挂失",
+              "isSelected": "1",
+              "menuId": "ThlKorMQBOhO2EgvChW",
+              "parentMenuId": "MUgA4vsjD98FB9AL2mF",
+              "sort": "1"
+            },
+            {
+              "contents": "充电卡取消挂失",
+              "isSelected": "1",
+              "menuId": "NGh10zTFeeDNZFwqk0h",
+              "parentMenuId": "MUgA4vsjD98FB9AL2mF",
+              "sort": "2"
+            }
+          ],
+          "contents": "充电卡管理列表",
+          "isSelected": "1",
+          "menuId": "MUgA4vsjD98FB9AL2mF",
+          "parentMenuId": "Y4zF40bmyXLp1oyiorE",
+          "sort": "1",
+          "url": ""
+        },
+        {
+          "buttonList": [],
+          "contents": "充电卡申请列表",
+          "isSelected": "1",
+          "menuId": "U0atTh8uLqKHoHZM3UX",
+          "parentMenuId": "Y4zF40bmyXLp1oyiorE",
+          "sort": "2",
+          "url": ""
+        }
+      ],
+      "sort": "17"
+    },
+    {
+      "contents": "优惠券管理",
+      "imageUrl": "",
+      "isSelected": "",
+      "menuId": "JpcGfOugqamNai6BJTL",
+      "menuList": [
+        {
+          "buttonList": [
+            {
+              "contents": "新增现金劵品种",
+              "isSelected": "1",
+              "menuId": "xFYpJsp90rmeUFvARVO",
+              "parentMenuId": "A46eA4eyRspMJPEgeLJ",
+              "sort": "1"
+            },
+            {
+              "contents": "修改现金劵品种",
+              "isSelected": "1",
+              "menuId": "1YwzqTNkEZyEQao5Xd8",
+              "parentMenuId": "A46eA4eyRspMJPEgeLJ",
+              "sort": "2"
+            }
+          ],
+          "contents": "现金劵品种",
+          "isSelected": "1",
+          "menuId": "A46eA4eyRspMJPEgeLJ",
+          "parentMenuId": "JpcGfOugqamNai6BJTL",
+          "sort": "1",
+          "url": ""
+        },
+        {
+          "buttonList": [
+            {
+              "contents": "批量删除",
+              "isSelected": "1",
+              "menuId": "7Po432WlIPcGEXNUCFD",
+              "parentMenuId": "D0bJ6Nzb9TO2yFIoKX7",
+              "sort": "1"
+            }
+          ],
+          "contents": "现金券明细",
+          "isSelected": "1",
+          "menuId": "D0bJ6Nzb9TO2yFIoKX7",
+          "parentMenuId": "JpcGfOugqamNai6BJTL",
+          "sort": "1",
+          "url": ""
+        }
+      ],
+      "sort": "18"
+    },
+    {
+      "contents": "活动管理",
+      "imageUrl": "",
+      "isSelected": "",
+      "menuId": "AFa3GkrbtrHvKvnZlTO",
+      "menuList": [
+        {
+          "buttonList": [
+            {
+              "contents": "新增渠道活动",
+              "isSelected": "1",
+              "menuId": "SnBr2BF32t5UjvhpMsZ",
+              "parentMenuId": "k6ObwktI4ozo7RQ4qUX",
+              "sort": "1"
+            }
+          ],
+          "contents": "渠道活动",
+          "isSelected": "1",
+          "menuId": "k6ObwktI4ozo7RQ4qUX",
+          "parentMenuId": "AFa3GkrbtrHvKvnZlTO",
+          "sort": "1",
+          "url": ""
+        },
+        {
+          "buttonList": [
+            {
+              "contents": "新增用户活动",
+              "isSelected": "1",
+              "menuId": "QT8UsLzxSoekhxRwrPF",
+              "parentMenuId": "941kUzLRcnYMw5UeF4W",
+              "sort": "1"
+            }
+          ],
+          "contents": "用户活动",
+          "isSelected": "1",
+          "menuId": "941kUzLRcnYMw5UeF4W",
+          "parentMenuId": "AFa3GkrbtrHvKvnZlTO",
+          "sort": "2",
+          "url": ""
+        },
+        {
+          "buttonList": [
+            {
+              "contents": "车型管理删除",
+              "isSelected": "1",
+              "menuId": "aWWDByvppB14pIodiDN",
+              "parentMenuId": "8BPpAIqvUMzrAU4OCwL",
+              "sort": "1"
+            },
+            {
+              "contents": "车型优惠导入",
+              "isSelected": "1",
+              "menuId": "oETpSGovTtgUTaLHzig",
+              "parentMenuId": "8BPpAIqvUMzrAU4OCwL",
+              "sort": "2"
+            }
+          ],
+          "contents": "车型优惠",
+          "isSelected": "1",
+          "menuId": "8BPpAIqvUMzrAU4OCwL",
+          "parentMenuId": "AFa3GkrbtrHvKvnZlTO",
+          "sort": "3",
+          "url": ""
+        }
+      ],
+      "sort": "19"
+    },
+    {
+      "contents": "产品型号管理",
+      "imageUrl": "",
+      "isSelected": "",
+      "menuId": "4tshobtv6mFJxAIjecF",
+      "menuList": [
+        {
+          "buttonList": [
+            {
+              "contents": "产品型号新增",
+              "isSelected": "1",
+              "menuId": "ls2h8wYdczcQAYywv5p",
+              "parentMenuId": "IqnIubc9ZAUZhYHxK6Z",
+              "sort": "0"
+            },
+            {
+              "contents": "产品型号编辑",
+              "isSelected": "1",
+              "menuId": "HZ7vuQkpFUOznHQhJfG",
+              "parentMenuId": "IqnIubc9ZAUZhYHxK6Z",
+              "sort": "1"
+            },
+            {
+              "contents": "产品型号查看",
+              "isSelected": "1",
+              "menuId": "96CACiE0w0WThgxbERn",
+              "parentMenuId": "IqnIubc9ZAUZhYHxK6Z",
+              "sort": "2"
+            },
+            {
+              "contents": "版本升级",
+              "isSelected": "1",
+              "menuId": "yJolm9HnU5X1V5iv7Xj",
+              "parentMenuId": "IqnIubc9ZAUZhYHxK6Z",
+              "sort": "3"
+            }
+          ],
+          "contents": "产品型号列表",
+          "isSelected": "1",
+          "menuId": "IqnIubc9ZAUZhYHxK6Z",
+          "parentMenuId": "4tshobtv6mFJxAIjecF",
+          "sort": "0",
+          "url": ""
+        }
+      ],
+      "sort": "20"
+    },
+    {
+      "contents": "第三方接口管理",
+      "imageUrl": "",
+      "isSelected": "",
+      "menuId": "q9IYVGkTSCBgaAKGZAH",
+      "menuList": [
+        {
+          "buttonList": [
+            {
+              "contents": "新增密钥",
+              "isSelected": "1",
+              "menuId": "ARAsPXjefcYnshdXjcc",
+              "parentMenuId": "Wt1ePc3OPNiV0H3tcnA",
+              "sort": "0"
+            },
+            {
+              "contents": "重新生成密钥",
+              "isSelected": "1",
+              "menuId": "OkFntKocaf7Ht5ZWkSS",
+              "parentMenuId": "Wt1ePc3OPNiV0H3tcnA",
+              "sort": "1"
+            },
+            {
+              "contents": "修改",
+              "isSelected": "1",
+              "menuId": "IxMh7pc8eLsg4oiTOIQ",
+              "parentMenuId": "Wt1ePc3OPNiV0H3tcnA",
+              "sort": "2"
+            },
+            {
+              "contents": "删除",
+              "isSelected": "1",
+              "menuId": "2h8nG2IfyvuisaOhqwP",
+              "parentMenuId": "Wt1ePc3OPNiV0H3tcnA",
+              "sort": "3"
+            }
+          ],
+          "contents": "用户身份管理",
+          "isSelected": "1",
+          "menuId": "Wt1ePc3OPNiV0H3tcnA",
+          "parentMenuId": "q9IYVGkTSCBgaAKGZAH",
+          "sort": "0",
+          "url": ""
+        }
+      ],
+      "sort": "21"
+    },
+    {
+      "contents": "首页管理",
+      "imageUrl": "",
+      "isSelected": "",
+      "menuId": "WoQ3qsd2EkbuW1byYI5",
+      "menuList": [
+        {
+          "buttonList": [
+            {
+              "contents": "新增功能按钮",
+              "isSelected": "1",
+              "menuId": "IljCbCuTMoGmZ56J91L",
+              "parentMenuId": "HjjXxyo5kPCAEMsB2nH",
+              "sort": "1"
+            },
+            {
+              "contents": "编辑功能按钮",
+              "isSelected": "1",
+              "menuId": "DKI0Owmmc5iYG0RbLqb",
+              "parentMenuId": "HjjXxyo5kPCAEMsB2nH",
+              "sort": "2"
+            },
+            {
+              "contents": "删除功能按钮",
+              "isSelected": "1",
+              "menuId": "vhN2Be4g1inSvip3bNE",
+              "parentMenuId": "HjjXxyo5kPCAEMsB2nH",
+              "sort": "3"
+            },
+            {
+              "contents": "下架功能按钮",
+              "isSelected": "1",
+              "menuId": "8Y588V2w1gJQnMai6cQ",
+              "parentMenuId": "HjjXxyo5kPCAEMsB2nH",
+              "sort": "4"
+            }
+          ],
+          "contents": "功能按钮列表",
+          "isSelected": "1",
+          "menuId": "HjjXxyo5kPCAEMsB2nH",
+          "parentMenuId": "WoQ3qsd2EkbuW1byYI5",
+          "sort": "1",
+          "url": ""
+        },
+        {
+          "buttonList": [
+            {
+              "contents": "资讯新增",
+              "isSelected": "1",
+              "menuId": "9xDhxotQUZPaRLend1g",
+              "parentMenuId": "GpaP35w5gtkggfLORLZ",
+              "sort": "1"
+            },
+            {
+              "contents": "编辑资讯",
+              "isSelected": "1",
+              "menuId": "eMbYXnc9QDa1gu7K736",
+              "parentMenuId": "GpaP35w5gtkggfLORLZ",
+              "sort": "2"
+            },
+            {
+              "contents": "删除资讯",
+              "isSelected": "1",
+              "menuId": "9mfbxjZc98zC5NHSZpE",
+              "parentMenuId": "GpaP35w5gtkggfLORLZ",
+              "sort": "3"
+            },
+            {
+              "contents": "下架资讯",
+              "isSelected": "0",
+              "menuId": "slB7FmbQDm2pl28eaIg",
+              "parentMenuId": "GpaP35w5gtkggfLORLZ",
+              "sort": "4"
+            }
+          ],
+          "contents": "资讯列表",
+          "isSelected": "1",
+          "menuId": "GpaP35w5gtkggfLORLZ",
+          "parentMenuId": "WoQ3qsd2EkbuW1byYI5",
+          "sort": "2",
+          "url": ""
+        },
+        {
+          "buttonList": [
+            {
+              "contents": "新增首页消息",
+              "isSelected": "1",
+              "menuId": "uDS4YuKkHjcI13q6qBC",
+              "parentMenuId": "pcbRyExlmn92lo7AUZR",
+              "sort": "1"
+            },
+            {
+              "contents": "编辑首页消息",
+              "isSelected": "1",
+              "menuId": "V1XgYiXmVlOjXdtsNnF",
+              "parentMenuId": "pcbRyExlmn92lo7AUZR",
+              "sort": "2"
+            },
+            {
+              "contents": "关闭首页消息",
+              "isSelected": "1",
+              "menuId": "GApGwH4Qtp7QuL026u1",
+              "parentMenuId": "pcbRyExlmn92lo7AUZR",
+              "sort": "3"
+            },
+            {
+              "contents": "删除首页消息",
+              "isSelected": "1",
+              "menuId": "1ty8IsTAhXpTWxHZpI3",
+              "parentMenuId": "pcbRyExlmn92lo7AUZR",
+              "sort": "4"
+            }
+          ],
+          "contents": "首页消息",
+          "isSelected": "1",
+          "menuId": "pcbRyExlmn92lo7AUZR",
+          "parentMenuId": "WoQ3qsd2EkbuW1byYI5",
+          "sort": "3",
+          "url": ""
+        }
+      ],
+      "sort": "22"
+    }
+  ],
+  "msg": "操作成功",
+  "pager": null,
+  "status": "1000",
+  "success": true
+}

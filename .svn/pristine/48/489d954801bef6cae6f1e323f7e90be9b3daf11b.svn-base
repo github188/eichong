@@ -1,0 +1,100 @@
+a,
+input,
+button {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+input,
+button {
+  -webkit-appearance: none;
+  border-radius: 0;
+}
+body {
+  margin: 0;
+  -webkit-user-select: auto;
+  background-color: #ebebeb;
+}
+body * {
+  -webkit-user-select: auto;
+  font-family: "微软雅黑";
+}
+body {
+  -webkit-text-size-adjust: 100%;
+  font-family: "微软雅黑";
+}
+* {
+  padding: 0;
+  margin: 0;
+}
+.chargeStatus {
+  width: 15rem;
+  min-height: 2rem;
+  background: #ebebeb;
+}
+.chargeStatus .pic {
+  width: 15rem;
+  min-height: 2.76rem;
+  text-align: center;
+  overflow: hidden;
+}
+.chargeStatus .pic img {
+  display: block;
+  width: 2.72rem;
+  height: 2.72rem;
+  margin: 0.92rem auto 0;
+}
+.chargeStatus .pic .statusValue {
+  font-size: 0.56rem;
+  color: #666666;
+  line-height: 0.56rem;
+}
+.chargeStatus .title {
+  width: 13.4rem;
+  height: 1.92rem;
+  line-height: 1.92rem;
+  padding: 0 0.8rem;
+  font-size: 0.64rem;
+  color: #333333;
+}
+.chargeList {
+  width: 13.4rem;
+  min-height: 2rem;
+  padding: 0 0.8rem;
+  background-color: #FFFFFF;
+  list-style: none;
+}
+.chargeList li {
+  width: 13.4rem;
+  height: 1.66rem;
+  line-height: 1.66rem;
+  border-top: 1px solid #c2c2c2;
+  font-size: 0.64rem;
+  color: #666666;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.chargeList li:first-child {
+  border: 0;
+}
+.smallTip {
+  width: 13.4rem;
+  height: 1.6rem;
+  line-height: 1.6rem;
+  padding: 0 0.8rem;
+  font-size: 0.52rem;
+  color: #888888;
+  text-align: right;
+}
+.doneBtn {
+  width: 13.4rem;
+  position: absolute;
+  bottom: 2.4rem;
+  left: 0.8rem;
+  height: 1.8rem;
+  background: #ff7d00;
+  color: #FFFFFF;
+  line-height: 1.8rem;
+  text-align: center;
+  font-size: 0.72rem;
+  border-radius: 0.16rem;
+}

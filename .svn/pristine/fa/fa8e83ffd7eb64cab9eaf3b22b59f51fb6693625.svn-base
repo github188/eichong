@@ -1,0 +1,108 @@
+package com.wanma.ims.service.impl;
+
+import com.google.common.base.Strings;
+import com.wanma.ims.common.domain.CarCompanyDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.constants.ResultCodeConstants;
+import com.wanma.ims.mapper.CarCompanyMapper;
+import com.wanma.ims.service.CarCompanyService;
+import com.wanma.ims.util.SplitterUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+/**
+ * Created by xyc on 2017/7/21.
+ * 电动车品牌逻辑处理接口
+ */
+@Service
+public class CarCompanyServiceImpl implements CarCompanyService {
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+
+    @Autowired
+    private CarCompanyMapper carCompanyMapper;
+
+    @Override
+    public List<CarCompanyDO> getCarCompanyList(CarCompanyDO searchModel) {
+        return carCompanyMapper.getCarCompanyList(searchModel);
+    }
+
+    @Override
+    public long countCarCompany(CarCompanyDO searchModel) {
+        return carCompanyMapper.countCarCompany(searchModel);
+    }
+
+    @Override
+    public List<CarCompanyDO> getAllCarCompany() {
+        return carCompanyMapper.getCarCompanyList(new CarCompanyDO());
+    }
+
+    @Override
+    public CarCompanyDO getCarCompanyById(Long carCompanyId) {
+        return carCompanyMapper.selectCarCompanyById(carCompanyId);
+    }
+
+    @Override
+    public BaseResultDTO addCarCompany(CarCompanyDO carCompany, UserDO loginUser) {
+        if (carCompany == null) {
+            LOGGER.warn(this.getClass() + "-addCarCompany is error, newCarCompany is null|loginUser={}", loginUser);
+            return new BaseResultDTO(false, ResultCodeConstants.FAILED, "添加电动车品牌失败，电动车品牌不能为空！");
+        }
+
+        carCompany.setIsDel(0);
+        if (carCompanyMapper.insertCarCompany(carCompany) < 1) {
+            LOGGER.warn(this.getClass() + "-addCarCompany is error, insert carCompany to db is error|addCarCompany={}|loginUser={}", carCompany, loginUser);
+            return new BaseResultDTO(false, ResultCodeConstants.FAILED, "添加电动车品牌失败，请刷新页面后重试！");
+        }
+
+        return new BaseResultDTO();
+    }
+
+    @Override
+    public BaseResultDTO modifyCarCompany(CarCompanyDO carCompany, UserDO loginUser) {
+        if (carCompany == null) {
+            LOGGER.warn(this.getClass() + "-modifyCarCompany is error, modifyCarCompany is null|loginUser={}", loginUser);
+            return new BaseResultDTO(false, ResultCodeConstants.FAILED, "修改电动车品牌失败，被修改的电动车品牌不能为空！");
+        }
+
+        CarCompanyDO oldCarCompany = carCompanyMapper.selectCarCompanyById(carCompany.getId());
+        if (oldCarCompany == null) {
+            LOGGER.warn(this.getClass() + "-modifyCarCompany is error, oldCarCompany is null|carCompany={}|loginUser={}", carCompany, loginUser);
+            return new BaseResultDTO(false, ResultCodeConstants.FAILED, "修改电动车品牌失败，被修改的电动车品牌不存在！");
+        }
+
+        if (carCompanyMapper.updateCarCompanyByIdSelective(carCompany) < 1) {
+            LOGGER.warn(this.getClass() + "-modifyCarCompany is error, update carCompany to db is error|carCompany={}|loginUser={}", carCompany, loginUser);
+            return new BaseResultDTO(false, ResultCodeConstants.FAILED, "修改电动车品牌失败，请刷新页面后重试！");
+        }
+
+        return new BaseResultDTO();
+    }
+
+    @Override
+    public BaseResultDTO delCarCompany(String carCompanyIds, UserDO loginUser) {
+        if (Strings.isNullOrEmpty(carCompanyIds)) {
+            LOGGER.warn(this.getClass() + "-delCarCompany is error, delCarCompanyIds is null|loginUser={}", loginUser);
+            return new BaseResultDTO(false, ResultCodeConstants.FAILED, "删除电动车品牌失败，电动车品牌id不能为空！");
+        }
+
+        List<Long> carCompanyIdList = SplitterUtil.splitToLongList(carCompanyIds, ",", null);
+        for (Long carCompanyId : carCompanyIdList) {
+            CarCompanyDO oldCarCompany = carCompanyMapper.selectCarCompanyById(carCompanyId);
+            if (oldCarCompany == null) {
+                LOGGER.warn(this.getClass() + "-delCarCompany is error, oldCarCompany is null|delCarCompanyId={}|loginUser={}", carCompanyId, loginUser);
+                return new BaseResultDTO(false, ResultCodeConstants.FAILED, "删除电动车品牌失败，被删除的电动车品牌不存在！");
+            }
+
+            if (carCompanyMapper.deleteCarCompanyById(carCompanyId) < 1) {
+                LOGGER.warn(this.getClass() + "-delCarCompany is error, del carCompany to db is error|delCarCompanyId={}|loginUser={}", carCompanyId, loginUser);
+                return new BaseResultDTO(false, ResultCodeConstants.FAILED, "删除电动车品牌失败，请刷新页面后重试！");
+            }
+        }
+        return new BaseResultDTO();
+    }
+}

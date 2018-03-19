@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+			
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="blank" />
+		<meta name="format-detection" content="telephone=no" />
+		<title>充电中-详情</title>
+		<!--<link rel="stylesheet" type="text/css" href="dist/css/bootstrap.min.css"/>-->
+		<link rel="stylesheet" type="text/css" href="css/mui.css"/>
+		<link rel="stylesheet" type="text/css" href="dist/css/bootstrap.css"/>
+		<link rel="stylesheet" type="text/css" href="css/base.css"/>
+		<!--<link rel="stylesheet" type="text/css" href="css/common.css"/>-->
+		<link rel="stylesheet" type="text/css" href="css/charging_detail.css"/>
+		<!--[if lt IE 9]>
+			<script src="dist/js/html5shiv.min.js"></script>
+			<script src="dist/js/respond.min.js"></script>
+		<![endif]-->
+	</head>
+	<body>
+	<!--<div class="waitLoad" id="waitLoad" style="display: none;">
+		<img src="img/load.gif"/>
+	</div>-->
+<!--第一块头部=======================================================-->
+<header class="navbar-fixed-top">
+	<div class="col-xs-2 headLeft" onclick="toHistory()">
+		<img src="img/nav_btn_back.png"/>
+	</div>
+	<div class="col-xs-8 headCenter">
+		正在充电
+	</div>
+	<div class="col-xs-2 headRight">
+	</div>
+</header>
+<!--占位部分===================================================================-->
+<div class="occupied"></div>
+<!--充电动态图片展示===================================================-->
+<div class="battery">
+	<img src="img/bg_charging_ok.gif"/>
+</div>
+<!--充电具体信息============================================================-->
+<div class="detailInfo">
+	<!--充电时间-->
+	<div class="baseHeight">
+		充电时间：<span id="chargedTime"></span>分钟
+	</div>
+	<!--预充金额-->
+	<div class="baseHeight">
+		预充金额：<span id="fronzeAmt"></span>元
+	</div>
+	<!--当前电价-->
+	<div class="baseHeight">
+		当前电价：<span id="chargePrice"></span>元/度
+	</div>
+	<!--已充电量-->
+	<div class="baseHeight">
+		已充电量：<span id="chargedMeterNum"></span>kWh
+	</div>
+	<!--已充金额-->
+	<!--<div class="baseHeight">
+		已充金额：<span id="chargedCost"></span>元
+	</div>-->
+	<!--电池Soc-->
+	<!--<div class="baseHeight SOC">
+		电池SOC：<span id="soc"></span>%
+	</div>-->
+</div>
+<!--结束充电按钮=======================================================================-->
+<button class="btn btn-block finishedBtn" data-toggle="modal" data-target="#myModal" data-backdrop="static">结束充电</button>
+<!--模态框===========================================================================-->
+	<div class="modal" id="myModal" tabindex="-1" role="dialog"  aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+		      <div class="modal-content">
+		         <div class="modal-header">
+		            <h4 class="modal-title" id="myModalLabel">
+		               		当前充电未完成，是否要结束充电？
+		            </h4>
+		         </div>
+		         <!--<div class="modal-body">
+		         </div>-->
+		         <div class="modal-footer">
+		         	<button type="button" class="btn btn-default return certain" 
+		               data-dismiss="modal" style="margin-left: 0;">返回
+		            </button>
+		            <button type="button" class="btn btn-primary certain" id="certain" onclick="toChargeEnd()"
+   data-target="#myModal2" data-backdrop="static" data-dismiss="modal">
+		              	 确定
+		            </button>
+		         </div>
+		      </div><!-- /.modal-content -->
+		</div><!-- /.modal -->
+	</div>
+<!--自制模态框========================================================================-->
+	<div class="modal" id="myModal2" tabindex="0" role="dialog"  aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+		      <div class="modal-content">
+		         <div class="modal-header">
+		            <h4 class="modal-title" id="myModalLabel2" data-dismiss="modal">
+		               		请将充电枪拔出
+		            </h4>
+		         </div>
+		         <!--<div class="modal-body">
+		         </div>-->
+		         <div class="modal-footer" data-dismiss="modal">
+		         </div>
+		      </div><!-- /.modal-content -->
+		</div><!-- /.modal -->
+	</div>
+	
+	
+
+	</body>
+	<script type="text/javascript" src="dist/js/jquery-1.11.0.js" ></script>
+	<script src="js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+//		if ('addEventListener' in document) {
+//		    document.addEventListener('DOMContentLoaded', function() {
+//		        FastClick.attach(document.body);
+//		    }, false);
+//		}
+		$(function() {
+		    FastClick.attach(document.body);
+		});
+
+	</script>
+	<!--<script src="dist/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>-->
+	<script src="js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript" src="dist/js/bootstrap.js" ></script>
+	<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/url.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/userinfo.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/charging_detail.js" type="text/javascript" charset="utf-8"></script>
+</html>

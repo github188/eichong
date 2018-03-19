@@ -1,0 +1,121 @@
+{
+    "data": [
+        {
+            "acPileNum": 112,
+            "chargeNum": 21,
+            "cityName": "北京市",
+            "dcPileNum": 38,
+            "pileNum": 150,
+            "provinceCode": "110000",
+            "provinceName": "北京市"
+        },
+        {
+            "acPileNum": 112,
+            "chargeNum": 21,
+            "cityCode": "110100",
+            "cityName": "北京市",
+            "dcPileNum": 38,
+            "pileNum": 150,
+            "provinceCode": "110000",
+            "provinceName": "北京市"
+        },
+        {
+            "acPileNum": 122,
+            "chargeNum": 24,
+            "cityName": "苏州市",
+            "dcPileNum": 8,
+            "pileNum": 130,
+            "provinceCode": "320000",
+            "provinceName": "江苏省"
+        },
+        {
+            "acPileNum": 37,
+            "chargeNum": 9,
+            "cityCode": "320100",
+            "cityName": "南京市",
+            "dcPileNum": 8,
+            "pileNum": 45,
+            "provinceCode": "320000",
+            "provinceName": "江苏省"
+        },
+        {
+            "acPileNum": 49,
+            "chargeNum": 9,
+            "cityCode": "320200",
+            "cityName": "无锡市",
+            "dcPileNum": 0,
+            "pileNum": 49,
+            "provinceCode": "320000",
+            "provinceName": "江苏省"
+        },
+        {
+            "acPileNum": 36,
+            "chargeNum": 6,
+            "cityCode": "320500",
+            "cityName": "苏州市",
+            "dcPileNum": 0,
+            "pileNum": 36,
+            "provinceCode": "320000",
+            "provinceName": "江苏省"
+        },
+        {
+            "acPileNum": 315,
+            "chargeNum": 92,
+            "cityName": "杭州市",
+            "dcPileNum": 66,
+            "pileNum": 381,
+            "provinceCode": "330000",
+            "provinceName": "浙江省"
+        },
+        {
+            "acPileNum": 315,
+            "chargeNum": 92,
+            "cityCode": "330100",
+            "cityName": "杭州市",
+            "dcPileNum": 66,
+            "pileNum": 381,
+            "provinceCode": "330000",
+            "provinceName": "浙江省"
+        },
+        {
+            "acPileNum": 0,
+            "chargeNum": 4,
+            "cityName": "萍乡市",
+            "dcPileNum": 34,
+            "pileNum": 34,
+            "provinceCode": "360000",
+            "provinceName": "江西省"
+        },
+        {
+            "acPileNum": 0,
+            "chargeNum": 4,
+            "cityCode": "360300",
+            "cityName": "萍乡市",
+            "dcPileNum": 34,
+            "pileNum": 34,
+            "provinceCode": "360000",
+            "provinceName": "江西省"
+        },
+        {
+            "acPileNum": 71,
+            "chargeNum": 13,
+            "cityName": "武汉市",
+            "dcPileNum": 3,
+            "pileNum": 74,
+            "provinceCode": "420000",
+            "provinceName": "湖北省"
+        },
+        {
+            "acPileNum": 71,
+            "chargeNum": 13,
+            "cityCode": "420100",
+            "cityName": "武汉市",
+            "dcPileNum": 3,
+            "pileNum": 74,
+            "provinceCode": "420000",
+            "provinceName": "湖北省"
+        }
+    ],
+    "msg": "操作成功!",
+    "status": 100
+}

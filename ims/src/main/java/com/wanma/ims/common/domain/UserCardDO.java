@@ -1,0 +1,168 @@
+package com.wanma.ims.common.domain;
+
+import java.util.List;
+
+import com.wanma.ims.common.domain.base.BasicModel;
+
+public class UserCardDO extends BasicModel {
+	private static final long serialVersionUID = -3460977615019060775L;
+	private Long ucId;// 主键
+	private String ucInternalCardNumber;// 内卡号
+	private String ucExternalCardNumber;// 外卡号
+	private Long ucUserId;// 用户ID
+	private Long newUserId;//新用户ID
+	private Integer ucCpyId;// 渠道ID
+	private Integer ucStatus;// 状态 0：正常，1：挂失 ，2：冻结
+	private Integer ucType;// 卡类型
+	private Long accountId;// 卡账户ID
+	private Integer isValid;// 是否开启放盗刷 0.否 1.是
+	private Integer isApp;// 是否绑App 0.否 1.是 （用户跟卡建立关系，tbl_user_normal表里面的apply_card=1）
+	private Integer isCredit;//0.信用金 1.余额
+	private Integer tradeType;// 结算方式 0.预付款 1.后付费
+	//表单填充
+	private String cpyCompanyname;//渠道公司名称
+	private List<Long> cpyIdList;// 权限
+	private String levelName;//等级名称
+	private String userAccount;//用户账号
+	private String cardBalance;//卡余额
+	private String chUcStatus;// 导出
+	private String chIsApp;// 导出
+	private String chUcType;// 导出
+	public Long getUcId() {
+		return ucId;
+	}
+	public void setUcId(Long ucId) {
+		this.ucId = ucId;
+	}
+	public String getUcInternalCardNumber() {
+		return ucInternalCardNumber;
+	}
+	public void setUcInternalCardNumber(String ucInternalCardNumber) {
+		this.ucInternalCardNumber = ucInternalCardNumber;
+	}
+	public String getUcExternalCardNumber() {
+		return ucExternalCardNumber;
+	}
+	public void setUcExternalCardNumber(String ucExternalCardNumber) {
+		this.ucExternalCardNumber = ucExternalCardNumber;
+	}
+	
+	public Long getUcUserId() {
+		return ucUserId;
+	}
+	public void setUcUserId(Long ucUserId) {
+		this.ucUserId = ucUserId;
+	}
+	public Integer getUcCpyId() {
+		return ucCpyId;
+	}
+	public void setUcCpyId(Integer ucCpyId) {
+		this.ucCpyId = ucCpyId;
+	}
+	public Integer getUcStatus() {
+		return ucStatus;
+	}
+	public void setUcStatus(Integer ucStatus) {
+		this.ucStatus = ucStatus;
+	}
+	public Integer getUcType() {
+		return ucType;
+	}
+	public void setUcType(Integer ucType) {
+		this.ucType = ucType;
+	}
+	public Long getAccountId() {
+		return accountId;
+	}
+	public void setAccountId(Long accountId) {
+		this.accountId = accountId;
+	}
+	public Integer getIsValid() {
+		return isValid;
+	}
+	public void setIsValid(Integer isValid) {
+		this.isValid = isValid;
+	}
+	
+	public String getCpyCompanyname() {
+		return cpyCompanyname;
+	}
+	public void setCpyCompanyname(String cpyCompanyname) {
+		this.cpyCompanyname = cpyCompanyname;
+	}
+	
+	
+	public Integer getIsApp() {
+		return isApp;
+	}
+	public void setIsApp(Integer isApp) {
+		this.isApp = isApp;
+	}
+	public Integer getIsCredit() {
+		return isCredit;
+	}
+	public void setIsCredit(Integer isCredit) {
+		this.isCredit = isCredit;
+	}
+	public String getChIsApp() {
+		return chIsApp;
+	}
+	public void setChIsApp(String chIsApp) {
+		this.chIsApp = chIsApp;
+	}
+	public String getChUcType() {
+		return chUcType;
+	}
+	public void setChUcType(String chUcType) {
+		this.chUcType = chUcType;
+	}
+	public String getChUcStatus() {
+		return chUcStatus;
+	}
+	public void setChUcStatus(String chUcStatus) {
+		this.chUcStatus = chUcStatus;
+	}
+	
+	public String getCardBalance() {
+		return cardBalance;
+	}
+	public void setCardBalance(String cardBalance) {
+		this.cardBalance = cardBalance;
+	}
+	
+	public String getUserAccount() {
+		return userAccount;
+	}
+	public void setUserAccount(String userAccount) {
+		this.userAccount = userAccount;
+	}
+	
+	public String getLevelName() {
+		return levelName;
+	}
+	public void setLevelName(String levelName) {
+		this.levelName = levelName;
+	}
+	
+	public Long getNewUserId() {
+		return newUserId;
+	}
+	public void setNewUserId(Long newUserId) {
+		this.newUserId = newUserId;
+	}
+	
+	public List<Long> getCpyIdList() {
+		return cpyIdList;
+	}
+	public void setCpyIdList(List<Long> cpyIdList) {
+		this.cpyIdList = cpyIdList;
+	}
+	
+	public Integer getTradeType() {
+		return tradeType;
+	}
+	public void setTradeType(Integer tradeType) {
+		this.tradeType = tradeType;
+	}
+	
+}

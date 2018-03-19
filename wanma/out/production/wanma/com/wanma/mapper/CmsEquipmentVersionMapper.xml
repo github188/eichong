@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsEquipmentVersionMapper">
+	<resultMap id="epVersionMap" type="com.wanma.model.TblEquipmentVersion">
+		<id column="pk_EquipmentVersion" property="pkEquipmentVersion" jdbcType="INTEGER" />
+		<result column="ev_ProductID" property="evProductID" jdbcType="VARCHAR" />
+		<result column="ev_ProductType" property="evProductType" jdbcType="VARCHAR" />
+		<result column="ev_FirmwareNumber" property="evFirmwareNumber" jdbcType="VARCHAR" />
+		<result column="ev_FirmwareVersion" property="evFirmwareVersion" jdbcType="VARCHAR" />
+		<result column="ev_HardwareNumber" property="evHardwareNumber" jdbcType="VARCHAR" />
+		<result column="ev_HardwareVersion" property="evHardwareVersion" jdbcType="VARCHAR" />
+		<result column="ev_FileMd5" property="evFileMd5" jdbcType="VARCHAR" />
+	</resultMap>
+	 <select id="getVersionByProductID" parameterType="int" resultMap="epVersionMap">
+	 SELECT 
+	 ev_FirmwareNumber ,
+	 ev_FirmwareVersion ,
+	 ev_HardwareNumber ,
+	 ev_HardwareVersion ,
+	 ev_FileMd5  
+	 from tbl_equipmentversion 
+	 where ev_ProductID = #{pkElectricpile} 
+	 AND ev_HardwareNumber != '' AND ev_FirmwareNumber != '' and ev_ProductType = 3
+	 </select>
+	 <select id="getBomById" parameterType="string" resultMap="epVersionMap">
+	 	select 
+		 	bl_HardwareNumber evHardwareNumber,
+		 	bl_HardwareVersion evHardwareVersion,
+		 	bl_FirmwareNumber evFirmwareNumber,
+		 	bl_FirmwareVersion evFirmwareVersion, 
+		 	bl_FileMd5 evFileMd5
+	 	from tbl_bomlist
+	 	where pk_BomListId = #{pkBomListId} 
+	 </select>
+	 <delete id="deleteByProductID" parameterType="string">
+	 delete from tbl_equipmentversion
+	 where ev_ProductID = #{evProductID}  and ev_ProductType = 3
+	 </delete>
+	 <insert id="insertEpVersion" parameterType="TblEquipmentVersion">
+	 	insert into tbl_equipmentversion(
+	 	ev_ProductID,
+	 	ev_ProductType,
+	 	ev_FirmwareNumber,
+	 	ev_FirmwareVersion, 
+	 	ev_HardwareNumber,
+	 	ev_HardwareVersion,
+	 	ev_Createdate,
+	 	ev_FileMd5
+	 	)values(
+	 	#{evProductID},
+	 	#{evProductType},
+	 	 #{evFirmwareNumber},
+	 	#{evFirmwareVersion},
+	 	#{evHardwareNumber},
+	 	#{evHardwareVersion},
+	 	now(),
+	 	#{evFileMd5}
+	 	)
+	 </insert>
+</mapper>

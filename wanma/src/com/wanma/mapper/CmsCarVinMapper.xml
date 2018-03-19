@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wanma.dao.CmsCarVinMapper">
+	<resultMap id="BaseResultMap" type="com.wanma.model.TblCarVin">
+		<id column="pk_car_vin" property="pkCarVin" jdbcType="INTEGER" />
+		<result column="cv_vin_code" property="cvVinCode" jdbcType="VARCHAR" />
+		<result column="cv_name" property="cvName" jdbcType="VARCHAR" />
+		<result column="cv_servicemoney" property="cvServicemoney"
+			jdbcType="DECIMAL" />
+		<result column="cv_isdelete" property="cvIsdelete" jdbcType="SMALLINT" />
+		<result column="cv_createdate" property="cvCreatedate"
+			jdbcType="TIMESTAMP" />
+		<result column="cv_updatedate" property="cvUpdatedate"
+			jdbcType="TIMESTAMP" />
+		<result column="cv_license_number" property="cvLicenseNumber" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		pk_car_vin, cv_vin_code, cv_name, cv_servicemoney, cv_isdelete, cv_createdate,
+		cv_updatedate
+	</sql>
+	<select id="getCarvinCount" parameterType="map" resultType="long">
+		select count(1) from (
+		select * from tbl_car_vin where cv_isdelete=0
+		<if test=" cvVinCode != null and cvVinCode!=''">
+			and cv_vin_code like concat('%',#{cvVinCode},'%')
+		</if>
+		<if test="cvName != null and cvName!=''">
+			and cv_name  like concat('%',#{cvName},'%')
+		</if>
+		order by cv_updatedate desc
+		) aa
+	</select>
+	<select id="getCarvinList" resultMap="BaseResultMap">
+		select
+	    pk_car_vin, cv_vin_code, cv_name, cv_servicemoney, cv_isdelete, cv_createdate,cv_license_number,
+		cv_updatedate
+		from tbl_car_vin
+		where cv_isdelete=0
+		<if test=" cvVinCode != null and cvVinCode!=''">
+			and cv_vin_code like concat('%',#{cvVinCode},'%')
+		</if>
+		<if test="cvName != null and cvName!=''">
+			and cv_name  like concat('%',#{cvName},'%')
+		</if>
+		<if test="cvName != null and cvName!=''">
+			and cv_name  like concat('%',#{cvName},'%')
+		</if>
+		order by cv_updatedate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	<delete id="deteleCarvin" parameterType="String">
+		 update tbl_car_vin set cv_isdelete=1 where pk_car_vin=#{pkCarVin}
+	</delete>
+	<insert id="addCarVin" parameterType="TblElectricpile">
+	insert
+	into tbl_car_vin(cv_vin_code,cv_name,cv_servicemoney,cv_license_number) values
+	(#{cvVinCode},#{cvName},#{cvServicemoney},#{cvLicenseNumber})
+</insert>
+<select id="getCarVinList_export" resultMap="BaseResultMap">
+select
+	    pk_car_vin, cv_vin_code, cv_name, cv_servicemoney, cv_isdelete, cv_createdate,cv_license_number,
+		cv_updatedate
+		from tbl_car_vin
+		where cv_isdelete=0
+		<if test=" cvVinCode != null and cvVinCode!=''">
+			and cv_vin_code like concat('%',#{cvVinCode},'%')
+		</if>
+		<if test="cvName != null and cvName!=''">
+			and cv_name  like concat('%',#{cvName},'%')
+		</if>
+		order by cv_updatedate desc
+	</select>
+		<select id="checkVinCode" parameterType="map" resultType="long">
+		select count(1) from (
+			select * from tbl_car_vin where cv_vin_code=#{vincode}
+		) aa
+		</select>
+		
+		
+	<select id="findOne" resultMap="BaseResultMap">
+		select * from tbl_car_vin
+			where 1=1
+		<if test=" cvVinCode != null and cvVinCode !=''">
+			and cv_vin_code  = #{cvVinCode}
+		</if>
+	</select>
+		
+	<update id="updateRepeatVinCode" parameterType="com.wanma.model.TblCarVin">
+	   UPDATE tbl_car_vin set cv_name = #{cvName},cv_servicemoney = #{cvServicemoney},cv_isdelete = 0,cv_license_number=#{cvLicenseNumber}
+	  WHERE pk_car_vin=#{pkCarVin} 
+	</update>
+</mapper>

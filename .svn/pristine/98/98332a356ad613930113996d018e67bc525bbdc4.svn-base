@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.PurchaseHistoryMapper">
+	<resultMap type="PurchaseHistoryDO" id="purchaseHistory">
+		<result property="pkPurchaseHistory" column="pk_PurchaseHistory" />
+		<result property="puHiType" column="puHi_Type" />
+		<result property="puHiPurchaseHistoryTime" column="puHi_PurchaseHistoryTime" />
+		<result property="puHiMonetary" column="puHi_Monetary" />
+		<result property="puHiConsumerRemark" column="puHi_ConsumerRemark" />
+		<result property="puHiCreatedate" column="puHi_Createdate" />
+		<result property="puHiUpdatedate" column="puHi_Updatedate" />
+		<result property="puHiPurchaseContent" column="puHi_PurchaseContent" />
+		<result property="puHiUserId" column="puHi_UserId" />
+		<result property="puHiChargeType" column="puHi_ChargeType" />
+		<result property="puHiUserOrigin" column="puHi_UserOrigin" />
+		<result property="puHiElectricPileCode" column="puHi_ElectricPileCode" />
+		<result property="puHiExternalCardNumber" column="puHi_ExternalCardNumber" />
+		<result property="puHiTransactionNumber" column="puHi_TransactionNumber" />
+		<result property="puHiBespokeNumber" column="puHi_BespokeNumber" />
+		<result property="puHiPaymentNumber" column="puHi_PaymentNumber" />
+		<result property="puhiInvoiceStatus" column="puhi_InvoiceStatus" />
+		<result property="pkInvoice" column="pk_Invoice" />
+		<result property="chOrCode" column="chOr_Code" />
+		<result property="accountNO" column="account_no" />
+		<result property="tradeType" column="trade_type" />
+		<result property="billAccountCode" column="bill_account_code" />
+		<result property="billAccountName" column="bill_account_name" />
+	</resultMap>
+	
+	<resultMap type="UserAccountBO" id="userAccount">
+		<result property="chongzhi" column="chongzhi" />
+		<result property="xiaofei" column="xiaofei" />
+		<result property="youhui" column="youhui" />
+		<result property="dongjie" column="dongjie" />
+		<result property="yue" column="yue" />
+	</resultMap>
+	
+	<select id="getPurchaseHistoryCount" parameterType="PurchaseHistoryDO" resultType="long">
+		SELECT
+			 COUNT(*)
+		FROM
+			 TBL_PURCHASEHISTORY b
+			LEFT JOIN TBL_CHARGINGORDER c on c.chOr_TransactionNumber = b.puHi_TransactionNumber
+			LEFT JOIN FIN_BILL_ACCOUNT t on c.bill_account_id = t.pk_id
+			LEFT JOIN FIN_ACCOUNT_RELATION r on r.user_id = c.chOr_UserId AND r.bill_account_id = c.bill_account_id
+			LEFT JOIN FIN_ACCOUNT a on r.account_id = a.account_id
+		WHERE 1=1
+		<if test="puHiTransactionNumber != null and puHiTransactionNumber !=''">
+		  and b.puHi_TransactionNumber = #{puHiTransactionNumber}
+		</if>
+		<if test="chOrCode != null and chOrCode !=''">
+		  and c.chOr_Code = #{chOrCode}
+		</if>
+		<if test="accountNO != null and accountNO !=''">
+		  and a.account_no = #{accountNO}
+		</if>
+		<if test="tradeType != null">
+		  and a.trade_type = #{tradeType}
+		</if>
+		<if test="billAccountCode != null and billAccountCode !=''">
+		  and t.bill_account_code = #{billAccountCode}
+		</if>
+		<if test="pkPurchaseHistory != null">
+		  and b.pk_PurchaseHistory = #{pkPurchaseHistory}
+		</if>
+		<if test="startGmtCreate != null and startGmtCreate !=''">
+	        and <![CDATA[b.puHi_Createdate >=  date_format(#{startGmtCreate},'%Y-%m-%d') ]]>
+	    </if>
+	    <if test="endGmtCreate != null and endGmtCreate !=''">
+	        and <![CDATA[b.puHi_Createdate <=  date_format(#{endGmtCreate},'%Y-%m-%d') ]]>
+	    </if>
+	</select>
+	
+	<select id="getPurchaseHistoryList" parameterType="PurchaseHistoryDO" resultMap="purchaseHistory">
+		SELECT
+			 b.pk_PurchaseHistory, b.puHi_Type, b.puHi_PurchaseHistoryTime, b.puHi_Monetary, b.puHi_ConsumerRemark, 
+			 b.puHi_Createdate, b.puHi_Updatedate, b.puHi_PurchaseContent, b.puHi_UserId, b.puHi_ChargeType, 
+			 b.puHi_UserOrigin, b.puHi_ElectricPileCode, b.puHi_ExternalCardNumber, b.puHi_TransactionNumber, 
+			 b.puHi_BespokeNumber, b.puHi_PaymentNumber, b.puhi_InvoiceStatus, b.pk_Invoice, c.chOr_Code,
+			 a.account_no, a.trade_type, t.bill_account_code, t.bill_account_name
+		FROM
+			 TBL_PURCHASEHISTORY b
+			LEFT JOIN TBL_CHARGINGORDER c on c.chOr_TransactionNumber = b.puHi_TransactionNumber
+			LEFT JOIN FIN_BILL_ACCOUNT t on c.bill_account_id = t.pk_id
+			LEFT JOIN FIN_ACCOUNT_RELATION r on r.user_id = c.chOr_UserId AND r.bill_account_id = c.bill_account_id
+			LEFT JOIN FIN_ACCOUNT a on r.account_id = a.account_id
+		WHERE 1=1
+		<if test="puHiTransactionNumber != null and puHiTransactionNumber !=''">
+		  and b.puHi_TransactionNumber = #{puHiTransactionNumber}
+		</if>
+		<if test="chOrCode != null and chOrCode !=''">
+		  and c.chOr_Code = #{chOrCode}
+		</if>
+		<if test="accountNO != null and accountNO !=''">
+		  and a.account_no = #{accountNO}
+		</if>
+		<if test="tradeType != null">
+		  and a.trade_type = #{tradeType}
+		</if>
+		<if test="billAccountCode != null and billAccountCode !=''">
+		  and t.bill_account_code = #{billAccountCode}
+		</if>
+		<if test="pkPurchaseHistory != null">
+		  and b.pk_PurchaseHistory = #{pkPurchaseHistory}
+		</if>
+		<if test="startGmtCreate != null and startGmtCreate !=''">
+	        and <![CDATA[b.puHi_Createdate >=  date_format(#{startGmtCreate},'%Y-%m-%d') ]]>
+	    </if>
+	    <if test="endGmtCreate != null and endGmtCreate !=''">
+	        and <![CDATA[b.puHi_Createdate <=  date_format(#{endGmtCreate},'%Y-%m-%d') ]]>
+	    </if>
+		order by b.pk_PurchaseHistory desc
+        <if test="pager!=null">limit #{pager.offset},#{pager.pageSize}</if>
+	</select>
+	
+	<select id="getUserAccount" parameterType="String" resultMap="userAccount">
+		select SUM(r.chongzhi) as chongzhi, SUM(r.xiaofei) as xiaofei, SUM(r.youhui) as youhui, SUM(r.dongjie) as dongjie
+		from (
+			<!-- 总充值 -->
+			select (SUM(s.chongzhi) - SUM(s.tuikuan)) as chongzhi, 0 as xiaofei, 0 as youhui, 0 as dongjie
+			from
+			(<!-- 充值 -->
+			select SUM(p.puHi_Monetary) as chongzhi, 0 as tuikuan
+			from tbl_purchasehistory p
+			where p.puHi_Type = 3 and p.puHi_UserId = #{userId}
+			union 
+			<!-- 充值退款 -->
+			select 0, SUM(p.puHi_Monetary)
+			from tbl_purchasehistory p
+			where p.puHi_Type = 4 and p.puHi_UserId = #{userId}) s
+			UNION
+			<!-- 总消费 -->
+			select 0, SUM(c.chOr_Moeny), 0, 0
+			from tbl_chargingorder c
+			where c.chOr_ChargingStatus = 2 and c.chOr_UserId = #{userId}
+			UNION
+			<!-- 总优惠 -->
+			select 0, 0, SUM(o.chOr_CouponMoney), 0
+			from tbl_chargingorder o
+			where o.chOr_UserId = #{userId}
+			UNION
+			<!-- 总冻结 -->
+			select 0, 0, 0, SUM(p.puHi_Monetary)
+			from tbl_purchasehistory p
+			inner join tbl_chargingorder o
+			on p.puHi_TransactionNumber = o.chOr_TransactionNumber
+			where o.chOr_ChargingStatus in (1, 4) and p.puHi_UserId = #{userId}
+			) r
+	</select>
+	
+	<select id="getCardAccount" parameterType="String" resultMap="userAccount">
+		select SUM(r.chongzhi) as chongzhi, SUM(r.xiaofei) as xiaofei, SUM(r.youhui) as youhui, SUM(r.dongjie) as dongjie
+		from (
+			select (SUM(s.chongzhi) - SUM(s.tuikuan)) as chongzhi, 0 as xiaofei, 0 as youhui, 0 as dongjie
+			from
+			(
+			select SUM(p.puHi_Monetary) as chongzhi, 0 as tuikuan
+			from tbl_purchasehistory p
+			inner join tbl_usercard u on u.user_Id = p.puHi_UserId
+			where p.puHi_Type = 3 and u.uc_id = #{ucId}
+			union
+			select 0, SUM(p.puHi_Monetary)
+			from tbl_purchasehistory p
+			inner join tbl_usercard u on u.user_Id = p.puHi_UserId
+			where p.puHi_Type = 4 and u.uc_id = #{ucId}) s
+			UNION
+			select 0, SUM(c.chOr_Moeny), 0, 0
+			from tbl_chargingorder c
+			inner join tbl_usercard u on u.user_Id = c.chOr_UserId
+			where c.chOr_ChargingStatus = 2 and u.uc_id = #{ucId}
+			UNION
+			select 0, 0, SUM(o.chOr_CouponMoney), 0
+			from tbl_chargingorder o 
+			inner join tbl_usercard u on u.user_Id = o.chOr_UserId
+			where u.uc_id = #{ucId}
+			UNION
+			select 0, 0, 0, SUM(p.puHi_Monetary)
+			from tbl_purchasehistory p
+			inner join tbl_chargingorder o
+			on p.puHi_TransactionNumber = o.chOr_TransactionNumber
+			inner join tbl_usercard u on u.user_Id = p.puHi_UserId
+			where o.chOr_ChargingStatus in (1, 4) and u.uc_id = #{ucId}
+			) r
+	</select>
+	
+	<select id="selectTransNumberByInvoiceId" parameterType="Long" resultType="java.util.List">
+	    select puHi_TransactionNumber from tbl_purchasehistory where pk_Invoice = #{invoiceId}
+	</select>
+	
+	
+	<!-- 添加消费记录 -->
+	<insert id="addPurchaseHistory" useGeneratedKeys="true" parameterType="PurchaseHistoryDO" keyProperty="pk_PurchaseHistory">
+		INSERT INTO TBL_PURCHASEHISTORY
+		(pk_PurchaseHistory, puHi_Type,puHi_PurchaseHistoryTime, puHi_Monetary, puHi_ConsumerRemark, 
+		puHi_PurchaseContent, puHi_UserId, puHi_ChargeType, puHi_UserOrigin, puHi_ElectricPileCode,puHi_ExternalCardNumber,
+		puHi_TransactionNumber, puHi_PaymentNumber, puhi_InvoiceStatus,pk_Invoice)
+		VALUES
+		(null,#{puHiType},#{puHiPurchaseHistoryTime},#{puHiMonetary},#{puHiConsumerRemark},
+		#{puHiPurchaseContent},#{puHiUserId},#{puHiChargeType},#{puHiUserOrigin},#{puHiElectricPileCode},#{puHiExternalCardNumber},
+		#{puHiTransactionNumber},#{puHiPaymentNumber},#{puhiInvoiceStatus},#{pkInvoice})
+	</insert>
+</mapper>

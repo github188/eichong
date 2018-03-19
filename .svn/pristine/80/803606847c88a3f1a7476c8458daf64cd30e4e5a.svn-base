@@ -1,0 +1,596 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsUserInfoMapper">
+	<resultMap type="TblUserinfo" id="result_user">
+		<result property="pkUserinfo" column="pk_UserInfo" />
+		<result property="usinGroupid" column="usIn_GroupID" />
+		<result property="usinUsername" column="usIn_UserName" />
+		<result property="usinPhone" column="usIn_Phone" />
+		<result property="usinFacticityname" column="usIn_FacticityName" />
+		<result property="usinSex" column="usIn_Sex" />
+		<result property="usinIccode" column="usIn_ICcode" />
+		<result property="usinAccountbalance" column="usIn_AccountBalance" />
+		<result property="usinBirthdate" column="usIn_Birthdate" />
+		<result property="usinEmail" column="usIn_Email" />
+		<result property="usinDrivinglicense" column="usIn_DrivingLicense" />
+		<result property="usinAcura" column="usIn_Acura" />
+		<result property="usinIntegrate" column="usIn_Integrate" />
+		<result property="usinHeadimage" column="usIn_HeadImage" />
+		<result property="usinMembercode" column="usIn_MemberCode" />
+		<result property="usinUseraddress" column="usIn_UserAddress" />
+		<result property="usinUserstatus" column="usIn_UserStatus" />
+		<result property="usinPassword" column="usIn_Password" />
+		<result property="usinCreatedate" column="usIn_Createdate" />
+		<result property="usinUpdatedate" column="usIn_Updatedate" />
+		<result property="usinPlatenumber" column="usIn_PlateNumber" />
+		<result property="usinVehiclenumbe" column="usIn_VehicleNumbe" />
+		<result property="picType" column="usIn_PicType" />
+		<result property="overCpNum" column="overCpNum" />
+		<result property="acRmark" column="act_Remark" />
+	</resultMap>
+	<resultMap id="result_brand" type="TblConfigcontent"
+		extends="result_user"></resultMap>
+		
+	<!-- 判断手机号是否存在 -->
+	<select id="userIsPhone" parameterType="String" resultType="int">
+		select count(pk_UserInfo) from tbl_UserInfo where
+		usIn_Phone=#{usinPhone}
+	</select>
+	<!-- 根据id获取用户信息 -->
+	<select id="get" parameterType="map" resultMap="result_user">
+		select
+		pk_UserInfo,
+		usIn_GroupID,
+		usIn_UserName,
+		usIn_Phone,
+		usIn_FacticityName,
+		usIn_Sex,
+		usIn_ICcode,
+		usIn_AccountBalance,
+		usIn_Birthdate,
+		usIn_Email,
+		usIn_DrivingLicense,
+		usIn_Acura,
+		usIn_Integrate,
+		usIn_HeadImage,
+		usIn_MemberCode,
+		usIn_UserAddress,
+		usIn_UserStatus,
+		usIn_Password,
+		usIn_Createdate,
+		usIn_Updatedate,
+		usIn_PlateNumber,
+		usIn_VehicleNumbe,
+		(SELECT a.act_Remark FROM tbl_activity a WHERE a.act_Status=0 <![CDATA[ and a.act_beginDate <= CURDATE() and a.act_endDate >= CURDATE()]]>
+		and a.act_ActivityRule='5') act_Remark
+		(select count(1) num from tbl_coupon where cp_Status = 0 and cp_UserId=#{pkUserinfo} and date_add(cp_EndDate, INTERVAL #{dc} day) >= CURDATE()) overCpNum
+		from tbl_UserInfo
+		where
+		pk_UserInfo=#{pkUserinfo} 
+	</select>
+	
+	<!-- 判断邮箱是否存在 -->
+	<select id="userIsEmail" parameterType="String" resultType="int">
+		select count(pk_UserInfo) from tbl_UserInfo where
+		usIn_Email=#{userIsEmail}
+	</select>
+
+	<!-- 新增用户 -->
+	<insert id="saveUser" parameterType="TblUserinfo" useGeneratedKeys="true" keyProperty="pkUserinfo">
+		insert into tbl_UserInfo
+		(
+			usIn_FacticityName,
+			usIn_Password,
+			usIn_HeadImage,
+			usIn_Sex,
+			usIn_Birthdate,
+			usIn_Phone,
+			usIn_Email,
+			usIn_UserAddress,
+			usIn_DrivingLicense,
+			usIn_MemberCode,
+			usIn_ICcode,
+			usIn_Acura,
+			usIn_GroupID,
+			usIn_UserStatus
+		)
+		values
+		(
+			#{usinFacticityname},
+			#{usinPassword},
+			#{usinHeadimage},
+			#{usinSex},
+			#{birthdate},
+			#{usinPhone},
+			#{usinEmail},
+			#{usinUseraddress},
+			#{usinDrivinglicense},
+			#{usinMembercode},
+			#{usinIccode},
+			#{usinAcura},
+			#{usinGroupid},
+			#{usinUserstatus}
+		)
+	</insert>
+
+	<!-- 修改用户信息 -->
+	<update id="modifyUser" parameterType="TblUserinfo">
+		update tbl_user_normal
+		<set>
+			<!-- <if test="usinGroupid!=null"> usIn_GroupID=#{usinGroupid}, </if> -->
+			<if test="usinUsername!=null"> norm_name=#{usinUsername}, </if>
+			<if test="usinFacticityname!=null"> norm_real_name=#{usinFacticityname},</if>
+			<!-- <if test="usinPhone!=null"> usIn_Phone=#{usinPhone}, </if> -->
+			<if test="usinSex!=null"> norm_sex=#{usinSex}, </if>
+			<!-- <if test="usinIccode!=null"> usIn_ICcode=#{usinIccode}, </if> -->
+			<if test="usinAccountbalance!=null"> norm_account_balance=#{usinAccountbalance}, </if>
+			<if test="usinBirthdate!=null"> norm_birthday=#{usinBirthdate},</if>
+			<if test="usinEmail!=null"> norm_email=#{usinEmail}, </if>
+			<if test="usinDrivinglicense!=null"> norm_driving_licence=#{usinDrivinglicense},</if>
+			<if test="usinCarcompanyId!=null"> norm_car_company_id=#{usinCarcompanyId},</if>
+			<if test="usinCarinfoId!=null"> norm_car_type_id=#{usinCarinfoId},</if>
+			<if test="usinIntegrate!=null"> norm_integrate=#{usinIntegrate},</if>
+			<!-- <if test="usinHeadimage!=null"> usIn_HeadImage=#{usinHeadimage},</if> -->
+			<!-- <if test="usinMembercode!=null"> usIn_MemberCode=#{usinMembercode},</if> -->
+			<if test="usinUseraddress!=null"> norm_address=#{usinUseraddress},</if>
+			<if test="usinUserstatus!=null"> norm_status=#{usinUserstatus},</if>
+			 <if test="usinVehiclenumbe!=null"> norm_vehicle_number=#{usinVehiclenumbe}, </if>
+			<!-- <if test="usinUpdatedate!=null"> usIn_Updatedate=#{usinUpdatedate}, </if> -->
+			<if test="usinPlatenumber!=null"> norm_plate_num=#{usinPlatenumber}, </if>
+			<if test="pCode != null"> norm_p_code = #{pCode}, </if>
+			<if test="cCode != null"> norm_c_code = #{cCode}, </if>
+			<if test="aCode != null"> norm_a_code = #{aCode}, </if>
+			<if test="isCard != null"> apply_card = #{isCard}, </if>
+			<!-- <if test="usinVehiclenumbe!=null"> usIn_VehicleNumbe=#{usinVehiclenumbe}</if> -->
+			<!-- <if test="picType!=null"> usIn_PicType=#{picType}</if> -->
+		</set>
+		<where>
+			user_id=#{pkUserinfo}
+		</where>
+	</update>
+	
+	<!-- 升级用户 -->
+	<update id="upgradeUser" parameterType="TblUserinfo">
+		update tbl_UserInfo
+		<set>
+			<if test="usinUserstatus!=null"> usIn_UserStatus=#{usinUserstatus}</if>
+		</set>
+		<where>
+			pk_UserInfo=#{pkUserinfo}
+		</where>
+	</update>
+	
+	<!-- 冻结 -->
+	<update id="frostUser" parameterType="TblUserinfo">
+		update tbl_UserInfo
+		<set>
+			<if test="usinUserstatus!=null"> usIn_UserStatus=#{usinUserstatus}</if>
+		</set>
+		<where>
+			pk_UserInfo=#{pkUserinfo}
+		</where>
+	</update>
+	
+	<!-- 审批 -->
+	<update id="approvalUser" parameterType="map">
+		update tbl_UserInfo 
+		<set>
+			<if test="usinGroupid!=null"> usIn_GroupID=#{usinGroupid}, </if>
+			<if test="usinUserstatus!=null"> usIn_UserStatus=#{usinUserstatus}</if>
+		</set>	
+ 		<where>
+			pk_UserInfo=#{pkUserinfo}
+		</where>
+	</update>
+
+	<!-- 根据ID查询用户 -->
+	<select id="findUser" parameterType="String" resultMap="result_user">
+		SELECT
+			pk_UserInfo,
+			(gr.grou_GroupName) AS groupId,
+			usIn_UserName,
+			usIn_Phone,
+			usIn_FacticityName,
+			usIn_Sex,
+			usIn_ICcode,
+			(ci.CarInfo_StyleName) AS carName,
+			(cc.coCo_Content ) AS brandName,
+			usIn_AccountBalance,
+			usIn_Birthdate,
+			usIn_DrivingLicense,
+			usIn_Acura,
+			usIn_Email,
+			usIn_Integrate,
+			usIn_HeadImage,
+			usIn_MemberCode,
+			usIn_UserAddress,
+			usIn_UserStatus,
+			usIn_Password,
+			usIn_Createdate,
+			usIn_Updatedate,
+			usIn_PlateNumber,
+			usIn_VehicleNumbe,
+			usIn_PicType
+
+		FROM tbl_UserInfo ui INNER JOIN tbl_Group AS gr ON gr.pk_Group = ui.usIn_GroupID
+  		     		     	 LEFT JOIN tbl_CarInfo AS ci ON ci.pk_CarInfo = ui.usIn_Acura
+				     	 	 LEFT JOIN tbl_ConfigContent AS cc ON cc.coCo_Content = ci.CarInfo_BrandName
+		where pk_UserInfo=#{pkUserinfo}
+	</select>
+
+	<!-- 取得用户列表 -->
+	<select id="getUserList" resultMap="result_user">
+		SELECT
+			pk_UserInfo,
+			(gr.grou_GroupName) AS groupId,
+			usIn_UserName,
+			usIn_Phone,
+			usIn_FacticityName,
+			usIn_Sex,
+			usIn_ICcode,
+			(ci.CarInfo_StyleName) AS carName,
+			(cc.coCo_Content ) AS brandName,
+			usIn_AccountBalance,
+			usIn_Birthdate,
+			usIn_DrivingLicense,
+			usIn_Acura,
+			usIn_Email,
+			usIn_Integrate,
+			usIn_HeadImage,
+			usIn_MemberCode,
+			usIn_UserAddress,
+			usIn_UserStatus,
+			usIn_Password,
+			usIn_Createdate,
+			usIn_Updatedate,
+			usIn_PlateNumber,
+			usIn_VehicleNumbe,
+			usIn_PicType
+
+		FROM tbl_UserInfo ui INNER JOIN tbl_Group AS gr ON gr.pk_Group = ui.usIn_GroupID
+  		     		      LEFT JOIN tbl_CarInfo AS ci ON ci.pk_CarInfo = ui.usIn_Acura
+				     LEFT JOIN tbl_ConfigContent AS cc ON cc.coCo_Content = ci.CarInfo_BrandName
+		
+		<where>
+			ui.usIn_GroupID = 1
+			<if test="usinFacticityname !=null and usinFacticityname !=''">
+				and usIn_FacticityName like concat('%',#{usinFacticityname},'%')
+			</if>
+			<if test="usinPhone !=null and usinPhone !=''">
+				and usIn_Phone=#{usinPhone}
+			</if>
+			<if test="usinEmail !=null and usinEmail !=''">
+				and usIn_Email=#{usinEmail}
+			</if>
+			<if test="usinIccode !=null and usinIccode !=''">
+				and usIn_ICcode=#{usinIccode}
+			</if>
+			<if test="usinBrand !=null and usinBrand !=''">
+				and cc.coCo_Content=#{usinBrand}
+			</if>
+			<if test="usinCar !=null and usinCar !=''">
+				and ci.CarInfo_StyleName=#{usinCar}
+			</if>
+			<if test="usinUserstatus !=null and usinUserstatus !=''">
+				and usIn_UserStatus=#{usinUserstatus}
+			</if>
+		</where>
+	    ORDER BY usIn_Createdate DESC
+	</select>
+
+	
+	<!-- 查询全部用户 -->
+	<select id="searchUserList" parameterType="TblUserinfo" resultMap="result_user">
+		SELECT
+			pk_UserInfo,
+			(gr.grou_GroupName) AS groupId,
+			usIn_UserName,
+			usIn_Phone,
+			usIn_FacticityName,
+			usIn_Sex,
+			usIn_ICcode,
+			(ci.CarInfo_StyleName) AS carName,
+			(cc.coCo_Content ) AS brandName,
+			usIn_AccountBalance,
+			DATE_FORMAT(usIn_Birthdate,'%Y-%m-%d') usinBirthdate,
+			usIn_DrivingLicense,
+			usIn_Acura,
+			usIn_Email,
+			usIn_Integrate,
+			usIn_HeadImage,
+			usIn_MemberCode,
+			usIn_UserAddress,
+			usIn_UserStatus,
+			usIn_Password,
+			usIn_Createdate,
+			usIn_Updatedate,
+			usIn_PlateNumber,
+			usIn_VehicleNumbe,
+			usIn_PicType
+
+		FROM tbl_UserInfo ui left JOIN tbl_Group AS gr ON gr.pk_Group = ui.usIn_GroupID
+  		     		     LEFT JOIN tbl_CarInfo AS ci ON ci.pk_CarInfo = ui.usIn_Acura
+				     LEFT JOIN tbl_ConfigContent AS cc ON cc.coCo_Content = ci.CarInfo_BrandName
+		
+		<where>
+			ui.usIn_GroupID = 1
+			<if test="usinFacticityname !=null and usinFacticityname !=''">
+				and usIn_FacticityName like concat('%',#{usinFacticityname},'%')
+			</if>
+			<if test="usinPhone !=null and usinPhone !=''">
+				and usIn_Phone=#{usinPhone}
+			</if>
+			<if test="usinEmail !=null and usinEmail !=''">
+				and usIn_Email=#{usinEmail}
+			</if>
+			<if test="usinIccode !=null and usinIccode !=''">
+				and usIn_ICcode=#{usinIccode}
+			</if>
+			<if test="usinBrand !=null and usinBrand !=''">
+				and cc.coCo_Content=#{usinBrand}
+			</if>
+			<if test="usinCar !=null and usinCar !=''">
+				and ci.CarInfo_StyleName=#{usinCar}
+			</if>
+			<if test="usinUserstatus !=null and usinUserstatus !=''">
+				and usIn_UserStatus=#{usinUserstatus}
+			</if>
+		</where>
+		ORDER BY usIn_Createdate DESC
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	
+	<!-- 查询车辆品牌列表 -->
+	<select id="searchBrandList" parameterType="TblConfigcontent" resultMap="result_brand">
+		SELECT pk_ConfigContent pkConfigcontent,coCo_Content cocoContent FROM tbl_ConfigContent WHERE coCo_ConfigParameterID = 9 AND coCo_ConfigPStatus = 0
+	</select>
+	
+	<!-- 查询用户数量 -->
+	<select id="searchUserCount" parameterType="TblUserinfo"
+		resultType="long">
+		select
+		count(ui.pk_UserInfo)	
+		from tbl_UserInfo ui INNER JOIN tbl_Group AS gr ON ui.usIn_GroupID = gr.pk_Group
+							   LEFT JOIN tbl_CarInfo AS ci ON ci.pk_CarInfo = ui.usIn_Acura
+				     LEFT JOIN tbl_ConfigContent AS cc ON cc.coCo_Content = ci.CarInfo_BrandName
+		<where>
+			ui.usIn_GroupID = 1
+			<if test="usinFacticityname !=null and usinFacticityname !=''">
+				and usIn_FacticityName like concat('%',#{usinFacticityname},'%')
+			</if>
+			<if test="usinPhone !=null and usinPhone !=''">
+				and usIn_Phone=#{usinPhone}
+			</if>
+			<if test="usinEmail !=null and usinEmail !=''">
+				and usIn_Email=#{usinEmail}
+			</if>
+			<if test="usinIccode !=null and usinIccode !=''">
+				and usIn_ICcode=#{usinIccode}
+			</if>
+			<if test="usinBrand !=null and usinBrand !=''">
+				and cc.coCo_Content=#{usinBrand}
+			</if>
+			<if test="usinCar !=null and usinCar !=''">
+				and ci.CarInfo_StyleName=#{usinCar}
+			</if>
+			<if test="usinUserstatus !=null and usinUserstatus !=''">
+				and usIn_UserStatus=#{usinUserstatus}
+			</if>
+		</where>
+	</select>
+	
+	<!-- 根据ID删除用户 -->
+	<delete id="deleteUser" parameterType="TblUserinfo">
+	   delete from 
+	     tbl_UserInfo 
+	   where 
+	    pk_UserInfo=#{pkUserinfo} 
+	</delete>
+	
+	
+	<!-- 添加个体商家 -->
+	<insert id="saveUnit" parameterType="TblUserinfo" useGeneratedKeys="true" keyProperty="pkUserinfo">
+		insert into tbl_UserInfo
+		(
+			usIn_FacticityName,
+			usIn_Password,
+			usIn_HeadImage,
+			usIn_Sex,
+			usIn_Birthdate,
+			usIn_Phone,
+			usIn_Email,
+			usIn_UserAddress,
+			usIn_DrivingLicense,
+			usIn_MemberCode,
+			usIn_ICcode,
+			usIn_Acura,
+			usIn_GroupID,
+			usIn_PicType
+		)
+		values
+		(
+			#{usinFacticityname},
+			#{usinPassword},
+			#{usinHeadimage},
+			#{usinSex},
+			#{usinBirthdate},
+			#{usinPhone},
+			#{usinEmail},
+			#{usinUseraddress},
+			#{usinDrivinglicense},
+			#{usinMembercode},
+			#{usinIccode},
+			#{usinAcura},
+			#{usinGroupid},
+			#{picType}
+		)
+	</insert>
+
+	<!-- 修改个体商家信息 -->
+	<update id="modifyUnit" parameterType="TblUserinfo">
+		update tbl_UserInfo
+		<set>
+			<if test="usinGroupid!=null"> usIn_GroupID=#{usinGroupid}, </if>
+			<if test="usinUsername!=null"> usIn_UserName=#{usinUsername}, </if>
+			<if test="usinPhone!=null"> usIn_Phone=#{usinPhone}, </if>
+			<if test="usinSex!=null"> usIn_Sex=#{usinSex}, </if>
+			<if test="usinIccode!=null"> usIn_ICcode=#{usinIccode}, </if>
+			<if test="usinAccountbalance!=null"> usIn_AccountBalance=#{usinAccountbalance}, </if>
+			<if test="birthdate!=null"> usIn_Birthdate=#{birthdate},</if>
+			<if test="usinEmail!=null"> usIn_Email=#{usinEmail}, </if>
+			<if test="usinDrivinglicense!=null"> usIn_DrivingLicense=#{usinDrivinglicense},</if>
+			<if test="usinAcura!=null"> usIn_Acura=#{usinAcura},</if>
+			<if test="usinIntegrate!=null"> usIn_Integrate=#{usinIntegrate},</if>
+			<if test="usinHeadimage!=null"> usIn_HeadImage=#{usinHeadimage},</if>
+			<if test="usinMembercode!=null"> usIn_MemberCode=#{usinMembercode},</if>
+			<if test="usinUseraddress!=null"> usIn_UserAddress=#{usinUseraddress},</if>
+			<if test="usinUserstatus!=null"> usIn_UserStatus=#{usinUserstatus},</if>
+			<if test="usinPassword!=null"> usIn_Password=#{usinPassword}, </if>
+			<if test="usinUpdatedate!=null"> usIn_Updatedate=#{usinUpdatedate}, </if>
+			<if test="usinPlatenumber!=null"> usIn_PlateNumber=#{usinPlatenumber}, </if>
+			<if test="usinVehiclenumbe!=null"> usIn_VehicleNumbe=#{usinVehiclenumbe}</if>
+			<if test="picType!=null"> usIn_PicType=#{picType}</if>
+		</set>
+		<where>
+			pk_UserInfo=#{pkUserinfo}
+		</where>
+	</update>
+
+	<!-- 根据ID查询个体商家 -->
+	<select id="findUnit" parameterType="String" resultMap="result_user">
+		select
+			pk_UserInfo,
+			(gr.grou_GroupName) AS groupId,
+			usIn_UserName,
+			usIn_Phone,
+			usIn_FacticityName,
+			usIn_Email,
+			usIn_Sex,
+			usIn_ICcode,
+			usIn_AccountBalance,
+			usIn_Birthdate,
+			usIn_DrivingLicense,
+			usIn_Acura,
+			usIn_Integrate,
+			getFullPath('userAvatar',#{pkUserinfo}) usinHeadimage,
+			getFullPath('IdCardImage',#{pkUserinfo}) idCardimage,
+			usIn_MemberCode,
+			usIn_UserAddress,
+			usIn_UserStatus,
+			usIn_Password,
+			usIn_Createdate,
+			usIn_Updatedate,
+			(ci.CarInfo_StyleName) AS carName,
+			(cc.coCo_Content ) AS brandName,
+			usIn_VehicleNumbe,
+			usIn_PicType
+		from tbl_UserInfo ui INNER JOIN tbl_Group AS gr ON ui.usIn_GroupID = gr.pk_Group
+							 LEFT JOIN tbl_CarInfo AS ci ON ci.pk_CarInfo = ui.usIn_Acura
+							 LEFT JOIN tbl_ConfigContent AS cc ON cc.coCo_Content = ci.CarInfo_BrandName
+		where pk_UserInfo=#{pkUserinfo}
+	</select>
+	
+	<!-- 取得个体商家列表 -->
+	<select id="getUnitList" resultMap="result_user">
+		select
+			pk_UserInfo,
+			(gr.grou_GroupName) AS groupId,
+			usIn_UserName,
+			usIn_Phone,
+			usIn_FacticityName,
+			usIn_Email,
+			usIn_Sex,
+			usIn_ICcode,
+			usIn_AccountBalance,
+			usIn_Birthdate,
+			usIn_DrivingLicense,
+			usIn_Acura,
+			usIn_Integrate,
+			getFullPath('userAvatar',#{pkUserinfo}) usinHeadimage,
+			getFullPath('IdCardImage',#{pkUserinfo}) idCardimage,
+			usIn_MemberCode,
+			usIn_UserAddress,
+			usIn_UserStatus,
+			usIn_Password,
+			usIn_Createdate,
+			usIn_Updatedate,
+			(ci.CarInfo_StyleName) AS carName,
+			(cc.coCo_Content ) AS brandName,
+			usIn_VehicleNumbe,
+			usIn_PicType
+		from tbl_UserInfo ui INNER JOIN tbl_Group AS gr ON ui.usIn_GroupID = gr.pk_Group
+							 LEFT JOIN tbl_CarInfo AS ci ON ci.pk_CarInfo = ui.usIn_Acura
+							 LEFT JOIN tbl_ConfigContent AS cc ON cc.coCo_Content = ci.CarInfo_BrandName
+		ORDER BY usIn_Createdate DESC
+	</select>
+
+	<!-- 查询全部个体商家 -->
+	<select id="searchUnitList" parameterType="TblUserinfo" resultMap="result_user">
+		select
+			pk_UserInfo,
+			(gr.grou_GroupName) AS groupId,
+			usIn_UserName,
+			usIn_Phone,
+			usIn_FacticityName,
+			usIn_Email,
+			usIn_Sex,
+			usIn_ICcode,
+			usIn_AccountBalance,
+			usIn_Birthdate,
+			usIn_DrivingLicense,
+			usIn_Acura,
+			usIn_Integrate,
+			getFullPath('userAvatar',#{pkUserinfo}) usinHeadimage,
+			getFullPath('IdCardImage',#{pkUserinfo}) idCardimage,
+			usIn_MemberCode,
+			usIn_UserAddress,
+			usIn_UserStatus,
+			usIn_Password,
+			usIn_Createdate,
+			usIn_Updatedate,
+			(ci.CarInfo_StyleName) AS carName,
+			(cc.coCo_Content ) AS brandName,
+			usIn_VehicleNumbe,
+			usIn_PicType
+		from tbl_UserInfo ui INNER JOIN tbl_Group AS gr ON ui.usIn_GroupID = gr.pk_Group
+							 LEFT JOIN tbl_CarInfo AS ci ON ci.pk_CarInfo = ui.usIn_Acura
+							 LEFT JOIN tbl_ConfigContent AS cc ON cc.coCo_Content = ci.CarInfo_BrandName
+		
+		<where>
+			ui.usIn_GroupID = 2
+			<if test="usinFacticityname !=null and usinFacticityname !=''">
+				and usIn_FacticityName like concat('%',#{usinFacticityname},'%')
+			</if>
+			<if test="usinPhone !=null and usinPhone !=''">
+				and usIn_Phone=#{usinPhone}
+			</if>
+			<if test="usinEmail !=null and usinEmail !=''">
+				and usIn_Email=#{usinEmail}
+			</if>
+			<if test="usinIccode !=null and usinIccode !=''">
+				and usIn_ICcode=#{usinIccode}
+			</if>
+			<if test="usinAcura !=null and usinAcura !=''">
+				and usIn_Acura=#{usinAcura}
+			</if>
+			<if test="usinAcura !=null and usinAcura !=''">
+				and usIn_Acura=#{usinAcura}
+			</if>
+		</where>
+		ORDER BY usIn_Createdate DESC
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<!-- 查询个体商家数量 -->
+	<select id="searchUnitCount" parameterType="TblUserinfo"
+		resultType="long">
+		select
+			count(pk_UserInfo)
+		from tbl_UserInfo ui INNER JOIN tbl_Group AS gr ON ui.usIn_GroupID = gr.pk_Group
+							 LEFT JOIN tbl_CarInfo AS ci ON ci.pk_CarInfo = ui.usIn_Acura
+							 LEFT JOIN tbl_ConfigContent AS cc ON cc.coCo_Content = ci.CarInfo_BrandName
+		where ui.usIn_GroupID = 2
+	</select>
+</mapper>

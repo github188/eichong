@@ -1,0 +1,131 @@
+package com.wanma.ims.service;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import com.wanma.ims.model.MenuDO;
+import com.wanma.ims.model.NodeDO;
+import com.wanma.ims.model.RoleDO;
+ 
+/**
+ * 菜单业务处理接口
+ * 
+ * @version V1.0
+ * @author Administrator
+ * @date 2014年6月26日
+ */
+public interface MenuService {
+	
+	
+	/**
+	 * 根据RoleId 加载菜单
+	 * @param roleId 角色ID
+	 * @param userLevel 用户级别
+	 * @return 
+	 * */
+	public List<MenuDO> getMenuListByRoleIds(String roleId,int userLevel);
+
+	/**
+	 * 统计菜单列表
+	 * @param MenuDO 
+	 * @return 
+	 * */
+	public Long countMenuList(MenuDO menuDO);
+	
+	/**
+	 * 查询菜单列表
+	 * @param MenuDO 
+	 * @return 
+	 * */
+	public List<MenuDO> getMenuListPage(MenuDO menuDO);
+	
+	/**
+	 * 添加菜单
+	 * @param MenuDO 
+	 * @return 
+	 * */
+	public boolean addMenu(MenuDO menuDO);
+	
+	/**
+	 * 根据ID查询菜单信息
+	 * @param MenuId
+	 * @return 
+	 * */
+	public MenuDO getMenuById(String menuId);
+	
+	/**
+	 * 根据父级ID查询菜单信息
+	 * @param MenuId
+	 * @return 
+	 * */
+	public List<MenuDO> getMenuByParentId(String parentMenuId);
+	
+	/**
+	 * 编辑菜单
+	 * @param MenuDO 
+	 * @return 
+	 * */
+	public boolean modifyMenu(MenuDO menuDO);
+	
+	/**
+	 * 删除菜单
+	 * @param menuIds 
+	 * @return 
+	 * */
+	public void removeMenu(List<String> menuIds);
+	/**
+	 * 根据roleId和MenuIds获取菜单，判断哪些菜单已选中
+	 * @param menuIds 
+	 * @return 
+	 * */
+	public List<MenuDO> getMenuListByRoleIdAndMenuIds(String roleId,String menuIds);
+	
+	/*******************************以下咱不用************************************/
+
+	/**
+	 * 取得菜单一览
+	 * 
+	 * @author yangweir
+	 * @since Version 1.0
+	 * @return List<Menu> 菜单一览
+	 * @throws 无
+	 */
+	public List<MenuDO> getMenuList();
+//	public List<MenuDO> getMenuList(MenuDO menu);
+	public Long getMenuListCount(MenuDO menu);
+
+
+	/**
+	 * 菜单唯一性检查
+	 * 
+	 * @author yangweir
+	 * @since Version 1.0
+	 * @param menuId
+	 *            菜单ID
+	 * @return String 菜单唯一性检查结果 "true":通过 "false":不通过
+	 * @throws 无
+	 */
+	public String checkMenuUnique(String menuId);
+	
+	
+
+
+	public List<MenuDO> getMenuListByRoleList(List<RoleDO> roleList);
+	/**
+	 * 菜单唯一性检查
+	 * 
+	 * @author wbc
+	 * @since Version 1.0
+	 * @param menuList:菜单权限LIST，isLookUp:是否是查找带回树
+	 *            
+	 * @return String 菜单唯一性检查结果 "true":通过 "false":不通过
+	 * @throws 无
+	 */
+	public String getMenuTree(List<MenuDO> menuList,boolean isLookUp);
+
+	public NodeDO getChildrenMenu(HttpServletRequest request, MenuDO menu);
+
+
+	
+}

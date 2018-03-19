@@ -1,0 +1,761 @@
+/**
+ * Created by Administrator on 2017/8/16.
+ */
+var cpyId = getUrlParam('cpyId');
+var cpyNumber = getUrlParam('cpyNumber');
+var accountId = getUrlParam('accountId');
+//数据权限控制
+//获取公司主页的menuId
+var getMenuMap = window.localStorage.getItem('menuMap');
+var getCurruntMap = JSON.parse(getMenuMap);
+var menuId = getCurruntMap['公司主页'];
+$(function () {
+    ctrlMenu(menuId);
+    //加载公司的基本信息
+    setTimeout('getCompanyBasicInfo()', 150);
+    //公司用户板块的内容    ////////////////////////////////////////////////
+    setTimeout('getCompanyUserInfo()', 100);
+    //大账户板块内容
+    setTimeout('getFinAccountBalance4CpyInfo()', 300);
+    //黑白名单板块内容 （...）
+    setTimeout('getUserBlackWhite4CpyInfo()', 400);
+    setTimeout('getFinAccountConfig4CpyInfo()', 550);
+    setTimeout('companyIndexChargeRelaInfo()', 500);
+    //管辖的公司板块内容
+    setTimeout('getCompanyByMasterInfo()', 600);
+    //充电卡内容.
+    setTimeout('getCardForCompanyInfo()', 800);
+
+    //订单信息板块内容////////////////////////////////////////内容待补充 订单接口？？？？？？？？？？？？？？
+    setTimeout('getHomeCpyOrderInfo()', 200);
+
+    //等级板块内容////
+    setTimeout('getLevelByCpyIdInfo()', 250);
+    setTimeout('getRateUniqueRelaGroupInfo()', 350);
+    //管理员账户板块内容
+    setTimeout('getUserAdminByCpyIdInfo()', 450);
+})
+function ctrlMenu(menuId) {
+    $.ajax({
+        type: "post",
+        url: basePath + getSelfButtonTreeUrl,
+        async: true,
+        data: {
+            menuId: menuId
+        },
+        success: function (data) {
+            var data = data.dataObject;
+            if (data.length == 0) {
+                return;
+            } else {
+                for (var i = 0; i < data.length; i++) {
+                    var contents = data[i].contents;
+                    if (contents.indexOf('概览管理') > -1) {
+                        $('#companyInfoId').show();
+                    }
+                    if (contents.indexOf('用户管理') > -1) {
+                        $('#companyUserId').show();
+                    }
+                    if (contents.indexOf('充电卡管理') > -1) {
+                        $('#getCardForCompanyId').show();
+                    }
+                    if (contents.indexOf('大账户管理') > -1) {
+                        $('#bigAccountId').show();
+                    }
+                    if (contents.indexOf('订单信息管理') > -1) {
+                        $('#getHomeCpyOrderId').show();
+                    }
+                    if (contents.indexOf('黑白名单管理') > -1) {
+                        $('#blackAndWhiteListId').show();
+                    }
+                    if (contents.indexOf('等级管理') > -1) {
+                        $('#getLevelByCpyId').show();
+                    }
+                    if (contents.indexOf('充电范围管理') > -1) {
+                        $('#companyChargeRelaId').show();
+                    }
+                    if (contents.indexOf('充电费率管理') > -1) {
+                        $('#chargeRatesId').show();
+                    }
+                    if (contents.indexOf('管辖公司管理') > -1) {
+                        $('#companyByMasterId').show();
+                    }
+                    if (contents.indexOf('管理员账号管理') > -1) {
+                        $('#getUserAdminByCpyId').show();
+                    }
+                    if (contents.indexOf('账务关系管理') > -1) {
+                        $('#companyFinanceId').show();
+                    }
+                    if (contents.indexOf('盗刷校验管理') > -1) {
+                        $('#isValidTextId').show();
+                    }
+                    if (contents.indexOf('付费策略管理') > -1) {
+                        $('#payForStrategy').show();
+                    }
+
+
+                }
+            }
+        }
+    });
+}
+
+
+function getCompanyBasicInfo() {
+    $.ajax({
+        type: "post",
+        url: basePath + companyHomeUrl,
+        async: true,
+        data: {
+            cpyId: cpyId
+        },
+        success: function (req) {
+            var data = req.dataObject;
+            var cpyName = data.cpyName;//公司名称
+            var cpyNumber = data.cpyNumber;//公司标识
+            var cpyCity = data.cpyCity;//地区
+            var cpyStatusText = data.cpyStatusText;//禁用状态
+            var isValidText = data.isValidText;//是否开启盗刷校验
+            var cpyParentName = data.cpyParentName;//上级公司
+            var slaveCpyName = data.slaveCpyName;//管理单位
+            var cpyStatus = data.cpyStatus;//公司状态
+            $('#companyNameInfo').html(cpyName);
+            $('#companyStatusInfo').html(cpyStatusText);
+            $('#cpyCity').html(cpyCity);
+            $('#cpyNumber').html(cpyNumber);
+            $('#cpyParentIdInfo').html(cpyParentName);
+            $('#slaveParentIdInfo').html(slaveCpyName);
+            $('#isValidText').html(isValidText);
+            if (cpyStatus == 1) {
+                $('#disableCompanyBtn').css('display', 'inline-block');
+            } else if (cpyStatus == 0) {
+                $('#disableCompanyBtn').css('display', 'none');
+            }
+            var setChargeInfo = window.localStorage;
+            setChargeInfo.setItem("remCompanyName", cpyName);
+        }
+    });
+}
+//编辑、更改公司的名称
+$("body").off("click", "#companyEdit").on("click", "#companyEdit", function () {
+    layer.closeAll();
+    layer.open({
+        type: 1,
+        offset: '100px',
+        title: ["提示", "font-size:12px;text-align:center"],
+        shadeClose: false,
+        closeBtn: 2,
+        area: ['310px', '180px'],//宽高
+        content: $('.changeCompanyNewName'),
+        btn: ["确定", "取消"],
+        yes: function (index, layero) {
+            layer.closeAll();
+            toSubmitCompanyNewName();
+        },
+        cancel: function (index, layero) {
+            layer.closeAll();
+        }
+    });
+});
+function toSubmitCompanyNewName() {
+    var cpyNewName = $('#cpyNewNameInput').val();
+    $.ajax({
+        type: "post",
+        url: basePath + modifyCompanyUrl,
+        async: true,
+        data: {
+            cpyName: cpyNewName,
+            cpyId: cpyId
+        },
+        success: function (data) {
+            if (data.success == true) {
+                layer.closeAll();
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:center"],
+                    shadeClose: false,
+                    closeBtn: 2,
+                    area: ['310px', '160px'],//宽高
+                    content: '修改成功',
+                    btn: ["确定", "取消"],
+                    yes: function (index, layero) {
+                        layer.closeAll();
+                        getCompanyBasicInfo()
+                    },
+                    cancel: function (index, layero) {
+                        layer.closeAll();
+                    }
+                });
+
+            } else {
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:center"],
+                    shadeClose: false,
+                    closeBtn: 2,
+                    area: ['310px', '160px'],//宽高
+                    content: data.msg,
+                    time: 3000,
+                    btn: ["确定", "取消"]
+                });
+            }
+        }
+    });
+}
+//解禁
+$("body").off("click", "#disableCompanyBtn").on("click", "#disableCompanyBtn", function () {
+    layer.closeAll();
+    layer.open({
+        type: 1,
+        offset: '100px',
+        title: ["提示", "font-size:12px;text-align:center"],
+        shadeClose: false,
+        closeBtn: 2,
+        area: ['310px', '180px'],//宽高
+        content: $('.abledCompany'),
+        btn: ["确定", "取消"],
+        yes: function (index, layero) {
+            layer.closeAll();
+            toAbledCompany();
+        },
+        cancel: function (index, layero) {
+            layer.closeAll();
+        }
+    });
+});
+function toAbledCompany() {
+    $.ajax({
+        type: "post",
+        url: basePath + disableCompanyUrl,
+        async: true,
+        data: {
+            type: 0,
+            cpyId: cpyId
+        },
+        success: function (data) {
+            if (data.success == true) {
+                getCompanyBasicInfo();
+            } else {
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:center"],
+                    shadeClose: false,
+                    closeBtn: 2,
+                    area: ['310px', '160px'],//宽高
+                    content: data.msg,
+                    time: 3000,
+                    btn: ["确定", "取消"]
+                });
+            }
+        }
+    });
+}
+
+function getCompanyUserInfo() {
+    $.ajax({
+        type: "post",
+        url: basePath + companyIndexUserUrl,
+        async: true,
+        data: {
+            cpyId: cpyId
+        },
+        success: function (req) {
+            var data = req.dataObject;
+            var indexUserLi = '';
+            var sAccountNum = data[0].count;
+            $('#sAccountNum').html(sAccountNum);
+            for (var i = 0; i < data.length; i++) {
+                indexUserLi += '<li><span>' + data[i].levelName + '</span><span>' + data[i].count + '</span></li>';
+            }
+            $('#indexUserUl').html(indexUserLi);
+        }
+    });
+}
+
+function getFinAccountBalance4CpyInfo() {
+    $.ajax({
+        type: "post",
+        url: basePath + getFinAccountBalance4CpyUrl,
+        async: true,
+        data: {
+            accountId: accountId
+        },
+        success: function (req) {
+            var data = req.dataObject;
+            var accountBalance = data.accountBalance;//余额
+            var accountStatusName = data.accountStatusName;//状态：1，正常，2.冻结，3.删除
+            var tradeTypeName = data.tradeTypeName;//类型： 1.信用，2.储蓄
+            $('#accountBalance').html(accountBalance);
+            $('#totalAccount').html(accountBalance);
+            $('#accountStatus').html(accountStatusName);
+            $('#tradeType').html(tradeTypeName);
+        }
+    });
+}
+//点击预警金额，设置预警金额
+$('#relieveCardFrozen').on("click", function () {
+    layer.closeAll();
+    layer.open({
+        type: 1,
+        title: '大账户预警金额',
+        btn: ["确定", "取消"],
+        shadeClose: true,
+        closeBtn: 2,//点击遮罩关闭层
+        area: ['320px', '200px'],
+        content: $(".warningLayer"),
+        yes: function () {
+            warningTest($('#warningInput'));
+            if (warningTest($('#warningInput')) == true) {
+                layer.closeAll();
+                setWarningAccount();
+            }
+        },
+        cancel: function (index, layero) {
+            layer.closeAll();
+        }
+    });
+})
+function warningTest(obj) {
+    var objValue = $(obj).val();
+    var reg = /^[0-9][\d]*$/;
+    $('#warningTip').html('');
+    if (!objValue) {
+        $(obj).focus();
+        $('#warningTip').html('请输入数字！');
+        return false;
+    } else if (!reg.test(objValue)) {
+        $(obj).focus();
+        $('#warningTip').html('请输入数字！');
+        return false;
+    }
+    return true;
+}
+
+function setWarningAccount() {
+    var accountWarn = $('#warningInput').val();
+    $.ajax({
+        type: "post",
+        url: basePath + modifyFinAccountWarnUrl,
+        async: true,
+        data: {
+            accountId: accountId,
+            accountWarn: accountWarn
+        },
+        success: function (req) {
+            if (req.success == true) {
+                layer.closeAll();
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:center"],
+                    shadeClose: false,
+                    closeBtn: 2,
+                    area: ['310px', '180px'],//宽高
+                    content: "保存成功",
+                    time: 2000,
+                    btn: ["确定"]
+                });
+            } else {
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:center"],
+                    shadeClose: false,
+                    closeBtn: 2,
+                    area: ['310px', '160px'],//宽高
+                    content: data.msg,
+                    time: 3000,
+                    btn: ["确定", "取消"]
+                });
+            }
+        }
+    });
+}
+
+function getUserBlackWhite4CpyInfo() {
+    $.ajax({
+        type: "post",
+        url: basePath + getUserBlackWhite4CpyUrl,
+        async: true,
+        data: {
+            cpyId: cpyId
+        },
+        success: function (req) {
+            var data = req.dataObject;
+            var blackWhiteUserLi = '';
+            if (data.length == 0) {
+                blackWhiteUserLi = '<li><span>白名单记录</span><span>0条</span></li><li><span>黑名单记录</span><span>0条</span></li>';
+            }
+            if (data.length > 0) {
+                for (var i = 0; i < data.length; i++) {
+                    if (data[i].type == 0) {
+                        blackWhiteUserLi += '<li><span>白名单记录</span><span><t>' + data[i].counts + '</t>条</span></li>';
+                    }
+                    if (data[i].type == 1) {
+                        blackWhiteUserLi += '<li><span>黑名单记录</span><span><t>' + data[i].counts + '</t>条</span></li>';
+                    }
+                }
+            }
+            $('#blackWhiteUserUl').html(blackWhiteUserLi);
+        }
+    });
+}
+//充电范围板块内容
+$('#getStationAndPile').on('click', function () {
+    window.location.href = "company_setChargeRela.html?cpyId=" + cpyId;
+});
+
+function companyIndexChargeRelaInfo() {
+    $.ajax({
+        type: "post",
+        url: basePath + companyIndexChargeRelaUrl,
+        async: true,
+        data: {
+            cpyId: cpyId
+        },
+        success: function (req) {
+            var data = req.dataObject;
+            var site = data[0];//电站数
+            var stake = data[1];//电桩数
+            $('#site').html(site);
+            $('#stake').html(stake);
+            var setChargeInfo = window.localStorage;
+            setChargeInfo.setItem("remSiteNumber", site);
+            setChargeInfo.setItem("remPileNumber", stake);
+
+        }
+    });
+}
+
+
+function getCompanyByMasterInfo() {
+    $.ajax({
+        type: "post",
+        url: basePath + getCompanyByMasterUrl,
+        async: true,
+        data: {
+            cpyId: cpyId
+        },
+        success: function (req) {
+            var data = req.dataObject;
+            //var cpyName = data.cpyName;//公司名称
+            var cpyNameLi = '';
+            for (var i = 0; i < data.length; i++) {
+                cpyNameLi += '<li>' + data[i].cpyName + '</li>';
+            }
+            $('#cpyNameUl').html(cpyNameLi);
+        }
+    });
+}
+
+function getCardForCompanyInfo() {
+    $.ajax({
+        type: "post",
+        url: basePath + getCardForCompanyUrl,
+        async: true,
+        data: {
+            ucCpyId: cpyId
+        },
+        success: function (req) {
+            var data = req.dataObject;
+            var lossCardNum = data.lossCardNum;//已挂失卡
+            var totalCardNum = data.totalCardNum;//卡数量
+            $('#lossCardNum').html(lossCardNum);
+            $('#totalCardNum').html(totalCardNum);
+        }
+    });
+}
+
+function getHomeCpyOrderInfo() {
+    $.ajax({
+        type: "post",
+        url: basePath + getHomeCpyOrderUrl,
+        async: true,
+        data: {
+            cpyNumber: cpyNumber
+        },
+        success: function (req) {
+            var data = req.dataObject;
+            for (var key in data) {
+                if (key == 1) {
+                    $('#cumulativeOrder').html(data[key]);
+                }
+                if (key == 2) {
+                    $('#cumulative').html(data[key]);
+                }
+                if (key == 3) {
+                    $('#cumulativePower').html(data[key]);
+                }
+                if (key == 4) {
+                    $('#todayOrder').html(data[key]);
+                }
+            }
+        }
+    });
+}
+
+function getLevelByCpyIdInfo() {
+    $.ajax({
+        type: "post",
+        url: basePath + getLevelByCpyIdUrl,
+        async: true,
+        data: {
+            cpyId: cpyId
+        },
+        success: function (req) {
+            var data = req.dataObject;
+            var levelNameLi = '';
+            for (var i = 0; i < data.length; i++) {
+                levelNameLi += '<li>' + data[i].levelName + '</li>';
+            }
+            $('#levelNameId').html(levelNameLi);
+        }
+    });
+}
+//充电费率板块内容
+$('#setChargeRate').on('click', function () {
+    window.location.href = "company_setChargeRate.html?cpyId=" + cpyId;
+});
+
+function getRateUniqueRelaGroupInfo() {
+    $.ajax({
+        type: "post",
+        url: basePath + getRateUniqueRelaGroupUrl,
+        async: true,
+        data: {
+            cpyId: cpyId
+        },
+        success: function (req) {
+            var data = req.dataObject;
+            var levelLi = '';
+            for (var i = 0; i < data.length; i++) {
+                levelLi += '<li><span>' + data[i].levelName + '</span><span>' + data[i].rateinfoId + '</span></li>';
+            }
+            $('#leaveUl').html(levelLi);
+        }
+    });
+}
+
+function getUserAdminByCpyIdInfo() {
+    $.ajax({
+        type: "post",
+        url: basePath + getUserAdminByCpyIdUrl,
+        async: true,
+        data: {
+            cpyId: cpyId
+        },
+        success: function (req) {
+            var data = req.dataObject;
+            var administerLi = '';
+            for (var i = 0; i < data.length; i++) {
+                administerLi += '<li><p><t>管理员名称：</t><span>' + data[i].adminName + '</span></p><p><t>管理员密码：******</t></p></li>';
+            }
+            $('#administerUl').html(administerLi);
+        }
+    });
+}
+//盗刷校验内容
+//付费策略
+
+function getFinAccountConfig4CpyInfo() {
+    $.ajax({
+        type: "post",
+        url: basePath + getFinAccountConfigRela4CpyUrl,
+        async: true,
+        data: {
+            cpyId: cpyId
+        },
+        success: function (req) {
+            var data = req.dataObject;
+            var paymentRuleNameLi = '';
+            for (var i = 0; i < data.length; i++) {
+                paymentRuleNameLi += '<li><span>' + data[i].billAccountName + '</span><span>' + data[i].paymentRuleName + '</span></li>';
+                if (data[i].paymentRuleName == "大账户为个人配资") {
+                    $('#toAssign').css("display", "inline-block");
+                }
+            }
+            $('#paymentRuleNameUl').html(paymentRuleNameLi);
+        }
+    });
+}
+
+//点击全部账户等额分配时
+/*$("body").off("click", "#divide").on("click", "#divide", function () {
+ layer.closeAll();
+ layer.open({
+ type: 1,
+ offset: '100px',
+ title: '全部小账户等额配资',
+ shadeClose: false,
+ closeBtn: 2,
+ area: ['310px', '240px'],//宽高
+ content: $(".allocationAmount"),
+ btn:["确定","取消"],
+ yes: function () {
+ isInteger($('#allocationAmount'));
+ if(isInteger($('#allocationAmount'))==true){
+ layer.closeAll();
+ divide();
+ }
+ },
+ cancel:function(index,layero) {
+ layer.closeAll();
+ }
+ });
+ })*/
+/*function isInteger(obj){
+ var objValue=$(obj).val();
+ var reg=/^[0-9][\d]*$/;
+ $('#allocationAmountTip').html('');
+ if(!objValue){
+ $(obj).focus();
+ $('#allocationAmountTip').html('请输入数字！');
+ return false;
+ }else if(!reg.test(objValue)){
+ $(obj).focus();
+ $('#allocationAmountTip').html('请输入数字！');
+ return false;
+ }
+ return true;
+ }
+ function divide(){
+ var allocationAmount = $('#allocationAmount').val();
+ $.ajax({
+ type:"post",
+ url:basePath + equalAllocationUrl,
+ async:true,
+ data:{
+ cpyId:cpyId,
+ allocationAmount:allocationAmount
+ },
+ success:function(req){
+ if (req.success == true) {
+ layer.closeAll();
+ layer.open({
+ type: 1,
+ offset: '100px',
+ title: ["提示", "font-size:12px;text-align:center"],
+ shadeClose: false,
+ closeBtn: 2,
+ area: ['310px', '180px'],//宽高
+ content: "设置成功",
+ time:2000,
+ btn:["确定"]
+ });
+ } else {
+ layer.open({
+ type: 1,
+ offset: '100px',
+ title: ["提示", "font-size:12px;text-align:center"],
+ shadeClose: false,
+ closeBtn: 2,
+ area: ['310px', '160px'],//宽高
+ content: req.msg,
+ time: 3000,
+ btn: ["确定"]
+ });
+ }
+ }
+ });
+ }*/
+
+//点击账户单独分配时
+$("body").off("click", "#toAssign").on("click", "#toAssign", function () {
+    layer.closeAll();
+    layer.open({
+        type: 1,
+        offset: '100px',
+        title: '单独为小账户配资',
+        shadeClose: false,
+        closeBtn: 2,
+        area: ['310px', '270px'],//宽高
+        content: $(".toAssign"),
+        btn: ["确定", "取消"],
+        yes: function () {
+            sAccountFundsTest($('#sAccountFunds'));
+            sAccountQuotaTest($('#sAccountQuota'));
+            if (sAccountFundsTest($('#sAccountFunds')) == true && sAccountQuotaTest($('#sAccountQuota')) == true) {
+                layer.closeAll();
+                toAssign();
+            }
+        },
+        cancel: function (index, layero) {
+            layer.closeAll();
+        }
+    });
+})
+function toAssign() {
+    var accountNO = $('#sAccountFunds').val();
+    var allocationAmount = $('#sAccountQuota').val();
+    $.ajax({
+        type: "post",
+        url: basePath + separateAllocationUrl,
+        async: true,
+        data: {
+            cpyId: cpyId,
+            allocationAmount: allocationAmount,
+            accountNO: accountNO
+        },
+        success: function (req) {
+            if (req.success == true) {
+                layer.closeAll();
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:center"],
+                    shadeClose: false,
+                    closeBtn: 2,
+                    area: ['320px', '180px'],//宽高
+                    content: "设置成功",
+                    time: 2000,
+                    btn: ["确定"]
+                });
+            } else {
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:center"],
+                    shadeClose: false,
+                    closeBtn: 2,
+                    area: ['310px', '160px'],//宽高
+                    content: req.msg,
+                    time: 3000,
+                    btn: ["确定"]
+                });
+            }
+        }
+    });
+}
+function sAccountFundsTest(obj) {
+    var objValue = $(obj).val();
+    var reg = /^[0-9][\d]*$/;
+    $('#sAccountFundsTip').html('');
+    if (!objValue) {
+        $(obj).focus();
+        $('#sAccountFundsTip').html('请输入数字！');
+        return false;
+    } else if (!reg.test(objValue)) {
+        $(obj).focus();
+        $('#sAccountFundsTip').html('请输入数字！');
+        return false;
+    }
+    return true;
+}
+function sAccountQuotaTest(obj) {
+    var objValue = $(obj).val();
+    var reg = /^[0-9][\d]*$/;
+    $('#sAccountQuotaTip').html('');
+    if (!objValue) {
+        $(obj).focus();
+        $('#sAccountQuotaTip').html('请输入数字！');
+        return false;
+    } else if (!reg.test(objValue)) {
+        $(obj).focus();
+        $('#sAccountQuotaTip').html('请输入数字！');
+        return false;
+    }
+    return true;
+}

@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dubbox.dao.TblAdvertisementMapper">
+	<resultMap id="BaseResultMap" type="TblAdvertisement">
+		<id column="pk_ad_id" property="id" />
+		<result column="ad_name" property="name" />
+		<result column="ad_type" property="type" />
+		<result column="ad_is_goto" property="igt" />
+		<result column="ad_desc" property="desc" />
+		<result column="ad_URL" property="url" />
+		<result column="ad_status" property="sts" />
+		<result column="ad_time" property="time" />
+		<result column="ad_location" property="lct" />
+		<result column="ad_createdate" property="cdate" />
+		<result column="ad_updatedate" property="udate" />
+		<result column="begin_ad_time" property="bgTm" />
+		<result column="end_ad_time" property="edTm" />
+		<result column="fk_user_id" property="uid" />
+		<result column="advPicUrl" property="picUrl" />
+		<result column="advListPicUrl" property="lstPicUrl" />
+	</resultMap>
+
+	<insert id="insert" parameterType="TblAdvertisement"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into
+		tbl_advertisement
+		(
+		<if test="name != null and name !=''">
+			ad_name,
+		</if>
+		<if test="type != null">
+			ad_type,
+		</if>
+		<if test="igt != null">
+			ad_is_goto,
+		</if>
+		<if test="desc != null and desc !=''">
+			ad_desc,
+		</if>
+		<if test="url != null and url !=''">
+			ad_URL,
+		</if>
+		<if test="sts != null">
+			ad_status,
+		</if>
+		<if test="time != null">
+			ad_time,
+		</if>
+		<if test="lct != null">
+			ad_location,
+		</if>
+		<if test="bgTm != null">
+			begin_ad_time,
+		</if>
+		<if test="edTm != null">
+			end_ad_time,
+		</if>
+		<if test="uid != null">
+			fk_user_id,
+		</if>
+		ad_createdate,
+		ad_updatedate
+		)
+		values
+		(
+		<if test="name != null and name !=''">
+			#{name},
+		</if>
+		<if test="type != null">
+			#{type},
+		</if>
+		<if test="igt != null">
+			#{igt},
+		</if>
+		<if test="desc != null and desc !=''">
+			#{desc},
+		</if>
+		<if test="url != null and url !=''">
+			#{url},
+		</if>
+		<if test="sts != null">
+			#{sts},
+		</if>
+		<if test="time != null">
+			#{time},
+		</if>
+		<if test="lct != null">
+			#{lct},
+		</if>
+		<if test="bgTm != null">
+			#{bgTm},
+		</if>
+		<if test="edTm != null">
+			#{edTm},
+		</if>
+		<if test="uid != null">
+			#{uid},
+		</if>
+		now(),
+		now()
+		)
+	</insert>
+
+	<update id="update" parameterType="TblAdvertisement">
+		update tbl_advertisement set
+
+		<if test="name != null and name !=''">
+			ad_name = #{name},
+		</if>
+		<if test="type != null">
+			ad_type = #{type},
+		</if>
+		<if test="igt != null">
+			ad_is_goto = #{igt},
+		</if>
+		<if test="desc != null and igt !=''">
+			ad_desc = #{igt},
+		</if>
+		<if test="url != null and url !=''">
+			ad_URL = #{url},
+		</if>
+		<if test="sts != null">
+			ad_status = #{sts},
+		</if>
+		<if test="time != null">
+			ad_time = #{time},
+		</if>
+		<if test="lct != null">
+			ad_location = #{lct},
+		</if>
+		<if test="bgTm != null">
+			begin_ad_time = #{bgTm},
+		</if>
+		<if test="edTm != null">
+			end_ad_time = #{edTm},
+		</if>
+		<if test="uid != null">
+			fk_user_id = #{uid},
+		</if>
+		ad_updatedate = now()
+		where pk_ad_id = #{id}
+	</update>
+
+	<select id="getLimitCount" parameterType="TblAdvertisement"
+		resultType="int">
+		select count(1) from (
+		select 1 from tbl_advertisement
+		where end_ad_time
+		>= now()
+		<if test="id != null">
+			and pk_ad_id != #{id}
+		</if>
+		<if test="type != null">
+			and ad_type = #{type}
+		</if>
+		<if test="lct != null">
+			and ad_location = #{lct}
+		</if>
+		and #{bgTm} between begin_ad_time and end_ad_time
+		union
+		select 1
+		from
+		tbl_advertisement
+		where end_ad_time >= now()
+		<if test="id != null">
+			and pk_ad_id != #{id}
+		</if>
+		<if test="type != null">
+			and ad_type = #{type}
+		</if>
+		<if test="lct != null">
+			and ad_location = #{lct}
+		</if>
+		and #{edTm} between begin_ad_time and end_ad_time
+		union
+		select 1
+		from
+		tbl_advertisement
+		where end_ad_time >= now()
+		<if test="id != null">
+			and pk_ad_id != #{id}
+		</if>
+		<if test="type != null">
+			and ad_type = #{type}
+		</if>
+		<if test="lct != null">
+			and ad_location = #{lct}
+		</if>
+		<![CDATA[
+		 	and #{bgTm} < begin_ad_time 
+		 	and #{edTm} > end_ad_time
+		 ]]>
+		) a
+	</select>
+
+	<select id="getCount" parameterType="TblAdvertisement"
+		resultType="int">
+		select count(1) from tbl_advertisement where 1=1
+		<if test="advSts != null and advSts == 0">
+		 	<![CDATA[
+		 		and NOW() < begin_ad_time and ad_status = '0'
+		 	]]>
+		</if>
+		<if test="advSts != null and advSts == 1">
+		 	<![CDATA[
+		 		and NOW() between begin_ad_time and end_ad_time and ad_status = '0'
+		 	]]>
+		</if>
+		<if test="advSts != null and advSts == 2">
+		 	<![CDATA[
+		 		and (NOW() > end_ad_time or ad_status = '1')
+		 	]]>
+		</if>
+		<if test="type != null">
+			and ad_type = #{type}
+		</if>
+	</select>
+
+	<select id="getList" parameterType="TblAdvertisement" resultMap="BaseResultMap">
+		SELECT *,b.admin_name as uName,getFullPath('advPic',pk_ad_id) as
+		advPicUrl,
+		getFullPath('advListPic',pk_ad_id) as advListPicUrl
+		FROM
+		tbl_advertisement a
+		left join tbl_user_admin b on a.fk_user_id =
+		b.user_id
+		WHERE 1 = 1
+		<if test="advSts != null and advSts == 0">
+		 	<![CDATA[
+		 		and NOW() < begin_ad_time and ad_status = '0'
+		 	]]>
+		</if>
+		<if test="advSts != null and advSts == 1">
+		 	<![CDATA[
+		 		and NOW() between begin_ad_time and end_ad_time and ad_status = '0'
+		 	]]>
+		</if>
+		<if test="advSts != null and advSts == 2">
+		 	<![CDATA[
+		 		and (NOW() > end_ad_time or ad_status = '1')
+		 	]]>
+		</if>
+		<if test="type != null">
+			and ad_type = #{type}
+		</if>
+		order by ad_createdate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<select id="selectOne" parameterType="TblAdvertisement"
+		resultMap="BaseResultMap">
+		SELECT *,getFullPath('advPic',pk_ad_id) as
+		advPicUrl,getFullPath('advListPic',pk_ad_id) as advListPicUrl
+		FROM
+		tbl_advertisement a
+		WHERE pk_ad_id = #{id}
+	</select>
+
+</mapper>

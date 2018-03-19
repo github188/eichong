@@ -1,0 +1,251 @@
+package com.wanma.app.controller;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.bluemobi.product.utils.AccessErrorResult;
+import com.bluemobi.product.utils.AccessSuccessResult;
+import com.bluemobi.util.CommonUtils;
+import com.wanma.net.ElectricPieUtil;
+
+@RequestMapping("/app/net")
+@Controller
+public class AppNetController {
+	Logger log = Logger.getLogger(AppNetController.class);
+	
+	/**
+	 * 下发费率
+	 * @param paramStr 电桩编码,电桩编码:费率id
+	 * @return
+	 */
+	@RequestMapping("/sendRate")
+	@ResponseBody
+	public String sendRates(@RequestParam String paramStrs){
+		if(StringUtils.isEmpty(paramStrs) ){
+			log.error("请求参数不全...");
+			return new AccessErrorResult(1050,"error.msg.miss.parameter").toString();
+		}
+		
+		try{
+			ElectricPieUtil.sendRateInfo(paramStrs);
+		}catch(Exception e){
+			log.error("下发费率失败....");
+			log.error(e.getMessage());
+			return new AccessErrorResult(1001, "error.msg.invalid.parameter").toString();
+		}
+		
+		return new AccessSuccessResult().toString();
+	}
+	/**
+	 * 离线充电次数下发
+	 * @param paramStr 公司标示:最大充电次数
+	 * @return
+	 */
+	@RequestMapping("/sendCompanyNum")
+	@ResponseBody
+	public String sendCompanyNum(@RequestParam String paramStrs){
+		log.info("接到下发离线充电命令...");
+		if(StringUtils.isEmpty(paramStrs) ){
+			log.error("请求参数不全...");
+			return new AccessErrorResult(1050,"error.msg.miss.parameter").toString();
+		}
+		
+		try{
+			ElectricPieUtil.sendCompanyNum(paramStrs);
+		}catch(Exception e){
+			log.error("下发离线充电次数失败....");
+			log.error(e.getMessage());
+			return new AccessErrorResult(1001, "error.msg.invalid.parameter").toString();
+		}
+		log.info("下发离线充电次数结束....");
+		return new AccessSuccessResult().toString();
+	}
+	/**
+	 * 定时充电
+	 * @param paramStr 电桩编码,电桩编码:时:分:状态
+	 * @return
+	 */
+	@RequestMapping("/sendTimeCharge")
+	@ResponseBody
+	public String sendTimeCharge(@RequestParam String paramStrs){
+		if(StringUtils.isEmpty(paramStrs) ){
+			log.error("请求参数不全...");
+			return new AccessErrorResult(1050,"error.msg.miss.parameter").toString();
+		}
+		
+		try{
+			ElectricPieUtil.sendTimeCharge(paramStrs);
+		}catch(Exception e){
+			log.error("下发定时充电失败....");
+			log.error(e.getMessage());
+			return new AccessErrorResult(1001, "error.msg.invalid.parameter").toString();
+		}
+		
+		return new AccessSuccessResult().toString();
+	}
+	/**
+	 * 下发充电设置
+	 * @param paramStr 电桩编码:设置类型:开关：指令码
+	 * @return
+	 */
+	@RequestMapping("/sendChargeSet")
+	@ResponseBody
+	public String sendChargeSet(@RequestParam String paramStrs){
+		if(StringUtils.isEmpty(paramStrs) ){
+			log.error("请求参数不全...");
+			return new AccessErrorResult(1050,"error.msg.miss.parameter").toString();
+		}
+		
+		try{
+			log.info("下发充电设置开始...");
+			ElectricPieUtil.sendChargeSet(paramStrs);
+		}catch(Exception e){
+			log.error("下发充电设置失败....");
+			log.error(e.getMessage());
+			return new AccessErrorResult(1001, "error.msg.invalid.parameter").toString();
+		}
+		
+		return new AccessSuccessResult().toString();
+	}
+	
+	/**
+	 * 下发二维码
+	 * @param paramStr 电桩编码:枪口编号,电桩编码:枪口编号
+	 * @return
+	 */
+	@RequestMapping("/sendTwoDiCode")
+	@ResponseBody
+	public String sendTwoDiCode(@RequestParam String paramStrs){
+		log.info("下发二维码开始...");
+		if(StringUtils.isEmpty(paramStrs)){
+			log.error("请求参数不全...");
+			return new AccessErrorResult(1050,"error.msg.miss.parameter").toString();
+		}
+		
+		try{
+			for(String paramStr : paramStrs.split(",")){
+				String[] params = paramStr.split(":");
+				String urlContent = "type=cdz&code=" + params[0] + "&q=" + params[1];
+				ElectricPieUtil.sendTwoDiCode(params[0], params[1], urlContent);
+			}
+		}catch(Exception e){
+			log.error("下发二维码失败...");
+			log.error(e.getMessage());
+			return new AccessErrorResult(1001, "error.msg.invalid.parameter").toString();
+		}
+		
+		log.info("下发二维码结束...");
+		return new AccessSuccessResult().toString();
+	}
+	
+	@RequestMapping("/offlineEp")
+	@ResponseBody
+	public String offlineEp(String epCode){
+		log.info("桩体离线设置开始...");
+		if(StringUtils.isEmpty(epCode)){
+			log.error("请求参数不全...");
+			return new AccessErrorResult(1050,"error.msg.miss.parameter").toString();
+		}
+		
+		log.info("桩体离线设置结束...");
+		return new AccessSuccessResult().toString();
+	}
+	
+	/**
+	 * 开关桩上的闪光灯
+	 * @param params
+	 * 			epCode 电桩编号，type 1开2关，remainTime 闪烁时间,lat\lng用户经纬，eplat\eplng桩经纬
+	 * @return
+	 */
+	@RequestMapping("/ledControl")
+	@ResponseBody
+	public String ledControl(@RequestParam Map<String, Object> params){
+		if(StringUtils.isEmpty(params.get("epCode")) || StringUtils.isEmpty(params.get("type"))
+				|| StringUtils.isEmpty(params.get("uid")) || StringUtils.isEmpty(params.get("lat")) 
+				|| StringUtils.isEmpty(params.get("lng")) || StringUtils.isEmpty(params.get("eplat")) 
+				|| StringUtils.isEmpty(params.get("eplng"))){
+			return new AccessErrorResult(1050,"error.msg.miss.parameter").toString();
+		}
+		if(CommonUtils.Distance(Double.parseDouble(params.get("lng").toString()), 
+				Double.parseDouble(params.get("lat").toString()), Double.parseDouble(params.get("eplng").toString()), 
+				Double.parseDouble(params.get("eplat").toString())) >= 1500){
+			return new AccessErrorResult(1001, "距离过远不可操作！").toString();
+		}
+		if(StringUtils.isEmpty(params.get("remainTime")))
+			params.put("remainTime",0);
+		
+		ElectricPieUtil.ledControl(params.get("epCode").toString(), Integer.parseInt(params.get("type").toString()), 
+				Integer.parseInt(params.get("remainTime").toString()),Integer.parseInt(params.get("uid").toString()),
+				params.get("lat").toString(),params.get("lng").toString());
+		
+		return new AccessSuccessResult().toString();
+	}
+	
+	/**
+	 * 降地锁
+	 * @param epCode 电桩编号
+	 * @param headNum 枪口号，不是枪口id
+	 * @param parkNum 枪口对应的车位号
+	 * @param lat,lng 手机经纬度
+	 * @param eplat,eplng 电桩经纬度
+	 * @return
+	 */
+	@RequestMapping("/downParkLock")
+	@ResponseBody
+	public String downParkLock(String epCode,int headNum,String parkNum,int uid,String lat,String lng,String eplat,String eplng){
+		if(StringUtils.isEmpty(epCode) || 0 == headNum || StringUtils.isEmpty(parkNum)
+				|| 0 == uid || StringUtils.isEmpty(lat) || StringUtils.isEmpty(lng)
+				|| StringUtils.isEmpty(eplat) || StringUtils.isEmpty(eplng)){
+			return new AccessErrorResult(1050,"error.msg.miss.parameter").toString();
+		}
+		if(CommonUtils.Distance(
+				Double.parseDouble(lng), Double.parseDouble(lat), Double.parseDouble(eplng), Double.parseDouble(eplat)) >= 1500){
+			return new AccessErrorResult(1001, "距离过远不可操作！").toString();
+		}
+		ElectricPieUtil.downParkLock(epCode, headNum, parkNum, uid,lat,lng);
+		
+		return new AccessSuccessResult().toString();
+	}
+	
+	/**
+	 * 升级电桩程序
+	 * @param pId 产品id
+	 * @param bomStrs bom清单列表
+	 * 			格式：硬件编号:硬件版本号;固件编号:固件版本号;强制更新标志;md5码|硬件编号:硬件版本号;固件编号:固件版本号;强制更新标志;md5码|...
+	 * @return
+	 */
+	@RequestMapping("/updateEpVersion")
+	@ResponseBody
+	public String updateEpVersion(int pId,String bomStrs){
+		if(0 == pId || StringUtils.isEmpty(bomStrs)){
+			return new AccessErrorResult(1050,"error.msg.miss.parameter").toString();
+		}
+		
+		String[] bomList = bomStrs.split("\\|");
+		ElectricPieUtil.updateEpVision(pId,bomList.length, bomList);
+		return new AccessSuccessResult().toString();
+	}
+	
+	/**
+	 * 下发集中器id
+	 * @param cId
+	 * @return
+	 */
+	@RequestMapping("/sendConcentrator")
+	@ResponseBody
+	public String sendConcentrator(int cId){
+		if(0 == cId){
+			return new AccessErrorResult(1050,"error.msg.miss.parameter").toString();
+		}
+
+		ElectricPieUtil.sendConcentrator(cId);
+		return new AccessSuccessResult().toString();
+	}
+}

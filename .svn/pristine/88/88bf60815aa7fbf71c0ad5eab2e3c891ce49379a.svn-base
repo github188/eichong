@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsCommonQuestionsMapper">
+	<resultMap type="CommonQuestions" id="result_questions">
+		<id property="questionId" column="pk_CommonQuestions" />
+		<result property="questionName" column="coQu_CommonQuestionsName" />
+		<result property="replyContent" column="coQu_ReplyContent" />
+		<result property="createDate" column="coQu_Createdate" />
+		<result property="updateDate" column="coQu_Updatedate" />
+	</resultMap>
+	
+	<!-- 取得常见问题列表 -->
+	<select id="getQuestionList" resultMap="result_questions">
+		select
+			pk_CommonQuestions,
+			coQu_CommonQuestionsName,
+			coQu_ReplyContent
+		from 
+			tbl_CommonQuestions
+	</select>
+	
+	<!-- 查询常见问题数量 -->
+	<select id="searchQuestionCount" parameterType="Consult" resultType="long">
+		select
+			count(pk_ConsultInfo)
+		from 
+			tbl_ConsultInfo
+	</select>
+	
+	<!-- 查询全部常见问题列表 -->
+	<select id="searchQuestionList" parameterType="commonQuestions" resultMap="result_questions">
+		select
+			pk_CommonQuestions,
+			coQu_CommonQuestionsName,
+			coQu_ReplyContent
+		from 
+			tbl_CommonQuestions
+		 order by coQu_Createdate desc
+	</select>
+	
+	<!-- 添加常见问题 -->
+	<insert id="insertQuestion" parameterType="commonQuestions" keyProperty="pk_CommonQuestions">
+		INSERT INTO tbl_CommonQuestions 
+		(
+			coQu_CommonQuestionsName,
+			coQu_ReplyContent
+		) 
+		VALUES
+		(
+			#{questionName},
+			#{replyContent}
+		)
+	</insert>
+	
+	<!-- 删除常见问题 -->
+	<delete id="removeQuestion" parameterType="commonQuestions">
+		DELETE FROM tbl_CommonQuestions WHERE pk_CommonQuestions=#{questionId}
+	</delete>
+</mapper>

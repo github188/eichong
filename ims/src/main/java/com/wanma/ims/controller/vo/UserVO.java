@@ -1,0 +1,258 @@
+package com.wanma.ims.controller.vo;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import com.wanma.ims.common.domain.UserDO;
+
+/**
+ * Created by xyc on 2017/6/16. 用户显示vo
+ */
+public class UserVO {
+
+	private Long userId;// 用户ID
+
+	private String userAccount;// 用户帐号
+
+	private Long cpyId; // 用户所属渠道
+
+	private String cpyName;// 渠道名
+
+	private String levelName;// 等级名
+
+	private Integer userStatus;// 用户状态 1:正常 2:冻结 3:删除
+
+	private String userAddress;// 用户地址
+
+	private String userCar;// 用户的车辆，暂时没有
+
+	private String userName; // 用户名称
+
+	private String userRealName;// 普通用户真实姓名
+
+	private Integer userSex;// 普通用户性别 (0:未知 1:男 2：女)
+
+	private String userPhone;// 用户手机号
+
+	private String userIdCard;// 身份证号
+
+	private Integer cpyType;// 区分用户来源： 0 爱充 1 其他渠道
+
+	private String userBalance;// 用户余额
+
+	private String userHeadImgUrl;// 用户头像图片链接
+
+	private Date registeredTime;// 注册时间
+
+	private Long accountId;// 帐户id
+
+	private String provinceCode;// 活动区域：省
+
+	private String cityCode;// 活动区域：市
+
+	private String normPlateNum;
+
+	public static List<UserVO> getUserVOList(List<UserDO> userList) {
+		List<UserVO> userVOList = new ArrayList<>();
+		for (UserDO user : userList) {
+			userVOList.add(valueOf(user));
+		}
+		return userVOList;
+	}
+
+	public static UserVO valueOf(UserDO user) {
+		UserVO userVO = new UserVO();
+		userVO.setUserId(user.getUserId());
+		userVO.setUserAccount(user.getUserAccount());
+		userVO.setCpyId(user.getCpyId());
+		userVO.setCpyName(user.getCpyName());
+		userVO.setLevelName(user.getLevelName());
+		userVO.setUserStatus(user.getUserStatus());
+		userVO.setUserAddress(user.getUserAddress());
+		userVO.setUserName(user.getUserName());
+		userVO.setUserCar(user.getUserCar());
+		userVO.setUserRealName(user.getUserRealName());
+		userVO.setUserSex(user.getUserSex());
+		userVO.setUserPhone(user.getUserPhone());
+		userVO.setUserIdCard(user.getUserIdcard());
+		userVO.setCpyType(user.getCpyType());
+		userVO.setUserBalance(user.getUserBalance());
+		userVO.setUserHeadImgUrl(user.getUserHeadImgUrl());
+		userVO.setRegisteredTime(user.getRegisteredTime());
+		userVO.setAccountId(user.getAccountId());
+		userVO.setProvinceCode(user.getProvinceCode());
+		userVO.setCityCode(user.getCityCode());
+		userVO.setNormPlateNum(user.getNormPlateNum());
+		return userVO;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public String getUserAccount() {
+		return userAccount;
+	}
+
+	public void setUserAccount(String userAccount) {
+		this.userAccount = userAccount;
+	}
+
+	public Long getCpyId() {
+		return cpyId;
+	}
+
+	public void setCpyId(Long cpyId) {
+		this.cpyId = cpyId;
+	}
+
+	public String getCpyName() {
+		return cpyName;
+	}
+
+	public void setCpyName(String cpyName) {
+		this.cpyName = cpyName;
+	}
+
+	public String getLevelName() {
+		return levelName;
+	}
+
+	public void setLevelName(String levelName) {
+		this.levelName = levelName;
+	}
+
+	public Integer getUserStatus() {
+		return userStatus;
+	}
+
+	public void setUserStatus(Integer userStatus) {
+		this.userStatus = userStatus;
+	}
+
+	public String getUserAddress() {
+		return userAddress;
+	}
+
+	public void setUserAddress(String userAddress) {
+		this.userAddress = userAddress;
+	}
+
+	public String getUserCar() {
+		return userCar;
+	}
+
+	public void setUserCar(String userCar) {
+		this.userCar = userCar;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getUserRealName() {
+		return userRealName;
+	}
+
+	public void setUserRealName(String userRealName) {
+		this.userRealName = userRealName;
+	}
+
+	public Integer getUserSex() {
+		return userSex;
+	}
+
+	public void setUserSex(Integer userSex) {
+		this.userSex = userSex;
+	}
+
+	public String getUserPhone() {
+		return userPhone;
+	}
+
+	public void setUserPhone(String userPhone) {
+		this.userPhone = userPhone;
+	}
+
+	public String getUserIdCard() {
+		return userIdCard;
+	}
+
+	public void setUserIdCard(String userIdCard) {
+		this.userIdCard = userIdCard;
+	}
+
+	public Integer getCpyType() {
+		return cpyType;
+	}
+
+	public void setCpyType(Integer cpyType) {
+		this.cpyType = cpyType;
+	}
+
+	public String getUserBalance() {
+		return userBalance;
+	}
+
+	public void setUserBalance(String userBalance) {
+		this.userBalance = userBalance;
+	}
+
+	public String getUserHeadImgUrl() {
+		return userHeadImgUrl;
+	}
+
+	public void setUserHeadImgUrl(String userHeadImgUrl) {
+		this.userHeadImgUrl = userHeadImgUrl;
+	}
+
+	public Date getRegisteredTime() {
+		return registeredTime;
+	}
+
+	public void setRegisteredTime(Date registeredTime) {
+		this.registeredTime = registeredTime;
+	}
+
+	public Long getAccountId() {
+		return accountId;
+	}
+
+	public void setAccountId(Long accountId) {
+		this.accountId = accountId;
+	}
+
+	public String getProvinceCode() {
+		return provinceCode;
+	}
+
+	public void setProvinceCode(String provinceCode) {
+		this.provinceCode = provinceCode;
+	}
+
+	public String getCityCode() {
+		return cityCode;
+	}
+
+	public void setCityCode(String cityCode) {
+		this.cityCode = cityCode;
+	}
+
+	public String getNormPlateNum() {
+		return normPlateNum;
+	}
+
+	public void setNormPlateNum(String normPlateNum) {
+		this.normPlateNum = normPlateNum;
+	}
+
+}

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.TagMapper">
+    <resultMap id="resultTag" type="TagDO">
+        <id column="id" property="id"/>
+        <result column="type" property="type"/>
+        <result column="name" property="name"/>
+        <result column="is_del" property="isDel"/>
+        <result column="creator_id" property="creatorId"/>
+        <result column="creator" property="creator"/>
+        <result column="modifier" property="modifier"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="gmt_modified" property="gmtModified"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, type, `name`, is_del, creator_id, creator, modifier, gmt_create, gmt_modified
+    </sql>
+
+    <sql id="condition">
+        <where>
+            <if test="id != null">
+                AND id = #{id}
+            </if>
+            <if test="type != null">
+                AND type = #{type}
+            </if>
+            <if test="name != null">
+                AND `name` LIKE "%"#{name}"%"
+            </if>
+            AND is_del = 0
+        </where>
+    </sql>
+
+    <select id="getTagList" parameterType="Map" resultMap="resultTag">
+        select
+        <include refid="Base_Column_List"/>
+        from tbl_tag
+        <include refid="condition"/>
+        ORDER BY gmt_modified DESC
+        <if test="pager!=null">
+            limit #{pager.offset},#{pager.pageSize}
+        </if>
+    </select>
+
+    <select id="countTag" parameterType="Map" resultType="long">
+        select count(1)
+        from tbl_tag
+        <include refid="condition"/>
+    </select>
+
+    <select id="selectTagById" parameterType="Long" resultMap="resultTag">
+        select
+        <include refid="Base_Column_List"/>
+        from tbl_tag
+        where id = #{id}
+    </select>
+
+    <delete id="deleteTag" parameterType="TagDO">
+        UPDATE tbl_tag
+        SET is_del       = 1,
+            modifier     = #{modifier},
+            gmt_modified = now()
+        WHERE id = #{id}
+    </delete>
+
+    <insert id="insertTag" parameterType="TagDO">
+        INSERT INTO tbl_tag (id, type, `name`,
+                             is_del, creator_id, creator,
+                             modifier, gmt_create, gmt_modified
+        )
+        VALUES (#{id}, #{type}, #{name},
+                #{isDel}, #{creatorId}, #{creator},
+                #{modifier}, now(), now()
+        )
+    </insert>
+
+    <update id="updateTagByIdSelective" parameterType="TagDO">
+        update tbl_tag
+        <set>
+            <if test="type != null">
+                type = #{type},
+            </if>
+            <if test="name != null">
+                `name` = #{name},
+            </if>
+            <if test="isDel != null">
+                is_del = #{isDel},
+            </if>
+            <if test="modifier != null">
+                modifier = #{modifier},
+            </if>
+            gmt_modified = now(),
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="updateTagById" parameterType="TagDO">
+        UPDATE tbl_tag
+        SET type         = #{type},
+            `name`       = #{name},
+            is_del       = #{isDel},
+            modifier     = #{modifier},
+            gmt_modified = now()
+        WHERE id = #{id}
+    </update>
+</mapper>

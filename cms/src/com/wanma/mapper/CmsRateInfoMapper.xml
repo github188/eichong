@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.dao.CmsRateInfoMapper">
+	<resultMap id="resultMap" type="TblRateinformation">
+		<id property="pkRateinformation" column="pk_Rateinformation" />
+		<result property="rainModelid" column="raIn_ModelId" />
+		<result property="rainEffectivedates" column="raIn_EffectiveDates" />
+		<result property="rainExpirydate" column="raIn_ExpiryDate" />
+		<result property="rainFreezingmoney" column="raIn_FreezingMoney" />
+		<result property="rainMinfreezingmoney" column="raIn_MinFreezingMoney" />
+		<result property="rainQuantumdate" column="raIn_QuantumDate" />
+		<result property="rainStartquantumdate" column="raIn_StartQuantumDate" />
+		<result property="rainEndquantumdate" column="raIn_EndQuantumDate" />
+		<result property="rainTimemarker" column="raIn_TimeMarker" />
+		<result property="rainTiptimetariff" column="raIn_TipTimeTariff" />
+		<result property="rainPeakelectricityprice" column="raIn_PeakElectricityPrice" />
+		<result property="rainUsualprice" column="raIn_UsualPrice" />
+		<result property="rainValleytimeprice" column="raIn_ValleyTimePrice" />
+		<result property="rainReservationrate" column="raIn_ReservationRate" />
+		<result property="rainServicecharge" column="raIn_ServiceCharge" />
+		<result property="rainWarnmoney" column="raIn_WarnMoney" />
+		<result property="raInAreaId" column="raIn_area_id" />
+		<result property="raInCityId" column="raIn_city_id" />
+		<result property="raInProvinceId" column="raIn_province_id" />
+		<result property="userId" column="userId" />
+		<result property="rainRemarks" column="raIn_remarks" />
+	</resultMap>
+	
+	<!-- 查询费率列表 -->
+		<select id="getRateInfoListByUserId" parameterType="TblRateinformation" resultMap="resultMap">	
+	 	  SELECT 
+				pk_RateInformation,
+				raIn_QuantumDate,
+				(
+					CASE
+					WHEN a.user_leval = '1' THEN
+						'爱充网'
+					WHEN a.user_leval = '2' THEN
+						'爱充网'
+					WHEN a.user_leval = '3' THEN
+						(
+							SELECT t.company_name from tbl_user_business_view t
+							WHERE t.user_id = a.user_id
+						)
+					WHEN a.user_leval = '5' THEN
+						a.user_account
+					END
+				) AS company_name,
+				raIn_MinFreezingMoney,
+				raIn_ReservationRate,
+				raIn_ServiceCharge,
+				a.user_account AS userId,
+				raIn_area_id,
+				raIn_city_id,raIn_province_id,
+				raIn_TipTimeTariff,
+				raIn_PeakElectricityPrice,
+				raIn_UsualPrice,
+				raIn_remarks,
+				raIn_ValleyTimePrice,
+				a.user_account AS uid,
+				c.CITY_NAME cityName
+			FROM   
+			    tbl_rateinformation r
+			    <if test="userLevel==1 || userLevel==2 || userLevel==5">	
+			    	inner join tbl_user a on r.userId = a.user_id
+			    </if>
+			    <if test="userLevel==3">
+			    	inner join tbl_user_business_view a on r.userId = a.user_id 
+			    </if>
+			     LEFT JOIN tb_m_city c on r.raIn_city_id = c.CITY_ID
+			<where>
+				<if test="cityName !=null and cityName != ''"> and c.CITY_NAME like CONCAT('%','${cityName}','%' )</if>
+				 <choose>
+			         <when test="userLevel==3">	
+			         	and exists (select 1 from tbl_user_business_view b where a.busi_company_id=b.busi_company_id and b.user_id = #{userId})
+			         </when>
+			         <when test="userLevel==5">	
+			         	and r.userId=#{userId}
+			         </when>
+	        	</choose>
+	        </where>	
+			  ORDER BY pk_RateInformation desc 	 								
+			<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+		</select>		
+		<select id="getRateInfoNumByUserId" parameterType="TblRateinformation" resultType="Integer">				
+				SELECT 
+						count(*)
+			 	FROM
+			    tbl_rateinformation r
+			    <if test="userLevel==1 || userLevel==2 || userLevel==5">	
+			    	inner join tbl_user a on r.userId = a.user_id
+			    </if>
+			    <if test="userLevel==3">
+			    	inner join tbl_user_business_view a on r.userId = a.user_id 
+			    </if>
+			     LEFT JOIN tb_m_city c on r.raIn_city_id = c.CITY_ID
+			<where>
+				<if test="cityName !=null and cityName != ''"> and c.CITY_NAME like CONCAT('%','${cityName}','%' )</if>
+				 <choose>
+			         <when test="userLevel==3">	
+			         	and exists (select 1 from tbl_user_business_view b where a.busi_company_id=b.busi_company_id and b.user_id = #{userId})
+			         </when>
+			         <when test="userLevel==5">	
+			         	and r.userId=#{userId}
+			         </when>
+	        	</choose>
+	        </where>	
+		</select>
+	
+	
+	<insert id="insertRateInfo" parameterType="TblRateinformation" useGeneratedKeys="true" keyProperty="pkRateinformation">
+		insert into tbl_rateinformation(
+			 raIn_EffectiveDates,
+			raIn_ExpiryDate,
+			raIn_MinFreezingMoney,
+			raIn_QuantumDate,
+			raIn_ReservationRate,
+			raIn_ServiceCharge,
+			raIn_WarnMoney,
+			userId,
+			raIn_area_id,
+			raIn_city_id,
+			raIn_province_id,
+			raIn_TipTimeTariff,
+			raIn_PeakElectricityPrice,
+			raIn_UsualPrice,
+			raIn_ValleyTimePrice,
+			raIn_remarks			
+		) 
+		values(
+			now(),
+			now(),
+			#{rainMinfreezingmoney},
+			#{rainQuantumdate},
+			#{rainReservationrate},
+			#{rainServicecharge},
+			#{rainWarnmoney},
+			#{userId},
+			#{raInAreaId},
+			#{raInCityId},
+			#{raInProvinceId},
+			#{rainTiptimetariff},
+			#{rainPeakelectricityprice},
+			#{rainUsualprice},
+			#{rainValleytimeprice},
+			#{rainRemarks}
+		)
+	</insert>
+
+	<insert id="insertRateHistoryInfo" parameterType="TblRateinformation">
+		insert into tbl_rateinformation_history(
+			pk_RateInformation,
+			raIn_EffectiveDates,
+			raIn_ExpiryDate,
+			raIn_MinFreezingMoney,
+			raIn_QuantumDate,
+			raIn_ReservationRate,
+			raIn_ServiceCharge,
+			raIn_WarnMoney,
+			userId,
+			raIn_area_id,
+			raIn_city_id,
+			raIn_province_id,
+			raIn_TipTimeTariff,
+			raIn_PeakElectricityPrice,
+			raIn_UsualPrice,
+			raIn_ValleyTimePrice,
+			raIn_update_user,
+			raIn_update_date		
+		) 
+		values(
+			#{pkRateinformation},
+			now(),
+			now(),
+			#{rainMinfreezingmoney},
+			#{rainQuantumdate},
+			#{rainReservationrate},
+			#{rainServicecharge},
+			#{rainWarnmoney},
+			#{userId},
+			#{raInAreaId},
+			#{raInCityId},
+			#{raInProvinceId},
+			#{rainTiptimetariff},
+			#{rainPeakelectricityprice},
+			#{rainUsualprice},
+			#{rainValleytimeprice},
+			#{updateUserId},
+			now()
+		)
+	</insert>
+	
+	<delete id="delRateInfo" parameterType="Integer">
+		delete from tbl_rateinformation  where pk_RateInformation = #{id} 
+	</delete>
+	<select id = "getRateAndElectricSend" parameterType="Integer" resultMap="resultMap">
+		select * from tbl_electricpile where elPi_RateInformationId = #{id}
+	</select>
+	<select id="getRateInfoById" parameterType="int" resultMap="resultMap">
+		SELECT 
+			 r.pk_RateInformation,<!--  r.raIn_EffectiveDates,r.raIn_ExpiryDate,-->r.raIn_QuantumDate,
+			r.raIn_MinFreezingMoney,r.raIn_WarnMoney,r.raIn_ReservationRate,r.raIn_ServiceCharge,r.userId,r.raIn_area_id,
+			r.raIn_city_id,r.raIn_province_id,r.raIn_TipTimeTariff,r.raIn_PeakElectricityPrice,
+			r.raIn_UsualPrice,r.raIn_ValleyTimePrice,c.serviceLimit,r.raIn_remarks raInRemarks,
+			(SELECT COUNT(1) from tbl_electricpile e where e.elPi_RateInformationId = r.pk_RateInformation) relevanceNumber 
+		FROM tbl_rateinformation r, tb_m_city c
+		WHERE r.pk_RateInformation = #{id} and r.raIn_city_id = c.CITY_ID 
+	</select>
+	
+	<update id="updateRateInfo" parameterType="TblRateinformation">
+		update tbl_rateinformation set
+		    raIn_EffectiveDates = now(),
+			raIn_ExpiryDate = now(),
+			pk_RateInformation = #{pkRateinformation},
+			raIn_QuantumDate = #{rainQuantumdate},
+			raIn_ReservationRate = #{rainReservationrate},
+			raIn_ServiceCharge = #{rainServicecharge},
+			raIn_area_id = #{raInAreaId},
+			raIn_city_id = #{raInCityId},
+			raIn_province_id = #{raInProvinceId},
+			raIn_TipTimeTariff = #{rainTiptimetariff},
+			raIn_PeakElectricityPrice=#{rainPeakelectricityprice},
+			raIn_UsualPrice=#{rainUsualprice},
+			raIn_ValleyTimePrice=#{rainValleytimeprice},
+			raIn_remarks=#{rainRemarks}	
+		where pk_RateInformation = #{pkRateinformation}
+	</update>
+	
+	<update id="updateRateInfoByProvince" parameterType="TblRateinformation">
+		update tbl_rateinformation set
+			raIn_TipTimeTariff = #{rainTiptimetariff},
+			raIn_PeakElectricityPrice=#{rainPeakelectricityprice},
+			raIn_UsualPrice=#{rainUsualprice},
+			raIn_ValleyTimePrice=#{rainValleytimeprice}				 
+		where raIn_province_id = #{raInProvinceId}
+	</update>
+	<!--个体商家 根据登陆用户id和地区获取费率信息 -->
+	<select id="getRateInfoByUser" parameterType="TblRateinformation" resultMap="resultMap">
+		select
+		r.pk_RateInformation,
+		r.raIn_ServiceCharge,
+		r.raIn_ReservationRate
+		from
+		tbl_rateinformation r
+		<where>
+			r.raIn_area_id = #{raInAreaId}
+			<if test="userId !=null and userId!=''">
+				and	r.userId = #{userId}
+			</if>
+		</where>
+	</select>
+	<!--纯商家 根据登陆用户id所属公司和地区获取费率信息 -->
+	<select id="getRateInfoByCompany" parameterType="map" resultMap="resultMap">
+		SELECT DISTINCT
+			r.pk_RateInformation,
+			r.raIn_ServiceCharge,
+			r.raIn_ReservationRate
+		FROM
+			tbl_rateinformation r
+		WHERE exists (SELECT 1 FROM tbl_user_business_view a
+				WHERE a.busi_company_id = (SELECT busi_company_id FROM tbl_user_business WHERE user_id = #{userId}) 
+					AND a.user_leval = '3'
+					and a.user_id=r.userId)
+		AND r.raIn_area_id = #{raInAreaId}
+	</select>
+	<!-- 万马账户 根据地区获取万马新增费率 -->
+	<select id="getRateInfoByWM" parameterType="map" resultMap="resultMap">
+		select
+		pk_RateInformation,
+		raIn_ServiceCharge,
+		raIn_ReservationRate
+		from
+		tbl_rateinformation
+		where
+		raIn_area_id = #{raInAreaId}
+		and
+		userId in (select user_id from tbl_user where (user_leval = 0 or user_leval = 1) and user_status != '3')
+	</select>
+	
+	<select id="getRateinfoList" parameterType="TblRateinformation" resultMap="resultMap">
+	  	select * from  
+	  	tbl_rateinformation 
+	  	<where> 
+	  	<if test="pkRateinformation !=null ">
+	  		and pk_RateInformation = #{pkRateinformation}
+	  	</if>
+	  	<if test="raInAreaId !=null ">
+	    	and	raIn_area_id = #{raInAreaId}
+	    </if>
+	    <if test="raInCityId !=null ">
+	  		and raIn_city_id = #{raInCityId}
+	  	</if>
+	  	<if test="raInProvinceId !=null ">
+	  		and raIn_province_id = #{raInProvinceId}
+	  	</if>
+  		<if test="userLevel !=null and	userLevel == 3 ">
+			 AND userId IN (
+					SELECT b.user_id FROM
+					tbl_user_business b
+				WHERE
+					b.busi_company_id = (
+						SELECT c.busi_company_id FROM
+							tbl_user_business c
+						WHERE c.user_id = #{userId}
+					)
+				)
+		</if>
+		<if test="userLevel !=null and userLevel == 5 ">
+			and userId = #{userId}
+		</if>
+		</where>
+	  </select>
+</mapper>

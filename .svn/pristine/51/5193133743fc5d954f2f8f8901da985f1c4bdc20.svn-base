@@ -1,0 +1,18 @@
+package com.wanma.ims.controller.fin.report;
+
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.wanma.ims.controller.BaseController;
+
+/**
+ * 充电点统计报表 
+ */
+@Component
+@Controller
+@RequestMapping("/fin/report/")
+public class ReportPstationOrderController extends BaseController{
+
+	
+}

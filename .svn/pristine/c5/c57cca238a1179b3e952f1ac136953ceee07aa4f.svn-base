@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/style.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/userList/add_user.css"/>
+    <title>新增电动车品牌</title>
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12" style="padding: 0">
+                <div class="ibox float-e-margins">
+                    <div class="">
+                        <div class="ibox-content">
+                            <div class="add_userBlock">
+                                <div class="add_greyBlock">
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">电桩制造商名称<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="name" id="name" class="commonStyle"
+                                                   placeholder="请输入电桩制造商名称"/>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="nameTip">
+                                        </div>
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">制造商标识<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="remark" id="remark" class="commonStyle"
+                                                   placeholder="请输入制造商标识"/>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="remarkTip">
+                                        </div>
+                                    </div>
+                                    <!--按钮组合-->
+                                    <div class="saveBtn cursor" id="saveBtn" onclick="saveCarCompany()">保存</div>
+                                    <div class="quitBtn commonBtn" id="goback">返回</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/config/addCarCompany.js" type="text/javascript" charset="utf-8"></script>
+</html>

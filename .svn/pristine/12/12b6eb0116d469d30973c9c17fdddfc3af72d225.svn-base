@@ -1,0 +1,13 @@
+var basePath="http://10.8.3.233:8020/newSystem";
+//用户列表
+var userListUrl="/static/json/userList/userList.json";
+var initProvinceListUrl="/static/json/cityJson/initProvinceList.json";
+var initCityListUrl="/static/json/cityJson/initCityList.json";
+var getCompanyListUrl="/static/json/cityJson/getCompanyList.json";
+var getLevelList="/static/json/cityJson/getLevelList.json";
+var freezeUserUrl="/static/json/userList/freezeUser.json";
+var userIndexUrl="/static/json/userList/userIndex.json";
+var getCouponInfoByUserIdUrl="/static/json/userList/getCouponInfoByUserId.json";
+//数据导出
+//var exportUserUrl="/static/json/userList/exportUser.json";
+

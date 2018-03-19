@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+			
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="blank" />
+		<meta name="format-detection" content="telephone=no" />
+		<title>充电详情-历史订单</title>
+		<!--<link rel="stylesheet" type="text/css" href="dist/css/bootstrap.min.css"/>-->
+		<link rel="stylesheet" type="text/css" href="dist/css/bootstrap.css"/>
+		<link rel="stylesheet" type="text/css" href="css/base.css"/>
+		<link rel="stylesheet" type="text/css" href="css/chargingDetailLast.css"/>
+		<!--[if lt IE 9]>
+			<script src="dist/js/html5shiv.min.js"></script>
+			<script src="dist/js/respond.min.js"></script>
+		<![endif]-->
+	</head>
+	<body>
+	<header class="navbar-fixed-top">
+		<div class="col-xs-2 headLeft" onclick="toOrderDetail()">
+			<img src="img/nav_btn_back.png"/>
+		</div>
+		<div class="col-xs-8 headCenter">
+			订单详情
+		</div>
+		<div class="col-xs-3 headRight">
+			
+		</div>
+	</header>
+	<!--占位部分===================================================================-->
+	<div class="occupied"></div>
+	<section>
+		<!--简单版详情========================-->
+		<div class="simpleDetail">
+			<div class="chargePoint" id="elPi_ElectricPileName">
+			</div>
+			<div class="chargeTime">
+				<span id="startDate">
+				</span>
+				<span>-</span>
+				<span id="endDate">
+				</span>
+			</div>
+			<div class="chargeAddress" id="elPi_ElectricPileAddress">
+			</div>
+		</div>
+		<!--详细详情=============================-->
+		<div class="detailInfo">
+			<!--充电时长-->
+			<div class="baseHeight">
+				<div class="baseText">
+					充电时长:
+				</div>
+				<div class="baseValue">
+					<span id="hour">0</span>时
+					<span id="min">0</span>分
+					<span id="sec">0</span>秒
+				</div>
+			</div>
+			<!--充电电量-->
+			<div class="baseHeight">
+				<div class="baseText">
+					充电电量:
+				</div>
+				<div class="baseValue">
+					<span id="chorQuantityelectricity"></span>kWh
+				</div>
+			</div>
+			<!--充电电费-->
+			<div class="baseHeight">
+				<div class="baseText">
+					电费金额:
+				</div>
+				<div class="baseValue">
+					<span id="chorChargemoney"></span>元
+				</div>
+			</div>
+			<!--充点服务费-->
+			<div class="baseHeight">
+				<div class="baseText">
+					服务费:
+				</div>
+				<div class="baseValue">
+					<span id="chorServicemoney"></span>元
+				</div>
+			</div>
+			<!--优惠券-->
+			<div class="baseHeight">
+				<div class="baseText">
+					优惠券:
+				</div>
+				<div class="baseValue">
+					-<span id="chOr_CouponMoney"></span>元
+				</div>
+			</div>
+			<!--实付金额：-->
+			<div class="baseHeight" style="border: 0;">
+				<div class="baseText">
+					实付金额:
+				</div>
+				<div class="baseValue">
+					<span id="costMoney" class="costMoney"></span>元
+				</div>
+			</div>
+		</div>
+		<div class="detailInfo chorInfo">
+			<!--订单编号-->
+			<div class="baseHeight">
+				<div class="baseText">
+					订单编号:
+				</div>
+				<div class="baseValue">
+					<span id="chorCode">
+						
+					</span>
+				</div>
+			</div>
+			<!--订单状态-->
+			<div class="baseHeight" style="border: 0;">
+				<div class="baseText">
+					订单状态:
+				</div>
+				<div class="baseValue">
+					<span id="chOr_ChargingStatus">
+						
+					</span>
+				</div>
+			</div>
+		</div>
+	</section>
+	
+	</body>
+	<script type="text/javascript" src="dist/js/jquery-1.11.0.js" ></script>
+	<script type="text/javascript">
+		$(function() {
+		    FastClick.attach(document.body);
+		});
+	</script>
+	<!--<script src="dist/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>-->
+	<script src="js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript" src="dist/js/bootstrap.js" ></script>
+	<script src="js/userinfo.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/url.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/chargingDetailLast.js" type="text/javascript" charset="utf-8"></script>
+</html>

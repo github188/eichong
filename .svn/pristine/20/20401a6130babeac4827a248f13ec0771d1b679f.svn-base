@@ -1,0 +1,55 @@
+package com.wanma.ims.service.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.wanma.ims.common.domain.BannerDO;
+import com.wanma.ims.common.domain.CityDO;
+import com.wanma.ims.common.domain.NewsInfoDO;
+import com.wanma.ims.mapper.BannerMapper;
+import com.wanma.ims.mapper.InitialMapper;
+import com.wanma.ims.mapper.NewsInfoMapper;
+import com.wanma.ims.service.BannerService;
+import com.wanma.ims.service.NewsInfoService;
+
+@Service("newsInfoService")
+public class NewsInfoServiceImpl implements NewsInfoService{
+	@Autowired
+	private NewsInfoMapper newsInfoMapper;
+	
+	
+	@Override
+	public long selectNewsInfoCount(NewsInfoDO newsInfoDO) {
+		return newsInfoMapper.selectNewsInfoCount(newsInfoDO);
+	}
+
+	@Override
+	public List<NewsInfoDO> selectNewsInfoList(NewsInfoDO newsInfoDO) {
+		return newsInfoMapper.selectNewsInfoList(newsInfoDO);
+	}
+
+	@Override
+	public boolean addNewsInfo(NewsInfoDO newsInfoDO) {
+		return newsInfoMapper.insertNewsInfo(newsInfoDO)>0;
+	}
+
+	@Override
+	public boolean updateNewsInfo(NewsInfoDO newsInfoDO) {
+		return newsInfoMapper.updateNewsInfo(newsInfoDO)>0;
+	}
+
+	@Override
+	public boolean deleteNewsInfo(NewsInfoDO newsInfoDO) {
+		return newsInfoMapper.deleteNewsInfo(newsInfoDO)>0;
+	}
+
+	@Override
+	public boolean downNewsInfoById(NewsInfoDO newsInfoDO) {
+		return newsInfoMapper.downNewsInfoById(newsInfoDO);
+	}
+
+	
+
+}

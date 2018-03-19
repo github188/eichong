@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.web.dao.WebInstalladdressMapper">
+
+	<resultMap id="installaddressResultMap" type="Installaddress">
+		<id property="pkInstalladdress" column="pk_InstallAddress" />
+		<result property="pradUserid" column="prad_UserId" />
+		<result property="pradUsername" column="prad_UserName" />
+		<result property="pradPhonenumber" column="prad_PhoneNumber" />
+		<result property="pradPostalcode" column="prad_PostalCode" />
+		<result property="pradAddress" column="prad_Address" />
+		<result property="pradStreet" column="prad_Street" />
+		<result property="pradCreatedate" column="prad_Createdate" />
+		<result property="pradUpdatedate" column="prad_Updatedate" />
+	</resultMap>
+	<resultMap id="findResultMap"  type="java.util.HashMap" extends="installaddressResultMap"></resultMap>
+	
+	<resultMap id="orderAddressResultMap" type="Installaddress"
+		extends="installaddressResultMap">
+		<id property="pkInstalladdress" column="pk_InstallAddress" />
+		<result property="pradUserid" column="prad_UserId" />
+		<result property="pradUsername" column="prad_UserName" />
+		<result property="pradPhonenumber" column="prad_PhoneNumber" />
+		<result property="pradPostalcode" column="prad_PostalCode" />
+		<result property="pradAddress" column="prad_Address" />
+		<result property="pradStreet" column="prad_Street" />
+
+		<collection property="productList" ofType="TblOrderdetail">
+			<id property="ordeProductid" column="orAd_ProductId" />
+			<result property="ordeProductname" column="orAd_ProductName" />
+			<result property="prodProductimage" column="prodProductimage" />
+			<result property="ordeQuantity" column="orAd_Quantity" />
+			<result property="orderAddressid" column="pk_OrderAddress" />
+			<result property="prodProductCode" column="prod_ProductCode" />
+		</collection>
+	</resultMap>
+	
+	<!-- 新增安装地址 -->
+	<insert id="insertAddress" parameterType="Installaddress">
+	   insert into tbl_installaddress (
+	     pk_InstallAddress,
+	     prad_UserId,
+	     prad_UserName,
+	     prad_PhoneNumber,
+	     prad_PostalCode,
+	     prad_Address,
+	     prad_Street,
+	     prad_Createdate,
+	     prad_Updatedate
+	   )values (
+	     #{pkInstalladdress},
+	     #{pradUserid},
+	     #{pradUsername},
+	     #{pradPhonenumber},
+	     #{pradPostalcode},
+	     #{pradAddress},
+	     #{pradStreet},
+	     #{pradCreatedate},
+	     #{pradUpdatedate}
+	   )
+	</insert>
+	<!-- 更新安装地址 -->
+	<update id="updateAddress" parameterType="Installaddress">
+	   update tbl_installaddress set
+	     prad_UserName=#{pradUsername},
+	     prad_PhoneNumber=#{pradPhonenumber},
+	     prad_PostalCode=#{pradPostalcode},
+	     prad_Address=#{pradAddress},
+	     prad_Street=#{pradStreet},
+	     prad_Updatedate=#{pradUpdatedate}
+	   where 
+	    pk_InstallAddress=#{pkInstalladdress} 
+	</update>
+	<!-- 删除安装地址 -->
+	<delete id="deleteAddress" parameterType="map">
+	   delete from 
+	     tbl_installaddress 
+	   where 
+	    pk_InstallAddress=#{pkInstalladdress} 
+	</delete>
+	<!-- 根据主键获取安装地址 -->
+	<select id="getAddress" parameterType="map" resultMap="installaddressResultMap">
+	   select 
+	    pk_InstallAddress,
+	    prad_UserId,
+	    prad_UserName,
+	    prad_PhoneNumber,
+	    prad_PostalCode,
+	    prad_Address,
+	    prad_Street,
+	    prad_Createdate,
+	    prad_Updatedate
+	   from tbl_installaddress
+	   where 
+	    pk_InstallAddress=#{pkInstalladdress} 
+	</select>
+	<!-- 根据用户获取安装地址以及关联的已购商品信息 -->
+	<select id="findAddresses" parameterType="map" resultMap="orderAddressResultMap">
+	   select 
+	     iadd.pk_InstallAddress,
+	     iadd.prad_UserId,
+	     iadd.prad_UserName,
+	     iadd.prad_PhoneNumber,
+	     iadd.prad_PostalCode,
+	     iadd.prad_Address,
+	     iadd.prad_Street,
+	     iadd.prad_Createdate,
+	     iadd.prad_Updatedate,
+	     oa.orAd_ProductId,
+	     oa.orAd_ProductName,
+	     oa.pk_OrderAddress,
+	     p.prod_ProductCode,
+	     getFullPath('ListImage',oa.orAd_ProductId) prodProductimage,
+	     oa.orAd_Quantity
+	   from tbl_installaddress iadd left join tbl_order_address oa
+	   on
+	   iadd.pk_InstallAddress = oa.orAd_InstallAddress and
+	   oa.orAd_Status = 0
+	   left join tbl_product p on p.pk_Product = oa.orAd_ProductId
+	   where 
+	   iadd.prad_UserId=#{pradUserid}
+	   order by
+	   iadd.prad_Updatedate desc
+	</select>
+	
+</mapper> 

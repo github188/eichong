@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.web.dao.WebRateinformationMapper">
+
+	<resultMap id="tblRateinformationResultMap" type="TblRateinformation">
+		<id property="pkRateinformation" column="pk_RateInformation" />
+		<result property="rainElectricpileid" column="raIn_ElectricPileID" />
+		<result property="rainElectricpilename" column="raIn_ElectricPileName" />
+		<result property="rainModelid" column="raIn_ModelId" />
+		<result property="rainEffectivedates" column="raIn_EffectiveDates" />
+		<result property="rainExpirydate" column="raIn_ExpiryDate" />
+		<result property="rainFreezingmoney" column="raIn_FreezingMoney" />
+		<result property="rainMinfreezingmoney" column="raIn_MinFreezingMoney" />
+		<result property="rainQuantumdate" column="raIn_QuantumDate" />
+		<result property="rainStartquantumdate" column="raIn_StartQuantumDate" />
+		<result property="rainEndquantumdate" column="raIn_EndQuantumDate" />
+		<result property="rainTimemarker" column="raIn_TimeMarker" />
+		<result property="rainTiptimetariff" column="raIn_TipTimeTariff" />
+		<result property="rainPeakelectricityprice" column="raIn_PeakElectricityPrice" />
+		<result property="rainUsualprice" column="raIn_UsualPrice" />
+		<result property="rainValleytimeprice" column="raIn_ValleyTimePrice" />
+		<result property="rainReservationrate" column="raIn_ReservationRate" />
+		<result property="rainServicecharge" column="raIn_ServiceCharge" />
+	</resultMap>
+	<resultMap id="pageResultMap"  type="java.util.HashMap" extends="tblRateinformationResultMap"></resultMap>
+	<resultMap id="findResultMap"  type="java.util.HashMap" extends="tblRateinformationResultMap"></resultMap>
+
+	<insert id="insert" parameterType="TblRateinformation">
+	   insert into tbl_RateInformation (
+	     pk_RateInformation,
+	     raIn_ElectricPileID,
+	     raIn_ElectricPileName,
+	     raIn_ModelId,
+	     raIn_EffectiveDates,
+	     raIn_ExpiryDate,
+	     raIn_FreezingMoney,
+	     raIn_MinFreezingMoney,
+	     raIn_QuantumDate,
+	     raIn_StartQuantumDate,
+	     raIn_EndQuantumDate,
+	     raIn_TimeMarker,
+	     raIn_TipTimeTariff,
+	     raIn_PeakElectricityPrice,
+	     raIn_UsualPrice,
+	     raIn_ValleyTimePrice,
+	     raIn_ReservationRate,
+	     raIn_ServiceCharge
+	   )values (
+	     #{pkRateinformation},
+	     #{rainElectricpileid},
+	     #{rainElectricpilename},
+	     #{rainModelid},
+	     #{rainEffectivedates},
+	     #{rainExpirydate},
+	     #{rainFreezingmoney},
+	     #{rainMinfreezingmoney},
+	     #{rainQuantumdate},
+	     #{rainStartquantumdate},
+	     #{rainEndquantumdate},
+	     #{rainTimemarker},
+	     #{rainTiptimetariff},
+	     #{rainPeakelectricityprice},
+	     #{rainUsualprice},
+	     #{rainValleytimeprice},
+	     #{rainReservationrate},
+	     #{rainServicecharge}
+	   )
+	</insert>
+
+	<update id="update" parameterType="TblRateinformation">
+	   update tbl_RateInformation set
+	     pk_RateInformation=#{pkRateinformation},
+	     raIn_ElectricPileID=#{rainElectricpileid},
+	     raIn_ElectricPileName=#{rainElectricpilename},
+	     raIn_ModelId=#{rainModelid},
+	     raIn_EffectiveDates=#{rainEffectivedates},
+	     raIn_ExpiryDate=#{rainExpirydate},
+	     raIn_FreezingMoney=#{rainFreezingmoney},
+	     raIn_MinFreezingMoney=#{rainMinfreezingmoney},
+	     raIn_QuantumDate=#{rainQuantumdate},
+	     raIn_StartQuantumDate=#{rainStartquantumdate},
+	     raIn_EndQuantumDate=#{rainEndquantumdate},
+	     raIn_TimeMarker=#{rainTimemarker},
+	     raIn_TipTimeTariff=#{rainTiptimetariff},
+	     raIn_PeakElectricityPrice=#{rainPeakelectricityprice},
+	     raIn_UsualPrice=#{rainUsualprice},
+	     raIn_ValleyTimePrice=#{rainValleytimeprice},
+	     raIn_ReservationRate=#{rainReservationrate},
+	     raIn_ServiceCharge=#{rainServicecharge}
+	   where 
+	    pk_RateInformation=#{pkRateinformation} 
+	</update>
+
+	<delete id="delete" parameterType="map">
+	   delete from 
+	     tbl_RateInformation 
+	   where 
+	    pk_RateInformation=#{pkRateinformation} 
+	</delete>
+
+	<select id="get" parameterType="map" resultMap="tblRateinformationResultMap">
+	   select 
+	    pk_RateInformation,
+	    raIn_ElectricPileID,
+	    raIn_ElectricPileName,
+	    raIn_ModelId,
+	    raIn_EffectiveDates,
+	    raIn_ExpiryDate,
+	    raIn_FreezingMoney,
+	    raIn_MinFreezingMoney,
+	    raIn_QuantumDate,
+	    raIn_StartQuantumDate,
+	    raIn_EndQuantumDate,
+	    raIn_TimeMarker,
+	    raIn_TipTimeTariff,
+	    raIn_PeakElectricityPrice,
+	    raIn_UsualPrice,
+	    raIn_ValleyTimePrice,
+	    raIn_ReservationRate,
+	    raIn_ServiceCharge
+	   from tbl_RateInformation
+	   where 
+	    pk_RateInformation=#{pkRateinformation} 
+	</select>
+
+	<select id="findOne" parameterType="map" resultMap="findResultMap">
+	   select 
+	    pk_RateInformation,
+	    raIn_ElectricPileID,
+	    raIn_ElectricPileName,
+	    raIn_ModelId,
+	    raIn_EffectiveDates,
+	    raIn_ExpiryDate,
+	    raIn_FreezingMoney,
+	    raIn_MinFreezingMoney,
+	    raIn_QuantumDate,
+	    raIn_StartQuantumDate,
+	    raIn_EndQuantumDate,
+	    raIn_TimeMarker,
+	    raIn_TipTimeTariff,
+	    raIn_PeakElectricityPrice,
+	    raIn_UsualPrice,
+	    raIn_ValleyTimePrice,
+	    raIn_ReservationRate,
+	    raIn_ServiceCharge
+	   from tbl_RateInformation
+	   where 
+	    pk_RateInformation=#{pkRateinformation} 
+	</select>
+
+	<select id="find" parameterType="map" resultMap="findResultMap">
+	   select 
+	     pk_RateInformation,
+	     raIn_ElectricPileID,
+	     raIn_ElectricPileName,
+	     raIn_ModelId,
+	     raIn_EffectiveDates,
+	     raIn_ExpiryDate,
+	     raIn_FreezingMoney,
+	     raIn_MinFreezingMoney,
+	     raIn_QuantumDate,
+	     raIn_StartQuantumDate,
+	     raIn_EndQuantumDate,
+	     raIn_TimeMarker,
+	     raIn_TipTimeTariff,
+	     raIn_PeakElectricityPrice,
+	     raIn_UsualPrice,
+	     raIn_ValleyTimePrice,
+	     raIn_ReservationRate,
+	     raIn_ServiceCharge
+	   from tbl_RateInformation
+	   <where>
+	     <if test="pkRateinformation != null">
+	        pk_RateInformation=#{pkRateinformation}
+	     </if>
+	     <if test="rainElectricpileid != null">
+	        and raIn_ElectricPileID=#{rainElectricpileid}
+	     </if>
+	     <if test="rainElectricpilename != null">
+	        and raIn_ElectricPileName=#{rainElectricpilename}
+	     </if>
+	     <if test="rainModelid != null">
+	        and raIn_ModelId=#{rainModelid}
+	     </if>
+	     <if test="rainEffectivedates != null">
+	        and raIn_EffectiveDates=#{rainEffectivedates}
+	     </if>
+	     <if test="rainExpirydate != null">
+	        and raIn_ExpiryDate=#{rainExpirydate}
+	     </if>
+	     <if test="rainFreezingmoney != null">
+	        and raIn_FreezingMoney=#{rainFreezingmoney}
+	     </if>
+	     <if test="rainMinfreezingmoney != null">
+	        and raIn_MinFreezingMoney=#{rainMinfreezingmoney}
+	     </if>
+	     <if test="rainQuantumdate != null">
+	        and raIn_QuantumDate=#{rainQuantumdate}
+	     </if>
+	     <if test="rainStartquantumdate != null">
+	        and raIn_StartQuantumDate=#{rainStartquantumdate}
+	     </if>
+	     <if test="rainEndquantumdate != null">
+	        and raIn_EndQuantumDate=#{rainEndquantumdate}
+	     </if>
+	     <if test="rainTimemarker != null">
+	        and raIn_TimeMarker=#{rainTimemarker}
+	     </if>
+	     <if test="rainTiptimetariff != null">
+	        and raIn_TipTimeTariff=#{rainTiptimetariff}
+	     </if>
+	     <if test="rainPeakelectricityprice != null">
+	        and raIn_PeakElectricityPrice=#{rainPeakelectricityprice}
+	     </if>
+	     <if test="rainUsualprice != null">
+	        and raIn_UsualPrice=#{rainUsualprice}
+	     </if>
+	     <if test="rainValleytimeprice != null">
+	        and raIn_ValleyTimePrice=#{rainValleytimeprice}
+	     </if>
+	     <if test="rainReservationrate != null">
+	        and raIn_ReservationRate=#{rainReservationrate}
+	     </if>
+	     <if test="rainServicecharge != null">
+	        and raIn_ServiceCharge=#{rainServicecharge}
+	     </if>
+	   </where>
+	</select>
+	
+	<select id="page" parameterType="map" resultMap="pageResultMap">
+	   select 
+	     pk_RateInformation,
+	     raIn_ElectricPileID,
+	     raIn_ElectricPileName,
+	     raIn_ModelId,
+	     raIn_EffectiveDates,
+	     raIn_ExpiryDate,
+	     raIn_FreezingMoney,
+	     raIn_MinFreezingMoney,
+	     raIn_QuantumDate,
+	     raIn_StartQuantumDate,
+	     raIn_EndQuantumDate,
+	     raIn_TimeMarker,
+	     raIn_TipTimeTariff,
+	     raIn_PeakElectricityPrice,
+	     raIn_UsualPrice,
+	     raIn_ValleyTimePrice,
+	     raIn_ReservationRate,
+	     raIn_ServiceCharge
+	   from tbl_RateInformation
+	   <where>
+	     <if test="pkRateinformation != null">
+	        pk_RateInformation=#{pkRateinformation}
+	     </if>
+	     <if test="rainElectricpileid != null">
+	        and raIn_ElectricPileID=#{rainElectricpileid}
+	     </if>
+	     <if test="rainElectricpilename != null">
+	        and raIn_ElectricPileName=#{rainElectricpilename}
+	     </if>
+	     <if test="rainModelid != null">
+	        and raIn_ModelId=#{rainModelid}
+	     </if>
+	     <if test="rainEffectivedates != null">
+	        and raIn_EffectiveDates=#{rainEffectivedates}
+	     </if>
+	     <if test="rainExpirydate != null">
+	        and raIn_ExpiryDate=#{rainExpirydate}
+	     </if>
+	     <if test="rainFreezingmoney != null">
+	        and raIn_FreezingMoney=#{rainFreezingmoney}
+	     </if>
+	     <if test="rainMinfreezingmoney != null">
+	        and raIn_MinFreezingMoney=#{rainMinfreezingmoney}
+	     </if>
+	     <if test="rainQuantumdate != null">
+	        and raIn_QuantumDate=#{rainQuantumdate}
+	     </if>
+	     <if test="rainStartquantumdate != null">
+	        and raIn_StartQuantumDate=#{rainStartquantumdate}
+	     </if>
+	     <if test="rainEndquantumdate != null">
+	        and raIn_EndQuantumDate=#{rainEndquantumdate}
+	     </if>
+	     <if test="rainTimemarker != null">
+	        and raIn_TimeMarker=#{rainTimemarker}
+	     </if>
+	     <if test="rainTiptimetariff != null">
+	        and raIn_TipTimeTariff=#{rainTiptimetariff}
+	     </if>
+	     <if test="rainPeakelectricityprice != null">
+	        and raIn_PeakElectricityPrice=#{rainPeakelectricityprice}
+	     </if>
+	     <if test="rainUsualprice != null">
+	        and raIn_UsualPrice=#{rainUsualprice}
+	     </if>
+	     <if test="rainValleytimeprice != null">
+	        and raIn_ValleyTimePrice=#{rainValleytimeprice}
+	     </if>
+	     <if test="rainReservationrate != null">
+	        and raIn_ReservationRate=#{rainReservationrate}
+	     </if>
+	     <if test="rainServicecharge != null">
+	        and raIn_ServiceCharge=#{rainServicecharge}
+	     </if>
+	   </where>
+	</select>
+</mapper> 

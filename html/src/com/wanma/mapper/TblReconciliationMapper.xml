@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+					
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.TblReconciliationMapper">
+	<resultMap type="TblReconciliation" id="TblReconciliationMap">
+	    <id property="reconciliationId" column="reconciliation_id" />
+		<result property="reconciliationNo" column="reconciliation_no" />
+		<result property="checkBeginTime" column="check_begin_time" />
+		<result property="checkEndTime" column="check_end_time" />
+		<result property="totalOrderPower" column="total_order_power" />
+		<result property="totalOrderMoney" column="total_order_money" />
+		<result property="gmtCreate" column="gmt_create" />
+		<result property="cpyId" column="cpy_id" />
+		<result property="checkStatus" column="check_status" />
+		<result property="disputeOrder" column="total_dispute_order" />
+		<result property="disputePower" column="total_dispute_power" />
+		<result property="disputeMoney" column="total_dispute_money" />
+	</resultMap>
+	<!-- 添加对账信息 -->
+	<insert id="insert" useGeneratedKeys="true" parameterType="TblReconciliation" keyProperty="reconciliationId">
+		INSERT INTO tbl_reconciliation (
+		reconciliation_no,
+		check_begin_time,
+		check_end_time,
+		total_order_power,
+		total_order_money,
+		gmt_create,
+		cpy_id,
+		check_status
+	    )
+	   VALUES
+		(
+		#{reconciliationNo},
+		#{checkBeginTime},
+		#{checkEndTime},
+		#{totalOrderPower},
+		#{totalOrderMoney},
+		#{gmtCreate},
+		#{cpyId},
+		#{checkStatus}
+		)
+	</insert>
+	<!-- 更新对账流水状态 -->
+	<update id="chargeStatusById" parameterType="hashMap">
+	update tbl_reconciliation
+	set check_status=#{Status},
+	total_dispute_order=#{TotalDisputeOrder},
+	total_dispute_power=#{TotalDisputePower},
+	total_dispute_money=#{TotalDisputeMoney}
+	where reconciliation_id=#{Id}
+	</update>
+	
+	
+	
+	
+	
+	</mapper>

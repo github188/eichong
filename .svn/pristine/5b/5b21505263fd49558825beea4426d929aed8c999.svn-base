@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.UserAdminMapper">
+	<resultMap type="UserAdminDO" id="resultUserAdmin">
+		<result property="userId" column="user_id" />
+		<result property="adminName" column="admin_name" />
+		<result property="adminPhone" column="admin_phone" />
+		<result property="cpyId" column="cpy_id" />
+		<result property="roleId" column="roleId" />
+		<result property="roleName" column="roleName" />
+		<result property="userLevel" column="user_leval"/>
+		<result property="creator" column="creator" />
+		<result property="modifier" column="modifier" />
+		<result property="gmtCreate" column="gmt_create" />
+		<result property="gmtModified" column="gmt_modified" />
+	</resultMap>
+   
+    <sql id="query-columns">
+		user_id, admin_name,admin_phone,cpy_id,creator,modifier,gmt_create,gmt_modified
+	</sql>
+	<sql id="where-columns">
+	    <if test="roleId != null and roleId != ''">
+		    and r.role_id = #{roleId}
+		</if>
+		<if test="userStatus != null and userStatus !=0 ">
+	        and a.user_status = #{userStatus}
+	    </if>
+	    <if test="userLevel != null and userLevel !=0 ">
+	        and a.user_leval = #{userLevel}
+	    </if>
+	    <if test="userId != null and userId !=''">
+	        and a.user_id = #{userId}
+	    </if>
+	    <if test="userAccount != null and userAccount !=''">
+	        and a.user_account = #{userAccount}
+	    </if>
+	    <if test="provinceCode != null and provinceCode !=''">
+	        and a.province_code = #{provinceCode}
+	    </if>
+	    <if test="cityCode != null and cityCode !=''">
+	        and a.city_code = #{cityCode}
+	    </if>
+	    <if test="cpyIdList != null and cpyIdList.size() > 0">
+	        and admin.cpy_id in
+	         <foreach collection="cpyIdList" item="id" open="(" close=")" separator=",">
+		        #{id}
+		    </foreach>
+	    </if>
+	    <if test="cpyId != null and cpyId !=0 ">
+	        and admin.cpy_id = #{cpyId}
+	    </if>
+	</sql>
+	<!-- 查询-统计 -->
+	<select id="countUserAdminList" parameterType="UserAdminDO" resultType="long">
+	     SELECT count(1) 
+		  FROM
+			tbl_user a,
+			tbl_user_admin admin,
+			p_m_user_role ur,
+			p_m_role r
+		WHERE
+			a.user_id = ur.user_id
+		AND a.user_id = admin.user_id
+		AND ur.role_id = r.role_id
+		AND a.user_status != '3'
+		AND a.user_leval in (2,8)
+		<include refid="where-columns"/>
+	</select>
+	<!-- 管理员-查询 -->
+	<select id="selectUserAdminList" parameterType="UserAdminDO" resultMap="resultUserAdmin">
+	    SELECT a.user_id,a.user_account,a.user_status,a.user_leval userLevel,
+		  admin.admin_name, admin.admin_phone,admin.cpy_id,
+		  r.role_Id roleId,GROUP_CONCAT(r.ROLE_NAME) roleName
+		FROM
+			tbl_user a,
+			tbl_user_admin admin,
+			p_m_user_role ur,
+			p_m_role r
+		WHERE
+			a.user_id = ur.user_id
+		AND a.user_id = admin.user_id
+		AND ur.role_id = r.role_id
+		AND a.user_status != '3'
+		AND a.user_leval in (2,8)
+		<include refid="where-columns"/>
+		GROUP BY a.user_id
+		ORDER BY a.gmt_create desc 
+		<if test="pager!=null">
+            limit #{pager.offset},#{pager.pageSize}
+        </if>
+	</select>
+	
+	<!-- 管理员-新增 -->
+	<insert id="insertUserAdmin" parameterType="UserAdminDO">
+	    insert into tbl_user_admin (<include refid="query-columns"/>) values 
+	    (#{userId}, #{adminName},#{adminPhone},#{cpyId},#{creator},'',NOW(),NULL)
+	</insert>
+	
+	<!-- 根据ID查询 -->
+	<select id="selectUserAdminByUserId" parameterType="long" resultMap="resultUserAdmin">
+	    select <include refid="query-columns"/> from tbl_user_admin where user_id = #{userId}
+	</select>
+	
+	<!-- 根据cpyId查询 -->
+	<select id="selectUserAdminByCpyId" parameterType="long" resultMap="resultUserAdmin">
+	   select <include refid="query-columns"/> from tbl_user_admin where cpy_id = #{cpyId}
+	</select>
+	
+	<select id="selectUserAccountByCpyId" parameterType="long" resultMap="resultUserAdmin">
+	   select tuser.user_account as adminName
+	          from tbl_user tuser,tbl_user_admin admin where tuser.user_id = admin.user_id 
+	          and tuser.user_status !=3 and cpy_id = #{cpyId}
+	</select>
+</mapper>

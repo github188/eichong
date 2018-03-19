@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/style.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../js/lib/ztree/css/zTreeStyle/zTreeStyle.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/admin/add_menu.css"/>
+    <title>新建菜单</title>
+</head>
+<body class="gray-bg">
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="container-fluid">
+        <div class="row">
+        </div>
+        <div class="row">
+            <div class="col-sm-12" style="padding: 0">
+                <div class="ibox float-e-margins">
+
+                    <div class="">
+                        <div class="ibox-content">
+                            <div class="add_userBlock">
+                                <div class="add_greyBlock">
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">菜单名称<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="contents" id="" class="commonStyle" placeholder="请输入菜单名称"/>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="contentsTip">
+
+                                        </div>
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">菜单链接</div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="url" id="" class="commonStyle" placeholder="请输入菜单链接"/>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="urlTip">
+
+                                        </div>
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">上级菜单<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" id="parentMenuInput" value="根菜单" class="commonStyle" placeholder="请输入上级菜单" readonly="readonly"/>
+                                            <input type="text" name="parentMenuId" class="commonStyle" placeholder="请输入上级菜单" style="display: none;"/>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="parentMenuInputTip">
+
+                                        </div>
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">菜单类别<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8">
+                                            <div class=" col-sm-3 col-xs-4 model-select-box" style="width: 100%">
+                                                <div class="model-select-text menuTypeBlock" data-value="1" id="menuTypeHtml">菜单权限</div>
+                                                <span class="downRow menuTypeBlock"></span>
+                                                <!--<input type="text" name="menuType" hidden="hidden" id="" value="" />-->
+                                                <ul class="model-select-option menuTypeUl">
+                                                    <li data-option="1" class="seleced">菜单权限</li>
+                                                    <li data-option="2">按钮权限</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+
+                                        </div>
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">菜单排序<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="sortNumber" id="" class="commonStyle" placeholder="请输入菜单排序"/>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="sortNumberTip">
+
+                                        </div>
+                                    </div>
+
+                                    <!--按钮组合-->
+                                    <div class="saveBtn commonBtn saveBtnStyle" id="saveBtn" onclick="toAddMenu()">保存</div>
+                                    <div class="quitBtn commonBtn" id="goback">取消</div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="menuBlock" style="display: none;">
+    <ul id="treeDemo" class="ztree"></ul>
+</div>
+</body>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/ztree/js/jquery.ztree.core.js"></script>
+<script src="../../js/admin/add_menu.js" type="text/javascript" charset="utf-8"></script>
+</html>

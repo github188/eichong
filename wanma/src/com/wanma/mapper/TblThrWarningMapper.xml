@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wanma.dao.TblThrWarningMapper">
+	<resultMap id="BaseResultMap" type="com.wanma.model.TblThrWarning">
+		<result column="thw_pk_id" property="thwPkId" jdbcType="INTEGER" />
+		<result column="thw_user_id" property="thwUserId" jdbcType="INTEGER" />
+		<result column="thw_busi_name" property="thwBusiName" jdbcType="VARCHAR" />
+		<result column="thw_threshold" property="thwThreshold"
+			jdbcType="INTEGER" />
+		<result column="thw_customer_phone" property="thwCustomerPhone"
+			jdbcType="VARCHAR" />
+		<result column="thw_cellphone" property="thwCellphone"
+			jdbcType="VARCHAR" />
+		<result column="thw_deletetag" property="thwDeletetag"
+			jdbcType="SMALLINT" />
+		<result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+		<result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<select id="getWarningCount" parameterType="map" resultType="long">
+		select count(1) from (
+		select * from tbl_threshod_warning a where 1=1
+		and thw_deletetag=0
+		<if test="thwBusiName != null and thwBusiName!=''">
+			and thw_busi_name LIKE concat('%', #{thwBusiName}, '%')
+		</if>
+		<if test="userAccount != null and userAccount !=''">
+			AND EXISTS (
+			SELECT
+			*
+			FROM
+			tbl_user b
+			WHERE
+			a.thw_user_id = b.user_id
+			AND user_account LIKE concat('%', #{userAccount}, '%')
+			)
+		</if>
+		<if test="thwCellphone != null and thwCellphone !=''">
+			and thw_cellphone LIKE concat('%', #{thwCellphone}, '%')
+		</if>
+		order by create_date desc
+		) aa
+
+	</select>
+
+	<select id="getWarningList" resultMap="BaseResultMap">
+		select thw_pk_id,thw_user_id,thw_busi_name,thw_threshold,thw_cellphone,thw_customer_phone
+		,(select user_account from tbl_user b where b.user_id=a.thw_user_id)
+		userAccount
+
+		from tbl_threshod_warning a where thw_deletetag=0
+
+		<if test="thwBusiName != null and thwBusiName!=''">
+			and thw_busi_name LIKE concat('%', #{thwBusiName}, '%')
+		</if>
+		<if test="userAccount != null and userAccount !=''">
+			AND EXISTS (
+			SELECT
+			*
+			FROM
+			tbl_user b
+			WHERE
+			a.thw_user_id = b.user_id
+			AND user_account LIKE concat('%', #{userAccount}, '%')
+			)
+		</if>
+		<if test="thwCellphone != null and thwCellphone !=''">
+			and thw_cellphone LIKE concat('%', #{thwCellphone}, '%')
+		</if>
+		order by create_date desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	<select id="getCompanyType" resultMap="BaseResultMap">
+		<!-- select t.pk_CompanyId, t.cpy_CompanyName from tbl_company t order 
+			by t.cpy_Createdate desc -->
+
+		select a.user_id thwUserId,b.norm_name thwBusiName from tbl_user a
+		,tbl_user_normal b where
+		a.user_id=b.user_id and LENGTH(a.user_account)=12
+		order by b.createdate
+	</select>
+
+	<insert id="insertWarning" parameterType="com.wanma.model.TblThrWarning">
+		insert into tbl_threshod_warning (thw_user_id, thw_busi_name,
+		thw_threshold,
+		thw_customer_phone,
+		thw_cellphone)
+		values (#{thwUserId}, (select  norm_name from tbl_user_normal where user_id=#{thwUserId}),
+	    #{thwThreshold},
+	    #{thwCustomerPhone},
+		#{thwCellphone})
+	</insert>
+<!-- 	<select id="getAccountNumber" parameterType="map" resultType="long">
+		select count(1) from (
+		select * from tbl_user_business where
+		busi_company_id=#{pkCompanyId}
+
+		) aa
+
+	</select> -->
+	<select id="getWarningCout" parameterType="map" resultType="long">
+		select count(1) from (
+		select * from tbl_threshod_warning where thw_user_id= 
+		#{thwUserId}
+		 and thw_deletetag=0
+		) aa
+
+	</select>
+	<update id="updateWarning" parameterType="com.wanma.model.TblThrWarning">
+		update tbl_threshod_warning set thw_threshold=#{thwThreshold} ,
+		thw_cellphone=#{thwCellphone},thw_customer_phone=#{thwCustomerPhone} where
+		thw_pk_id=#{thwPkId}
+	</update>
+	<update id="updateWarningFlag" parameterType="String">
+		update
+		tbl_threshod_warning set thw_deletetag=1 where
+		thw_pk_id=#{thwPkId}
+	</update>
+</mapper>

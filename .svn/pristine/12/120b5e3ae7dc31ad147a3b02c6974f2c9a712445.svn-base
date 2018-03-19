@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.OrderStatisticMapper">
+
+	<!-- 用户总充电量 -->
+	<select id="countTotalElectricCharge" parameterType="Long" resultType="Double">
+	     SELECT sum(chOr_QuantityElectricity) FROM tbl_chargingorder where chOr_ChargingStatus in (2,3) and chOr_UserId = #{userId} GROUP BY chOr_UserId
+	</select>
+
+	<!-- 用户总订单 -->
+	<select id="countTotalOrder" parameterType="Long" resultType="string">
+	    SELECT count(1) FROM tbl_chargingorder where chOr_ChargingStatus in (2,3) and chOr_UserId = #{userId} GROUP BY chOr_UserId
+	</select>
+
+	<!-- 用户今日订单 -->
+	<select id="countTotalTodayOrder" parameterType="Long" resultType="string">
+	 SELECT count(1) FROM tbl_chargingorder where chOr_ChargingStatus in (2,3) and chOr_UserId = #{userId}
+	     AND <![CDATA[ DATE_FORMAT(chOr_Createdate,'%Y-%m-%d') = DATE_FORMAT(NOW(),'%Y-%m-%d')  ]]>
+	     GROUP BY chOr_UserId
+	</select>
+
+	<!-- 公司总充电量 -->
+	<select id="countTotalCpyElectricCharge" parameterType="Integer" resultType="Double">
+	     SELECT sum(chOr_QuantityElectricity) FROM tbl_chargingorder where chOr_ChargingStatus in (2,3) 
+	        and chOr_OrgNo = #{cpyNumber}
+	     GROUP BY chOr_OrgNo
+	</select>
+
+	<!-- 公司总订单 -->
+	<select id="countTotalCpyOrder" parameterType="Integer" resultType="string">
+	    SELECT count(1) FROM tbl_chargingorder where chOr_ChargingStatus in (2,3) and chOr_OrgNo = #{cpyNumber} GROUP BY chOr_OrgNo
+	</select>
+
+	<!-- 公司总消费 -->
+	<select id="countTotalCpyConsume" parameterType="Integer" resultType="Double">
+	    SELECT SUM(chOr_ChargeMoney)+SUM(chOr_ServiceMoney)-SUM(chOr_CouponMoney) FROM tbl_chargingorder where chOr_ChargingStatus in (2,3) and chOr_OrgNo = #{cpyNumber} GROUP BY chOr_OrgNo
+	</select>
+
+	<!-- 公司今日订单 -->
+	<select id="countTotalTodayCpyOrder" parameterType="Integer" resultType="string">
+	 SELECT count(1) FROM tbl_chargingorder where chOr_ChargingStatus in (2,3) and chOr_OrgNo = #{cpyNumber}
+	     AND <![CDATA[ DATE_FORMAT(chOr_Createdate,'%Y-%m-%d') = DATE_FORMAT(NOW(),'%Y-%m-%d')  ]]>
+	     GROUP BY chOr_OrgNo
+	</select>
+
+	<select id="countTotalElectric" parameterType="Long" resultType="Double">
+	     SELECT sum(chOr_QuantityElectricity) FROM tbl_chargingorder
+	     where chOr_ChargingStatus in (2,3)
+		<if test="endGmtCreate != null and endGmtCreate !=''">
+			and end_charge_time &lt;=  #{endGmtCreate}
+		</if>
+	</select>
+
+	<!-- 图形统计 -->
+	<!-- 渠道统计 -->
+	<sql id="where-cpy-order">
+	    <if test="cpyNumber != null and cpyNumber !=0">
+		   and chOr_OrgNo = #{cpyNumber}
+		</if>
+		<if test="startGmtCreate != null and startGmtCreate !=''">
+	        and <![CDATA[date_format(end_charge_time,'%Y-%m-%d') >=  #{startGmtCreate} ]]>
+	    </if>
+	    <if test="endGmtCreate != null and endGmtCreate !=''">
+	        and <![CDATA[date_format(end_charge_time,'%Y-%m-%d') <=  #{endGmtCreate} ]]>
+	    </if>
+	    <if test="startGmtCreateY != null and startGmtCreateY !=''">
+	        and <![CDATA[date_format(end_charge_time,'%Y-%m') >= #{startGmtCreateY} ]]>
+	    </if>
+	    <if test="endGmtCreateY != null and endGmtCreateY !=''">
+	        and <![CDATA[date_format(end_charge_time,'%Y-%m') <=  #{endGmtCreateY} ]]>
+	    </if>
+	</sql>
+
+	<select id="countCpyCharge" parameterType="java.util.Map" resultType="java.util.Map">
+	    SELECT
+		IFNULL(sum(chOr_QuantityElectricity),0) as A,
+		IFNULL(SUM(TRUNCATE ((UNIX_TIMESTAMP(end_charge_time) - UNIX_TIMESTAMP(begin_charge_time)) / 3600,2)),0) AS B,
+		count(1) as C,
+		IFNULL(sum(chOr_Moeny),0) as D
+		FROM tbl_chargingorder where chOr_ChargingStatus in (2,3)
+		<include refid="where-cpy-order"/>
+	</select>
+
+	<select id="countCpyChargeDetail" parameterType="java.util.Map" resultType="long">
+	  select count(1) from
+		   (
+		   SELECT
+			date_format(end_charge_time,'%Y-%m-%d') as time
+			FROM tbl_chargingorder where chOr_ChargingStatus in (2,3)
+			<include refid="where-cpy-order"/>
+			GROUP BY time
+		   ) b
+	</select>
+
+	<select id="selectCpyChargeDetail" parameterType="java.util.Map" resultType="java.util.Map">
+	   SELECT
+		replace(FORMAT(IFNULL(sum(chOr_QuantityElectricity),0),2),',','') as A,
+		IFNULL(SUM(TRUNCATE ((UNIX_TIMESTAMP(end_charge_time) - UNIX_TIMESTAMP(begin_charge_time)) / 3600,2)),0) AS B,
+		count(1) as C,
+		replace(FORMAT(IFNULL(sum(chOr_Moeny),0),4),',','') as D,
+		date_format(end_charge_time,'%Y-%m-%d') as time
+		FROM tbl_chargingorder where chOr_ChargingStatus in (2,3)
+		<include refid="where-cpy-order"/>
+		GROUP BY time
+		ORDER BY time desc
+		<if test="pager!=null">
+           limit #{pager.offset},#{pager.pageSize}
+        </if>
+	</select>
+
+	<select id="countChargeDataTop" parameterType="java.util.Map" resultType="java.util.Map">
+	    select A,C,D,cpyName from
+		   (
+		   SELECT
+				cast(IFNULL(SUM(chOr_QuantityElectricity),0) as decimal(12,2)) as A,
+				count(1) as C,
+			    cast(IFNULL(SUM(chOr_Moeny),0) as decimal(12,2)) as D,
+				cpy.cpy_name cpyName
+				FROM tbl_chargingorder INNER JOIN tbl_company cpy ON chOr_OrgNo = cpy.cpy_number
+		      where chOr_ChargingStatus in (2,3)
+		      <include refid="where-cpy-order"/>
+				GROUP BY cpy.cpy_number
+				  order by ${type} desc 
+				limit 10
+		   ) b
+	</select>
+
+	<select id="countChargeDataDetail" parameterType="java.util.Map" resultType="long">
+	   SELECT
+	     count(1)
+      from (
+		    SELECT
+		    IFNULL(SUM(chOr_QuantityElectricity),0) as A,
+			count(1) as C,
+			IFNULL(SUM(chOr_Moeny),0) as D,
+			cpy.cpy_name cpyName
+			FROM tbl_chargingorder INNER JOIN tbl_company cpy ON chOr_OrgNo = cpy.cpy_number
+	      where chOr_ChargingStatus in (2,3)
+	      <include refid="where-cpy-order"/>
+			GROUP BY cpy.cpy_number
+			ORDER BY A desc
+			) b
+	</select>
+
+	<select id="selectChargeDataDetail" parameterType="java.util.Map" resultType="java.util.Map">
+	   SELECT
+	     (SELECT(@rowNo :=@rowNo + 1)) AS rowNo,A,C,D,cpyName
+      from (
+		    SELECT
+			IFNULL(SUM(chOr_QuantityElectricity),0) as A,
+			count(1) as C,
+			IFNULL(SUM(chOr_Moeny),0) as D,
+			cpy.cpy_name cpyName
+			FROM tbl_chargingorder INNER JOIN tbl_company cpy ON chOr_OrgNo = cpy.cpy_number
+	      where chOr_ChargingStatus in (2,3)
+	      <include refid="where-cpy-order"/>
+			GROUP BY cpy.cpy_number
+			ORDER BY A desc
+			) b,(SELECT @rowNO := 0) C
+		<if test="pager!=null">
+           limit #{pager.offset},#{pager.pageSize}
+        </if>
+	</select>
+
+	<select id="countChargeElectricMoney" parameterType="java.util.Map" resultType="java.util.Map">
+	     SELECT
+			replace(FORMAT(IFNULL(sum(chOr_tipPower * record.chRe_JPrice),0),4),',','') as A,
+			replace(FORMAT(IFNULL(sum(chOr_peakPower * record.chRe_FPrice),0),4),',','') as B,
+			replace(FORMAT(IFNULL(sum(chOr_usualPower * record.chRe_PPrice),0),4),',','') as C,
+			replace(FORMAT(IFNULL(sum(chOr_valleyPower * record.chRe_GPrice),0),4),',','') as D,
+			date_format(end_charge_time,'%Y-%m') as time
+			FROM tbl_chargingorder
+		    INNER JOIN tbl_chargingrecord record ON chOr_TransactionNumber = record.chRe_TransactionNumber and chOr_UserId = record.user_id
+			where chOr_ChargingStatus in (2,3)
+			<include refid="where-cpy-order"/>
+			GROUP BY time
+			ORDER BY time asc
+	</select>
+
+	<select id="countChargeServiceMoney" parameterType="java.util.Map" resultType="java.util.Map">
+	    SELECT
+	        replace(FORMAT(IFNULL(sum(chOr_tipPower * record.chRe_JPrice),0),4),',','') as A,
+			replace(FORMAT(IFNULL(sum(chOr_peakPower * record.chRe_FPrice),0),4),',','') as B,
+			replace(FORMAT(IFNULL(sum(chOr_usualPower * record.chRe_PPrice),0),4),',','') as C,
+			replace(FORMAT(IFNULL(sum(chOr_valleyPower * record.chRe_GPrice),0),4),',','') as D,
+			date_format(record.chRe_GMoney,'%Y-%m') as time
+			FROM tbl_chargingorder
+			INNER JOIN tbl_chargingrecord record ON chOr_TransactionNumber = record.chRe_TransactionNumber and chOr_UserId = record.user_id
+			where chOr_ChargingStatus in (2,3)
+			<include refid="where-cpy-order"/>
+			GROUP BY time
+			ORDER BY time asc
+	</select>
+
+	<select id="countChargeMoney" parameterType="java.util.Map" resultType="java.util.Map">
+	    SELECT
+		IFNULL(sum(chOr_Moeny),0) as A,
+		IFNULL(sum(chOr_ChargeMoney),0) as B,
+		IFNULL(sum(chOr_ServiceMoney),0) as C
+		FROM tbl_chargingorder where chOr_ChargingStatus in (2,3)
+		<include refid="where-cpy-order"/>
+	</select>
+
+	<select id="countChargeMoneyDetail" parameterType="java.util.Map" resultType="long">
+	  select count(1) from
+		   (
+		   SELECT
+			date_format(end_charge_time,'%Y-%m') as time
+			FROM tbl_chargingorder where chOr_ChargingStatus in (2,3)
+			<include refid="where-cpy-order"/>
+			GROUP BY time
+		   ) b
+	</select>
+
+	<select id="selectChargeMoneyDetail" parameterType="java.util.Map" resultType="java.util.Map">
+	   SELECT
+		FORMAT(IFNULL(sum(chOr_Moeny),0),4) as A,
+		FORMAT(IFNULL(sum(chOr_ChargeMoney),0),4) as B,
+		FORMAT(IFNULL(sum(chOr_ServiceMoney),0),4) as C,
+		date_format(end_charge_time,'%Y-%m') as time
+		FROM tbl_chargingorder where chOr_ChargingStatus in (2,3)
+		<include refid="where-cpy-order"/>
+		GROUP BY time
+		ORDER BY time desc
+		<if test="pager!=null">
+           limit #{pager.offset},#{pager.pageSize}
+        </if>
+	</select>
+
+	<!-- 图形统计 -->
+	<!-- 城市统计 -->
+	<sql id="condition">
+		<if test="provinceCode != null and provinceCode != ''">
+			and pile.elPi_OwnProvinceCode = #{provinceCode}
+		</if>
+        <if test="cityCode != null and cityCode != ''">
+            and pile.elPi_OwnCityCode = #{cityCode}
+        </if>
+		<if test="startGmtCreate != null and startGmtCreate !=''">
+			and <![CDATA[date_format(end_charge_time,'%Y-%m-%d') >=  #{startGmtCreate} ]]>
+		</if>
+		<if test="endGmtCreate != null and endGmtCreate !=''">
+			and <![CDATA[date_format(end_charge_time,'%Y-%m-%d') <=  #{endGmtCreate} ]]>
+		</if>
+		<if test="startGmtCreateY != null and startGmtCreateY !=''">
+			and <![CDATA[date_format(end_charge_time,'%Y-%m') >= #{startGmtCreateY} ]]>
+		</if>
+		<if test="endGmtCreateY != null and endGmtCreateY !=''">
+			and <![CDATA[date_format(end_charge_time,'%Y-%m') <=  #{endGmtCreateY} ]]>
+		</if>
+	</sql>
+
+	<select id="countCityCharge" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT
+        IFNULL(sum(chOr_QuantityElectricity),0) as A,
+		IFNULL(SUM(TRUNCATE ((UNIX_TIMESTAMP(end_charge_time) - UNIX_TIMESTAMP(begin_charge_time)) / 3600,2)),0) AS B,
+        count(1) as C,
+        IFNULL(sum(chOr_Moeny),0) as D
+		FROM tbl_chargingorder INNER JOIN tbl_electricpile pile ON chOr_PileNumber = pile.elPi_ElectricPileCode
+        where chOr_ChargingStatus in (2,3)
+		<include refid="condition"/>
+	</select>
+
+	<select id="countCityChargeDetail" parameterType="java.util.Map" resultType="long">
+		select count(1) from
+		(
+		SELECT
+		date_format(end_charge_time,'%Y-%m-%d') as time
+		FROM tbl_chargingorder INNER JOIN tbl_electricpile pile ON chOr_PileNumber = pile.elPi_ElectricPileCode
+        where chOr_ChargingStatus in (2,3)
+		<include refid="condition"/>
+		GROUP BY time
+		) b
+	</select>
+
+	<select id="selectCityChargeDetail" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT
+        replace (FORMAT(IFNULL(sum(chOr_QuantityElectricity),0),2),',','') as A,
+		IFNULL(SUM(TRUNCATE ((UNIX_TIMESTAMP(end_charge_time) - UNIX_TIMESTAMP(begin_charge_time)) / 3600,2)),0) AS B,
+        count(1) as C,
+        replace (FORMAT(IFNULL(sum(chOr_Moeny),0),4),',','')  as D,
+		date_format(end_charge_time,'%Y-%m-%d') as time
+		FROM tbl_chargingorder INNER JOIN tbl_electricpile pile ON chOr_PileNumber = pile.elPi_ElectricPileCode
+        where chOr_ChargingStatus in (2,3)
+		<include refid="condition"/>
+		GROUP BY time
+		ORDER BY time desc
+		<if test="pager!=null">
+			limit #{pager.offset},#{pager.pageSize}
+		</if>
+	</select>
+
+	<select id="countPowerStationChargeDataDetail" parameterType="java.util.Map" resultType="long">
+		select count(1) from
+		(
+		SELECT
+		chOr_QuantityElectricity as A,
+		count(1) as C,
+		chOr_Moeny as D,
+        power.`powerStation_name` powerStationName
+		FROM tbl_chargingorder
+        INNER JOIN tbl_electricpile pile ON chOr_PileNumber = pile.elPi_ElectricPileCode
+        INNER JOIN tbl_powerstation power ON pile.elPi_RelevancePowerStation = power.powerStation_id
+        where chOr_ChargingStatus in (2,3)
+		<include refid="condition"/>
+        GROUP BY pile.elPi_RelevancePowerStation
+        ORDER BY pile.elPi_RelevancePowerStation ASC
+		) b
+	</select>
+
+	<select id="selectPowerStationChargeDataDetail" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT
+        IFNULL(SUM(chOr_QuantityElectricity),0) as A,
+        count(1) as C,
+        IFNULL(SUM(chOr_Moeny),0) as D,
+        power.powerStation_name powerStationName
+		FROM tbl_chargingorder
+        INNER JOIN tbl_electricpile pile ON chOr_PileNumber = pile.elPi_ElectricPileCode
+        INNER JOIN tbl_powerstation power ON pile.elPi_RelevancePowerStation = power.powerStation_id
+		where chOr_ChargingStatus in (2,3)
+		<include refid="condition"/>
+        GROUP BY pile.elPi_RelevancePowerStation
+        ORDER BY A DESC
+		<if test="pager!=null">
+			limit #{pager.offset},#{pager.pageSize}
+		</if>
+	</select>
+
+    <select id="selectPowerStationChargeDataDetailTop10" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+        IFNULL(SUM(chOr_QuantityElectricity),0) as A,
+        count(1) as C,
+        IFNULL(SUM(chOr_Moeny),0) as D,
+        power.powerStation_name powerStationName
+        FROM tbl_chargingorder
+        INNER JOIN tbl_electricpile pile ON chOr_PileNumber = pile.elPi_ElectricPileCode
+        INNER JOIN tbl_powerstation power ON pile.elPi_RelevancePowerStation = power.powerStation_id
+        where chOr_ChargingStatus in (2,3)
+        <include refid="condition"/>
+        GROUP BY pile.elPi_RelevancePowerStation
+        ORDER BY ${type} DESC
+        limit 10
+    </select>
+
+	<select id="countNowCharge" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT
+		IFNULL(sum(chOr_QuantityElectricity),0)*5 as electricity,
+		IFNULL(sum(chOr_Moeny),0)*5 as chargeMoney
+		FROM tbl_chargingorder INNER JOIN tbl_electricpile pile ON chOr_PileNumber = pile.elPi_ElectricPileCode
+		where chOr_ChargingStatus in (2,3)
+		and end_charge_time &gt;=  #{startGmtCreate}
+		and end_charge_time &lt;=  #{endGmtCreate}
+	</select>
+
+	<select id="selectNowCityCharge" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+        city.CITY_NAME cityName,
+        IFNULL(SUM(chOr_QuantityElectricity),0) electricity
+        FROM tbl_chargingorder
+        INNER JOIN tbl_electricpile pile ON chOr_PileNumber = pile.elPi_ElectricPileCode
+        INNER JOIN tb_m_city city ON pile.elPi_OwnCityCode = city.CITY_ID
+        WHERE chOr_ChargingStatus IN (2,3)
+        <if test="startGmtCreate != null and startGmtCreate !=''">
+            and end_charge_time &gt;=  #{startGmtCreate}
+        </if>
+        <if test="endGmtCreate != null and endGmtCreate !=''">
+            and end_charge_time &lt;=  #{endGmtCreate}
+        </if>
+        GROUP BY pile.elPi_OwnCityCode
+        ORDER BY electricity DESC
+        LIMIT 10
+	</select>
+
+    <select id="selectNowPowerStationCharge" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+        powerStation.powerStation_name powerStationName,
+		IFNULL(SUM(chOr_QuantityElectricity),0)/10000 AS electricity
+        FROM tbl_chargingorder
+        INNER JOIN tbl_electricpile pile ON chOr_PileNumber = pile.elPi_ElectricPileCode
+        INNER JOIN tbl_powerstation powerStation ON pile.elPi_RelevancePowerStation = powerStation.powerStation_id
+        WHERE chOr_ChargingStatus IN (2,3)
+        <if test="startGmtCreate != null and startGmtCreate !=''">
+            and end_charge_time &gt;=  #{startGmtCreate}
+        </if>
+        <if test="endGmtCreate != null and endGmtCreate !=''">
+            and end_charge_time &lt;=  #{endGmtCreate}
+        </if>
+        GROUP BY pile.elPi_RelevancePowerStation
+        ORDER BY electricity DESC
+        LIMIT 10
+    </select>
+
+    <select id="selectMonthCharge" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT
+		FORMAT(IFNULL(SUM(chOr_QuantityElectricity),0)/10000*5,0) AS electricity,
+		DATE_FORMAT(end_charge_time,'%Y/%m/01 00:00:00') AS monthTime
+		FROM tbl_chargingorder INNER JOIN tbl_electricpile pile ON chOr_PileNumber = pile.elPi_ElectricPileCode
+		WHERE chOr_ChargingStatus IN (2,3)
+        AND end_charge_time  &gt;= '2017-01-01'
+        AND end_charge_time &lt;= '2017-10-01'
+        GROUP BY monthTime
+        ORDER BY monthTime,electricity DESC
+	</select>
+</mapper>

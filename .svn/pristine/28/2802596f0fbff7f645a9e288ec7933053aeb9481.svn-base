@@ -1,0 +1,227 @@
+/**     
+ * @Title:  TblElectricpileServiceImpl.java   
+ * @Package com.wanma.service.impl   
+ * @Description:    TODO  
+ * @author: Android_Robot     
+ * @date:   2015年11月19日 下午4:24:40   
+ * @version V1.0     
+ */
+package com.wanma.service.impl;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.wanma.dao.TblElectricpileHeadMapper;
+import com.wanma.dao.TblElectricpileMapper;
+import com.wanma.model.TblElectricpile;
+import com.wanma.model.TblElectricpilehead;
+import com.wanma.model.TcbElectric;
+import com.wanma.service.TblElectricpileService;
+
+/**
+ * @author bc
+ *
+ */
+@Service
+public class TblElectricpileServiceImpl implements TblElectricpileService {
+	@Autowired
+	private TblElectricpileMapper electricpileMapper;
+	@Autowired
+	private TblElectricpileHeadMapper electricpileHeadMapper;
+	
+	@Override
+	public TblElectricpile getElectricpileDetail(TblElectricpile tblElectricpile) {
+		return electricpileMapper.getElectricpileDetail(tblElectricpile);
+	}
+
+	@Override
+	public List<TblElectricpile> getElectricpileList(
+			TblElectricpile tblElectricpile) {
+		return electricpileMapper.getElectricpileList(tblElectricpile);
+	}
+
+	@Override
+	public List<TblElectricpile> getElectricpileListForMap(
+			TblElectricpile tblElectricpile) {
+		return electricpileMapper.getElectricpileListForMap(tblElectricpile);
+	}
+
+	@Override
+	public Integer getElectricpileCountForMap(TblElectricpile tblElectricpile) {
+		return electricpileMapper
+				.getElectricpileListCountForMap(tblElectricpile);
+	}
+
+	@Override
+	public void update(TblElectricpile tblElectricpile) {
+		electricpileMapper.update(tblElectricpile);
+	}
+
+	@Override
+	public void updateByCode(TblElectricpile tblElectricpile) {
+		electricpileMapper.updateByCode(tblElectricpile);
+	}
+
+	@Override
+	public List<Map<String, Object>> selectDetailList(Map<String, Object> params) {
+		List<Map<String, Object>> pileList = electricpileMapper
+				.selectDetailList(params);
+		for (Map<String, Object> pile : pileList) {
+			TblElectricpilehead hModel = new TblElectricpilehead();
+			hModel.setPkElectricpile(Integer.parseInt(pile.get("pkId")
+					.toString()));
+			List<TblElectricpilehead> hList = electricpileHeadMapper
+					.getList(hModel);
+			List<Map<String, String>> hIdList = new ArrayList<Map<String, String>>();
+			Map<String, String> hMap = null;
+			for (TblElectricpilehead h : hList) {
+				hMap = new HashMap<String, String>();
+				hMap.put("gunId", h.getEpheElectricpileHeadId().toString());
+				hIdList.add(hMap);
+			}
+			pile.put("GunInfo", hIdList);
+			pile.put("electricFee", makeFengzhiStr(pile));
+			pile.remove("pkId");
+			pile.remove("efQuantumDate");
+			pile.remove("efTip");
+			pile.remove("efPeak");
+			pile.remove("efUsual");
+			pile.remove("efValley");
+		}
+		return electricpileMapper.selectDetailList(params);
+	}
+
+	@Override
+	public TblElectricpile selectOne(TblElectricpile model) {
+		return electricpileMapper.selectOne(model);
+	}
+
+	public List<Map<String, Object>> makeFengzhiStr(Map<String, Object> pile) {
+		List<Map<String, Object>> rateMapList = new ArrayList<Map<String, Object>>();
+		String fengzhiHtml = "";
+		Map<String, Map<String, Object>> jsonMap = (Map<String, Map<String, Object>>) JSON
+				.parse(pile.get("efQuantumDate").toString());
+		List<Map<String, Object>> rateList = (List<Map<String, Object>>) jsonMap
+				.get("data");
+		for (Map<String, Object> rateInfo : rateList) {
+			Map<String, Object> rate = new HashMap<String, Object>();
+			int st = Integer.valueOf(rateInfo.get("st").toString());
+			int et = Integer.valueOf(rateInfo.get("et").toString());
+			Integer timeSt = (int) Math.floor(st / 60);
+			String stMin = String.valueOf(st - timeSt * 60);
+			String timeStart=String.format("%02d", timeSt);   
+			
+			Integer timeEt = (int) Math.floor(et / 60);
+			String etMin = String.valueOf(et - timeEt * 60);
+			String timeEnd=String.format("%02d", timeEt);   
+			
+			if ("1".equals(rateInfo.get("mark")))
+			{
+				rate.put("fee", pile.get("efTip"));
+			   rate.put("flag", 1);
+			}
+			if ("2".equals(rateInfo.get("mark")))
+				{rate.put("fee", pile.get("efPeak"));
+			    rate.put("flag", 2);
+				}
+			if ("3".equals(rateInfo.get("mark")))
+			{
+				rate.put("fee", pile.get("efUsual"));
+			   rate.put("flag", 3);}
+			if ("4".equals(rateInfo.get("mark")))
+			{
+				rate.put("fee", pile.get("efValley"));
+			    rate.put("flag", 4);
+			}
+			rate.put("startTime", timeStart + ":"
+					+ (stMin.length() == 1 ? "0" + stMin : stMin));
+			rate.put("endTime", timeEnd + ":"
+					+ (etMin.length() == 1 ? "0" + etMin : etMin));
+			rateMapList.add(rate);
+		}
+		return rateMapList;
+	}
+
+	@Override
+	public List<TcbElectric> getElectricpileListByPsId(Integer pkPowerstation) {
+		return electricpileMapper.getElectricListByPsId(pkPowerstation);
+	}
+
+	/**
+	 * 获取电桩信息
+	 */
+	@Override
+	public Map<String, Object> getElectricpileInfo(Map<String, Object> map) {
+		Map<String,Object> data = electricpileMapper.getElectricpileInfo(map);
+		return data;
+	}
+
+	/**
+	 * 获取当前时间对应的尖峰平谷那个段
+	 * @param jsonRate 格式化的费率字符串
+	 * @return 1尖2峰3平4谷
+	 */
+	@Override
+	public String getCurrentPowerRateMark(String jsonRate) {
+		if(StringUtils.isEmpty(jsonRate)){
+			return "0";
+		}
+		JSONObject jo = JSONObject.parseObject(jsonRate);
+		JSONArray ja = jo.getJSONArray("data");
+		Calendar c = Calendar.getInstance();
+		for(int i = 0;i < ja.size();i++){
+			JSONObject cjo = ja.getJSONObject(i);
+			int currentM = (c.get(Calendar.HOUR_OF_DAY)*60 + c.get(Calendar.MINUTE));
+			if(Integer.parseInt(cjo.getString("st")) < currentM && Integer.parseInt(cjo.getString("et")) > currentM){
+				return cjo.getString("mark");
+			}
+		}
+		return "0";
+	}
+
+	/**
+	 * 查询统计信息--电站累计电量
+	 */
+	@Override
+	public String getStationMeterNum(Map<String, Object> model) {
+		return electricpileMapper.getStationMeterNum(model);
+	}
+
+	/**
+	 * 查询统计信息--电站内电桩、枪头累计电量
+	 */
+	@Override
+	public List<Map<String, Object>> getEleMeterNum(Map<String, Object> model) {
+		return electricpileMapper.getEleMeterNum( model);
+	}
+	
+	/**
+	 *  查询统计信息--充电设备接口编码
+	 */
+	@Override
+	public String getElectricpileHeadId(Map<String, Object> ehMap) {
+		 return electricpileMapper.getElectricpileHeadId(ehMap);
+	}
+
+	/**
+	 * 查询充电状态
+	 */
+	@Override
+	public Map<String, Object> getStatusByChReCode(String chReCode) {
+		return electricpileMapper.getStatusByChReCode(chReCode);
+	}
+
+	
+
+
+}

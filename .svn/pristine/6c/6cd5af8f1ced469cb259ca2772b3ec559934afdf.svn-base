@@ -1,0 +1,226 @@
+@charset "utf-8";
+
+body{
+	background: #EBECED;
+}
+header{
+	overflow: hidden;
+}
+header .scanning,header .mapIcon{
+	height: 100%;
+	=background: #0062CC;
+	text-align: center;
+	line-height: 5rem;
+}
+header .scanning img,header .mapIcon img{
+	width: 60%;
+	height: 70%;
+}
+header .search{
+	height: 100%;
+	padding: 1.2rem;
+}
+header .search .searchBlock{
+	width: 96%;
+	height: 3rem;
+	background-color: #FF7D00;
+	border: 0.1rem solid #FFFFFF;
+	margin: 0 auto;
+	/*margin-top: 0.9rem;*/
+	border-radius: 2rem;
+	overflow: hidden;
+	position: relative;
+}
+header .search .searchBlock img{
+	display: block;
+	width: 2.4rem;
+	height: 2.4rem;
+	position: absolute;
+	left: 0;
+	top: 0.3rem;
+}
+header .search .searchBlock input{
+	width: 84%;
+	height: 2.4rem;
+	margin-left: 2rem;
+	border: 0;
+	outline-style: none;
+	background: #FF7D00;
+	/*background: #000;*/
+	font-size: 1.4rem;
+	margin-top: 0.2rem;
+	color: #FFFFFF;
+	text-align: left;
+}
+/*第二块============================================================================*/
+.classifyList{
+	width: 100%;
+	height: 4rem;
+	background: #FFFFFF;
+	margin-bottom: 0;
+	margin-top: 5rem;
+	/*position: relative;
+	display: table;
+	overflow: hidden;
+	table-layout: fixed;*/
+	/*z-index: 900;
+	overflow: hidden;*/
+}
+.classifyList li{
+	height: 100%;
+	text-align: center;
+	line-height: 4rem;
+	border-left: 0.1rem solid #C0C0C0;
+	border-bottom: 0.1rem solid #C0C0C0;
+	font-size: 1.6rem;
+	color: #959595;
+	
+}
+.classifyList .active{
+	border-bottom: 0.1rem solid #FF7D00;
+	color: #FF7D00;
+}
+/*第四块========================================================================*/
+.mainContent{
+	width: 100%;
+	/*此高度只是适配华为=======*/
+	height: 84%;
+	/*background: #0062CC;*/
+	-padding: 0.8rem;
+	position: relative;
+	font-size: 1.6rem;
+	-border-bottom: 0.1rem solid #C0C0C0;
+	overflow: auto;
+	margin-bottom: 4.8rem;
+	
+}
+.mainContent .distanceBlock,.mainContent .priceBlock,.mainContent .starBlock{
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+/*每一个小模块处理，动态添加section==========================================*/
+.mainContent section{
+	width: 100%;
+	min-height: 3rem;
+	background: #FFFFFF;
+	border-top: 0.1rem solid #C0C0C0;
+	border-bottom: 0.1rem solid #C0C0C0;
+	margin-top: 2%;
+	
+}
+.mainContent section:focus,.mainContent section:active{
+	background: #FFF6EC;
+}
+.mainContent  section .detailTop,.mainContent  section .detailCenter{
+	width: 100%;
+	min-height: 4rem;
+	border-bottom: 0.1rem solid #DCDCDC;
+	padding: 2%;
+	color: #666666;
+}
+
+.mainContent  section .detailTop .powerStationAddress{
+	font-size: 1.8rem;
+}
+.mainContent  section .detailCenter .showBtn{
+	width: 100%;
+	min-height: 3rem;
+	background: url(../img/btn_map_arrow.png) no-repeat right center;
+	background-size:10% 80% ;
+}
+.mainContent  section .detailCenter .showBtn li{
+	width: 40%;
+	min-height: 3rem;
+	border: 0.1rem solid #C0C0C0;
+	border-radius: 2.4rem;
+	display: inline-block;
+	font-size: 1.4rem;
+	text-align: center;
+	line-height: 3rem;
+	
+}
+.mainContent  section .detailCenter .showBtn li span{
+	display: inline-block;
+	margin-left: 2%;
+	
+}
+.mainContent  section .detailCenter .showBtn li .fastRound,.mainContent  section .detailCenter .showBtn li .freeRound{
+	height: 2rem;
+	min-width: 2rem;
+	border-radius: 55%;
+	background: #666666;
+	color: #FFFFFF;
+	text-align: center;
+	margin-top: 4%;
+	font-size: 1rem;
+	line-height: 2rem;
+}
+.mainContent  section .detailCenter .showBtn li .freeRound{
+	background: #00A438;
+}
+.mainContent  section .detailCenter .showBtn li .slowlyRound{
+	height: 2rem;
+	min-width: 2rem;
+	border-radius: 55%;
+	background: #666666;
+	color: #FFFFFF;
+	text-align: center;
+	margin-top: 4%;
+	font-size: 1rem;
+	line-height: 2rem;
+}
+.mainContent  section .detailCenter .powerStationAddress{
+	width: 100%;
+	min-height: 2rem;
+	font-size: 1.4rem;
+}
+/*处理底部部分样式==================================================*/
+.mainContent  section .detailBottom{
+	width: 100%;
+	min-height: 3.6rem;
+	color: #666666;
+	text-align: center;
+	line-height: 3.6rem;
+	
+}
+.mainContent  section .detailBottom .baseStyle{
+	min-height: 3.6rem;
+	border-left: 0.1rem solid #C0C0C0;
+	font-size: 1.4rem;
+	/*padding-left: 1.3rem;*/
+}
+/*四个默认的样式=====================================================*/
+.mainContent  section .detailBottom .rate{
+	/*background: url(../img/bg_map_rmb.png) no-repeat 2% center;
+	background-size:32% 80% ;*/
+	font-size: 1.2rem;
+	word-break: break-all;
+	w
+}
+.mainContent  section .detailBottom .star{
+	background: url(../img/bg_map_score.png) no-repeat 2% center;
+	background-size:34% 70% ;
+}
+.mainContent  section .detailBottom .navImgActive{
+	background: url(../img/btn_help_navigation.png) no-repeat 2%  center;
+	background-size:30% 60% ;
+	color: #FF7D00;
+}
+
+.mainContent  section .detailBottom  .appointmentBtn{
+	background: url(../img/bg_map_appointment2.png) no-repeat 2%  center;
+	background-size:30% 60% ;
+	color: #DCDCDC;
+}
+/*可预约时候的样式============================================*/
+.mainContent  section .detailBottom .appointmentBtnActive{
+	background: url(../img/bg_map_appointment1.png) no-repeat 2%  center;
+	background-size:30% 60% ;
+	color: #FF7D00;
+}
+.mainContent  section .detailBottom .appointmentBtnActive a{
+	color: #FF7D00;
+}

@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="../../css/dataCenter/electricity.css"/>
+    <link rel="stylesheet" href="http://cache.amap.com/lbs/static/main1119.css"/>
+    <title>电量展示</title>
+
+</head>
+<body style="width:100%;height:100%;background-color:transparent;">
+    <div id="container">
+        <div style="position: absolute;top:50px;right:50px;z-index:1000;">
+            <div id="app" style="">
+                <div class="block" style="position: relative;">
+                    <el-cascader style="width:100%;" :show-all-levels="false" placeholder="请选择" :options="dataObject" :props="{value: 'value'}" v-model="selectObject" filterable=""  @change="handleChange" change-on-select separator="-"></el-cascader>
+                    <button id="queryBtn" @click="getChangeValue">显示</button>
+                </div>
+            </div>
+            <div class="historicalData">
+                <div class="table_header">历史数据</div>
+                <ul class="historicalDataUl">
+                    <li>
+                        <span>累计充电电量 : </span>
+                        <span class="chargeCount1"></span>
+                    </li>
+                    <li>
+                        <span>累计充电订单 :</span>
+                        <span class="orderCount1"></span>
+                    </li>
+                    <li>
+                        <span>累计充电时长 :</span>
+                        <span class="chargeTime1"></span>
+                    </li>
+                </ul>
+            </div>
+            <div class="realTimeData">
+                <div class="table_header">实时数据</div>
+                <ul class="realTimeDataUl">
+                    <li>
+                        <span>充电电量 :</span>
+                        <span class="chargeCount"></span>
+                    </li>
+                    <li>
+                        <span>充电订单 :</span>
+                        <span class="orderCount"></span>
+                    </li>
+                    <li>
+                        <span>异常订单 :</span>
+                        <span class="errorCount"></span>
+                    </li>
+                </ul>
+            </div>
+            <div class="chargiePoint no">
+                <ul class="chargiePointUl">
+                    <li>
+                        <span>该城市累计充电电量 :</span>
+                        <span id="cityChargeCount"></span>
+                    </li>
+                    <li>
+                        <span>实时充电电量 :</span>
+                        <span id="newChargeCount"></span>
+                    </li>
+                    <li>
+                        <span>实时充电金额 :</span>
+                        <span id="chargeMoney"></span>
+                    </li>
+                </ul>
+            </div>
+            <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+            <div id="chargeAmountOne" class="chargeAmountOne no"></div>
+            <div id="chargeAmountTwo" class="chargeAmountTwo no"></div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=5482098780018a97976fbb4f52252595&plugin=AMap.DistrictSearch"></script>
+<script src="../../js/jquery-2.1.0.js"></script>
+<script src="../../js/apiAddress-web.js"></script>
+<script src="../../js/dataCenter/echarts.js"></script>
+
+<!--引入vue组件库-->
+<script src="../../js/vue.min.js"></script>
+<script src="../../js/dataCenter/elementUi2.1.0.js"></script>
+<!--<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>-->
+
+<script src="../../js/dataCenter/electricity.js"></script>
+<script type="text/javascript" src="../../js/dataCenter/electricityData.js"></script>
+</html>

@@ -1,0 +1,38 @@
+/**
+ * FileName:AppFeedbackMapper.java
+ * Author: Administrator
+ * Create: 2014年6月26日
+ * Last Modified: 2014年6月26日
+ * Version: V1.0 
+ */
+package com.wanma.app.service;
+
+import java.util.List;
+import java.util.Map;
+
+import com.wanma.model.Feedback;
+import com.wanma.model.TblCity;
+
+/**
+ * 反馈信息业务处理接口
+ * 
+ * @version V1.0
+ * @author Administrator
+ * @date 2014年6月26日
+ */
+public interface AppCityService {
+
+	/**
+	 *  获取所有城市接口
+	 *  
+	 * @return
+	 */
+	public List<TblCity> getCityList();
+
+	public <K, V> List<Map<K, V>> getCityAndProvince();
+
+	public void updateLatLng(Map<String, String> map);
+
+	public List<Map<String, String>> getCityOrProvinceInfo();
+
+}

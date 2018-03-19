@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wanma.dubbox.dao.TblUserNormalMapper">
+	<resultMap id="BaseResultMap" type="com.wanma.dubbox.model.TblUserNormal">
+		<id column="user_id" property="id" jdbcType="INTEGER" />
+		<result column="norm_name" property="name" jdbcType="VARCHAR" />
+		<result column="norm_real_name" property="rlname" jdbcType="VARCHAR" />
+		<result column="norm_status" property="sts" jdbcType="SMALLINT" />
+		<result column="norm_registe_type" property="rgsTp" jdbcType="SMALLINT" />
+		<result column="norm_account_balance" property="accBlc"
+			jdbcType="DECIMAL" />
+		<result column="norm_pay_password" property="payPwd" jdbcType="VARCHAR" />
+		<result column="norm_device_id" property="dvcId" jdbcType="VARCHAR" />
+		<result column="norm_email" property="eml" jdbcType="VARCHAR" />
+		<result column="norm_address" property="adr" jdbcType="VARCHAR" />
+		<result column="norm_id_card" property="cid" jdbcType="VARCHAR" />
+		<result column="norm_sex" property="sex" jdbcType="SMALLINT" />
+		<result column="norm_birthday" property="birthday" jdbcType="VARCHAR" />
+		<result column="norm_integrate" property="itgrt" jdbcType="INTEGER" />
+		<result column="norm_car_company_id" property="carComid"
+			jdbcType="SMALLINT" />
+		<result column="norm_car_type_id" property="carTpid" jdbcType="SMALLINT" />
+		<result column="norm_vehicle_number" property="vcNum" jdbcType="VARCHAR" />
+		<result column="norm_plate_num" property="pltNm" jdbcType="VARCHAR" />
+		<result column="norm_driving_licence" property="drvLce"
+			jdbcType="VARCHAR" />
+		<result column="createdate" property="cdate" jdbcType="TIMESTAMP" />
+		<result column="updatedate" property="udate" jdbcType="TIMESTAMP" />
+		<result column="apply_card" property="aplyCd" jdbcType="SMALLINT" />
+		<result column="norm_origin" property="ogn" jdbcType="SMALLINT" />
+		<result column="norm_p_code" property="pcde" jdbcType="VARCHAR" />
+		<result column="norm_c_code" property="ccde" jdbcType="VARCHAR" />
+		<result column="norm_a_code" property="acde" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<select id="selectOne" resultMap="BaseResultMap" parameterType="TblUserNormal">
+		select ${rtColumns},
+		getFullPath('userAvatar',#{id}) userImageUrl,
+		getFullPath('IdCardImage',#{id}) idCardimageUrl
+		from tbl_user_normal
+		where 1=1
+		<if test="id != null">
+			and user_id = #{id}
+		</if>
+		<if test="rlname != null">
+			and norm_real_name = #{rlname}
+		</if>
+	</select>
+
+	<delete id="delete" parameterType="TblUserNormal">
+		delete from tbl_user_normal
+		where user_id = #{id,jdbcType=INTEGER}
+	</delete>
+
+	<insert id="insert" parameterType="TblUserNormal"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into tbl_user_normal
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				user_id,
+			</if>
+			<if test="name != null">
+				norm_name,
+			</if>
+			<if test="rlname != null">
+				norm_real_name,
+			</if>
+			<if test="sts != null">
+				norm_status,
+			</if>
+			<if test="rgsTp != null">
+				norm_registe_type,
+			</if>
+			<if test="accBlc != null">
+				norm_account_balance,
+			</if>
+			<if test="payPwd != null">
+				norm_pay_password,
+			</if>
+			<if test="dvcId != null">
+				norm_device_id,
+			</if>
+			<if test="eml != null">
+				norm_email,
+			</if>
+			<if test="adr != null">
+				norm_address,
+			</if>
+			<if test="cid != null">
+				norm_id_card,
+			</if>
+			<if test="sex != null">
+				norm_sex,
+			</if>
+			<if test="birthday != null">
+				norm_birthday,
+			</if>
+			<if test="itgrt != null">
+				norm_integrate,
+			</if>
+			<if test="carComid != null">
+				norm_car_company_id,
+			</if>
+			<if test="carTpid != null">
+				norm_car_type_id,
+			</if>
+			<if test="vcNum != null">
+				norm_vehicle_number,
+			</if>
+			<if test="pltNm != null">
+				norm_plate_num,
+			</if>
+			<if test="drvLce != null">
+				norm_driving_licence,
+			</if>
+			<if test="cdate != null">
+				createdate,
+			</if>
+			<if test="udate != null">
+				updatedate,
+			</if>
+			<if test="aplyCd != null">
+				apply_card,
+			</if>
+			<if test="ogn != null">
+				norm_origin,
+			</if>
+			<if test="pcde != null">
+				norm_p_code,
+			</if>
+			<if test="ccde != null">
+				norm_c_code,
+			</if>
+			<if test="acde != null">
+				norm_a_code,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="name != null">
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="rlname != null">
+				#{rlname,jdbcType=VARCHAR},
+			</if>
+			<if test="sts != null">
+				#{sts,jdbcType=SMALLINT},
+			</if>
+			<if test="rgsTp != null">
+				#{rgsTp,jdbcType=SMALLINT},
+			</if>
+			<if test="accBlc != null">
+				#{accBlc,jdbcType=DECIMAL},
+			</if>
+			<if test="payPwd != null">
+				#{payPwd,jdbcType=VARCHAR},
+			</if>
+			<if test="dvcId != null">
+				#{dvcId,jdbcType=VARCHAR},
+			</if>
+			<if test="eml != null">
+				#{eml,jdbcType=VARCHAR},
+			</if>
+			<if test="adr != null">
+				#{adr,jdbcType=VARCHAR},
+			</if>
+			<if test="cid != null">
+				#{cid,jdbcType=VARCHAR},
+			</if>
+			<if test="sex != null">
+				#{sex,jdbcType=SMALLINT},
+			</if>
+			<if test="birthday != null">
+				#{birthday,jdbcType=VARCHAR},
+			</if>
+			<if test="itgrt != null">
+				#{itgrt,jdbcType=INTEGER},
+			</if>
+			<if test="carComid != null">
+				#{carComid,jdbcType=SMALLINT},
+			</if>
+			<if test="carTpid != null">
+				#{carTpid,jdbcType=SMALLINT},
+			</if>
+			<if test="vcNum != null">
+				#{vcNum,jdbcType=VARCHAR},
+			</if>
+			<if test="pltNm != null">
+				#{pltNm,jdbcType=VARCHAR},
+			</if>
+			<if test="drvLce != null">
+				#{drvLce,jdbcType=VARCHAR},
+			</if>
+			<if test="cdate != null">
+				#{cdate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="udate != null">
+				#{udate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="aplyCd != null">
+				#{aplyCd,jdbcType=SMALLINT},
+			</if>
+			<if test="ogn != null">
+				#{ogn,jdbcType=SMALLINT},
+			</if>
+			<if test="pcde != null">
+				#{pcde,jdbcType=VARCHAR},
+			</if>
+			<if test="ccde != null">
+				#{ccde,jdbcType=VARCHAR},
+			</if>
+			<if test="acde != null">
+				#{acde,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="update" parameterType="TblUserNormal">
+		update tbl_user_normal
+		<set>
+			<if test="name != null">
+				norm_name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="rlname != null">
+				norm_real_name = #{rlname,jdbcType=VARCHAR},
+			</if>
+			<if test="sts != null">
+				norm_status = #{sts,jdbcType=SMALLINT},
+			</if>
+			<if test="rgsTp != null">
+				norm_registe_type = #{rgsTp,jdbcType=SMALLINT},
+			</if>
+			<if test="accBlc != null">
+				norm_account_balance = #{accBlc,jdbcType=DECIMAL},
+			</if>
+			<if test="payPwd != null">
+				norm_pay_password = #{payPwd,jdbcType=VARCHAR},
+			</if>
+			<if test="dvcId != null">
+				norm_device_id = #{dvcId,jdbcType=VARCHAR},
+			</if>
+			<if test="eml != null">
+				norm_email = #{eml,jdbcType=VARCHAR},
+			</if>
+			<if test="adr != null">
+				norm_address = #{adr,jdbcType=VARCHAR},
+			</if>
+			<if test="cid != null">
+				norm_id_card = #{cid,jdbcType=VARCHAR},
+			</if>
+			<if test="sex != null">
+				norm_sex = #{sex,jdbcType=SMALLINT},
+			</if>
+			<if test="birthday != null">
+				norm_birthday = #{birthday,jdbcType=VARCHAR},
+			</if>
+			<if test="itgrt != null">
+				norm_integrate = #{itgrt,jdbcType=INTEGER},
+			</if>
+			<if test="carComid != null">
+				norm_car_company_id = #{carComid,jdbcType=SMALLINT},
+			</if>
+			<if test="carTpid != null">
+				norm_car_type_id = #{carTpid,jdbcType=SMALLINT},
+			</if>
+			<if test="vcNum != null">
+				norm_vehicle_number = #{vcNum,jdbcType=VARCHAR},
+			</if>
+			<if test="pltNm != null">
+				norm_plate_num = #{pltNm,jdbcType=VARCHAR},
+			</if>
+			<if test="drvLce != null">
+				norm_driving_licence = #{drvLce,jdbcType=VARCHAR},
+			</if>
+			<if test="cdate != null">
+				createdate = #{cdate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="aplyCd != null">
+				apply_card = #{aplyCd,jdbcType=SMALLINT},
+			</if>
+			<if test="ogn != null">
+				norm_origin = #{ogn,jdbcType=SMALLINT},
+			</if>
+			<if test="pcde != null">
+				norm_p_code = #{pcde,jdbcType=VARCHAR},
+			</if>
+			<if test="ccde != null">
+				norm_c_code = #{ccde,jdbcType=VARCHAR},
+			</if>
+			<if test="acde != null">
+				norm_a_code = #{acde,jdbcType=VARCHAR},
+			</if>
+			updatedate = now()
+		</set>
+		where user_id = #{id,jdbcType=INTEGER}
+	</update>
+
+	<select id="getCount" resultType="int" parameterType="TblUserNormal">
+		select
+		count(1)
+		from tbl_user_normal t
+		where exists(select 1 from
+		tbl_user a where a.user_id = t.user_id and a.user_status != '3'
+		<if test="bsAcc != null and bsAcc !=''">
+			and a.user_account like concat('%',#{bsAcc},'%')
+		</if>
+		<if test="bslev != null">
+			and a.user_leval = #{bslev}
+		</if>
+		)
+		<if test="id != null">
+			and user_id = #{id}
+		</if>
+		<if test="carComid != null">
+			and norm_car_company_id = #{carComid}
+		</if>
+		<if test="carTpid != null">
+			and norm_car_type_id = #{carTpid}
+		</if>
+		<if test="rlname != null and rlname !=''">
+			and norm_real_name like concat('%',#{rlname},'%')
+		</if>
+		<if test="sts != null">
+			and norm_status = #{sts}
+		</if>
+		<if test="pkIds != null">
+			and user_id in
+			<foreach item="item" index="index" collection="pkIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+	</select>
+
+	<select id="getList" resultMap="BaseResultMap" parameterType="TblUserNormal">
+		select ${rtColumns}
+		from tbl_user_normal t
+		where exists(select 1 from
+		tbl_user a where a.user_id = t.user_id and a.user_status != '3'
+		<if test="bsAcc != null and bsAcc !=''">
+			and a.user_account like concat('%',#{bsAcc},'%')
+		</if>
+		<if test="bslev != null">
+			and a.user_leval = #{bslev}
+		</if>
+		)
+		<if test="id != null">
+			and user_id = #{id}
+		</if>
+		<if test="carComid != null">
+			and norm_car_company_id = #{carComid}
+		</if>
+		<if test="carTpid != null">
+			and norm_car_type_id = #{carTpid}
+		</if>
+		<if test="rlname != null and rlname !=''">
+			and norm_real_name like concat('%',#{rlname},'%')
+		</if>
+		<if test="sts != null">
+			and norm_status = #{sts}
+		</if>
+		<if test="pkIds != null">
+			and user_id in
+			<foreach item="item" index="index" collection="pkIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		order by updatedate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+</mapper>

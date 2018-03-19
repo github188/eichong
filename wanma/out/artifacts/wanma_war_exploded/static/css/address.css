@@ -1,0 +1,76 @@
+.default_addr{margin:0 auto 20px;background: #eeeeee;padding: 10px 15px;}
+.default_tit{font-size: 18px;}
+.addr_info{overflow: hidden;margin-top: 10px;}
+.check_box{width: 5%;margin-top: 15px;}
+.def_check{background: url(../images/img/address/no_check.png) no-repeat;width: 35px;height: 35px;display: block;cursor: pointer;}
+.def_check.checked{background: url(../images/img/address/checked_icon.png) no-repeat;}
+.user_info{width:75%;}
+.user_info_2{width: 60%;}
+.user_info p,.user_info_2 p{line-height: 25px;}
+.gray{color: #808080;}
+.yellow{color: #ec7843;}
+.add_icon{width: 15%;}
+.add_icon_2{margin-left: 7%;margin-top: 10px;}
+.add_icon a{display: inline-block;}
+.del{background: url(../images/img/address/del_img.png) no-repeat;width: 28px;height: 28px;}
+.edit{background: url(../images/img/address/edit_img.png) no-repeat;width: 23px;height: 23px;margin-left:40%;}
+.other_addr{margin: 15px auto;background: #eeeeee;padding: 10px 0;}
+.other_tit{font-size: 18px;border-bottom: 1px solid #999;height: 35px;line-height: 35px;padding-left: 20px;}
+.other_addr ul li{border-bottom: 1px dashed #b4b4b4;padding: 15px;}
+.addrDet{overflow: hidden;}
+.set_defalut{margin-top: 10px;}
+.set_defalut a{color: #adadad;}
+.type_btn {border-radius: 5px;height: 40px;line-height: 40px;text-align: center;width: 45%;display: inline-block;}
+.type_a{width:35%;margin: 30px auto 10px;}
+.cancal{background: #fff;border: 2px solid #f08307;color: #f08307;margin-left: 5%;}
+.sure{background: #f08307;color: #fff;}
+
+/*提交安装预约单*/
+.add_addr{
+    background: #f08307;
+    color: #fff;
+    text-align: center;
+    height: 35px;
+    line-height: 35px;
+    border-radius: 5px;
+    right: 20px;
+    top: -5px;
+    display: block;
+    padding: 0 10px;
+}
+.product_box{margin: 20px 0;border: 1px solid #ccc;border-top: 0;}
+.product_tit{background: #ccc;height: 35px;line-height: 35px;color: #fff;padding-left: 20px;}
+.product_det{padding: 15px;}
+.product_det ul li{overflow: hidden;border-bottom: 1px solid #ccc;padding: 10px 0;}
+.productInfo{margin-left: 2%;}
+.productInfo p{line-height: 35px;}
+.proTit{font-size: 22px;margin-bottom: 10px;}
+.pro_price{color: #f08307;font-size: 22px;}
+.account{color: #737373;font-size: 14px;}
+.total_cont{padding: 0 0 15px;width: 88%;margin: 0 auto;overflow: hidden;}
+a.num_opt1 {
+    border: 1px solid #d7d7d7;
+    display: inline-block;
+    padding: 0 10px;
+    border-right: none;
+    height: 31px;
+    line-height: 30px;
+}
+input.num_input{
+    border: 1px solid #d7d7d7;
+    height: 31px;
+    line-height: 32px;
+}
+a.num_opt2 {
+    border: 1px solid #d7d7d7;
+    display: inline-block;
+    padding: 0 10px;
+    border-left: none;
+    height: 31px;
+    line-height: 30px;
+}
+.total_num{color: #5b5b5b;font-size: 20px;}
+
+
+
+

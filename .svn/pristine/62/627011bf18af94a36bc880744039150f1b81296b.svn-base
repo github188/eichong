@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.MenuMapper">
+	<resultMap type="MenuDO" id="resultMenu">
+		<result property="menuId" column="menu_id" />
+		<result property="menuType" column="menu_type" />
+		<result property="contents" column="contents" />
+		<result property="sortNumber" column="sort_number" />
+		<result property="url" column="url" />
+		<result property="rel" column="rel" />
+		<result property="parentMenuId" column="parent_menu_id" />
+		<result property="notes" column="notes" />
+		<result property="isDel" column="is_del" />
+		<result property="createDate" column="create_date" />
+		<result property="createUser" column="create_user" />
+		<result property="lastUpdateDate" column="last_update_date" />
+		<result property="lastUpdateUser" column="last_update_user" />
+		<result property="isSelected" column="isSelected" />
+	</resultMap>
+   
+    <sql id="query-columns">
+		menu_id, menu_type,contents,sort_number,url,rel,parent_menu_id,notes,is_del,create_date,create_user,last_update_date,last_update_user
+	</sql>
+	<sql id="where-columns">
+	    is_del = 0
+        <if test="menuId!=null"> 
+		   and menu_id=#{menuId}
+	    </if>
+		<if test="menuType!=null and menuType!=''">
+		   and menu_type=#{menuType}
+		 </if>
+		<if test="contents!=null and contents!=''">
+		   and contents like concat('%',#{contents},'%')
+		</if>
+		<if test="sortNumber!=null and sortNumber!=''"> 
+		   and sort_number=#{sortNumber}
+		</if>
+		<if test="url!=null and url!=''">
+		   and url like concat('%',#{url},'%')
+		</if>
+		<if test="rel!=null and rel!=''"> 
+		   and rel=#{rel}
+		</if>
+		<if test="parentMenuId!=null">
+		   and parent_menu_id=#{parentMenuId}
+		</if>
+		<if test="notes!=null and notes!=''">
+		  and notes=#{notes}
+		</if>
+	</sql>
+	
+    <!-- 获取超级管理员权限菜单 -->
+    <select id="getMenuListByAdmin"  resultMap="resultMenu">
+		select t.MENU_ID,t.menu_type,t.CONTENTS,t.sort_number,t.url,t.rel,t.parent_menu_id,
+			(select count(1) from p_m_menu m left join p_m_menu_role n on m.MENU_ID=n.MENU_ID 
+			where m.PARENT_MENU_ID=t.menu_id and m.MENU_TYPE=1
+			) hasChild
+		from p_m_menu t left join p_m_menu_role mr on t.MENU_ID=mr.MENU_ID 
+		where 1=1
+        GROUP BY t.MENU_ID
+		order by PARENT_MENU_ID ASC, sort_number asc,menu_id asc
+	</select>
+	
+    <!-- 根据roleId获取权限菜单 -->
+    <select id="getMenuListByRoleIds" parameterType="String" resultMap="resultMenu">
+		select t.MENU_ID,t.menu_type,t.CONTENTS,t.sort_number,t.url,t.rel,t.parent_menu_id,
+			(select count(1) from p_m_menu m left join p_m_menu_role n on m.MENU_ID=n.MENU_ID 
+			where m.PARENT_MENU_ID=t.menu_id and m.MENU_TYPE=1
+			<if test="_parameter!=null and _parameter!=''"> and FIND_IN_SET(n.ROLE_ID,#{roleId})</if>
+			) hasChild
+		from p_m_menu t left join p_m_menu_role mr on t.MENU_ID=mr.MENU_ID 
+		where 1=1
+		<if test="_parameter!=null and _parameter!=''">and  FIND_IN_SET(mr.ROLE_ID,#{roleId})</if>
+		GROUP BY t.MENU_ID
+		order by PARENT_MENU_ID ASC, sort_number asc,menu_id asc
+	</select>
+	
+    <!-- 统计菜单列表 -->
+    <select id="countMenuList" parameterType="MenuDO" resultType="Long">
+		select count(1) from p_m_menu where <include refid="where-columns" />
+	</select>
+ 
+    <!-- 查询菜单列表 -->
+    <select id="selectMenuListPage" parameterType="MenuDO" resultType="Long">
+		select 	<include refid="query-columns"/>  from p_m_menu where <include refid="where-columns" />
+		<if test="pager != null">
+		  limit #{pageNo},#{pageSize}
+		</if>
+	</select>
+	
+	<!-- 添加菜单 -->
+	<insert id="insertMenu" parameterType="MenuDO" keyProperty="menu_id" resultType="Integer">
+		insert into p_m_menu
+		(<include refid="query-columns"/>)
+		values
+		(#{menuId},#{menuType},#{contents},#{sortNumber},#{url},#{rel},#{parentMenuId},#{notes},0,NOW(),#{createUser},NULL,'')
+	</insert>
+	
+	<!-- 根据ID查询菜单 -->
+	<select id="selectMenuById" parameterType="String" resultMap="resultMenu">
+		select <include refid="query-columns"/> from p_m_menu 
+		  left join p_m_menu m on parent_menu_id=m.menu_id
+		  where menu_id = #{menuId}
+	</select>
+	
+	<!-- 根据父级ID查询菜单 -->
+	<select id="selectMenuByParentId" parameterType="String" resultMap="resultMenu">
+		select <include refid="query-columns"/> from p_m_menu 
+		  left join p_m_menu m on parent_menu_id=m.menu_id
+		  where parent_menu_id = #{parentMenuId}
+	</select>
+	
+	<!-- 编辑菜单 -->
+	<update id="updateMenu" parameterType="MenuDO" resultType="Integer">
+		update p_m_menu
+		<set>
+			<if test="menuId!=null"> 
+			  menu_id=#{menuId}, 
+			</if>
+			<if test="menuType!=null"> 
+			  menu_type=#{menuType}, 
+			</if>
+			<if test="contents!=null">
+			  contents=#{contents}, 
+			</if>
+			<if test="sortNumber!=null"> 
+			  sort_number=#{sortNumber}, 
+			</if>
+			<if test="url!=null"> 
+			  url=#{url}, 
+			</if>
+			<if test="url!=null"> 
+			  rel=#{rel},
+		    </if>
+			<if test="parentMenuId!=null"> 
+			  parent_menu_id=#{parentMenuId}, 
+			</if>
+			<if test="notes!=null"> 
+			  notes=#{notes}, 
+			</if>
+			  last_update_date = NOW(),
+			<if test="lastUpdateUser!=null">
+			  last_update_user=#{lastUpdateUser}, 
+			</if>
+		</set>
+		<where>
+			menu_id=#{menuId}
+		</where>
+	</update>
+	
+	<!-- 删除菜单 -->
+	<update id="deleteMenu">
+	    update p_m_menu set is_del = 1 where menu_id in 
+	    <foreach collection="menuIds" item="menuId" open="(" separator="," close=")">
+			#{menuId}
+		</foreach>
+	</update>
+	
+	<!-- 查询角色Id拥有的菜单权限 -->
+	<select id="selectMenuListByRoleIdAndMenuIds"  parameterType="map" resultMap="resultMenu">
+		select t.MENU_ID,t.menu_type,t.CONTENTS,t.sort_number,t.url,t.rel,t.parent_menu_id,
+		(case when s.menu_id is null then 0 else 1 end) isSelected
+		from p_m_menu t LEFT JOIN 
+		(select m.MENU_ID from p_m_menu_role mr,p_m_menu m 
+		where mr.MENU_ID=m.MENU_ID and mr.ROLE_ID=#{roleId}) s on t.menu_id=s.menu_id
+		where FIND_IN_SET(t.menu_id,#{menuIds}) 
+		order by sort_number asc
+	</select>
+	
+	
+    <!-- xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx以下暂不用xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -->
+	
+
+	<update id="modifyMenu" parameterType="MenuDO">
+		update p_m_menu
+		<set>
+			<if test="menuId!=null"> menu_id=#{menuId}, </if>
+			<if test="menuType!=null"> menu_type=#{menuType}, </if>
+			<if test="contents!=null"> contents=#{contents}, </if>
+			<if test="sortNumber!=null"> sort_number=#{sortNumber}, </if>
+			<if test="url!=null"> url=#{url}, </if>
+			<if test="url!=null"> rel=#{rel}, </if>
+			<if test="parentMenuId!=null"> parent_menu_id=#{parentMenuId}, </if>
+			<if test="notes!=null"> notes=#{notes}, </if>
+			last_update_date=sysdate(),
+			<if test="lastUpdateUser!=null"> last_update_user=#{lastUpdateUser}, </if>
+		</set>
+		<where>
+			menu_id=#{menuId}
+		</where>
+	</update>
+
+	<select id="getMenuCountById" parameterType="String" resultType="int">
+		select count(menu_id) as data_count from
+		p_m_menu
+		where
+		menu_id=#{menuId}
+	</select>
+
+	
+
+	<select id="getMenuList" resultMap="resultMenu">
+		select
+		p_m_menu.menu_id,
+		p_m_menu.menu_type,
+		p_m_menu.contents,
+		p_m_menu.sort_number,
+		p_m_menu.url,
+		p_m_menu.rel,
+		p_m_menu.parent_menu_id,
+		p_m_menu.notes,
+		p_m_menu.create_date,
+		p_m_menu.create_user,
+		p_m_menu.last_update_date,
+		p_m_menu.last_update_user
+		from
+		p_m_menu
+	</select>
+
+	<select id="searchMenuList" parameterType="MenuDO" resultMap="resultMenu">
+		select
+		t.menu_id,
+		t.menu_type,
+		t.contents,
+		t.sort_number,
+		t.url,
+		t.rel,
+		t.parent_menu_id,
+		m.contents parentMenuName,
+		t.notes,
+		t.create_date,
+		t.create_user,
+		t.last_update_date,
+		t.last_update_user
+		from
+		p_m_menu t
+		left join p_m_menu m on t.parent_menu_id=m.menu_id
+		<where>
+			<if test="menuId!=null"> and t.menu_id=#{menuId}</if>
+			<if test="menuType!=null and menuType!=''"> and t.menu_type=#{menuType}</if>
+			<if test="contents!=null and contents!=''"> and t.contents like concat('%',#{contents},'%')</if>
+			<if test="sortNumber!=null and sortNumber!=''"> and t.sort_number=#{sortNumber}</if>
+			<if test="url!=null and url!=''"> and t.url like concat('%',#{url},'%')</if>
+			<if test="rel!=null and rel!=''"> and t.rel=#{rel}</if>
+			<if test="parentMenuId!=null"> and t.parent_menu_id=#{parentMenuId}</if>
+			<if test="notes!=null and notes!=''"> and t.notes=#{notes}</if>
+		</where>
+		order by t.PARENT_MENU_ID ASC, t.sort_number asc,t.menu_id asc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	<select id="searchMenuListCount" parameterType="MenuDO" resultType="Long">
+		select
+		count(1)
+		from
+		p_m_menu t
+		<where>
+			<if test="menuId!=null"> and t.menu_id=#{menuId}</if>
+			<if test="menuType!=null and menuType!=''"> and t.menu_type=#{menuType}</if>
+			<if test="contents!=null and contents!=''"> and t.contents like concat('%',#{contents},'%')</if>
+			<if test="sortNumber!=null and sortNumber!=''"> and t.sort_number=#{sortNumber}</if>
+			<if test="url!=null and url!=''"> and t.url like concat('%',#{url},'%')</if>
+			<if test="rel!=null and rel!=''"> and t.rel=#{rel}</if>
+			<if test="parentMenuId!=null"> and t.parent_menu_id=#{parentMenuId}</if>
+			<if test="notes!=null and notes!=''"> and t.notes=#{notes}</if>
+		</where>
+	</select>
+
+	<delete id="removeMenu" parameterType="String">
+		delete from p_m_menu where
+		menu_id=#{menuId}
+	</delete>
+	
+	
+	
+	<delete id="removeMenusByRoleId" parameterType="String">
+		delete from p_m_menu_role where
+		role_id=#{roleId}
+	</delete>
+	
+</mapper>

@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wanma.app.dao.AppVfourMapper">
+	<resultMap id="BannerResultMap" type="com.wanma.model.TblBanner">
+		<id column="pk_bl_id" property="pkBlId" jdbcType="INTEGER" />
+		<result column="bl_desc" property="blDesc" jdbcType="VARCHAR" />
+		<result column="bl_url" property="blUrl" jdbcType="VARCHAR" />
+		<result column="bl_status" property="blStatus" jdbcType="SMALLINT" />
+		<result column="bl_sort" property="blSort" jdbcType="SMALLINT" />
+		<result column="bl_createdate" property="blCreatedate"
+			jdbcType="TIMESTAMP" />
+		<result column="bl_updatedate" property="blUpdatedate"
+			jdbcType="TIMESTAMP" />
+		<result column="bl_begin_time" property="blBeginTime" jdbcType="TIMESTAMP" />
+		<result column="bl_end_time" property="blEndTime" jdbcType="TIMESTAMP" />
+		<result column="bl_provincecode" property="blProvincecode"
+			jdbcType="VARCHAR" />
+		<result column="bl_citycode" property="blCitycode" jdbcType="VARCHAR" />
+		<result column="bl_countycode" property="blCountycode"
+			jdbcType="VARCHAR" />
+		<result column="bannerPicUrl" property="bannerPicUrl" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<resultMap id="ChargingResultMap" type="com.wanma.model.ChargingOrderBrief">
+		<id property="pkChargingorder" column="pk_ChargingOrder" />
+		<result property="chorUserid" column="chOr_UserId" />
+		<result property="beginChargeTime" column="begin_charge_time" />
+		<result property="endChargeTime" column="end_charge_time" />
+
+	</resultMap>
+
+	<resultMap id="MessageResultMap" type="com.wanma.model.TblMessageInfo">
+		<id column="pk_mei_id" property="pkMeiId" jdbcType="INTEGER" />
+		<result column="mei_name" property="meiName" jdbcType="VARCHAR" />
+		<result column="mei_content" property="meiContent" jdbcType="VARCHAR" />
+		<result column="mei_status" property="meiStatus" jdbcType="SMALLINT" />
+		<result column="mei_type" property="meiType" jdbcType="SMALLINT" />
+		<result column="mei_begin_time" property="meiBeginTime"
+			jdbcType="TIMESTAMP" />
+		<result column="mei_end_time" property="meiEndTime" jdbcType="TIMESTAMP" />
+		<result column="mei_createdate" property="meiCreatedate"
+			jdbcType="TIMESTAMP" />
+		<result column="mei_updatedate" property="meiUpdatedate"
+			jdbcType="TIMESTAMP" />
+		<result column="mei_provincecode" property="meiProvincecode"
+			jdbcType="VARCHAR" />
+		<result column="mei_citycode" property="meiCitycode" jdbcType="VARCHAR" />
+		<result column="mei_countycode" property="meiCountycode"
+			jdbcType="VARCHAR" />
+	
+	</resultMap>
+	<resultMap id="MessageInfoMap" type="com.wanma.model.TblMessagePointRela">
+	<id column="pk_mpr_id" property="pkMprId" jdbcType="INTEGER" />
+		<result column="mei_name" property="pkMeiId" jdbcType="INTEGER" />
+		<result column="pk_powerstation" property="pkPowerstation" jdbcType="INTEGER" />
+		<result column="mpr_name" property="mprName" jdbcType="VARCHAR" />
+		<result column="mpr_createdate" property="mprCreatedate" jdbcType="TIMESTAMP" />
+		<result column="address" property="address"
+			jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="ButtonResultMap" type="com.wanma.model.TblAppButtonList">
+		<id column="pk_abl_id" property="pkAblId" jdbcType="INTEGER" />
+		<result column="abl_name" property="ablName" jdbcType="VARCHAR" />
+		<result column="abl_desc" property="ablDesc" jdbcType="VARCHAR" />
+		<result column="abl_status" property="ablStatus" jdbcType="SMALLINT" />
+		<result column="abl_type" property="ablType" jdbcType="SMALLINT" />
+		<result column="abl_action" property="ablAction" jdbcType="SMALLINT" />
+		<result column="abl_sort" property="ablSort" jdbcType="SMALLINT" />
+		<result column="abl_createdate" property="ablCreatedate"
+			jdbcType="TIMESTAMP" />
+		<result column="abl_updatedate" property="ablUpdatedate"
+			jdbcType="TIMESTAMP" />
+		<result column="abl_url" property="ablUrl" jdbcType="VARCHAR" />
+		<result column="buttonPicUrl" property="buttonPicUrl" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<resultMap id="InfoResultMap" type="com.wanma.model.TblNewsInfo">
+		<id column="pk_nei_id" property="pkNeiId" jdbcType="INTEGER" />
+		<result column="nei_name" property="neiName" jdbcType="VARCHAR" />
+		<result column="nei_url" property="neiUrl" jdbcType="VARCHAR" />
+		<result column="nei_status" property="neiStatus" jdbcType="SMALLINT" />
+		<result column="nei_createdate" property="neiCreatedate"
+			jdbcType="TIMESTAMP" />
+		<result column="nei_updatedate" property="neiUpdatedate"
+			jdbcType="TIMESTAMP" />
+		<result column="newsPicUrl" property="newsPicUrl" jdbcType="VARCHAR" />
+	</resultMap>
+	<select id="getBannerList" resultMap="BannerResultMap">
+		SELECT pk_bl_id,bl_desc,bl_url,bl_status,bl_sort,bl_createdate,bl_updatedate,bl_begin_time,bl_end_time,
+		bl_provincecode,bl_citycode,bl_countycode,getFullPath('bannerPic',pk_bl_id) as
+		bannerPicUrl
+		from
+		tbl_banner_list
+		where
+		<!-- 状态正常：未删除和未下架 -->
+		bl_status=0
+		<!-- 当前时间满足设定时间内 -->
+    <![CDATA[
+		 		and (NOW() between bl_begin_time and bl_end_time )
+    ]]>
+		<!-- 用户所在地 -->
+		and ((bl_provincecode=#{blProvincecode}
+		and bl_citycode=#{blCitycode}
+		)
+		<!-- 全国 -->
+		or bl_provincecode='')
+		order by bl_sort asc LIMIT 10
+
+	</select>
+
+	<select id="getCharging" parameterType="map" resultMap="ChargingResultMap">
+
+		select
+		pk_ChargingOrder,chOr_UserId, begin_charge_time from
+		tbl_chargingorder
+		where
+		chOr_UserId=#{chorUserid} and chOr_ChargingStatus=1 limit 1
+	</select>
+
+
+
+	<select id="getMessageList" resultMap="MessageResultMap">
+		SELECT
+		pk_mei_id, mei_name, mei_content, mei_status, mei_type, mei_begin_time, mei_end_time, 
+        mei_createdate, mei_updatedate, mei_provincecode, mei_citycode, mei_countycode
+		<!-- u.* ,t.mpr_name,(select a.poSt_Address from tbl_powerstation a where
+		a.pk_powerstation=t.pk_powerstation) as address -->
+		from
+		(
+		(
+		SELECT
+		pk_mei_id, mei_name, mei_content, mei_status, mei_type, mei_begin_time, mei_end_time, 
+        mei_createdate, mei_updatedate, mei_provincecode, mei_citycode, mei_countycode
+		FROM
+		tbl_message_info t
+		WHERE
+		t.mei_status = 1
+		AND
+		t.mei_type = 1
+		 <![CDATA[
+		AND NOW() BETWEEN t.mei_begin_time
+		AND t.mei_end_time
+		 ]]>
+		ORDER BY
+		t.mei_begin_time DESC
+		LIMIT 2
+		)
+		UNION ALL
+		(
+		SELECT
+		pk_mei_id, mei_name, mei_content, mei_status, mei_type, mei_begin_time, mei_end_time, 
+        mei_createdate, mei_updatedate, mei_provincecode, mei_citycode, mei_countycode
+		FROM
+		tbl_message_info t
+		WHERE
+		t.mei_status = 1
+		AND t.mei_type = 2
+		<![CDATA[
+		AND t.mei_createdate > date_add(now(), INTERVAL - 7 DAY)
+		 ]]>
+		ORDER BY
+		t.mei_createdate DESC
+		LIMIT 2
+		)
+		) u<!-- ,
+		tbl_message_point_rela t -->
+		WHERE
+		1=1 
+		<!-- u.pk_mei_id = t.pk_mei_id
+          and -->
+        <if test="meiProvincecode!=null and meiProvincecode!=''">
+		and u.mei_provincecode =#{meiProvincecode}
+		</if>	
+		<if test="meiCitycode!=null and meiCitycode!=''">
+		AND u.mei_citycode = #{meiCitycode}
+		</if>	
+		<!-- <if test="meiCountycode!=null and meiCountycode!=''">
+		AND u.mei_countycode = #{meiCountycode}
+		</if> -->
+	</select>
+	
+    <select id="getMessageInfo" resultMap="MessageInfoMap">
+		select t.pk_mpr_id,t.pk_mei_id,t.pk_powerstation,t.mpr_name,t.mpr_createdate,(select a.poSt_Address from tbl_powerstation a where
+		a.pk_powerstation=t.pk_powerstation) as address from tbl_message_point_rela t where t.pk_mei_id=#{pkMeiId} order by t.mpr_createdate desc
+	</select>
+	
+	<select id="getButtonList" resultMap="ButtonResultMap">
+		select
+		pk_abl_id, abl_name, abl_desc, abl_status, abl_type, abl_action, abl_sort, abl_createdate,abl_url,
+    abl_updatedate,getFullPath('appButtonPic',pk_abl_id) as
+		buttonPicUrl from
+		tbl_app_button_list where abl_status=1 order by abl_sort asc
+
+	</select>
+
+	<select id="getInfoList" parameterType="Map" resultMap="InfoResultMap">
+
+		select  pk_nei_id, nei_name, nei_url, nei_status, nei_createdate, nei_updatedate,getFullPath('newInfoPic',pk_nei_id) as
+		newsPicUrl from
+		tbl_news_info where 
+		<![CDATA[
+		 nei_createdate > date_add(now(), INTERVAL - 30 DAY)
+		 ]]>
+		 and nei_status = 1
+		order by nei_createdate desc
+		limit
+		#{pagerNumber},#{pagerNum}
+
+	</select>
+</mapper>

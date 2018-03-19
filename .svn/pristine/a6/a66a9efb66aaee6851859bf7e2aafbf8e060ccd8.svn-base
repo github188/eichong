@@ -1,0 +1,249 @@
+var electricPileId=getUrlParam('electricPileId');
+function toUnbindEvent() {
+    $('.chargingMethodBlock').unbind();
+    $('.electricPowerBlock').unbind();
+    $('.ownerShipBlock').unbind();
+    $('.provinceBlock').unbind();
+    $('.cityBlock').unbind();
+    $('.areaBlock').unbind();
+    $('.simNameBlock').unbind();
+    $('.chStatusBlock').unbind();
+    $('.typeBlock').unbind();
+    $('.rateInformationIdBlock').unbind();
+    $('.pileMakerBlock').unbind();
+    selectModel();
+}
+toUnbindEvent();
+//获取单个电桩详细，并且展示到对应框上面
+getElectricDetail();
+function getElectricDetail(){
+    $.ajax({
+        type: "post",
+        url: basePath + getElectricDetailUrl,
+        async: true,
+        data: {
+            electricPileId: electricPileId
+        },
+        success: function (data) {
+            $('#code').html(data.code);
+            $('#chargingMethod').html(data.chChargingMethod);
+            $('#chargingMethod').attr('data-value',data.chargingMethod);
+            $('#chPower').html(data.chPower);
+            $('#chPower').attr('data-value',data.power);
+            //电桩归属等待确定
+            $('#ownerShip').html(data.ownerShip);
+            $('#ownerShip').attr('data-value','');
+
+            $('#productModel').html(data.productModel);
+
+            $('#company').html(data.company);
+
+            $('#province').html(data.province);
+            $('#province').attr('data-value',data.provinceCode);
+
+
+            $('#city').html(data.city);
+            $('#city').attr('data-value',data.cityCode);
+
+            $('#areaHtml').html(data.area);
+            $('#areaHtml').attr('data-value',data.areaCode);
+
+            window.localStorage.setItem('ele_provinceCode', data.provinceCode);
+            window.localStorage.setItem('ele_cityCode', data.cityCode);
+            window.localStorage.setItem('ele_areaCode', data.areaCode);
+            //等待确定
+            $('#simName').html(data.simName);
+
+            $('#remark').val(data.remark);
+
+            $('#num').val(data.num);
+
+            $('#chStatus').html(data.chStatus);
+
+            $('#type').html(data.type);
+            $('#type').attr('data-value',data.typeId);
+
+            $('#pileMaker').html(data.pileMaker);
+            //未确认是否能修改 高
+            $('#rateInformationId').html(data.rateInformationId);
+            $('#muzzleNumber').val(data.muzzleNumber);
+
+
+            $('#longitude').val(data.longitude);
+            $('#latitude').val(data.latitude);
+            $('#interfaceStandard').val(data.interfaceStandard);
+            $('#address').val(data.address);
+            $('#simMac').html(data.simMac);
+
+
+            var ele_provinceCode = window.localStorage.getItem('ele_provinceCode');
+            var ele_cityCode = window.localStorage.getItem('ele_cityCode');
+            var ele_areaCode = window.localStorage.getItem('ele_areaCode');
+            //console.log(provinceCode + "::" + cityCode)
+            if (ele_provinceCode == null) {
+                ele_provinceCode = '';
+            }
+            if (ele_cityCode == null) {
+                ele_cityCode = '';
+            }
+            if (ele_areaCode == null) {
+                ele_areaCode = '';
+            }
+            //去加载城市的省
+            toLoadProvince(ele_provinceCode, '#province', '.provinceUl', 'toUnbindEvent');
+
+        }
+    });
+
+}
+
+//配置每一个下拉框拉接口，并处理加载选项到点击事件
+/*
+3资产归属
+11默认费率 未写接口*/
+var selectMap={
+    1:'electricPileType',
+    3:'electricChargeMode',
+    4:'electricPower'
+}
+initSelects(selectMap);
+//功率选择
+$('#electricPower').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+});
+//充电方式选择
+$('#electricChargeMode').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+});
+//电桩类型
+$('#electricPileType').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+});
+
+//电桩制造厂商选择
+setTimeout('toPileMarkerList()',200);
+$('.pileMarkerUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+});
+
+//费率设置
+$('.rateInformationUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .html($(this).text());
+});
+//点击省加载市
+$('.provinceUl').on("click", "li", function () {
+    var provinceCodeId = $(this).attr('data-option');
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+    var flag = $(this).attr('data-option');
+    if (flag == "") {
+        $('#city').html('请选择');
+        $('.cityUl').html('');
+        $('#city').attr('data-value', '');
+        $('#areaHtml').html('请选择');
+        $('.areaUl').html('');
+        $('#areaHtml').attr('data-value', '');
+    } else {
+        toLoadCity(provinceCodeId, '', '#city', '.cityUl', 'toUnbindEvent');
+    }
+})
+
+//点击市加载区
+$('.cityUl').on("click", "li", function () {
+    var cityCodeId = $(this).attr('data-option');
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+    var flag= $(this).attr('data-option');
+    if (flag == "") {
+        $('#areaHtml').html('请选择');
+        $('.areaUl').html('');
+        $('#areaHtml').attr('data-value', '');
+    } else {
+        $('.areaUl').html('');
+        toLoadArea(cityCodeId, '', '#areaHtml', '.areaUl', 'toUnbindEvent');
+    }
+})
+
+//点击区获取值
+$('.areaUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+})
+
+//接口提示保存成功后跳回列表页面
+//$('body').on('click','#saveBtn',function(){
+//    window.location.href='electricPile_list.html';
+//})
+//返回按钮返回到电桩详细
+$('body').on('click','#toPileDetail',function(){
+    window.location.href='electricPile_detail.html?electricPileId='+electricPileId;
+})
+
+//编辑保存按钮
+function toModifyElectricPile(){
+    var obj={
+        id:electricPileId,
+        num: $('#num').val(),
+        chargingMethod:$('#chargingMethod').attr('data-value'),
+        power:$('#chPower').attr('data-value'),
+        typeId:$('#type').attr('data-value'),
+        interfaceStandard:$('#interfaceStandard').val(),
+        rateInformationId:$('#rateInformationId').html(),
+        provinceCode:$('#province').attr('data-value'),
+        cityCode:$('#city').attr('data-value'),
+        areaCode:$('#areaHtml').attr('data-value'),
+        address:$('#address').val(),
+        longitude:$('#longitude').val(),
+        latitude:$('#latitude').val(),
+        muzzleNumber:$('#muzzleNumber').val(),
+        simName:$('#simName').val(),
+        simMac:$('#simMac').val(),
+        remark:$('#remark').val()
+    };
+    $.ajax({
+        type: "post",
+        url: basePath + modifyElectricUrl,
+        async: false,
+        data: obj,
+        success: function (data) {
+               if(data.success==true){
+                   layer.closeAll();
+                   layer.open({
+                       type: 1,
+                       offset: '100px',
+                       title: ["提示", "font-size:12px;text-align:center"],
+                       shadeClose: false,
+                       closeBtn: 2,
+                       area: ['310px', '160px'],//宽高
+                       content: data.msg,
+                       btn: ["确定"],
+                       yes:function(index, layero){
+                           layer.closeAll();
+                           window.location.href="electricPile_list.html";
+                       }
+                   });
+
+               }else{
+                   layer.closeAll();
+                   layer.open({
+                       type: 1,
+                       offset: '100px',
+                       title: ["提示", "font-size:12px;text-align:center"],
+                       shadeClose: false,
+                       closeBtn: 2,
+                       area: ['310px', '160px'],//宽高
+                       content: data.msg,
+                       //time: 2000,
+                       btn: ["确定"]
+                   });
+               }
+    	}
+
+    });
+
+}

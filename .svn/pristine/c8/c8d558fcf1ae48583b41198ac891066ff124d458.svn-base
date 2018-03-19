@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/admin/admin_list.css"/>
+    <title>卡管理</title>
+</head>
+<body>
+<div class="container animated fadeInRight">
+    <div class="row">
+        <div class="formBlock clearfix">
+            <form id="adminListForm">
+                <div class="col-xs-12 col-sm-10 col-md-10 col-lg-10" >
+                    <div class="userListSelect row">
+                        <div class="col-sm-4 col-xs-12">
+                            <div class="col-sm-4 queryParam">
+                                管理员账号
+                            </div>
+                            <div class=" col-sm-7 userAccount">
+                                <input type="text" name="userAccount" id="userAccount" value="" class="userAccountInput"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-5 col-xs-12">
+                            <div class="col-sm-2 queryParam" style="padding-right:14px">
+                                城市
+                            </div>
+                            <div class=" col-sm-4 col-xs-6 model-select-box">
+                                <div class="model-select-text provinceBlock" data-value="" id="provinceCode">请选择</div>
+                                <span class="downRow provinceBlock"></span>
+                                <input type="text" name="provinceCode" hidden="hidden" id="" value="" />
+                                <ul class="model-select-option provinceUl">
+
+                                </ul>
+                            </div>
+                            <div class="col-sm-offset-1 col-xs-6 col-sm-5  model-select-box">
+                                <div class="model-select-text cityBlock" data-value="" id="cityCode">请选择</div>
+                                <span class="downRow cityBlock"></span>
+                                <input type="text" name="cityCode" hidden="hidden" id="" value="" />
+                                <ul class="model-select-option cityUl">
+
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-xs-12">
+                            <div class="col-sm-3 col-sm-offset-1 queryParam">
+                                状态
+                            </div>
+                            <div class="col-sm-7 col-xs-12 model-select-box">
+                                <div class="model-select-text userStatusBlock" data-value="" id="userStatus">请选择</div>
+                                <span class="downRow userStatusBlock"></span>
+                                <input type="text" name="userStatus" id="" value="" hidden="hidden"/>
+                                <ul class="model-select-option userStatusUl">
+                                    <li data-option="" class="seleced">请选择</li>
+                                    <li data-option="">全部</li>
+                                    <li data-option="1">正常</li>
+                                    <li data-option="2">禁用</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12" style="background: #FFFFFF;height: 10px;"></div>
+                    <div class="userListSelect row">
+                        <div class="col-sm-4 col-xs-12">
+                            <div class="col-sm-4 queryParam">
+                                渠道
+                            </div>
+                            <div class=" col-xs-12 col-sm-7 model-select-box">
+                                <div class="model-select-text cpyProvinceBlock" data-value="" id="cpyProvinceCode">请选择</div>
+                                <span class="downRow cpyProvinceBlock"></span>
+                                <ul class="model-select-option cpyProvinceUl">
+
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-sm-8 col-xs-12">
+                            <div class=" col-sm-4 col-xs-6 col-sm-offset-1 model-select-box">
+                                <div class="model-select-text cypCityBlock" data-value="" id="cypCityCode">请选择</div>
+                                <span class="downRow cypCityBlock"></span>
+                                <ul class="model-select-option cypCityUl">
+                                </ul>
+                            </div>
+                            <div class="col-sm-offset-1 col-xs-6 col-sm-4 model-select-box">
+                                <div class="model-select-text cpyCompanyBlock" data-value="" id="cpyCompanyName">请选择</div>
+                                <span class="downRow cpyCompanyBlock"></span>
+                                <input type="text" name="cpyId" id="cpyId" value="" hidden="hidden"/>
+                                <ul class="model-select-option cpyCompanyUl">
+
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-sm-12" style="background: #FFFFFF;height: 10px;"></div>
+                    <div class="userListSelect row">
+                        <div class="col-sm-4 col-xs-12">
+                            <div class="col-sm-4 queryParam">
+                                类型
+                            </div>
+                            <div class=" col-xs-12 col-sm-7 model-select-box">
+                                <div class="model-select-text adminTypeBlock" data-value="" id="adminTypeHtml">请选择</div>
+                                <span class="downRow adminTypeBlock"></span>
+                                <input type="text" name="userLevel" id="userLevel" value="" hidden="hidden"/>
+                                <ul class="model-select-option adminTypeUl">
+                                    <li data-option="" class="seleced">请选择</li>
+                                    <li data-option="2">系统管理员</li>
+                                    <li data-option="8">业务管理员</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-sm-4 col-xs-12">
+                            <div class="col-sm-2 queryParam">
+                                角色
+                            </div>
+                            <div class=" col-xs-12 col-sm-8 model-select-box">
+                                <div class="model-select-text roleIdBlock" data-value="" id="roleIdHtml">请选择</div>
+                                <span class="downRow roleIdBlock"></span>
+                                <input type="text" name="roleId" id="roleId" value="" hidden="hidden"/>
+                                <ul class="model-select-option roleIdUl">
+                                    <!--<li data-option="" class="seleced">请选择</li>-->
+                                    <!--<li data-option="0">系统管理员</li>-->
+                                    <!--<li data-option="1">投资公司管理员</li>-->
+                                    <!--<li data-option="2">渠道公司管理员</li>-->
+                                    <!--<li data-option="3">桩主公司管理员</li>-->
+                                    <!--<li data-option="4">业主公司管理员</li>-->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-2 col-md-2 col-lg-2" style="position: relative;">
+                    <div class="queryBtn" onclick="adminListSearch()">
+                        查询
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!--按钮部分开始==========================================================-->
+        <div class="btnBlock">
+            <div class="col-sm-10 col-xs-12 col-md-10" style="">
+                <div class="col-sm-3 col-xs-3 btnStyle" id="addAdmin">
+                    新建管理员
+                </div>
+                <div class="col-sm-3 col-xs-3 btnStyle" id="disabledBtn" style="margin-left: 20px;">
+                    禁用
+                </div>
+            </div>
+            <div class="col-sm-2 col-md-2"></div>
+        </div>
+        <!--表格部分开始==========================================================-->
+        <div class="showSet table-responsive">
+            <table class=" table table-bordered text-center" style="border: 1px solid #DCDCDC;">
+                <thead>
+                <tr>
+                    <th class=""><input type="checkbox" name="" class="selAll" value=""/></th>
+                    <th>账号</th>
+                    <th>渠道</th>
+                    <th>角色</th>
+                    <th>类型</th>
+                    <th>状态</th>
+                </tr>
+                </thead>
+                <tbody id="myTbody">
+
+                </tbody>
+            </table>
+
+            <div id="adminListPage" class="pagination">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="disabledContent" style="display: none;">
+    禁用管理员后，管理员将无法登陆后台
+</div>
+</body>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<!--<script src="../js/apiAddress.js" type="text/javascript" charset="utf-8"></script>-->
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="../../js/contabs.min.js"></script>
+<script src="../../js/admin/admin_list.js" type="text/javascript" charset="utf-8"></script>
+</html>

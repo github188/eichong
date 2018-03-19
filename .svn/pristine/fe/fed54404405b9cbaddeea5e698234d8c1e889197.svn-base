@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+						http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+						http://www.springframework.org/schema/context
+						http://www.springframework.org/schema/context/spring-context-4.0.xsd
+						http://www.springframework.org/schema/aop 
+       					http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+       					http://www.springframework.org/schema/tx
+       					http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+       					http://www.springframework.org/schema/mvc 
+       					http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
+						
+	<!-- 属性文件读入 -->  
+	<bean id="propertyConfigurer"  
+	    class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">  
+	    <property name="locations">  
+	        <list>  
+	        	<value>classpath:jdbc.properties</value>
+	        	<value>classpath:redis.properties</value>
+	        </list>  
+	    </property>  
+	</bean>  	
+	
+	<context:annotation-config />
+	
+	<context:component-scan base-package="com.wanma.dubbox,com.wanma.dubbox.service,com.wanma.dubbox.dao,com.wanma.dubbox.mapper" />
+	<aop:aspectj-autoproxy proxy-target-class="true" />
+	<bean id="cacheAop" class="com.wanma.redis.CacheAop" />
+	
+	<!-- datasource -->
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+		
+		<property name="driverClassName" value="${jdbc.driver}"/>
+		<property name="url" value="${jdbc.url}"/>
+		<property name="username" value="${jdbc.username}"/>
+		<property name="password" value="${jdbc.password}"/>
+		<!--最大连接数量 -->
+		<property name="maxActive" value="50" />
+		<!--初始化连接 -->
+		<property name="initialSize" value="5" />
+	</bean>
+	<!-- sql session factory -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="mapperLocations"
+			value="classpath*:com/wanma/dubbox/**/*.xml" />
+		<property name="configLocation" value="classpath:mybatis.xml" />
+		<property name="plugins">
+			<array>
+				<ref bean="paginationInterceptor" />
+			</array>
+		</property>
+	</bean>
+	
+	<bean id="paginationInterceptor"
+		class="com.github.miemiedev.mybatis.paginator.OffsetLimitInterceptor">
+		<property name="properties">
+			<props>
+				<prop key="dialectClass">com.github.miemiedev.mybatis.paginator.dialect.MySQLDialect
+				</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSessionFactory" />
+	</bean>
+	
+	<bean class="com.wanma.SqlSessionDaoSupport">
+		<constructor-arg index="0" ref="sqlSessionTemplate" />
+	</bean>
+	
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+	  	<property name="basePackage" value="com.wanma.dubbox.dao,com.wanma.dubbox.mapper" />
+	</bean>
+	
+	<!-- 配置事务管理器 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    	<property name="dataSource" ref="dataSource"/>
+    </bean>
+    <!-- 通过AOP配置提供事务增强，让service包下所有Bean的所有方法拥有事务 -->
+    <aop:config proxy-target-class="true">
+        <aop:pointcut id="serviceMethod"
+            expression="(execution(* com.wanma.dubbox.service..*(..)))" />
+        <aop:advisor pointcut-ref="serviceMethod" advice-ref="txAdvice" />
+    </aop:config>
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="add*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+            <tx:method name="send*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+            <tx:method name="remove*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+            <tx:method name="modify*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+            <tx:method name="insert*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+            <tx:method name="update*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+            <tx:method name="delete" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+            <tx:method name="*" propagation="SUPPORTS" read-only="true"/>
+        </tx:attributes>
+    </tx:advice>
+	<!-- more bean definitions for services go here -->
+	
+	<mvc:interceptors>  
+	    <bean class="com.wanma.common.GlobalInterceptors"/>  
+	</mvc:interceptors> 
+	<bean id="applicationContextUtils" class="com.wanma.common.ApplicationContextUtils"/>
+</beans>

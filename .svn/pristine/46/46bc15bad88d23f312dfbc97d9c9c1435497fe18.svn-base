@@ -1,0 +1,29 @@
+package com.cn.wanma.controller;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.cn.wanma.service.StartChargeService;
+
+@Controller("common")  
+@RequestMapping("admin/common")  
+public class CommonController {
+	@Autowired
+	private StartChargeService startService;
+	
+	@RequestMapping(value = "/start")
+	@ResponseBody
+	public String startCharge(HttpServletRequest request) {
+		
+		int count=startService.startCharge("9006");
+		// 返回处理结果信息
+		return (count==0)+"";
+	}
+}

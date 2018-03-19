@@ -1,0 +1,16 @@
+#\u9a8c\u8bc1\u7801
+notCheckAuthCode=1
+
+
+#\u56fe\u7247\u4e0a\u4f20\u670d\u52a1\u5668\u5730\u5740ftp://img:img.com@172.51.96.192:21/
+picture.service.uploadUrl=ftp://web:aichong@10.9.2.111:21/img/
+#\u56fe\u7247\u6d41\u7a0b\u670d\u52a1\u5668\u5730\u5740http://112.64.173.178:9000/img/
+picture.service.scanUrl=http://cs.ep.eichong.com:7070/img/
+
+#api\u8def\u5f84
+apiRoot=http://10.9.2.109:80/api
+apiTokenPath=/app/common/getToken.do
+
+
+
+

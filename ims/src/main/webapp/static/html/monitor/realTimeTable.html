@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/monitor/realTimeInfoTable.css"/>
+    <title>实时信息</title>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="formBlock clearfix">
+            <div class="zlRunDataBlock" style="display: none;">
+                <div class="detailDateTitle">
+                    运行数据
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered text-center" style="border: 1px solid #DCDCDC;">
+                        <thead>
+                        <tr>
+                            <th>桩体编码</th>
+                            <th>枪口</th>
+                            <th>额定功率</th>
+                            <th>充电状态</th>
+                            <th>充电模式</th>
+                            <th>电源单体最高温度</th>
+                            <th>本次已充电时间（小时）</th>
+                            <th>有无故障</th>
+                            <th>故障类型</th>
+
+                        </tr>
+                        </thead>
+                        <tbody id="zlRunDataTbody">
+
+                        </tbody>
+                    </table>
+
+                </div>
+
+            </div>
+            <!--交流的运行数据-->
+            <div class="jlRunDataBlock" style="display: none;">
+                <div class="detailDateTitle">
+                    运行数据
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered text-center" style="border: 1px solid #DCDCDC;">
+                        <thead>
+                        <tr>
+                            <th>桩体编码</th>
+                            <th>枪口</th>
+                            <th>额定功率</th>
+                            <th>充电状态</th>
+                            <th>本次已充电时间</th>
+                            <th>有无故障</th>
+                            <th>故障类型</th>
+                        </tr>
+                        </thead>
+                        <tbody id="jlRunDataTbody">
+
+                        </tbody>
+                    </table>
+
+                </div>
+
+            </div>
+            <!--车端数据-->
+            <div class="carInfo" style="display: none;">
+                <div class="detailDateTitle">
+                    车端数据
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered text-center" style="border: 1px solid #DCDCDC;">
+                        <thead>
+                        <tr>
+                            <th>车牌号</th>
+                            <th>车辆识别码（VIN）</th>
+                            <th>SOC</th>
+                            <th>电池类型</th>
+                            <th>车端总电压</th>
+                            <th>单体最高电压和组号</th>
+                            <th>单体电池最高温度</th>
+                            <th>单体电池最低温度</th>
+                        </tr>
+                        </thead>
+                        <tbody id="carInfoTbody">
+
+                        </tbody>
+                    </table>
+
+                </div>
+
+            </div>
+            <!--枪口输出-->
+            <div class="yunxing">
+
+                <div class="detailDateTitle">
+                    枪口输出
+                </div>
+                <div class="col-sm-12 deletePadding">
+                    <div class="col-sm-3 col-xs-12 commonHeight" id="voltageDiv">
+
+                    </div>
+                    <div class="col-sm-3 col-xs-12 commonHeight" id="currentDiv">
+
+                    </div>
+                    <div class="col-sm-3 col-xs-12 commonHeight" id="powerRateDiv">
+
+                    </div>
+                    <div class="col-sm-3 col-xs-12 commonHeight" id="allChargeDiv">
+
+                    </div>
+                </div>
+
+            </div>
+            <!--充电数据采样-->
+            <div class="yunxing">
+                <div class="detailDateTitle">
+                    <span>充电数据采样</span>
+                    <span class="queryAll cursor" id="queryAllData">查看全部</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered text-center" style="border: 1px solid #DCDCDC;">
+                        <thead id="chargeDataThead">
+                            <tr>
+                                <th>时间</th>
+                                <th>电表读数</th>
+                                <th>已充度数（度）</th>
+                                <th>已消费金额（元）</th>
+                                <th>电池电量</th>
+                            </tr>
+                        </thead>
+                        <tbody id="chargeDataTbody">
+                        </tbody>
+                    </table>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layDate-v5.0.4/laydate/laydate.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/contabs.min.js" type="text/javascript"></script>
+<script src="../../js/lib/Echarts/echarts.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/Echarts/macarons.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/monitor/realTimeInfoTable.js" type="text/javascript" charset="utf-8"></script>
+</html>

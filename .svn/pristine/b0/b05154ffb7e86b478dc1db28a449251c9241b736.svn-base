@@ -1,0 +1,47 @@
+package com.wanma.ims.controller.vo;
+
+import com.wanma.ims.common.domain.ElectricPileDO;
+import com.wanma.ims.common.domain.PowerStationDO;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by xyc on 2017/8/7.‘’
+ * 充电范围VO
+ */
+public class CompanyChargeRelaVO {
+    private PowerStationDO powerStation;
+
+    private List<ElectricPileDO> electricPileList;
+
+    public static List<CompanyChargeRelaVO> getListVO(Map<PowerStationDO, List<ElectricPileDO>> map) {
+        List<CompanyChargeRelaVO> resultList = new ArrayList<>();
+        for (Map.Entry<PowerStationDO, List<ElectricPileDO>> entry : map.entrySet()) {
+            CompanyChargeRelaVO vo = new CompanyChargeRelaVO();
+            vo.setPowerStation(entry.getKey());
+            vo.setElectricPileList(entry.getValue());
+            resultList.add(vo);
+        }
+
+        return resultList;
+    }
+
+
+    public PowerStationDO getPowerStation() {
+        return powerStation;
+    }
+
+    public void setPowerStation(PowerStationDO powerStation) {
+        this.powerStation = powerStation;
+    }
+
+    public List<ElectricPileDO> getElectricPileList() {
+        return electricPileList;
+    }
+
+    public void setElectricPileList(List<ElectricPileDO> electricPileList) {
+        this.electricPileList = electricPileList;
+    }
+}

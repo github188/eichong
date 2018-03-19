@@ -1,0 +1,265 @@
+package com.wanma.ims.mapper;
+
+import java.util.List;
+import java.util.Map;
+
+import com.wanma.ims.model.RoleDO;
+import com.wanma.ims.model.UserDO;
+ 
+/**
+ * 角色Mapper
+ * 
+ * @version V1.0
+ * @author zcy
+ * @date 2017年5月31日
+ */
+public interface RoleMapper {
+
+	/**
+	 * 根据userId获取role列表
+	 * @param 
+	 */
+	public List<RoleDO> selectRoleListByUserId(Long userId);
+	/**
+	 * 统计-超级管理员、管理员角色列表
+	 * @param 
+	 */
+	public Long countSubRoleListByAdmin(UserDO userDO);
+	/**
+	 * 统计-合作公司业务员角色列表
+	 * @param 
+	 */
+	public Long countSubRoleListByOperatorId(UserDO userDO);
+	/**
+	 * 统计-自己创建角色列表
+	 * @param 
+	 */
+	public Long countSubRoleListByCreateUserId(UserDO userDO);
+	/**
+	 * 查询-超级管理员、管理员角色列表
+	 * @param 
+	 */
+	public List<RoleDO> selectSubRoleListByAdmin(UserDO userDO);
+	/**
+	 * 查询-合作公司业务员角色列表
+	 * @param 
+	 */
+	public List<RoleDO> selectSubRoleListByOperatorId(UserDO userDO);
+	/**
+	 * 查询-自己创建角色列表
+	 * @param 
+	 */
+	public List<RoleDO> selectSubRoleListByCreateUserId(UserDO userDO);
+	/**
+	 * 根据roleId查询RoleDO
+	 * @param 
+	 */
+	public RoleDO selectRoleById(String roleId);
+	/**
+	 * 添加-角色
+	 * @param 
+	 */
+	public Integer insertRole(RoleDO roleDO);
+	/**
+	 * 修改-角色菜单权限
+	 * @param 
+	 */
+	public void updateRoleMenuRela(String roleId, String menuIds);
+	
+	/*******************************以下暂时不可用**************************************/
+	
+	/**
+	 * 根据用户角色D取得角色数
+	 * 
+	 * @author yangweir
+	 * @since Version 1.0
+	 * @param roleId
+	 *            角色ID
+	 * @return int 角色数
+	 * @throws 无
+	 */
+	public int getRoleCountById(String roleId);
+
+	/**
+	 * 取得角色信息
+	 * 
+	 * @author yangweir
+	 * @since Version 1.0
+	 * @param roleId
+	 *            角色ID
+	 * @return RoleModel 角色信息
+	 * @throws 无
+	 */
+	public RoleDO findRole(String roleId);
+
+	/**
+	 * 取得角色一览
+	 * 
+	 * @author yangweir
+	 * @since Version 1.0
+	 * @return List<RoleModel> 角色一览
+	 * @throws 无
+	 */
+	public List<RoleDO> getRoleList();
+
+	/**
+	 * 查询角色一览
+	 * 
+	 * @author yangweir
+	 * @since Version 1.0
+	 * @param roleModel
+	 *            查询用角色对象
+	 * @return List<RoleModel> 角色一览
+	 * @throws 无
+	 */
+	public List<RoleDO> searchRoleList(RoleDO roleModel);
+
+	/**
+	 * 查询角色数据条数
+	 * 
+	 * @author yangweir
+	 * @since Version 1.0
+	 * @param roleModel
+	 *            查询用角色对象
+	 * @return long 角色数据条数
+	 * @throws 无
+	 */
+	public long searchRoleCount(RoleDO roleModel);
+
+	/**
+	 * 添加角色
+	 * 
+	 * @author yangweir
+	 * @since Version 1.0
+	 * @param RoleDO
+	 *            角色信息
+	 * @return Role 角色信息
+	 * @throws 无
+	 */
+	public void addRole(RoleDO roleModel);
+
+	/**
+	 * 编辑角色
+	 * 
+	 * @author yangweir
+	 * @since Version 1.0
+	 * @param RoleDO
+	 *            角色信息
+	 * @return String 处理结果标识
+	 * @throws 无
+	 */
+	public void modifyRole(RoleDO roleModel);
+
+	/**
+	 * 删除角色
+	 * 
+	 * @author yangweir
+	 * @since Version 1.0
+	 * @param roleId
+	 *            角色ID
+	 * @return 无
+	 * @throws 无
+	 */
+	public void removeRole(String roleId);
+
+	/**
+	 * 删除角色(包括子角色)
+	 * 
+	 * @author yangweir
+	 * @since Version 1.0
+	 * @param roleId
+	 *            角色ID
+	 * @return 无
+	 * @throws 无
+	 */
+	public void removeSelfAndChildRole(String roleId);
+
+	/**
+	 * 取得菜单角色权限列表
+	 * 
+	 * @author yangweir
+	 * @since Version 1.0
+	 * @param menuId
+	 *            菜单ID
+	 * @return 取得菜单角色权限列表
+	 * @throws 无
+	 */
+	public List<RoleDO> getMenuRoleList1(RoleDO roleModel);
+
+	/**
+	 * 取得菜单角色权限列表
+	 * 
+	 * @author yangweir
+	 * @since Version 1.0
+	 * @param menuId
+	 *            菜单ID
+	 * @return 取得菜单角色权限列表
+	 * @throws 无
+	 */
+	public List<RoleDO> getMenuRoleList(String menuId);
+
+	/**
+	 * 取得画面功能角色权限列表
+	 * 
+	 * @author yangweir
+	 * @since Version 1.0
+	 * @param actionId
+	 *            画面功能ID
+	 * @return 取得画面功能角色权限列表
+	 * @throws 无
+	 */
+	public List<RoleDO> getActionRoleList(String actionId);
+
+	/**
+	 * 取得App接口角色权限列表
+	 * 
+	 * @author yangweir
+	 * @since Version 1.0
+	 * @param appApiId
+	 *            App接口ID
+	 * @return 取得App接口角色权限列表
+	 * @throws 无
+	 */
+	public List<RoleDO> getAppApiRoleList(String appApiId);
+
+	
+
+
+	public List<RoleDO> getParentRoleList(UserDO user);
+
+	public List<RoleDO> getParentRoleListByUserLevel(UserDO user);
+
+	public List<RoleDO> getParentRoleListByCompanyId(UserDO user);
+
+	public List<RoleDO> getParentRoleListByCreateUserId(UserDO user);
+
+	public Long getParentRoleListCount(UserDO user);
+
+	public Long getParentRoleListCountByUserLevel(UserDO user);
+
+	public Long getParentRoleListCountByCompanyId(UserDO user);
+
+	public Long getParentRoleListCountByCreateUserId(UserDO user);
+
+	public void deleteUserRoleRelation(Long userId, String roleIds);
+
+	public void saveUserRoleRelation(Long userId, String roleIds);
+
+	/**
+	 * @Title: getRole 
+	 * @Description: TODO 	
+	 * @author wbc	
+	 * 2015年11月12日 	
+	 * @return: RoleModel 
+	 */
+	public RoleDO getRole(RoleDO role);
+
+	/**
+	 * @Description: TODO 	
+	 * @author wbc	
+	 * 2015年12月1日 	
+	 * @return: int 
+	 */
+	public int checkCommonUnique(Map<String, String> map);
+
+}

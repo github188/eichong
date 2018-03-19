@@ -1,0 +1,274 @@
+@charset "utf-8";
+{
+	margin: 0;
+	padding: 0;
+}
+.f18{
+	font-size: 18px;
+}
+
+.f18-l1{
+	font-size: 18px;
+	margin-left: -10%;
+}
+.mainContent {
+	width: 100%;
+	/*min-width: 170px;*/
+	min-height: 120px;
+	background: #333;
+	height: 830px;
+	/*background: #FF0000;*/
+}
+/*===top===============================================*/
+.mainContent .mainTop {
+	height: 50px;
+	border-bottom: 1px dashed #4e4e4e;
+	color: #FFFFFF;
+}
+
+.mainContent .mainTop .mainTip {
+	display: inline-block;
+    margin-left: 10px;
+}
+
+.mainContent .mainTop .refresh {
+	width: 90px;
+	height: 30px;
+	line-height: 30px;
+	background: #ff9925;
+	border-radius: 5px;
+	text-align: center;
+	margin-left: 20px;
+	cursor: pointer;
+}
+
+.mainContent .mainTop .time {
+	margin-left: 18px;
+}
+
+.mainContent .mainTop  .electricStation {
+	margin-left: 250px;
+	margin-top: 20px;
+}
+/*=====ccenter===================================================*/
+.mainContent .mainCenter {
+	min-height: 500px;
+	/*width: 1053px;*/
+	/*background: #FFFFFF;*/
+	background: #333;
+	padding: 5% 5%;
+	margin-top: 5%;
+}
+
+.mainContent .mainCenter .pileList {
+	width: 985px;
+	height: 462px;
+	margin-top: -27px;
+	background: url(/wanma/static/images/img/pileDetail/1.png) repeat-y center;
+}
+
+.pileList ul:nth-child(odd) {
+	width: 880px;
+	min-height: 150px;
+	/*background: #FF0000;*/
+	/*margin-top: -30px;*/
+	margin-left: 50px;
+}
+
+.pileList ul:nth-child(odd) li {
+	list-style: none;
+	width: 201px;
+	height: 145px;
+	background: #3F8E55;
+	float: left;
+	margin-left: 18px;
+	margin-top: -50px;
+	text-align: center;
+	cursor: pointer;
+}
+
+.pileList ul:nth-child(even) {
+	width: 880px;
+	min-height: 150px;
+	margin-left: 50px;
+	/*background: #00FF00;*/
+}
+
+.pileList ul:nth-child(even) li {
+	list-style: none;
+	width: 201px;
+	height: 145px;
+	background: #3F8E55;
+	float: right;
+	margin-left: 18px;
+	text-align: center;
+	cursor: pointer;
+}
+/*处理不同状态的li的样式=====================================================*/
+/*预约中*/
+.mainCenter .pileList ul .blue {
+	background: url(/wanma/static/images/img/pileDetail/1_05.png);
+}
+/*空闲中*/
+.mainCenter .pileList ul .green {
+	background: url(/wanma/static/images/img/pileDetail/1_02.png);
+}
+/*通讯中断*/
+.mainCenter .pileList ul .gray {
+	background: url(/wanma/static/images/img/pileDetail/1_03.png);
+}
+/*充电中*/
+.mainCenter .pileList ul .yellow {
+	background: url(/wanma/static/images/img/pileDetail/1_04.png);
+}
+/*故障*/
+.mainCenter .pileList ul .red {
+	background: url(/wanma/static/images/img/pileDetail/1_06.png);
+}
+
+.pileList ul li .pileNum {    height: 50px;
+    line-height: 60px;
+    font-size: 12px;
+    font-weight: 900;
+    margin-left: -10px;
+    margin-top: 5px;
+}
+
+.pileList ul li .power {
+	height: 28px;
+	line-height: 28px;
+	font-size: 12px;
+	font-weight: 900;
+	margin-top: -5px;
+}
+
+.pileList ul li .pileStatus {
+	height: 45px;
+	line-height: 60px;
+	font-size: 18px;
+	color: #FFFFFF;
+	margin-top: -20px;
+}
+/*====rightTip部分定位处理=========================================================*/
+.rightTip {
+	width: 235px;
+	height: 584px;
+	/*background: #FFFFFF;*/
+	position: absolute;
+	position: fixed;
+	top: 100px;
+	/*right: 40px;*/
+	right: 0;
+}
+/*总数汇总===============*/
+.rightTip .allCount {
+	height: 178px;
+	width: 180px;
+	border-radius: 8px;
+	background: #5C5C5C;
+	padding-top: 15px;
+	padding-left: 15px;
+}
+
+.rightTip .allCount .allChargeTimes {
+	height: 64px;
+	/*background: #f00;*/
+}
+
+.rightTip .allCount .allChargeTimes .lable {
+	color: #FFFFFF;
+	font-size: 16px;
+	margin-bottom: 4px;
+}
+
+.rightTip .allCount .allChargeTimes .lableValue {
+	color: #fe9a2a;
+	font-size: 16px;
+	margin-top: 10px;
+}
+/*电桩总数======================*/
+.rightTip .pileTotal {
+	height: 130px;
+	width: 195px;
+	border-radius: 8px;
+	background: #5C5C5C;
+	margin-top: 20px;
+}
+
+.rightTip .pileTotal .propertyList {
+	height: 30px;
+	/*width: 100%;*/
+	/*background: #FE9A2A;
+	display: flex;
+	display: -webkit-flex;
+	flex-direction: row;*/
+}
+
+.rightTip .pileTotal .propertyList .propertyTag {
+	margin-top: 10px;
+	margin-left: 15px;
+	width: 60%;
+	font-size: 16px;
+	/*background: #00ff00;*/
+	color: #FFFFFF;
+	float:left;
+}
+
+.rightTip .pileTotal .propertyList .propertyTagValue {
+	margin-top: 10px;
+	margin-left: 15px;
+	/*background: #0000FF;*/
+	color: #fe9a2a;
+	font-size: 16px;
+	float:left;
+}
+/*状态枪口总数==================*/
+.rightTip .pileStatusTotal {
+	height: 150px！important;
+	width: 195px;
+	border-radius: 8px;
+	background: #5C5C5C;
+	margin-top: 20px;
+}
+
+.rightTip .pileStatusTotal .propertyList {
+	height: 30px;
+	/*width: 100%;*/
+	/*background: #FE9A2A;
+	display: flex;
+	display: -webkit-flex;
+	flex-direction: row;*/
+}
+
+.rightTip .pileStatusTotal .propertyList .propertyTag {
+	margin-top: 10px;
+	margin-left: 15px;
+	width: 60%;
+	/*background: #00ff00;*/
+	color: #FFFFFF;
+	font-size: 16px;
+	float:left;
+}
+
+.rightTip .pileStatusTotal .propertyList .propertyTagValue {
+	margin-top: 10px;
+	margin-left: 15px;
+	/*background: #0000FF;*/
+	color: #fe9a2a;
+	font-size: 16px;
+	float:left;
+}
+
+/*提示小箭头======================================================*/
+.row {
+	width: 30px;
+	height: 100px;
+	position: absolute;
+	top: 140px;
+	right: 235px;
+	/*background: #333;*/
+	color: #FFFFFF;
+	position: fixed;
+	cursor: pointer;
+	font-size: 16px;
+}

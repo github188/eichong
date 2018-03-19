@@ -1,0 +1,252 @@
+package com.wanma.ims.controller.activity;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.sun.javafx.collections.MappingChange.Map;
+import com.wanma.ims.common.domain.ActivityDO;
+import com.wanma.ims.common.domain.FavCouponVarietyDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.domain.base.Pager;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.constants.ResultCodeConstants;
+import com.wanma.ims.controller.BaseController;
+import com.wanma.ims.controller.result.JsonResult;
+import com.wanma.ims.service.ActivityService;
+import com.wanma.ims.service.FavCouponVarietyService;
+
+
+/**
+ * 优惠券管理
+ */
+@RequestMapping("/activity")
+@Controller
+public class ActivityController extends BaseController{
+	/** 日志文件生成器 */
+	private static Logger log = Logger.getLogger(ActivityController.class);
+	
+	@Autowired
+	private  ActivityService activityService;
+	@Autowired
+	private  FavCouponVarietyService couponVarietyService;
+	/**
+	 * 渠道活动列表
+	 * @author mb
+	 */
+	@RequestMapping(value = "/getActivityList")
+	@ResponseBody
+	public void getActivityList(@ModelAttribute("pager") Pager pager,@ModelAttribute ActivityDO activity,HttpServletRequest request){
+		JsonResult result = new JsonResult();
+		List<ActivityDO> activityList = null;
+		long total = 0 ;
+		try {
+			activity.setActType(2);
+			Date date = new Date();
+			activity.setCurrentDate(date);
+			total = activityService.getActivityCount(activity);
+			if (total <= pager.getOffset()) {
+				pager.setPageNo(1L);
+			}
+			activity.setPager(pager);
+			activityList= activityService.getActivityList(activity);
+			for (ActivityDO row : activityList) {
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(row.getActEnddate());
+				cal.add(Calendar.DATE, 1);
+				Date dateEnd=cal.getTime();
+				
+				if (row.getActStatus()==1) {
+					row.setActStatus(1);
+				}
+				// 开始时间在当前时间之后,状态为未开始
+				else if (row.getActBegindate().after(date)) {
+					row.setActStatus(0);
+				}
+				// 当前时间处于开始时间和结束时间之间,状态为进行中
+				else if (row.getActBegindate().before(date)
+						&& dateEnd.after(date)) {
+					row.setActStatus(2);
+				}
+				// 结束时间在当前时间之后,状态为已结束
+				else if (dateEnd.before(date)) {
+					row.setActStatus(3);
+				}
+			}
+			pager.setTotal(total);
+			result.setDataObject(activityList);
+			result.setPager(pager);
+		} catch (Exception e) {
+			log.error(this.getClass()+".getActivityList() error:",e);
+			responseJson(new JsonResult(false,ResultCodeConstants.EXCEPTION,"渠道活动列表失败"));
+			return;
+		}
+		responseJson(result); 
+	}
+	/**
+	 * 终止活动
+	 * @author mb
+	 * @param 
+	 * @return
+	 */
+	@RequestMapping(value = "/stopActivity")
+	@ResponseBody
+	public void stopActivity(@ModelAttribute ActivityDO activity,HttpServletRequest request) {
+		UserDO loginUser = getCurrentLoginUser();
+		JsonResult result = new  JsonResult() ;
+		try {
+			activity.setActUpdateuserid(loginUser.getUserAccount());//设置修改人
+			activity.setActStatus(1);
+			activityService.modifyActStatus(activity);
+		} catch (Exception e) {
+			log.error(this.getClass()+".stopActivity() error:",e);
+			responseJson(new JsonResult(false,ResultCodeConstants.EXCEPTION,"终止活动失败"));
+			return;
+		}
+		responseJson(result);
+	}
+	/**
+	 * 新增渠道活动
+	 * @author mb
+	 * @param 
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/addActivity")
+	@ResponseBody
+	public void addActivity(@ModelAttribute ActivityDO activity,HttpServletRequest request) {
+		UserDO loginUser = getCurrentLoginUser();
+		JsonResult result = new  JsonResult() ;
+		try {
+			String list = request.getParameter("prizeList");
+			JSONArray JsonList = JSONArray.fromObject(list);
+			List<ActivityDO> headList = new ArrayList<ActivityDO>();
+			for (int i = 0; i < JsonList.size(); i++) {
+				ActivityDO activityDO = (ActivityDO) JSONObject.toBean(JsonList.getJSONObject(i),ActivityDO.class);
+				headList.add(activityDO);
+			}
+			activity.setHeadList(headList);
+			if (activity.getHeadList()== null) {
+				responseJson(new JsonResult(false,ResultCodeConstants.FAILED,"请点击新增奖品"));
+				return;
+			} 
+			activity.setActCreateuserid(loginUser.getUserAccount());//设置创建人
+			activity.setActUpdateuserid(loginUser.getUserAccount());//设置修改人
+			activity.setActType(2);
+			activityService.addActivity(activity);
+		} catch (Exception e) {
+			log.error(this.getClass()+".addActivity() error:",e);
+			responseJson(new JsonResult(false,ResultCodeConstants.EXCEPTION,"新增渠道活动失败"));
+			return;
+		}
+		responseJson(result);
+	}
+	/**
+	 * 获取用户活动列表
+	 * @author mb
+	 * @param 
+	 * @return
+	 */
+	@RequestMapping(value = "/getUserActivityList")
+	@ResponseBody
+	public void getUserActivityList(@ModelAttribute("pager") Pager pager,@ModelAttribute ActivityDO activity,HttpServletRequest request){
+		JsonResult result = new JsonResult();
+		List<ActivityDO> userActivityList = null;
+		long total = 0 ;
+		try {
+			Date date = new Date();
+			// 设置活动类型为用户活动
+			activity.setActType(1);
+			activity.setCurrentDate(date);
+			total = activityService.getActivityCount(activity);
+			if (total <= pager.getOffset()) {
+				pager.setPageNo(1L);
+			}
+			activity.setPager(pager);
+			userActivityList= activityService.getActivityList(activity);
+			pager.setTotal(total);
+			for (ActivityDO row : userActivityList) {
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(row.getActEnddate());
+				cal.add(Calendar.DATE, 1);
+				Date dateEnd=cal.getTime();
+				
+				if (row.getActStatus()==1) {
+					row.setActStatus(1);
+				}
+				// 开始时间在当前时间之后,状态为未开始
+				else if (row.getActBegindate().after(date)) {
+					row.setActStatus(0);
+				}
+				// 当前时间处于开始时间和结束时间之间,状态为进行中
+				else if (row.getActBegindate().before(date)
+						&& dateEnd.after(date)) {
+					row.setActStatus(2);
+				}
+				// 结束时间在当前时间之后,状态为已结束
+				else if (dateEnd.before(date)) {
+					row.setActStatus(3);
+				}
+
+			}
+			result.setDataObject(userActivityList);
+			result.setPager(pager);
+		} catch (Exception e) {
+			log.error(this.getClass()+".getUserActivityList() error:",e);
+			responseJson(new JsonResult(false,ResultCodeConstants.EXCEPTION,"渠道活动列表失败"));
+			return;
+		}
+		responseJson(result); 
+	}
+	/**
+	 * 新增用户活动
+	 * @author mb
+	 * @param 
+	 * @return
+	 */
+	@RequestMapping(value = "/addUserActivity", method = RequestMethod.POST)
+	@ResponseBody
+	public void addUserActivity(@ModelAttribute ActivityDO activity,@RequestParam(value = "file", required = false) MultipartFile file,HttpServletRequest request) {
+		UserDO loginUser = getCurrentLoginUser();
+		JsonResult result = new  JsonResult() ;
+ 		try {
+ 			String list = request.getParameter("prizeList");
+			JSONArray JsonList = JSONArray.fromObject(list);
+			List<ActivityDO> headList = new ArrayList<ActivityDO>();
+			for (int i = 0; i < JsonList.size(); i++) {
+				ActivityDO activityDO = (ActivityDO) JSONObject.toBean(JsonList.getJSONObject(i),ActivityDO.class);
+				headList.add(activityDO);
+			}
+			activity.setHeadList(headList);
+			BaseResultDTO resultDTO = activityService.addUserActivity(activity,file,loginUser);
+			if(resultDTO.isFailed()){
+				result = new JsonResult(false,resultDTO.getResultCode(),resultDTO.getErrorDetail());
+			}
+		} catch (Exception e) {
+			log.error(this.getClass()+".addActivity() error:",e);
+			responseJson(new JsonResult(false,ResultCodeConstants.EXCEPTION,"新增用户活动失败"));
+			return;
+		}
+		responseJson(result);
+	}
+	
+}

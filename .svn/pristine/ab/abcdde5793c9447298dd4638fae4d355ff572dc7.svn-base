@@ -1,0 +1,302 @@
+//获取订单列表的menuId
+var getMenuMap = window.localStorage.getItem('menuMap');
+var getCurruntMap = JSON.parse(getMenuMap);
+var menuId = getCurruntMap['订单列表'];
+$(function () {
+    ctrlMenu(menuId);
+    setTimeout('orderListSearch()', 190);
+    setTimeout("getBaseInfo()", 300);
+})
+
+function ctrlMenu(menuId) {
+    $.ajax({
+        type: "post",
+        url: basePath + getSelfButtonTreeUrl,
+        async: true,
+        data: {
+            menuId: menuId
+        },
+        success: function (data) {
+            var data = data.dataObject;
+            if (data.length == 0) {
+                return;
+            } else {
+                for (var i = 0; i < data.length; i++) {
+                    var contents = data[i].contents;
+                    if (contents.indexOf('显示') > -1) {
+                        $('#showSet').show();
+                    }
+                    if (contents.indexOf('导出') > -1) {
+                        $('#dataExport').show();
+                    }
+
+                }
+            }
+        }
+    });
+}
+
+function toUnbindEvent() {
+    $('.cpyProvinceBlock').unbind();
+    $('.cypCityBlock').unbind();
+    $('.cpyCompanyBlock').unbind();
+    $('.orderStatusBlock').unbind();
+    selectModel();
+}
+
+//去加载表格的数据
+
+function orderListSearch() {
+    toGiveHiddenInput();
+    initTable("orderListForm", "orderListPage", getOrderListPageUrl, orderListCallback);
+}
+function orderListCallback(req) {
+    var data = req.dataObject;
+    var pageNum = req.pager.pageNo;
+    var listTr = "";
+    for (var i = 0; i < data.length; i++) {
+        var startChargeTime = data[i].startChargeTime;
+        var endChargeTime = data[i].endChargeTime;
+        endtime = Date.parse(endChargeTime);
+        starttime = Date.parse(startChargeTime);
+        var s = endtime / 1000 - starttime / 1000;
+        var time = sec_to_time(s);
+        var orderStatusHtml = '';
+        if (data[i].orderStatus == 1) {
+            orderStatusHtml = '待支付';
+        }
+        if (data[i].orderStatus == 2) {
+            orderStatusHtml = '支付成功';
+        }
+        if (data[i].orderStatus == 3) {
+            orderStatusHtml = '完成操作';
+        }
+        var invoiceStatusHtml = '';
+        if (data[i].invoiceStatus == 0) {
+            invoiceStatusHtml = '否';
+        }
+        if (data[i].invoiceStatus == 1) {
+            invoiceStatusHtml = '是';
+        }
+
+        listTr += '<tr><td><input type="checkbox" name="ids" class="selectedBox" value="' + data[i].orderId + '"/></td>'
+        + '<td class="orderList_orderCode">' + data[i].orderCode
+        + '<td class="orderList_electricPileCode">' + data[i].electricPileCode
+        + '</td><td class="orderList_totalElectricMoney">' + data[i].totalElectricMoney
+        + '</td><td class="orderList_totalServiceMoney">' + data[i].totalServiceMoney
+        + '</td><td class="orderList_totalfavMoney">' + data[i].totalfavMoney
+        + '</td><td class="orderList_totalElectricCharge">' + data[i].totalElectricCharge
+        + '</td><td class="orderList_orderStatus">' + orderStatusHtml
+        + '</td><td class="orderList_powerstationName">' + data[i].powerstationName
+        + '</td><td class="orderList_invoiceStatus">' + invoiceStatusHtml
+        + '</td><td class="orderList_soc">' + data[i].startSoc
+        + '</td><td class="orderList_soc">' + data[i].endSoc
+        + '</td><td class="orderList_carNum">' + data[i].carNum
+        + '</td><td class="orderList_TIME">' + time
+        + '</td><td class="orderList_accountNO">' + data[i].accountNO
+        + '</td><td class="orderList_VIN">' + data[i].vin
+        + '</td><td class="orderList_timeQuantum">' + data[i].timeQuantum
+        + '</td><td class="orderList_cardNum">' + data[i].cardNum
+        + '</td><td class="orderList_eMoney">' + data[i].JMoney
+        + '</td><td class="orderList_eMoney">' + data[i].FMoney
+        + '</td><td class="orderList_eMoney">' + data[i].PMoney
+        + '</td><td class="orderList_eMoney">' + data[i].GMoney
+        + '</td><td class="orderList_sMoney">' + data[i].JServiceMoney
+        + '</td><td class="orderList_sMoney">' + data[i].FServiceMoney
+        + '</td><td class="orderList_sMoney">' + data[i].PServiceMoney
+        + '</td><td class="orderList_sMoney">' + data[i].GServiceMoney
+        + '</td></tr>';
+
+    }
+    $("#myTbogy").html(listTr);
+    var arr = ['orderList_orderCode', 'orderList_electricPileCode', 'orderList_totalElectricMoney', 'orderList_totalServiceMoney',
+        'orderList_totalfavMoney', 'orderList_totalElectricCharge', 'orderList_orderStatus', 'orderList_powerstationName',
+        'orderList_invoiceStatus', 'orderList_soc', 'orderList_carNum', 'orderList_TIME', 'orderList_accountNO', 'orderList_VIN',
+        'orderList_timeQuantum', 'orderList_cardNum', 'orderList_eMoney', 'orderList_sMoney'];
+    toGetLocalStorageInfo(arr);
+}
+function toGiveHiddenInput() {
+    var orderStatusValue = $('#orderStatus').attr('data-value');
+    var cpyCompanyValue = $('#cpyCompanyName').attr('data-value');
+
+    if (orderStatusValue == "") {
+        $('input[name=orderStatus]').val('');
+    } else {
+        $('input[name=orderStatus]').val(orderStatusValue);
+    }
+    if (cpyCompanyValue == "") {
+        $('input[name=cpyNumber]').val('');
+    } else {
+        $('input[name=cpyNumber]').val(cpyCompanyValue);
+    }
+    getDateValue();
+
+}
+//卡状态
+$('.orderStatusUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+});
+
+//获取渠道公司卡cpyProvinceUl=================================================
+$('.cpyProvinceUl').on("click", "li", function () {
+    var provinceCodeId = $(this).attr('data-option');
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+    var flag = $(this).attr('data-option');
+    if (flag == "") {
+        $('#cypCityCode').html('请选择');
+        $('#cypCityCode').attr('data-value', '');
+        $('.cypCityUl').html('');
+        $('#cpyCompanyName').html('请选择');
+        $('.cpyCompanyUl').html('');
+        $('#cpyCompanyName').attr("data-value", '');
+        $('input[name=ucCpyId]').val('');
+
+    } else {
+        toLoadCity(provinceCodeId, '', '#cypCityCode', '.cypCityUl', 'toUnbindEvent');
+    }
+});
+$('.cypCityUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+    var flag = $(this).attr('data-option');
+    var cypCityCodeValue = $('#cypCityCode').attr('data-value');
+    var cpyProvinceCodeValue = $('#cpyProvinceCode').attr('data-value');
+    if (flag == "") {
+        $('#cpyCompanyName').html('请选择');
+        $('.cpyCompanyUl').html('');
+        $('#levelId').html("请选择");
+    } else {
+        toLoadComponyName(cypCityCodeValue, cpyProvinceCodeValue);
+    }
+});
+function toLoadComponyName(cypCityCodeValue, cpyProvinceCodeValue) {
+    var cpyObject = {
+        provinceCode: cpyProvinceCodeValue,
+        cityCode: cypCityCodeValue
+    };
+    if (JSON.stringify(cpyObject) == "{}") {
+        $('#cpyCompanyName').html("请选择");
+    } else {
+        toAjaxCompany(cpyObject);
+    }
+}
+function toAjaxCompany(cpyObject) {
+    $.ajax({
+        type: "post",
+        url: basePath + getCompanyListUrl,
+        async: true,
+        data: cpyObject,
+        success: function (data) {
+            if (data.success == true) {
+                var dataModule = data.dataObject;
+                var cypCompanyLi = '<li data-option="">请选择</li>';
+                for (var i = 0; i < dataModule.length; i++) {
+                    cypCompanyLi += '<li data-option="' + dataModule[i].cpyNumber + '">' + dataModule[i].cpyName + '</li>';
+                }
+                $('.cpyCompanyUl').html(cypCompanyLi);
+                toUnbindEvent();
+            }
+        }
+    });
+}
+$('.cpyCompanyUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+})
+//渠道公司加载完毕
+//控制权限
+function getBaseInfo() {
+    var loginUser = window.localStorage.getItem('loginUser');
+    var getLoginUser = JSON.parse(loginUser);
+    var userLevel = getLoginUser.userLevel;
+    isLoadCompany(userLevel);
+}
+
+function isLoadCompany(userLevel) {
+    if (userLevel == 1) {
+        toLoadProvince('', '#cpyProvinceCode', '.cpyProvinceUl', 'toUnbindEvent');
+    }
+    if (userLevel == 2) {
+        toLoadProvince('', '#cpyProvinceCode', '.cpyProvinceUl', 'toUnbindEvent');
+    } else if (userLevel == 8) {
+        toLoadCpy();
+    }
+}
+
+function toLoadCpy() {
+    $.ajax({
+        type: "post",
+        url: basePath + getCompanyListUrl,
+        async: true,
+        data: {
+            provinceCode: '',
+            cityCode: ''
+        },
+        success: function (data) {
+            if (data.success == true) {
+                var dataModule = data.dataObject;
+                var cypCompanyLi = '<li data-option="">请选择</li>';
+                for (var i = 0; i < dataModule.length; i++) {
+                    cypCompanyLi += '<li data-option="' + dataModule[i].cpyNumber + '">' + dataModule[i].cpyName + '</li>';
+                }
+                $('.cpyCompanyUl').html(cypCompanyLi);
+                toUnbindEvent();
+            }
+        }
+    });
+}
+//数据导出	=====================
+$('#dataExport').on("click", function () {
+    toGiveHiddenInput();
+    var obj = {
+        orderCode: $('input[name=orderCode]').val(),
+        electricPileCode: $('input[name=electricPileCode]').val(),
+        userAccount: $('input[name=userAccount]').val(),
+        cardNum: $('input[name=cardNum]').val(),
+        startGmtCreate: $('input[name=startGmtCreate]').val(),
+        endGmtCreate: $('input[name=endGmtCreate]').val(),
+        cpyNumber: $('input[name=cpyNumber]').val(),
+        orderStatus: $('input[name=orderStatus]').val()
+    };
+    window.location.href = basePath + exportOrderUrl + '?orderCode='
+    + obj.orderCode + '&electricPileCode='
+    + obj.electricPileCode + '&userAccount='
+    + obj.userAccount + '&cardNum='
+    + obj.cardNum + '&startGmtCreate='
+    + obj.startGmtCreate + '&endGmtCreate='
+    + obj.endGmtCreate + '&cpyNumber='
+    + obj.cpyNumber + '&orderStatus='
+    + obj.orderStatus;
+});
+
+//日期选择
+laydate.render({
+    elem: '#datePicker'
+    , range: true,
+    theme: '#ff7d00'
+});
+
+function getDateValue() {
+    var dateValue = $('#datePicker').val();
+    if (dateValue == "") {
+        $('input[name=startGmtCreate]').val('');
+        $('input[name=endGmtCreate]').val('');
+    } else {
+        var dateValue = $('#datePicker').val();
+        var startGmtCreate = dateValue.substring(0, 10);
+        var endGmtCreate = dateValue.substring(13, 23);
+        $('input[name=startGmtCreate]').val(startGmtCreate);
+        $('input[name=endGmtCreate]').val(endGmtCreate);
+    }
+
+}
+//监听回车键
+$(document).keyup(function (event) {
+    if (event.keyCode == 13) {
+        orderListSearch();
+    }
+});
+
+

@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.FinAccountMapper">
+	<resultMap type="FinAccountDO" id="finAccount">
+		<result property="accountId" column="account_id" />
+		<result property="accountNO" column="account_no" />
+		<result property="accountPwd" column="account_pwd" />
+		<result property="accountBalance" column="account_balance" />
+		<result property="tradeType" column="trade_type" />
+		<result property="accountWarn" column="account_warn" />
+		<result property="accountStatus" column="account_status" />
+		<result property="isDel" column="is_del" />
+		<result property="creator" column="creator" />
+		<result property="modifier" column="modifier" />
+		<result property="gmtCreate" column="gmt_create" />
+		<result property="gmtModified" column="gmt_modified" />
+	</resultMap>
+	
+	<select id="getFinAccountCount" parameterType="FinAccountDO" resultType="long">
+		SELECT COUNT(1)
+		FROM FIN_ACCOUNT b
+		<if test="userAccount != null and userAccount != ''">
+		  INNER JOIN tbl_user_normal n ON n.account_id = b.account_id
+		  INNER JOIN tbl_user u on u.user_id = n.user_id
+		</if>
+		where 1=1
+		<if test="accountId != null">
+		  and b.account_id = #{accountId}
+		</if>
+		<if test="accountNO != null and accountNO !=''">
+		  and b.account_no like concat('%',#{accountNO},'%')
+		</if>
+		<if test="accountStatus != null and accountStatus !=''">
+		  and b.account_status = #{accountStatus}
+		</if>
+		<if test="tradeType != null">
+		  and b.trade_type = #{tradeType}
+		</if>
+		<if test="isDel != null">
+		  and b.is_del = #{isDel}
+		</if>
+		<if test="userAccount != null and userAccount != ''">
+	  	  and u.user_account = #{userAccount}
+		</if>
+	</select>
+	
+	<select id="getFinAccountList" parameterType="FinAccountDO" resultMap="finAccount">
+		SELECT
+			b.account_id,
+			b.account_no,
+			b.account_pwd,
+			b.account_balance,
+			b.trade_type,
+			b.account_warn,
+			b.account_status,
+			b.is_del,
+			b.creator,
+			b.modifier,
+			b.gmt_create,
+			b.gmt_modified
+		FROM FIN_ACCOUNT b
+		<if test="userAccount != null and userAccount != ''">
+		  INNER JOIN tbl_user_normal n ON n.account_id = b.account_id
+		  INNER JOIN tbl_user u on u.user_id = n.user_id
+		</if>
+		where 1=1
+		<if test="accountId != null">
+		  and b.account_id = #{accountId}
+		</if>
+		<if test="accountNO != null and accountNO !=''">
+		  and b.account_no like concat('%',#{accountNO},'%')
+		</if>
+		<if test="accountStatus != null and accountStatus !=''">
+		  and b.account_status = #{accountStatus}
+		</if>
+		<if test="tradeType != null">
+		  and b.trade_type = #{tradeType}
+		</if>
+		<if test="isDel != null">
+		  and b.is_del = #{isDel}
+		</if>
+		<if test="userAccount != null and userAccount != ''">
+	  	  and u.user_account = #{userAccount}
+		</if>
+		<if test="accountIdList != null and accountIdList.size() > 0">
+		   and b.account_id in
+		   <foreach collection="accountIdList" item="id" open="(" close=")" separator=",">
+		        #{id}
+		   </foreach>
+	   </if>
+        <if test="pager!=null">limit #{pager.offset},#{pager.pageSize}</if>
+	</select>
+
+	<!-- 添加资金账户 -->
+	<insert id="addFinAccount" useGeneratedKeys="true" parameterType="FinAccountDO" keyProperty="accountId">
+		INSERT INTO FIN_ACCOUNT
+		(account_no, account_pwd,account_balance, trade_type, account_warn, account_status, is_del, creator, modifier, gmt_create, gmt_modified)
+		VALUES
+		(#{accountNO},#{accountPwd},#{accountBalance},#{tradeType},#{accountWarn},#{accountStatus},#{isDel},#{creator},#{modifier},#{gmtCreate},#{gmtModified})
+	</insert>
+	
+	<!-- 修改资金账户 -->
+	<update id="modifyFinAccount" parameterType="FinAccountDO" >
+		UPDATE FIN_ACCOUNT
+		SET account_pwd = #{accountPwd},
+		account_balance = #{accountBalance},
+		trade_type = #{tradeType},
+		account_warn = #{accountWarn},
+		account_status = #{accountStatus},
+		is_del = #{isDel},
+		modifier = #{modifier},
+		gmt_modified = #{gmtModified}
+		WHERE account_id = #{accountId}
+	</update>
+	
+	<!-- 删除资金账户 -->
+	<delete id="removeFinAccount" parameterType="String">
+		DELETE FROM FIN_ACCOUNT WHERE account_id=#{accountId}
+	</delete>
+	
+	<!-- 获取用户首页中资金账户数据 -->
+	<select id="getFinAccount4User" parameterType="java.util.Map" resultMap="finAccount">
+		SELECT a.account_no accountNO, a.trade_type tradeType, a.account_balance accountBalance,
+			a.account_status accountStatus, a.account_warn accountWarn
+		FROM fin_account a
+		<choose>
+			<when test="cpyType == 0">
+				INNER JOIN tbl_user_normal n ON a.account_id = n.account_id
+			</when>
+			<otherwise>
+				INNER JOIN tbl_user_company n ON a.account_id = n.account_id
+			</otherwise>
+		</choose>
+		WHERE n.user_id = #{userId}
+		union
+		SELECT fa.account_no, fa.trade_type, fa.account_balance, fa.account_status, fa.account_warn
+		FROM fin_account fa
+		INNER JOIN tbl_usercard tu ON fa.account_id = tu.account_id
+		WHERE tu.uc_status != 3
+	    <if test="userDefaultIds == null or userDefaultIds.size() == 0">
+			and tu.user_id = #{userId}
+		</if>
+		<if test="userDefaultIds != null and userDefaultIds.size() > 0">
+			and tu.user_id in
+			<foreach collection="userDefaultIds" item="userDefaultIds" open="(" close=")" separator=",">
+		        #{userDefaultIds}
+		    </foreach>
+		</if>
+	</select>
+	
+	<!-- 获取用户首页中的总资产 -->
+	<select id="getFinAccountBalance4User" parameterType="java.util.Map" resultType="long">
+		SELECT SUM(c.accountBalance) accountBalance
+		FROM (SELECT a.account_balance accountBalance
+				FROM fin_account a
+				<choose>
+					<when test="cpyType == 0">
+						INNER JOIN tbl_user_normal t ON a.account_id = t.account_id
+					</when>
+					<otherwise>
+						INNER JOIN tbl_user_company t ON a.account_id = t.account_id
+					</otherwise>
+				</choose>
+		    	WHERE t.user_Id = #{userId}
+			    union
+			    SELECT a.account_balance
+			    FROM tbl_usercard uc
+		    	INNER JOIN fin_account a ON a.account_id = uc.account_id
+				WHERE uc.uc_status != 3
+				<if test="userDefaultIds == null or userDefaultIds.size() == 0">
+					and uc.user_id = #{userId}
+				</if>
+				<if test="userDefaultIds != null and userDefaultIds.size() > 0">
+					and uc.user_id in
+					<foreach collection="userDefaultIds" item="userDefaultIds" open="(" close=")" separator=",">
+				        #{userDefaultIds}
+				    </foreach>
+				</if>
+				) c
+	</select>
+	
+	<!-- 获取卡首页中资金账户数据 -->
+	<select id="getFinAccount4Card" parameterType="UserCardDO" resultMap="finAccount">
+		SELECT fa.account_no accountNO, fa.trade_type tradeType, fa.account_balance accountBalance,
+		 fa.account_status accountStatus, fa.account_warn accountWarn
+		FROM fin_account fa INNER JOIN tbl_usercard tu
+		ON fa.account_id = tu.account_id WHERE tu.uc_id = #{ucId}
+	</select>
+	
+	<!-- 修改资金账户 -->
+	<update id="modifyFinAccountPwd" parameterType="FinAccountDO" >
+		UPDATE FIN_ACCOUNT
+		SET account_pwd = #{accountPwd},
+		modifier = #{modifier},
+		gmt_modified = #{gmtModified}
+		WHERE account_id = #{accountId}
+	</update>
+	
+	<!-- 获取公司首页中的余额和状态 -->
+	<select id="getFinAccountBalance4Cpy" parameterType="String" resultMap="finAccount">
+		SELECT fa.account_balance accountBalance, fa.account_status accountStatus, fa.trade_type as tradeType, fa.account_warn accountWarn
+		FROM fin_account fa
+		WHERE fa.account_id = #{accountId}
+	</select>
+	
+	<update id="modifyFinAccountBalance" parameterType="FinAccountDO">
+		UPDATE FIN_ACCOUNT
+		SET account_balance = account_balance + #{allocationAmount},
+		modifier = #{modifier},
+		gmt_modified = now()
+		WHERE account_id = #{accountId}
+	</update>
+	
+	<select id="getFinAccountByAccountNO" parameterType="String" resultType="FinAccountDO">
+		select account_id,account_no,account_balance,account_pwd,account_status,trade_type
+		from fin_account
+		where account_no = #{accountNO} and is_del = 0
+	</select>
+	
+	<!-- 修改大账户预警金额 -->
+	<update id="modifyFinAccountWarn" parameterType="FinAccountDO" >
+		UPDATE FIN_ACCOUNT
+		SET	account_warn = #{accountWarn},
+		modifier = #{modifier},
+		gmt_modified = #{gmtModified}
+		WHERE account_id = #{accountId}
+	</update>
+</mapper>

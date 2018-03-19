@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.web.dao.WebElecPileStarMapper">
+
+	<!-- <resultMap id="tblPSCommentResultMap" type="com.wanma.model.PowerStationComment">
+		<id property="pk_PsComment" column="pk_PsComment" />
+		<result property="psc_PsId" column="psc_PsId" />
+		<result property="psc_UserId" column="psc_UserId" />
+		<result property="psc_UserName" column="psc_UserName" />
+		<result property="psc_CommentPic" column="psc_CommentPic" />
+		<result property="psc_Createdate" column="psc_Createdate" />
+		<result property="psc_Updatedate" column="psc_Updatedate" />
+		<result property="psc_Utatus" column="psc_Utatus" />
+		<result property="psc_Content" column="psc_Content" />
+	</resultMap>
+	<resultMap id="pageResultMap"  type="java.util.HashMap" extends="tblPSCommentResultMap"></resultMap>
+	<resultMap id="findResultMap"  type="java.util.HashMap" extends="tblPSCommentResultMap"></resultMap> -->
+
+	<insert id="insert" parameterType="map">
+	   insert into tbl_electricpilestar (
+	     eps_EpId,
+	     eps_UserId,
+	     eps_UserName,
+	     eps_Utatus,
+	     eps_CommentStar,
+	     eps_Createdate
+	   )values (
+	     #{epId},
+	     #{uId},
+	     #{uName},
+	     0,
+	     #{epStar},
+	     #{createdate}
+	   )
+	</insert>
+
+<!-- 	<update id="update" parameterType="PowerStationComment">
+	   update tbl_powerstationcomment set
+	     psc_UserId=#{psc_UserId},
+	     psc_UserName=#{psc_UserName},
+	     psc_CommentPic=#{psc_CommentPic},
+	     psc_Utatus=#{psc_Utatus},
+	     psc_Content=#{psc_Content},
+	    
+	   where 
+	    psc_PsId=#{psc_PsId} 
+	</update> -->
+	<select id ="getEpCommentStar" parameterType ="map"  resultType ="HashMap">
+	     select  	  
+	     *	    
+         from 
+	     tbl_electricpilestar
+	     where 
+	     eps_EpId=#{epId}
+	     and  
+	     eps_UserId=#{uId}	   
+	     limit 0,1  
+	</select>
+	
+	 <select id="countStarByElecPileId" parameterType="Integer" resultType="HashMap">
+	    SELECT count(1) epStarCount
+	    from  tbl_electricpilestar 
+	    where 1=1 and eps_EpId=#{epId}
+	      
+	  </select>
+	
+	 <!-- <select id="getPsCommentsPageList" parameterType="map" resultType="HashMap">
+		select		
+		pk_PsComment,
+		psc_PsId,
+		psc_UserName,
+		getFullPath('proImage',pk_PsComment) as psc_CommentPic,
+		getFullPath('userAvatar',psc_UserId) as userImage,
+		psc_Createdate,
+		psc_Content
+		from tbl_powerstationcomment
+		where 
+		psc_PsId = #{prCoProductId} and psc_Utatus=0
+		order by psc_Createdate desc
+		limit #{pageNumber},#{pageNum}
+	</select>  -->
+	
+</mapper> 

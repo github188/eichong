@@ -1,0 +1,23 @@
+package com.wanma.ims.service;
+
+import java.util.List;
+
+import com.wanma.ims.model.LevelDO;
+
+
+/**
+ * 等级Service
+ */
+public interface LevelService {
+
+	/**
+	 * 根据渠道ID查询等级
+	 * @param
+	 * */
+	public List<LevelDO> getLevelListByCpyId(Long cpyId);
+	
+	
+	
+	
+
+}

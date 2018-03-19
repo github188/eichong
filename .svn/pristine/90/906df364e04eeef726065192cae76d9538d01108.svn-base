@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/electric/electricPile/electricPile_list.css"/>
+    <title>电桩列表</title>
+</head>
+<body>
+<div class="container animated fadeInRight">
+    <div class="row">
+        <div class="formBlock clearfix">
+            <form id="electricListForm">
+                <div class="col-xs-12 col-sm-10 col-md-10 col-lg-10" >
+                    <div class="userListSelect">
+                        <input type="text" name="code" id="" value="" class="col-sm-2 col-xs-6 pileCode" placeholder="桩体编码"/>
+                        <div class="col-sm-offset-1 col-sm-2 col-xs-6 model-select-box">
+                            <div class="model-select-text pileStatusBlock" data-value="" id="pileStatusHtml">电桩状态</div>
+                            <span class="downRow pileStatusBlock"></span>
+                            <input type="text" name="status" hidden="hidden" id="" value="" />
+                            <ul class="model-select-option pileStatusUl">
+                                <li data-option="" class="seleced">电桩状态</li>
+                                <li data-option="0">离散</li>
+                                <li data-option="1">上线</li>
+
+                            </ul>
+                        </div>
+                        <div class="col-sm-offset-1 col-xs-6 col-sm-2  model-select-box">
+                            <div class="model-select-text electricPowerBlock" data-value="" id="powerHtml">功率</div>
+                            <span class="downRow electricPowerBlock"></span>
+                            <input type="text" name="power" hidden="hidden" id="" value="" />
+                            <ul class="model-select-option" id="electricPower">
+                                <li data-option="" class="seleced">功率</li>
+                            </ul>
+                        </div>
+                        <!--============-->
+                        <div class="col-sm-offset-1 col-sm-2 col-xs-6 model-select-box">
+                            <div class="model-select-text electricChargeModeBlock" data-value="" id="chargingMethodHtml">充电方式</div>
+                            <span class="downRow electricChargeModeBlock"></span>
+                            <input type="text" name="chargingMethod" id="" value="" hidden="hidden"/>
+                            <ul class="model-select-option " id="electricChargeMode">
+                                <li data-option="" class="seleced">充电方式</li>
+
+                            </ul>
+                        </div>
+
+                    </div>
+                    <div class="col-sm-12" style="background: #FFFFFF;height: 10px;"></div>
+                    <div class="userListSelect">
+                        <!--==============-->
+                        <div class=" col-sm-2 col-xs-6 model-select-box">
+                            <div class="model-select-text pileMakerBlock" data-value="" id="pileMakerIdHtml">制造商</div>
+                            <span class="downRow pileMakerBlock"></span>
+                            <input type="text" name="pileMakerId" id="" value="" hidden="hidden"/>
+                            <ul class="model-select-option pileMarkerUl">
+                                <li data-option="" class="seleced">制造商</li>
+
+                            </ul>
+                        </div>
+                        <!--==============-->
+                        <div class="col-sm-offset-1 col-sm-2 col-xs-6 model-select-box">
+                            <div class="model-select-text cpyProvinceBlock" data-value="" id="provinceCodeHtml">选择省份</div>
+                            <span class="downRow cpyProvinceBlock"></span>
+                            <input type="text" name="provinceCode" hidden="hidden" id="" value="" />
+                            <ul class="model-select-option cpyProvinceUl">
+                                <li data-option="" class="seleced">选择省份</li>
+
+                            </ul>
+                        </div>
+                        <div class="col-sm-offset-1 col-xs-6 col-sm-2  model-select-box">
+                            <div class="model-select-text cypCityBlock" data-value="" id="cityCodeHtml">选择城市</div>
+                            <span class="downRow cypCityBlock"></span>
+                            <input type="text" name="cityCode" hidden="hidden" id="" value="" />
+                            <ul class="model-select-option cypCityUl">
+                                <li data-option="" class="seleced">选择城市</li>
+
+                            </ul>
+                        </div>
+                        <!--============-->
+
+                        <div class=" col-sm-offset-1 col-sm-2 col-xs-6 model-select-box">
+                            <div class="model-select-text cpyAreaBlock" data-value="" id="areaCodeHtml">选择区/县</div>
+                            <span class="downRow cpyAreaBlock"></span>
+                            <input type="text" name="areaCode" id="" value="" hidden="hidden"/>
+                            <ul class="model-select-option areaUl">
+                                <li data-option="" class="seleced">选择区/县</li>
+
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-sm-12" style="background: #FFFFFF;height: 10px;"></div>
+                    <div class="userListSelect">
+                        <div class="col-sm-2 col-xs-6 model-select-box">
+                            <div class="model-select-text electricPileTypeBlock" data-value="" id="typeIdHtml">电桩类型</div>
+                            <span class="downRow electricPileTypeBlock"></span>
+                            <input type="text" name="typeId" id="" value="" hidden="hidden"/>
+                            <ul class="model-select-option " id="electricPileType">
+                                <li data-option="" class="seleced">电桩类型</li>
+
+                            </ul>
+                        </div>
+
+                        <!--==============-->
+                        <div class="col-sm-offset-1 col-sm-2 col-xs-6 model-select-box">
+                            <div class="model-select-text ownerShipBlock" data-value="" id="ownerShipHtml">资产归属</div>
+                            <span class="downRow ownerShipBlock"></span>
+                            <input type="text" name="ownerShip" id="" value="" hidden="hidden"/>
+                            <ul class="model-select-option ownerShipUl">
+                                <li data-option="" class="seleced">资产归属</li>
+
+                            </ul>
+                        </div>
+                        <!--==============-->
+
+
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-2 col-md-2 col-lg-2" style="position: relative;">
+                    <div class="queryBtn" onclick="getElectricPileList()">
+                        查询
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!--按钮部分开始==========================================================-->
+        <div class="btnBlock">
+            <div class="col-sm-12 col-xs-12 col-md-12" style="">
+                <div class="col-sm-1 col-xs-1 btnStyle showBtn" id="showBtn" style="display: none;">
+                    显示
+                </div>
+                <ul class="checkList animated fadeInDown col-sm-3 col-xs-3" style="display: none;">
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name=""  data-state="0" id="" value="" disabled="disabled" checked="checked" data-flag="electricPileList_electricPileCode" />
+                        </div><label>桩体编码</label>
+                    </li>
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name=""  data-state="0" id="" value="" disabled="disabled" checked="checked" data-flag="electricPileList_electricPileNum"/>
+                        </div><label>编号</label>
+
+                    </li>
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name=""  data-state="0" id="" value="" disabled="disabled" checked="checked" data-flag="electricPileList_chargeMode"/>
+                        </div><label>充电方式</label>
+
+                    </li>
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name=""  data-state="0" id="" value="" disabled="disabled" checked="checked" data-flag="electricPileList_powerNum"/>
+                        </div><label>功率</label>
+                    </li>
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name=""  data-state="0" id="" value=""  data-flag="electricPileList_headNum"/>
+                        </div><label>枪头数量</label>
+                    </li>
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name=""  data-state="0" id="" value=""  data-flag="electricPileList_pileStatus"/>
+                        </div><label>电桩状态</label>
+                    </li>
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name=""  data-state="0" id="" value=""  data-flag="electricPileList_pileAddress"/>
+                        </div><label>地址</label>
+                    </li>
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name=""  data-state="0" id="" value=""  data-flag="electricPileList_pileOwnner"/>
+                        </div><label>资产归属</label>
+                    </li>
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name=""  data-state="0" id="" value=""  data-flag="electricPileList_creatTime"/>
+                        </div><label>创建时间</label>
+                    </li>
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name=""  data-state="0" id="" value=""  data-flag="electricPileList_typeSpan"/>
+                        </div><label>产品型号</label>
+                    </li>
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name=""  data-state="0" id="" value=""  data-flag="electricPileList_pileType"/>
+                        </div><label>电桩类型</label>
+                    </li>
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name=""  data-state="0" id="" value=""  data-flag="electricPileList_pileCompany"/>
+                        </div><label>电桩制造商</label>
+                    </li>
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name=""  data-state="0" id="" value=""  data-flag="electricPileList_defaultRateInfo"/>
+                        </div><label>默认费率</label>
+                    </li>
+
+                   <li>
+                       <div class="checkboxStyle">
+                           <input type="checkbox" name=""  data-state="0" id="" value=""  data-flag="electricPileList_pileName"/>
+                       </div><label>电桩名称</label>
+                   </li>
+
+                </ul>
+                <div class="col-sm-1 col-xs-1 btnStyle" id="importElectricBtn" style="margin-left: 20px;display: none;">
+                    导入
+                </div>
+                <div class="col-sm-1 col-xs-1 btnStyle" id="exportElectricBtn" style="margin-left: 20px;display: none;">
+                    导出
+                </div>
+                <div class="col-sm-1 col-xs-1 btnStyle" id="addElectric" style="margin-left: 20px;display: none;">
+                    新建
+                </div>
+                <div class="col-sm-1 col-xs-1 btnStyle" id="deleteBtn" style="margin-left: 20px;display: none;">
+                    删除
+                </div>
+                <div class="col-sm-1 col-xs-1 btnStyle" id="ownshipBind" style="margin-left: 20px;display: none;">
+                    资产绑定
+                </div>
+            </div>
+        </div>
+        <!--表格部分开始==========================================================-->
+        <div class="showSet table-responsive">
+
+            <table class=" table table-bordered text-center" style="border: 1px solid #DCDCDC;">
+                <thead>
+                <tr>
+                    <th class=""><input type="checkbox" name="" class="selAll" value=""/></th>
+                    <th class="electricPileList_electricPileCode">桩体编码</th>
+                    <th class="electricPileList_electricPileNum">编号</th>
+                    <th class="electricPileList_chargeMode">充电方式</th>
+                    <th class="electricPileList_powerNum">功率</th>
+                    <th class="electricPileList_headNum">枪头数量</th>
+                    <th class="electricPileList_pileStatus">电桩状态</th>
+                    <th class="electricPileList_pileAddress">地址</th>
+                    <th class="electricPileList_pileOwnner">资产归属</th>
+                    <th class="electricPileList_creatTime">创建时间</th>
+                    <th class="electricPileList_typeSpan">产品型号</th>
+                    <th class="electricPileList_pileType">电桩类型</th>
+                    <th class="electricPileList_pileCompany">电桩制造商</th>
+                    <th class="electricPileList_defaultRateInfo">默认费率</th>
+                    <th class="electricPileList_pileName">电桩名称</th>
+                </tr>
+                </thead>
+                <tbody id="myTbogy">
+
+                </tbody>
+            </table>
+
+            <div id="electricListPage" class="pagination">
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="deleteContent" style="display: none;">
+    确定删除吗？
+</div>
+<div class="ownshipBindBlock" style="display: none;">
+    <div class="" style="width: 280px;">
+        <div class="col-sm-12 queryParam text-left">
+            请选择省
+        </div>
+        <div class=" col-xs-12 col-sm-12 model-select-box">
+            <div class="model-select-text ele_cpyProvinceBlock" data-value="" id="el_cpyProvinceCode">请选择
+            </div>
+            <span class="downRow ele_cpyProvinceBlock"></span>
+            <ul class="model-select-option el_cpyProvinceUl" style="max-height: 90px;">
+
+            </ul>
+        </div>
+    </div>
+    <div class="" style="width: 280px;margin-top: 30px;">
+        <div class="col-sm-12 queryParam text-left">
+            请选择市
+        </div>
+        <div class=" col-xs-12 col-sm-12 model-select-box">
+            <div class="model-select-text ele_cypCityBlock" data-value="" id="ele_cypCityCode">请选择</div>
+            <span class="downRow ele_cypCityBlock"></span>
+            <ul class="model-select-option ele_cypCityUl" style="max-height: 90px;">
+            </ul>
+        </div>
+    </div>
+    <div class="" style="width: 280px;margin-top: 30px;">
+        <div class="col-sm-12 queryParam text-left">
+            请选择公司
+        </div>
+        <div class=" col-xs-12 col-sm-12 model-select-box">
+            <div class="model-select-text ele_cpyCompanyBlock" data-value="" id="ele_cpyCompanyName">请选择
+            </div>
+            <span class="downRow ele_cpyCompanyBlock"></span>
+            <input type="text" name="ownerShip" id="ownerShip" value="" hidden="hidden"/>
+            <ul class="model-select-option ele_cpyCompanyUl" style="max-height: 90px;">
+
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+<script src="../../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<!--<script src="../js/apiAddress.js" type="text/javascript" charset="utf-8"></script>-->
+<script src="../../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="../../../js/contabs.min.js"></script>
+<script src="../../../js/electric/electricPile/electricPile_list.js" type="text/javascript" charset="utf-8"></script>
+</html>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>加载列表</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" type="text/css" href="css/mui.css"/>
+		<link rel="stylesheet" type="text/css" href="css/powerStation_evaluateList.css"/>
+	</head>
+	<body>
+		<!--<div class="occupied">
+			1111
+		</div>-->
+		<!--下拉刷新容器-->
+		<div id="pullrefresh" class="mui-content mui-scroll-wrapper">
+			
+			<div class="mui-scroll">
+				<!--数据列表-->
+				<ul class="mui-table-view mui-table-view-chevron">
+					<!--<li class="active">
+						<div class="commentTop">-->
+							<!--头像====-->
+							<!--<div class="headPortrait">
+								<div class="round">-->
+									<!--<img src="img/bg_map_head2.png"/>-->
+									<!--<img src="img/bg_map_eichong.png"/>
+								</div>
+							</div>-->
+							<!--昵称===-->
+							<!--<div class="nickName">-->
+								<!--15802452365-->
+								<!--一车小石头
+							</div>-->
+							<!--星评===-->
+							<!--<div class="star">
+								<ul class="starList" id="starList">
+									<li class="firstStar"></li>
+									<li></li>
+									<li></li>
+									<li></li>
+									<li></li>
+								</ul>
+							</div>
+						</div>
+						<div class="commentCenter">
+							国家能发放时发生地方飞方式放水电费水电费是否是的方式阿道夫
+						</div>
+						<div class="commentBottom">
+							<div class="commentDay">
+								10-12
+							</div>
+						</div>
+					</li>-->
+				</ul>
+			</div>
+		</div>
+		<script src="dist/js/jquery-1.11.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/url.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			mui.init({
+				pullRefresh: {
+					container: '#pullrefresh',
+					down: {
+						callback: pulldownRefresh
+					},
+					up: {
+						contentrefresh: '正在加载...',
+						callback: pullupRefresh
+					}
+				}
+			});
+			/**
+			 * 下拉刷新具体业务实现   具体需求还没实现，刷新是一次刷10条，加载不能一次加载10条
+			 */
+			var j=0;
+			function pulldownRefresh() {
+				setTimeout(function() {
+					var table = document.body.querySelector('.mui-table-view');
+					var cells = document.body.querySelectorAll('.mui-table-view-cell');
+					var url="/itf/electric/psComment";
+					$.ajax({
+						type:"get",
+						url:getRootPath()+url,
+						async:true,
+						dataType:"json",
+						data:{
+							pageNum:10,
+							pageNumber:1,
+							prCoProductId:252
+						},
+						success:function(req){
+							//alert(JSON.stringify(req));
+							if(req.status==100){
+								//alert(req.data);
+								var datas=req.data;
+								//alert(j)
+//								if(datas.length==0){
+//									mui('#pullrefresh').pullRefresh().endPulldownToRefresh(); //refresh completed
+//								}
+								
+								table.innerHTML="";
+								j=1;
+								
+								for (var i =0 , len = i + datas.length; i < len; i++) {
+									
+									//alert(JSON.stringify(datas))
+									//评论内容========================================================
+									var epc_Content=datas[i].epc_Content;
+									//alert(epc_Content);
+									//用户昵称=======================================================
+									var epc_UserName=datas[i].epc_UserName;
+									//alert(epc_UserName)
+									//评论创建时间===================================================
+									var epc_Createdate=datas[i].epc_Createdate;
+									//alert(epc_Createdate);
+									//评论id==========================================================
+									var pk_EpcComment=datas[i].pk_EpcComment;
+									//alert(pk_EpcComment);
+									//电桩id
+									var epc_EpId=datas[i].epc_EpId;
+									//alert(epc_EpId)
+									//用户头像========================================================
+									var userImage=datas[i].userImage;
+									//alert(userImage);
+									//星评
+									var eps_CommentStar=datas[i].eps_CommentStar;
+									//alert(eps_CommentStar);
+									var star2="";
+									var html2="";
+									for(var n=0;n<eps_CommentStar;n++){
+										star2+='<li class="activeStyle"></li>';
+										
+									}
+									for(var m=0;m<5-eps_CommentStar;m++){
+										html2+='<li></li>';
+									}
+									var li = document.createElement('li');
+									li.className = 'active';
+									li.innerHTML = '<div class="commentTop"><div class="headPortrait"><div class="round">'
+									+'<img src="'+userImage+'"/>'
+									+'</div></div><div class="nickName">'+epc_UserName
+									+'</div><div class="star"><ul class="starList" id="starList">'+star2+html2+'</ul></div></div>'
+									+'<div class="commentCenter">'+epc_Content
+									+'</div><div class="commentBottom"><div class="commentDay">'+epc_Createdate
+									+'</div></div>';
+//									table.insertBefore(li, table.firstChild);
+									table.appendChild(li);
+								}
+								
+							}
+							
+						}
+					});
+					mui('#pullrefresh').pullRefresh().endPulldownToRefresh(); //refresh completed
+				}, 1500);
+			}
+			
+			var count = 0;
+			/**
+			 * 上拉加载具体业务实现
+			 */
+//			j是当前第几页的变量
+			
+			function pullupRefresh() {
+				setTimeout(function() {
+					var table = document.body.querySelector('.mui-table-view');
+					var cells = document.body.querySelectorAll('.mui-table-view-cell');
+					var url="/itf/electric/psComment";
+					$.ajax({
+						type:"get",
+						url:getRootPath()+url,
+						async:true,
+						dataType:"json",
+						data:{
+							pageNum:10,
+							pageNumber:++j,
+							prCoProductId:252
+						},
+						success:function(req){
+							//alert(JSON.stringify(req));
+							if(req.status==100){
+								//alert(req.data);
+								var datas=req.data;
+								//alert(JSON.stringify(datas));
+								//alert(j)
+								if(datas.length==0){
+									count=1;
+									mui('#pullrefresh').pullRefresh().endPullupToRefresh((count==1)); //参数为true代表没有更多数据了。
+								}
+								for (var i =0 , len = i + datas.length; i < len; i++) {
+									
+									//alert(JSON.stringify(datas))
+									//评论内容========================================================
+									var epc_Content=datas[i].epc_Content;
+									//alert(epc_Content);
+									//用户昵称=======================================================
+									var epc_UserName=datas[i].epc_UserName;
+									//alert(epc_UserName)
+									//评论创建时间===================================================
+									var epc_Createdate=datas[i].epc_Createdate;
+									//alert(epc_Createdate);
+									//评论id==========================================================
+									var pk_EpcComment=datas[i].pk_EpcComment;
+									//alert(pk_EpcComment);
+									//电桩id
+									var epc_EpId=datas[i].epc_EpId;
+									//alert(epc_EpId)
+									//用户头像========================================================
+									var userImage=datas[i].userImage;
+									//alert(userImage);
+									//星评
+									var eps_CommentStar=datas[i].eps_CommentStar;
+									//alert(eps_CommentStar);
+									var star="";
+									var html="";
+									for(var n=0;n<eps_CommentStar;n++){
+										star+='<li class="activeStyle"></li>';
+									}
+									for(var m=0;m<5-eps_CommentStar;m++){
+										html+='<li></li>';
+									}
+									var li = document.createElement('li');
+									li.className = 'active';
+									li.innerHTML = '<div class="commentTop"><div class="headPortrait"><div class="round">'
+									+'<img src="'+userImage+'"/>'
+									+'</div></div><div class="nickName">'+epc_UserName
+									+'</div><div class="star"><ul class="starList" id="starList">'+star+html+'</ul></div></div>'
+									+'<div class="commentCenter">'+epc_Content
+									+'</div><div class="commentBottom"><div class="commentDay">'+epc_Createdate
+									+'</div></div>';
+									table.appendChild(li);
+									
+								}
+								
+							}
+							
+						}
+					});
+					mui('#pullrefresh').pullRefresh().endPullupToRefresh((count==1)); //参数为true代表没有更多数据了。
+				}, 1500);
+			}
+			if (mui.os.plus) {
+				mui.plusReady(function() {
+					setTimeout(function() {
+						mui('#pullrefresh').pullRefresh().pullupLoading();
+					}, 1000);
+
+				});
+			} else {
+				mui.ready(function() {
+					mui('#pullrefresh').pullRefresh().pullupLoading();
+				});
+				
+			}
+			
+		</script>
+	</body>
+
+</html>

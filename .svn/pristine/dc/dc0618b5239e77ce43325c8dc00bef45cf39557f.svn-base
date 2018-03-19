@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.StatisticsUserMapper">
+ 	
+ 	<select id="queryUserDataCount" parameterType="Map" resultType="Map">
+ 	SELECT
+	*
+FROM
+	(
+		SELECT
+			count(1) countYesterdayApp
+		FROM
+			tbl_user a,
+			tbl_user_normal n
+		WHERE
+			a.user_id = n.user_id AND a.user_status != 3 AND
+				<![CDATA[	TO_DAYS(NOW()) - TO_DAYS(a.gmt_create) <= 1 ]]>  
+	) aa,
+(
+		SELECT
+			count(1) countYesterdayCard
+		FROM
+			tbl_user a,
+			tbl_usercard c
+		WHERE
+			a.user_id = c.user_Id AND c.new_user_id = 0 AND a.user_status != 3 AND
+		<![CDATA[	TO_DAYS(NOW()) - TO_DAYS(a.gmt_create) <= 1 ]]>  
+	) bb,
+	(
+		SELECT
+			count(1) countTotalApp
+		FROM
+			tbl_user a,
+			tbl_user_normal n
+		WHERE
+			a.user_id = n.user_id AND a.user_status != 3 
+			<if test="beginTime != null and beginTime !=''">
+			AND a.gmt_create &gt; #{beginTime}
+			</if>
+			<if test="endTime != null and endTime !=''">
+		AND a.gmt_create &lt; #{endTime}
+		</if>
+	) cc,
+(
+		SELECT
+			count(1) countTotalCard
+		FROM
+		tbl_user a,
+			tbl_usercard c
+		WHERE
+			a.user_id = c.user_Id AND c.new_user_id = 0 AND a.user_status != 3 
+			<if test="beginTime != null and beginTime !=''">
+			AND a.gmt_create &gt; #{beginTime}
+			</if>
+			<if test="endTime != null and endTime !=''">
+		AND a.gmt_create &lt; #{endTime}
+		</if>
+	) dd
+ 	</select>
+  
+  <select id="queryAppUserDataLine" parameterType="Map" resultType="Map">
+  		SELECT
+			count(1) countTotal,
+			DATE_FORMAT(a.gmt_create,'%Y-%m-%d') as time
+		FROM
+			tbl_user a,
+			tbl_user_normal n
+		WHERE
+			a.user_id = n.user_id AND a.user_status != 3 
+	<if test="beginTime != null and beginTime !=''">
+			AND a.gmt_create &gt;= #{beginTime}
+			</if>
+			<if test="endTime != null and endTime !=''">
+		AND a.gmt_create &lt;= #{endTime}
+		</if>
+		GROUP BY DATE_FORMAT(a.gmt_create,'%Y-%m-%d')
+  </select>
+  
+  <select id="queryCardUserDataLine" parameterType="Map" resultType="Map">
+  		SELECT
+			count(1) countTotal,
+			DATE_FORMAT(a.gmt_create, '%Y-%m-%d') AS time
+		FROM
+		tbl_user a,
+		tbl_usercard c
+		WHERE
+			a.user_id = c.user_id
+		AND a.user_status != 3
+		AND c.new_user_id = 0
+	<if test="beginTime != null and beginTime !=''">
+			AND a.gmt_create &gt;= #{beginTime}
+			</if>
+			<if test="endTime != null and endTime !=''">
+		AND a.gmt_create &lt;= #{endTime}
+		</if>
+		GROUP BY
+		DATE_FORMAT(a.gmt_create, '%Y-%m-%d')
+  </select>
+  <select id="queryUserDataList" parameterType="Map" resultType="Map">
+  		SELECT
+	time,
+	sum(a1) AS appUserCount,
+	sum(a2) AS cardUserCount
+FROM
+	(
+		SELECT
+			count(1) a1,
+			0 AS a2,
+			DATE_FORMAT(a.gmt_create, '%Y-%m-%d') AS time
+		FROM
+			tbl_user a,
+			tbl_user_normal n
+		WHERE
+			a.user_id = n.user_id
+		AND a.user_status != 3
+	<if test="beginTime != null and beginTime !=''">
+			AND a.gmt_create &gt;= #{beginTime}
+			</if>
+			<if test="endTime != null and endTime !=''">
+		AND a.gmt_create &lt;= #{endTime}
+		</if>
+		GROUP BY
+			time
+		UNION
+			SELECT
+				0 AS a1,
+				count(1) a2,
+				DATE_FORMAT(a.gmt_create, '%Y-%m-%d') AS time
+			FROM
+				tbl_user a,
+				tbl_usercard c
+			WHERE
+				a.user_id = c.user_id
+			AND a.user_status != 3
+			AND c.new_user_id = 0
+		<if test="beginTime != null and beginTime !=''">
+			AND a.gmt_create &gt; #{beginTime}
+			</if>
+			<if test="endTime != null and endTime !=''">
+		AND a.gmt_create &lt; #{endTime}
+		</if>
+			GROUP BY
+				time
+		) b
+		GROUP BY
+			time
+		ORDER BY
+		time DESC
+		<if test="pager!=null">
+           limit #{pager.offset},#{pager.pageSize}
+        </if>
+  </select>
+  
+  <select id="queryUserDataListCount" parameterType="Map" resultType="long">
+  SELECT count(1) from(
+  SELECT
+	time,
+	sum(a1) AS appUserCount,
+	sum(a2) AS cardUserCount
+FROM
+	(
+		SELECT
+			count(1) a1,
+			0 AS a2,
+			DATE_FORMAT(a.gmt_create, '%Y-%m-%d') AS time
+		FROM
+			tbl_user a,
+			tbl_user_normal n
+		WHERE
+			a.user_id = n.user_id
+		AND a.user_status != 3
+		<if test="beginTime != null and beginTime !=''">
+			AND a.gmt_create &gt;= #{beginTime}
+			</if>
+			<if test="endTime != null and endTime !=''">
+		AND a.gmt_create &lt;= #{endTime}
+		</if>
+		GROUP BY
+			time
+		UNION
+			SELECT
+				0 AS a1,
+				count(1) a2,
+				DATE_FORMAT(a.gmt_create, '%Y-%m-%d') AS time
+			FROM
+				tbl_user a,
+				tbl_usercard c
+			WHERE
+				a.user_id = c.user_id
+			AND a.user_status != 3
+			AND c.new_user_id = 0
+			<if test="beginTime != null and beginTime !=''">
+			AND a.gmt_create &gt; #{beginTime}
+			</if>
+			<if test="endTime != null and endTime !=''">
+		AND a.gmt_create &lt; #{endTime}
+		</if>
+			GROUP BY
+				time
+		) b
+		GROUP BY
+			time
+		ORDER BY
+		time DESC
+  )cc
+  </select>
+  
+</mapper>

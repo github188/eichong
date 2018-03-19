@@ -1,0 +1,38 @@
+{
+	 "title" : {
+        "text": "电桩消费"
+    },
+    "tooltip" : {
+        "trigger": "axis"
+    },
+    "legend": {
+    	"y": 20,
+        "data":["充电金额","充电度数","充电次数"]
+    },
+    "toolbox": {
+        "show" : true,
+        "feature" : {
+        	"outView":{"false": false,color: '#8b3a3a'},
+        	"innerView":{"false": true,color: '#8b3a3a'},
+            "mark" : {"show": false},
+            "dataView" : {"show": false, "readOnly": false},
+            "magicType" : {"show": false, "type": ["line", "bar"]},
+            "restore" : {"show": false},
+            "saveAsImage" : {"show": false}
+        }
+    },
+    "calculable" : true,
+    "xAxis" : [
+                    {
+                        "type" : "category",
+                        "data" : ["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"]
+                    }
+                ],
+    "yAxis" : [
+                    {
+                        "type" : "value",
+                        "splitArea" : {"show" : true}
+                    }
+                ]         
+    
+}

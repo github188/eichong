@@ -1,0 +1,137 @@
+package com.wanma.ims.service.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.wanma.ims.common.domain.RoleDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.constants.WanmaConstants;
+import com.wanma.ims.mapper.RoleMapper;
+import com.wanma.ims.mapper.UserRoleMapper;
+import com.wanma.ims.service.MenuService;
+import com.wanma.ims.service.RoleService;
+
+@Service
+public class RoleServiceImpl implements RoleService {
+
+	// 日志输出对象
+	private static Logger LOGGER = Logger.getLogger(RoleServiceImpl.class);
+
+	@Autowired
+	private RoleMapper roleMapper;
+	@Autowired
+	UserRoleMapper userRoleMapper;
+	@Autowired
+	MenuService menuService;
+
+
+	@Override
+	public Long countRoleList(UserDO userDO,RoleDO roleDO) {
+		Long total = 0L;
+		roleDO.setUserId(userDO.getUserId());
+		switch (userDO.getUserLevel()) {
+			case WanmaConstants.USER_LEVEL_SUPER:
+				total = roleMapper.countRoleListByAdmin(roleDO);
+				break;
+			case WanmaConstants.USER_LEVEL_ADMIN:
+				total = roleMapper.countRoleListByAdmin(roleDO);
+				break;
+			case WanmaConstants.USER_LEVEL_WORK:
+				total = roleMapper.countRoleListByOperatorId(roleDO);
+				break;
+			default:
+				total = roleMapper.countRoleListByCreateUserId(roleDO);
+				break;
+		}
+		return total;
+	}
+
+	@Override
+	public List<RoleDO> getRoleList(UserDO userDO,RoleDO roleDO) {
+		roleDO.setUserId(userDO.getUserId());
+		List<RoleDO> roleList = new ArrayList<RoleDO>();
+		switch (userDO.getUserLevel()) {
+			case WanmaConstants.USER_LEVEL_SUPER:
+				roleList = roleMapper.selectRoleListByAdmin(roleDO);
+				break;
+			case WanmaConstants.USER_LEVEL_ADMIN:
+				roleList = roleMapper.selectRoleListByAdmin(roleDO);
+				break;
+			case WanmaConstants.USER_LEVEL_WORK:
+				roleList = roleMapper.selectRoleListByOperatorId(roleDO);
+				break;
+			default:
+				roleList = roleMapper.selectRoleListByCreateUserId(roleDO);
+				break;
+		}
+		return roleList;
+	}
+
+	@Override
+	public RoleDO getRoleById(String roleId) {
+		return roleMapper.selectRoleById(roleId);
+	}
+
+	@Override
+	public List<RoleDO> getRoleListByUserId(Long userId) {
+		return roleMapper.selectRoleListByUserId(userId);
+	}
+	
+	@Override
+	public List<String> getRoleIdsByUserId(Long userId) {
+		return roleMapper.selectRoleIdsByUserId(userId);
+	}
+	@Override
+	public boolean addRole(RoleDO roleDO, String menuIds) throws Exception{
+		if (roleMapper.insertRole(roleDO) > 0) {
+			roleMapper.updateRoleMenuRela(roleDO.getRoleId(), menuIds);
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public List<RoleDO> getAllRoleList() {
+		return roleMapper.selectAllRoleList();
+	}
+
+	@Override
+	public boolean modifyRole(RoleDO roleDO, String menuIds) throws Exception{
+		if (roleMapper.updateRole(roleDO) > 0) {
+			roleMapper.updateRoleMenuRela(roleDO.getRoleId(), menuIds);
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public BaseResultDTO removeRoleById(String roleId) throws Exception{
+		BaseResultDTO result = new BaseResultDTO();
+		RoleDO role = roleMapper.selectRoleById(roleId);
+		if(null == role){
+			result.setSuccess(false);
+			result.setErrorDetail("该角色不存在，请刷新页面重试");
+			return result;
+		}
+		int count = userRoleMapper.selectUserListByRoleId(roleId);
+		if (count > 0) {
+			result.setSuccess(false);
+			result.setErrorDetail("此角色下已有用户，请先删除用户");
+			return result;
+		} 
+		//删除角色
+		if(roleMapper.deleteRoleById(roleId) < 0){
+			roleMapper.deleteRoleMenuByRoleId(roleId);
+		}
+	
+		return result;
+	}
+
+	
+
+}

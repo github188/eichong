@@ -1,0 +1,150 @@
+var code = getUrlParam("code");
+var getOpenId = localStorage.getItem("openId");
+
+function getChargeStatus() {
+//    alert("code="+code+":::::::getOpenId"+getOpenId);
+    $.ajax({
+        type: "get",
+        url: basePath + getChgStatus,
+        async: true,
+        dataType: "json",
+        data: {
+            code: code,
+            openId: (!getOpenId) ? "" : getOpenId
+        },
+        success: function (reqs) {
+
+            var reqs = JSON.parse(reqs);
+            if (reqs.status == 100) {
+                var req = reqs.data;
+                var openId = req.openId;
+                localStorage.setItem("openId", openId);
+                var status = req.status;
+                
+                
+                //localStorage.setItem("chargeStatus", status);
+                
+                if (status == 1) {
+        	        layer.closeAll();
+        	        layer.open({
+        	            content: '<div class="chargingTip">您正在充电</div>',
+        	            style: 'border:none; background-color:#cccccc; color:#000;font-size:36/@r;',
+        	            btn: ['查看', '我知道了'],
+        	            shadeClose: false,
+        	            anim: 'up',
+        	            fixed: true,
+        	            no: function (index) {
+        	                layer.close(index);
+        	            },
+        	            yes: function (index) {
+        	                toPage("charging.html");
+        	                layer.close(index);
+        	            }
+        	        });
+        	    }
+        	    
+        	  else if (testPileNum) {
+                getCharge();
+            }
+                
+                // alert(getLValue("openId"))
+            }
+
+        }
+    });
+}
+// 传识别码获取状态===================================
+function getCharge() {
+  
+   /* getChargeStatus();
+    var chargeStatus = localStorage.getItem("chargeStatus");*/
+    var epCodes = $('#pileNum').val();
+    //alert(chargeStatus);
+    localStorage.setItem("epCodes", epCodes);
+    // var epCodes="568571";
+  //  if (chargeStatus == 0) {
+        getPileInfo(epCodes);
+   /* } else if (chargeStatus == 1) {
+        layer.closeAll();
+        layer.open({
+            content: '<div class="chargingTip">您正在充电</div>',
+            style: 'border:none; background-color:#cccccc; color:#000;font-size:36/@r;',
+            btn: ['查看', '我知道了'],
+            shadeClose: false,
+            anim: 'up',
+            fixed: true,
+            no: function (index) {
+                layer.close(index);
+            },
+            yes: function (index) {
+                toPage("charging.html");
+                layer.close(index);
+            }
+        });
+    }*/
+}
+function getPileInfo(epCode) {
+    $.ajax({
+        type: "get",
+        url: basePath + getElectricPile,
+        async: true,
+        dataType: "json",
+        data: {
+            epCodes: epCode
+        },
+        success: function (datas) {
+            var datas = JSON.parse(datas);
+            if (datas.status == 100) {
+                var req = datas.data;
+                localStorage.setItem("elPiElectricPileName", req.elPiElectricPileName);
+                localStorage.setItem("elPiOutputCurrent", req.elPiOutputCurrent);
+                localStorage.setItem("currentRate", req.currentRate);
+                localStorage.setItem("elPiPowerSize", req.elPiPowerSize);
+                localStorage.setItem("pileCode", req.pileCode);
+                localStorage.setItem("gunCode", req.gunCode);
+                localStorage.setItem("elPiChargingMode", req.elPiChargingMode);
+                toPage("pileInfo.html");
+                // alert(JSON.stringify(req))
+            } else {
+                layer.closeAll();
+                layer.open({
+                    content: datas.msg,
+                    style: 'border:none; background-color:#cccccc; color:#000;font-size:36/@r;',
+                    btn: ['我知道了'],
+                    shadeClose: false,
+                    anim: 'up',
+                    fixed: true
+                });
+
+            }
+        }
+    });
+}
+//输入框6位识别码验证=========
+$('#pileNum').on("input propertychange", function () {
+    var numValue = $('#pileNum').val();
+    if (numValue.length > 6) {
+        $('#pileNum').val("");
+        $('#pileNum').focus();
+        return false;
+    }
+    return true;
+})
+function testPileNum() {
+    var reg = /^[0-9]{6}$/;
+    var numValue = $('#pileNum').val();
+    if (!reg.test(numValue)) {
+        $('#pileNum').focus();
+        $('#pileNum').prop('placeholder', '请输入6位纯数字');
+        $('#pileNum').val("");
+        return false;
+    }
+    return true;
+}
+//询问框
+$("#sureBtn").on("click", function () {
+	 getChargeStatus();
+//	 var chargeStatus = localStorage.getItem("chargeStatus");
+	 
+	  
+})

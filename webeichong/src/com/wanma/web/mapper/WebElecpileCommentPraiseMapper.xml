@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.web.dao.WebElecpileCommentPraiseMapper">
+
+	<insert id="insert" parameterType="map">
+	   insert into tbl_electricpilecomment_praise (
+	     ep_commentId,
+	     praise_UserId
+	   )values (
+	     #{commentId},
+	     #{userId}
+	   )
+	</insert>
+
+	<update id="updatePraiseCount" parameterType="map">
+	   update tbl_electricpilecomment set praise_count=#{praiseCount} where pk_EpcComment=#{commentId}
+	</update>
+
+	<select id="getMyPraiseCount" parameterType="map" resultType="int">
+	   select count(1) from tbl_electricpilecomment_praise where ep_commentId=#{commentId} and praise_UserId=#{userId}
+	</select>
+		
+</mapper> 

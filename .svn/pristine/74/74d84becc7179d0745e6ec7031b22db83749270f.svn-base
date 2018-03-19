@@ -1,0 +1,18 @@
+package com.wanma.ims.mapper;
+
+import java.util.List;
+
+import com.wanma.ims.common.domain.CarVinRelaDO;
+
+public interface CarVinRelaMapper {
+   
+	public List<CarVinRelaDO> getCarVinRelaList(CarVinRelaDO carVinRelaDO);
+	
+	public Long getCarVinRelaCount(CarVinRelaDO carVinRelaDO);
+
+	public Integer addCarVinRela(CarVinRelaDO carVinRelaDO);
+
+	public Integer batchAddCarVinRela(List<CarVinRelaDO> list);
+
+	public Integer removeCarVinRela(CarVinRelaDO carVinRelaDO);
+}

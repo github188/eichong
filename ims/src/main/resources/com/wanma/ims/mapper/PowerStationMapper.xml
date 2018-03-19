@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.PowerStationMapper">
+	<resultMap type="PowerStationDO" id="resultPowerStation">
+		<result property="powerstationId" column="powerStation_id" />
+		<result property="powerstationName" column="powerstation_name" />
+		<result property="address" column="address" />
+		<result property="longitude" column="longitude" />
+		<result property="latitude" column="latitude" />
+		<result property="phone" column="phone" />
+		<result property="provinceCode" column="province_code" />
+		<result property="cityCode" column="city_code" />
+		<result property="areaCode" column="area_Code" />
+		<result property="rateInfoId" column="rateInfo_id" />
+		<result property="parkingFee" column="parking_fee" />
+		<result property="onlineTime" column="onlineTime"/> 
+		<result property="isDel" column="is_del" />
+		<result property="creatorId" column="creator_id" />
+		<result property="creator" column="creator" />
+		<result property="modifier" column="modifier" />
+		<result property="gmtCreate" column="gmt_create" />
+		<result property="gmtModified" column="gmt_modified" />
+	</resultMap>
+   
+    <sql id="query-columns">
+		powerStation_id, powerstation_name,address,longitude,latitude,phone,province_code,city_code,area_Code,
+		rateInfo_id,parking_fee,onlineTime,is_del,creator_id,creator,modifier,gmt_create,gmt_modified
+	</sql>
+	<sql id="where-columns">
+	    is_del = 0
+	    <if test="powerstationId!=null and powerstationId != 0"> 
+		   and powerStation_id = #{powerstationId}
+	    </if>
+	    <if test="powerstationName!=null and powerstationName != ''"> 
+		   and powerstation_name like CONCAT('%',#{powerstationName},'%' )  
+	    </if>
+        <if test="provinceCode!=null and provinceCode!=''"> 
+		   and province_code = #{provinceCode}
+	    </if>
+	    <if test="cityCode!=null and cityCode!=''"> 
+		   and city_code = #{cityCode}
+	    </if>
+	    <if test="areaCode!=null and areaCode!=''"> 
+		   and area_Code = #{areaCode}
+	    </if>
+	    <if test="rateInfoId != null">
+	       and rateInfo_id = #{rateInfoId}
+	    </if>
+	    <if test="ids != null and ids.size() > 0">
+	       and powerStation_id in 
+	       <foreach collection="ids" item="id" open="(" close=")" separator=",">
+		        #{id}
+		   </foreach>
+	    </if>
+	</sql>
+	
+	<!-- 统计 -->
+	<select id="countPowerStationList" parameterType="PowerStationDO" resultType="Long">
+	   select count(1) from tbl_powerstation 
+	        where <include refid="where-columns"/> 
+       <if test="pager!=null">
+            limit #{pager.offset},#{pager.pageSize}
+        </if>
+	</select>
+	<!-- 分页查询 -->
+    <select id="selectPowerStationList" parameterType="PowerStationDO" resultMap="resultPowerStation">
+       select <include refid="query-columns"/>
+        from tbl_powerstation 
+	    where <include refid="where-columns"/> 
+       order by gmt_create desc 
+       <if test="pager!=null">
+            limit #{pager.offset},#{pager.pageSize}
+        </if>
+    </select>
+	
+	<!-- 根据ID查询 -->
+    <select id="selectPowerStationById" resultMap="resultPowerStation">
+       select <include refid="query-columns"/> from tbl_powerstation where is_del = 0 and powerStation_id = #{powerStationId}
+    </select>
+    
+    <!-- 根据名字查询 -->
+    <select id="selectPowerStationIdByName" resultType="Long">
+       select powerStation_id from tbl_powerstation where is_del = 0 and powerStation_name like concat(concat('%',#{powerStationName}),'%') 
+    </select>
+    
+	<!-- 新增 -->
+    <insert id="insertPowerStation" parameterType="PowerStationDO" useGeneratedKeys="true" keyProperty="powerstationId">
+       insert into tbl_powerstation (<include refid="query-columns"/> ) 
+       values (null, #{powerstationName},#{address},#{longitude},#{latitude},#{phone},
+       #{provinceCode},#{cityCode},#{areaCode},#{rateInfoId},#{parkingFee},#{onlineTime},0,#{creatorId},#{creator},'',NOW(),NOW())
+    </insert>
+	<!-- 修改 -->
+    <update id="updatePowerStation" parameterType="PowerStationDO">
+       update tbl_powerstation set
+	    <if test="powerstationName!=null and powerstationName != ''"> 
+		    powerstation_name = #{powerstationName},
+	    </if>
+        <if test="provinceCode!=null and provinceCode!=''"> 
+		    province_code = #{provinceCode},
+	    </if>
+	    <if test="cityCode!=null and cityCode!=''"> 
+		    city_code = #{cityCode},
+	    </if>
+	    <if test="areaCode!=null and areaCode!=''"> 
+		    area_Code = #{areaCode},
+	    </if>
+	    <if test="rateInfoId!=null and rateInfoId!=0"> 
+		    rateInfo_id = #{rateInfoId},
+	    </if>
+	    <if test="address!=null and address!=''"> 
+		    address = #{address},
+	    </if>
+	    <if test="longitude!=null"> 
+		    longitude = #{longitude},
+	    </if>
+	    <if test="latitude!=null"> 
+		    latitude = #{latitude},
+	    </if>
+	     <if test="onlineTime!=null and onlineTime!=''"> 
+		    onlineTime = #{onlineTime},
+	    </if>
+	     <if test="phone!=null and phone!=''"> 
+		    phone = #{phone},
+	    </if>
+	     <if test="parkingFee!=null"> 
+		    parking_fee = #{parkingFee},
+	    </if>
+	    modifier = #{modifier},
+	    gmt_modified = NOW()
+	    where is_del = 0 and powerStation_id = #{powerstationId} 
+    </update>
+    <!-- 删除 -->
+    <delete id="deletePowerStationById" parameterType="Long">
+       update tbl_powerstation set is_del = 1 where is_del = 0 and powerStation_id = #{powerStationId};
+    </delete>
+    
+    <!-- 省市区联动 获取电站 -->
+    <select id="getPowerStationForList" parameterType="PowerStationDO" resultType="hashMap">
+      SELECT powerStation_id id,powerStation_name name FROM tbl_powerstation p
+	  <where>
+	     <if test="provinceCode != null and provinceCode!=''"> AND province_code = #{provinceCode}</if>
+	     <if test="cityCode != null and cityCode!=''"> AND city_code = #{cityCode} </if>
+	     <if test="areaCode != null and areaCode !=''"> AND area_Code = #{areaCode}</if>
+	     <if test="powerstationName != null and powerstationName !=''">AND powerStation_name LIKE "%"#{powerstationName}"%" </if>
+	  </where>
+    </select>
+</mapper>

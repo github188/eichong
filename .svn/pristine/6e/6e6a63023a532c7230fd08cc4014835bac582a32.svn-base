@@ -1,0 +1,23 @@
+package com.wanma.ims.result;
+
+import com.wanma.ims.common.GlobalSystem;
+
+public class BaseException extends BaseResult{
+	
+	private static final long serialVersionUID = -1556451407092290067L;
+
+	public BaseException() {
+	   this.success = false;
+       this.status =  GlobalSystem.getConfig("exception");
+       this.msg = GlobalSystem.getConfig("error.msg.exception");
+    }
+	public BaseException(String msg) {
+	   this.success = false;
+       this.status =  GlobalSystem.getConfig("exception");
+       this.msg = msg;
+	}
+    @Override
+    public String toString() {
+        return super.toString();
+    }
+}

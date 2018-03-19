@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.dao.CmsConfigMapper">
+	<select id="getTypespanDictList" resultType="hashMap">
+		SELECT
+		pk_TypeSpanId
+		k,
+		ts_TypeSpan v
+		FROM tbl_typespan t
+		order by ts_Updatedate desc
+	</select>
+
+	<select id="getRateInfoList" resultType="hashMap">
+		SELECT
+		pk_RateInformation k,
+		pk_RateInformation v
+		FROM tbl_rateinformation t
+		order by raIn_Updatedate desc
+	</select>
+
+	<select id="getPileMakerDictList" resultType="hashMap">
+		SELECT
+		t.pk_Carmaker k,
+		t.maker_Name v
+		FROM tbl_pilemaker t
+		order by
+		t.maker_Createdate desc
+	</select>
+
+
+	<select id="getCarCompanyList" resultType="hashMap">
+		SELECT
+		t.pk_carCompany
+		k,
+		t.carCompany_Name v
+		FROM tbl_carcompany t
+		order by
+		t.carCompany_UpdateDate desc
+	</select>
+
+	<select id="searchProvinceList" parameterType="map" resultType="hashmap">
+		select
+		PROVINCE_ID provinceId,
+		PROVINCE_NAME provinceName,
+		CREATE_DATE createDate,
+		CREATE_USER createUser,
+		LAST_UPDATE_DATE lastUpdateDate,
+		LAST_UPDATE_USER lastUpdateUser,
+		Tip_Electricity tipElectricity,
+		Peak_Electricity peakElectricity,
+		Flat_Electricity flatElectricity,
+		Valley_Electricity valleyElectricity
+		from
+		tb_m_province
+		<where>
+			<if test="provinceId!=null and provinceId !=''">
+				and PROVINCE_ID=#{provinceId}
+			</if>
+			<if test="cityId!=null and cityId !=''">
+				and CITY_ID=#{cityId}
+			</if>
+		</where>
+		order by last_update_date desc
+	</select>
+
+	<select id="searchCityList" parameterType="map" resultType="hashmap">
+		select
+		PROVINCE_ID provinceId,
+		CITY_ID cityId,
+		CITY_NAME cityName,
+		HOT_FLAG hotFlag,
+		CREATE_DATE createDate,
+		CREATE_USER createUser,
+		LAST_UPDATE_DATE lastUpdateDate,
+		LAST_UPDATE_USER lastUpdateUser,
+		serviceLimit
+		from
+		tb_m_city
+		<where>
+			<if test="provinceId!=null and provinceId !=''">
+				and PROVINCE_ID=#{provinceId}
+			</if>
+			<if test="cityId!=null and cityId !=''">
+				and CITY_ID=#{cityId}
+			</if>
+			<if test="startDate !=null and startDate !='' ">
+			       <![CDATA[and CREATE_DATE >=#{startDate}]]>
+			</if>
+			<if test="endDate !=null and endDate !=''">
+				   <![CDATA[and CREATE_DATE <=#{endDate}]]>
+			</if>
+			<if test="serviceLimit !=null and serviceLimit !=''">
+				   <![CDATA[and serviceLimit <=#{serviceLimit}]]>
+			</if>
+		</where>
+	</select>
+
+	<select id="searchAreaList" parameterType="map" resultType="hashmap">
+		select
+		AREA_ID areaId,
+		PROVINCE_ID provinceId,
+		CITY_ID cityId,
+		AREA_NAME areaName,
+		hot_flag hotFlag,
+		delete_flag deleteFlag,
+		create_date createDate,
+		create_user createUser,
+		last_update_date lastUpdateDate,
+		last_update_user lastUpdateUsere
+		from
+		tb_m_area
+		<where>
+			<if test="provinceId!=null and provinceId !=''">
+				and PROVINCE_ID=#{provinceId}
+			</if>
+			<if test="cityId!=null and cityId !=''">
+				and CITY_ID=#{cityId}
+			</if>
+			<if test="areaId!=null and areaId !=''">
+				and area_id=#{areaId}
+			</if>
+			<if test="startDate !=null and startDate !='' ">
+			       <![CDATA[and CREATE_DATE >=#{startDate}]]>
+			</if>
+			<if test="endDate !=null and endDate !=''">
+				   <![CDATA[and CREATE_DATE <=#{endDate}]]>
+			</if>
+		</where>
+	</select>
+
+	<select id="getCompanyDictList" resultType="hashMap">
+		SELECT
+		pk_CompanyId k,
+		cpy_CompanyName v,
+		cpy_CompanyNumber t
+		FROM tbl_company
+		order by
+		cpy_Updatedate desc
+	</select>
+</mapper>

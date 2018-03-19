@@ -1,0 +1,51 @@
+toGiveHiddenInput();
+//去加载表格的数据
+setTimeout('productModelListSearch()', 150);
+function productModelListSearch() {
+    toGiveHiddenInput();
+    initTable("productModelListForm", "productModelListPage", getUserBlackWhiteUrl, productModelListCallback);
+}
+//表格数据
+function productModelListCallback(req) {
+    var data = req.dataObject;
+    var pageNum = req.pager.pageNo;
+    var listTr = "";
+    for (var i = 0; i < data.length; i++) {
+        listTr += '<tr><td><input type="checkbox" name="ids" class="selectedBox" value="' + data[i].id + '"/></td>'
+            + '<td class="bwList_userAccount">'+data[i].userAccount
+            + '</td><td class="bwList_electricPileCode">'+data[i].electricPileCode
+            + '</td><td class="bwList_cpyName">' + data[i].cpyName
+            + '</td><td class="bwList_typeName">' + data[i].typeName
+            + '</td></tr>';
+    }
+    $("#myCompanyTb").html(listTr);
+}
+//新建黑白名单
+$("body").off("click", "#addList").on("click", "#addList", function () {
+    window.location.href = "add_company.html";
+})
+//查询条件部分=========================
+function toGiveHiddenInput() {
+    var userAccountValue = $('#userAccount').val();
+    if (userAccountValue == "") {
+        $('input[name=userAccount]').val('');
+    } else {
+        $('input[name=userAccount]').val(userAccountValue);
+    }
+}
+//监听回车键
+$(document).keyup(function (event) {
+    if (event.keyCode == 13) {
+        productModelListSearch();
+    }
+});
+//单个禁用
+$('body').on('click', 'input[name=ids]', function () {
+    var flag = $(this).prop('checked');
+    if (flag == true) {
+        $(this).parents('td').parents('tr').siblings().find('input[name=ids]').prop('checked', false).attr('disabled', true);
+    } else {
+        $(this).parents('td').parents('tr').siblings().find('input[name=ids]').attr('disabled', false);
+    }
+
+})

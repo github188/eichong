@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsFeedbackMapper">
+	<resultMap id="feedbackResultMap" type="Feedback">
+		<id property="feedbackId" column="pk_FeedBack" />
+		<result property="userId" column="feBa_UserId" />
+		<result property="content" column="feBa_Content" />
+		<result property="createDate" column="feBa_Createdate" />
+		<result property="lastUpdateDate" column="feBa_Updatedate" />
+		<result property="processStatus" column="feBa_Status" />
+		<result property="reason" column="feBa_Reason" />		
+	</resultMap>
+	
+	
+	
+	<!-- 取得意见反馈列表 -->
+	<select id="getFeedbackList" parameterType="map" resultMap="feedbackResultMap">
+		select
+			pk_FeedBack,
+			feBa_UserId,
+			feBa_Content,
+			feBa_Createdate,
+			feBa_Updatedate,
+			feBa_Reason,
+			feBa_Status
+		from 
+			tbl_FeedBack
+		<where>
+		<if test="feedbackId != null">
+				pk_FeedBack=#{feedbackId}
+	     </if>
+	     <if test="userId != null">
+				feBa_UserId=#{userId}
+	     </if>
+	     <if test="content != null">
+				feBa_Content=#{content}
+	     </if>
+	     <if test="createDate != null">
+				feBa_Createdate=#{createDate}
+	     </if>
+	     <if test="lastUpdateDate != null">
+				feBa_Updatedate=#{lastUpdateDate}
+	     </if>
+	     <if test="processStatus != null">
+				feBa_Status=#{processStatus}
+	     </if>
+	     <if test="reason != null">
+				feBa_Reason=#{reason}
+	     </if>
+		</where>
+		order by feBa_Createdate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>	
+	</select>
+	
+	<!-- 查询意见反馈数量 -->
+	<select id="searchFeedbackCount" parameterType="map" resultType="long">
+		SELECT
+			count(fb.pk_FeedBack)
+		FROM 
+			tbl_FeedBack AS fb INNER JOIN (select a.user_account,b.user_id,b.norm_real_name from tbl_user a,tbl_user_normal b where a.user_id=b.user_id) AS ui ON ui.user_id = fb.feBa_UserId
+		<where>
+			1=1
+			<if test="phone!=null and phone !=''">
+				and ui.user_account like concat('%',#{phone},'%')
+			</if>
+			<if test="startDate !=null and startDate !='' ">
+			  <![CDATA[and fb.feBa_Createdate >=#{startDate}]]>
+			</if>
+			
+			<if test="endDate !=null and endDate !=''">
+				 <![CDATA[and fb.feBa_Createdate <=#{endDate}]]>
+			</if>
+			
+			<if test="processStatus!=null and processStatus !=''">
+				and fb.feBa_Status = #{processStatus}
+			</if>
+		</where>
+	</select>
+	
+	<!-- 查询全部意见反馈 -->
+	<select id="searchFeedbackList" parameterType="map" resultType="Feedback">
+		SELECT
+			fb.pk_FeedBack feedbackId,
+			ui.user_account as phone,
+			ui.norm_real_name as userIname,
+			(select user_account from tbl_user u where u.user_id = feBa_update_user_id) as replyUserAccount,
+			fb.feBa_UserId userId,
+			fb.feBa_Content content,
+			fb.feBa_Createdate createDate,
+			fb.feBa_Updatedate lastUpdateDate,
+			fb.feBa_Status processStatus,
+			fb.feBa_Reason reason
+		FROM 
+			tbl_FeedBack AS fb INNER JOIN (select a.user_account,b.user_id,b.norm_real_name from tbl_user a,tbl_user_normal b where a.user_id=b.user_id) AS ui ON ui.user_id = fb.feBa_UserId
+		<where>
+			1=1
+			<if test="phone!=null and phone !=''">
+				and ui.user_account like concat('%',#{phone},'%')
+			</if>
+			<if test="startDate !=null and startDate !='' ">
+			  <![CDATA[and fb.feBa_Createdate >=#{startDate}]]>
+			</if>
+			
+			<if test="endDate !=null and endDate !=''">
+				 <![CDATA[and fb.feBa_Createdate <=#{endDate}]]>
+			</if>
+			
+			<if test="processStatus!=null and processStatus !=''">
+				and fb.feBa_Status = #{processStatus}
+			</if>
+		</where>
+		ORDER BY feBa_Createdate DESC
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	
+	<!-- 删除意见反馈 -->
+	<delete id="removeFeedback" parameterType="map">
+		delete from
+		tbl_FeedBack
+		where
+		pk_FeedBack=#{feedbackId} 
+	</delete>
+	<update id="updateFeedbackReason" parameterType="Feedback">
+	update tbl_FeedBack set
+		feBa_UserId=#{userId},
+		feBa_Content=#{content},
+		feBa_Updatedate=#{lastUpdateDate},
+		feBa_Status=#{processStatus},
+		feBa_Reason=#{reason},
+		feBa_update_user_id=#{feBaUpdateUserId}
+		where
+		pk_FeedBack=#{feedbackId} 
+	</update>
+	<!-- 根据ID查询意见反馈 -->
+	<select id="findFeedback" parameterType="String"  resultMap="feedbackResultMap">
+	SELECT
+			fb.pk_FeedBack,
+			ui.user_account AS phone,
+			ui.norm_real_name AS userIname,
+			fb.feBa_UserId,
+			fb.feBa_Content,
+			fb.feBa_Createdate,
+			fb.feBa_Updatedate,
+			fb.feBa_Status,
+			fb.feBa_Reason
+		FROM 
+			tbl_FeedBack AS fb INNER JOIN 
+				(select a.user_account,b.user_id,b.norm_real_name from tbl_user a,tbl_user_normal b 
+				where a.user_id=b.user_id) AS ui 
+			ON ui.user_id = fb.feBa_UserId and pk_FeedBack=#{feedbackId}		
+	</select>
+	
+	
+</mapper> 

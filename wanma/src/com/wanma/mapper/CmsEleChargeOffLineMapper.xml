@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.dao.CmsEleChargeOffLineMapper">
+	<resultMap type="TblEleChargeOffLine" id="result_eleChargeOffLine">
+		<id property="pkElectricpile" column="pk_ElectricPile" />
+		<id property="elpiElectricpilename" column="elPi_ElectricPileName" />
+		<id property="postName" column="poSt_Name" />
+		<id property="epCode" column="ep_code" />
+		<id property="elPiMakerName" column="elPi_Maker_Name" />
+		<id property="elPiOwnProvince" column="elPi_OwnProvince" />
+		<id property="elPiOwnCity" column="elPi_elPiOwnCity" />
+		<id property="elPiOwnCounty" column="elPi_elPiOwnCounty" />
+		<id property="issuedStatus" column="ISSUED_STATUS" />
+		<id property="remark" column="REMARK" />
+		<id property="argValue" column="ARG_VALUE" />
+		<id property="status" column="is_del" />
+		<id property="elpiElectricpilecode" column="ep_code" />
+		<id property="elpiElectricpilecode" column="elPi_ElectricPileCode" />
+	
+	</resultMap>
+	<select id="getEleChargeOffLineList" parameterType="TblEleChargeOffLine" resultMap="result_eleChargeOffLine">
+			SELECT
+			e.pk_ElectricPile,
+			e.elPi_ElectricPileName,
+			e.elPi_ElectricPileCode,
+			p.poSt_Name,
+			(select maker_Name from tbl_pilemaker where e.elPi_Maker = pk_Carmaker) as elPi_Maker_Name,
+			(SELECT arg_value FROM tbl_electricpile_workarg tc WHERE tc.ep_code = e.elPi_ElectricPileCode and arg_id=3) AS ARG_VALUE,
+			(SELECT ISSUED_STATUS FROM tbl_electricpile_workarg tc WHERE tc.ep_code = e.elPi_ElectricPileCode and arg_id=3) AS ISSUED_STATUS
+            FROM
+			tbl_electricpile e
+			LEFT JOIN tb_m_province a on   a.PROVINCE_ID=e.elPi_OwnProvinceCode 
+			LEFT JOIN tb_m_city c on   c.CITY_ID=e.elPi_OwnCityCode
+			LEFT JOIN tb_m_area d on    d.area_id=e.elPi_OwnCountyCode
+			LEFT JOIN tbl_powerstation p on   p.pk_PowerStation = e.elPi_RelevancePowerStation
+			where 1=1
+			<if test="elpiElectricpilecode !=null and elpiElectricpilecode!=''">
+				and e.elPi_ElectricPileCode LIKE CONCAT('%',#{elpiElectricpilecode},'%' )
+			</if>
+			<if test="postName !=null and postName!=''">
+				and p.poSt_Name LIKE CONCAT('%',#{postName},'%' )
+			</if>
+			<if  test="elPiOwnProvinceCode!=null and elPiOwnProvinceCode!='' ">
+			 	and	 a.PROVINCE_ID=#{elPiOwnProvinceCode}
+		 	</if >
+		 	<if test="elPiOwnCityCode!=null and elPiOwnCityCode!='' ">
+		 		and c.CITY_ID=#{elPiOwnCityCode}
+		 	</if>
+		 	<if test="elPiOwnCountyCode!=null and elPiOwnCountyCode!='' ">
+		 		and d.area_id=#{elPiOwnCountyCode}
+		 	</if>
+		 	 <choose>
+	        	<when test="(userLevel==1 || userLevel==2)">
+	        	 	and exists (select 1 from tbl_user b where b.user_id = e.elPi_UserId )
+			    </when>
+				<when test="userLevel==3">
+			        and exists (select 1 from tbl_user_business_view b where b.user_id=e.elPi_UserId and exists (select 1 from tbl_user_business_view b1 where  b.busi_company_id = b1.busi_company_id and b1.user_id = #{elpiUserid})
+			       <!--  <if test="elPiUserName != '' and elPiUserName != null">
+		          		and b.user_account like concat('%',#{elPiUserName},'%')
+		         	</if> -->
+			        )
+			    </when>
+			    <when test="userLevel==5">	
+			        and e.elPi_UserId=#{elpiUserid}
+			    </when>
+	        </choose> 
+			order by e.elPi_Updatedate
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	
+	</select>
+	<select id="getEleChargeOffLineCount" parameterType="TblEleChargeOffLine" resultType="long">
+		SELECT count(*) FROM
+			tbl_electricpile e
+			LEFT JOIN tb_m_province a on   a.PROVINCE_ID=e.elPi_OwnProvinceCode 
+			LEFT JOIN tb_m_city c on   c.CITY_ID=e.elPi_OwnCityCode
+			LEFT JOIN tb_m_area d on    d.area_id=e.elPi_OwnCountyCode
+			LEFT JOIN tbl_powerstation p on   p.pk_PowerStation = e.elPi_RelevancePowerStation
+			where 1=1
+			<if test="elpiElectricpilecode !=null and elpiElectricpilecode!=''">
+				and e.elPi_ElectricPileCode LIKE CONCAT('%',#{elpiElectricpilecode},'%' )
+			</if>
+			<if test="postName !=null and postName!=''">
+				and p.poSt_Name LIKE CONCAT('%',#{postName},'%' )
+			</if>
+			<if  test="elPiOwnProvinceCode!=null and elPiOwnProvinceCode!='' ">
+			 	and	 a.PROVINCE_ID=#{elPiOwnProvinceCode}
+		 	</if >
+		 	<if test="elPiOwnCityCode!=null and elPiOwnCityCode!='' ">
+		 		and c.CITY_ID=#{elPiOwnCityCode}
+		 	</if>
+		 	<if test="elPiOwnCountyCode!=null and elPiOwnCountyCode!='' ">
+		 		and d.area_id=#{elPiOwnCountyCode}
+		 	</if>
+		 	 <!-- 权限控制 -->
+	       <choose>
+	        	<when test="(userLevel==1 || userLevel==2)">
+	        	 	and exists (select 1 from tbl_user b where b.user_id = e.elPi_UserId )
+			    </when>
+				<when test="userLevel==3">
+			        and exists (select 1 from tbl_user_business_view b where b.user_id=e.elPi_UserId and exists (select 1 from tbl_user_business_view b1 where  b.busi_company_id = b1.busi_company_id and b1.user_id = #{elpiUserid})
+			       <!--  <if test="elPiUserName != '' and elPiUserName != null">
+		          		and b.user_account like concat('%',#{elPiUserName},'%')
+		         	</if> -->
+			        )
+			    </when>
+			    <when test="userLevel==5">	
+			        and e.elPi_UserId=#{elpiUserid}
+			    </when>
+	        </choose> 
+		
+	</select>
+		
+	<select id="findCodeFormEleChargeOffLine" parameterType="String" resultType="int">
+		select count(*) from tbl_electricpile_workarg 
+		where ep_code = #{elpiElectricpilecode} and arg_id=3
+	</select>
+	
+	<insert id="insertEcOffLine" parameterType="TblEleChargeOffLine">
+			insert into tbl_electricpile_workarg
+			(
+			 ep_code,
+			 arg_id,
+			 arg_value,
+			 ISSUED_STATUS,
+			 delete_flag,
+			 creator,
+			 create_date
+			)values(
+			 #{elpiElectricpilecode},
+			 '3',
+			 #{argValue},
+			 '0',
+			 '0',
+			 #{operator},
+			 now()
+			)
+		
+	</insert>
+	<update id="updateEcOffLine" parameterType="TblEleChargeOffLine">
+		update tbl_electricpile_workarg
+		set
+		arg_value= #{argValue},
+		modifier=#{operator},
+		UPDATE_DATE=now()
+		where ep_code = #{elpiElectricpilecode}
+	</update>	
+</mapper>

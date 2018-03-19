@@ -1,0 +1,61 @@
+{
+	"dataObject": [
+		{
+			"id": 1,
+			"pId": 0,
+			"name": "根菜单",
+			"open": true,
+			"checked": true
+		},
+		{
+			"id": 11,
+			"pId": 1,
+			"name": "用户管理",
+			"open": true,
+			"checked": true
+		}, {
+			"id": 111,
+			"pId": 11,
+			"name": "用户列表",
+			"open": true,
+			"checked": false
+		}, {
+			"id": 112,
+			"pId": 11,
+			"name": "xin用户",
+			"open": true,
+			"checked": false
+		},{
+			"id": 12,
+			"pId": 1,
+			"name": "卡管理",
+			"open": true,
+			"checked": true
+		}, {
+			"id": 121,
+			"pId": 12,
+			"name": "卡管理列表",
+			"open": true,
+			"checked": true
+		}, {
+			"id": 122,
+			"pId": 12,
+			"name": "卡管理xin",
+			"open": true,
+			"checked": true
+		}
+	],
+	"failed": false,
+	"msg": "操作成功",
+	"pager": {
+		"keywords": "",
+		"offset": 0,
+		"pageNo": 1,
+		"pageSize": 20,
+		"pageTotal": 126,
+		"status": "",
+		"total": 2516
+	},
+	"status": "",
+	"success": true
+}

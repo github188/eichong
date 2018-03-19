@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/order/thirdOrder_list.css"/>
+    <title>第三方订单列表</title>
+</head>
+<body>
+<div class="container animated fadeInRight">
+    <div class="row">
+        <div class="formBlock clearfix">
+            <form id="thirdOrderListForm">
+                <div class="col-xs-12 col-sm-11 col-md-11 col-lg-11">
+                    <div class="userListSelect row">
+                        <div class="col-sm-3 col-xs-12">
+                            <div class="col-sm-4 queryParam">
+                                订单号
+                            </div>
+                            <div class="col-sm-8 userAccount">
+                                <input type="text" name="orderCode" value="" class="userAccountInput" id="orderCode"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-sm-offset-1 col-xs-12">
+                            <div class="col-sm-4 queryParam">
+                                电桩编号
+                            </div>
+                            <div class="col-sm-8 userAccount">
+                                <input type="text" name="electricPileCode" value="" class="userAccountInput"
+                                       id="electricPileCode"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-sm-offset-1 col-xs-12">
+                            <div class="col-sm-4 queryParam">
+                                公司标识
+                            </div>
+                            <div class="col-sm-8 userAccount">
+                                <input type="text" name="cpyNumber" value="" class="userAccountInput" id="cpyNumber"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12" style="background: #FFFFFF;height: 20px;"></div>
+                    <div class="userListSelect row">
+
+                        <div class="col-sm-3 col-xs-12">
+                            <div class="col-sm-4 queryParam">
+                                订单状态
+                            </div>
+                            <div class="col-sm-8  col-xs-12 model-select-box">
+                                <div class="model-select-text orderStatusBlock" data-value="" id="orderStatus">请选择</div>
+                                <span class="downRow orderStatusBlock"></span>
+                                <input type="text" name="orderStatus" value="" hidden="hidden"/>
+                                <ul class="model-select-option orderStatusUl">
+                                    <li data-option="" class="seleced">请选择</li>
+                                    <li data-option="1">未结算</li>
+                                    <li data-option="2">结算已到账</li>
+                                    <li data-option="3">结算未到账</li>
+                                    <li data-option="4">异常未处理</li>
+                                    <li data-option="5">异常已处理</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-sm-offset-1 col-xs-12">
+                            <div class="col-sm-4 queryParam">
+                                时间选择
+                            </div>
+                            <div class="col-sm-8 userAccount">
+                                <input type="text" name="" value="" class="userAccountInput" id="datePicker"/>
+                                <input type="text" name="startGmtCreate" value="" class="userAccountInput"
+                                       hidden="hidden" style="display: none;"/>
+                                <input type="text" name="endGmtCreate" value="" class="userAccountInput" hidden="hidden"
+                                       style="display: none;"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-4 col-sm-offset-1 col-xs-12">
+                            <div class="col-sm-4 queryParam textLeft">
+                                投资公司
+                            </div>
+                            <div class="col-sm-8  col-xs-12 model-select-box">
+                                <div class="model-select-text slaveCpyBlock" data-value="" id="slaveCpyHtml">请选择</div>
+                                <span class="downRow slaveCpyBlock"></span>
+                                <input type="text" name="slaveCpyId" value="" hidden="hidden"/>
+                                <ul class="model-select-option slaveCpyUl">
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-xs-12 col-sm-1 col-md-1 col-lg-1" style="position: relative;">
+                    <div class="queryBtn" onclick="thirdOrderListSearch()">
+                        查询
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!--按钮部分开始==========================================================-->
+        <div class="btnBlock">
+            <div class="col-sm-10 col-xs-12 col-md-10" style="">
+                <div class="col-sm-2 col-xs-2 btnStyle showBtn" id="showSet" style="display: none;">
+                    显示
+                </div>
+                <ul class="checkList animated fadeInDown col-sm-5 col-xs-5" style="display: none;">
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name="" data-state="0" value="" disabled="disabled"
+                                   checked="checked" data-flag="thirdOrderList_orderCode"/>
+                        </div>
+                        <label>订单号</label>
+                    </li>
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name="" data-state="0" value="" disabled="disabled"
+                                   checked="checked" data-flag="thirdOrderList_electricPileCode"/>
+                        </div>
+                        <label>电桩编号</label>
+
+                    </li>
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name="" data-state="0" value="" disabled="disabled"
+                                   checked="checked" data-flag="thirdOrderList_totalElectricMoney"/>
+                        </div>
+                        <label>电费</label>
+
+                    </li>
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name="" data-state="0" value="" disabled="disabled"
+                                   checked="checked" data-flag="thirdOrderList_totalServiceMoney"/>
+                        </div>
+                        <label>服务费</label>
+                    </li>
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name="" data-state="0" value="" disabled="disabled"
+                                   checked="checked" data-flag="thirdOrderList_totalfavMoney"/>
+                        </div>
+                        <label>优惠</label>
+                    </li>
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name="" data-state="0" value="" disabled="disabled"
+                                   checked="checked" data-flag="thirdOrderList_totalElectricCharge"/>
+                        </div>
+                        <label>电量</label>
+                    </li>
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name="" data-state="0" value="" disabled="disabled"
+                                   checked="checked" data-flag="thirdOrderList_orderStatus"/>
+                        </div>
+                        <label>状态</label>
+                    </li>
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name="" data-state="0" value="" disabled="disabled"
+                                   checked="checked" data-flag="thirdOrderList_powerstationName"/>
+                        </div>
+                        <label>充电点</label>
+                    </li>
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name="" data-state="0" value="" disabled="disabled"
+                                   checked="checked" data-flag="thirdOrderList_invoiceStatus"/>
+                        </div>
+                        <label>发票状态</label>
+                    </li>
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name="" data-state="0" value=""
+                                   data-flag="thirdOrderList_soc"/>
+                        </div>
+                        <label>启至SOC值</label>
+                    </li>
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name="" data-state="0" value=""
+                                   data-flag="thirdOrderList_carNum"/>
+                        </div>
+                        <label>车牌号</label>
+                    </li>
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name="" data-state="0" value=""
+                                   data-flag="thirdOrderList_TIME"/>
+                        </div>
+                        <label>充电时长</label>
+                    </li>
+
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name="" data-state="0" value=""
+                                   data-flag="thirdOrderList_accountNO"/>
+                        </div>
+                        <label>资金账号</label>
+                    </li>
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name="" data-state="0" value=""
+                                   data-flag="thirdOrderList_VIN"/>
+                        </div>
+                        <label>VIN码</label>
+                    </li>
+
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name="" data-state="0" value=""
+                                   data-flag="thirdOrderList_timeQuantum"/>
+                        </div>
+                        <label>充电时间段</label>
+                    </li>
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name="" data-state="0" value=""
+                                   data-flag="thirdOrderList_cardNum"/>
+                        </div>
+                        <label>卡号</label>
+                    </li>
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name="" data-state="0" value=""
+                                   data-flag="thirdOrderList_eMoney"/>
+                        </div>
+                        <label>电费按尖峰平谷拆分</label>
+                    </li>
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name="" data-state="0" value=""
+                                   data-flag="thirdOrderList_sMoney"/>
+                        </div>
+                        <label>服务费按尖峰平谷拆分</label>
+                    </li>
+
+                </ul>
+                <div class="col-sm-2 col-xs-2 col-sm-offset-1 col-xs-offset-1 btnStyle" id="dataExport"
+                     style="display: none;">
+                    导出
+                </div>
+                <div class="col-sm-2 col-xs-2 col-sm-offset-1 col-xs-offset-1 btnStyle" id="manualClearing" style="display: none;">
+                    结算
+                </div>
+            </div>
+            <div class="col-sm-2 col-md-2"></div>
+        </div>
+        <!--表格部分开始==========================================================-->
+        <div class="showSet table-responsive">
+            <div class="commonDiv">
+                <table class=" table table-bordered text-center" style="border: 1px solid #DCDCDC;">
+                    <thead>
+                    <tr>
+                        <th style="min-width: 48px;" class=""><input type="checkbox" name="" class="selAll" value=""/></th>
+                        <th style="min-width: 60px;" class="thirdOrderList_orderCode">订单号</th>
+                        <th style="min-width: 80px;" class="thirdOrderList_electricPileCode">电桩编号</th>
+                        <th style="min-width: 60px;" class="thirdOrderList_totalElectricMoney">电费</th>
+                        <th style="min-width: 60px;" class="thirdOrderList_totalServiceMoney">服务费</th>
+                        <th style="min-width: 60px;" class="thirdOrderList_totalfavMoney">优惠</th>
+                        <th style="min-width: 60px;" class="thirdOrderList_totalElectricCharge">电量</th>
+                        <th style="min-width: 66px;" class="thirdOrderList_orderStatus">状态</th>
+                        <th style="min-width: 60px;" class="thirdOrderList_powerstationName">充电点</th>
+                        <th style="min-width: 80px;" class="thirdOrderList_invoiceStatus">发票状态</th>
+                        <th style="min-width: 80px;" class="thirdOrderList_soc">启SOC</th>
+                        <th style="min-width: 80px;" class="thirdOrderList_soc">末SOC</th>
+                        <th style="min-width: 60px;" class="thirdOrderList_carNum">车牌号</th>
+                        <th style="min-width: 80px;" class="thirdOrderList_TIME">充电时长(分)</th>
+                        <th style="min-width: 80px;" class="thirdOrderList_accountNO">资金账号</th>
+                        <th style="min-width: 60px;" class="thirdOrderList_VIN">VIN码</th>
+                        <th style="min-width: 90px;" class="thirdOrderList_timeQuantum">充电时间段</th>
+                        <th style="min-width: 60px;" class="thirdOrderList_cardNum">卡号</th>
+                        <th style="min-width: 80px;" class="thirdOrderList_eMoney">电费(尖)</th>
+                        <th style="min-width: 80px;" class="thirdOrderList_eMoney">电费(峰)</th>
+                        <th style="min-width: 80px;" class="thirdOrderList_eMoney">电费(平)</th>
+                        <th style="min-width: 80px;" class="thirdOrderList_eMoney">电费(谷)</th>
+                        <th style="min-width: 100px;" class="thirdOrderList_sMoney">服务费(尖)</th>
+                        <th style="min-width: 100px;" class="thirdOrderList_sMoney">服务费(峰)</th>
+                        <th style="min-width: 100px;" class="thirdOrderList_sMoney">服务费(平)</th>
+                        <th style="min-width: 100px;" class="thirdOrderList_sMoney">服务费(谷)</th>
+                    </tr>
+                    </thead>
+                    <tbody id="myTbogy">
+
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="thirdOrderListPage" class="pagination">
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layDate-v5.0.4/laydate/laydate.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="../../js/contabs.min.js"></script>
+<script src="../../js/order/thirdOrder_list.js" type="text/javascript" charset="utf-8"></script>
+</html>

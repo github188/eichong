@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.FinAccountSplitConfigHistoryMapper">
+	<resultMap type="FinAccountSplitConfigHistoryDO" id="finAccountSplitConfigHistory">
+		<result property="pkId" column="pk_id" />
+		<result property="splitMode" column="split_mode" />
+		<result property="electricPileId" column="electricPile_id" />
+		<result property="splitRules" column="split_rules" />
+		<result property="refId" column="ref_id" />
+		<result property="creator" column="creator" />
+		<result property="modifier" column="modifier" />
+		<result property="gmtCreate" column="gmt_create" />
+		<result property="gmtModified" column="gmt_modified" />
+	</resultMap>
+	
+	<select id="getFinAccountSplitConfigHistoryCount" parameterType="FinAccountSplitConfigHistoryDO" resultType="long">
+		SELECT COUNT(1)
+		FROM fin_account_split_config_history b
+		where 1=1
+		<if test="pkId != null">
+			and b.pk_id = #{pkId}
+		</if>
+		<if test="splitMode != null">
+			and b.split_mode = #{splitMode}
+		</if>
+		<if test="electricPileId != null">
+			and b.electricPile_id = #{electricPileId}
+		</if>
+		<if test="splitRules != null">
+			and b.split_rules like concat('%',#{splitRules},'%')
+		</if>
+		<if test="refId != null">
+			and b.ref_id = #{refId}
+		</if>
+	</select>
+	
+	<select id="getFinAccountSplitConfigHistoryList" parameterType="FinAccountSplitConfigHistoryDO" resultMap="finAccountSplitConfigHistory">
+		SELECT
+			b.pk_id,
+			b.split_mode,
+			b.electricPile_id,
+			b.split_rules,
+			b.ref_id,
+			b.creator,
+			b.modifier,
+			b.gmt_create,
+			b.gmt_modified
+		FROM fin_account_split_config_history b
+		where 1=1
+		<if test="pkId != null">
+		  and b.pk_id = #{pkId}
+		</if>
+		<if test="splitMode != null">
+		  and b.split_mode = #{splitMode}
+		</if>
+		<if test="electricPileId != null">
+		  and b.electricPile_id = #{electricPileId}
+		</if>
+		<if test="splitRules != null">
+		  and b.split_rules like concat('%',#{splitRules},'%')
+		</if>
+		<if test="refId != null">
+			and b.ref_id = #{refId}
+		</if>
+        <if test="pager!=null">limit #{pager.offset},#{pager.pageSize}</if>
+	</select>
+
+	<!-- 添加分账配置历史 -->
+	<insert id="addFinAccountSplitConfigHistory" useGeneratedKeys="true" parameterType="FinAccountSplitConfigHistoryDO" keyProperty="pkId">
+		INSERT INTO fin_account_split_config_history
+		(pk_id, split_mode, electricPile_id, split_rules, ref_id, creator, modifier, gmt_create, gmt_modified)
+		VALUES
+		(null, #{splitMode},#{electricPileId},#{splitRules},#{refId},#{creator},#{modifier},#{gmtCreate},#{gmtModified})
+	</insert>
+
+	<!-- 批量添加分账配置历史 -->
+	<insert id="batchAddFinAccountSplitConfigHistory" useGeneratedKeys="true" parameterType="java.util.List">
+		INSERT INTO fin_account_split_config_history
+		(pk_id, split_mode, cpy_id, electricPile_id, split_rules, ref_id, creator, gmt_create)
+		VALUES
+		<foreach collection="list" item="item" index="index" separator="," >
+			(null,#{item.splitMode},#{item.cpyId},#{item.electricPileId},#{item.splitRules},#{item.refId},#{item.creator},#{item.gmtCreate})
+		</foreach>
+	</insert>
+</mapper>

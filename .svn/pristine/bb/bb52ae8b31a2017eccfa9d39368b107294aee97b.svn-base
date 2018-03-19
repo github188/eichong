@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../js/lib/layui/css/layui.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/companyList/chargeScope.css"/>
+    <title>充电范围导入</title>
+</head>
+<body>
+<div class="container animated fadeInRight">
+    <div class="row">
+        <div class="formBlock clearfix">
+            <div class="col-sm-12 titleTip">批量添加白名单</div>
+            <div class="col-sm-12">
+                <input value="" name="fileName" readonly="readonly" class="col-sm-3 fileInput">
+                <div class="importBtn cursor" id="importElectricBtn">确定添加</div>
+                <div class="importBtn cursor" id="downElectricBtn">下载模版</div>
+            </div>
+            <!--<div class="sureAdd cursor col-sm-3" id="sureAdd">确定添加</div>-->
+        </div>
+    </div>
+</div>
+</body>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layui/layui.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/companyList/chargeScope.js" type="text/javascript" charset="utf-8"></script>
+</html>

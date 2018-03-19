@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.FinAccountRelationMapper">
+	<resultMap type="FinAccountRelationDO" id="finAccountRelation">
+		<result property="pkId" column="pk_id" />
+		<result property="userId" column="user_id" />
+		<result property="billAccountId" column="bill_account_id" />
+		<result property="accountId" column="account_id" />
+		<result property="priority" column="priority" />
+		<result property="isDel" column="is_del" />
+		<result property="creator" column="creator" />
+		<result property="modifier" column="modifier" />
+		<result property="gmtCreate" column="gmt_create" />
+		<result property="gmtModified" column="gmt_modified" />
+		<result property="userAccount" column="user_account" />
+	</resultMap>
+	
+	<resultMap type="FinAccountRelationDO" id="finAccountRelation4Interface" extends="finAccountRelation">
+		<result property="billAccountName" column="bill_account_name" />
+		<result property="accountNO" column="account_no" />
+	</resultMap>
+	
+	<select id="getFinAccountRelationCount" parameterType="FinAccountRelationDO" resultType="long">
+		SELECT
+			 COUNT(*)
+		FROM
+			 FIN_ACCOUNT_RELATION b 
+			inner join fin_account a on a.account_id = b.account_id
+			inner join fin_bill_account ba on ba.pk_id = b.bill_account_id
+			inner join tbl_user u on u.user_id = b.user_id
+		where 1=1
+		<if test="pkId != null">
+		  and b.pk_id = #{pkId}
+		</if>
+		<if test="userId != null">
+		  and b.user_id = #{userId}
+		</if>
+		<if test="billAccountId != null">
+		  and b.bill_account_id = #{billAccountId}
+		</if>
+		<if test="accountId != null">
+		  and b.account_id = #{accountId}
+		</if>
+		<if test="priority != null">
+		  and b.priority = #{priority}
+		</if>
+		<if test="isDel != null">
+		  and b.is_del = #{isDel}
+		</if>
+		<if test="accountNO != null and accountNO != ''">
+		  and a.account_no = #{accountNO}
+		</if>
+		<if test="userAccount != null and userAccount != ''">
+		  and u.user_account = #{userAccount}
+		</if>
+	</select>
+	
+	<select id="getFinAccountRelationList" parameterType="FinAccountRelationDO" resultMap="finAccountRelation4Interface">
+		SELECT
+			b.pk_id pkId,
+			b.user_id userId,
+			b.bill_account_id billAccountId,
+			b.account_id accountId,
+			b.priority priority,
+			b.is_del isDel,
+			b.creator creator,
+			b.modifier modifier,
+			b.gmt_create gmtCreate,
+			b.gmt_modified gmtModified,
+			ba.bill_account_name,
+			a.account_no,
+			u.user_account
+		FROM
+			FIN_ACCOUNT_RELATION b
+			inner join fin_account a on a.account_id = b.account_id
+			inner join fin_bill_account ba on ba.pk_id = b.bill_account_id
+			inner join tbl_user u on u.user_id = b.user_id
+		where 1=1
+		<if test="pkId != null">
+		  and b.pk_id = #{pkId}
+		</if>
+		<if test="userId != null">
+		  and b.user_id = #{userId}
+		</if>
+		<if test="billAccountId != null">
+		  and b.bill_account_id = #{billAccountId}
+		</if>
+		<if test="accountId != null">
+		  and b.account_id = #{accountId}
+		</if>
+		<if test="priority != null">
+		  and b.priority = #{priority}
+		</if>
+		<if test="isDel != null">
+		  and b.is_del = #{isDel}
+		</if>
+		<if test="accountNO != null and accountNO != ''">
+		  and a.account_no = #{accountNO}
+		</if>
+		<if test="userAccount != null and userAccount != ''">
+		  and u.user_account = #{userAccount}
+		</if>
+		order by b.gmt_modified desc
+        <if test="pager!=null">limit #{pager.offset},#{pager.pageSize}</if>
+	</select>
+	
+	<!-- 添加账户关系 -->
+	<insert id="addFinAccountRelation" parameterType="FinAccountRelationDO" keyProperty="pk_id">
+		INSERT INTO FIN_ACCOUNT_RELATION
+		(user_id, bill_account_id, account_id, priority, is_del, creator, modifier, gmt_create, gmt_modified)
+		VALUES
+		(#{userId},#{billAccountId},#{accountId},#{priority},#{isDel},#{creator},#{modifier},#{gmtCreate},#{gmtModified})
+	</insert>
+	
+	<!-- 修改账户关系 -->
+	<update id="modifyFinAccountRelation" parameterType="FinAccountRelationDO" >
+		UPDATE FIN_ACCOUNT_RELATION
+		SET is_del = #{isDel}
+		where pk_id = #{pkId}
+	</update>
+	
+	<!-- 删除账户关系 -->
+	<delete id="removeFinAccountRelation" parameterType="String">
+		DELETE FROM FIN_ACCOUNT_RELATION WHERE pk_id=#{pkId}
+	</delete>
+	
+	<!-- 获取用户首页中账务关系数据 -->
+	<select id="getFinAccountRelation4User" parameterType="UserNormalDO" resultMap="finAccountRelation4Interface">
+		SELECT
+			ba.bill_account_name billAccountName,
+			a.account_no accountNO
+		FROM
+			fin_account_relation r
+		INNER JOIN fin_bill_account ba ON r.bill_account_id = ba.pk_id
+		INNER JOIN fin_account a ON r.account_id = a.account_id
+		WHERE r.user_id = #{userId}
+	</select>
+	
+	<!-- 获取卡首页中账务关系数据 -->
+	<select id="getFinAccountRelation4Card" parameterType="UserCardDO" resultMap="finAccountRelation4Interface">
+		SELECT
+			ba.bill_account_name billAccountName,
+			a.account_no accountNO
+		FROM
+			tbl_usercard uc
+		INNER JOIN fin_account_relation r ON uc.user_id = r.user_id
+		INNER JOIN fin_bill_account ba ON r.bill_account_id = ba.pk_id
+		INNER JOIN fin_account a ON r.account_id = a.account_id
+		WHERE uc.uc_id = #{ucId}
+	</select>
+	
+	<!-- 获取公司首页中账务关系数据 -->
+	<select id="getFinAccountRelation4Cpy" parameterType="String" resultMap="finAccountRelation4Interface">
+		SELECT
+			ba.bill_account_name billAccountName,
+			a.account_no accountNO
+		FROM
+			fin_account_relation r
+		INNER JOIN fin_bill_account ba ON r.bill_account_id = ba.pk_id
+		INNER JOIN fin_account a ON r.account_id = a.account_id
+		WHERE r.account_id = #{accountId}
+	</select>
+</mapper>

@@ -1,0 +1,156 @@
+@charset "utf-8";
+*{
+    margin: 0;
+    padding: 0;
+}
+body {
+    background: #F3F3F4;
+    font-family: "微软雅黑";
+    font-size: 12px;
+}
+.baseInfoBtn{
+    flex-direction: row;
+    min-width: 36px;
+    height: 24px;
+    border-radius: 4px;
+    background: #f19149;
+    color: #FFFFFF;
+    text-align: center;
+    line-height: 14px;
+    padding: 4px 10px;
+    margin-left: 18px;
+}
+.baseInfoBtn:hover{
+    cursor: pointer;
+}
+.borderRight{
+    border-right:1px solid #E7EAEC ;
+}
+.tdBlock{
+    padding: 14px 26px;
+    display: flex;
+    justify-content: space-between;
+}
+.tdBlock span{
+    display: inline-block;
+    min-width: 56px;
+}
+.container {
+    width: 98%;
+    padding: 2px 24px 20px 20px;
+}
+.btnLine{
+    width: 100%;
+    height: 40px;
+    background: #F3F3F4;
+    position: relative;
+}
+.grayBlock{
+    min-height: 138px;
+    height: auto !important;
+    background: #F06E57;
+    border-top: 3px solid #E5E5E5;
+    padding: 26px 18px 20px 20px;
+}
+.clearfix{
+    　　zoom:1;
+}
+
+.clearfix:after{
+    content:"";
+    display:block;
+    clear:both;
+}
+.emptyDiv{
+    width: 100%;
+    height: 16px;
+    background: #F3F3F4;
+}
+.userBaseInfo{
+     padding:20px 20px 14px 28px;
+     display: flex;
+     flex-direction: row;
+     border-top: 4px solid #E7EAEC;
+ }
+.companyInfo{
+    padding:20px 20px 14px 28px;
+    display: flex;
+    flex-direction: row;
+    border-top: 4px solid #E7EAEC;
+}
+
+.companyInfo .headTable{
+    flex: 1;
+}
+.companyInfo .headTable .headList{
+    border: 1px solid #E7EAEC;
+    list-style: none;
+}
+
+/*基本资料列表部分*/
+.companyBaseInfoList{
+    padding: 20px 20px 12px 20px;
+    border-top: 4px solid #E7EAEC;
+}
+.companyBaseInfoList .baseInfoShow{
+    display: flex;
+    padding-bottom: 12px;
+    padding-left: 4px;
+    justify-content: space-between;
+}
+.companyBaseInfoList .baseInfoShow .baseInfoTitle{
+    font-size: 14px;
+    color: #000000;
+    font-family: "微软雅黑";
+}
+.companyBaseInfoList .baseInfoShow .baseBtnInfoUl{
+    list-style: none;
+    display: flex;
+    border: 0;
+}
+.companyBaseInfoList .baseInfoShow .baseBtnInfoUl li{
+    flex-direction: row;
+    min-width: 36px;
+    height: 24px;
+    border-radius: 4px;
+    background: #f19149;
+    color: #FFFFFF;
+    text-align: center;
+    line-height: 14px;
+    padding: 4px 10px;
+    margin-left: 18px;
+}
+.companyBaseInfoList .baseInfoShow .baseInfoBtn:hover,
+.companyBaseInfoList .baseInfoShow .baseInfoBtn:active,
+.companyBaseInfoList .baseInfoShow .baseInfoBtn:focus{
+    background-color: #f19149;
+    cursor: pointer;
+}
+.companyBaseInfoList .baseInfoUl{
+    list-style: none;
+    border: 1px solid #E7EAEC;
+}
+
+.companyBaseInfoList .baseInfoUl li{
+    border-bottom: 1px solid #E7EAEC;
+    padding: 14px 18px 10px;
+    display: flex;
+    justify-content: space-between;
+    color: #666666;
+    font-size: 12px;
+}
+.companyBaseInfoList .baseInfoUl li:last-child{
+    border: 0;
+}
+.tdBlockTop{
+    padding: 14px;
+    display: flex;
+    text-align: center;
+
+}
+.borderBottom{
+    border-bottom: 1px solid #E7EAEC;
+}
+.tdBlockTop span{
+    flex:1;
+}

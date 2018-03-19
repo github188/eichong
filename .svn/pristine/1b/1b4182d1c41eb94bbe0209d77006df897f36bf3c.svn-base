@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dubbox.dao.TblUsermessageMapper">
+	<resultMap id="tblUsermessage" type="TblUsermessage">
+		<id property="id" column="id" />
+		<result property="uid" column="to_user_id" />
+		<result property="froUid" column="from_user_id" />
+		<result property="froUname" column="from_user_name" />
+		<result property="ttl" column="title" />
+		<result property="txt" column="content" />
+		<result property="sts" column="status" />
+		<result property="cdate" column="createTime" />
+		<result property="udate" column="editTime" />
+	</resultMap>
+
+	<insert id="insert" parameterType="TblUsermessage">
+		insert into tbl_user_message(
+		to_user_id,
+		from_user_id,
+		from_user_name,
+		title,
+		content,
+		createTime,
+		editTime
+		)
+		values (
+		#{uid},
+		#{froUid},
+		#{froUname},
+		#{ttl},
+		#{txt},
+		sysdate(),
+		sysdate()
+		)
+
+	</insert>
+
+	<select id="getList" parameterType="TblUsermessage" resultMap="tblUsermessage">
+		SELECT ${rtColumns}
+		from
+		tbl_user_message t
+		where t.status != '2'
+		<if test="uid !=null">and to_user_id in (0,#{uid})</if>
+		order by edittime desc
+		<if test="pager !=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	<select id="getCount" parameterType="TblUsermessage" resultType="int">
+		SELECT count(1)
+		from tbl_user_message t
+		where t.status != '2'
+		<if test="uid !=null">and to_user_id in (0,#{uid})</if>
+	</select>
+
+	<select id="selectOne" parameterType="TblUsermessage" resultMap="tblUsermessage">
+		SELECT ${rtColumns}
+		from tbl_user_message t
+		where
+		id=#{id}
+	</select>
+
+	<update id="update" parameterType="TblUsermessage">
+		update tbl_user_message set
+		<if test="uid != null">
+			to_user_id=#{uid},
+		</if>
+		<if test="froUid != null">
+			from_user_id=#{froUid},
+		</if>
+		<if test="froUname != null">
+			from_user_name=#{froUname},
+		</if>
+		<if test="ttl != null">
+			title=#{ttl},
+		</if>
+		<if test="txt != null">
+			content=#{txt},
+		</if>
+		<if test="sts != null">
+			status=#{sts},
+		</if>
+		editTime = sysdate()
+		where
+		id=#{id}
+	</update>
+
+	<update id="delete" parameterType="TblUsermessage">
+		update tbl_user_message
+		set
+		status = 2
+		where
+		1=1
+		<if test="pkIds != null">
+			and id in
+			<foreach item="item" index="index" collection="pkIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+	</update>
+</mapper> 

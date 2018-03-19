@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dubbox.dao.TblInvoiceMapper">
+	<resultMap id="tblInvoiceMap" type="TblInvoice">
+		<id property="id" column="pk_Invoice" />
+		<result property="amt" column="iv_InvoiceAmount" />
+		<result property="num" column="iv_InvoiceNumber" />
+		<result property="txt" column="iv_InvoiceContent" />
+		<result property="tpyNum" column="iv_TaxpayerNumber" />
+		<result property="cpyName" column="iv_CompanyName" />
+		<result property="comAdr" column="iv_CompanyAddress" />
+		<result property="phone" column="iv_PhoneNumber" />
+		<result property="bkName" column="iv_BankName" />
+		<result property="bkAct" column="iv_BankAccount" />
+		<result property="trkNum" column="iv_TrackNumber" />
+		<result property="fgtAmt" column="iv_FreightAmount" />
+		<result property="rpt" column="iv_Recipients" />
+		<result property="csgAdr" column="iv_ConsigneeAddress" />
+		<result property="rptNum" column="iv_RecipientsNumber" />
+		<result property="type" column="iv_InvoiceType" />
+		<result property="sts" column="iv_InvoiceStatus" />
+		<result property="fgt" column="iv_Pay_Freight" />
+		<result property="proCd" column="iv_OwnProvinceCode" />
+		<result property="cityCd" column="iv_OwnCityCode" />
+		<result property="cotyCd" column="iv_OwnCountyCode" />
+		<result property="uid" column="iv_UserID" />
+		<result property="cdate" column="iv_Createdate" />
+		<result property="udate" column="iv_Updatedate" />
+	</resultMap>
+
+	<insert id="insert" parameterType="TblInvoice">
+		insert into tbl_invoice (
+		iv_InvoiceAmount,
+		iv_InvoiceNumber,
+		iv_InvoiceContent,
+		iv_TaxpayerNumber,
+		iv_CompanyName,
+		iv_CompanyAddress,
+		iv_PhoneNumber,
+		iv_BankName,
+		iv_BankAccount,
+		iv_TrackNumber,
+		iv_FreightAmount,
+		iv_Recipients,
+		iv_ConsigneeAddress,
+		iv_RecipientsNumber,
+		iv_InvoiceType,
+		iv_InvoiceStatus,
+		iv_Pay_Freight,
+		iv_OwnProvinceCode,
+		iv_OwnCityCode,
+		iv_OwnCountyCode,
+		iv_UserID,
+		iv_Createdate,
+		iv_Updatedate
+		)values (
+		#{amt},
+		#{num},
+		#{txt},
+		#{tpyNum},
+		#{cpyName},
+		#{comAdr},
+		#{phone},
+		#{bkName},
+		#{bkAct},
+		#{trkNum},
+		#{fgtAmt},
+		#{rpt},
+		#{csgAdr},
+		#{rptNum},
+		#{type},
+		#{sts},
+		#{fgt},
+		#{proCd},
+		#{cityCd},
+		#{cotyCd},
+		#{uid},
+		sysdate(),
+		sysdate()
+		)
+	</insert>
+	
+	<update id="update" parameterType="TblInvoice">
+		update
+		tbl_invoice
+		set 
+		<if test="sts != null">
+			iv_InvoiceStatus=#{sts},
+		</if>
+		<if test="num != null">
+			iv_InvoiceNumber=#{num},
+		</if>
+		iv_Updatedate = sysdate()
+		where
+		pk_Invoice=#{id}
+	</update>
+
+	<select id="getCount" parameterType="TblInvoice" resultType="int">
+		select count(1) from
+		tbl_invoice a
+		WHERE 1=1
+		<if test="slcBgDate !=null and slcBgDate !=''">
+			<![CDATA[AND TO_DAYS(a.iv_Createdate) >= TO_DAYS(#{slcBgDate})]]>
+		</if>
+		<if test="slcEdDate !=null and slcEdDate !=''">
+			<![CDATA[AND TO_DAYS(a.iv_Createdate) <= TO_DAYS(#{slcEdDate})]]>
+		</if>
+		<if test="rptNum != null and rptNum != ''">
+			and a.iv_RecipientsNumber like concat('%',#{rptNum},'%')
+		</if>
+		<if test="num != null">
+			and iv_InvoiceNumber like concat('%',#{num},'%')
+		</if>
+		<if test="sts != null">
+			and iv_InvoiceStatus=#{sts}
+		</if>
+		<if test="type != null">
+			and iv_InvoiceType=#{type}
+		</if>
+	</select>
+
+	<select id="getList" parameterType="TblInvoice" resultMap="tblInvoiceMap">
+		select ${rtColumns} from
+		tbl_invoice a
+		WHERE 1=1
+		<if test="slcBgDate !=null and slcBgDate !=''">
+			<![CDATA[AND TO_DAYS(a.iv_Createdate) >= TO_DAYS(#{slcBgDate})]]>
+		</if>
+		<if test="slcEdDate !=null and slcEdDate !=''">
+			<![CDATA[AND TO_DAYS(a.iv_Createdate) <= TO_DAYS(#{slcEdDate})]]>
+		</if>
+		<if test="rptNum != null and rptNum != ''">
+			and a.iv_RecipientsNumber like concat('%',#{rptNum},'%')
+		</if>
+		<if test="num != null">
+			and iv_InvoiceNumber like concat('%',#{num},'%')
+		</if>
+		<if test="sts != null">
+			and iv_InvoiceStatus=#{sts}
+		</if>
+		<if test="type != null">
+			and iv_InvoiceType=#{type}
+		</if>
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<select id="selectOne" parameterType="TblInvoice" resultMap="tblInvoiceMap">
+		select ${rtColumns} from
+		tbl_invoice a
+		WHERE
+		pk_Invoice=#{id}
+	</select>
+</mapper>

@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wanma.dubbox.dao.TblPowerStationMapper">
+	<resultMap id="BaseResultMap" type="com.wanma.dubbox.model.TblPowerStation">
+		<id column="pk_PowerStation" property="id" jdbcType="INTEGER" />
+		<result column="poSt_Name" property="name" jdbcType="VARCHAR" />
+		<result column="poSt_Address" property="adr" jdbcType="VARCHAR" />
+		<result column="poSt_Longitude" property="lgt" jdbcType="DECIMAL" />
+		<result column="poSt_Latitude" property="ltt" jdbcType="DECIMAL" />
+		<result column="poSt_Phone" property="pho" jdbcType="VARCHAR" />
+		<result column="poSt_Status" property="ste" jdbcType="INTEGER" />
+		<result column="poSt_Createdate" property="cdate" jdbcType="TIMESTAMP" />
+		<result column="poSt_Updatedate" property="udate" jdbcType="TIMESTAMP" />
+		<result column="poSt_Remark" property="remark" jdbcType="VARCHAR" />
+		<result column="poSt_PowerUser" property="powUs" jdbcType="INTEGER" />
+		<result column="poSt_IsAppoint" property="isApot" jdbcType="INTEGER" />
+		<result column="poSt_RejectionReason" property="reason"
+			jdbcType="VARCHAR" />
+		<result column="poSt_OnlineTime" property="olTime" jdbcType="VARCHAR" />
+		<result column="poSt_UserName" property="uname" jdbcType="VARCHAR" />
+		<result column="poSt_createUserId" property="cuId" jdbcType="INTEGER" />
+		<result column="poSt_OwnProvinceCode" property="proCd"
+			jdbcType="VARCHAR" />
+		<result column="poSt_OwnCityCode" property="cityCd" jdbcType="VARCHAR" />
+		<result column="poSt_OwnCountyCode" property="areaCd"
+			jdbcType="VARCHAR" />
+		<result column="poSt_Eleids" property="elids" />
+	</resultMap>
+	<resultMap id="ResultMapWithBLOBs" type="com.wanma.dubbox.model.TblPowerStation"
+		extends="BaseResultMap">
+		<result column="poSt_Eleids" property="elids" jdbcType="LONGVARCHAR" />
+	</resultMap>
+
+	<delete id="delete" parameterType="TblPowerStation">
+		delete from
+		tbl_powerstation
+		where 1=1
+		<if test="id != null">
+			and pk_PowerStation = #{id,jdbcType=INTEGER}
+		</if>
+		<if test="pkIds != null">
+			and pk_PowerStation in
+			<foreach item="item" index="index" collection="pkIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+	</delete>
+
+	<update id="updateMore" parameterType="TblPowerStation">
+		update tbl_powerstation
+		<set>
+			<if test="ste != null">
+				poSt_Status = #{ste,jdbcType=INTEGER},
+			</if>
+			poSt_Updatedate = sysdate()
+		</set>
+		where 1=1
+		<if test="id != null and id != ''">
+			and	pk_PowerStation = #{id,jdbcType=INTEGER}
+		</if>	
+		<if test="pkIds != null">
+			and pk_PowerStation in
+			<foreach item="item" index="index" collection="pkIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+	</update>
+
+	<insert id="insert" parameterType="TblPowerStation"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into tbl_powerstation
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				pk_PowerStation,
+			</if>
+			<if test="name != null">
+				poSt_Name,
+			</if>
+			<if test="adr != null">
+				poSt_Address,
+			</if>
+			<if test="lgt != null">
+				poSt_Longitude,
+			</if>
+			<if test="ltt != null">
+				poSt_Latitude,
+			</if>
+			<if test="pho != null">
+				poSt_Phone,
+			</if>
+			<if test="ste != null">
+				poSt_Status,
+			</if>
+			<if test="cdate != null">
+				poSt_Createdate,
+			</if>
+			<if test="udate != null">
+				poSt_Updatedate,
+			</if>
+			<if test="remark != null">
+				poSt_Remark,
+			</if>
+			<if test="powUs != null">
+				poSt_PowerUser,
+			</if>
+			<if test="isApot != null">
+				poSt_IsAppoint,
+			</if>
+			<if test="reason != null">
+				poSt_RejectionReason,
+			</if>
+			<if test="olTime != null">
+				poSt_OnlineTime,
+			</if>
+			<if test="uname != null">
+				poSt_UserName,
+			</if>
+			<if test="cuId != null">
+				poSt_createUserId,
+			</if>
+			<if test="proCd != null">
+				poSt_OwnProvinceCode,
+			</if>
+			<if test="cityCd != null">
+				poSt_OwnCityCode,
+			</if>
+			<if test="areaCd != null">
+				poSt_OwnCountyCode,
+			</if>
+			<if test="elids != null">
+				poSt_Eleids,
+			</if>
+			poSt_Createdate
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="name != null">
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="adr != null">
+				#{adr,jdbcType=VARCHAR},
+			</if>
+			<if test="lgt != null">
+				#{lgt,jdbcType=DECIMAL},
+			</if>
+			<if test="ltt != null">
+				#{ltt,jdbcType=DECIMAL},
+			</if>
+			<if test="pho != null">
+				#{pho,jdbcType=VARCHAR},
+			</if>
+			<if test="ste != null">
+				#{ste,jdbcType=INTEGER},
+			</if>
+			<if test="cdate != null">
+				#{cdate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="udate != null">
+				#{udate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="remark != null">
+				#{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="powUs != null">
+				#{powUs,jdbcType=INTEGER},
+			</if>
+			<if test="isApot != null">
+				#{isApot,jdbcType=INTEGER},
+			</if>
+			<if test="reason != null">
+				#{reason,jdbcType=VARCHAR},
+			</if>
+			<if test="olTime != null">
+				#{olTime,jdbcType=VARCHAR},
+			</if>
+			<if test="uname != null">
+				#{uname,jdbcType=VARCHAR},
+			</if>
+			<if test="cuId != null">
+				#{cuId,jdbcType=INTEGER},
+			</if>
+			<if test="proCd != null">
+				#{proCd,jdbcType=VARCHAR},
+			</if>
+			<if test="cityCd != null">
+				#{cityCd,jdbcType=VARCHAR},
+			</if>
+			<if test="areaCd != null">
+				#{areaCd,jdbcType=VARCHAR},
+			</if>
+			<if test="elids != null">
+				#{elids,jdbcType=LONGVARCHAR},
+			</if>
+			sysdate()
+		</trim>
+	</insert>
+	<update id="update" parameterType="TblPowerStation">
+		update tbl_powerstation
+		<set>
+			<if test="name != null">
+				poSt_Name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="adr != null">
+				poSt_Address = #{adr,jdbcType=VARCHAR},
+			</if>
+			<if test="lgt != null">
+				poSt_Longitude = #{lgt,jdbcType=DECIMAL},
+			</if>
+			<if test="ltt != null">
+				poSt_Latitude = #{ltt,jdbcType=DECIMAL},
+			</if>
+			<if test="pho != null">
+				poSt_Phone = #{pho,jdbcType=VARCHAR},
+			</if>
+			<if test="ste != null">
+				poSt_Status = #{ste,jdbcType=INTEGER},
+			</if>
+			<if test="remark != null">
+				poSt_Remark = #{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="powUs != null">
+				poSt_PowerUser = #{powUs,jdbcType=INTEGER},
+			</if>
+			<if test="isApot != null">
+				poSt_IsAppoint = #{isApot,jdbcType=INTEGER},
+			</if>
+			<if test="reason != null">
+				poSt_RejectionReason = #{reason,jdbcType=VARCHAR},
+			</if>
+			<if test="olTime != null">
+				poSt_OnlineTime = #{olTime,jdbcType=VARCHAR},
+			</if>
+			<if test="uname != null">
+				poSt_UserName = #{uname,jdbcType=VARCHAR},
+			</if>
+			<if test="cuId != null">
+				poSt_createUserId = #{cuId,jdbcType=INTEGER},
+			</if>
+			<if test="proCd != null">
+				poSt_OwnProvinceCode = #{proCd,jdbcType=VARCHAR},
+			</if>
+			<if test="cityCd != null">
+				poSt_OwnCityCode = #{cityCd,jdbcType=VARCHAR},
+			</if>
+			<if test="areaCd != null">
+				poSt_OwnCountyCode = #{areaCd,jdbcType=VARCHAR},
+			</if>
+			<if test="elids != null">
+				poSt_Eleids = #{elids,jdbcType=LONGVARCHAR},
+			</if>
+			poSt_Updatedate = sysdate()
+		</set>
+		where 1=1
+		<if test="id != null and id != ''">
+			and	pk_PowerStation = #{id,jdbcType=INTEGER}
+		</if>	
+		<if test="pkIds != null">
+			and pk_PowerStation in
+			<foreach item="item" index="index" collection="pkIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+	</update>
+
+	<select id="selectOne" resultMap="ResultMapWithBLOBs"
+		parameterType="TblPowerStation">
+		select ${rtColumns}
+		from tbl_powerstation
+		<where>
+			1=1
+			<if test="id != null">
+				and pk_PowerStation = #{id}
+			</if>
+			<if test="name != null and name != ''">
+				and poSt_Name =#{name}
+			</if>
+		</where>
+	</select>
+
+	<select id="getCount" parameterType="TblPowerStation"
+		resultType="int">
+		select count(1)
+		from tbl_powerstation where 1=1
+		<if test="name != null and name != ''">
+			and poSt_Name like concat('%',#{name},'%')
+		</if>
+		<if test="proCd != null and proCd != ''">
+			and poSt_OwnProvinceCode = #{proCd}
+		</if>
+		<if test="cityCd != null and cityCd != ''">
+			and poSt_OwnCityCode = #{cityCd}
+		</if>
+		<if test="areaCd != null and areaCd != ''">
+			and poSt_OwnCountyCode = #{areaCd}
+		</if>
+		<if test="udate != null">
+			and poSt_Updatedate &gt; #{udate}
+		</if>
+		<if test="ste != null and ste!='99999'">
+			and poSt_Status=#{ste}
+		</if>
+		<if test="isApot != null">
+			and poSt_IsAppoint=#{isApot}
+		</if>
+		<if test="pkIds != null">
+			and pk_PowerStation in
+			<foreach item="item" index="index" collection="pkIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="userIds != null">
+			and poSt_createUserId in
+			<foreach item="item1" index="index" collection="userIds"
+				open="(" separator="," close=")">
+				#{item1}
+			</foreach>
+		</if>
+	</select>
+
+	<select id="getList" parameterType="TblPowerStation" resultMap="BaseResultMap">
+		select ${rtColumns}
+		from tbl_powerstation where 1=1
+		<if test="name != null and name != ''">
+			and poSt_Name like concat('%',#{name},'%')
+		</if>
+		<if test="proCd != null and proCd != ''">
+			and poSt_OwnProvinceCode = #{proCd}
+		</if>
+		<if test="cityCd != null and cityCd != ''">
+			and poSt_OwnCityCode = #{cityCd}
+		</if>
+		<if test="areaCd != null and areaCd != ''">
+			and poSt_OwnCountyCode = #{areaCd}
+		</if>
+		<if test="udate != null">
+			and poSt_Updatedate &gt; #{udate}
+		</if>
+		<if test="ste != null and ste!='99999'">
+			and poSt_Status=#{ste}
+		</if>
+		<if test="isApot != null">
+			and poSt_IsAppoint=#{isApot}
+		</if>
+		<if test="pkIds != null">
+			and pk_PowerStation in
+			<foreach item="item" index="index" collection="pkIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="userIds != null">
+			and poSt_createUserId in
+			<foreach item="item1" index="index" collection="userIds"
+				open="(" separator="," close=")">
+				#{item1}
+			</foreach>
+		</if>
+		order by poSt_Updatedate desc
+		<if test="pager !=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+</mapper>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dubbox.dao.TblCityMapper">
+
+	<resultMap id="tblCityResultMap" type="TblCity">
+		<id property="id" column="CITY_ID" />
+		<result property="name" column="CITY_NAME" />
+		<result property="proCd" column="PROVINCE_ID" />
+		<result property="cdate" column="CREATE_DATE" />
+		<result property="creUser" column="CREATE_USER" />
+		<result property="htFlg" column="HOT_FLAG" />
+		<result property="udate" column="LAST_UPDATE_DATE" />
+		<result property="upUser" column="LAST_UPDATE_USER" />
+		<result property="sevLmt" column="serviceLimit" />
+	</resultMap>
+
+	<!-- 更新 -->
+	<update id="update" parameterType="TblCity">
+		update tb_m_city set
+		<if test="upUser != null">
+			LAST_UPDATE_USER=#{upUser},
+		</if>
+		<if test="htFlg != null">
+			HOT_FLAG=#{htFlg},
+		</if>
+		<if test="sevLmt != null">
+			serviceLimit=#{sevLmt},
+		</if>
+		LAST_UPDATE_DATE=sysdate()
+		where
+		CITY_ID=#{id}
+	</update>
+
+	<!-- 查询单条记录 -->
+	<select id="selectOne" parameterType="TblCity" resultMap="tblCityResultMap">
+		select
+		${rtColumns}
+		from tb_m_city
+		where
+		CITY_ID=#{id}
+	</select>
+
+	<!-- 查询列表数量 -->
+	<select id="getCount" parameterType="TblCity" resultType="int">
+		select count(1)
+		from tb_m_city c
+		where 1=1
+		<if test="proCd != null and proCd !=''">
+			and PROVINCE_ID=#{proCd}
+		</if>
+		order by LAST_UPDATE_DATE desc
+	</select>
+
+	<!-- 获取列表 -->
+	<select id="getList" parameterType="TblCity" resultMap="tblCityResultMap">
+		select ${rtColumns}
+		from tb_m_city c
+		where 1=1
+		<if test="proCd != null and proCd !=''">
+			and PROVINCE_ID=#{proCd}
+		</if>
+		order by LAST_UPDATE_DATE desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+</mapper>

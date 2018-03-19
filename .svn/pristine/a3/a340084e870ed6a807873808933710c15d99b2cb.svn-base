@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.InitialMapper">
+   
+   <!-- 省 -->
+   <select id="selectProvinceList" resultType="ProvinceDO" parameterType="java.util.List">
+		select
+			province_id provinceId,province_name provinceName from tb_m_province
+		<where>
+			<if test="list != null">
+			    and province_id in  
+			   <foreach collection="list" item="id" open="(" close=")" separator=",">
+			        #{id}
+			   </foreach>
+	        </if>
+		</where>
+	</select>
+	<!-- 市 -->
+	<select id="selectCityList" resultType="CityDO" parameterType="java.util.List">
+		select
+			province_id provinceId,city_id cityId,city_name cityName from tb_m_city
+		<where>
+			<if test="list != null">
+			    and city_id in  
+			   <foreach collection="list" item="id" open="(" close=")" separator=",">
+			        #{id}
+			   </foreach>
+	        </if>
+		</where>
+	</select>
+	<!-- 区 -->
+	<select id="selectAreaList" resultType="AreaDO">
+		select
+			province_id provinceId,city_id cityId,area_id areaId,area_name areaName
+		from tb_m_area
+		<where>
+			<if test="list != null">
+				and area_id in
+				<foreach collection="list" item="id" open="(" close=")" separator=",">
+					#{id}
+				</foreach>
+			</if>
+		</where>
+	</select>
+	
+	<!-- 根据省名称查省编码 -->
+	<select id="selectProvinceByName" resultType="string" parameterType="string">
+	     select province_id from tb_m_province where province_name = #{provinceName}
+	</select>
+	
+	<!-- 根据市名称查市编码 -->
+	<select id="selectCityByName" resultType="string" parameterType="string">
+	     select city_id from tb_m_city where city_name = #{cityName}
+	</select>
+	
+	<select id="selectProvinceById" resultType="string" parameterType="string">
+	     select province_name from tb_m_province where province_id = #{provinceId}
+	</select>
+	
+	<select id="selectCityById" resultType="string" parameterType="string">
+	      select city_name from tb_m_city where city_id = #{cityId}
+	</select>
+	
+	<select id="selectAreaById" resultType="string" parameterType="string">
+	     select area_name from tb_m_area where area_id = #{areaId}
+	</select>
+</mapper>

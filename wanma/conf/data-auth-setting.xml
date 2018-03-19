@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data-auths-config>
+	<data-auth-group>
+	   <!--  非必须项目可以不设置 -->
+		<data-auth>
+			<!-- mapper除后缀名外全路径名（必须） -->
+			<mapper>com.bluemobi.product.dao.UserMapper</mapper>
+			<!-- 需要执行权限控制的SQL ID（必须） -->
+			<sql-id>searchUserList</sql-id>
+			<!-- 需要执行权限控制的对象表（必须） -->
+			<auth-face-table>p_m_user</auth-face-table>
+			<!-- 权限类型（如果不设置，则认为只可以查询本人数据 ，非必须）-->
+			<!-- (role：按照角色控制权限） -->
+			<!-- (department：按照部门控制权限） -->
+			<!-- (all：角色和部门两方面） -->
+			<auth-type>department</auth-type>
+			<!-- 是否可以访问下级部门/角色数据（默认true，非必须） -->
+			<child-accessable>true</child-accessable>
+			<!-- 是否有where条件（默认false，非必须） -->
+			<has-where>true</has-where>
+			<!-- 是否有Group By处理（默认false，非必须） -->
+			<has-group-by>false</has-group-by>
+			<!-- 是否有having子句（默认false，非必须） -->
+			<has-having>false</has-having>
+			<!-- 是否有排序处理（默认false，非必须） -->
+			<has-order-by>true</has-order-by>
+			<!-- 是否有limit处理（默认false，非必须） -->
+			<has-limit>true</has-limit>
+		</data-auth>
+	   <!--  非必须项目可以不设置 -->
+		<data-auth>
+			<!-- mapper除后缀名外全路径名（必须） -->
+			<mapper>com.bluemobi.product.dao.UserMapper</mapper>
+			<!-- 需要执行权限控制的SQL ID（必须） -->
+			<sql-id>searchUserCount</sql-id>
+			<!-- 需要执行权限控制的对象表（必须） -->
+			<auth-face-table>p_m_user</auth-face-table>
+			<!-- 权限类型（如果不设置，则认为只可以查询本人数据 ，非必须）-->
+			<!-- (role：按照角色控制权限） -->
+			<!-- (department：按照部门控制权限） -->
+			<!-- (all：角色和部门两方面） -->
+			<auth-type>department</auth-type>
+			<!-- 是否可以访问下级部门/角色数据（默认true，非必须） -->
+			<child-accessable>true</child-accessable>
+			<!-- 是否有where条件（默认false，非必须） -->
+			<has-where>true</has-where>
+			<!-- 是否有Group By处理（默认false，非必须） -->
+			<has-group-by>false</has-group-by>
+			<!-- 是否有having子句（默认false，非必须） -->
+			<has-having>false</has-having>
+			<!-- 是否有排序处理（默认false，非必须） -->
+			<has-order-by>false</has-order-by>
+			<!-- 是否有limit处理（默认false，非必须） -->
+			<has-limit>false</has-limit>
+		</data-auth>
+		
+		
+		<data-auth>
+			<!-- mapper除后缀名外全路径名（必须） -->
+			<mapper>com.bluemobi.product.dao.DepartmentMapper</mapper>
+			<!-- 需要执行权限控制的SQL ID（必须） -->
+			<sql-id>findDepartment11</sql-id>
+			<!-- 需要执行权限控制的对象表（必须） -->
+			<auth-face-table>p_m_department</auth-face-table>
+			<!-- 权限类型（如果不设置，则认为只可以查询本人数据 ，非必须）-->
+			<!-- (role：按照角色控制权限） -->
+			<!-- (department：按照部门控制权限） -->
+			<!-- (all：角色和部门两方面） -->
+			<auth-type>department</auth-type>
+			<!-- 是否可以访问下级部门/角色数据（默认true，非必须） -->
+			<child-accessable>true</child-accessable>
+			<!-- 是否有where条件（默认false，非必须） -->
+			<has-where>true</has-where>
+			<!-- 是否有Group By处理（默认false，非必须） -->
+			<has-group-by>false</has-group-by>
+			<!-- 是否有having子句（默认false，非必须） -->
+			<has-having>false</has-having>
+			<!-- 是否有排序处理（默认false，非必须） -->
+			<has-order-by>false</has-order-by>
+			<!-- 是否有limit处理（默认false，非必须） -->
+			<has-limit>false</has-limit>
+		</data-auth>
+	</data-auth-group>
+</data-auths-config>

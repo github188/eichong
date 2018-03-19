@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.PowerStationMapper">
+    <resultMap type="PowerStation" id="result_PowerStation">
+        <id property="pkPowerstation" column="pk_PowerStation" />
+		<result property="postName" column="poSt_Name" />
+		<result property="postStatus" column="poSt_Status" />
+		<result property="postOwnProvinceCode" column="poSt_OwnProvinceCode" />
+		<result property="postOwnCityCode" column="poSt_OwnCityCode" />
+		<result property="postOwnCountyCode" column="poSt_OwnCountyCode" />
+		<result property="provinceName" column="PROVINCE_NAME" />
+        <result property="cityName" column="CITY_NAME" />
+        <result property="areaName" column="area_name" />
+		<result property="postAreacode" column="poSt_AreaCode" /> 
+		<result property="postAddress" column="poSt_Address" />
+		<result property="postPhone" column="poSt_Phone" />
+		<result property="poStOnlineTime" column="poSt_OnlineTime" />
+		<result property="postLongitude" column="poSt_Longitude" />
+		<result property="postLatitude" column="poSt_Latitude" />
+		<result property="postRemark" column="poSt_Remark" />
+		<result property="postCreatedate" column="poSt_Createdate" />
+		<result property="postUpdatedate" column="poSt_Updatedate" />
+		<!-- <result property="postPic" column="poSt_Pic" />
+		<result property="postDetailpic" column="poSt_DetailPic" /> -->
+		<result property="postEleids" column="poSt_Eleids" />
+		<result property="postPoweruser" column="poSt_PowerUser" />
+		<result property="postIsappoint" column="poSt_IsAppoint" />
+		<result property="rejectionReason" column="poSt_RejectionReason" />
+		<result property="poStUserName" column="poSt_UserName" />
+		<result property="poStCreateUserId" column="poSt_createUserId" />
+		<result property="cpyCompanyNumber" column="cpy_CompanyNumber" />					             
+    </resultMap>
+    <select id="getPkPowerStations" parameterType="PowerStation" resultType="hashMap">
+    	SELECT DISTINCT
+			t.pk_PowerStation pkPowerStation
+		FROM
+			tbl_company_rela t
+		LEFT JOIN tbl_company c ON c.pk_CompanyId = t.pk_cpy_operate_id
+		WHERE c.cpy_CompanyNumber = #{org}
+    </select>
+   	<select id="getPowerStationList" parameterType="PowerStation" resultMap="result_PowerStation">
+   		SELECT
+			p.pk_PowerStation,
+			p.poSt_Name,
+			p.poSt_Status,
+			p.poSt_OwnProvinceCode,
+			a.PROVINCE_NAME,
+			p.poSt_OwnCityCode,
+			c.CITY_NAME,
+			p.poSt_OwnCountyCode,
+			d.area_name,
+			p.poSt_Address,
+			p.poSt_Phone,
+			p.poSt_OnlineTime,
+			p.poSt_Longitude,
+			p.poSt_Latitude,
+			p.poSt_Remark,
+			p.poSt_Eleids,		
+			p.poSt_Createdate,
+			p.poSt_Updatedate,		
+			p.poSt_PowerUser,
+			p.poSt_IsAppoint,
+			p.poSt_RejectionReason,
+			p.poSt_UserName,
+			p.poSt_createUserId
+		FROM tbl_PowerStation p
+		LEFT JOIN tb_m_province a ON   a.PROVINCE_ID=p.poSt_OwnProvinceCode 
+		LEFT JOIN tb_m_city c ON   c.CITY_ID=p.poSt_OwnCityCode
+		LEFT JOIN tb_m_area d ON    d.area_id=p.poSt_OwnCountyCode
+		WHERE p.pk_PowerStation=#{pkPowerstation}	
+   	</select>
+   	<select id="getCountResult" parameterType="PowerStation" resultType="int">
+   		SELECT  
+   			COUNT(*)
+		FROM
+			tbl_company_rela t
+		LEFT JOIN tbl_company c ON c.pk_CompanyId = t.pk_cpy_operate_id
+		WHERE 
+			c.cpy_CompanyNumber =#{cpyCompanyNumber} 
+		AND 
+			t.pk_PowerStation=#{pkPowerstation}
+   	</select>
+</mapper> 

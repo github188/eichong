@@ -1,0 +1,198 @@
+#container1 {
+	height: 100%;
+}
+#container1 .box {
+	width: 100%;
+	min-height: 50px;
+	margin: 0 auto;
+	background: #FFFFFF;
+	padding:0 30px;
+	position: absolute;
+	position: fixed;
+	top:63px;
+	z-index: 100;
+}
+#container1 .box .formList {
+	width: 100%;
+	padding: 10px;
+	padding-top: 40px;
+	padding-left: 0;
+	background: #FFFFFF;
+	border-bottom: 1px solid #E5E5E5;
+}
+
+#container1 .box .formList .160width {
+	width: 160px !important;
+	height: 26px;
+	border: 1px solid #E5E5E5;
+	font-size: 12px;
+	color: #999999;
+}
+#container1 .box .formList select {
+	width: 100px;
+	height: 26px;
+	margin-left: 10px;
+	color: #999999;
+	font-size: 12px;
+	border: 1px solid #E5E5E5;
+	border-radius: 4px;
+	appearance:none;
+	-moz-appearance:none;
+	-webkit-appearance:none;
+	background: url(../images/triangle_right_114px_1189854_easyicon.net-down-8.png) no-repeat 90% 8px;
+}
+
+#container1 .box .formList .check {
+	display: inline-block;
+	width: 48px;
+	height: 26px;
+	background: #FF7D00;
+	color: #FFFFFF;
+	border-radius: 4px;
+	margin-left: 20px;
+	text-align: center;
+	line-height: 22px;
+	cursor: pointer;
+	font-size: 12px;
+}
+
+#container1 .box2 {
+	width: 100%;
+	min-height: 420px;
+	background: #FFFFFF;
+	padding: 0;
+}
+
+#container1 .box .btnGroup {
+	width: 100%;
+	height: 60px;
+	font-size: 12px;
+	background: #FFFFFF;
+	padding-right: 50px;
+	position: relative;
+}
+#container1 .box .btnGroup span {
+	display: inline-block;
+	width: 76px;
+	height: 28px;
+	background: #FF7D00;
+	color: #FFFFFF;
+	margin-top: 16px;
+	border-radius: 4px;
+	text-align: center;
+	line-height: 28px;
+	margin-left: 20px;
+	cursor: pointer;
+}
+#container1 .box .btnGroup span a{
+	display: inline-block;
+	width: 76px;
+	height: 28px;
+	background: #FF7D00;
+	color: #FFFFFF;
+	border-radius: 4px;
+	text-align: center;
+	line-height: 28px;
+	cursor: pointer;
+	text-decoration: none;
+}
+.myTable tr:nth-child(odd) {
+	background: #FFFFFF;
+}
+.myTable tr:nth-child(even) {
+	background: #f5f5f5;
+}
+.padding30 {
+	padding: 30px;
+	padding-left: 30px;
+	padding-top: 0;
+	background: #FFFFFF;
+	overflow-x: auto;
+}
+.myTable {
+	overflow: auto;
+	width: 100%;
+}
+.myTable tr th {
+	text-align: left;
+	min-height: 39px !important;
+	line-height: 39px !important;
+	color: #333333;
+	font-size: 12px;
+	background: #F5F5F5;
+}
+.myTable tr .smallWidth{
+	min-width: 40px;
+	text-align: left;
+	min-height: 39px !important;
+	line-height: 39px !important;
+	color: #333333;
+	font-size: 12px;
+	background: #F5F5F5;
+}
+.myTable tr td {
+	text-align: left;
+	min-height:19px !important;
+	padding: 10px 0;
+	padding-left: 10px;
+}
+.myTable tbody tr{
+	min-height: 19px !important;
+	font-size: 12px;
+	color: #666666;
+}
+/*分页部分开始*/
+.pagination {
+	width: 100%;
+	height: 50px;
+	margin: 0;
+	padding: 0;
+	background: #FFFFFF;
+	padding-top:16px ;
+	position: absolute;
+	bottom: 0;
+	left: 14.6667%;
+	position: fixed;
+}
+.pagination ul li:last-Child{
+	list-style: none;
+	float: left;
+	margin-left: 0;
+	
+}
+.pagination ul li:last-Child a{
+	text-decoration: none;
+	pointer-events: none;
+}
+.pagination ul li:nth-last-child(2) a{
+	text-decoration: none;
+	pointer-events: none;
+}
+.pagination ul li:last-Child a:hover{
+	color: #666666;
+	text-decoration: none;
+}
+.pagination ul li:nth-last-child(2) a:hover{
+	color: #666666;
+	text-decoration: none;
+}
+.pagination ul .jump{
+	margin-top: -4px;
+}
+.pagination ul li a{
+	font-size: 12px;
+	color: #333333;
+	text-decoration: underline;
+	cursor: pointer;
+}
+.pagination ul li a:visited,.pagination ul li a:hover,.pagination ul li a:focus,.pagination ul li a:active{
+	font-size: 12px;
+	color: #FF9900;
+	text-decoration: none;
+}
+.textInput{
+	font-size: 12px;
+	display: inline-block;
+	width: 30px;
+	height: 30px;
+}

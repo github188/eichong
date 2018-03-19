@@ -1,0 +1,180 @@
+@charset "utf-8";
+body{
+    height:auto!important;
+    color: #000;
+    font-size: 12px;
+    background-color: #f3f3f4;
+}
+.form-group .col-sm-2{
+    text-align: left;
+}
+.userBaseInfo{
+    background-color: #ffffff;
+    border-top: 4px solid #E5E5E5;
+    margin: 20px 0px 20px 0px;
+    padding: 14px;
+    background-color: #ffffff;
+}
+.queryParam {
+    line-height: 40px;
+    font-size: 14px;
+    text-align: center;
+    color: #333;
+}
+.formBlock {
+    width: 100%;
+    min-height: 138px;
+    height: 100%;
+    /*overflow: hidden;*/
+    background: #FFFFFF;
+    border-top: 3px solid #E5E5E5;
+    padding: 26px 18px 20px 20px;
+}
+.userAccount{
+    /*border: 1px solid #DCDCDC;*/
+    height: 32px;
+}
+.userAccount .userAccountInput{
+    display: inline;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #DCDCDC;
+    outline: none;
+    color: #666666;
+}
+.userAccount .userAccountInput:focus{
+    display: inline;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #ff7d00;
+    color: #666666;
+}
+.saveBtn{
+    display: inline-block;
+    width: 80px;
+    height: 30px;
+    line-height: 30px;
+    color: #ffffff;
+    background-color: #ff7d00;
+    text-align: center;
+    border-radius:4px;
+    font-size: 13px;
+    margin: 5% 0 0 20%;
+    cursor: pointer;
+}
+.col-sm-3,.radio-inline{
+    line-height:40px;
+}
+.radio-inline:first{
+    margin-left: 13px;
+}
+.radio-inline input{
+    margin-left: 1%;
+    margin-top:13px!important;
+}
+
+.model-select-box {
+    height: 32px;
+    line-height: 32px;
+    border: 1px solid #E7EAEC;
+    float: left;
+    text-indent: 5px;
+    position: relative;
+    margin-left: 13px;
+}
+
+.downRow {
+    width: 32px;
+    height: 31px;
+    background: url(../../../img/downR.png) no-repeat center;
+    position: absolute;
+    right: 0;
+    top: 0;
+    border-left: 1px solid #DCDCDC;
+    cursor: pointer;
+    z-index: 0;
+}
+/*select*/
+.model-select-text {
+    height: 32px;
+    cursor: pointer;
+    color: #666666;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.model-select-option {
+    display: none;
+    position: absolute;
+    background: #fff;
+    width: 100%;
+    left: -1px;
+    border: 1px solid #aaa;
+    z-index: 5000;
+    max-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.model-select-option li {
+    height: 22px;
+    line-height: 22px;
+    color: #666666;
+    cursor: pointer;
+}
+
+.model-select-option li.seleced {
+    background: #ff7d00;
+    color: #fff;
+}
+.model-select-option li:hover {
+    background: #ff7d00;
+    color: #fff;
+}
+/*结束下拉框*/
+.checkList {
+    list-style: none;
+    min-height: 30px;
+    position: absolute;
+    left: 0;
+    top: 30px;
+    z-index: 10000;
+    background: #FFFFFF;
+    color: #000000;
+    padding: 10px 20px 10px 40px;
+}
+
+input[name="proportion"]{
+    margin-left: 12px!important;
+}
+.rechargeAmount{
+    padding-left: 0px;
+}
+
+.cut-line{
+    margin-left: 15px;
+    border: 0.5px solid black;
+    -webkit-box-shadow: 1px 1px 1px #888888;
+    -moz-box-shadow: 1px 1px 1px #888888;
+    box-shadow: 1px 1px 1px #888888;
+}
+.common-div .common-div-child{
+    float: left;
+    padding: 0px;
+    padding-left: 15px;
+    line-height: 35px;
+    color: #333;
+}
+ch{
+    color: #949494;
+}
+.log{
+    margin-left: 15px;
+}
+
+@media (min-width: 768px) {
+    .col-sm-2 {
+        width: 12%;
+    }
+}

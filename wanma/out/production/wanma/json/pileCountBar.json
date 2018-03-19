@@ -1,0 +1,31 @@
+{
+	 "title" : {
+        "text": "桩体数量"
+    },
+    "tooltip" : {
+        "trigger": "axis"
+    },
+    "legend": {
+         "data":["专属", "分享"]
+    },
+    "toolbox": {
+        "show" : true,
+        "feature" : {
+        	"outView":{"show": false,color: '#8b3a3a'},
+        	"innerView":{"show": true,color: '#8b3a3a'},
+            "mark" : {"show": false},
+            "dataView" : {"show": false, "readOnly": false},
+            "magicType" : {"show": false, "type": ["line", "bar"]},
+            "restore" : {"show": false},
+            "saveAsImage" : {"show": false}
+        }
+    },
+    "calculable" : true,
+    "yAxis" : [
+                    {
+                        "type" : "value",
+                        "splitArea" : {"show" : true}
+                    }
+                ]         
+    
+}

@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.web.dao.WebUsermessageMapper">
+	<resultMap id="listResultMap" type="TblUsermessage">
+		<id property="id" column="id" />
+		<result property="userId" column="to_user_id" />
+		<result property="fromUserid" column="from_user_id" />
+		<result property="fromUsername" column="from_user_name" />
+		<result property="title" column="title" />
+		<result property="content" column="content" />
+		<result property="status" column="status" />
+		<result property="editTime" column="edittime" />
+		<result property="createTime" column="createtime" />		
+	</resultMap>
+
+<!-- 根据用户ID获取他的全部消息及分页 -->
+	<select id="getByUserId"      parameterType="map"   resultMap="listResultMap" >
+		 select id,from_user_id,from_user_name,title,content,edittime,status,createtime
+		 from tbl_user_message
+		 where to_user_id in (#{userId},0) and status in(0,1)  order by  createtime desc
+		 limit #{pageNumber},#{pageNum}		
+	</select>
+	
+	<select id="countUsermessage" parameterType="map" resultType="long">
+		select count(*)
+		from tbl_user_message
+		where 
+		to_user_id in (#{userId},0) and status in(0,1) 
+	</select>
+	
+<!-- 获取系统消息或者用户自己发给自己的消息 以及 分页 -->	
+	<select id="getSystemMsg"      parameterType="map"   resultType="hashmap" >
+		 select id,from_user_id,from_user_name,title,content,edittime,status,createtime
+		 from tbl_user_message
+		 where to_user_id in (#{userId},0)  and  from_user_id in (#{userId},0) and status in(0,1)  
+		 order by  createtime desc
+		 limit #{pageNumber},#{pageNum}
+	</select>
+	
+	
+	
+	<select id="countSystemMessage" parameterType="map" resultType="long">
+		select count(*)
+		from tbl_user_message
+		where 
+		to_user_id in (#{userId},0)  and  from_user_id in (#{userId},0) and status in(0,1)  
+	</select>
+	
+	
+	
+	<!-- 根据消息ID获得消息 -->
+	<select id="getUsermessageById" resultMap="listResultMap" parameterType="int" >
+	         select id,from_user_id,from_user_name,title,content,edittime,status from tbl_user_message where id = #{id}
+	</select>
+	<!-- 根据消息ID修改消息状态 -->
+		<update id="updateById" parameterType ="int">
+			update tbl_user_message set status = 1  where id = #{id}
+		</update>
+	
+	<!-- 获取用户私信 -->	
+	<select id="getPersonMessage"      parameterType="map"   resultType="hashmap" >
+	SELECT
+	e.pk_EpcComment,
+	e.epc_EpId,
+	e.epc_UserId,
+	e.epc_UserName,
+	e.type,
+	e.epc_CommentPic,
+	e.epc_Createdate,
+	e.epc_Content,
+	e.up_commentId,
+	e.commentAddress
+FROM
+	(
+		SELECT
+			c.pk_EpcComment,
+			c.epc_EpId,
+			c.epc_UserId,
+			c.epc_UserName,
+			1 type,
+			c.epc_CommentPic,
+			c.epc_Createdate,
+			c.epc_Content,
+			c.up_commentId,
+			b.elPi_ElectricPileAddress AS commentAddress
+		FROM
+			(
+				SELECT
+					pk_EpcComment,
+					epc_EpId,
+					epc_UserId,
+					epc_UserName,
+					1 type,
+					epc_CommentPic,
+					epc_Createdate,
+					epc_Content,
+					up_commentId
+				FROM
+					tbl_electricpilecomment
+				WHERE
+					up_commentId > 0
+				AND up_commentId IN (
+					SELECT
+						pk_EpcComment
+					FROM
+						tbl_electricpilecomment
+					WHERE
+						epc_UserId = #{userId} 
+				)
+			) c
+		LEFT JOIN tbl_electricpile b ON c.epc_EpId = b.pk_ElectricPile
+		UNION ALL
+			SELECT
+				d.pk_PsComment,
+				d.psc_PsId,
+				d.psc_UserId,
+				d.psc_UserName,
+				2 type,
+				d.psc_CommentPic,
+				d.psc_Createdate,
+				d.psc_Content,
+				d.up_commentId,
+				a.poSt_Address AS commentAddress
+			FROM
+				(
+					SELECT
+						pk_PsComment,
+						psc_PsId,
+						psc_UserId,
+						psc_UserName,
+						2 type,
+						psc_CommentPic,
+						psc_Createdate,
+						psc_Content,
+						up_commentId
+					FROM
+						tbl_powerstationcomment
+					WHERE
+						up_commentId > 0
+					AND up_commentId IN (
+						SELECT
+							pk_PsComment
+						FROM
+							tbl_powerstationcomment
+						WHERE
+							psc_UserId = #{userId} 
+					)
+				) d
+			LEFT JOIN tbl_powerstation a ON d.psc_PsId = a.pk_PowerStation
+	) e
+			ORDER BY
+			  e.epc_Createdate desc
+		  limit #{pageNumber},#{pageNum}
+	</select>
+	
+	<select id="countPersonMessage" parameterType="map" resultType="long">
+		select count(e.pk_EpcComment)
+		FROM
+			(
+				SELECT
+					c.pk_EpcComment,
+					c.epc_EpId,
+					c.epc_UserId,
+					c.epc_UserName,
+					1 type,
+					c.epc_CommentPic,
+					c.epc_Createdate,
+					c.epc_Content,
+					c.up_commentId,
+					b.elPi_ElectricPileAddress AS commentAddress
+				FROM
+					(
+						SELECT
+							pk_EpcComment,
+							epc_EpId,
+							epc_UserId,
+							epc_UserName,
+							1 type,
+							epc_CommentPic,
+							epc_Createdate,
+							epc_Content,
+							up_commentId
+						FROM
+							tbl_electricpilecomment
+						WHERE
+							up_commentId > 0
+						AND up_commentId IN (
+							SELECT
+								pk_EpcComment
+							FROM
+								tbl_electricpilecomment
+							WHERE
+								epc_UserId = #{userId} 
+						)
+					) c
+				LEFT JOIN tbl_electricpile b ON c.epc_EpId = b.pk_ElectricPile
+				UNION ALL
+					SELECT
+						d.pk_PsComment,
+						d.psc_PsId,
+						d.psc_UserId,
+						d.psc_UserName,
+						2 type,
+						d.psc_CommentPic,
+						d.psc_Createdate,
+						d.psc_Content,
+						d.up_commentId,
+						a.poSt_Address AS commentAddress
+					FROM
+						(
+							SELECT
+								pk_PsComment,
+								psc_PsId,
+								psc_UserId,
+								psc_UserName,
+								2 type,
+								psc_CommentPic,
+								psc_Createdate,
+								psc_Content,
+								up_commentId
+							FROM
+								tbl_powerstationcomment
+							WHERE
+								up_commentId > 0
+							AND up_commentId IN (
+								SELECT
+									pk_PsComment
+								FROM
+									tbl_powerstationcomment
+								WHERE
+									psc_UserId = #{userId} 
+							)
+						) d
+					LEFT JOIN tbl_powerstation a ON d.psc_PsId = a.pk_PowerStation
+			) e
+	</select>
+</mapper> 

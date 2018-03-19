@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/style.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/integral/integralList/integral_detail.css"/>
+    <title>积分详情</title>
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="ibox float-e-margins" style="margin: 0">
+                    <div class="">
+                        <div class="ibox-content">
+                            <div class="userBaseInfo col-sm-12 clearfix" id="scanManageMent">
+                                <div class="col-sm-9">
+                                    <div class="baseBlock">
+                                        <div class="perblock">
+                                            <span class="titleTip">用户账号</span>
+                                            <span class="parmValue" id="userAccount"></span>
+                                        </div>
+                                        <div class="perblock">
+                                            <span class="titleTip">用户名</span>
+                                            <span class="parmValue" id="normName"></span>
+                                        </div>
+                                        <div class="perblock">
+                                            <span class="titleTip">当前可用积分</span>
+                                            <span class="parmValue" id="availableIntegrals"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3" style="position: relative">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class="ibox float-e-margins" style="margin: 0">
+                    <div class="">
+                        <div class="ibox-content">
+                            <div class="userBaseInfo" id="adminManagementBlock">
+                                <div class="queryTable table-responsive">
+                                    <table class=" table table-bordered text-center" style="border: 1px solid #DCDCDC;">
+                                        <thead>
+                                        <tr>
+                                            <th>积分变化</th>
+                                            <th>积分方向</th>
+                                            <th>活动名称</th>
+                                            <th>涉及金额</th>
+                                            <th>时间</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="myTbody">
+
+                                        </tbody>
+                                    </table>
+                                    <div id="integralDetailsPage" class="pagination">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="../../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="../../../js/contabs.min.js"></script>
+<script src="../../../js/integral/integralList/integral_detail.js" type="text/javascript" charset="utf-8"></script>
+</html>

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dubbox.dao.TblEquipmentrepairMapper">
+	<resultMap id="base_result" type="TblEquipmentrepair">
+		<id property="id" column="pk_EquipmentRepair" />
+		<result property="wtpId" column="eqRe_WarrantyTypeId" />
+		<result property="txt" column="eqRe_Content" />
+		<result property="uid" column="eqRe_UserId" />
+		<result property="wsts" column="eqRe_WarrantyStatus" />
+		<result property="cdate" column="eqRe_Createdate" />
+		<result property="udate" column="eqRe_Updatedate" />
+		<result property="sts" column="eqRe_Status" />
+		<result property="epid" column="epid" />
+		<result property="dvcTp" column="device_type" />
+		<result property="deaRst" column="deal_result" />
+	</resultMap>
+
+	<!-- 添加 -->
+	<insert id="insert" parameterType="TblEquipmentrepair">
+		insert into
+		tbl_equipmentrepair
+		(
+		eqRe_WarrantyTypeId,
+		eqRe_Content,
+		eqRe_UserId,
+		eqRe_WarrantyStatus,
+		eqRe_Status,
+		epid,
+		device_type,
+		deal_result,
+		eqRe_Createdate,
+		eqRe_Updatedate
+		)values (
+		#{wtpId},
+		#{txt},
+		#{uid},
+		#{wsts},
+		#{sts},
+		#{epid},
+		#{dvcTp},
+		#{deaRst},
+		sysdate(),
+		sysdate()
+		)
+	</insert>
+
+	<!-- 修改 -->
+	<update id="update" parameterType="TblEquipmentrepair">
+		update
+		tbl_equipmentrepair
+		set
+		<if test="wtpId != null">
+			eqRe_WarrantyTypeId=#{wtpId},
+		</if>
+		<if test="txt != null">
+			eqRe_Content=#{txt},
+		</if>
+		<if test="uid != null">
+			eqRe_UserId=#{uid},
+		</if>
+		<if test="wsts != null">
+			eqRe_WarrantyStatus=#{wsts},
+		</if>
+		<if test="sts != null">
+			eqRe_Status=#{sts},
+		</if>
+		<if test="epid != null">
+			epid=#{epid},
+		</if>
+		<if test="dvcTp != null">
+			device_type=#{dvcTp},
+		</if>
+		<if test="deaRst != null">
+			deal_result=#{deaRst},
+		</if>
+		eqRe_Updatedate=sysdate()
+		where
+		pk_EquipmentRepair=#{id}
+	</update>
+
+	<!-- 取得条数 -->
+	<select id="getCount" parameterType="TblEquipmentrepair"
+		resultType="int">
+		select
+		count(1)
+		from
+		tbl_equipmentrepair
+		where 1=1
+		<if test="slcBgDate !=null and slcBgDate !=''">
+			<![CDATA[AND TO_DAYS(eqRe_Createdate) >= TO_DAYS(#{slcBgDate})]]>
+		</if>
+		<if test="slcEdDate !=null and slcEdDate !=''">
+			<![CDATA[AND TO_DAYS(eqRe_Createdate) <= TO_DAYS(#{slcEdDate})]]>
+		</if>
+		<if test="wtpId !=null">
+			and eqRe_WarrantyTypeId=#{wtpId}
+		</if>
+		<if test="userIds != null">
+			and eqRe_UserId in
+			<foreach item="item" index="index" collection="userIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+	</select>
+
+	<!-- 取得列表 -->
+	<select id="getList" parameterType="TblEquipmentrepair"
+		resultMap="base_result">
+		select
+		${rtColumns}
+		from
+		tbl_equipmentrepair
+		where 1=1
+		<if test="slcBgDate !=null and slcBgDate !=''">
+			<![CDATA[AND TO_DAYS(eqRe_Createdate) >= TO_DAYS(#{slcBgDate})]]>
+		</if>
+		<if test="slcEdDate !=null and slcEdDate !=''">
+			<![CDATA[AND TO_DAYS(eqRe_Createdate) <= TO_DAYS(#{slcEdDate})]]>
+		</if>
+		<if test="wtpId !=null">
+			and eqRe_WarrantyTypeId=#{wtpId}
+		</if>
+		<if test="userIds != null">
+			and eqRe_UserId in
+			<foreach item="item" index="index" collection="userIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		order by eqRe_Updatedate desc
+		<if test="pager !=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<!-- 删除列表 -->
+	<update id="delete" parameterType="TblEquipmentrepair">
+		update
+		tbl_equipmentrepair
+		set
+		eqRe_Status = 1
+		WHERE pk_EquipmentRepair = #{id}
+	</update>
+
+</mapper>

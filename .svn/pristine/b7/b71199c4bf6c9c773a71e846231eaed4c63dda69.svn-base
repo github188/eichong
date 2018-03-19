@@ -1,0 +1,58 @@
+package com.wanma.ims.service;
+
+import java.util.List;
+
+import com.wanma.ims.common.domain.ElectricPileDO;
+import com.wanma.ims.common.domain.PowerStationDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.dto.BaseResultDTO;
+
+/**
+ * <p>充电点接口<p>
+ * @author zhangchunyan
+ * @date 2017-6-23 
+ */
+public interface PowerStationService {
+
+	/**
+	 * 充电点-统计,根据参数统计充电点信息
+	 * @param powerStationDO
+	 * @return list
+	 */
+	public Long countPowerStationList(PowerStationDO powerStationDO);
+	
+	/**
+	 * 充电点-查询,根据参数查询充电点信息
+	 * @param powerStationDO
+	 * @return list
+	 */
+	public List<PowerStationDO> getPowerStationList(PowerStationDO powerStationDO);
+	
+	/**
+	 * 充电点-查询,根据ID查询充电点信息
+	 * @param powerStationId
+	 * @return PowerStationDO
+	 */
+	public PowerStationDO getPowerStationById(Long powerStationId);
+	
+	/**
+	 * 充电点-新增
+	 * @param powerStationDO
+	 * @return boolean
+	 */
+	public boolean addPowerStation(PowerStationDO powerStationDO);
+	
+	/**
+	 * 充电点-编辑
+	 * @param powerStationDO
+	 * @return boolean
+	 */
+	public BaseResultDTO modifyPowerStation(PowerStationDO powerStationDO, List<ElectricPileDO> infoList,UserDO loginUser);
+	
+	/**
+	 * 充电点-删除
+	 * @param powerStationId
+	 * @return boolean
+	 */
+	public boolean removePowerStation(Long powerStationId);
+}

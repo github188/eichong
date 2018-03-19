@@ -1,0 +1,8 @@
+package com.wanma.ims.model;
+
+/**
+ * 管理员实体类 
+ */
+public class UserAdminDO {
+
+}

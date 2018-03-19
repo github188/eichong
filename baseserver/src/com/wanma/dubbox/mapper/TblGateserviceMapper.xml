@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dubbox.dao.TblGateserviceMapper">
+
+	<resultMap id="tblGateserviceResultMap" type="TblGateservice">
+		<id property="id" column="pk_GateId" />
+		<result property="name" column="gtSe_GateName" />
+		<result property="ip" column="gtSe_GateIp" />
+		<result property="port" column="gtSe_GatePort" />
+		<result property="cdate" column="gtSe_CreateTime" />
+		<result property="udate" column="gtSe_UpdateTime" />
+		<result property="cuserId" column="gtSe_create_user_id" />
+		<result property="faiCount" column="gtSe_FailTimes" />
+		<result property="ste" column="gtSe_GateState" />
+	</resultMap>
+
+	<insert id="insert" parameterType="TblGateservice">
+		insert into tbl_gateservice (
+		pk_GateId,
+		gtSe_GateName,
+		gtSe_GateIp,
+		gtSe_GatePort,
+		gtSe_create_user_id,
+		gtSe_CreateTime,
+		gtSe_UpdateTime,
+		gtSe_GateState
+		)values (
+		#{id},
+		#{name},
+		#{ip},
+		#{port},
+		#{cuserId},
+		#{cdate},
+		#{udate},
+		1
+		)
+	</insert>
+
+	<update id="update" parameterType="TblGateservice">
+		update tbl_gateservice set
+		<if test="name != null">
+			gtSe_GateName=#{name},
+		</if>
+		<if test="ip != null">
+			gtSe_GateIp=#{ip},
+		</if>
+		<if test="port != null">
+			gtSe_GatePort=#{port},
+		</if>
+		<if test="cuserId != null">
+			gtSe_create_user_id=#{cuserId},
+		</if>
+		<if test="ste != null">
+			gtSe_GateState=#{ste},
+		</if>
+		gtSe_UpdateTime=sysdate()
+		where
+		pk_GateId=#{id}
+	</update>
+
+	<delete id="delete" parameterType="TblGateservice">
+		delete from
+		tbl_gateservice
+		where
+		1=1
+		<if test="id != null">
+			and pk_GateId = #{id}
+		</if>
+		<if test="pkIds != null">
+			and pk_GateId in
+			<foreach item="item" index="index" collection="pkIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+	</delete>
+
+	<select id="selectOne" parameterType="TblGateservice" resultMap="tblGateserviceResultMap">
+		select ${rtColumns} from tbl_gateservice where pk_GateId=#{id}
+	</select>
+
+	<select id="getCount" parameterType="TblGateservice" resultType="int">
+		select count(1) from tbl_gateservice
+		<where>
+			gtSe_GateState=1
+			<if test="id != null">
+				and pk_GateId=#{id}
+			</if>
+			<if test="name != null">
+				and gtSe_GateName=#{name}
+			</if>
+			<if test="ip != null">
+				and gtSe_GateIp=#{ip}
+			</if>
+			<if test="port != null">
+				and gtSe_GatePort=#{port}
+			</if>
+			<if test="cdate != null">
+				and gtSe_CreateTime=#{cdate}
+			</if>
+			<if test="udate != null">
+				and gtSe_UpdateTime=#{udate}
+			</if>
+		</where>
+		order by gtSe_UpdateTime desc
+	</select>
+
+	<select id="getList" parameterType="TblGateservice" resultMap="tblGateserviceResultMap">
+		select ${rtColumns} from tbl_gateservice
+		<where>
+			gtSe_GateState=1
+			<if test="id != null">
+				and pk_GateId=#{id}
+			</if>
+			<if test="name != null">
+				and gtSe_GateName=#{name}
+			</if>
+			<if test="ip != null">
+				and gtSe_GateIp=#{ip}
+			</if>
+			<if test="port != null">
+				and gtSe_GatePort=#{port}
+			</if>
+			<if test="cdate != null">
+				and gtSe_CreateTime=#{cdate}
+			</if>
+			<if test="udate != null">
+				and gtSe_UpdateTime=#{udate}
+			</if>
+		</where>
+		order by gtSe_UpdateTime desc
+	</select>
+</mapper> 

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsApplyBuildElecPileMapper">
+	<resultMap id="listResultMap" type="TblApplyBuildElecPile">		
+		<id property="aepId" column="aep_id" />
+		<result property="aepAType" column="aep_a_type" />
+		<result property="aepCType" column="aep_c_type" />
+		<result property="aepName" column="aep_name" />
+		<result property="aepPhone" column="aep_phone" />
+		<result property="aepPCode" column="aep_p_code" />
+		<result property="aepCCode" column="aep_c_code" />		
+		<result property="aepACode" column="aep_a_code" />
+		<result property="aepAddr" column="aep_addr" />
+		<result property="aepHPark" column="aep_h_park" />
+		<result property="aepParkNum" column="aep_park_num" />
+		<result property="aepEpType" column="aep_ep_type" />
+		<result property="aepIAgree" column="aep_i_agree" />
+		<result property="aepIReport" column="aep_i_report" />
+		<result property="aepIGround" column="aep_i_ground" />
+		<result property="aepUserId" column="aep_user_id" />
+		<result property="aepStatus" column="aep_status" />
+		<result property="createdate" column="createdate" />		
+		<result property="updatedate" column="updatedate" />
+		<result property="aepOrigin" column="aep_origin" />
+	</resultMap>
+	
+	<select id="getCmsApplyBuildElecPileCount" parameterType="TblApplyBuildElecPile"
+		resultType="long">
+		select
+		count(1)
+		from
+		tbl_apply_ep a	
+		where 1=1
+		<if test="aepCType !=null and aepCType !=''">
+			and a.aep_c_type = #{aepCType}
+		</if>
+		<if test="aepStatus !=null and aepStatus !=''">
+			and a.aep_status = #{aepStatus}
+		</if>
+		<if test="aepName and aepName !=''">
+			and a.aep_name like concat('%',#{aepName},'%')
+		</if>
+		<if test="aepPhone and aepPhone !=''">
+			and a.aep_phone like concat('%',#{aepPhone},'%')
+		</if>
+		<if test="aepAddr and aepAddr !=''">
+			and a.aep_addr like concat('%',#{aepAddr},'%')
+		</if>
+		<if test="aepPCode !=null and aepPCode !=''">
+			and a.aep_p_code = #{aepPCode}
+		</if>	
+		<if test="aepCCode !=null and aepCCode !=''">
+			and a.aep_c_code = #{aepCCode}
+		</if>	
+		<if test="aepACode !=null and aepACode !=''">
+			and a.aep_a_code = #{aepACode}
+		</if>
+	</select>
+	<select id="getCmsApplyBuildElecPileList" parameterType="TblApplyBuildElecPile"
+		resultMap="listResultMap">
+		select
+		a.aep_id,
+		a.aep_a_type,
+		a.aep_c_type,
+		a.aep_name,
+		a.aep_phone,
+		a.aep_addr,
+		a.aep_h_park,
+		a.aep_park_num,
+		a.aep_ep_type,
+		a.aep_i_agree,	
+		a.aep_i_report,
+		a.aep_i_ground,
+		a.aep_status,
+		a.createdate
+		from
+		tbl_apply_ep a	
+		where 1=1	
+		<if test="aepCType !=null and aepCType !=''">
+			and a.aep_c_type = #{aepCType}
+		</if>
+		<if test="aepStatus !=null and aepStatus !=''">
+			and a.aep_status = #{aepStatus}
+		</if>
+		<if test="aepName and aepName !=''">
+			and a.aep_name like concat('%',#{aepName},'%')
+		</if>
+		<if test="aepPhone and aepPhone !=''">
+			and a.aep_phone like concat('%',#{aepPhone},'%')
+		</if>
+		<if test="aepAddr and aepAddr !=''">
+			and a.aep_addr like concat('%',#{aepAddr},'%')
+		</if>	
+		<if test="aepPCode !=null and aepPCode !=''">
+			and a.aep_p_code = #{aepPCode}
+		</if>	
+		<if test="aepCCode !=null and aepCCode !=''">
+			and a.aep_c_code = #{aepCCode}
+		</if>	
+		<if test="aepACode !=null and aepACode !=''">
+			and a.aep_a_code = #{aepACode}
+		</if>
+		order by a.updatedate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	
+	<!-- 更新申请状态 -->
+	<update id="updateApplyState" parameterType="map">
+		update
+		tbl_apply_ep set aep_status = #{aepStatus} where
+		aep_id = #{aepId}
+	</update>
+</mapper> 

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration scan="true">
+   <appender name="console" class="ch.qos.logback.core.ConsoleAppender">  
+        <encoder>  
+            <pattern>[%-5level] %d{HH:mm:ss.SSS} [%thread] %logger{36} - %msg%n</pattern>  
+        </encoder>  
+    </appender>  
+    <!-- 日志级别 -->  
+    <root>  
+        <level value="error" />
+        <level value="warn" />
+        <appender-ref ref="console" />  
+    </root>  
+   
+    <appender name="RollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>../ims_log/ims.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>../ims_log/ims-%d{MM-dd}.log</fileNamePattern>
+            <maxHistory>15</maxHistory>
+        </rollingPolicy>
+        <encoder charset="UTF-8">
+            <pattern>%d{HH:mm:ss.SSS} [%thread][%logger{36}] %-5level - %msg%n</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>WARN</level>
+        </filter>
+    </appender>
+
+    <appender name="DebugFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>../ims_log/ims-debug.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>../ims_log/ims-debug-%d{MM-dd}.log</fileNamePattern>
+            <maxHistory>15</maxHistory>
+        </rollingPolicy>
+        <encoder charset="UTF-8">
+            <pattern>%d{HH:mm:ss.SSS} [%thread][%logger{36}] %-5level - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <appender name="SlowFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>../ims_log/filter-web.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>../ims_log/ims-filter-%d{MM-dd}.log</fileNamePattern>
+            <maxHistory>15</maxHistory>
+        </rollingPolicy>
+        <encoder charset="UTF-8">
+            <pattern>%d{HH:mm:ss.SSS} [%thread][%logger{36}] %-5level - %msg%n</pattern>
+        </encoder>
+    </appender>
+    
+    <logger name="com.wanma.ims.common" level="DEBUG" />
+    <logger name="com.wanma.ims.mapper" level="DEBUG" />
+    <logger name="com.wanma.ims" level="DEBUG" />
+
+    <logger name="org.springframework" level="DEBUG" />
+    <logger name="org.springframework.remoting.support.RemoteInvocationTraceInterceptor" level="ERROR" />
+
+    <root level="INFO">
+        <appender-ref ref="DebugFile"/>
+        <appender-ref ref="RollingFile"/>
+    </root>
+
+    <logger name="com.wanma.ims.filter" level="DEBUG" additivity="false">
+        <appender-ref ref="SlowFile"/>
+    </logger>
+
+</configuration>

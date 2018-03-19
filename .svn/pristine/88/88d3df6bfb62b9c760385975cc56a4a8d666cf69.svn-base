@@ -1,0 +1,71 @@
+package com.wanma.ims.service.impl;
+
+import com.wanma.ims.common.domain.LevelDO;
+import com.wanma.ims.mapper.LevelMapper;
+import com.wanma.ims.service.LevelService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class LevelServiceImpl implements LevelService{
+
+	@Autowired
+	private LevelMapper levelMapper;
+	
+	@Override
+	public List<LevelDO> getLevelListByIds(List<Long> ids) {
+		return levelMapper.selectLevelListByIds(ids);
+	}
+	
+	@Override
+	public List<LevelDO> getLevelListByCpyId(Long cpyId) {
+		return levelMapper.selectLevelListByCpyId(cpyId);
+	}
+
+	@Override
+	public long getLevelCount(LevelDO level) {
+		return levelMapper.getLevelCount(level);
+	}
+
+	@Override
+	public List<LevelDO> getLevelList(LevelDO level) {
+		return levelMapper.getLevelList(level);
+	}
+
+	@Override
+	public boolean removeLevel(LevelDO level) {
+		return levelMapper.removeLevel(level) > 0;
+	}
+
+	@Override
+	public boolean setLevelDefault(LevelDO level) {
+		return levelMapper.setLevelDefault(level) > 0;
+	}
+
+	@Override
+	public boolean checkLevelCode(LevelDO level) {
+		return levelMapper.checkLevelCode(level) <= 0;
+	}
+
+	@Override
+	public boolean checkLevelName(LevelDO level) {
+		return levelMapper.checkLevelName(level) <= 0;
+	}
+
+	@Override
+	public boolean addLevel(LevelDO level) {
+		if("1".equals(String.valueOf(level.getIsDefault()))){//如果是设为默认等级 则先修改之前的默认等级为普通
+			levelMapper.setLevelNormal(level);
+		}
+		return levelMapper.addLevel(level) > 0;
+	}
+
+	@Override
+	public List<LevelDO> getLevelByCpyId(Long cpyId) {
+		return levelMapper.getLevelByCpyId(cpyId);
+	}
+	
+
+}

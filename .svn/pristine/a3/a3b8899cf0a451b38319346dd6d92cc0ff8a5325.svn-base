@@ -1,0 +1,103 @@
+package com.wanma.ims.service.impl;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.wanma.ims.common.domain.ElectricPileDO;
+import com.wanma.ims.common.domain.PowerStationDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.constants.ResultCodeConstants;
+import com.wanma.ims.constants.WanmaConstants;
+import com.wanma.ims.mapper.ElectricPileMapper;
+import com.wanma.ims.mapper.InitialMapper;
+import com.wanma.ims.mapper.PowerStationMapper;
+import com.wanma.ims.service.ElectricPileService;
+import com.wanma.ims.service.PowerStationService;
+
+@Service
+public class PowerStationServiceImpl implements PowerStationService{
+
+	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+	@Autowired
+	private PowerStationMapper powerStationMapper;
+	@Autowired
+	private ElectricPileService electricPileService;
+	@Autowired
+	private ElectricPileMapper electricPileMapper;
+	@Autowired
+	private InitialMapper initialMapper;
+	@Override
+	public Long countPowerStationList(PowerStationDO powerStationDO) {
+		return powerStationMapper.countPowerStationList(powerStationDO);
+	}
+
+	@Override
+	public List<PowerStationDO> getPowerStationList(PowerStationDO powerStationDO) {
+		List<PowerStationDO> list = powerStationMapper.selectPowerStationList(powerStationDO);
+		for (PowerStationDO powerStationDO2 : list) {  //TODO: 有时间的话还是要改成批量的
+			ElectricPileDO searchModel = new ElectricPileDO();
+			searchModel.setPowerStationId(powerStationDO2.getPowerstationId());
+			Long num = electricPileMapper.countElectricPile(searchModel);
+			if(num != null){
+				powerStationDO2.setElectricPileNum(num.intValue());
+			}
+		}
+		return list;
+	}
+
+	@Override
+	public PowerStationDO getPowerStationById(Long powerStationId) {
+		PowerStationDO powerStationDO = powerStationMapper.selectPowerStationById(powerStationId);
+		//省市区
+		powerStationDO.setProvinceName(initialMapper.selectProvinceById(powerStationDO.getProvinceCode()));
+		powerStationDO.setCityName(initialMapper.selectCityById(powerStationDO.getCityCode()));
+		powerStationDO.setAreaName(initialMapper.selectAreaById(powerStationDO.getAreaCode()));
+		return powerStationDO;
+	}
+
+	@Override
+	public boolean addPowerStation(PowerStationDO powerStationDO) {
+		return powerStationMapper.insertPowerStation(powerStationDO) > 0? true : false;
+	}
+
+	@Override
+	public BaseResultDTO modifyPowerStation(PowerStationDO powerStationDO,List<ElectricPileDO> infoList,UserDO loginUser) {
+		BaseResultDTO result = new BaseResultDTO();
+	    try{
+	    	if(powerStationMapper.updatePowerStation(powerStationDO) > 0){
+				loginUser.setModifier(powerStationDO.getModifier());
+				BaseResultDTO dto = electricPileService.bandElectricPile(infoList,WanmaConstants.POWER_STATION_BIND_ELECTRIC_PILE,powerStationDO.getPowerstationId(),loginUser);
+				if(!dto.isSuccess()){
+					result.setSuccess(false);
+					result.setErrorDetail(ResultCodeConstants.ERROR_MSG_MODIFY_POWERSTATION);
+					return result;
+				}
+			}
+	    }catch(Exception e){
+	    	result.setSuccess(false);
+	    	result.setErrorDetail("修改充电桩信息失败");
+	    	LOGGER.error("PowerStationServiceImpl called modifyPowerStation failed", e);
+	    }
+		return result;
+	}
+
+	@Override
+	public boolean removePowerStation(Long powerStationId) {
+		if(powerStationMapper.deletePowerStationById(powerStationId) > 0){
+			Map<String,Long> map = new HashMap<String,Long>();
+			map.put("powerStationId", powerStationId);
+			if(electricPileMapper.updateElectricByForeignKey(map) >= 0){
+				return true;
+			}
+		}
+		return false;
+	}
+
+}

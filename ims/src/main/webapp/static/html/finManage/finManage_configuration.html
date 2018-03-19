@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>分成配置</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/style.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/finManage/finManage_configuration.css"/>
+    <link rel="stylesheet" type="text/css" href="../../js/lib/ztree/css/zTreeStyle/zTreeStyle.css"/>
+</head>
+<body>
+<div class="col-sm-12">
+    <div class="ibox float-e-margins" style="margin: 0">
+        <div class="userBaseInfo col-sm-12 clearfix">
+            <div class="form-group col-xs-10">
+                <div class="queryParam finManage-title">
+                    分账配置
+                </div>
+                <label class="radio-inline log">
+                    <input type="radio" name="state" value="0" checked="checked"> 服务费&电费比例分账
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="state" value="1">电量*单价分账
+                </label>
+            </div>
+            <div class="form-group col-xs-10">
+                <div class="queryParam finManage-title">
+                    分账对象
+                    <a class="add-company" href="javascript:void(0);" onclick="addCompany();">添加分账公司</a>
+                </div>
+            </div>
+            <div class="electric-company">
+                <div class="form-group col-xs-10">
+                    <div class="col-sm-3 queryParam">
+                        选择电桩资产公司
+                    </div>
+                    <div class="userAccount queryParam">
+                        <input type="text" name="" class="userAccountInput cityName searchZnode" placeholder="输入公司名称">
+                    </div>
+                </div>
+                <div class="form-group col-xs-10">
+                    <div class="col-sm-3 queryParam">
+                        选择分账公司1
+                    </div>
+                    <div class="userAccount queryParam">
+                        <input type="text" name="" class="userAccountInput cityName" placeholder="输入公司名称">
+                    </div>
+                </div>
+            </div>
+            <div class="PropAccount">
+                <div class="form-group col-xs-10 finManage-title">
+                    分账比例
+                </div>
+                <div class="form-group col-xs-10 serviceFee">
+                    <div class="col-sm-1 queryParam">
+                        服务费
+                    </div>
+                    <div class="col-sm-1 queryParam userAccount">
+                        <input type="text" name="" class="userAccountInput" placeholder="资产公司">
+                    </div>
+                    <div class="col-sm-1 queryParam userAccount">
+                        <input type="text" name="" class="userAccountInput" placeholder="分账公司1">
+                    </div>
+                </div>
+                <div class="form-group col-xs-10 electricFee">
+                    <div class="col-sm-1 queryParam">
+                        电费
+                    </div>
+                    <div class="col-sm-1 queryParam userAccount">
+                        <input type="text" name="" class="userAccountInput" placeholder="资产公司">
+                    </div>
+                    <div class="col-sm-1 queryParam userAccount">
+                        <input type="text" name="" class="userAccountInput" placeholder="分账公司1">
+                    </div>
+                </div>
+                <div class="form-group col-xs-10 explain">注：若无需分账，则相应输入框内填写0:100或100:0</div>
+            </div>
+            <div class="SplitAccount" style="display: none;">
+                <div class="form-group col-xs-10">
+                    <div class="queryParam finManage-title">
+                        分账价格
+                    </div>
+                    <div class="col-sm-2 queryParam userAccount">
+                        <input type="text" name="" class="userAccountInput" placeholder="" onKeyUp="amount(this)" onBlur="overFormat(this)" />
+                    </div>
+                    <div class="col-sm-2 queryParam">元/每度</div>
+                </div>
+                <div class="form-group col-xs-10 explain">
+                    <div class="queryParam">说明</div>
+                    <div class="queryParam">分账公司获得：电量*分账价格</div>
+                    <div class="queryParam">资产公司获得：电量*费率-电量*分账价格</div>
+                </div>
+            </div>
+            <div class="form-group col-xs-10">
+                <div class="queryParam finManage-title">
+                    选择电桩
+                </div>
+                <div class="col-xs-10 form-group" id="searchBtn">查询电桩</div>
+                <div class="col-sm-6 ">
+                    <ul id="treeDemo" class="ztree"></ul>
+                </div>
+            </div>
+            <div class="col-xs-10 form-group" id="submitBtn">
+                保存
+            </div>
+            <div class="col-xs-10 form-group" id="changeBtn" style="display: none;">
+                修改
+            </div>
+            <div class="col-xs-10 form-group" id="cancelBtn">
+                返回
+            </div>
+            <!--模糊查询模块-->
+            <div class="cityQueryBlock">
+                <ul class="searchUl"></ul>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/ztree/js/jquery.ztree.core.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/ztree/js/jquery.ztree.excheck.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/finManage/finManage_configuration.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+</html>

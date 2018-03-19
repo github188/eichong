@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root-node>
+	<class-config>
+		<class-bean-name>tblElectricPileServiceImpl</class-bean-name>
+		<method-name>getList</method-name>
+		<key-cache>com.wanma.dubbox.model.TblElectricPile</key-cache>
+	</class-config>
+	<class-config>
+		<class-bean-name>tblElectricPileHeadServiceImpl</class-bean-name>
+		<method-name>getList</method-name>
+		<key-cache>com.wanma.dubbox.model.TblElectricPileHead</key-cache>
+	</class-config>
+	<class-config>
+		<class-bean-name>tblPowerStationServiceImpl</class-bean-name>
+		<method-name>getList</method-name>
+		<key-cache>com.wanma.dubbox.model.TblPowerStation</key-cache>
+	</class-config>
+	<class-config>
+		<class-bean-name>tblUserServiceImpl</class-bean-name>
+		<method-name>getList</method-name>
+		<key-cache>com.wanma.dubbox.model.TblUser</key-cache>
+	</class-config>
+	<class-config>
+		<class-bean-name>tblUserNormalServiceImpl</class-bean-name>
+		<method-name>getList</method-name>
+		<key-cache>com.wanma.dubbox.model.TblUserNormal</key-cache>
+	</class-config>
+	<class-config>
+		<class-bean-name>tblUserBusinessServiceImpl</class-bean-name>
+		<method-name>getList</method-name>
+		<key-cache>com.wanma.dubbox.model.TblUserBusiness</key-cache>
+	</class-config>
+	<class-config>
+		<class-bean-name>tblUserAdminServiceImpl</class-bean-name>
+		<method-name>getList</method-name>
+		<key-cache>com.wanma.dubbox.model.TblUserAdmin</key-cache>
+	</class-config>
+</root-node>

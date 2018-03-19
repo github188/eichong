@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	    <meta name="renderer" content="webkit">
+		<link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/style.min.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/cardList/card_home.css"/>
+		<title>卡主页</title>
+	</head>
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInRight">
+    	<div class="container-fluid">
+    		<div class="row">
+	    			<div class="btnLine">
+	    				<!--<div class="goBack">返回</div>-->
+	    			</div>
+	    		</div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="ibox float-e-margins">
+                    <div class="">
+                        <div class="ibox-content">
+	                       <div class="userBaseInfo" id="ctrCardBaseInfo" style="display: none;">
+	                       		<div class="headTable">
+	                       			<ul class="headList">
+	                       				<li>
+	                       					<div class="col-sm-4 borderRight tdBlockTop">
+	                       						<span>外卡号</span>
+	                       						<span id="ucExternalCardNumber"></span>
+	                       						<span></span>
+	                       					</div>
+	                       					<div class="col-sm-4 borderRight tdBlockTop">
+	                       						<span>内卡号</span>
+	                       						<span><t id="ucInternalCardNumber" class="orange"></t></span>
+	                       						<span></span>
+	                       					</div>
+	                       					<div class="col-sm-4 tdBlockTop">
+	                       						<span>渠道</span>
+	                       						<span class="cpyNameStyle" id="cpyCompanyname"></span>
+	                       						<span> </span>
+	                       					</div>
+	                       					<div class="clearfix"></div>
+	                       				</li>
+	                       				<li>
+	                       					<div class="col-sm-4 borderRight tdBlock">
+	                       						<span>状态</span>
+	                       						<!--<span class="cpyNameStyle">正常</span>-->
+	                       						<span class="cpyNameStyle" id="ucStatusHTML"></span>
+	                       						<span class="openDisable" id="statusDisableBtn" style="display: none">解禁</span>
+	                       					</div>
+	                       					<div class="col-sm-4 borderRight tdBlock">
+	                       						<span>级别</span>
+	                       						<span class="cpyNameStyle" id="levelName"></span>
+	                       						<span class="openDisable" id="setLevelBtn_card">设置</span>
+	                       					</div>
+	                       					<div class="col-sm-4 tdBlock">
+	                       						<span>黑白名单</span>
+	                       						<span class="openDisable">设置</span>
+	                       					</div>
+	                       					<div class="clearfix"></div>
+	                       				</li>
+	                       			</ul>
+	                       		</div>
+	                       		
+	                       </div>
+
+	                       <div class="emptyDiv"></div>
+                            <!--状态管理-->
+                            <div class="userBaseInfoList" id="statusBlock" style="display: none;">
+                                <div class="baseInfoShow" style="padding-bottom: 0">
+                                    <div class="baseInfoTitle">
+                                        状态管理
+                                    </div>
+                                    <ul class="baseBtnInfoUl">
+                                        <li class="baseInfoBtn cardFrozen">冻结</li>
+                                        <li class="baseInfoBtn relieveCardFrozen">解冻</li>
+                                        <li class="baseInfoBtn cardLoss">挂失</li>
+                                        <li class="baseInfoBtn relieveCardLoss">解挂</li>
+                                        <li class="baseInfoBtn cardCancel">注销</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="emptyDiv"></div>
+                            <!--状态管理结束-->
+	                       <!--用户信息-->
+	                       <div class="userBaseInfoList" id="userInfoManagement" style="display: none;">
+	                       		<div class="baseInfoShow">
+	                       			<div class="baseInfoTitle">
+	                       				默认用户
+	                       			</div>
+                                    <ul class="baseBtnInfoUl">
+                                        <li class="baseInfoBtn" id="bindUser">绑用户</li>
+                                    </ul>
+	                       		</div>
+	                       		<ul class="baseInfoUl">
+	                       			<li class="userInfoAccount" style="display: none;">
+	                       				<span>用户账号</span>
+	                       				<span id="userAccount" class="colorUnderLine"></span>
+	                       			</li>
+	                       		</ul>
+	                       </div>
+	                       <div class="emptyDiv"></div>
+	                       <!--用户信息结束-->
+	                       <!--订单详情-->
+	                       <div class="userBaseInfoList" id="dingdanBlock" style="display: none;">
+	                       		<div class="baseInfoShow">
+	                       			<div class="baseInfoTitle">
+	                       				订单详情
+	                       			</div>
+                                    <ul class="baseBtnInfoUl">
+                                        <li class="baseInfoBtn">查看</li>
+                                    </ul>
+	                       		</div>
+	                       		<ul class="baseInfoUl">
+                                    <li>
+                                        <span>累计充电</span>
+                                        <span><t id="chargeAll"></t>度</span>
+                                    </li>
+                                    <li>
+                                        <span>累积订单</span>
+                                        <span><t id="orderAll"></t>笔</span>
+                                    </li>
+                                    <li>
+                                        <span>今日订单</span>
+                                        <span id="orderToday"></span>
+                                    </li>
+	                       		</ul>
+	                       </div>
+	                       <!--订单详情结束-->
+	                    </div>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="ibox float-e-margins">
+                    <div class="">
+                        <div class="ibox-content">
+	                        <!--安全管理-->
+	                        <div class="userBaseInfoList" id="safetyBlock" style="display: none;">
+	                       		<div class="baseInfoShow">
+	                       			<div class="baseInfoTitle">
+	                       				安全管理
+	                       			</div>
+	                       			<div class=""></div>
+	                       		</div>
+	                       		<ul class="baseInfoUl">
+	                       			<li>
+	                       				<span>支付密码</span>
+	                       				<span class="orange" id="setPayPassword">重置</span>
+	                       			</li>
+	                       		</ul>
+	                       </div>
+	                       <div class="emptyDiv"></div>
+	                       <!--安全管理结束-->
+	                       <!--资金账户开始-->
+	                       <div class="userBaseInfoList" id="finAccountBlock" style="display: none;">
+	                       		<div class="baseInfoShow">
+	                       			<div class="baseInfoTitle">
+	                       				资金账户
+	                       			</div>
+                                    <ul class="baseBtnInfoUl">
+                                        <li class="baseInfoBtn">查看</li>
+                                    </ul>
+	                       		</div>
+	                       		<ul class="baseInfoUl">
+	                       			<li>
+	                       				<span>资金账户号</span>
+	                       				<span id="accountNO"></span>
+	                       			</li>
+	                       			<li>
+	                       				<span>余额/额度</span>
+	                       				<span id="accountBalance"></span>
+	                       			</li>
+	                       			<li>
+	                       				<span>类型</span>
+	                       				<span id="tradeType"></span>
+	                       			</li>
+	                       			<li>
+	                       				<span>状态</span>
+	                       				<span id="accountStatus"></span>
+	                       			</li>
+	                       		</ul>
+	                       </div>
+	                        <div class="emptyDiv"></div>
+	                       <!--资金账户结束-->
+                            <!--卡账单开始-->
+                            <div class="userBaseInfoList" id="cardBill" style="display: none;">
+                                <div class="baseInfoShow">
+                                    <div class="baseInfoTitle">
+                                        卡账单
+                                    </div>
+                                </div>
+                                <ul class="baseInfoUl">
+                                    <li>
+                                        <span>总充值</span>
+                                        <span id="chongzhi"></span>
+                                    </li>
+                                    <li>
+                                        <span>总优惠</span>
+                                        <span id="youhui"></span>
+                                    </li>
+                                    <li>
+                                        <span>总消费</span>
+                                        <span id="xiaofei"></span>
+                                    </li>
+                                    <li>
+                                        <span>冻结</span>
+                                        <span id="dongjie"></span>
+                                    </li>
+                                    <li>
+                                        <span>余额</span>
+                                        <span id="yue"></span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="emptyDiv"></div>
+                            <!--卡账单结束-->
+	                       <!--账务关系开始-->
+	                         <div class="userBaseInfoList" id="finRelationBlock" style="display: none;">
+	                       		<div class="baseInfoShow">
+	                       			<div class="baseInfoTitle">
+	                       				账务关系
+	                       			</div>
+                                    <ul class="baseBtnInfoUl">
+                                        <li class="baseInfoBtn">查看</li>
+                                    </ul>
+	                       		</div>
+	                       		<ul class="baseInfoUl">
+	                       			<li>
+	                       				<span>账单科目</span>
+	                       				<span id="billAccountName"></span>
+	                       			</li>
+	                       			<li>
+	                       				<span>资金账户</span>
+	                       				<span id="accountNumber"></span>
+	                       			</li>
+	                       		</ul>
+	                       </div>
+	                        <div class="emptyDiv"></div>
+	                       <!--账务关系结束-->
+	                    </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+    <div class="setUserLevel_card" style="display: none;">
+        <select class="form-control m-b" name="levelId" id="setUserLevel_card">
+
+
+        </select>
+    </div>
+    <!--新绑定用户-->
+    <div class="newBindUser" style="display: none;">
+        <div class="text-left">输入用户账号,绑用户后,资金账户将合并</div>
+        <div class="ucCardNumber">
+            <input type="text" name="userAccount" value="" placeholder="用户账号"/>
+        </div>
+
+    </div>
+	</body>
+	<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+    <!--<script src="../js/apiAddress.js" type="text/javascript" charset="utf-8"></script>-->
+    <script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="../../js/contabs.min.js"></script>
+    <script src="../../js/cardList/card_home.js" type="text/javascript" charset="utf-8"></script>
+</html>

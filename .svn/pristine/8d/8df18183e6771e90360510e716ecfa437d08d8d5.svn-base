@@ -1,0 +1,38 @@
+/** 
+ * FileName UserService.java
+ * 
+ * Version 1.0
+ *
+ * Create by yangwr 2014/6/9
+ * 
+ * Copyright 2000-2001 Bluemobi. All Rights Reserved.
+ */
+
+package com.wanma.service;
+
+import java.util.List;
+
+import com.wanma.model.TblEquipmentVersion;
+
+/**
+ * FileName UserService.java
+ * 
+ * Version 1.0
+ * 
+ * Create by mb 2017/5/26
+ * 
+ * 设备版本信息
+ */
+public interface CmsEquipmentVersionService {
+
+	List<TblEquipmentVersion> getVersionByProductID(int pkElectricpile);
+
+	void deleteByProductID(String evProductID);
+
+	TblEquipmentVersion getBomById(String pkBomListId);
+
+	void insertEpVersion(TblEquipmentVersion epVersion);
+
+
+
+}

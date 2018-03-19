@@ -1,0 +1,281 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>爱充-申请入网表单/合作伙伴</title>
+<link href="static/css/style.css" rel="stylesheet" type="text/css" /><!--全局-->
+<link href="static/css/infobox.css" rel="stylesheet" type="text/css"/>
+<link href="static/css/loginBox.css" rel="stylesheet" type="text/css"/>
+<!-- common js aere -->
+<script type="text/javascript">
+	var basepath="";
+	var this_tag = "index";	
+	var number = Math.random(); 	
+</script>
+<script src="static/js/jquery-1.10.2.min.js" type="text/javascript"></script>
+</head>
+
+<body>
+
+<!--导航-->
+<div id="afterHead" class="clear"></div><div style="clear:both;"></div>
+<!--通栏大图-->
+<div style="clear:both;"></div> 
+
+
+
+
+
+<!--内容-->
+<div class="apply">
+  <div class="applyWarp">
+    <dl>
+      <!--选择开始-->
+      <div id = "choosePartnerDiv" style="display: none;">
+      <dd style="height:100px;"></dd>
+      <dd style="height:60px; text-align:center; font-size:24px;">请选择</dd>
+      <dd><form style="text-align:center; height:60px;"> 
+                  <label>
+                    <input type="radio" name="choosePartner" value="1" id="choosePartner1" />
+                    企业  &nbsp;&nbsp;&nbsp;&nbsp;                  
+                    <label>
+                    <input type="radio" name="choosePartner" value="2" id="choosePartner2" />
+                    个人                                     
+              </label>
+              </form></dd>
+      <dd><div class="applyTijiao"><a id="chooseNext">下一步</a></div></dd>
+      <dd style="height:100px;"></dd>    
+     </div>
+      <!---个人开始---->   <!--- ---->  
+      <div id="personApplyPartner" style="display: none;">
+      <dd>
+        <dl class="liuchengA">
+          <dt>申请入网流程</dt>
+          <dd class="liuchengBG03">1</dd>
+          <dd class="liuchengBG03">2</dd>
+          <dd class="liuchengBG03">3</dd>
+          <dd class="liuchengBG03">4</dd>
+
+        </dl><div style="clear:both;"></div>
+      </dd>
+      <dd>
+       <dl class="liuchengB">
+          <dt> </dt>
+          <dd>提交申请</dd>
+          <dd>信息审核</dd>
+          <dd>入网洽谈</dd>
+          <dd>入网成功</dd>
+
+        </dl><div style="clear:both;"></div>      
+      </dd>
+      
+      <dd style=" border-bottom:1px #CCCCCC solid; height:60px; line-height:60px; text-align:center; font-size:14px;">
+      
+        <a href="#">阅读《合作协议》</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				 <label>
+                    <input type="radio" name="apPaAgreement" value="1" id="RadioGroup1_30"  checked ='checked'/>我同意&nbsp;&nbsp;&nbsp;&nbsp;                    
+                  <label>
+                    <input type="radio" name="apPaAgreement" value="0" id="RadioGroup1_31" />我不同意                                      
+          </label>
+      </dd>      
+      <form id="personApplyForm"    enctype="multipart/form-data" method="post" action="/admin/applyPartner/insert.do"> 
+      <dd class="applyTltle mar_top20"><span class="apply_qq">在线客服 QQ: <input class="ABM-200" type="text" name="apPaServiceQQ" id="apPaServiceQQ" /></span>填写表单<span class="apply_zs">（<span class="Red">*</span>为必须填写项目）</span></dd>
+      <dd>
+        <dl class="appluBox">
+          <dt>基本信息</dt>
+          <dd><span class="applyBoxMu">联系人姓名<span class="Red">*</span></span> <input class="ABM-200" type="text" name="apPaUserName" id="apPaUserName" /></dd>
+          <dd><span class="applyBoxMu">联系电话<span class="Red">*</span></span><input class="ABM-200" type="text" name="apPaUserPhone" id="apPaUserPhone" /></dd>
+           <input class="ABM-100"  type="hidden"   name="apPaStationTypeText" id="apPaStationTypeText" />
+            <input class="ABM-100"  type="hidden"   name="apPaAcPileNum" id="apPaAcPileNum" />
+             <input class="ABM-100"  type="hidden"   name="apPaDcPileNum" id="apPaDcPileNum" />
+              <input class="ABM-100"  type="hidden"   name="apPaOpenTimeWorkDay" id="apPaOpenTimeWorkDay" />
+               <input class="ABM-100"  type="hidden"   name="apPaOpenTimeHoliday" id="apPaOpenTimeHoliday" />
+                <input class="ABM-100"  type="hidden"   name="apPaChargingFee" id="apPaChargingFee" />
+                 <input class="ABM-100"  type="hidden"   name="apPaServiceFee" id="apPaServiceFee" />
+                  <input class="ABM-100"  type="hidden"   name="apPaParkingFee" id="apPaParkingFee" />
+        </dl>
+      </dd>
+      <dd>
+        <dl class="appluBox">
+          <dt>站点信息</dt>
+<dd><span class="applyBoxMu">站点名称</span><input class="ABM-200" type="text" name="apPaPointName" id="apPaPointName" />（如不填写，后台系统将以自动生成的编号命名该站点）</dd>
+          <dd><span class="applyBoxMu">建桩地址<span class="Red">*</span></span><input class="ABM-100" type="text" name="apPaProvinceAddress" id="apPaProvinceAddress" />省<input class="ABM-100" type="text" name="apPaCityAddress" id="apPaCityAddress" />市<input class="ABM-100" type="text" name="apPaAreaAddress" id="apPaAreaAddress" />区<input class="ABM-100" type="text" name="apPaStreetAddress" id="apPaStreetAddress" />街道<input class="ABM-200" type="text" name="apPaRoomNumber" id="apPaRoomNumber" /></dd>
+          <h6 style=" list-style:none; font-style:normal; height:30px; line-height:30px; font-size:14px; font-weight:normal; margin:0; padding:0; padding-left:160px;">（请详细到车位号，方便车友快速找到您的电桩）  </h6>          
+          <dd><span class="applyBoxMu">站点类型<span class="Red">*</span></span>
+          <input id="apPaStationAddr"  name="apPaStationAddr" type="hidden" />
+                  <label>
+                    <input type="radio" name="apPaStationType" value="1" id="RadioGroup1_30" />家庭充电点  &nbsp;&nbsp;&nbsp;&nbsp; </label>                    
+                  <label>
+                    <input type="radio" name="apPaStationType" value="2" id="RadioGroup1_31" />目的地充电点    &nbsp;&nbsp;&nbsp;&nbsp;                                     
+              </label>
+                  <label>
+                    <input type="radio" name="apPaStationType" value="3" id="RadioGroup1_31" />其他 <input class="ABM-100" type="text" name="apPaStationTypeOther" id="apPaStationTypeOther" />                                    
+              </label>                                   
+          </dd>  
+          <dd><span class="applyBoxMu">已安装电桩<span class="Red">*</span></span>
+         
+                  <label>
+                    <input type="radio" name="apPaInstallation" value="1" id="RadioGroup1_30" />是  &nbsp;&nbsp;&nbsp;&nbsp; </label>                    
+                  <label>
+                    <input type="radio" name="apPaInstallation" value="2" id="RadioGroup1_31" />否                                    
+              </label>                 
+                     
+          </dd>                 
+          <dd><span class="applyBoxMu">电桩数量</span>
+          
+                  <label>
+                    <input type="checkbox" name="apPaPileNum" value="1" id="RadioGroup1_30" />交流 <input class="ABM-100" type="text" name="apPaAcPileNumText" id="apPaAcPileNumText" />台  &nbsp;&nbsp;&nbsp;&nbsp; </label>                    
+                  <label>
+                    <input type="checkbox" name="apPaPileNum" value="2" id="RadioGroup1_31" />直流 <input class="ABM-100" type="text" name="apPaDcPileNumText" id="apPaDcPileNumText" />台                                     
+              </label>                 
+                   
+          </dd> 
+          <dd><span class="applyBoxMu">开放时间</span>
+        
+                  <label>
+                    <input type="checkbox" name="apPaOpenTime" value="1" id="RadioGroup1_30" />工作日 （时间段：<input class="ABM-100" type="text" name="apPaOpenTimeWorkDayText" id="apPaOpenTimeWorkDayText" />）&nbsp;&nbsp;&nbsp;&nbsp; </label>
+                  <label>
+                    <input type="checkbox" name="apPaOpenTime" value="2" id="RadioGroup1_31" />节假日 （时间段：<input class="ABM-100" type="text" name="apPaOpenTimeHolidayText" id="apPaOpenTimeHolidayText" />）                                    
+              </label>                 
+               
+          </dd>
+          <dd><span class="applyBoxMu">充电费用</span>
+         
+                  <label>
+                    <input type="checkbox" name="apPaChargingCost" value="1" id="RadioGroup1_30" />电费 （<input class="ABM-100" type="text" name="apPaChargingFeeText" id="apPaChargingFeeText" />元/度）&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                  <label>
+                    <input type="checkbox" name="apPaChargingCost" value="2" id="RadioGroup1_31" />服务费 （<input class="ABM-100" type="text" name="apPaServiceFeeText" id="apPaServiceFeeText" />元/度）&nbsp;&nbsp;&nbsp;&nbsp;</label>  
+                  <label>
+                    <input type="checkbox" name="apPaChargingCost" value="3" id="RadioGroup1_31" />停车费 （<input class="ABM-100" type="text" name="apPaParkingFeeText" id="apPaParkingFeeText" />元/小时）</label>                              
+                 
+          </dd>
+          <dd><span class="applyBoxMu">匹配车型</span><input class="ABM-200" type="text" name="apPaCarTypeMatch" id="apPaCarTypeMatch" /></dd>          
+ 						<dd><span class="applyBoxMu">图片分享<span class="Red">*</span></span>
+ 										<a onclick="file1.click()"><img id="fileImg1" class="applyimg"
+										src=""
+										width="120" height="80" alt="未上传图片" /></a> <a
+										onclick="file2.click()"><img id="fileImg2" class="applyimg"
+										src=""
+										width="120" height="80" alt="未上传图片" /></a> <a
+										onclick="file3.click()"><img id="fileImg3" class="applyimg"
+										src=""
+										width="120" height="80" alt="未上传图片" /></a> <a
+										onclick="file4.click()"><img id="fileImg4" class="applyimg"
+										src=""
+										width="120" height="80" alt="未上传图片" /></a>
+										<input type="file" id="file1" name="file1" size="1" class="filehidden" /> 
+										<input type="file" id="file2" name="file1" size="1" class="filehidden" /> 
+										<input type="file" id="file3" name="file1" size="1" class="filehidden" /> 
+										<input type="file" id="file4" name="file1" size="1" class="filehidden" />  
+
+ 
+ </dd></dl> 
+      </dd><div style="clear:both;"></div>
+
+      <dd style="border-top:1px solid #CCC; padding-top:20px;"><div class="applyTijiao"><a id="personApplySub">提交申请</a></div></dd>
+		</form> 
+      </div>
+      <div id="personApplyRemind" style="display: none;">
+      <!--提交申请申购成功的提示-->
+      <dd style=" height:200px; padding-top:100px;">
+        <dl>
+          <dt style=" width:30%; text-align:right; float:left;"><img style="margin-right:20px;" src="static/images/img/OK.png" width="128" height="110" /></dt>
+          <dd style=" width:66%; text-align:left; float:left; font-size:24px; color:#f80; margin-top:30px;">提交成功！<br />
+          我们的客服人员将尽快与您联系，洽谈入网事宜。</dd>
+
+        </dl>
+      </dd>
+       </div> 
+     
+<!---企业开始----> 
+<div id="companyApplyPartner" style="display: none;">
+      <dd>
+        <dl class="liuchengA">
+          <dt>合作流程</dt>
+          <dd class="liuchengBG03">1</dd>
+          <dd class="liuchengBG03">2</dd>
+          <dd class="liuchengBG03">3</dd>
+          <dd class="liuchengBG03">4</dd>
+
+        </dl><div style="clear:both;"></div>
+      </dd>
+      <dd>
+       <dl class="liuchengB">
+          <dt> </dt>
+          <dd>提交申请</dd>
+          <dd>信息审核</dd>
+          <dd>合作洽谈</dd>
+          <dd>达成合作</dd>
+
+        </dl><div style="clear:both;"></div>      
+      </dd>
+   	<form id = "companyApplyForm"> 
+      <dd>
+        <dl class="appluBox">
+          <dt>填写表单<span class="apply_zs">（<span class="Red">*</span>为必须填写项目）</span></dt>
+          <dd><span class="applyBoxMu">联系人姓名<span class="Red">*</span></span> <input class="ABM-200" type="text" name="apPaUserName" id="apPaCompanyUserName" /></dd>
+          <dd><span class="applyBoxMu">联系电话<span class="Red">*</span></span><input class="ABM-200" type="text" name="apPaUserPhone" id="apPaCompanyUserPhone" /></dd>
+          <dd><span class="applyBoxMu">企业名称</span><input class="ABM-200" type="text" name="apPaCompanyName" id="apPaCompanyName" /></dd>
+          <dd><span class="applyBoxMu">联系邮箱</span><input class="ABM-200" type="text" name="apPaUserEmail" id="apPaCompanyUserEmail" /></dd> 
+          <dd><span class="applyBoxMu">合作模式</span>
+       
+                  <label>
+                    <input type="radio" name="apPaCooperationMode" value="1" id="RadioGroup1_30" />您有空地，苦恼无桩&nbsp;&nbsp;&nbsp;&nbsp; </label>
+                  <label>
+                    <input type="radio" name="apPaCooperationMode" value="2" id="RadioGroup1_31" />您有电桩，苦恼运营&nbsp;&nbsp;&nbsp;&nbsp;              
+                  <label>
+                    <input type="radio" name="apPaCooperationMode" value="3" id="RadioGroup1_31" />其他合作模式                                    
+              </label>              
+                              
+                      
+          </dd>                    
+        </dl>
+      </dd>
+      <dd style="border-top:1px solid #CCC; padding-top:20px;"><div class="applyTijiao"><a id="companyApplySub">提交申请</a></div></dd>
+   	</form>
+   </div>
+     
+      <!--提交申请成功的提示-->
+      <div id="companyApplyRemind" style="display: none;">
+      <dd style=" height:200px; padding-top:100px;">
+        <dl>
+          <dt style=" width:30%; text-align:right; float:left;"><img style="margin-right:20px;" src="static/images/img/OK.png" width="128" height="110" /></dt>
+          <dd style=" width:66%; text-align:left; float:left; font-size:24px; color:#f80; margin-top:30px;">提交成功！<br />
+         我们的客服人员会在2个工作日内与您联系，洽谈合作事宜。</dd>
+        </dl>
+      </dd>
+      </div>
+      <!--提交申请成功的提示结束-->        
+         
+    </dl> 
+  </div>
+  <div style="clear:both;"></div>
+</div>
+<div style="clear:both;"></div>
+<!--footer-->
+<div style="text-align:center; line-height:60px; color:#888; font-size:14px;width:100%;height:60px;background:#eee;position:fixed;bottom:0;margin:0 auto;">浙江爱充网络科技有限公司    Copyright ©2014爱充网版权所有.浙ICP备15005865号-1</div>
+
+
+<!-- common js aere -->
+
+<script src="static/lib/json3/json3.min.js" type="text/javascript"></script>
+<script src="static/lib/template/template.js" type="text/javascript"></script>
+<script src="static/lib/md5/jquery.md5.js" type="text/javascript"></script>
+<script src="static/js/validate.js" type="text/javascript"></script>
+<script src="static/js/DateUtil.js" type="text/javascript"></script>
+<script src="static/js/common/common.js" type="text/javascript"></script>
+<script src="static/js/user-service.js" type="text/javascript"></script>
+<script src="static/js/global.js" type="text/javascript"></script>
+<script src="static/js/config.js" type="text/javascript"></script>
+<script src="static/js/template-other.js" type="text/javascript"></script>
+<script src="static/js/index/regist.js" type="text/javascript"></script>
+<script src="static/js/index/reset.js" type="text/javascript"></script>
+<script src="static/js/initHtml.js" type="text/javascript"></script>
+<script type="text/javascript" src="static/lib/ajaxupload/jquery-form.js"></script>
+<script src="static/js/apply/applyPartner.js" type="text/javascript"></script>
+
+
+
+
+</body>
+</html>

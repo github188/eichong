@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wanma.dubbox.dao.TblUserAdminMapper">
+	<resultMap id="BaseResultMap" type="com.wanma.dubbox.model.TblUserAdmin">
+		<id column="user_id" property="id" jdbcType="INTEGER" />
+		<result column="admin_name" property="name" jdbcType="VARCHAR" />
+		<result column="admin_phone" property="pho" jdbcType="VARCHAR" />
+		<result column="createdate" property="cdate" jdbcType="TIMESTAMP" />
+		<result column="updatedate" property="udate" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<select id="selectOne" resultMap="BaseResultMap" parameterType="TblUserAdmin">
+		select ${rtColumns}
+		from tbl_user_admin
+		where user_id =
+		#{id,jdbcType=INTEGER}
+	</select>
+
+	<insert id="insert" parameterType="TblUserAdmin"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into tbl_user_admin
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				user_id,
+			</if>
+			<if test="name != null">
+				admin_name,
+			</if>
+			<if test="pho != null">
+				admin_phone,
+			</if>
+			createdate,
+			updatedate
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="name != null">
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="pho != null">
+				#{pho,jdbcType=VARCHAR},
+			</if>
+			sysdate(),
+			sysdate()
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="TblUserAdmin">
+		update tbl_user_admin
+		<set>
+			<if test="name != null">
+				admin_name = #{name,jdbcType=INTEGER},
+			</if>
+			<if test="name != null">
+				admin_phone = #{pho,jdbcType=VARCHAR},
+			</if>
+			updatedate = sysdate()
+		</set>
+		where user_id = #{id,jdbcType=INTEGER}
+	</update>
+
+	<select id="getCount" resultType="int" parameterType="TblUserAdmin">
+		select count(1)
+		from tbl_user_admin t
+		where exists(select 1 from
+		tbl_user a where a.user_id = t.user_id and a.user_status != '3'
+		<if test="bsAcc != null and bsAcc !=''">
+			and a.user_account like concat('%',#{bsAcc},'%')
+		</if>
+		)
+		<if test="name != null">
+			and admin_name like concat('%',#{name},'%')
+		</if>
+		<if test="pho != null">
+			and admin_phone like concat('%',#{pho},'%')
+		</if>
+		<if test="id != null">
+			and user_id = #{id}
+		</if>
+	</select>
+
+	<select id="getList" resultMap="BaseResultMap" parameterType="TblUserAdmin">
+		select ${rtColumns}
+		from tbl_user_admin t
+		where exists(select 1 from
+		tbl_user a where a.user_id = t.user_id and a.user_status != '3'
+		<if test="bsAcc != null and bsAcc !=''">
+			and a.user_account like concat('%',#{bsAcc},'%')
+		</if>
+		)
+		<if test="name != null">
+			and admin_name like concat('%',#{name},'%')
+		</if>
+		<if test="pho != null">
+			and admin_phone like concat('%',#{pho},'%')
+		</if>
+		<if test="id != null">
+			and user_id = #{id}
+		</if>
+		order by updatedate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+</mapper>

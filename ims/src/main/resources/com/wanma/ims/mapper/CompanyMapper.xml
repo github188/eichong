@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.CompanyMapper">
+	<resultMap type="CompanyDO" id="resultCompany">
+		<result property="cpyId" column="cpy_id" />
+		<result property="cpyNumber" column="cpy_number" />
+		<result property="cpyName" column="cpy_name" />
+		<result property="cpyProvince" column="cpy_province" />
+		<result property="cpyCity" column="cpy_city" />
+		<result property="cpyAddress" column="cpy_address" />
+		<result property="cpyPhone" column="cpy_phone" />
+		<result property="cpyEmail" column="cpy_email" />
+		<result property="cpyStatus" column="cpy_status"/>
+		<result property="cpyType" column="cpy_type" />
+		<result property="cpyParentId" column="cpy_parent_id" />
+		<result property="cpyParentType" column="cpy_parent_type" />
+		<result property="tradeType" column="trade_type" />
+		<result property="isValid" column="is_valid" />
+		<result property="slaveCpyId" column="slave_cpy_id" />
+		<result property="accountId" column="account_id" />
+		<result property="isDel" column="is_del" />
+		<result property="creator" column="creator" />
+		<result property="modifier" column="modifier" />
+		<result property="gmtCreate" column="gmt_create" />
+		<result property="gmtModified" column="gmt_modified" />
+		<result property="payRule" column="payRule"/>
+		<result property="savingAccountId" column="saving_account_Id"/>
+	</resultMap>
+   
+    <sql id="query-columns">
+		cpy.cpy_id, cpy.cpy_number,cpy.cpy_name,cpy.cpy_province,cpy.cpy_city,cpy.cpy_address,cpy.cpy_phone,cpy.cpy_email,cpy.cpy_status,cpy.cpy_type,
+		cpy.cpy_parent_id,cpy.cpy_parent_type,cpy.trade_type,cpy.is_valid,cpy.slave_cpy_id,cpy.account_id,cpy.is_del,cpy.creator,cpy.modifier,cpy.gmt_create,cpy.gmt_modified,
+		saving_account_Id
+	</sql>
+	
+	<sql id="where-columns">
+	    cpy.is_del = 0
+        <if test="cpyId!=null and cpyId != 0"> 
+		   and cpy.cpy_id=#{cpyId}
+	    </if>
+	    <if test="cpyNumber != null and cpyNumber !=0">
+	       and cpy.cpy_number = #{cpyNumber}
+	    </if>
+	    <if test="cpyName != null and cpyName != ''">
+	       and cpy.cpy_name LIKE "%"#{cpyName}"%"
+	    </if>
+	    <if test="cpyType != null and cpyType != 0">
+	       and cpy.cpy_type = #{cpyType}
+	    </if>
+	    <if test="cpyProvince != null and cpyProvince != ''">
+	       and cpy.cpy_province = #{cpyProvince}
+	    </if>
+	    <if test="cpyCity != null and cpyCity != ''">
+	       and cpy.cpy_city = #{cpyCity}
+	    </if>
+	    <if test="slaveCpyId != null and slaveCpyId != ''">
+	       and cpy.slave_cpy_id = #{slaveCpyId}
+	    </if>
+	     <if test="cpyStatus != null">
+	       and cpy.cpy_status = #{cpyStatus}
+	    </if>
+	    <if test="cpyProvince != null and cpyProvince !=''">
+	       and cpy.cpy_province = #{cpyProvince}
+	    </if>
+	    <if test="cpyCity != null and cpyCity !=''">
+	       and cpy.cpy_city = #{cpyCity}
+	    </if>
+	    <if test="cpyIdList != null and cpyIdList.size() > 0">
+	       and cpy.cpy_id in 
+	       <foreach collection="cpyIdList" item="id" open="(" close=")" separator=",">
+	        #{id}
+	      </foreach>
+	    </if>
+	    <if test="cpyNumberList != null and cpyNumberList.size() > 0">
+	       and cpy.cpy_number in 
+	       <foreach collection="cpyNumberList" item="id" open="(" close=")" separator=",">
+	        #{id}
+	      </foreach>
+	    </if>
+	</sql>
+	
+    <!-- 系统管理员获取渠道 -->
+    <select id="selectCpyListBySystem"  parameterType="map" resultMap="resultCompany">
+		select cpy_id, cpy_number,cpy_type,trade_type, cpy_name from tbl_company where is_del = 0 and cpy_status = 0
+		<if test="provinceCode !=null and provinceCode !=''">
+		  and cpy_province = #{provinceCode}
+		</if>
+		<if test="cityCode !=null and cityCode !=''">
+		  and cpy_city = #{cityCode}
+		</if>
+	</select>
+	
+	<!-- 业务管理员 -->
+	<select id="selectCpyListByWork"  parameterType="map" resultMap="resultCompany"> 
+		select cpy_id, cpy_number,cpy_type,trade_type, cpy_name from tbl_company where is_del = 0 and cpy_status = 0 and cpy_parent_type = 0 
+		and (cpy_parent_id = #{cpyId} or cpy_id = #{cpyId} or slave_cpy_id = #{cpyId})
+		<if test="provinceCode !=null and provinceCode !=''">
+		  and cpy_province = #{provinceCode}
+		</if>
+		<if test="cityCode !=null and cityCode !=''">
+		  and cpy_city = #{cityCode}
+		</if>
+	</select>
+	
+   <!--  获取自己的渠道  -->
+    <select id="selectCpyListByOwner"  parameterType="map" resultMap="resultCompany">
+		select cpy_id, cpy_number,cpy_type,trade_type, cpy_name from tbl_company where is_del = 0 and cpy_status = 0 and cpy_parent_type = 0 and cpy_id = #{cpyId}
+		<if test="provinceCode !=null and provinceCode !=''">
+		  and cpy_province = #{provinceCode}
+		</if>
+		<if test="cityCode !=null and cityCode !=''">
+		  and cpy_city = #{cityCode}
+		</if>
+ 	</select>
+	
+	<!-- 根据ID查询渠道信息 -->
+	<select id="selectCpyListByIds" parameterType="java.util.List" resultMap="resultCompany">
+	   select <include refid="query-columns"/> from tbl_company cpy where cpy.is_del = 0 
+	   <if test="list != null and list.size() > 0">
+	   and cpy.cpy_id in 
+	    <foreach collection="list" item="id" open="(" close=")" separator=",">
+	        #{id}
+	   </foreach>
+	   </if>
+	</select>
+	
+	<!-- 根据ID查询公司 -->
+	<select id="selectCpyListById" parameterType="Long" resultMap="resultCompany">
+	   select <include refid="query-columns"/> from tbl_company cpy where cpy.is_del = 0 and cpy.cpy_id = #{cpyId} 
+	</select>
+	
+	<!-- 分页-统计 -->
+	<select id="countCompanyList" parameterType="CompanyDO" resultType="long">
+	    select count(1) from tbl_company cpy,
+	     (select cpy_id,payment_rule from fin_account_config_rela where bill_account_id = 1) b
+	    where cpy.cpy_id = b.cpy_id
+	    <if test="payRule != null">
+	        and b.payment_rule = #{payRule}
+	     </if>
+	     and <include refid="where-columns"/>
+	</select>
+	
+	<!-- 分页-查询 -->
+	<select id="selectCompanyList" parameterType="CompanyDO" resultMap="resultCompany">
+	    select <include refid="query-columns"/>,b.payment_rule as payRule from tbl_company cpy,
+	    (select cpy_id,payment_rule from fin_account_config_rela where bill_account_id = 1) b
+	    where cpy.cpy_id = b.cpy_id
+	     <if test="payRule != null">
+	        and b.payment_rule = #{payRule}
+	     </if>
+	     and <include refid="where-columns"/>
+	    order by gmt_create desc 
+	    <if test="pager!=null">
+           limit #{pager.offset},#{pager.pageSize}
+        </if>
+	</select>
+	
+	<!-- 公司-新增 -->
+	<insert id="insertCompany" parameterType="CompanyDO" useGeneratedKeys="true" keyProperty="cpyId">
+	    insert into tbl_company 
+		(cpy_id, cpy_number,cpy_name,cpy_province,cpy_city,cpy_address,cpy_phone,cpy_type,
+		cpy_parent_id,trade_type,slave_cpy_id,creator,gmt_create)
+	    values (null,#{cpyNumber},#{cpyName},#{cpyProvince},#{cpyCity},#{cpyAddress},#{cpyPhone},#{cpyType},
+	    #{cpyParentId},#{tradeType},#{slaveCpyId},#{creator},NOW())
+	</insert>
+	
+	<!-- 公司-修改 -->
+	<update id="updateCompany" parameterType="CompanyDO">
+	   update tbl_company set 
+	    <if test="cpyName != null and cpyName != ''">
+	        cpy_name = #{cpyName},
+	    </if>
+	    <if test="cpyType != null and cpyType != 0">
+	        cpy_type = #{cpyType},
+	    </if>
+	    <if test="isValid != null">
+	        is_valid = #{isValid},
+	    </if>
+	    <if test="cpyStatus != null">
+	        cpy_status = #{cpyStatus},
+	    </if>
+	    <if test="accountId != null and accountId !=0">
+	        account_id = #{accountId},
+	    </if>
+	    <if test="savingAccountId !=null and savingAccountId!=0">
+	        saving_account_id = #{savingAccountId},
+	    </if>
+	    modifier = #{modifier},gmt_modified = NOW()
+	    where is_del = 0 and cpy_id = #{cpyId}
+	</update>
+	
+	
+	<!-- 修改-公司下卡用户改为冻结 -->
+	<update id="updateUserStatusByCpyId">
+	   { call proc_update_user_status(#{0},#{1})}   
+	</update>
+	
+	<!-- 校验公司唯一性 -->
+	<select id="checkCompanyUnique" parameterType="map" resultType="Integer">
+	   select count(1) from tbl_company where is_del = 0 
+	   <if test="cpyNumber != null and cpyNumber != ''">
+	      and cpy_number = #{cpyNumber}
+	   </if>
+	   <if test="cpyName != null and cpyName !=''">
+	      and cpy_name = #{cpyName}
+	   </if>
+	</select>
+	
+	<!-- 合作公司列表 -->
+	<select id="selectOperateCompanyList" resultMap="resultCompany">
+	    select <include refid="query-columns"/> from tbl_company cpy where cpy.is_del = 0 and cpy.cpy_status = 0 and cpy.cpy_type != 1
+	</select>
+	
+	<!-- 投资公司管理的合作商 -->
+	<select id="selectCpyListByMaster" parameterType="Long" resultMap="resultCompany">
+	    select <include refid="query-columns"/> from tbl_company cpy where cpy.is_del = 0 and cpy.cpy_status = 0 and cpy.slave_cpy_id = #{cpyId} and cpy.cpy_parent_type = 0
+	</select>
+	<!-- 根据公司标识查询 -->
+	<select id="selectCompanyByCpyInfo" parameterType="CompanyDO" resultMap="resultCompany">
+		select 
+		<include refid="query-columns"/>
+		from tbl_company cpy where cpy.is_del = 0 
+		and cpy.cpy_status = 0 
+	  	<if test="cpyNumber != null and cpyNumber !=''">
+	      and cpy.cpy_number = #{cpyNumber}
+	  	</if>
+	  	<if test="accountId != null and accountId !=''">
+	      and cpy.account_id = #{accountId}
+	  	</if>
+	  	<if test="cpyId != null and cpyId !=''">
+	      and cpy.cpy_id = #{cpyId}
+	  	</if>
+	</select>
+
+	<!-- 根据公司名称获取公司列表 -->
+	<select id="getCompanyListByCpyName" resultMap="resultCompany">
+		select <include refid="query-columns"/> from tbl_company cpy where cpy.is_del = 0 and cpy.cpy_status = 0 and cpy.cpy_name LIKE CONCAT('%',#{cpyName},'%')
+	</select>
+
+	<!-- 根据ID查询公司 -->
+	<select id="selectCompanyByCpyNumber" parameterType="Integer" resultMap="resultCompany">
+		select <include refid="query-columns"/> from tbl_company cpy where cpy.is_del = 0 and cpy.cpy_number = #{cpyNumber}
+	</select>
+</mapper>

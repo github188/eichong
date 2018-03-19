@@ -1,0 +1,337 @@
+*{
+	margin: 0;
+	padding: 0;
+}
+/*body,html{
+	font-size: 62.5%;
+	background: #FFFFFF;
+}*/
+.col-xs-1,.col-xs-2,.col-xs-3,.col-xs-4,.col-xs-5,.col-xs-6,.col-xs-7,.col-xs-8,.col-xs-9,.col-xs-10,.col-xs-11,.col-xs-12{
+	padding: 0;
+	margin: 0;
+}
+/*第一块===================================================*/
+.container{
+	padding: 0;
+	width: 100%;
+	height: 4rem;
+	background-color: #FF7D00;
+}
+.container .row{
+	padding: 0;
+	margin: 0;
+}
+/* .container .row .back{
+	padding: 0;
+	padding: 1.2rem 0 0 1.5rem;
+}
+.container .row .back img{
+	width: 1rem;
+	height: 1.5rem;
+	
+} */
+.container .row .head{
+	line-height: 4rem;
+	
+	padding: 0;
+	padding-left:5.8rem ;
+	font-size: 1.6rem;
+	color:#FFFFFF;
+	font-weight: 900;
+	font-family: "微软雅黑";
+}
+/*第二块================================================================*/
+section{
+	width: 100%;
+	min-height: 20rem;
+	-background: #F0FF0F;
+	padding-top: 4rem;
+}
+.flow{
+	width: 90%;
+	height: 9rem;
+	-background: #007AFF;
+	margin: 0 auto;
+	border-bottom: 0.1rem solid #CCCCCC;
+	padding-top: 1.5rem;
+}
+section .flow h3{
+	padding: 0;
+	margin: 0;
+	padding-left: 2rem;
+}
+section .flow p{
+	font-size: 1.8rem;
+	color: #666666;
+	margin: 0;
+	padding: 0;
+	padding-left: 2rem;
+	margin-top: 1rem;
+	
+}
+section .diagram{
+	width: 90%;
+	height: 9rem;
+	-background: #008000;
+	margin: 0 auto;
+}
+
+/*.num_step{
+	width: 25%;
+	height: 100%;
+	float: left;
+	position: relative;
+	padding-right: 0;
+}
+.num_step .round{
+	width: 6rem;
+	height: 6rem;
+	background: #808080;
+	border-radius: 5rem;
+	margin: 1.5rem 0 0 0.5rem;
+	color: #FFFFFF;
+	text-align: center;
+	font-size: 1.4rem;
+	padding-top: 1rem;
+}
+.num_step img{
+	width: 1rem;
+	height: 1rem;
+	position: absolute;
+	top: 4rem;
+	right: 0;
+}*/
+@media only screen and (min-width: 320px) and (max-width: 640px) {
+ .num_step {
+	width: 25%;
+	height: 100%;
+	float: left;
+	position: relative;
+	padding-right: 0;
+}
+.num_step .round{
+	width: 4.5rem;
+	height: 4.5rem;
+	background: #808080;
+	border-radius: 5rem;
+	margin: 1.5rem 0 0 0.5rem;
+	color: #FFFFFF;
+	text-align: center;
+	font-size: 1.2rem;
+	padding-top: 0.6rem;
+}
+.num_step img{
+	width: 1rem;
+	height: 1rem;
+	position: absolute;
+	top: 3rem;
+	right: 0rem;
+}
+}
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+.num_step {
+	width: 25%;
+	height: 100%;
+	float: left;
+	position: relative;
+	padding-right: 0;
+}
+.num_step .round{
+	width: 7rem;
+	height: 7rem;
+	background: #808080;
+	border-radius: 5rem;
+	margin: 1.5rem 0 0 0.5rem;
+	color: #FFFFFF;
+	text-align: center;
+	font-size: 1.4rem;
+	padding-top: 2rem;
+}
+.num_step img{
+	width: 2rem;
+	height: 2rem;
+	position: absolute;
+	top: 4rem;
+	right: 3rem;
+}
+.right_apply{
+	width: 100%;
+	height: 20rem;
+	margin: 0 auto;
+	text-align: center;
+	line-height: 20rem;
+}
+.right_apply .btn{
+	width: 70%;
+	background: #FF7D00 !important;
+	color: #FFFFFF;
+	height: 5rem;
+	font-size: 2rem;
+	margin-top: 3rem;
+}
+.right_apply .btn:focus,.right_apply .btn:active{
+	border: 0.1rem solid #FF7D00 !important;
+	outline-style: none;
+	color: #FFFFFF;
+	background-color: #FF7D00;
+	outline-style: none;
+	font-family: "微软雅黑";
+}
+
+.apply_list{
+	width: 90%;
+	height: 6rem;
+	border-bottom: 0.1rem solid #CCCCCC;
+	margin: 0 auto;
+	color: #666666;
+	font-size: 2rem;
+	line-height: 6rem;
+	margin-top: 4rem;
+}
+}
+/*第三块立即申请=========================================================================================*/
+.right_apply{
+	width: 100%;
+	height: 5rem;
+	margin: 0 auto;
+	text-align: center;
+	line-height: 5rem;
+}
+.right_apply .btn{
+	width: 70%;
+	height: 3rem;
+	line-height: 3rem;
+	background: #FF7D00;
+	color: #FFFFFF;
+	padding: 0;
+}
+.right_apply .btn:focus,.right_apply .btn:active{
+	border: 0.1rem solid #FF7D00;
+	outline-style: none;
+}
+/*申请列表部分==============================================================================================*/
+.apply_list{
+	width: 90%;
+	height: 4rem;
+	border-bottom: 0.1rem solid #CCCCCC;
+	margin: 0 auto;
+	color: #666666;
+	font-size: 1.8rem;
+	line-height: 4rem;
+	margin-top: 2rem;
+	
+}
+.applyMain{
+	width: 100%;
+	min-height: 1rem;
+	margin: 0 auto;
+	=background: #0062CC;
+}
+.applylistHead{
+	width: 90%;
+	height: 4rem;
+	margin: 0 auto;
+	=background: #EBECED;
+	border-bottom: 0.1rem solid #CCCCCC;
+	color: #666666;
+	margin-top: 0.5rem;
+	overflow: hidden;
+	font-weight: 900;
+	font-size: 1.8rem;
+}
+.applylistHead .head{
+	height: 4rem;
+	line-height: 4rem;
+	text-align: center;
+	font-size: 1.4rem;
+}
+.applyStates{
+	width: 90%;
+	min-height: 4rem;
+	border-bottom: 0.1rem solid #CCCCCC;
+	margin: 0 auto;
+	color: #666666;
+	font-size: 1.4rem;
+}
+.applyStates:focus,.applyStates:active{
+	background: #EBECED;
+}
+.applyStates .headValue{
+	text-align: center;
+	min-height: 1rem;
+	display: inline-block;
+}
+.applyStates .headValueCenter{
+	line-height: 4rem;
+}
+.applyStates .red{
+	color: #FF0000;
+}
+/*申请表格==================================================================================================*/
+/*.table-hover{
+	width: 90%;
+	margin: 0 auto;
+	margin-top: 1rem;
+	font-size: 1.4rem;
+}
+.table-hover #content tr{
+	height: 4rem;
+	line-height: 4rem;
+}
+.table-hover #content tr td{
+	height: 4rem;
+	text-align: left;
+	font-size: 1.4rem;
+}
+.table-hover #content tr .red{
+	color: #FF0000;
+}*/
+/*适配iphone4---5*/
+/*@media only screen and (min-width: 319px) and (max-width: 359px) {
+	.table-hover{
+		width: 90%;
+		margin: 0 auto;
+		margin-top: 1rem;
+		font-size: 1.2rem;
+	}
+.table-hover #content tr{
+	height: 4rem;
+	line-height: 4rem;
+}
+.table-hover #content tr td{
+	height: 4rem;
+	text-align: left;
+	font-size: 1.2rem;
+}
+.table-hover #content tr .red{
+	color: #FF0000;
+}
+}
+@media only screen and (min-width: 359px) and (max-width: 479px) {
+	.table-hover{
+		width: 90%;
+		margin: 0 auto;
+		margin-top: 1rem;
+		font-size: 1.4rem;
+	}
+.table-hover #content tr{
+	height: 4rem;
+	line-height: 4rem;
+}
+.table-hover #content tr td{
+	height: 4rem;
+	text-align: left;
+	font-size: 1.4rem;
+}
+.table-hover #content tr .red{
+	color: #FF0000;
+}
+}*/
+@media only screen and (min-width: 472px) {
+	.applyStates .headValue{
+		text-align: center;
+		min-height: 1rem;
+		display: inline-block;
+		line-height: 4rem;
+	}
+}

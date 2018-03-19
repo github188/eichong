@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsElectricpileheadMapper">
+
+	<resultMap id="tblElectricpileheadResultMap" type="TblElectricpilehead">
+		<id property="pkElectricpilehead" column="pk_ElectricpileHead" />
+		<result property="pkElectricpile" column="pk_ElectricPile" />
+		<result property="epheElectricpileheadname" column="ePHe_ElectricpileHeadName" />
+		<result property="epheElectricpileheadstate" column="ePHe_ElectricpileHeadState" />
+	</resultMap>
+	<resultMap id="pageResultMap" type="java.util.HashMap"
+		extends="tblElectricpileheadResultMap"></resultMap>
+	<resultMap id="findResultMap" type="java.util.HashMap"
+		extends="tblElectricpileheadResultMap"></resultMap>
+
+	<insert id="insert" parameterType="TblElectricpilehead">
+		insert into tbl_ElectricPileHead (
+		pk_ElectricpileHead,
+		pk_ElectricPile,
+		ePHe_ElectricpileHeadName,
+		ePHe_ElectricpileHeadState
+		)values (
+		#{pkElectricpilehead},
+		#{pkElectricpile},
+		#{epheElectricpileheadname},
+		#{epheElectricpileheadstate}
+		)
+	</insert>
+
+	<update id="update" parameterType="TblElectricpilehead">
+		update tbl_ElectricPileHead set
+		pk_ElectricpileHead=#{pkElectricpilehead},
+		pk_ElectricPile=#{pkElectricpile},
+		ePHe_ElectricpileHeadName=#{epheElectricpileheadname},
+		ePHe_ElectricpileHeadState=#{epheElectricpileheadstate}
+		where
+		pk_ElectricpileHead=#{pkElectricpilehead} 
+	</update>
+
+	<delete id="delete" parameterType="map">
+		delete from
+		tbl_ElectricPileHead
+		where
+		pk_ElectricpileHead=#{pkElectricpilehead} 
+	</delete>
+	<!-- 通过Id获取电桩数据 -->
+	<select id="get" parameterType="map" resultMap="tblElectricpileheadResultMap">
+		select
+		pk_ElectricpileHead,
+		pk_ElectricPile,
+		ePHe_ElectricpileHeadName,
+		ePHe_ElectricpileHeadState
+		from tbl_ElectricPileHead
+		where
+		pk_ElectricpileHead=#{pkElectricpilehead} 
+	</select>
+
+	<select id="findOne" parameterType="map" resultMap="findResultMap">
+		select
+		pk_ElectricpileHead,
+		pk_ElectricPile,
+		ePHe_ElectricpileHeadName,
+		ePHe_ElectricpileHeadState
+		from tbl_ElectricPileHead
+		where
+		pk_ElectricpileHead=#{pkElectricpilehead} 
+	</select>
+
+	<select id="find" parameterType="map" resultType="TblElectricpilehead">
+		select
+		pk_ElectricpileHead pkElectricpilehead,
+		pk_ElectricPile pkElectricpile,
+		ePHe_ElectricpileHeadName epheElectricpileheadname,
+		ePHe_ElectricpileHeadState epheElectricpileheadstate
+		from tbl_ElectricPileHead
+		<where>
+			<if test="pkElectricpilehead != null">
+				pk_ElectricpileHead=#{pkElectricpilehead}
+	     </if>
+			<if test="pkElectricpile != null">
+				and pk_ElectricPile=#{pkElectricpile}
+	     </if>
+			<if test="epheElectricpileheadname != null">
+				and ePHe_ElectricpileHeadName=#{epheElectricpileheadname}
+	     </if>
+			<if test="epheElectricpileheadstate != null">
+				and ePHe_ElectricpileHeadState=#{epheElectricpileheadstate}
+	     </if>
+		</where>
+	</select>
+
+	<select id="findMonitorHeadInfo" parameterType="map" resultType="hashMap">
+		select
+		pk_ElectricpileHead,
+		pk_ElectricPile,
+		ePHe_ElectricpileHeadName,
+		ePHe_ElectricpileHeadState,
+		eph_num,
+		hava_car_place_lock,
+		have_radar
+		from tbl_ElectricPileHead
+		<where>
+			<if test="pkElectricpilehead != null">
+				pk_ElectricpileHead=#{pkElectricpilehead}
+	     </if>
+			<if test="pkElectricpile != null">
+				and pk_ElectricPile=#{pkElectricpile}
+	     </if>
+			<if test="epheElectricpileheadname != null">
+				and ePHe_ElectricpileHeadName=#{epheElectricpileheadname}
+			</if>
+			<if test="epheElectricpileheadstate != null">
+				and
+				ePHe_ElectricpileHeadState=#{epheElectricpileheadstate}
+	     </if>
+		</where>
+	</select>
+
+	<select id="page" parameterType="map" resultMap="pageResultMap">
+		select
+		pk_ElectricpileHead,
+		pk_ElectricPile,
+		ePHe_ElectricpileHeadName,
+		ePHe_ElectricpileHeadState
+		from tbl_ElectricPileHead
+		<where>
+			<if test="pkElectricpilehead != null">
+				pk_ElectricpileHead=#{pkElectricpilehead}
+	     </if>
+			<if test="pkElectricpile != null">
+				and pk_ElectricPile=#{pkElectricpile}
+	     </if>
+			<if test="epheElectricpileheadname != null">
+				and ePHe_ElectricpileHeadName=#{epheElectricpileheadname}
+	     </if>
+			<if test="epheElectricpileheadstate != null">
+				and ePHe_ElectricpileHeadState=#{epheElectricpileheadstate}
+	     </if>
+		</where>
+	</select>
+	<!-- 更新枪口状态 取消预约时，如果枪口状态为充电中，则不需要改变状态-->
+	<update id="updateState" parameterType="map">
+		update
+		tbl_ElectricPileHead set
+		ePHe_ElectricpileHeadState=#{epheElectricpileheadstate}
+		where
+		pk_ElectricpileHead=#{bespElectricpilehead} and ePHe_ElectricpileHeadState !=6
+	</update>
+
+</mapper> 

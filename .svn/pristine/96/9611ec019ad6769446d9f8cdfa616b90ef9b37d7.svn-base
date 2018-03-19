@@ -1,0 +1,93 @@
+/*body,html{
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	margin: 0;
+	font-size: 62.5%;
+	background: #FFFFFF;
+	font-family: "微软雅黑";
+}*/
+header{
+	width: 100%;
+	height: 5rem;
+	background: #FF7D00;
+}
+header .headLeft{
+	/*height: 100%;*/	
+	height: 5rem;
+	text-align: center;
+	-background: #0062CC;
+	=line-height: 5rem;
+	color: #FFFFFF;
+	font-size: 1.4rem;
+}
+
+header .headCenter{
+	/*height: 100%;*/
+	height: 5rem;
+	-background: #008000;
+	text-align: center;
+	color: #FFFFFF;
+	line-height: 5rem;
+	font-size: 1.8rem;
+}
+header .headRight{
+	/*height: 100%;*/
+	text-align: center;
+	color: #FFFFFF;
+	font-size: 1.6rem;
+	line-height: 5rem;
+}
+.occupied{
+	width: 100%;
+	height: 5rem;
+}
+@media screen and (max-width: 480px) {
+/*body{ padding:0 20px;}*/
+.colorA{ color:#ff8800;}
+h1{ color:#333333; font-size:18px; text-align:left; padding-left: 2rem;}
+.feilv{ font-size:14px;padding-left: 2rem;}
+.feilv dt{ height:50px; line-height:50px; width:100px; float:left; background-image:url(../img/c-img3.png); background-repeat:no-repeat; background-position:right center; margin-right:5px;}
+.feilv dd.OneText{ }
+.feilv dd.TwoText{ padding-top:10px;}
+ul, li{ list-style:none; margin:0; padding:0;}
+/*ul{border-top:1px solid #999;}*/
+li{ height:40px; line-height:40px; border-bottom:1px solid #999;}
+.feilvA,.feilvB,.feilvC{ display:block; float:left; text-align:center; font-size:14px;}
+.feilvA{ width:20%;}
+.feilvB{ width:40%;}
+.feilvC{ width:38%;}
+}
+@media screen and (min-width: 480px) and (max-width: 720px)  {
+body{ padding:30px;}
+.colorA{ color:#ff8800;}
+h1{ color:#333333; font-size:26px; text-align:left;padding-left: 2rem;}
+.feilv{ font-size:18px;padding-left: 2rem;}
+.feilv dt{ height:70px; line-height:70px; width:140px; float:left; background-image:url(../img/c-img2.png); background-repeat:no-repeat; background-position:right center; margin-right:10px;}
+.feilv dd.OneText{ }
+.feilv dd.TwoText{ padding-top:14px;}
+ul, li{ list-style:none; margin:0; padding:0;}
+/*ul{ border-top:1px solid #999;}*/
+li{ height:60px; line-height:60px; border-bottom:1px solid #999;}
+.feilvA,.feilvB,.feilvC{ display:block; float:left; text-align:center; font-size:28px;}
+.feilvA{ width:20%;}
+.feilvB{ width:40%;}
+.feilvC{ width:38%;}
+}
+
+@media screen and (min-width:720px) {
+body{ padding:40px;}
+.colorA{ color:#ff8800;}
+h1{ color:#333333; font-size:36px; text-align:left; padding-left: 2rem;}
+.feilv{ font-size:28px;padding-left: 2rem;}
+.feilv dt{ height:100px; line-height:100px; width:200px; float:left; background-image:url(../img/c-img.png); background-repeat:no-repeat; background-position:right center; margin-right:10px;}
+.feilv dd.OneText{ }
+.feilv dd.TwoText{ padding-top:20px;}
+ul, li{ list-style:none; margin:0; padding:0;}
+/*ul{ border-top:1px solid #999;}*/
+li{ height:80px; line-height:80px; border-bottom:1px solid #999;width: 100%;}
+.feilvA,.feilvB,.feilvC{ display:block; float:left; text-align:center; font-size:28px;}
+.feilvA{ width:20%;}
+.feilvB{ width:40%;}
+.feilvC{ width:38%;}
+}

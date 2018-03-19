@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.LogCommitMapper">
+	<resultMap type="LogCommitDO" id="resultLogCommit">
+		<result property="logId" column="pk_CommitLog" />
+		<result property="logName" column="coLo_LogName" />
+		<result property="logIpAddress" column="coLo_IpAddress" />
+		<result property="logContent" column="coLo_LogContent" />
+		<result property="isDel" column="coLo_Status" />
+		<result property="creatorId" column="coLo_user_id" />
+		<result property="gmtCreate" column="coLo_Createdate" />
+		<result property="gmtModified" column="coLo_Updatedate" />
+	</resultMap>
+	 
+	<insert id="insertLogCommit" parameterType="LogCommitDO" useGeneratedKeys="true" keyProperty="log_id">
+		insert into tbl_commitlog (
+		   pk_CommitLog,coLo_LogName,coLo_IpAddress,coLo_LogContent,coLo_Status,coLo_user_id,coLo_Createdate,coLo_Updatedate
+		)values
+		 (null,#{logName},#{logIpAddress},#{logContent},0,#{creatorId},NOW(),NULL
+		)
+	</insert>
+
+	<update id="deleteLogCommitById" parameterType="int">
+		update tbl_commitlog set coLo_Status = 1,gmt_modified = NOW() where coLo_Status = 0 and pk_CommitLog = #{logId}
+	</update>
+
+	<select id="countLogCommitList" parameterType="LogCommitDO" resultMap="resultLogCommit">
+		SELECT  count(1) FROM tbl_commitlog where coLo_Status = 0
+		<if test="pager!=null">limit #{pager.offset},#{pager.pageSize}</if>
+	</select>
+	<select id="selectLogCommitList" parameterType="LogCommitDO" resultMap="resultLogCommit">
+		SELECT  pk_CommitLog,coLo_LogName,coLo_IpAddress,coLo_LogContent,coLo_Status,coLo_Createdate,coLo_Updatedate
+		FROM tbl_commitlog where coLo_Status = 0
+		<if test="pager!=null">limit #{pager.offset},#{pager.pageSize}</if>
+	</select>
+
+	<select id="selectLogCommitById" parameterType="Long" resultMap="resultLogCommit">
+		SELECT  pk_CommitLog,coLo_LogName,coLo_IpAddress,coLo_LogContent,coLo_Status,coLo_user_id,coLo_Createdate
+		FROM tbl_commitlog where coLo_Status = 0 and pk_CommitLog = #{logId}
+	</select>
+
+</mapper>

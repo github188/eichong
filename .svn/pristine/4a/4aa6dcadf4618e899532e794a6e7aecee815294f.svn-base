@@ -1,0 +1,53 @@
+var pkCouponVariety=getUrlParam('pkCouponVariety');
+getDetailById(pkCouponVariety);
+function getDetailById(pkCouponVariety){
+    $.ajax({
+        type: "post",
+        url: basePath + getCouponVarietyInfoUrl,
+        async: true,
+        data: {
+            pkCouponVariety: pkCouponVariety
+        },
+        success: function (data) {
+            var data=data.dataObject;
+            var covaActivityName=data.covaActivityName;
+            $('input[name=covaActivityName]').val(covaActivityName);
+
+            var covaCouponValue=data.covaCouponValue;
+            $('input[name=covaCouponValue]').val(covaCouponValue);
+
+            var covaCouponCondition=data.covaCouponCondition;
+            $('input[name=covaCouponCondition]').val(covaCouponCondition);
+
+            var covaRemark=data.covaRemark;
+            $('input[name=covaRemark]').val(covaRemark);
+
+            var covaLabel=data.covaLabel;
+            $('input[name=covaLabel]').val(covaLabel);
+
+            var covaLimitation=data.covaLimitation;
+            if(covaLimitation==1){
+                $('#covaLimitationHtml').attr('data-value',1).html('仅限交流充电桩');
+            }
+            if(covaLimitation==2){
+                $('#covaLimitationHtml').attr('data-value',2).html('仅限直流充电桩');
+            }
+            if(covaLimitation==3){
+                $('#covaLimitationHtml').attr('data-value',3).html('不限充电桩');
+            }
+            var covaStutas=data.covaStutas;
+            if(covaStutas==0){
+                $('#covaStutasHtml').attr('data-value',0).html('上架');
+            }
+            if(covaStutas==1){
+                $('#covaStutasHtml').attr('data-value',1).html('下架');
+            }
+        }
+    });
+}
+$('#goback').off('click').on('click', function () {
+    window.location.href = 'couponVariety_list.html';
+})
+function editCouponVariety(){
+    window.location.href='couponVariety_edit.html?pkCouponVariety='+pkCouponVariety;
+}

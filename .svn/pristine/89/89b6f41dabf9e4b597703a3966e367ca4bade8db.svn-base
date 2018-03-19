@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/style.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/electric/powerStation/powerStation_detail.css"/>
+    <title>充电点详情主页</title>
+</head>
+<body>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="container-fluid">
+        <div class="row btnBlock">
+            <!--按钮组合-->
+            <div class="editBtn cursor" id="editBtn" style="display: none;">编辑</div>
+            <div class="goBack cursor" id="toPowerStationList">返回</div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 ">
+                <div class="ibox float-e-margins" style="margin: 0">
+                    <div class="">
+                        <div class="ibox-content clearfix">
+                            <div class="userBaseInfo col-sm-12 ">
+                                <div class="col-sm-6" style="padding: 0">
+                                    <ul class="baseInfoLeft">
+                                        <li>
+                                            <span class="infoTip">充电点名称</span>
+                                            <span class="infoValue" id="powerstationName"></span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">省份</span>
+                                            <span class="infoValue" id="provinceName"></span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">区／县</span>
+                                            <span class="infoValue" id="areaName"></span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">纬度</span>
+                                            <span class="infoValue" id="latitude"></span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">联系电话</span>
+                                            <span class="infoValue" id="phone"></span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">停车费</span>
+                                            <span class="infoValue" id="parkingFee"></span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-sm-6" style="padding: 0">
+                                    <ul class="baseInfoRight">
+                                        <li>
+                                            <span class="infoTip">默认费率</span>
+                                            <span class="infoValue" id="rateInfoId"></span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">城市</span>
+                                            <span class="infoValue" id="cityName"></span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">地址</span>
+                                            <span class="infoValue" id="address"></span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">经度</span>
+                                            <span class="infoValue" id="longitude"></span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">开放时间</span>
+                                            <span class="infoValue" id="onlineTime"></span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip"></span>
+                                            <span class="infoValue"></span>
+                                        </li>
+                                    </ul>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-sm-12 ">
+                <div class="ibox float-e-margins" style="margin: 0">
+                    <div class="">
+                        <div class="ibox-content clearfix">
+
+                            <div class="userBaseInfo col-sm-12 table-responsive">
+                                <div class="col-sm-12 titleTip">
+                                    <span>所属电桩列表</span>
+                                </div>
+                                <table class=" table table-bordered text-center" style="border: 1px solid #DCDCDC;">
+                                    <thead>
+                                    <tr>
+                                        <th>序号</th>
+                                        <th>桩体编码</th>
+                                        <th>编号</th>
+                                        <th>电桩状态</th>
+                                        <th>充电方式</th>
+                                        <th>功率</th>
+                                        <th>类型</th>
+                                        <th>默认费率</th>
+                                        <th>产品型号</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="electricPile">
+
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+<script src="../../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="../../../js/contabs.min.js"></script>
+<script src="../../../js/electric/powerStation/powerStation_detail.js" type="text/javascript" charset="utf-8"></script>
+</html>

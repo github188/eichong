@@ -1,0 +1,56 @@
+package com.wanma.ims.service;
+
+import java.util.List;
+
+import com.wanma.ims.common.domain.LogCommitDO;
+import com.wanma.ims.common.domain.UserDO;
+
+/**
+ * 日志管理-日志列表 
+ */
+public interface LogCommitService {
+
+		
+	/**
+	 * 列表
+	 * 
+	 * @param logCommitDO
+	 * @return
+	 */
+	public List<LogCommitDO> getLogCommitList(LogCommitDO logCommitDO);
+	
+	/**
+	 * 统计
+	 * 
+	 * @param logCommitDO
+	 * @return
+	 */
+	public Integer countLogCommit(LogCommitDO logCommitDO);
+	
+	/**
+	* 根据Id查询
+	* 
+	* @return
+	*/
+	public LogCommitDO getLogCommitById(Long logId);
+
+	/**
+     * 新增
+	 * 
+	 * @param logCommitDO
+     */
+    public boolean addLogCommit(LogCommitDO logCommitDO);
+    
+	/**
+	 * 删除
+	 * 
+	 * @param logId
+	 * @return
+	 */
+	public boolean removeLogCommitById(Long logId);
+
+	/**
+	 * hbase新增日志
+	 */
+	public void addHbaseLogCommit(String logContent, UserDO loginUser);
+}

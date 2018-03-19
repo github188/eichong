@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<parameters>
+	<!--
+		hpRecoverCD	: 该地方进行功能作用注释
+		————
+		下面进行参数配置
+	-->
+	<parameter 
+		hpRecoverCD="900" 
+	/>
+</parameters>

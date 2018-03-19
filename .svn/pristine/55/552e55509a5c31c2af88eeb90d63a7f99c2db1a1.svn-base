@@ -1,0 +1,63 @@
+{
+    "data": {
+        "coctConcentratorName": "宣城测试用集中器",
+        "coctCreatedate": 1476178111000,
+        "coctSIMCODE": "12345678901",
+        "coctSIMMAC": "123456",
+        "coctSIMTYPE": 2,
+        "coctState": 1,
+        "coctUpdatedate": 1476178111000,
+        "coctUserId": 1,
+        "coctUserName": "爱充网",
+        "extValue1": "电信",
+        "pileList": [
+            {
+                "elPiRelevancePowerStation": 0,
+                "elpiBinding": 0,
+                "elpiChargingmode": 5,
+                "elpiElectricpilecode": "3301060987457975",
+                "elpiElectricpilename": "宣城测试电桩1",
+                "elpiLatitude": 30.27006,
+                "elpiLongitude": 120.120628,
+                "elpiPowerinterface": 7,
+                "elpiPowernumber": 1,
+                "elpiPowersize": 172,
+                "elpiState": 0,
+                "elpiType": 1,
+                "elpiUserid": "1",
+                "ep_num": 0,
+                "extValue1": "草稿",
+                "extValue2": "直流充电桩",
+                "extValue3": "30kw",
+                "pkConcentratorID": 17,
+                "pkElectricpile": 30144,
+                "pkUserinfo": 0
+            },
+            {
+                "elPiRelevancePowerStation": 0,
+                "elpiBinding": 0,
+                "elpiChargingmode": 5,
+                "elpiElectricpilecode": "3301060987457974",
+                "elpiElectricpilename": "宣城测试电桩2",
+                "elpiLatitude": 30.27006,
+                "elpiLongitude": 120.120628,
+                "elpiPowerinterface": 7,
+                "elpiPowernumber": 1,
+                "elpiPowersize": 6,
+                "elpiState": 15,
+                "elpiType": 1,
+                "elpiUserid": "1",
+                "ep_num": 0,
+                "extValue1": "上线",
+                "extValue2": "直流充电桩",
+                "extValue3": "3.5kw",
+                "pkConcentratorID": 17,
+                "pkElectricpile": 30145,
+                "pkUserinfo": 0
+            }
+        ],
+        "pkConcentratorID": 17
+    },
+    "msg": "操作成功!",
+    "status": 100
+}

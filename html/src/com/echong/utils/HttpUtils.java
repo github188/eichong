@@ -1,0 +1,153 @@
+package com.echong.utils;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.PoolingClientConnectionManager;
+import org.apache.http.message.BasicNameValuePair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.echong.constant.CommonConsts;
+
+/**
+ * Created by zangyaoyi on 2016/12/30.
+ */
+public class HttpUtils {
+	private static final Logger LOGGER = LoggerFactory.getLogger(HttpUtils.class);
+	private  HttpUtils() {
+		super();
+	}
+
+    /**
+     * POST方式发起http请求
+     *
+     * @param url    要请求的url
+     * @param params 请求参数
+     * @return http返回的response的body内容
+     */
+    public static String httpPost(String url, Map<String, String> params) throws IOException {
+    	
+        HttpPost post = new HttpPost(url);
+        List<NameValuePair> list = new ArrayList<>();
+
+        // params中参数放入list
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            BasicNameValuePair basicNameValuePair = new BasicNameValuePair(entry.getKey(), entry.getValue());
+            list.add(basicNameValuePair);
+        }
+        post.setEntity(new UrlEncodedFormEntity(list, "UTF-8"));
+        HttpClient httpClient = getHttpClient();
+        HttpResponse response = httpClient.execute(post);
+        StringBuilder sb = new StringBuilder();
+        Reader reader = new InputStreamReader(response.getEntity().getContent(), "UTF-8");
+        BufferedReader bf = new BufferedReader(reader);
+        String line;
+        try {
+        	while ((line = bf.readLine()) != null) {
+                sb.append(line);
+            }
+		} catch (Exception e) {
+			LOGGER.error("Reader fail!");
+		}finally{
+			try {
+				bf.close();
+			} catch (IOException e) {
+				LOGGER.error("Reader close fail!");
+			}
+		}
+        return sb.toString();
+    }
+
+
+    public static HttpClient getHttpClient() {
+        try {
+            SchemeRegistry schemeRegistry = new SchemeRegistry();
+            schemeRegistry.register(new Scheme("http", 80, PlainSocketFactory.getSocketFactory()));
+            schemeRegistry.register(new Scheme("https", 443, SSLSocketFactory.getSocketFactory()));
+            ClientConnectionManager ccm = new PoolingClientConnectionManager(schemeRegistry);
+           
+
+            SSLContext ctx = SSLContext.getInstance("TLS");
+            if (ctx!=null){
+            X509TrustManager tm = new X509TrustManager() {
+               @Override
+    			public void checkClientTrusted(X509Certificate[] chain,
+    					String authType) throws CertificateException {
+            		throw new CertificateException();
+    			}
+
+    			@Override
+    			public void checkServerTrusted(X509Certificate[] chain,
+    					String authType) throws CertificateException  {
+    				throw new CertificateException();
+    			}
+
+				@Override
+				public X509Certificate[] getAcceptedIssuers() {
+					return new X509Certificate[0];
+				}
+            };
+            ctx.init(null, new TrustManager[]{tm}, null);
+            SSLSocketFactory ssf = new SSLSocketFactory(ctx);
+            ssf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+            SchemeRegistry sr = ccm.getSchemeRegistry();
+            sr.register(new Scheme("https", ssf, 443));
+            return new DefaultHttpClient(ccm);
+            }else{
+            	   return null;
+            }
+            	
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public static String send2EChong(String url, String info) {
+        Map<String, String> params = fullParams(info);
+        LOGGER.info("send2EChong is fail;url={}", url);
+        String response = null;
+        try {
+            response = HttpUtils.httpPost(url, params);
+        } catch (IOException e) {
+            e.printStackTrace();
+            LOGGER.error("send to EChong is fail;url={}|params={}", url, params, e);
+        }
+        return response;
+    }
+
+    private static Map<String, String> fullParams(String info) {
+        String app_id = CommonConsts.E_CHONG_APP_ID;  //e充网分配的app_id
+        String app_key = CommonConsts.E_CHONG_APP_KEY;  //e充网分配的app_key
+        Map<String, String> params = new HashMap<>();
+        params.put("app_id", app_id);
+        params.put("info", info);
+        String sig = SigTool.getSignString(app_id, info, app_key);
+        params.put("sig", sig);
+        return params;
+    }
+}

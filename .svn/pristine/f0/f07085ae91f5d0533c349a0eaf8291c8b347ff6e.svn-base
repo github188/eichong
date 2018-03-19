@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+			
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="blank" />
+		<meta name="format-detection" content="telephone=no" />
+		<title>登录</title>
+		<!--<link rel="stylesheet" type="text/css" href="dist/css/bootstrap.min.css"/>-->
+		<link rel="stylesheet" type="text/css" href="dist/css/bootstrap.css"/>
+		<link rel="stylesheet" type="text/css" href="css/mui.css"/>
+		<link rel="stylesheet" type="text/css" href="css/login.css"/>
+		<!--[if lt IE 9]>
+			<script src="dist/js/html5shiv.min.js"></script>
+			<script src="dist/js/respond.min.js"></script>
+		<![endif]-->
+	</head>
+	<body>
+		<!--<div class="loginPage" id="loginPage">
+			
+			<div class="occupied" style="width: 100%; height: 7rem;"></div>
+			<div class="header">
+				<div class="col-xs-4 headLeft" id="closeWindow">
+					关闭
+				</div>
+				<div class="col-xs-4 headRight">
+					登录
+				</div>
+				<div class="col-xs-4 headLeft">
+				
+				</div>
+			</div>
+			<div class="passBlock">
+				<input type="text" name="userAccount" id="userAccount" value="" class="userInfo" placeholder="手机号"/>
+			</div>
+			<div class="passBlock repassBlock">
+				<input type="password" name="userPassword" id="userPassword" value="" class="userInfo" placeholder="密码"/>
+			</div>
+			<a href="#" id="login" onclick="login()" class="loginBtn">登录</a>
+		</div>-->
+	
+		
+		
+	
+	</body>
+	<script type="text/javascript" src="dist/js/jquery-1.11.0.js" ></script>
+	<!--<script src="dist/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>-->
+	<script type="text/javascript" src="dist/js/bootstrap.js" ></script>
+	<script src="js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/url.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/userinfo.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript" charset="utf-8">
+		initLogin();
+	</script>
+</html>

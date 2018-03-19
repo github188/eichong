@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.dao.StatisticRegisteMapper">
+
+	<select id="userRegisteCount" resultType="hashmap">
+		 <![CDATA[
+		SELECT 
+			COUNT(if(DATE_FORMAT(t.createdate,'%Y-%m-%d')=CURRENT_DATE(),true,null)) v1,
+			COUNT(if(DATE_FORMAT(t.createdate,'%Y-%m-%d')=CURRENT_DATE()- INTERVAL 1 day,true,null)) v2,
+			COUNT(if(DATE_FORMAT(t.createdate,'%Y-%m-%d')< CURRENT_DATE,true,null)) v3
+ 		FROM tbl_user_normal t 
+ 		]]>
+	</select>
+
+
+	<select id="userRegisteLatest" resultType="hashmap">
+	 	<![CDATA[
+		SELECT
+		DATE_FORMAT(t.createdate,'%Y%m%d') date, 
+		CASE t.norm_registe_type
+		WHEN '3' THEN 'android'
+		WHEN '4' THEN 'ios'
+		END as 'type',COUNT(1) num 
+		FROM tbl_user_normal t WHERE t.norm_registe_type
+		in ('3','4') AND DATE_FORMAT(t.createdate,'%Y%m%d')< CURRENT_DATE
+		AND DATE_FORMAT(t.createdate,'%Y%m%d')> CURRENT_DATE - INTERVAL 8 DAY
+		GROUP BY DATE_FORMAT(t.createdate,'%Y%m%d'),t.norm_registe_type
+		]]>
+	</select>
+
+	<select id="userRegisteForMonth" resultType="map">
+		SELECT
+		DATE_FORMAT(t.createdate,'%Y%m') month,
+		CASE t.norm_registe_type
+		WHEN
+		'3' THEN 'android'
+		WHEN '4' THEN 'ios'
+		END as type,
+		COUNT(1) num FROM
+		tbl_user_normal t WHERE norm_registe_type in ('3','4')
+		GROUP BY DATE_FORMAT(t.createdate,'%Y%m'),t.norm_registe_type
+	</select>
+
+
+	<select id="userRegisteList" parameterType="Entity" resultType="map">
+		SELECT a.createdate
+		v1,b.user_account v2,CASE a.norm_registe_type
+		WHEN '3' THEN 'android'
+		WHEN '4' THEN 'ios'
+		END as 'v3' FROM tbl_user_normal a
+		JOIN tbl_user b on a.user_id=b.user_id AND b.user_leval=6 AND
+		a.norm_registe_type in ('3','4')
+		ORDER BY a.createdate DESC
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	
+	<select id="userRegisteListCount" resultType="long">
+		SELECT count(1) FROM tbl_user_normal a
+		JOIN tbl_user b on a.user_id=b.user_id AND b.user_leval=6 AND
+		a.norm_registe_type in ('3','4')
+	</select>
+
+</mapper>

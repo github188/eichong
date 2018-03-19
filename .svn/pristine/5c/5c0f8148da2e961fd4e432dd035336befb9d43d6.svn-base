@@ -1,0 +1,145 @@
+/**
+ * Created by Administrator on 2017/11/3 0003.
+ */
+$(function(){
+    integralActivityListSearch();
+})
+//日期选择
+laydate.render({
+    elem: '#datePicker'
+    , range: true,
+    theme: '#ff7d00'
+    /* ,min: -90,
+     max:0//0 代表今天 -1代表昨天，-2代表前天，以此类推*/
+});
+
+//设置比例表格的数据
+
+function integralActivityListSearch() {
+    //toGiveHiddenInput();
+    initTable("integralActivityExchangeForm", "", getIntegralActivityListUrl, intergralActivityExchange);
+}
+
+function intergralActivityExchange(req) {
+    var data = req.dataObject;
+    console.log(data)
+    var listTr = "";
+    for (var i = 0; i < data.length; i++) {
+        var state = '';
+        //状态
+        if(data[i].activityStatus == 0){
+            state = '开启'
+        }else if(data[i].activityStatus == 1){
+            state = '关闭'
+        }
+        listTr += '<tr data-value="'+data[i].integralRulesId+'"><td>'+data[i].activityName+'</td><td>' + state + '</td><td>' + data[i].integralValue + '</td><td><a onclick="IntegralEditing(this);">编辑积分</a><a href="#">停止兑换</a></td></tr>';
+    }
+
+    $("#myTbogy").html(listTr);
+}
+//----------------------------------
+
+//选择优惠券表格数据
+function ExchangeChoice(){
+        $('.selAll').attr('checked',false);
+        layer.closeAll();
+        initTable("ChooseCouponsForm", "ChooseCouponsPage", getCouponVarietyListUrl, ChooseCoupons);
+        layer.open({
+            type: 1,
+            title: '选择优惠券',
+            btn: ["确定"],
+            shadeClose: true,
+            closeBtn: 1,//点击遮罩关闭层
+            area: ['860px', '400px'],
+            content: $("#ChooseCoupons"),
+            yes: function () {
+                layer.closeAll();
+                selectExchangeCallback();
+                $('.selAll').attr('checked',false);
+            }
+        });
+
+}
+
+function ChooseCoupons(req) {
+    var data = req.dataObject;
+    var ChooseCouponsList = "";
+    for (var i = 0; i < data.length; i++) {
+        var limitation = '',
+            state = '';
+        //电桩限制
+        if(data[i].covaLimitation == 1){
+            limitation = '仅限交流充电桩';
+        }else if(data[i].covaLimitation == 2){
+            limitation = '仅限直流充电桩';
+        }else if(data[i].covaLimitation == 3){
+            limitation = '不限充电桩';
+        }
+        //状态
+        if(data[i].covaStutas == 0){
+            state = '已上架'
+        }else if(data[i].covaStutas == 1){
+            state = '已下架'
+        }
+        ChooseCouponsList += '<tr><td><input type="checkbox" class="selectedBox" name="exchangeIds" data-value="'+data[i].pkCouponVariety+'"></td><td>'+data[i].covaActivityName+'</td><td>' + limitation + '</td><td>' + data[i].covaCouponValue + '</td><td>满' + data[i].covaCouponCondition + '元可用</td><td>' + state + '</td></tr>';
+    }
+
+    $("#ChooseCouponsTbody").html(ChooseCouponsList);
+}
+//--------------------------------
+
+//确定按钮回调
+function selectExchangeCallback() {
+    var selectExchangeTr = "";
+    var arr = [];
+    var b = 0;
+    $('input[name="exchangeIds"]:checked').each(function () {
+        var ExchangeData = $(this).attr('data-value');
+        selectExchangeTr += '<tr data-value="'+ExchangeData+'"><td>'
+            + $(this).parent().parent().find("td:eq(1)").text() + '</td><td>'
+            + '关闭</td><td>'
+            + '0<a onclick="IntegralEditing(this);">编辑</a></td><td>'
+            + '<a href="#">停止兑换</a></td></tr>'
+
+        arr[b] = $(this).val();
+        b++;
+    });
+
+    $("#myTbogy").append(selectExchangeTr);
+}
+
+//编辑按钮
+function IntegralEditing(r){
+    var index = r.parentNode.parentNode.rowIndex - 1;
+    layer.open({
+        type: 1,
+        title: '选择优惠券',
+        btn: ["确定"],
+        shadeClose: true,
+        closeBtn: 1,//点击遮罩关闭层
+        area: ['200px', '200px'],
+        content: $("#caution_case"),
+        yes: function () {
+            var param = $('.NeedExchange').val();
+            var data={
+                'pkId' : 6,
+                'integralRulesId' : $('#myTbogy tr:eq('+index+')').attr('data-value'),
+                'integralValue' : param
+            };
+            $.ajax({
+                url: basePath + modifyIntegralActivityUrl,
+                type: "post",
+                dataType: 'json',
+                data: data,
+                success: function (data) {
+                    console.log(data)
+                    $('#myTbogy tr:eq('+index+') td:eq(2)').html(param);
+                }
+            });
+            layer.closeAll();
+        },
+        cancel: function() {
+            layer.closeAll();
+        }
+    });
+}

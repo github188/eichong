@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/monitor/monitorIndex.css"/>
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <!--<link rel="stylesheet" href="http://cache.amap.com/lbs/static/main1119.css"/>-->
+    <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=5482098780018a97976fbb4f52252595&plugin=AMap.DistrictSearch"></script>
+    <!--<script type="text/javascript" src="http://cache.amap.com/lbs/static/addToolbar.js"></script>-->
+    <title>充电点地图</title>
+</head>
+<body>
+    <div class="container animated fadeInRight">
+        <div class="row">
+            <div class="formBlock clearfix">
+                <div class="stationBox row" style="margin:0">
+                    <div class="col-sm-12 newsTit" id="newsTit"></div>
+                    <div class="searchBlock col-sm-3 col-xs-12">
+                        <div class="searchList" id="stationSearch">
+                            <!--返回-->
+                            <div class="backBtn" id="backBtn">返回 </div>
+                            <form id="stationListForm">
+                                <!--充电点名称-->
+                                <div class="button-group">
+                                    <input id="powerStationName" name="powerStationName" class="stationInput col-sm-9 col-xs-12" placeholder="请输入充电点名称" type="text"/>
+                                    <input id="query" class="searchButton col-sm-3 col-xs-12" value="查询" type="button"/>
+                                </div>
+                                <!--市区选择-->
+                                <div class="area row" style="margin: 0;">
+                                    <div class="seleckBlock col-xs-6 model-select-box citySeleckBlock">
+                                        <div class="model-select-text cityBlock" data-value="" id="cityCode">选择市</div>
+                                        <span class="downRow cityBlock clickRotateSpan"></span>
+                                        <input type="text" name="cityCode" hidden="hidden" id="" value="" />
+                                        <ul class="model-select-option cityUl">
+
+                                        </ul>
+                                    </div>
+                                    <div class="seleckBlock col-xs-6 model-select-box areaSeleckBlock">
+                                        <div class="model-select-text areaBlock" data-value="" id="areaCode">选择区</div>
+                                        <span class="downRow areaBlock clickRotateSpan"></span>
+                                        <input type="text" name="areaCode" hidden="hidden" id="" value="" />
+                                        <ul class="model-select-option areaUl">
+
+                                        </ul>
+                                    </div>
+                                </div>
+                            </form>
+                            <!--查询结果-->
+                            <div class="stationListBlock">
+                                <ul class="stationListUl" id="stationListUl" style="display: none;">
+                                    <!--<li class="stationLi">-->
+                                        <!--<p class="stationName">张卡工具卡工具拉开尼古拉括号内啦空格和婕拉咖啡卡号该季拉开</p>-->
+                                        <!--<p class="stationAddress"><t class="addressHtml">地址：</t><t class="addressCon">陕西省西安市未央区北辰嘉苑徐家湾街道北辰村村委会对面</t></p>-->
+                                        <!--<span class="stationNum">直流：6</span><span class="stationNum">交流：3</span>-->
+                                    <!--</li>-->
+                                </ul>
+                            </div>
+                            <div id="stationListPage" class="pagination">
+
+                            </div>
+                        </div>
+                        <div class="searchStationList" id="stationDetail" style="display: none;">
+                            <!--返回-->
+                            <div class="backBtn backListBtn" id="backListBtn"> </div>
+                            <!--查询结果-->
+                            <div class="stationDetailBlock">
+                                <div class="stationInfo">
+                                    <p class="stationNameTitle" id="stationNameTitle" style="margin: 0;"></p>
+                                    <p class="stationDetailAddress" id="stationDetailAddress" style="margin: 0;"></p>
+                                    <span class="phoneNum" id="phoneNum"></span>
+                                </div>
+                                <div class="stationHeadInfo">
+                                    <div class="title row" style="margin: 0;"><span class="headNumTit col-sm-4 col-xs-4">终端</span><span class="chargingModeTit col-sm-4 col-xs-4">类型</span><span class="headStatus col-sm-4 col-xs-4">状态</span></div>
+                                    <ul class="stationHeadUl" id="stationHeadUl" >
+
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="stationHeadPage">
+                                <div id="stationDetailPage" class="pagination ">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="map col-sm-9 col-xs-12" id="container" style="min-height:700px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<!--<script src="../js/apiAddress.js" type="text/javascript" charset="utf-8"></script>-->
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/contabs.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/monitor/monitorIndex.js" type="text/javascript" charset="utf-8"></script>
+</html>

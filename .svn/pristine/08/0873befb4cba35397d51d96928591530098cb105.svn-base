@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<config>
+
+	<!-- 通信协议混淆参数1 -->
+	<mask1>89</mask1>
+	<!-- 通信协议混淆参数2 -->
+	<mask2>122</mask2>
+	<!-- 通信协议混淆参数3 -->
+	<mask3>122</mask3>
+	<!-- 通信协议混淆参数4 -->
+	<mask4>89</mask4>
+
+</config>

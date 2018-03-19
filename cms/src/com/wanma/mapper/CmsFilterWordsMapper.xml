@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsFilterWordsMapper">
+	<resultMap type="TblFilterWords" id="result_filterwords">
+		<id property="filterwordsId" column="pk_FilterWords" />
+		<result property="wordsName" column="fiWo_WordsName" />
+		<result property="createdate" column="fiWo_Createdate" />
+		<result property="updatedate" column="fiWo_Updatedate" />
+		<result property="status" column="fiWo_Status" />
+	</resultMap>
+	
+	<!-- 取得过滤字列表 -->
+	<select id="getFilterWordList" resultMap="result_filterwords">
+		select
+			pk_FilterWords,
+			fiWo_WordsName,
+			fiWo_Createdate,
+			fiWo_Updatedate,
+			fiWo_Status
+		from 
+			tbl_FilterWords
+	</select>
+
+	<!-- 查询过滤字数量 -->	
+	<select id="searchFilterWordCount" parameterType="TblFilterWords" resultType="long">
+		select
+			count(pk_FilterWords)
+		from 
+			tbl_FilterWords
+	</select>
+	
+	<!-- 查询全部过滤字列表 -->
+	<select id="searchFilterWordList" parameterType="TblFilterWords" resultMap="result_filterwords">
+		select
+			pk_FilterWords,
+			fiWo_WordsName,
+			fiWo_Createdate,
+			fiWo_Updatedate,
+			fiWo_Status
+		from 
+			tbl_FilterWords
+		ORDER BY fiWo_Createdate DESC
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	
+	<!-- 添加过滤字列表 -->
+	<insert id="insertFilterWords" parameterType="TblFilterWords" keyProperty="pk_FilterWords">
+		INSERT INTO tbl_FilterWords 
+		(
+			fiWo_WordsName,
+			fiWo_Createdate,
+			fiWo_Updatedate,
+			fiWo_Status
+		) 
+		VALUES
+		(
+			#{wordsName},
+			#{createdate},
+			#{updatedate},
+			#{status}
+		)
+	</insert>
+	
+	<!-- 删除过滤字 -->
+	<update id="removeFilterWord" parameterType="String">
+		DELETE FROM tbl_FilterWords WHERE pk_FilterWords=#{filterwordsId}
+	</update>
+</mapper>

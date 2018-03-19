@@ -1,0 +1,63 @@
+package com.wanma.ims.result;
+
+import java.io.Serializable;
+
+import com.alibaba.fastjson.JSON;
+import com.wanma.ims.common.GlobalSystem;
+
+public class BaseResult  implements Serializable{
+	
+	private static final long serialVersionUID = 4911157382670369102L;
+	protected boolean success = true;
+	protected String status;
+	protected String msg;
+
+	// 默认success
+	public BaseResult(){
+		this.success = true;
+		this.status = GlobalSystem.getConfig("success");
+		this.msg = "操作成功";
+	}
+    
+	// 针对于404 这种页面错误
+	public BaseResult(boolean flag,String status){
+		this.success = flag;
+		this.status = status;
+	}
+	public BaseResult(boolean flag,String status,String msg){
+		this.success = flag;
+		this.status = status;
+	    this.msg = msg;
+	}
+	
+	public boolean isSuccess() {
+		return this.success;
+	}
+
+	public void setSuccess(boolean success) {
+		this.success = success;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getMsg() {
+		return msg;
+	}
+
+	public void setMsg(String msg) {
+		this.msg = msg;
+	}
+
+	public boolean isFailed() {
+		return !this.success;
+	}
+	public String toString() {
+		return JSON.toJSONString(this);
+	}
+}

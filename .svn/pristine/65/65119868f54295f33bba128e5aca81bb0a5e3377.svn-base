@@ -1,0 +1,9 @@
+package com.wanma.ims.controller.electric;
+
+
+/**
+ * 桩体管理-电桩管理 
+ */
+public class ElectricPileController {
+
+}

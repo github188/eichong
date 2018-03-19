@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.dubbox.dao.TblPureBusiness">
+	<resultMap id="result_base" type="TblPureBusiness">
+		<result property="id" column="pk_PureBusiness" />
+		<result property="grpId" column="puBu_GroupID" />
+		<result property="comNm" column="puBu_CompanyName" />
+		<result property="nkNm" column="puBu_NickName" />
+		<result property="comAdr" column="puBu_CompanyAddress" />
+		<result property="comEml" column="puBu_CompanyEmail" />
+		<result property="pstCd" column="puBu_PostCode" />
+		<result property="scpBs" column="puBu_ScopeBusiness" />
+		<result property="athName" column="puBu_AuthorizedName" />
+		<result property="athPho" column="puBu_AuthorizedPhone" />
+		<result property="athCd" column="puBu_AuthorizedCard" />
+		<result property="lic" column="puBu_BusinessLicence" />
+		<result property="ogzCd" column="puBu_OrganizationCode" />
+		<result property="TroHst" column="puBu_TorontoHospital" />
+		<result property="athZt" column="puBu_Authorization" />
+		<result property="mlgAdr" column="puBu_MailingAddress" />
+		<result property="sts" column="puBu_PureBusinessStatus" />
+		<result property="lgn" column="puBu_LoveLogin" />
+		<result property="pw" column="puBu_LovePassword" />
+		<result property="cdate" column="puBu_Createdate" />
+		<result property="udate" column="puBu_Updatedate" />
+		<result property="picTp" column="puBu_PicType" />
+		<result property="prtLgn" column="puBu_ParentLoveLoginId" />
+		<result property="comId" column="puBu_CompanyId" />
+	</resultMap>
+
+	<select id="selectOne" parameterType="TblPureBusiness"
+		resultMap="result_base">
+		select
+		${rtColumns}
+		from
+		tbl_PureBusiness
+		where
+		pk_PureBusiness =
+		#{id}
+	</select>
+
+	<select id="getList" parameterType="TblPureBusiness" resultMap="result_base">
+		select
+		${rtColumns}
+		from
+		tbl_PureBusiness
+		where 1=1
+		<if test="pkIds != null">
+			and pk_PureBusiness in
+			<foreach item="item" index="index" collection="pkIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+	</select>
+
+</mapper>

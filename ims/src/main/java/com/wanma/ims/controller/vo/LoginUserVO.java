@@ -1,0 +1,83 @@
+package com.wanma.ims.controller.vo;
+
+import java.util.List;
+
+import com.wanma.ims.common.domain.UserDO;
+
+public class LoginUserVO {
+
+	private Long userId; // 登录ID
+	private String userAccount; // 登录账户
+	private Integer userLevel; // 登录人类型
+	private String userName; // 登录人名称
+	private String userPhone; // 登录人手机
+	private Long cpyId; // 管理员所属渠道ID
+	private List<Long> cpyIdList;
+
+	public LoginUserVO(UserDO userDO){
+		this.userId = userDO.getUserId();
+		this.userAccount = userDO.getUserAccount();
+		this.userLevel = userDO.getUserLevel();
+		this.userName = userDO.getUserName();
+		this.userPhone = userDO.getUserPhone();
+		this.cpyId = userDO.getCpyId();
+        this.cpyIdList = userDO.getCpyIdList();
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public String getUserAccount() {
+		return userAccount;
+	}
+
+	public void setUserAccount(String userAccount) {
+		this.userAccount = userAccount;
+	}
+
+	public Integer getUserLevel() {
+		return userLevel;
+	}
+
+	public void setUserLevel(Integer userLevel) {
+		this.userLevel = userLevel;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getUserPhone() {
+		return userPhone;
+	}
+
+	public void setUserPhone(String userPhone) {
+		this.userPhone = userPhone;
+	}
+
+	public Long getCpyId() {
+		return cpyId;
+	}
+
+	public void setCpyId(Long cpyId) {
+		this.cpyId = cpyId;
+	}
+
+	public List<Long> getCpyIdList() {
+		return cpyIdList;
+	}
+
+	public void setCpyIdList(List<Long> cpyIdList) {
+		this.cpyIdList = cpyIdList;
+	}
+
+}

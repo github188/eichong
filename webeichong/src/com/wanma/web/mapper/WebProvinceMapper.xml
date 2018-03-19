@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.web.dao.WebProvinceMapper">
+
+    <resultMap id="province" type="WebProvince">
+        <id property="id" column="pk_Province"/>
+        <result property="provinceName" column="Prov_Name"/>
+        <result property="provinceCode" column="Prov_Code"/>
+        <result property="createDate" column="Prov_Createdate"/>
+        <result property="updateDate" column="Prov_Updatedate"/>
+    </resultMap>
+
+    <select id="getAll" parameterType="map" resultMap="province">
+        SELECT
+            p.pk_Province,
+            p.Prov_Code,
+            p.Prov_Name
+        from tbl_Province p
+        WHERE 1=1
+        <if test="pageSize != null">
+            and p.pk_Province >= (SELECT t.pk_Province from tbl_Province t ORDER BY t.pk_Province LIMIT ${begin},1) LIMIT ${pageSize}
+        </if>
+    </select>
+
+    <select id="getCount" parameterType="map" resultType="long">
+		SELECT count(p.Prov_Code)
+		from tbl_Province p
+		WHERE 1=1
+	</select>
+</mapper> 

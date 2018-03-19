@@ -1,0 +1,36 @@
+package com.wanma.ims.service;
+
+import java.util.List;
+import java.util.Map;
+
+import com.wanma.ims.model.base.AreaDO;
+import com.wanma.ims.model.base.CityDO;
+import com.wanma.ims.model.base.ProvinceDO;
+
+
+/**
+ * 初始化下拉框
+ */
+public interface InitialService {
+
+	/**
+	 * 初始化省下拉框
+	 * @param
+	 * */
+	public List<ProvinceDO> getProvinceList(Map<String,String> map);
+	
+	/**
+	 * 初始化市下拉框
+	 * @param
+	 * */
+	public Map<String,List<CityDO>> getCityMap(String provinceId);
+	
+	/**
+	 * 初始化区下拉框
+	 * @param
+	 * */
+	public Map<String,List<AreaDO>> getAreaMap(String cityId);
+	
+	
+
+}

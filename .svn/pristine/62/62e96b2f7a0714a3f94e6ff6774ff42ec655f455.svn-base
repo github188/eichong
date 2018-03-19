@@ -1,0 +1,156 @@
+@charset "utf-8";
+#container1 {
+	height: 100%;
+	margin-top: 22px;
+	padding: 30px;
+	padding-top: 20px;
+	font-size: 12px;
+	font-family: "微软雅黑";
+}
+#container1 .nav {
+	width: 100%;
+	padding: 10px 0 10px 20px;
+	margin: 0 auto;
+	font-size: 14px;
+	border-bottom:1px solid #E1E1E1 ;
+}
+#container1 .orderDetail{
+	width: 100%;
+	padding: 15px;
+	padding-top: 20;
+	margin: 0 auto;
+}
+#container1 .orderDetail .lineBlock{
+	padding: 5px;
+}
+#container1 .orderDetail .lineBlock .line{
+	display: inline-block;
+	margin-left: 20px;
+	min-width: 40%;
+	height: 30px;
+	line-height: 30px;
+}
+#container1 .orderDetail .lineBlock .red{
+	color: #FF0000;
+}
+#container1 .orderDetail .lineBlock .line:first-child{
+	margin-left: 0;
+}
+#container1 .orderDetail .lineBlock .line span{
+	display: inline-block;
+	
+}
+#container1 .orderDetail .lineBlock .line .lineLeft{
+	width: 30%;
+}
+#container1 .orderDetail .lineBlock .line input{
+	width: 160px;
+	height: 26px !important;
+	outline: none;
+	border: 1px solid #E5E5E5;
+	border-radius: 4px;
+	appearance:none;
+	-moz-appearance:none;
+	-webkit-appearance:none;
+}
+#container1 .orderDetail .lineBlock .line select{
+	width: 160px;
+	height: 26px !important;
+	line-height: 22px;
+	outline: none;
+	border: 1px solid #E5E5E5;
+	border-radius: 4px;
+	appearance:none;
+	-moz-appearance:none;
+	-webkit-appearance:none;
+	background: url(../../images/triangle_right_114px_1189854_easyicon.net-down-8.png) no-repeat 90% 10px !important;
+}
+.rateValue{
+	text-decoration: underline;
+	color: #FF9900;
+	cursor: pointer;
+}
+/*费率弹框==============*/
+.rateBlock{
+	width: 100%;
+	height: 186px;
+	border: 1px solid #E1E1E1;
+}
+.rateBlock .rateTitle{
+	width: 100%;
+	height: 26px;
+	line-height: 26px;
+	text-align: center;
+	border-bottom: 1px solid #E1E1E1;
+}
+.rateBlock .rateMain{
+	width: 100%;
+}
+.rateBlock .rateMain .rateMainBlock{
+	width: 100%;
+	border-bottom: 1px solid #E1E1E1;
+}
+.rateBlock .rateMain .rateMainBlock div{
+	display: inline-block;
+	
+}
+.rateBlock .rateMain .rateMainBlock .width30{
+	width: 30%;
+	height: 26px;
+	line-height: 26px;
+	text-align: center;
+	border-right: 1px solid #E1E1E1;
+}
+.rateBlock .rateMain .rateMainBlock .width30:last-child{
+	border-right: none;
+}
+.rateBlock .rateBottom{
+	width: 100%;
+	border-bottom: 1px solid #E1E1E1;
+}
+.rateBlock .rateBottom div{
+	display: inline-block;
+}
+.rateBlock .rateBottom .width60{
+	width: 61.3%;
+	height: 26px;
+	line-height: 26px;
+	text-align: center;
+	border-right: 1px solid #E1E1E1;
+}
+.rateBlock .rateBottom .width30{
+	width: 30%;
+	height: 26px;
+	line-height: 26px;
+	text-align: center;
+}
+#container1 .orderDetail .saveBlock{
+	padding: 5px;
+}
+#container1 .orderDetail .saveBlock .saveBtn{
+	display: inline-block;
+	width: 90px;
+	height: 26px;
+	color: #FFFFFF;
+	border: 1px solid #FF7D00;
+	background: #FF7D00;
+	border-radius: 4px;
+	text-align: center;
+	line-height: 26px;
+	margin-left: 24%;
+	margin-top: 30px;
+	cursor: pointer;
+}
+#container1 .orderDetail .saveBlock .cancelBtn{
+	display: inline-block;
+	width: 90px;
+	height: 26px;
+	color: #FFFFFF;
+	border: 1px solid #FF7D00;
+	background: #FF7D00;
+	border-radius: 4px;
+	text-align: center;
+	line-height: 26px;
+	margin-left: 30px;
+	cursor: pointer;
+}

@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.app.dao.IntegralMapper">
+
+	<select id="getdrawableList" parameterType="Map" resultType="HashMap">
+	SELECT
+	fixed_integral_value AS point,
+	pk_CouponVariety AS
+	couponVariety_id,
+	cova_ActivityName AS ActivityName,
+	cova_limitation AS
+	limitation,
+	cova_CouponValue,
+	s.powerStation_id,
+	s.powerStation_name,
+	cova_Label
+	FROM
+	tbl_integral_activity a,
+	tbl_integral_rules r,
+	TBL_COUPONVARIETY c,
+	tbl_powerstation s,
+	tbl_integral_rules_extensions ex
+	WHERE
+	r.start_date &lt;= NOW()
+	AND r.end_date &gt;=NOW()
+	AND r.integral_activity_id = a.pk_id
+	AND ex.coupon_variety_id = c.pk_CouponVariety
+	AND s.powerStation_id = r.powerStation_id
+	AND COVA_stutas = 0
+	AND city_id = #{cid}
+	AND activity_name = '积分兑换'
+	AND ex.integral_rules_id = r.pk_id
+
+		
+		
+		
+	</select>
+
+	<!-- 获取用户今日签到次数 -->
+	<select id="getUserTodaySignCount" parameterType="int"
+		resultType="int">
+
+		SELECT COUNT(*) from tbl_integral_details detail
+		,tbl_integral i where
+		detail.integral_id = i.pk_id and
+		detail.direction
+		= 0 and LEFT( detail.integral_date ,10) = LEFT(NOW(),10) and
+		i.user_id
+		= #{userId} and
+		detail.integral_activity_id = 3
+
+	</select>
+
+
+
+	<select id="getSignList" parameterType="int" resultType="hashmap">
+
+	select * from (SELECT
+	*
+	FROM
+	(
+	SELECT
+	NOW() date
+	UNION
+	SELECT
+	
+	DATE_ADD(NOW(), INTERVAL 1 DAY) AS date
+	UNION
+	SELECT
+	
+	DATE_ADD(NOW(), INTERVAL 2 DAY) AS date
+	UNION
+	SELECT
+	
+	DATE_ADD(NOW(), INTERVAL 3 DAY)AS date
+	UNION
+	SELECT
+
+	DATE_ADD(NOW(), INTERVAL 4 DAY) AS date
+	) b
+	LEFT JOIN (
+	(
+	SELECT
+	A.pk_id,
+	r.fixed_integral_value AS point,
+	a.activity_name AS aname,
+	r.start_date,
+	r.end_date
+	FROM
+	tbl_integral_activity a,
+	tbl_integral_rules r
+	WHERE
+	a.pk_id = r.integral_activity_id
+	AND a.pk_id IN (3, 8)
+    and activity_status = 0
+     and r.highest_priority = (SELECT   MAX(highest_priority) from tbl_integral_rules where integral_activity_id = 9  and activity_status = 0 )
+     and (city_id = #{cid} or is_whole =1)
+	)
+	UNION
+	(
+	SELECT
+	A.pk_id,
+	r.fixed_integral_value AS point,
+	a.activity_name AS aname,
+	CONCAT(LEFT(NOW(),4),RIGHT( LEFT (u.norm_birthday, 10),6)," 00:00:00") AS start_date,
+	CONCAT(LEFT(NOW(),4),RIGHT( LEFT (u.norm_birthday, 10),6)," 23:59:59") AS end_date
+	FROM
+	tbl_integral_activity a,
+	tbl_integral_rules r,
+	tbl_user_normal u
+	WHERE
+	a.pk_id = r.integral_activity_id
+	AND u.user_id = #{userId}
+	AND a.pk_id IN (9)
+	 AND r.activity_status = 0
+     and r.highest_priority = (SELECT   MAX(highest_priority) from tbl_integral_rules where integral_activity_id = 9  and activity_status = 0 )
+     and  ( city_id = #{cid} or is_whole =1 )
+     and (r.start_date &lt;= (select CONCAT(LEFT(NOW(),4),RIGHT( LEFT ((select norm_birthday from 	tbl_user_normal where user_id =  #{userId}), 10),6)," 00:00:00")) &lt;= r.end_date)
+     
+	)
+	) a ON (
+	b.date BETWEEN a.start_date
+	AND a.end_date
+	) ) tmpa where  point is not null 
+	order BY tmpa.date
+
+
+
+	</select>
+
+	<!-- 获取积分详情 -->
+	<select id="getUserPointDetailByUid" parameterType="Map"
+		resultType="hashmap">
+	     SELECT d.integral_date ,a.activity_name
+		,a.direction
+		,	d.integral_value *(IF(a.direction=0,1,-1)) as integral_value FROM
+		tbl_integral_details d ,tbl_integral
+		i,tbl_integral_activity a where
+		i.pk_id = d.integral_id and
+		d.integral_activity_id = a.pk_id  and
+		i.user_id = #{userId}
+		and d.integral_value != 0
+		order by integral_date desc
+		limit #{pager.pageNumber},#{pager.pageNum}
+	</select>
+
+	<!-- 获得可兑换列表 -->
+	<select id="findactivitylist" parameterType="Map" resultType="hashmap">
+
+	SELECT
+	fixed_integral_value as point,
+	r.pk_id as rule_id,
+	a.pk_id as activity_id,
+	activity_name,
+	is_whole as whole,
+	city_id,
+		0 as hasshared
+	FROM
+	tbl_integral_activity a,
+	tbl_integral_rules r
+
+	WHERE
+	r.start_date &lt;=
+	NOW()
+	AND r.end_date &gt;= NOW() and
+	r.integral_activity_id = a.pk_id
+	and 1=1 
+	and (city_id = #{cid} or is_whole =1)
+	and activity_status = 0
+	 <if test="type!=null and type!=''">
+	and a.pk_id = #{type}
+	</if>
+	
+	union 
+	
+
+	(
+	SELECT
+	fixed_integral_value as point,
+	r.pk_id as rule_id,
+	a.pk_id as activity_id,
+	activity_name,
+	is_whole as whole,
+	city_id,
+	 (select is_share from tbl_user_normal
+     where user_id = #{userId}) as hasshared
+	FROM
+	tbl_integral_activity a,
+	tbl_integral_rules r
+	 
+	WHERE
+	r.start_date &lt;=
+	NOW()
+	AND r.end_date &gt;= NOW() and
+	r.integral_activity_id = a.pk_id
+	and a.pk_id in (5)
+	and (city_id = #{cid} or is_whole =1)
+	and activity_status = 0
+	 <if test="type!=null and type!=''">
+	and a.pk_id = #{type}
+	</if>
+	)
+	
+
+
+	</select>
+	<!---->
+	<select id="canDrawByActivityId" parameterType="int" resultType="hashmap">
+		SELECT
+		count(*)
+		FROM
+		tbl_integral_activity a,
+		tbl_integral_rules r
+		WHERE
+		r.start_date &lt;= NOW()
+		AND r.end_date &gt;= NOW() and
+		r.integral_activity_id = a.pk_id
+		and a.pk_id = 6
+		and province_id = 100000
+		and city_id = 100000
+		and activity_status = 0
+
+	</select>
+	
+   <!---->
+<!-- 	public List<Map<String,Object>> getpointpresentrate(Map<String,Object>params); -->
+	<select id="getpointpresentrate" parameterType="Map" resultType="hashmap">
+	
+	
+	<if test="type ==null  or type == '' " >
+
+
+	SELECT
+	ratio_integral_value,
+	fixed_integral_value,
+	a.pk_id,
+	activity_name,
+	r.highest_priority
+	FROM
+	tbl_integral_activity a,
+	tbl_integral_rules r
+	WHERE
+	r.integral_activity_id = a.pk_id
+	AND (
+	r.city_id = #{cid}
+	OR is_whole = 1
+	)
+	AND a.direction = 0
+	AND a.pk_id IN (1, 2)
+	AND r.START_dATE &lt;= NOW()
+    AND  NOW() &lt;= r.END_dATE
+	AND r.activity_status = 0
+	</if>
+	
+	<if test="type == 1">
+
+	SELECT
+	ratio_integral_value,
+	fixed_integral_value,
+	a.pk_id,
+	activity_name,
+	r.highest_priority
+	FROM
+	tbl_integral_activity a,
+	tbl_integral_rules r
+
+	WHERE
+	r.integral_activity_id = a.pk_id
+	AND (
+	r.city_id = #{cid}
+	OR is_whole = 1
+	)
+	AND a.direction = 0
+	AND a.pk_id IN (1, 2)
+	AND r.highest_priority = (
+	SELECT
+	MAX(highest_priority)
+	FROM
+	tbl_integral_rules F
+	WHERE
+	f.integral_activity_id = 1
+	AND F.START_dATE &lt;= NOW()
+	AND NOW() &lt;= F.END_dATE
+	AND activity_status = 0
+	)
+	AND r.activity_status = 0
+	AND a.pk_id = '1'
+
+	AND r.START_dATE &lt;= NOW()
+	AND NOW() &lt;= r.END_dATE
+	
+	</if>
+	
+
+    <if test="type == 2">
+
+
+
+	SELECT
+	ratio_integral_value,fixed_integral_value,a.pk_id,activity_name,r.highest_priority
+	FROM
+	tbl_integral_activity a,
+	tbl_integral_rules r,
+	tbl_integral_rules_extensions e
+	WHERE
+	r.integral_activity_id = a.pk_id
+	and e.integral_rules_id = r.pk_id
+	and (e.city_id = #{cid}
+	or is_whole=1)
+	and a.direction = 0
+	and a.pk_id in (2)
+	and r.highest_priority= ( SELECT
+	MAX(highest_priority)
+	FROM
+	tbl_integral_rules F
+	WHERE
+	f.integral_activity_id = 2
+	AND F.START_dATE &lt;= NOW()
+	AND NOW() &lt;= F.END_dATE
+	AND activity_status = 0 )
+	and r.activity_status = 0
+	AND r.START_dATE &lt;= NOW()
+	AND NOW() &lt;= r.END_dATE
+	<if test="type == 2">
+		<if test="pid != null and pid!=''">
+			and e.electricPile_id = #{sid}
+		</if>
+	</if>
+	</if>
+
+	
+	</select>
+	
+	
+	
+	
+	<select id="getuserpointById" parameterType="int" resultType="long">
+     select  IFNULL(SUM(available_integrals),0) as point from tbl_integral  where user_id = #{uid}
+
+	</select>
+
+    <select id="usermodinfogetpointcount" parameterType="int" resultType="int">
+	select COUNT(user_id) as count from tbl_integral_details d
+	,tbl_integral i
+	where i.pk_id =d.integral_id and integral_activity_id = 4
+	and user_id = #{uid}
+    
+    </select>
+    
+    <update id="marksharegetpointbyuId"  parameterType="int">
+    
+     update tbl_user_normal set is_share = 1 where user_id = #{userId}
+    </update>
+
+</mapper>      

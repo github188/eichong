@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?> 
+<server>
+
+	<data-Analyze-server>
+		<description>数据分析中心服务端</description>
+		<server-name>dataAnalyzeserver</server-name>
+		<server-port>8002</server-port>
+	</data-Analyze-server>
+
+</server>

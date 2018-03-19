@@ -1,0 +1,17 @@
+{
+    "data": {
+        "carinfoBatteryType": 0,
+        "carinfoBatterycapacity": 30,
+        "carinfoChargingMode": 1,
+        "carinfoChargingTime": "慢8快2",
+        "carinfoCompanyId": 1,
+        "carinfoCreatedate": 1426033771000,
+        "carinfoMaxodometer": 200,
+        "carinfoPowerInterface": 7,
+        "carinfoStylename": "逸动 2016款",
+        "carinfoUpdatedate": 1466669225000,
+        "pkCarinfo": 1
+    },
+    "msg": "操作成功!",
+    "status": 100
+}

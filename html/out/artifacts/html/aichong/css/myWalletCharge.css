@@ -1,0 +1,152 @@
+@charset "utf-8";
+section{
+	width: 100%;
+	min-height: 10rem;
+	-background: #008000;
+	padding: 2rem;
+}
+.reChargeTip{
+	height: 3rem;
+	-background: #007AFF;
+	font-size: 1.2rem;
+}
+.reChargeTip .reChargeTitle{
+	color: #666666;
+	font-size: 1.4rem;
+}
+.reChargeTip .reChargeValue{
+	color: #FF7D00;
+	font-size: 1.4rem;
+	padding: 0;
+}
+.purseTip{
+	width: 100%;
+	height: 4rem;
+	border-radius: 0.5rem;
+	border: 0.1rem solid #C0C0C0;
+	padding-left: 2%;
+	font-size: 1.4rem;
+	color: #888888;
+	margin-bottom: 1rem;
+}
+.purseTip .purseValue{
+	width: 93%;
+	height: 3.4rem;
+	border: 0;
+	outline-style:none ;
+	margin-top: 0.2rem;
+}
+.choiceMoney{
+	width: 100%;
+	min-height: 5rem;
+	-background: #F0FF0F;
+}
+.choiceMoney .costList{
+	width: 100%;
+	height: 3rem;
+	-background: #F0AD4E;
+	color: #808080;
+}
+
+.choiceMoney .costList li{
+	
+	display: inline-block;
+	width: 30%;
+	height: 3.4rem;
+	border-radius: 2rem;
+	border: 0.1rem solid #C0C0C0;
+	text-align: center;
+	line-height:3.4rem;
+	margin-left: 2%;
+	font-size: 1.6rem;
+}
+.choiceMoney .costList .changeStyle{
+	border: 0.1rem solid #FF7D00;
+	background: url(../img/btn_selected.png) no-repeat 95% center;
+	background-size: 22% 70%;
+	color: #FF7D00;
+}
+.chargeWay{
+	width: 100%;
+	min-height: 3rem;
+	-background: #FF0000;
+	
+}
+.chargeWay .costWay{
+	width: 100%;
+	min-height: 3rem;
+	color: #808080;
+}
+/*默认展示支付宝充值方式*/
+.chargeWay .costWay li{
+	width: 40%;
+	height: 3.4rem;
+	line-height: 3.4rem;
+	border: 0.1rem solid #FF7D00;
+	text-align: center;
+	border-radius: 2rem;
+	color: #FF7D00;
+	background: url(../img/btn_selected.png) no-repeat 95% center;
+	background-size: 22% 70%;
+}
+/*支付方式样式*/
+#payDiv .chargeActive{
+	width: 44%;
+	height: 3.4rem;
+	border: 0.1rem solid #C0C0C0;
+	border-radius:2rem ;
+	text-align: center;
+	line-height: 3.4rem;
+	/*float: left;*/
+	display: inline-block;
+	margin-left: 4%;
+	font-size: 1.6rem;
+	color: #808080;
+}
+/*点击之后的支付方式样式*/
+#payDiv .chargeActiveAfter{
+	width: 44%;
+	height: 3.4rem;
+	border: 0.1rem solid #FF7D00;
+	border-radius:2rem ;
+	text-align: center;
+	line-height: 3.4rem;
+	/*float: left;*/
+	display: inline-block;
+	margin-left: 4%;
+	font-size: 1.6rem;
+	color: #C0C0C0;
+}
+#payDiv .styleWay{
+	border: 0.1rem solid #FF7D00;
+	background: url(../img/btn_selected.png) no-repeat 95% center;
+	background-size: 15% 70%;
+	color: #FF7D00;
+}
+.chargeExp{
+	width: 100%;
+	height: 4rem;
+	line-height:4rem;
+	color: #666666;
+	font-size: 1.4rem;
+}
+.instantCharge{
+	color: #FFFFFF;
+	outline-style: none;
+	background: #C0C0C0;
+}
+ .instantCharge:focus,.instantCharge:active{
+	color: #FFFFFF;
+	outline-style: none;
+}
+.instantChargeStyle{
+	background: #FF7D00;
+	color: #FFFFFF;
+	outline-style: none;
+}
+.instantChargeStyle:focus,.instantChargeStyle:active{
+	background: #FF7D00;
+	color: #FFFFFF;
+	outline-style: none;
+}
+/*模态框提示=================================================================*/

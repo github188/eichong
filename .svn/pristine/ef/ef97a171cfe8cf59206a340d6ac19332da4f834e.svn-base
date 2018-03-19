@@ -1,0 +1,238 @@
+package com.wanma.ims.controller.config.app;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.druid.util.StringUtils;
+import com.wanma.ims.common.domain.MessageInfoDO;
+import com.wanma.ims.common.domain.base.Pager;
+import com.wanma.ims.constants.ResultCodeConstants;
+import com.wanma.ims.controller.BaseController;
+import com.wanma.ims.controller.result.JsonResult;
+import com.wanma.ims.service.MessageInfoService;
+
+
+
+/**
+ * 首页新建 故障消息
+ */
+@Controller
+@RequestMapping("/manage/app/messageInfo")
+public class MessageInfoController extends BaseController {
+	// 日志输出对象
+		private static Logger log = Logger.getLogger(MessageInfoController.class);
+		@Autowired
+		private MessageInfoService messageInfoService;
+	/**
+	 * 首页消息列表
+	 * @author mb
+	 * @param 
+	 * @return
+	 */
+		@RequestMapping(value = "/getMessageInfoList")
+		@ResponseBody
+		public void getMessageInfoList(@ModelAttribute("pager") Pager pager,
+				@ModelAttribute MessageInfoDO messageInfoDO,HttpServletRequest request) {
+			JsonResult result = new JsonResult();
+			List<MessageInfoDO> messageInfoList = null;
+			long total = 0;
+			try {
+				total = messageInfoService.selectMessageInfoCount(messageInfoDO);
+				if (total <= pager.getOffset()) {
+					pager.setPageNo(1L);
+				}
+				messageInfoDO.setPager(pager);
+				messageInfoList = messageInfoService.selectMessageInfoList(messageInfoDO);
+				pager.setTotal(total);
+				result.setDataObject(messageInfoList);
+				result.setPager(pager);
+			} catch (Exception e) {
+				log.error(this.getClass()+".getMessageInfoList() error:",e);
+			}
+			responseJson(result);
+		}
+		
+		/**
+		 * 新增资讯首页消息
+		 * @author mb
+		 * @param 
+		 * @return
+		 */
+			@RequestMapping(value = "/addMessageInfo")
+			@ResponseBody
+			public void addMessageInfo(@ModelAttribute MessageInfoDO messageInfoDO,String pkPowerstations,HttpServletRequest request) {
+				JsonResult result = new JsonResult();
+				try {
+					if(StringUtils.isEmpty(pkPowerstations)){
+						responseJson(new JsonResult(false,ResultCodeConstants.EXCEPTION,"未绑定电站"));
+						return;
+					}else {
+						String[] pkPowerstation = pkPowerstations.split(",");
+						messageInfoService.insertMessageInfo(messageInfoDO,pkPowerstation);
+					}
+				} catch (Exception e) {
+					log.error(this.getClass()+".addMessageInfo() error:",e);
+				}
+				responseJson(result);
+			}
+		
+			/**
+			 * 动态关联充电点
+			 * 
+			 * @author mb
+			 * @return Object
+			 * @throws 无
+			 */
+			@RequestMapping("/getPowerstation")
+			@ResponseBody
+			public void getPowerstation(String powerstationName,String proviceId,String cityId ){
+				JsonResult result = new JsonResult();
+				try {
+					Map<String,String> params=new HashMap<String, String>();
+					params.put("powerstationName", powerstationName);
+					params.put("proviceId", proviceId);
+					params.put("cityId", cityId);
+					List<Object> powerstation = messageInfoService.getpowerstation(params);
+					result.setDataObject(powerstation);
+				} catch (Exception e) {
+					log.error(this.getClass()+".getPowerstation() error:",e);
+				}
+				responseJson(result);
+			}
+			/**
+			 *根据主键获取首页消息信息
+			 * @author mb
+			 * @return Object
+			 * @throws 无
+			 */
+			@RequestMapping("/getMessageInfoById")
+			@ResponseBody
+			public void getMessageInfoById(String pkMessageInfoId,HttpServletRequest request){
+				JsonResult result = new JsonResult();
+				try {
+					MessageInfoDO messageInfoDO = messageInfoService.getMessageInfoById(pkMessageInfoId);
+					List<Map<String, Object>> powerstationList =new ArrayList<Map<String, Object>>();
+					powerstationList = messageInfoService.getPowerstationById(Integer.parseInt(pkMessageInfoId));
+					messageInfoDO.setPowerstationList(powerstationList);
+					result.setDataObject(messageInfoDO);
+				} catch (Exception e) {
+					log.error(this.getClass()+".getPowerstation() error:",e);
+				}
+				responseJson(result);
+			}
+			/**
+			 *编辑首页消息
+			 * @author mb
+			 * @return Object
+			 * @throws 无
+			 */
+			@RequestMapping("/updateMessageInfo")
+			@ResponseBody
+			public void updateMessageInfo(@ModelAttribute MessageInfoDO messageInfo,String pkPowerstations,HttpServletRequest request){
+				JsonResult result = new JsonResult();
+				try {
+					String messageInfoProvinceCode = messageInfo.getMessageInfoProvinceCode();
+					if(messageInfoProvinceCode.isEmpty()){
+						messageInfo.setMessageInfoCityCode("");
+					}
+					List<Map<String, Object>> oldPowerstationList =new ArrayList<Map<String, Object>>();
+					oldPowerstationList = messageInfoService.getPowerstationById(messageInfo.getPkMessageInfoId());
+					messageInfoService.updateMessageInfo(messageInfo);
+					String[] newPkPowerstation = pkPowerstations.split(",");
+					String[] oldPkPowerstation = new String[oldPowerstationList.size()];
+					if(newPkPowerstation==null){
+						responseJson(new JsonResult(false,ResultCodeConstants.EXCEPTION,"未绑定电站"));
+						return;
+					}else{
+						for(int j=0;j<oldPowerstationList.size();j++){
+							oldPkPowerstation[j]=oldPowerstationList.get(j).get("pkPowerstation").toString();
+						}
+						for (String id : newPkPowerstation)
+							{
+								int flag =0;
+							    for(int j=0;j<oldPkPowerstation.length;j++){
+							    	if(id.trim().equals(oldPkPowerstation[j].trim())){
+							    		flag++;
+							    	}
+							    }
+							    if(flag==0){
+							    	messageInfo.setPkPowerstation(Integer.parseInt(id));
+							    	messageInfo.setMprName(messageInfoService.getMprNameByPkPowerstation(id));
+							    	messageInfoService.relationPowerStation(messageInfo);
+							    }
+						}
+						for(String oldId:oldPkPowerstation){
+							int flag =0;
+							for(int j=0;j<newPkPowerstation.length;j++){
+							    	if(oldId.trim().equals(newPkPowerstation[j].trim())){
+							    		flag++;
+							    	}
+							}
+							if(flag==0){
+						    	messageInfo.setPkPowerstation(Integer.parseInt(oldId));
+						    	messageInfoService.removeRelationPowerStation(messageInfo);
+						    }
+					    }
+					}
+				} catch (Exception e) {
+					log.error(this.getClass()+".updateMessageInfo() error:",e);
+				}
+				responseJson(result);
+			}	
+		
+			/**
+			 *关闭首页消息
+			 * @author mb
+			 * @return Object
+			 * @throws 无
+			 */
+			@RequestMapping("/closeMessageInfo")
+			@ResponseBody
+			public void closeMessageInfo(String pkMessageInfoId,HttpServletRequest request){
+				JsonResult result = new JsonResult();
+				try {
+					if(!messageInfoService.closeMessageInfoById(pkMessageInfoId)){
+						responseJson(new JsonResult(false,ResultCodeConstants.EXCEPTION,"未绑定电站"));
+						return;
+					}
+				} catch (Exception e) {
+					log.error(this.getClass()+".closeMessageInfo() error:",e);
+				}
+				responseJson(result);
+			}
+			/**
+			 *删除首页消息
+			 * @author mb
+			 * @return Object
+			 * @throws 无
+			 */
+			@RequestMapping("/deleteMessageInfo")
+			@ResponseBody
+			public void deleteMessageInfo(String pkMessageInfoId,HttpServletRequest request){
+				JsonResult result = new JsonResult();
+				try {
+					if(!messageInfoService.deleteMessageInfoById(pkMessageInfoId)){
+						responseJson(new JsonResult(false,ResultCodeConstants.EXCEPTION,"删除首页消息失败"));
+						return;
+					}
+					if(!messageInfoService.deleteMessageInfoPointById(pkMessageInfoId)){
+						responseJson(new JsonResult(false,ResultCodeConstants.EXCEPTION,"删除首页消息关联失败"));
+						return;
+					}
+				} catch (Exception e) {
+					log.error(this.getClass()+".deleteMessageInfo() error:",e);
+				}
+				responseJson(result);
+			}
+}

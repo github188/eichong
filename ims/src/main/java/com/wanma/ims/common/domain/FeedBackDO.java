@@ -1,0 +1,119 @@
+package com.wanma.ims.common.domain;
+
+import com.wanma.ims.common.domain.base.BasicModel;
+
+
+
+/**
+ * 意见反馈
+ * mbmbmbmb
+ */
+public class FeedBackDO extends BasicModel {
+	private static final long serialVersionUID = -7763818152679819358L;
+	
+	private Integer pkFeedBack;//主键
+	private String content;//反馈内容
+	private Long userId;//用户ID
+	private String createDate;//创建时间
+	private String updateDate;//修改时间
+	private Integer status;//是否处理，0：未处理，1：处理中，2：已处理
+	private String reason;//回复内容
+	private Integer updateUserId;//处理人 
+	
+	/******不与数据库对应*******/
+	private String userAccount;
+	private String userName;
+	private String startDate;
+	private String endDate;
+	/** 修改人账号 */
+	private String replyUserAccount;
+	private Integer isPush;//是否通知 0：不通知 1：通知
+	public Integer getPkFeedBack() {
+		return pkFeedBack;
+	}
+	public void setPkFeedBack(Integer pkFeedBack) {
+		this.pkFeedBack = pkFeedBack;
+	}
+	public String getContent() {
+		return content;
+	}
+	public void setContent(String content) {
+		this.content = content;
+	}
+	public Long getUserId() {
+		return userId;
+	}
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+	public String getCreateDate() {
+		return createDate;
+	}
+	public void setCreateDate(String createDate) {
+		this.createDate = createDate;
+	}
+	public String getUpdateDate() {
+		return updateDate;
+	}
+	public void setUpdateDate(String updateDate) {
+		this.updateDate = updateDate;
+	}
+	public Integer getStatus() {
+		return status;
+	}
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+	public String getReason() {
+		return reason;
+	}
+	public void setReason(String reason) {
+		this.reason = reason;
+	}
+	public Integer getUpdateUserId() {
+		return updateUserId;
+	}
+	public void setUpdateUserId(Integer updateUserId) {
+		this.updateUserId = updateUserId;
+	}
+	public String getUserAccount() {
+		return userAccount;
+	}
+	public void setUserAccount(String userAccount) {
+		this.userAccount = userAccount;
+	}
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+	public String getStartDate() {
+		return startDate;
+	}
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
+	}
+	public String getEndDate() {
+		return endDate;
+	}
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
+	}
+	public String getReplyUserAccount() {
+		return replyUserAccount;
+	}
+	public void setReplyUserAccount(String replyUserAccount) {
+		this.replyUserAccount = replyUserAccount;
+	}
+	public Integer getIsPush() {
+		return isPush;
+	}
+	public void setIsPush(Integer isPush) {
+		this.isPush = isPush;
+	}
+	
+	
+	
+	
+}

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bluemobi.product.dao.ProvinceMapper">
+	<resultMap type="Province" id="result_province">
+		<result property="provinceId" column="province_id" />
+		<result property="provinceName" column="province_name" />
+		<result property="createDate" column="create_date" />
+		<result property="createUser" column="create_user" />
+		<result property="lastUpdateDate" column="last_update_date" />
+		<result property="lastUpdateUser" column="last_update_user" />
+	</resultMap>
+	<select id="getProvinceName" parameterType="String" resultType="String">
+		select tb_m_province.province_name
+		from tb_m_province
+		where
+		tb_m_province.province_id= #{provinceId}
+	</select>
+
+	<select id="getProvinceList" resultMap="result_province">
+		select
+		tb_m_province.province_id ,
+		tb_m_province.province_name
+		from
+		tb_m_province
+	</select>
+
+	<select id="getProvinceListByAuth" parameterType="BasicModel"
+		resultMap="result_province">
+		select t.province_id ,
+		t.province_name
+		from
+		tb_m_province t
+		where 0 = 0
+		<!-- 物业权限控制 -->
+		<if test="authUserType == '002'">
+			and exists( select
+			*
+			from
+			tb_community tc,
+			p_m_department
+			pmd,
+			p_m_company pmc,
+			p_m_user_department pmud
+			where
+			tc.province_id = t.province_id
+			and tc.company_id = pmc.company_id
+			and tc.company_id =
+			pmd.company_id
+			and tc.department_id = pmd.department_id
+			and
+			pmud.user_id = #{authUserId}
+			and pmud.company_id = pmd.company_id
+			and
+			exists( select
+			*
+			from
+			p_m_department_inclusion pmdi
+			where
+			pmd.department_id = pmdi.department_id
+			and pmd.company_id =
+			pmdi.company_id
+			and pmdi.parent_department_id = pmud.department_id))
+		</if>
+	</select>
+</mapper>

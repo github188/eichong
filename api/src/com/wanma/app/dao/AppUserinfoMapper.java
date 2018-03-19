@@ -1,0 +1,184 @@
+package com.wanma.app.dao;
+
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.wanma.model.TblUserinfo;
+import com.wanma.model.UserLoginRecord;
+import com.wanma.page.Page;
+
+/**
+ * 数据访问接口
+ * 
+ */
+public interface AppUserinfoMapper {
+	public final static String PREFIX = AppUserinfoMapper.class.getName();
+
+	/**
+	 * @Title: getUserById
+	 * @Description: 根据id获取用户信息
+	 * @param pkUserInfo
+	 * @return
+	 */
+	public TblUserinfo get(int pkUserinfo);
+	
+	/**
+	 * @Title: getByPhone
+	 * @Description: 根据手机号获取用户信息
+	 * @param pkUserInfo
+	 * @return
+	 */
+	public TblUserinfo getByPhone(java.lang.String pkUserinfo);
+
+	public <K, V> Map<K, V> findOne(java.lang.Integer pkUserinfo);
+
+	public <T, K, V> List<T> find(Map<K, V> params);
+	
+	public int insert(TblUserinfo tblUserinfo);
+	public int insertUserBase(TblUserinfo tblUserinfo);
+	public int insertUserNormal(TblUserinfo tblUserinfo);
+	public int update(TblUserinfo tblUserinfo);
+	public int userRecharge(TblUserinfo tblUserinfo);
+	public int upgradeoUser(TblUserinfo tblUserinfo);
+	
+	public void insertLoginRecord (UserLoginRecord record);
+
+	public int delete(java.lang.Integer pkUserinfo);
+
+	public <E, K, V> Page<E> page(Map<K, V> params, int current, int pagesize);
+
+	/**
+	 * @Title: getUserByMobile
+	 * @Description: 根据手机号码取得用户ID
+	 * @param mobileNumber
+	 * @return pkUserInfo 用户id
+	 */
+	public Map<String, Object> getUserByMobile(String usinPhone);
+
+	/**
+	 * @Title: getUserCountByPassword
+	 * @Description: 取得用户 记录数
+	 * @param params
+	 * @param usInPassword
+	 * @return
+	 */
+	public int getUserCountByPassword(Map<String, Object> params);
+
+	/**
+	 * @Title: getUserById
+	 * @Description: 根据id获取用户信息
+	 * @param pk_UserInfo
+	 * @return
+	 */
+	public <T> T getUserById(String pkUserInfo);
+	
+	
+	/**
+	 * @Title: updateUserInfo
+	 * @Description: 修改个人资料
+	 * @param pk_UserInfo
+	 * @return
+	 */
+	
+	public void updateUserInfo(TblUserinfo pkUserInfo);
+
+	/**
+	 * @Title: userIsExist
+	 * @Description: 判断用户是否存在
+	 * @param usinPhone
+	 * @return
+	 */
+	public int userIsExist(String usinPhone);
+
+	/**
+	 * @Title: resetPasswrod
+	 * @Description: 重置密码
+	 * @param params
+	 *            新密码 用户id
+	 * @return
+	 */
+	public <K, V> int resetPasswrod(Map<K, V> params);
+
+	/**
+	 * @Title: updateAccountbalance
+	 * @Description: 更新用户余额
+	 * @param params
+	 * @return
+	 */
+	public <K, V> int updateAccountbalance(Map<K, V> params);
+
+	/**
+	 * @Title: selectMoney
+	 * @Description: 获取用户余额，冻结金额，电桩最小充电金额
+	 * @param params
+	 * @return
+	 */
+	public <T, K, V> T selectMoney(Map<K, V> params);
+
+	/**
+	 * 更新用户账户余额
+	 * @param userMap
+	 * 			userId 用户id blance 账户余额
+	 */
+	public void updateUserBlance(Map<String, Object> userMap);
+	
+	/**
+	 * 根据用户id获取充电订单列表
+	 * @param userId
+	 * @return
+	 */
+	public List<Map<String, Object>> getChargeOrderListByUid(Map<String, Object> params);
+	
+	/**
+	 * 更新用户登录的设备唯一标识
+	 * @param deviceId
+	 */
+	public void updateUserDeviceId(Map<String, Object> params);
+	
+	public void setPayPwd(Map<String, Object> map);
+	
+	/**
+	 * 获取用户余额
+	 * @param userId
+	 * @return
+	 */
+	public Map<String, Object> getUserABById(int userId);
+	
+	/**
+	 * 根据用户id修改用户密码
+	 * @param params
+	 */
+	public void updatePwByUid(Map<String, String> params);
+	
+	/**
+	 * 申请充电卡
+	 * @param params
+	 */
+	public void applyCard(Map<String, String> params);
+	
+	/**
+	 * 更新用户表中卡申请状态
+	 * @param params
+	 */
+	public void updateUserApplyCardStatus(Map<String, String> params);
+	
+	/**
+	 * 卡申请列表
+	 * @param uId
+	 * @return
+	 */
+	public List<Map<String, String>> applyListByUid(long uId);
+	
+	/**
+	 * 从user表获取用户的状态，正常还是冻结
+	 * @param uId
+	 * @return
+	 */
+	public int getStatusFromUserTable(long uId);
+
+	public int insertUserFinBill(TblUserinfo userinfo);
+
+	public void insertFinRelation(TblUserinfo userinfo);
+}

@@ -1,0 +1,114 @@
+{
+    "data": {
+        "children": [
+            {
+                "children": [
+                    {
+                        "id": "XJPI9YbrqCDz7oPFzPS",
+                        "name": "电桩信息",
+                        "target": "/static/html/electric/electricList.html"
+                    },
+                    {
+                        "id": "XFvK75Di5d2B055LPJQ",
+                        "name": "充电点信息",
+                        "target": "/static/html/station/stationList.html"
+                    },
+                    {
+                        "id": "I1vEWHykv6Ndy1YK8pk",
+                        "name": "集中器信息",
+                        "target": "/static/html/concentrator/concentratorList.html"
+                    }
+                ],
+                "id": "vw09dhvGeegfkk8ton2",
+                "name": "电桩充电点集中器",
+                "target": ""
+            },
+            {
+                "children": [
+                    {
+                        "id": "D4YoXjnUTNt1RJjzuAP",
+                        "name": "充值订单",
+                        "target": "/static/html/order/listPayOrder.html"
+                    },
+                    {
+                        "id": "eKT8JaavphwP4vB3xsW",
+                        "name": "充电订单",
+                        "target": "/static/html/order/listCharge.html"
+                    },
+                    {
+                        "id": "7EWBOnJKS7wUOXYiN0d",
+                        "name": "预约订单",
+                        "target": "/static/html/order/listBespoke.html"
+                    },
+                    {
+                        "id": "KWO0zsGZnMwn50Z8Ja8",
+                        "name": "预约收益",
+                        "target": "/static/html/order/listBusBespoke.html"
+                    },
+                    {
+                        "id": "ddRghpolkBMCzgQraVn",
+                        "name": "充电收益",
+                        "target": "/static/html/order/listBusCharge.html"
+                    }
+                ],
+                "id": "bfxeoUheg9w12XggvQs",
+                "name": "订单管理2",
+                "target": ""
+            },
+            {
+                "children": [
+                    {
+                        "id": "HlGhKfrqrmQNgKObzlS",
+                        "name": "普通用户",
+                        "target": "/static/html/userNormal/userNormalList.html"
+                    }
+                ],
+                "id": "5gIu24l7U6kAL6U2H3y",
+                "name": "用户管理2",
+                "target": ""
+            },
+            {
+                "children": [
+                    {
+                        "id": "zJe5f5zvQS",
+                        "name": "费率",
+                        "target": "/static/html/config/rateinfoList.html"
+                    },
+                    {
+                        "id": "4Ey9xGVn9D",
+                        "name": "省份电费",
+                        "target": "/static/html/config/powerRateList.html"
+                    },
+                    {
+                        "id": "Uqsvo73hv0",
+                        "name": "服务费上限",
+                        "target": "/static/html/config/serviceLimitList.html"
+                    },
+                    {
+                        "id": "Pi24FCmVpV",
+                        "name": "车型品牌",
+                        "target": "/static/html/config/carinfoList.html"
+                    },
+                    {
+                        "id": "dMSK2hm1Lx",
+                        "name": "电桩制造商",
+                        "target": "/static/html/config/pileMakerList.html"
+                    },
+                    {
+                        "id": "aYcNE7dMC5O0gWJinJN",
+                        "name": "产品型号",
+                        "target": "/static/html/config/typeSpanList.html"
+                    }
+                ],
+                "id": "gX1ihA6Py0",
+                "name": "配置管理",
+                "target": ""
+            }
+        ],
+        "id": "PEIO10uBCSkCIR2iG2n",
+        "name": "运营管理",
+        "target": ""
+    },
+    "msg": "操作成功!",
+    "status": 100
+}

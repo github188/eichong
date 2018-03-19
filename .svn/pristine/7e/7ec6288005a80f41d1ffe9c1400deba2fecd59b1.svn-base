@@ -1,0 +1,198 @@
+
+
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+
+.header .search {
+    
+    height: 44px !important;
+}
+
+
+.content{
+	width: 1162px;
+	height: 555px;	
+	border-radius:15px;
+	margin: 0 auto	
+}
+.cm-con-bm{
+	background-color: #ededed;
+}
+
+.pic-left,.content-right{
+	width: 50%;
+	height: 100%;
+	float: left;
+	
+}
+.btn-register a.lg-bt{
+	color: #fff;
+	margin-left: 0px;
+}
+	
+.login-detail{
+	margin-top: 65px;
+	margin-left: 30px;
+	width: 330px;
+}
+.login-detail h3{
+	font-size: 24px;
+	color: #5f5f5f;
+	text-indent: 112px;
+}
+.login-detail .wrap{
+	width: 330px;
+	height: 48px;
+	border-radius: 12px;
+	border: 1px solid #cccccc;
+	background-color:#ffffff;
+	position: relative;
+	text-align: center;
+	line-height: 40px;
+	margin-top: 14px;
+	
+}
+
+.login-detail img{
+	position: absolute;
+	top: 11px;
+	left: 11px;	
+	float: left;
+}
+.login-detail input{
+	float: right;
+	width: 280px;
+	line-height: 40px;
+	height: 48px;
+	outline: none;
+	background-color: transparent;
+	border: none;
+	border-left: 1px solid #ffffff;
+	font-size: 14px;
+	
+}
+.rem-wrap{
+	margin-top: 5px;
+}
+.rem-pass{
+	line-height: 23px;
+}
+.rem-pass .checkbox,.rem-pass .tx{
+	display: inline-block;
+	vertical-align: middle;
+}
+.login-detail .checkbox {
+	width: 16px;
+	height: 16px;
+	float: none; 
+	margin-top: 2px;
+}
+.for-pass{
+	text-decoration: underline;
+}
+
+.checkid{
+	position: relative;
+	width: 200px !important ;	
+		
+}
+.checkid input{
+	float: right;
+	width: 130px;
+	line-height: 43px;	
+	background-color: transparent;
+	border: none;	
+	font-size: 14px;
+}
+
+#check-img{
+	position:absolute ;
+	top:5px;
+	left: 215px;
+	cursor: pointer;
+}
+.login-detail .btn{
+	margin-left: 100px;
+	color: #fa6b3c;
+	text-align: center;	
+	font-size: 14px;:14px;
+	width: 350px;
+}
+#btn-message{
+	margin-left: 0 !important;
+	color: #ffffff;
+	text-align: center;	
+	font-size: 14px;
+	position:absolute ;
+	top:5px;
+	left: 215px;
+	width: 114px !important;
+	background-color: #ffb019 ;
+	border-radius: 8px;
+	
+}
+
+
+
+.btn-register{
+	margin-top: 30px !important;
+	background-color: #f0830f !important;
+}
+.btn-register .zc{
+	display:inline-block;
+	height:100%;
+	width:100%;
+	margin-left:0px;
+	color:#fff;
+	cursor: pointer;
+}
+.error{
+	position: absolute;
+	left: 350px;
+	white-space: nowrap;
+}
+.other-login{
+	margin-top: 40px;
+}
+.line{
+	height: 1px;
+	width: 100%;
+	background-color: #bbb;
+	position: relative;
+}
+.other-login .tx{
+	padding:0 10px;
+	background-color: #ededed;
+	position: absolute;
+	left: 50%;
+	margin-left: -74px;
+	white-space: nowrap;
+	top: -10px;
+}
+.img-wrap {
+	margin-top: 30px;
+	padding:0 50px; 
+}
+.img-wrap span{
+	vertical-align: middle;
+	display: inline-block;
+	width: 30%;
+	height: 35px;
+	background:  url("") center center no-repeat;
+}
+.img-wrap a{
+	display: block;
+}
+.img-wrap .qq{
+	background-image: url(../images/icon/qq.png);
+}
+.img-wrap .weixin{
+	background-image: url(../images/icon/weixin.png);
+}
+.img-wrap .weibo{
+	background-image: url(../images/icon/weibo.png);
+}

@@ -1,0 +1,177 @@
+package com.wanma.ims.service.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.wanma.ims.common.convert.Convert2CountAdminEpDO;
+import com.wanma.ims.common.domain.CompanyDO;
+import com.wanma.ims.common.domain.CountAdminEpRelaDO;
+import com.wanma.ims.common.domain.ElectricPileDO;
+import com.wanma.ims.common.domain.UserAdminDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.domain.UserRoleDO;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.constants.ResultCodeConstants;
+import com.wanma.ims.constants.WanmaConstants;
+import com.wanma.ims.mapper.CountAdminEpRelaMapper;
+import com.wanma.ims.mapper.ElectricPileMapper;
+import com.wanma.ims.mapper.UserAdminMapper;
+import com.wanma.ims.mapper.UserMapper;
+import com.wanma.ims.mapper.UserRoleMapper;
+import com.wanma.ims.service.CommonRedisService;
+import com.wanma.ims.service.CompanyService;
+import com.wanma.ims.service.UserAdminService;
+import com.wanma.ims.util.MD5Util;
+
+@Service
+public class UserAdminServiceImpl implements UserAdminService{
+ 
+	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+	
+	@Autowired
+	private UserMapper userMapper;
+	@Autowired
+	private UserAdminMapper userAdminMapper;
+	@Autowired
+	private UserRoleMapper userRoleMapper;
+	@Autowired
+	private ElectricPileMapper electricPileMapper;
+	@Autowired
+	private CountAdminEpRelaMapper countAdminEpRelaMapper;
+	@Autowired
+	private CommonRedisService commonRedisService;
+	@Autowired
+	private CompanyService companyService;
+
+	@Override
+	public Long countUserAdminList(UserAdminDO userAdminDO) {
+		return userAdminMapper.countUserAdminList(userAdminDO);
+	}
+
+	@Override
+	public List<UserAdminDO> getUserAdminList(UserAdminDO userAdminDO) {
+		List<UserAdminDO> list = userAdminMapper.selectUserAdminList(userAdminDO);
+		Map<Long,CompanyDO> companyMap = companyService.getCompanyMap(null);
+		for (UserAdminDO userAdmin : list) {
+			if(null != companyMap.get(userAdmin.getCpyId())){
+				userAdmin.setCpyName(companyMap.get(userAdmin.getCpyId()).getCpyName());
+			}
+		}
+		return list;
+	}
+
+	@Override
+	public BaseResultDTO addUserAdmin(UserAdminDO userAdminDO,UserDO loginUser) throws Exception{
+		    BaseResultDTO result = new BaseResultDTO();
+			UserDO userDO = new UserDO();
+			userDO.setUserAccount(userAdminDO.getUserAccount());
+			userDO.setUserPassword(MD5Util.Md5(userAdminDO.getUserPassword()));
+			userDO.setUserLevel(userAdminDO.getUserLevel());
+			userDO.setUserStatus(WanmaConstants.USER_STATUS_NORMAL);
+			userDO.setCreator(loginUser.getUserAccount());
+			int count = userMapper.insertUser(userDO);
+			if(count <= 0){
+				result.setSuccess(false);
+				result.setErrorDetail(ResultCodeConstants.ERROR_MSG_ADD_USER);
+				return result;
+			}
+			userAdminDO.setUserId(userDO.getUserId());
+			if(userAdminMapper.insertUserAdmin(userAdminDO) <= 0){
+				result.setSuccess(false);
+				result.setErrorDetail(ResultCodeConstants.ERROR_MSG_ADD_USER_ADMIN);
+				return result;
+			}
+			// 管理员角色权限 TODO:管理员只能有一个角色了，后期应该有入口可以多个角色的
+			UserRoleDO userRoleDO = new UserRoleDO();
+			userRoleDO.setRoleId(userAdminDO.getRoleId());
+			userRoleDO.setUserId(userDO.getUserId());
+			userRoleDO.setCreator(loginUser.getUserAccount());
+			userRoleDO.setModifier(loginUser.getUserAccount());
+			if(userRoleMapper.insertUserRole(userRoleDO) <= 0){
+				result.setSuccess(false);
+				result.setErrorDetail(ResultCodeConstants.ERROR_MSG_ADD_USER_ROLE);
+				return result;
+			}
+			/**
+			 * 系统管理员无需设置充电桩数据权限，默认所有
+			 * 业务管理员设置桩权限  
+			 *        系统管理员-业务管理员 ,可选继承公司or不需要设置数据权限
+			 *        业务管理员-业务管理员,默认继承父级充电桩数据权限
+			 */
+			if(userAdminDO.getUserLevel() == WanmaConstants.USER_LEVEL_WORK){
+				boolean flag = false;
+				List<CountAdminEpRelaDO> epRelaList = null;
+				if(loginUser.getUserLevel() == WanmaConstants.USER_LEVEL_WORK && userAdminDO.getIsCpyEp() == WanmaConstants.IS_COMPANY_EP_ON){
+					result.setSuccess(false);
+					result.setErrorDetail(ResultCodeConstants.ERROR_MSG_NO_PERMISSION);
+					return result;
+				}
+				if(loginUser.getUserLevel() == WanmaConstants.USER_LEVEL_ADMIN || loginUser.getUserLevel() == WanmaConstants.USER_LEVEL_SUPER){
+					flag = true;
+					if(userAdminDO.getIsCpyEp() == WanmaConstants.IS_COMPANY_EP_ON){
+						// 继承公司数据权限
+						ElectricPileDO domain = new ElectricPileDO(); 
+						domain.setCompanyId(userAdminDO.getCpyId());
+						List<ElectricPileDO> epList = electricPileMapper.selectElectricPileList(domain);
+						epRelaList = Convert2CountAdminEpDO.convertEpList2AdminEpList(epList, loginUser);
+					}
+				}
+				// 继承父级数据权限
+				if(!flag){
+					epRelaList = commonRedisService.getAdminEpRelaByLoginId(loginUser);
+				}
+				if(null != epRelaList){
+					if(countAdminEpRelaMapper.batchInsertCountAdminEpRela(epRelaList) <= 0){
+						result.setSuccess(false);
+						result.setErrorDetail(ResultCodeConstants.ERROR_MSG_ADD_ADMIN_COMPANY_EP);
+						return result;
+					}
+					
+				}
+				LOGGER.error("管理员："+userAdminDO.getUserAccount()+"未设置充电桩数据权限");
+				result.setSuccess(true);
+			}
+			return result;
+	}
+
+	@Override
+	public UserAdminDO getUserAdminById(Long userId) {
+		UserAdminDO userAdmin = userAdminMapper.selectUserAdminByUserId(userId);
+		Map<Long, CompanyDO> companyMap = companyService.getCompanyMap(null);
+		if (null != companyMap.get(userAdmin.getCpyId())) {
+			userAdmin.setCpyName(companyMap.get(userAdmin.getCpyId()).getCpyName());
+		}
+		return userAdmin;
+	}
+
+	@Override
+	public List<UserAdminDO> getUserAdminByCpyId(Long cpyId) {
+		return userAdminMapper.selectUserAdminByCpyId(cpyId);
+	}
+
+	@Override
+	public boolean modifyUserRole(Long adminId, String roleId) throws Exception{
+		UserRoleDO userRole = new UserRoleDO();
+		userRole.setUserId(adminId);
+		userRole.setRoleId(roleId);
+		return userRoleMapper.updateUserRole(userRole) > 0 ? true:false;
+	}
+
+	@Override
+	public UserAdminDO viewUserAdmin(Long userId) {
+		UserAdminDO userAdmin = new UserAdminDO();
+		userAdmin.setUserId(userId);
+		List<UserAdminDO> list = getUserAdminList(userAdmin);
+		if(CollectionUtils.isEmpty(list)){
+			return userAdmin;
+		}
+		return list.get(0);
+	}
+	
+}

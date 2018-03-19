@@ -1,0 +1,242 @@
+package com.wanma.ims.service.impl;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.wanma.ims.common.domain.FinAccountDO;
+import com.wanma.ims.common.domain.FinAccountRelationDO;
+import com.wanma.ims.common.domain.UserCardDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.domain.UserNormalDO;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.constants.ResultCodeConstants;
+import com.wanma.ims.mapper.FinAccountConfigRelaMapper;
+import com.wanma.ims.mapper.FinAccountMapper;
+import com.wanma.ims.mapper.FinAccountRelationMapper;
+import com.wanma.ims.mapper.UserMapper;
+import com.wanma.ims.service.FinAccountRelationService;
+import com.wanma.ims.util.DateUtil;
+
+@Service("finAccountRelationService")
+public class FinAccountRelationServiceImpl implements FinAccountRelationService {
+
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	@Autowired
+	private FinAccountRelationMapper finAccountRelationMapper;
+	
+	@Autowired
+	private FinAccountConfigRelaMapper finAccountConfigRelaMapper;
+	
+	@Autowired
+	private UserMapper userMapper;	
+	
+	@Autowired
+	private FinAccountMapper finAccountMapper;
+	
+	private boolean setValue(FinAccountRelationDO finAccountRelation) {
+		String userAccount = finAccountRelation.getUserAccount();
+		if (userAccount != null && !"".equals(userAccount)) {
+			UserDO userDO = userMapper.selectUserByUserAccount(userAccount);
+			if (userDO != null) {
+				finAccountRelation.setUserId(userDO.getUserId());
+			}else {
+				return false;
+			}
+		}
+		
+		String accountNO = finAccountRelation.getAccountNO();
+		if (accountNO != null && !"".equals(accountNO)) {
+			FinAccountDO finAccount = new FinAccountDO();
+			finAccount.setAccountNO(accountNO);
+			List<FinAccountDO> qryAccountDOList = finAccountMapper.getFinAccountList(finAccount);
+			if (qryAccountDOList != null && qryAccountDOList.size() > 0) {
+				finAccountRelation.setAccountId(((FinAccountDO)qryAccountDOList.get(0)).getAccountId());
+			}else {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	@Override
+	public Long getFinAccountRelationCount(FinAccountRelationDO finAccountRelation) {
+		boolean flag = setValue(finAccountRelation);
+		if (!flag) {
+			return 0L;
+		}
+		return finAccountRelationMapper.getFinAccountRelationCount(finAccountRelation);
+	}
+	
+	@Override
+	public List<FinAccountRelationDO> getFinAccountRelationList(FinAccountRelationDO finAccountRelation) {
+		boolean flag = setValue(finAccountRelation);
+		if (!flag) {
+			return null;
+		}
+		return finAccountRelationMapper.getFinAccountRelationList(finAccountRelation);
+	}
+	
+	@Override
+	public BaseResultDTO addFinAccountRelation(FinAccountRelationDO finAccountRelation, UserDO user) throws Exception{
+		BaseResultDTO baseResultDTO = new BaseResultDTO(); 
+		
+		String userAccount = finAccountRelation.getUserAccount();
+		if (userAccount == null || "".equals(userAccount)) {
+			log.error(this.getClass() + ".addFinAccountRelation() error : 用户账号不能为空！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("用户账号不能为空！");
+			return baseResultDTO;
+		}
+		
+		String accountNO = finAccountRelation.getAccountNO();
+		if (accountNO == null || "".equals(accountNO)) {
+			log.error(this.getClass() + ".addFinAccountRelation() error : 资金账号不能为空！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("资金账号不能为空！");
+			return baseResultDTO;
+		}
+		
+		UserDO userDO = userMapper.selectUserByUserAccount(userAccount);
+		if (userDO == null) {
+			log.error(this.getClass() + ".addFinAccountRelation() error : 用户账号不存在！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("用户账号不存在！");
+			return baseResultDTO;
+		}else{
+			finAccountRelation.setUserId(userDO.getUserId());
+		}
+		
+		FinAccountDO finAccount = new FinAccountDO();
+		finAccount.setAccountNO(accountNO);
+		List<FinAccountDO> qryAccountDOList = finAccountMapper.getFinAccountList(finAccount);
+		if (qryAccountDOList == null || qryAccountDOList.size() < 1) {
+			log.error(this.getClass() + ".addFinAccountRelation() error : 资金账户不存在！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("资金账户不存在！");
+			return baseResultDTO;
+		}else {
+			finAccountRelation.setAccountId(((FinAccountDO)qryAccountDOList.get(0)).getAccountId());
+		}
+		
+		FinAccountRelationDO qryDO = new FinAccountRelationDO();
+		qryDO.setBillAccountId(finAccountRelation.getBillAccountId());
+		qryDO.setUserId(finAccountRelation.getUserId());
+		qryDO.setAccountId(finAccountRelation.getAccountId());
+		qryDO.setIsDel(0);
+		Long count = finAccountRelationMapper.getFinAccountRelationCount(qryDO);
+		if (count > 0) {
+			log.error(this.getClass() + ".addFinAccountRelation() error : 账务关系已存在！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("账务关系已存在！");
+			return baseResultDTO;
+		}
+		
+		finAccountRelation.setIsDel(0);
+
+		finAccountRelation.setCreator(user.getUserAccount());
+		finAccountRelation.setModifier(user.getUserAccount());
+		// 取系统当前时间
+		Date now = DateUtil.parse(DateUtil.getNow(DateUtil.TYPE_COM_YMDHMS));
+		finAccountRelation.setGmtCreate(now);
+		finAccountRelation.setGmtModified(now);
+
+		int result = finAccountRelationMapper.addFinAccountRelation(finAccountRelation);
+		
+		if (result == 0) {
+			log.error(this.getClass() + ".addFinAccountRelation() error : " + ResultCodeConstants.ERROR_MSG_ERROR_ADD);
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail(ResultCodeConstants.ERROR_MSG_ERROR_ADD);
+			return baseResultDTO;
+		}else {			
+			return new BaseResultDTO();
+		}
+	}
+	
+	@Override
+	public int modifyFinAccountRelation(FinAccountRelationDO finAccountRelation, UserDO user) throws Exception{
+		FinAccountRelationDO qryfinAccountRelation = new FinAccountRelationDO();
+		qryfinAccountRelation.setPkId(finAccountRelation.getPkId());
+		Long qryResult = finAccountRelationMapper.getFinAccountRelationCount(qryfinAccountRelation);
+		if (qryResult < 1) {
+			return 2;
+		}
+
+		finAccountRelation.setModifier(user.getUserAccount());
+		finAccountRelation.setGmtModified(DateUtil.parse(DateUtil.getNow(DateUtil.TYPE_COM_YMDHMS)));
+
+		return finAccountRelationMapper.modifyFinAccountRelation(finAccountRelation);
+	}
+	
+	@Override
+	public int removeFinAccountRelation(FinAccountRelationDO finAccountRelation) throws Exception{
+		finAccountRelation.setIsDel(1);
+		return finAccountRelationMapper.modifyFinAccountRelation(finAccountRelation);
+	}
+	
+	@Override
+	public List<FinAccountRelationDO> getFinAccountRelation4User(UserNormalDO userNormal) {
+		if (userNormal == null || userNormal.getUserId() == null) {
+			log.error(this.getClass() + ".getFinAccountRelation4User() error : 用户信息不允许为空！");
+			return null;
+		}
+		
+		List<FinAccountRelationDO> list =  finAccountRelationMapper.getFinAccountRelation4User(userNormal);
+		
+		return splitResult(list);
+	}
+	
+	@Override
+	public List<FinAccountRelationDO> getFinAccountRelation4Card(UserCardDO userCard) {
+		if (userCard == null || userCard.getUcId() == null) {
+			log.error(this.getClass() + ".getFinAccountRelation4Card() error : 卡信息不允许为空！");
+			return null;
+		}
+		
+		List<FinAccountRelationDO> list =  finAccountRelationMapper.getFinAccountRelation4Card(userCard);
+		
+		return splitResult(list);
+	}
+
+	@Override
+	public List<FinAccountRelationDO> getFinAccountRelation4Cpy(String accountId) {
+		if (accountId == null || "".equals(accountId)) {
+			log.error(this.getClass() + ".getFinAccountRelation4Cpy() error : 资金账户信息不允许为空！");
+			return null;
+		}
+		
+		List<FinAccountRelationDO> list =  finAccountRelationMapper.getFinAccountRelation4Cpy(accountId);
+		
+		return splitResult(list);
+	}
+
+	/**
+	* <p>Description: 拼接结果集</p>
+	* @param
+	* @author bingo
+	* @date 2017-7-10
+	 */
+	private List<FinAccountRelationDO> splitResult(List<FinAccountRelationDO> list) {
+		List<FinAccountRelationDO> resultList = new ArrayList<FinAccountRelationDO>();
+		if (list != null && list.size() > 0) {
+			StringBuffer billAccountName = new StringBuffer();
+			
+			for (FinAccountRelationDO finAccountRelationDO : list) {
+				billAccountName.append(finAccountRelationDO.getBillAccountName());
+				billAccountName.append("/");
+			}
+			String retStr = billAccountName.substring(0, (billAccountName.length() - 1)).toString();
+			
+			FinAccountRelationDO result = new FinAccountRelationDO();
+			result.setBillAccountName(retStr);
+			result.setAccountNO(((FinAccountRelationDO)list.get(0)).getAccountNO());
+			resultList.add(result);
+		}
+		return resultList;
+	}
+}

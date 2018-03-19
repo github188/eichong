@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.dao.CmsRateInfoMapper">
+
+	
+	<!-- 查询费率列表 -->
+		<select id="getRateInfoListByUserId" parameterType="TblRateInfo" resultType="hashMap">	
+	 	  SELECT 
+				pk_RateInformation,
+				raIn_QuantumDate,
+				(
+					CASE
+					WHEN a.user_leval = '1' THEN
+						'爱充网'
+					WHEN a.user_leval = '2' THEN
+						'爱充网'
+					WHEN a.user_leval = '3' THEN
+						(
+							SELECT t.company_name from tbl_user_business_view t
+							WHERE t.user_id = a.user_id
+						)
+					WHEN a.user_leval = '5' THEN
+						a.user_account
+					END
+				) AS company_name,
+				raIn_MinFreezingMoney,
+				raIn_ReservationRate,
+				raIn_ServiceCharge,
+				a.user_account AS userId,
+				raIn_area_id,
+				raIn_city_id,raIn_province_id,
+				raIn_TipTimeTariff,
+				raIn_PeakElectricityPrice,
+				raIn_UsualPrice,
+				raIn_remarks raInRemarks,
+				raIn_ValleyTimePrice,
+				a.user_account AS uid,
+				c.CITY_NAME			
+			FROM   
+			    tbl_rateinformation r
+			    <if test="user_level==1 || user_level==2 || user_level==5">	
+			    	inner join tbl_user a on r.userId = a.user_id
+			    </if>
+			    <if test="user_level==3">
+			    	inner join tbl_user_business_view a on r.userId = a.user_id 
+			    </if>
+			     LEFT JOIN tb_m_city c on r.raIn_city_id = c.CITY_ID
+			WHERE 
+				1=1
+				 <choose>
+			         <when test="user_level==3">	
+			         	and exists (select 1 from tbl_user_business_view b where a.busi_company_id=b.busi_company_id and b.user_id = #{userId})
+			         </when>
+			         <when test="user_level==5">	
+			         	and r.userId=#{userId}
+			         </when>
+	        	</choose>
+			  ORDER BY pk_RateInformation desc 	 								
+			<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+		</select>		
+		<select id="getRateInfoNumByUserId" parameterType="TblRateInfo" resultType="Integer">				
+				SELECT 
+						count(*)
+			 	FROM
+			    tbl_rateinformation r
+			    <if test="user_level==1 || user_level==2 || user_level==5">	
+			    	inner join tbl_user a on r.userId = a.user_id
+			    </if>
+			    <if test="user_level==3">
+			    	inner join tbl_user_business_view a on r.userId = a.user_id 
+			    </if>
+			     LEFT JOIN tb_m_city c on r.raIn_city_id = c.CITY_ID
+			WHERE 
+				1=1
+				 <choose>
+			         <when test="user_level==3">	
+			         	and exists (select 1 from tbl_user_business_view b where a.busi_company_id=b.busi_company_id and b.user_id = #{userId})
+			         </when>
+			         <when test="user_level==5">	
+			         	and r.userId=#{userId}
+			         </when>
+	        	</choose>
+		</select>
+	
+	
+	<insert id="insertRateInfo" parameterType="TblRateInfo" useGeneratedKeys="true" keyProperty="pk_RateInformation">
+		insert into tbl_rateinformation(
+			 raIn_EffectiveDates,
+			raIn_ExpiryDate,
+			raIn_MinFreezingMoney,
+			raIn_QuantumDate,
+			raIn_ReservationRate,
+			raIn_ServiceCharge,
+			raIn_WarnMoney,
+			userId,
+			raIn_area_id,
+			raIn_city_id,
+			raIn_province_id,
+			raIn_TipTimeTariff,
+			raIn_PeakElectricityPrice,
+			raIn_UsualPrice,
+			raIn_ValleyTimePrice,
+			raIn_remarks			
+		) 
+		values(
+			now(),
+			now(),
+			#{raIn_MinFreezingMoney},
+			#{raIn_QuantumDate},
+			#{raIn_ReservationRate},
+			#{raIn_ServiceCharge},
+			#{raIn_WarnMoney},
+			#{userId},
+			#{raIn_AreaId},
+			#{raIn_CityId},
+			#{raIn_ProvinceId},
+			#{raIn_TipTimeTariff},
+			#{raIn_PeakElectricityPrice},
+			#{raIn_UsualPrice},
+			#{raIn_ValleyTimePrice},
+			#{raInRemarks}
+		)
+	</insert>
+
+	<insert id="insertRateHistoryInfo" parameterType="TblRateInfo">
+		insert into tbl_rateinformation_history(
+			pk_RateInformation,
+			raIn_EffectiveDates,
+			raIn_ExpiryDate,
+			raIn_MinFreezingMoney,
+			raIn_QuantumDate,
+			raIn_ReservationRate,
+			raIn_ServiceCharge,
+			raIn_WarnMoney,
+			userId,
+			raIn_area_id,
+			raIn_city_id,
+			raIn_province_id,
+			raIn_TipTimeTariff,
+			raIn_PeakElectricityPrice,
+			raIn_UsualPrice,
+			raIn_ValleyTimePrice,
+			raIn_update_user,
+			raIn_update_date		
+		) 
+		values(
+			#{pk_RateInformation},
+			now(),
+			now(),
+			#{raIn_MinFreezingMoney},
+			#{raIn_QuantumDate},
+			#{raIn_ReservationRate},
+			#{raIn_ServiceCharge},
+			#{raIn_WarnMoney},
+			#{userId},
+			#{raIn_AreaId},
+			#{raIn_CityId},
+			#{raIn_ProvinceId},
+			#{raIn_TipTimeTariff},
+			#{raIn_PeakElectricityPrice},
+			#{raIn_UsualPrice},
+			#{raIn_ValleyTimePrice},
+			#{updateUserId},
+			now()
+		)
+	</insert>
+	
+	<delete id="delRateInfo" parameterType="Integer">
+		delete from tbl_rateinformation  where pk_RateInformation = #{id} 
+	</delete>
+	<select id = "getRateAndElectricSend" parameterType="Integer" resultType="hashmap">
+		select * from tbl_electricpile where elPi_RateInformationId = #{id}
+	</select>
+	<select id="getRateInfoById" parameterType="int" resultType="hashmap">
+		SELECT 
+			 r.pk_RateInformation,<!--  r.raIn_EffectiveDates,r.raIn_ExpiryDate,-->r.raIn_QuantumDate,
+			r.raIn_MinFreezingMoney,r.raIn_WarnMoney,r.raIn_ReservationRate,r.raIn_ServiceCharge,r.userId,r.raIn_area_id,
+			r.raIn_city_id,r.raIn_province_id,r.raIn_TipTimeTariff,r.raIn_PeakElectricityPrice,
+			r.raIn_UsualPrice,r.raIn_ValleyTimePrice,c.serviceLimit,r.raIn_remarks raInRemarks,
+			(SELECT COUNT(1) from tbl_electricpile e where e.elPi_RateInformationId = r.pk_RateInformation) relevanceNumber 
+		FROM tbl_rateinformation r, tb_m_city c
+		WHERE r.pk_RateInformation = #{id} and r.raIn_city_id = c.CITY_ID 
+	</select>
+	
+	<update id="updateRateInfo" parameterType="TblRateInfo">
+		update tbl_rateinformation set
+		    raIn_EffectiveDates = now(),
+			raIn_ExpiryDate = now(),
+			pk_RateInformation = #{pk_RateInformation},
+			raIn_QuantumDate = #{raIn_QuantumDate},
+			raIn_ReservationRate = #{raIn_ReservationRate},
+			raIn_ServiceCharge = #{raIn_ServiceCharge},
+			raIn_area_id = #{raIn_AreaId},
+			raIn_city_id = #{raIn_CityId},
+			raIn_province_id = #{raIn_ProvinceId},
+			raIn_TipTimeTariff = #{raIn_TipTimeTariff},
+			raIn_PeakElectricityPrice=#{raIn_PeakElectricityPrice},
+			raIn_UsualPrice=#{raIn_UsualPrice},
+			raIn_ValleyTimePrice=#{raIn_ValleyTimePrice},
+			raIn_remarks=#{raInRemarks}	
+		where pk_RateInformation = #{pk_RateInformation}
+	</update>
+<!-- 以下是尖峰平谷电费模块相关语句 -->
+	<select id="getElectricChargeCount"  resultType="Integer">
+		select count(*) num from  tb_m_province
+	</select>
+	<update id="updateElectricCharge" parameterType="map">
+	    update tb_m_province set
+			PROVINCE_ID = #{provinceId},
+			PROVINCE_NAME = #{PROVINCE_NAME},
+			CREATE_DATE = #{CREATE_DATE},
+			CREATE_USER = #{CREATE_USER},
+			LAST_UPDATE_DATE = #{LAST_UPDATE_DATE},
+			LAST_UPDATE_USER = #{LAST_UPDATE_USER},
+			Tip_Electricity = #{Tip_Electricity},
+			Peak_Electricity = #{Peak_Electricity},
+			Flat_Electricity = #{Flat_Electricity},
+			Valley_Electricity = #{Valley_Electricity}		 
+		where PROVINCE_ID = #{provinceId}
+	</update>
+	
+	<update id="updateRateInfoByProvince" parameterType="TblRateInfo">
+		update tbl_rateinformation set
+			raIn_TipTimeTariff = #{Tip_Electricity},
+			raIn_PeakElectricityPrice=#{Peak_Electricity},
+			raIn_UsualPrice=#{Flat_Electricity},
+			raIn_ValleyTimePrice=#{Valley_Electricity}				 
+		where raIn_province_id = #{provinceId}
+	</update>
+	<!-- 以下是省市区三级查询 -->
+  <select id="searchProvinceList" parameterType="map" resultType="hashmap">
+	     select  
+		     PROVINCE_ID,
+		     PROVINCE_NAME,
+		     CREATE_DATE,
+		     CREATE_USER,
+		     LAST_UPDATE_DATE,
+		     LAST_UPDATE_USER,
+		     Tip_Electricity,
+		     Peak_Electricity,
+		     Flat_Electricity,
+		     Valley_Electricity
+	     from  
+	    	 tb_m_province 
+	     	<where>
+				<if test="provinceId!=null and provinceId !=''">
+				and	PROVINCE_ID=#{provinceId}
+				</if>
+				<if test="cityId!=null and cityId !=''">
+				and	CITY_ID=#{cityId}
+				</if>			
+			</where>
+			order by last_update_date desc
+  </select> 
+	
+	<select id="searchCityList" parameterType="map" resultType="hashmap">
+			select 
+				PROVINCE_ID,
+				CITY_ID,
+				CITY_NAME,
+				HOT_FLAG,
+				CREATE_DATE,
+				CREATE_USER,
+				LAST_UPDATE_DATE,
+				LAST_UPDATE_USER,
+				serviceLimit
+			from
+				tb_m_city
+			<where>
+				<if test="provinceId!=null and provinceId !=''">
+					and	PROVINCE_ID=#{provinceId}
+				</if>
+				<if test="cityId!=null and cityId !=''">
+					and	CITY_ID=#{cityId}
+				</if>
+				<if test="startDate !=null and startDate !='' ">
+			       <![CDATA[and CREATE_DATE >=#{startDate}]]>
+			    </if>			
+		    	<if test="endDate !=null and endDate !=''">
+				   <![CDATA[and CREATE_DATE <=#{endDate}]]>
+			    </if>
+			    <if test="serviceLimit !=null and serviceLimit !=''">
+				   <![CDATA[and serviceLimit <=#{serviceLimit}]]>
+			    </if>				
+			</where>
+	</select>
+	
+	<select id="searchAreaList" parameterType="map" resultType="hashmap">
+			select 
+				area_id,
+				province_id,
+				city_id,
+				area_name,
+				hot_flag,
+				delete_flag,
+				create_date,
+				create_user,
+				last_update_date,
+				last_update_user
+			from 
+				tb_m_area
+			<where>
+				<if test="provinceId!=null and provinceId !=''">
+					and	PROVINCE_ID=#{provinceId}
+				</if>
+				<if test="cityId!=null and cityId !=''">
+					and	CITY_ID=#{cityId}
+				</if>
+				<if test="areaId!=null and areaId !=''">
+					and	area_id=#{areaId}
+				</if>
+				<if test="startDate !=null and startDate !='' ">
+			       <![CDATA[and CREATE_DATE >=#{startDate}]]>
+			    </if>			
+		    	<if test="endDate !=null and endDate !=''">
+				   <![CDATA[and CREATE_DATE <=#{endDate}]]>
+			    </if>			   			
+			</where>
+	</select>
+	<!--个体商家 根据登陆用户id和地区获取费率信息 -->
+	<select id="getRateInfoByUser" parameterType="map" resultType="TblRateInfo">
+		select
+		r.pk_RateInformation,
+		r.raIn_ServiceCharge,
+		r.raIn_ReservationRate
+		from
+		tbl_rateinformation r
+		<where>
+			r.raIn_area_id = #{raIn_AreaId}
+			<if test="userId !=null and userId!=''">
+				and	r.userId = #{userId}
+			</if>
+		</where>
+	</select>
+	<!--纯商家 根据登陆用户id所属公司和地区获取费率信息 -->
+	<select id="getRateInfoByCompany" parameterType="map" resultType="TblRateInfo">
+		SELECT DISTINCT
+			r.pk_RateInformation,
+			r.raIn_ServiceCharge,
+			r.raIn_ReservationRate
+		FROM
+			tbl_rateinformation r
+		WHERE exists (SELECT 1 FROM tbl_user_business_view a
+				WHERE a.busi_company_id = (SELECT busi_company_id FROM tbl_user_business WHERE user_id = #{userId}) 
+					AND a.user_leval = '3'
+					and a.user_id=r.userId)
+		AND r.raIn_area_id = #{raIn_AreaId}
+	</select>
+	<!-- 万马账户 根据地区获取万马新增费率 -->
+	<select id="getRateInfoByWM" parameterType="map" resultType="TblRateInfo">
+		select
+		pk_RateInformation,
+		raIn_ServiceCharge,
+		raIn_ReservationRate
+		from
+		tbl_rateinformation
+		where
+		raIn_area_id = #{raIn_AreaId}
+		and
+		userId in (select user_id from tbl_user where (user_leval = 0 or user_leval = 1) and user_status != '3')
+	</select>
+	<select id="selectMinPriceByPsId" parameterType="int" resultType="Double">
+		SELECT min(t.raIn_ValleyTimePrice) FROM tbl_rateinformation t WHERE 1=1
+			and exists (select 1 from tbl_electricpile e where e.elPi_RateInformationId = t.pk_RateInformation and e.elPi_RelevancePowerStation = #{value})
+		
+	</select>
+</mapper>

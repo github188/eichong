@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.TypeSpanMapper">
+	<resultMap type="TypeSpanDO" id="resultTypeSpan">
+		<result property="pkTypeSpanId" column="pk_TypeSpanId" />
+		<result property="tsTypeSpan" column="ts_TypeSpan" />
+		<result property="tsModelName" column="ts_ModelName" />
+		<result property="tsFactTag" column="ts_FactTag" />
+		<result property="tsFileName" column="ts_FileName" />
+		<result property="tsProductNumber" column="ts_ProductNumber" />
+		<result property="tsRemarks" column="ts_Remarks" />
+		<result property="tsCreatedate" column="ts_Createdate" />
+		<result property="tsUpdatedate" column="ts_Updatedate" />
+	</resultMap>
+   
+   <select id="getTypeSpanList" parameterType="TypeSpanDO" resultMap="resultTypeSpan">
+   		select pk_TypeSpanId,ts_TypeSpan,ts_ModelName,ts_FactTag,ts_FileName,ts_ProductNumber,ts_Remarks
+   		from tbl_typespan 
+   		<if test="tsTypeSpan !=null and tsTypeSpan !=''">
+   			and ts_TypeSpan like concat('%',#{tsTypeSpan},'%')
+   		</if>
+		<if test="tsModelName !=null and tsModelName !=''">
+			and ts_ModelName like concat('%',#{tsModelName},'%')
+		</if>
+   		order by ts_Updatedate desc
+   		<if test="pager!=null">limit #{pager.offset},#{pager.pageSize}</if>
+   </select>
+   
+   <select id="getTypeSpanCount" parameterType="TypeSpanDO" resultType="long">
+	   	select count(*) from tbl_typespan
+	   	<if test="tsTypeSpan !=null and tsTypeSpan !=''">
+	   			and ts_TypeSpan like concat('%',#{tsTypeSpan},'%')
+	  	</if>
+		<if test="tsModelName !=null and tsModelName !=''">
+				and ts_ModelName like concat('%',#{tsModelName},'%')
+		</if>
+   </select>
+   
+   <select id="checkTsTypeSpan" parameterType="String" resultType="int">
+		SELECT count(*)
+		FROM tbl_typespan t
+		where ts_TypeSpan = #{tsTypeSpan}
+   </select>
+   
+   
+   
+   
+</mapper>

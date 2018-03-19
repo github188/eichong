@@ -1,0 +1,14 @@
+#jdbc.driver=com.mysql.jdbc.Driver
+#jdbc.url=jdbc:mysql://10.9.3.100:3306/aichong_0408?useUnicode=true&characterEncoding=UTF-8
+#jdbc.username=root
+#jdbc.password=aichong123
+
+#jdbc.driver=com.mysql.jdbc.Driver
+#jdbc.url=jdbc:mysql://10.9.3.100:3306/aichong_test?useUnicode=true&characterEncoding=UTF-8
+#jdbc.username=root
+#jdbc.password=aichong123
+
+jdbc.driver=com.mysql.jdbc.Driver
+jdbc.url=jdbc:mysql://10.9.2.107:3306/eichong?useUnicode=true&characterEncoding=UTF-8
+jdbc.username=root
+jdbc.password=aichong123

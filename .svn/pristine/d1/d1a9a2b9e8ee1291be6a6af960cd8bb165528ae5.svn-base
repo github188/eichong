@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="renderer" content="webkit">
+        <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+        <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+        <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+        <link rel="stylesheet" type="text/css" href="../../css/companyList/company_list.css"/>
+        <title>公司管理</title>
+    </head>
+    <body>
+        <div class="container animated fadeInRight">
+            <div class="row">
+                <div class="formBlock clearfix">
+                    <form id="companyListForm">
+                        <div class="col-xs-12 col-sm-10 col-md-10 col-lg-10" >
+                            <div class="companyListSelect row companyContent">
+                                <div class="col-sm-3 col-xs-12">
+                                    <div class="col-sm-4 queryParam">
+                                        公司标识
+                                    </div>
+                                    <div class=" col-sm-8 companyLogos">
+                                        <input type="text" name="cpyNumber" id="companyLogos" value="" class="companyLogosInput"/>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3 col-xs-12">
+                                    <div class="col-sm-4 queryParam">
+                                        公司名称
+                                    </div>
+                                    <div class="col-sm-8 companyName">
+                                        <input type="text" name="cpyName" id="companyName" value="" class="companyNameInput"/>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4 col-xs-12">
+                                    <div class="col-sm-4 queryParam">
+                                        管理单位
+                                    </div>
+                                    <div class="col-sm-7 col-xs-12 model-select-box">
+                                        <div class="model-select-text manageCompanyBlock" data-value="" id="slaveCpyIdCode">请选择</div>
+                                        <span class="downRow manageCompanyBlock"></span>
+                                        <input type="text" name="slaveCpyId" id="" value="" hidden="hidden"/>
+                                        <ul class="model-select-option slaveCpyIdCodeUl">
+
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12" style="height: 20px;"></div>
+                                <div class="col-sm-6 col-xs-12">
+                                    <div class="col-sm-2  queryParam">
+                                        地区
+                                    </div>
+                                    <div class=" col-sm-4 col-xs-6 model-select-box">
+                                        <div class="model-select-text provinceBlock" data-value="" id="provinceCode">选择省</div>
+                                        <span class="downRow provinceBlock"></span>
+                                        <input type="text" name="cpyProvince" hidden="hidden" id="" value="" />
+                                        <ul class="model-select-option provinceUl">
+
+                                        </ul>
+                                    </div>
+                                    <div class="col-sm-offset-1 col-xs-6 col-sm-4  model-select-box">
+                                        <div class="model-select-text cityBlock" data-value="" id="cityCode">选择市</div>
+                                        <span class="downRow cityBlock"></span>
+                                        <input type="text" name="cpyCity" hidden="hidden" id="" value="" />
+                                        <ul class="model-select-option cityUl">
+
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4 col-xs-12">
+                                    <div class="col-sm-4 queryParam">
+                                        类别
+                                    </div>
+                                    <div class="col-sm-7 col-xs-12 model-select-box">
+                                        <div class="model-select-text companyTypeBlock" data-value="" id="companyType">请选择</div>
+                                        <span class="downRow companyTypeBlock"></span>
+                                        <input type="text" name="cpyType" id="" value="" hidden="hidden"/>
+                                        <ul class="model-select-option companyTypeUl">
+                                            <li data-option="" class="seleced">请选择</li>
+                                            <li data-option="1">投资公司</li>
+                                            <li data-option="2">渠道公司</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12" style="height: 20px;"></div>
+                                <div class="col-sm-6 col-xs-12">
+                                    <div class="col-sm-2  queryParam">
+                                        付费策略
+                                    </div>
+                                    <div class="col-sm-6 col-xs-12 model-select-box">
+                                        <div class="model-select-text payTypeBlock" data-value="" id="payRule">请选择</div>
+                                        <span class="downRow payTypeBlock"></span>
+                                        <input type="text" name="payRule" hidden="hidden" id="" value="" />
+                                        <ul class="model-select-option payRuleUl" id="payRuleUl">
+                                            <li data-option="" class="seleced">请选择</li>
+                                            <li data-option="0">无付费策略</li>
+                                            <li data-option="1">公司付费</li>
+                                            <li data-option="2">个人付费</li>
+                                            <li data-option="3">大账户为个人配资</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-1 col-md-1 col-lg-1" style="position: relative;">
+                            <div class="queryBtn" onclick="companyListSearch()">
+                                查询
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!--按钮部分开始==========================================================-->
+                <div class="btnBlock">
+                    <div class="col-sm-10 col-xs-12 col-md-10" style="">
+                        <div class="col-sm-2 col-xs-2  btnStyle" id="companyDataExport" style="display: none;">
+                            导出
+                        </div>
+                        <div class="col-sm-2 col-xs-2 col-sm-offset-1 col-xs-offset-1 btnStyle" id="addCompany" style="display: none;">
+                            新建
+                        </div>
+                        <div class="col-sm-2 col-xs-2 col-sm-offset-1 col-xs-offset-1 btnStyle" id="disabledCompanyBtn" style="display: none;">
+                            禁用
+                        </div>
+                    </div>
+                    <div class="col-sm-2 col-md-2"></div>
+                </div>
+                <!--表格部分开始==========================================================-->
+                <div class="showSet table-responsive">
+                    <table class=" table table-bordered text-center" style="border: 1px solid #DCDCDC;">
+                        <thead>
+                        <tr>
+                            <th class="">选择</th>
+                            <th class="companyList_companyLogo">公司标识</th>
+                            <th class="companyList_companyName">公司名称</th>
+                            <th class="companyList_companyCity">地区</th>
+                            <th class="companyList_companyType">类型</th>
+                            <th class="companyList_unauthorizedCheck">盗刷校验</th>
+                            <th class="companyList_payRule">付费策略</th>
+                            <th class="companyList_highCompany">上级公司</th>
+                            <th class="companyList_manageComapany">管理单位</th>
+                        </tr>
+                        </thead>
+                        <tbody id="myCompanyTb">
+
+                        </tbody>
+                    </table>
+
+                    <div id="companyListPage" class="pagination">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--<div class="disabledCompanyNumber" style="display: none;">-->
+            <!--请单个禁用公司-->
+        <!--</div>-->
+        <div class="disabledContentCompany" style="display: none;">
+            禁用公司后，以该公司为渠道的用户全部不可用；公司管理员全部禁用；
+        </div>
+    </body>
+    <script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+    <!--<script src="../js/apiAddress.js" type="text/javascript" charset="utf-8"></script>-->
+    <script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../js/contabs.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../js/companyList/company_list.js" type="text/javascript" charset="utf-8"></script>
+</html>

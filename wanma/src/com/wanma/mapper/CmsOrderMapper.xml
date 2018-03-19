@@ -1,0 +1,575 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsOrderMapper">
+	<resultMap type="TblOrder" id="result_order">
+		<id property="pkOrder" column="pk_Order" />
+		<result property="ordeCode" column="orde_Code" />
+		<result property="ordeTotalamount" column="orde_TotalAmount" />
+		<result property="ordeUserid" column="orde_UserId" />
+		<result property="ordeStatus" column="orde_Status" />
+		<result property="ordeOrdertype" column="orde_OrderType" />
+		<result property="ordeRemark" column="orde_Remark" />
+		<result property="ordeReceiveingname" column="orde_ReceiveingName" />
+		<result property="ordeReceiveingaddress" column="orde_ReceiveingAddress" />
+		<result property="ordeReceiveingcontact" column="orde_ReceiveingContact" />
+		<result property="ordeCreatedate" column="orde_Createdate" />
+		<result property="ordeUpdatedate" column="orde_Updatedate" />
+		<result property="ordeDeliveryway" column="orde_DeliveryWay" />
+		<result property="ordeExpress" column="orde_Express" />
+		<result property="ordeTypeOrder" column="orde_TypeOrder" />
+		<result property="ordeCommodityTotal" column="orde_CommodityTotal" />
+	</resultMap>
+
+	<!-- 根据ID查询商城商品 -->
+	<select id="findOrder" parameterType="String" resultMap="result_order">
+		SELECT 
+			od.pk_Order,
+			od.orde_Code,
+			(pr.prod_ProductName) as prName,
+			(pr.prod_ProductCode) as prCode,
+			(ui.usIn_UserName) as uiName,
+			(ui.usIn_Phone) as uiPhone,
+			(ol.orde_TotalAmount) as olTotal,
+			(ol.orDe_Price) as olPrice,
+			(ol.orDe_Quantity) as olQuan,
+			od.orde_Status,
+			od.orDe_Updatedate,
+			od.orde_ReceiveingAddress,
+			od.orde_ReceiveingName,
+			od.orde_ReceiveingContact,
+			od.orde_TypeOrder
+		FROM tbl_Order od INNER JOIN tbl_OrderDetail AS ol ON ol.orDe_ParentId = od.pk_Order
+				  INNER JOIN tbl_Product AS pr ON pr.pk_Product = ol.orDe_ProductId
+				  INNER JOIN tbl_user_normal_view AS ui ON ui.user_id  = od.orde_UserId
+		
+		<where>
+			<if test="ordeCode !=null and ordeCode !=''">
+				and orde_Code=#{ordeCode}
+			</if>
+			<if test="ordeStatus !=null and ordeStatus !=''">
+				and orde_Status=#{ordeStatus}
+			</if>
+			<if test="uiName !=null and uiName !=''">
+				and ui.usIn_UserName like concat('%',#{uiName},'%')
+			</if>
+			<if test="uiPhone !=null and uiPhone !=''">
+				and ui.usIn_Phone=#{uiPhone}
+			</if>
+		</where>
+	</select>
+
+	<!-- 取得商城商品列表 -->
+	<select id="getOrderList" resultMap="result_order">
+		SELECT 
+			od.pk_Order,
+			od.orde_Code,
+			(pr.prod_ProductName) as prName,
+			(pr.prod_ProductCode) as prCode,
+			(ui.usIn_UserName) as uiName,
+			(ui.usIn_Phone) as uiPhone,
+			(ol.orde_TotalAmount) as olTotal,
+			(ol.orDe_Price) as olPrice,
+			(ol.orDe_Quantity) as olQuan,
+			od.orde_Status,
+			od.orDe_Updatedate,
+			od.orde_ReceiveingAddress,
+			od.orde_ReceiveingName,
+			od.orde_ReceiveingContact,
+			od.orde_TypeOrder
+		FROM tbl_Order od INNER JOIN tbl_OrderDetail AS ol ON ol.orDe_ParentId = od.pk_Order
+				  INNER JOIN tbl_Product AS pr ON pr.pk_Product = ol.orDe_ProductId
+				  INNER JOIN tbl_user_normal_view AS ui ON ui.user_id  = od.orde_UserId
+		<where>
+			<if test="ordeCode !=null and ordeCode !=''">
+				and orde_Code=#{ordeCode}
+			</if>
+			<if test="ordeStatus !=null and ordeStatus !=''">
+				and orde_Status=#{ordeStatus}
+			</if>
+			<if test="uiName !=null and uiName !=''">
+				and ui.usIn_UserName like concat('%',#{uiName},'%')
+			</if>
+			<if test="uiPhone !=null and uiPhone !=''">
+				and ui.usIn_Phone=#{uiPhone}
+			</if>
+		</where>
+	</select>
+	
+	<!-- 根据ID查询商城商品 -->
+	<select id="searchOrderList" parameterType="TblOrder" resultMap="result_order">
+		SELECT 
+			od.pk_Order,
+			od.orde_Code,
+			(ui.norm_real_name) as uiName,
+			(ui.user_account) as uiPhone,
+			od.orde_TotalAmount,
+			od.orde_CommodityTotal,
+			od.orde_Status,
+			od.orde_Createdate,
+			od.orde_ReceiveingAddress,
+			od.orde_ReceiveingName,
+			od.orde_ReceiveingContact,
+			od.orde_TypeOrder
+		FROM tbl_Order od inner JOIN (select a.user_account,b.user_id,b.norm_real_name from tbl_user a,tbl_user_normal b where a.user_leval='6' and a.user_id=b.user_id) AS ui ON ui.user_id = od.orde_UserId
+		
+		<where>
+			<if test="ordeCode !=null and ordeCode !=''">
+				and orde_Code like concat('%',#{ordeCode},'%')  
+			</if>
+			<if test="ordeStatus !=null and ordeStatus !=''">
+				and orde_Status=#{ordeStatus}
+			</if>
+			<if test="uiName !=null and uiName !=''">
+				and (ui.norm_real_name like concat('%',#{uiName},'%') or ui.user_account like concat('%',#{uiName},'%'))
+			</if>
+			<if test="uiPhone !=null and uiPhone !=''">
+				and ui.usIn_Phone like concat('%',#{uiPhone},'%')   
+			</if>
+		</where>
+		ORDER BY orde_Updatedate DESC
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<!-- 根据ID查询商城商品 -->
+	<select id="searchOrderCount" parameterType="TblOrder"
+		resultType="long">
+		select
+		count(pk_Order)	
+		FROM tbl_Order od inner JOIN (select a.user_account,b.user_id,b.norm_real_name from tbl_user a,tbl_user_normal b where a.user_leval='6' and a.user_id=b.user_id) AS ui ON ui.user_id = od.orde_UserId
+		<where>
+			<if test="ordeCode !=null and ordeCode !=''">
+				and orde_Code like concat('%',#{ordeCode},'%')  
+			</if>
+			<if test="ordeStatus !=null and ordeStatus !=''">
+				and orde_Status=#{ordeStatus}
+			</if>
+			<if test="uiName !=null and uiName !=''">
+				and (ui.norm_real_name like concat('%',#{uiName},'%') or ui.user_account like concat('%',#{uiName},'%'))
+			</if>
+			<if test="uiPhone !=null and uiPhone !=''">
+				and ui.usIn_Phone like concat('%',#{uiPhone},'%')   
+			</if>
+		</where>
+	</select>
+	
+	
+	
+	<!-- 根据ID查询商城商品(个体商家) -->
+	<select id="findShop" parameterType="String" resultMap="result_order">
+		SELECT 
+			od.pk_Order,
+			od.orde_Code,
+			(pr.prod_ProductName) as prName,
+			(pr.prod_ProductCode) as prCode,
+			(ui.usIn_UserName) as uiName,
+			(ui.usIn_Phone) as uiPhone,
+			(ol.orde_TotalAmount) as olTotal,
+			(ol.orDe_Price) as olPrice,
+			(ol.orDe_Quantity) as olQuan,
+			od.orde_Status,
+			od.orDe_Updatedate,
+			od.orde_ReceiveingAddress,
+			od.orde_ReceiveingName,
+			od.orde_ReceiveingContact,
+			od.orde_TypeOrder
+		FROM tbl_Order od INNER JOIN tbl_OrderDetail AS ol ON ol.orDe_ParentId = od.pk_Order
+				  INNER JOIN tbl_Product AS pr ON pr.pk_Product = ol.orDe_ProductId
+				  INNER JOIN tbl_user_normal_view AS ui ON ui.user_id  = od.orde_UserId
+		<where>
+			<if test="ordeCode !=null and ordeCode !=''">
+				and orde_Code=#{ordeCode}
+			</if>
+			<if test="ordeStatus !=null and ordeStatus !=''">
+				and orde_Status=#{ordeStatus}
+			</if>
+			<if test="uiName !=null and uiName !=''">
+				and ui.usIn_UserName like concat('%',#{uiName},'%')
+			</if>
+			<if test="uiPhone !=null and uiPhone !=''">
+				and ui.usIn_Phone=#{uiPhone}
+			</if>
+		</where>
+	</select>
+
+	<!-- 取得商城商品(个体商家) -->
+	<select id="getShopList" resultMap="result_order">
+		SELECT 
+			od.pk_Order,
+			od.orde_Code,
+			(pr.prod_ProductName) as prName,
+			(pr.prod_ProductCode) as prCode,
+			(ui.usIn_UserName) as uiName,
+			(ui.usIn_Phone) as uiPhone,
+			(ol.orde_TotalAmount) as olTotal,
+			(ol.orDe_Price) as olPrice,
+			(ol.orDe_Quantity) as olQuan,
+			od.orde_Status,
+			od.orDe_Updatedate,
+			od.orde_ReceiveingAddress,
+			od.orde_ReceiveingName,
+			od.orde_ReceiveingContact,
+			od.orde_TypeOrder
+		FROM tbl_Order od INNER JOIN tbl_OrderDetail AS ol ON ol.orDe_ParentId = od.pk_Order
+				  INNER JOIN tbl_Product AS pr ON pr.pk_Product = ol.orDe_ProductId
+				  INNER JOIN tbl_user_normal_view AS ui ON ui.user_id  = od.orde_UserId
+		<where>
+			<if test="ordeCode !=null and ordeCode !=''">
+				and orde_Code=#{ordeCode}
+			</if>
+			<if test="ordeStatus !=null and ordeStatus !=''">
+				and orde_Status=#{ordeStatus}
+			</if>
+			<if test="uiName !=null and uiName !=''">
+				and ui.usIn_UserName like concat('%',#{uiName},'%')
+			</if>
+			<if test="uiPhone !=null and uiPhone !=''">
+				and ui.usIn_Phone=#{uiPhone}
+			</if>
+		</where>
+	</select>
+
+	<!-- 查询全部商城商品(个体商家) -->
+	<select id="searchShopList" parameterType="TblOrder" resultMap="result_order">
+		SELECT 
+			od.pk_Order,
+			od.orde_Code,
+			(pr.prod_ProductName) as prName,
+			(pr.prod_ProductCode) as prCode,
+			(ui.usIn_UserName) as uiName,
+			(ui.usIn_Phone) as uiPhone,
+			(ol.orde_TotalAmount) as olTotal,
+			(ol.orDe_Price) as olPrice,
+			(ol.orDe_Quantity) as olQuan,
+			od.orde_Status,
+			od.orDe_Updatedate,
+			od.orde_ReceiveingAddress,
+			od.orde_ReceiveingName,
+			od.orde_ReceiveingContact,
+			od.orde_TypeOrder
+		FROM tbl_Order od INNER JOIN tbl_OrderDetail AS ol ON ol.orDe_ParentId = od.pk_Order
+				  INNER JOIN tbl_Product AS pr ON pr.pk_Product = ol.orDe_ProductId
+				  INNER JOIN tbl_user_normal_view AS ui ON ui.user_id  = od.orde_UserId
+		
+		<where>
+			<if test="ordeCode !=null and ordeCode !=''">
+				and orde_Code like concat('%',#{ordeCode},'%')
+			</if>
+			<if test="ordeStatus !=null and ordeStatus !=''">
+				and orde_Status=#{ordeStatus}
+			</if>
+			<if test="uiName !=null and uiName !=''">
+				and ui.usIn_UserName like concat('%',#{uiName},'%')
+			</if>
+			<if test="uiPhone !=null and uiPhone !=''">
+				and ui.usIn_Phone like concat('%',#{uiPhone},'%') 
+			</if>
+		</where>
+		ORDER BY orde_Updatedate DESC
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	
+	<!-- 查询全部商城商品(个体商家) -->
+	<select id="searchShopCount" parameterType="TblOrder"
+		resultType="long">
+		select
+		count(pk_Order)	
+		FROM tbl_Order od INNER JOIN tbl_OrderDetail AS ol ON ol.orDe_ParentId = od.pk_Order
+				  INNER JOIN tbl_Product AS pr ON pr.pk_Product = ol.orDe_ProductId
+				  INNER JOIN tbl_user_normal_view AS ui ON ui.user_id  = od.orde_UserId
+		<where>
+			<if test="ordeCode !=null and ordeCode !=''">
+				and orde_Code like concat('%',#{ordeCode},'%')
+			</if>
+			<if test="ordeStatus !=null and ordeStatus !=''">
+				and orde_Status=#{ordeStatus}
+			</if>
+			<if test="uiName !=null and uiName !=''">
+				and ui.usIn_UserName like concat('%',#{uiName},'%')
+			</if>
+			<if test="uiPhone !=null and uiPhone !=''">
+				and ui.usIn_Phone like concat('%',#{uiPhone},'%') 
+			</if>
+		</where>
+	</select>
+	
+	
+	<!-- 根据ID查询商城商品(纯商家) -->
+	<select id="findFirmShop" parameterType="String" resultMap="result_order">
+		SELECT 
+			od.pk_Order,
+			od.orde_Code,
+			(pr.prod_ProductName) AS prName,
+			(pr.prod_ProductCode) AS prCode,
+			(pb.puBu_CompanyName) AS comName,
+			(ol.orde_TotalAmount) AS olTotal,
+			(ol.orDe_Price) AS olPrice,
+			(ol.orDe_Quantity) AS olQuan,
+			od.orde_Status,
+			od.orDe_Updatedate,
+			od.orde_ReceiveingAddress,
+			od.orde_ReceiveingName,
+			od.orde_ReceiveingContact,
+			od.orde_TypeOrder
+		FROM tbl_Order od INNER JOIN tbl_OrderDetail AS ol ON ol.orDe_ParentId = od.pk_Order
+				  INNER JOIN tbl_Product AS pr ON pr.pk_Product = ol.orDe_ProductId
+				  INNER JOIN tbl_PureBusiness AS pb ON pb.pk_PureBusiness = od.orde_UserId
+		<where>
+			<if test="ordeCode !=null and ordeCode !=''">
+				and orde_Code=#{ordeCode}
+			</if>
+			<if test="ordeStatus !=null and ordeStatus !=''">
+				and orde_Status=#{ordeStatus}
+			</if>
+			<if test="comName !=null and comName !=''">
+				and pb.puBu_CompanyName like concat('%',#{comName},'%')
+			</if>
+			<if test="prCode !=null and prCode !=''">
+				and pr.prod_ProductCode=#{prCode}
+			</if>
+		</where>
+	</select>
+
+	<!-- 取得商城商品(纯商家) -->
+	<select id="getFirmShopList" resultMap="result_order">
+		SELECT 
+			od.pk_Order,
+			od.orde_Code,
+			(pr.prod_ProductName) AS prName,
+			(pr.prod_ProductCode) AS prCode,
+			(pb.puBu_CompanyName) AS comName,
+			(ol.orde_TotalAmount) AS olTotal,
+			(ol.orDe_Price) AS olPrice,
+			(ol.orDe_Quantity) AS olQuan,
+			od.orde_Status,
+			od.orDe_Updatedate,
+			od.orde_ReceiveingAddress,
+			od.orde_ReceiveingName,
+			od.orde_ReceiveingContact,
+			od.orde_TypeOrder
+		FROM tbl_Order od INNER JOIN tbl_OrderDetail AS ol ON ol.orDe_ParentId = od.pk_Order
+				  INNER JOIN tbl_Product AS pr ON pr.pk_Product = ol.orDe_ProductId
+				  INNER JOIN tbl_PureBusiness AS pb ON pb.pk_PureBusiness = od.orde_UserId
+		<where>
+			<if test="ordeCode !=null and ordeCode !=''">
+				and orde_Code=#{ordeCode}
+			</if>
+			<if test="ordeStatus !=null and ordeStatus !=''">
+				and orde_Status=#{ordeStatus}
+			</if>
+			<if test="comName !=null and comName !=''">
+				and pb.puBu_CompanyName like concat('%',#{comName},'%')
+			</if>
+			<if test="prCode !=null and prCode !=''">
+				and pr.prod_ProductCode=#{prCode}
+			</if>
+		</where>
+	</select>
+
+	<!-- 查询全部商城商品(纯商家) -->
+	<select id="searchFirmShopList" parameterType="TblOrder" resultMap="result_order">
+		SELECT 
+			od.pk_Order,
+			od.orde_Code,
+			(pr.prod_ProductName) AS prName,
+			(pr.prod_ProductCode) AS prCode,
+			(pb.puBu_CompanyName) AS comName,
+			(ol.orde_TotalAmount) AS olTotal,
+			(ol.orDe_Price) AS olPrice,
+			(ol.orDe_Quantity) AS olQuan,
+			od.orde_Status,
+			od.orDe_Updatedate,
+			od.orde_ReceiveingAddress,
+			od.orde_ReceiveingName,
+			od.orde_ReceiveingContact,
+			od.orde_TypeOrder
+		FROM tbl_Order od INNER JOIN tbl_OrderDetail AS ol ON ol.orDe_ParentId = od.pk_Order
+				  INNER JOIN tbl_Product AS pr ON pr.pk_Product = ol.orDe_ProductId
+				  INNER JOIN tbl_PureBusiness AS pb ON pb.pk_PureBusiness = od.orde_UserId
+		
+		<where>
+			<if test="ordeCode !=null and ordeCode !=''">
+				and orde_Code like concat('%',#{ordeCode},'%')  
+			</if>
+			<if test="ordeStatus !=null and ordeStatus !=''">
+				and orde_Status=#{ordeStatus}
+			</if>
+			<if test="comName !=null and comName !=''">
+				and pb.puBu_CompanyName like concat('%',#{comName},'%')
+			</if>
+			<if test="prCode !=null and prCode !=''">
+				and pr.prod_ProductCode like concat('%',#{prCode},'%')  
+			</if>
+		</where>
+		ORDER BY orde_Updatedate DESC
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<!-- 查询全部商城商品数量(纯商家) -->
+	<select id="searchFirmShopCount" parameterType="TblOrder"
+		resultType="long">
+		select
+		count(pk_Order)	
+		FROM tbl_Order od INNER JOIN tbl_OrderDetail AS ol ON ol.orDe_ParentId = od.pk_Order
+				  INNER JOIN tbl_Product AS pr ON pr.pk_Product = ol.orDe_ProductId
+				  INNER JOIN tbl_PureBusiness AS pb ON pb.pk_PureBusiness = od.orde_UserId
+		<where>
+			<if test="ordeCode !=null and ordeCode !=''">
+				and orde_Code like concat('%',#{ordeCode},'%')  
+			</if>
+			<if test="ordeStatus !=null and ordeStatus !=''">
+				and orde_Status=#{ordeStatus}
+			</if>
+			<if test="comName !=null and comName !=''">
+				and pb.puBu_CompanyName like concat('%',#{comName},'%')
+			</if>
+			<if test="prCode !=null and prCode !=''">
+				and pr.prod_ProductCode like concat('%',#{prCode},'%')  
+			</if>
+		</where>
+	</select>
+	
+	
+	<!-- 根据ID查询订单详情(产品) -->
+	<select id="findProOrder" parameterType="String" resultMap="result_order">
+		SELECT 
+			pk_Order,
+			(pd.prod_ProductName) as prName,
+			(pd.prod_ProductCode) as prCode,
+			(oe.orDe_Price) as olPrice,
+			(oe.orDe_Quantity) as olQuan,
+			(oe.orDe_TotalAmount) as olTotal,
+			od.orde_Code,
+			od.orde_Status,
+			od.orde_TypeOrder,
+			od.orde_Createdate,
+			od.orde_ReceiveingName,
+			od.orde_ReceiveingContact,
+			od.orde_ReceiveingAddress,
+			od.orde_DeliveryWay,
+			od.orde_Express		
+		FROM tbl_Order od INNER JOIN tbl_OrderDetail AS oe ON oe.orDe_ParentId = od.pk_Order
+				  INNER JOIN tbl_AppointmentInstallationOrder AS ao ON ao.aLor_OrderId = od.pk_Order
+				  INNER JOIN tbl_Product AS pd ON pd.pk_Product = oe.orDe_ProductId
+		<where>
+			pk_Order =#{pkOrder}
+		</where>
+	</select>
+
+	<!-- 取得订单列表(产品) -->
+	<select id="getProOrderList" resultMap="result_order">
+		SELECT 
+			pk_Order,
+			(pd.prod_ProductName) as prName,
+			od.orde_Code,
+			(oe.orDe_TotalAmount) as olTotal,
+			(oe.orDe_Price) as olPrice,
+			(oe.orDe_Quantity) as olQuan,
+			od.orde_Createdate,
+			od.orde_Status,
+			od.orde_ReceiveingName,
+			od.orde_ReceiveingAddress,
+			(ao.aiOr_InstallationAddress) as installAdress
+		FROM tbl_Order od INNER JOIN tbl_OrderDetail AS oe ON oe.orDe_ParentId = od.pk_Order
+				  INNER JOIN tbl_AppointmentInstallationOrder AS ao ON ao.aLor_OrderId = od.pk_Order
+				  INNER JOIN tbl_Product AS pd ON pd.pk_Product = oe.orDe_ProductId
+		<where>
+			<if test="ordeCode !=null and ordeCode !=''">
+				orde_Code=#{ordeCode}
+			</if>
+			
+			<if test="start_create_date !=null and start_create_date !='' ">
+			  <![CDATA[and od.orde_Createdate >=#{start_create_date}]]>
+			</if>
+			
+			<if test="end_create_date !=null and end_create_date !=''">
+				 <![CDATA[and od.orde_Createdate <=#{end_create_date}]]>
+			</if>
+			
+			<if test="ordeStatus !=null and ordeStatus !=''">
+				and orde_Status=#{ordeStatus}
+			</if>
+			<if test="ordeTypeOrder !=null and ordeTypeOrder !=''">
+				and orde_TypeOrder=#{ordeTypeOrder}
+			</if>
+		</where>
+	</select>
+
+	<!-- 查询订单列表(产品)  -->
+	<select id="searchProOrderList" parameterType="TblOrder" resultMap="result_order">
+		SELECT 
+			pk_Order,
+			(pd.prod_ProductName) AS prName,
+			od.orde_Code,
+			(oe.orDe_TotalAmount) AS olTotal,
+			(oe.orDe_Price) AS olPrice,
+			(oe.orDe_Quantity) AS olQuan,
+			od.orde_Createdate,
+			od.orde_Status,
+			od.orde_TypeOrder,
+			od.orde_ReceiveingName,
+			od.orde_ReceiveingAddress,
+			(ao.aiOr_InstallationAddress) AS installAdress
+		FROM tbl_Order od INNER JOIN tbl_OrderDetail AS oe ON oe.orDe_ParentId = od.pk_Order
+				  INNER JOIN tbl_AppointmentInstallationOrder AS ao ON ao.aLor_OrderId = od.pk_Order
+				  INNER JOIN tbl_Product AS pd ON pd.pk_Product = oe.orDe_ProductId
+		<where>
+			<if test="ordeCode !=null and ordeCode !=''">
+				and orde_Code=#{ordeCode}
+			</if>
+			<if test="start_create_date !=null and start_create_date !='' ">
+			  <![CDATA[and od.orde_Createdate >=#{start_create_date}]]>
+			</if>
+			
+			<if test="end_create_date !=null and end_create_date !=''">
+				 <![CDATA[and od.orde_Createdate <=#{end_create_date}]]>
+			</if>
+			<if test="ordeStatus !=null and ordeStatus !=''">
+				and orde_Status=#{ordeStatus}
+			</if>
+			<if test="ordeTypeOrder !=null and ordeTypeOrder !=''">
+				and orde_TypeOrder=#{ordeTypeOrder}
+			</if>
+		</where>
+		ORDER BY orde_Createdate DESC
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<!-- 查询全部订单数量(产品) -->
+	<select id="searcProOrderCount" parameterType="TblOrder"
+		resultType="long">
+		select
+		count(pk_Order)	
+		FROM tbl_Order od INNER JOIN tbl_OrderDetail AS oe ON oe.orDe_ParentId = od.pk_Order
+				  INNER JOIN tbl_AppointmentInstallationOrder AS ao ON ao.aLor_OrderId = od.pk_Order
+				  INNER JOIN tbl_Product AS pd ON pd.pk_Product = oe.orDe_ProductId
+		<where>
+			<if test="ordeCode !=null and ordeCode !=''">
+				and orde_Code=#{ordeCode}
+			</if>
+			<if test="start_create_date !=null and start_create_date !='' ">
+			  <![CDATA[and od.orde_Createdate >=#{start_create_date}]]>
+			</if>
+			<if test="end_create_date !=null and end_create_date !=''">
+				 <![CDATA[and od.orde_Createdate <=#{end_create_date}]]>
+			</if>
+			<if test="ordeStatus !=null and ordeStatus !=''">
+				and orde_Status=#{ordeStatus}
+			</if>
+			<if test="ordeTypeOrder !=null and ordeTypeOrder !=''">
+				and orde_TypeOrder=#{ordeTypeOrder}
+			</if>
+		</where>
+	</select>
+	<!-- 更新订单状态 -->
+	<update id="updateOrderStatus" parameterType="map">
+		update tbl_Order
+		set orde_Status = #{ordeStatus},
+		orde_Updatedate = #{ordeUpdatedate}
+		where
+		pk_Order = #{pkOrder}
+	</update>
+	
+</mapper>

@@ -1,0 +1,153 @@
+a,
+input,
+button {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+input,
+button {
+  -webkit-appearance: none;
+  border-radius: 0;
+}
+body {
+  margin: 0;
+  -webkit-user-select: auto;
+  background-color: #ebebeb;
+}
+body * {
+  -webkit-user-select: auto;
+  font-family: "微软雅黑";
+}
+body {
+  -webkit-text-size-adjust: 100%;
+  font-family: "微软雅黑";
+}
+* {
+  padding: 0;
+  margin: 0;
+}
+.chargeInfo {
+  width: 15rem;
+  height: 7.6rem;
+  background-color: #ff7d00;
+}
+.chargeInfo .chargeInfoTitle {
+  width: 15rem;
+  height: 2.6rem;
+  color: #FFFFFF;
+  line-height: 2.6rem;
+  text-align: center;
+  font-size: 0.72rem;
+}
+.chargeInfo .smallTip {
+  width: 15rem;
+  height: 1.6rem;
+  line-height: 1.6rem;
+  text-align: center;
+  color: #FFFFFF;
+  font-size: 0.52rem;
+}
+.chargeInfo .chargeDetailparam {
+  width: 10.84rem;
+  height: 3.4rem;
+  display: flex;
+  flex-direction: row;
+  list-style: none;
+  padding: 0 1.76rem 0 2.4rem;
+  justify-content: space-around;
+}
+.chargeInfo .chargeDetailparam li .writeColor {
+  display: block;
+  font-size: 1.44rem;
+  color: #FFFFFF;
+  text-align: center;
+}
+.chargeInfo .chargeDetailparam li .tip {
+  display: block;
+  font-size: 0.52rem;
+  color: #FFFFFF;
+  text-align: center;
+}
+.chargeAccountBlock {
+  width: 15rem;
+  min-height: 2rem;
+}
+.chargeAccountBlock .chargeAccountTitle {
+  width: 14.2rem;
+  height: 1.8rem;
+  line-height: 1.8rem;
+  font-size: 0.64rem;
+  color: #333333;
+  padding-left: 0.8rem;
+}
+.chargeAccountBlock .chargeNum {
+  display: inline-block;
+  width: 14.2rem;
+  background-color: #FFFFFF;
+  color: #333333;
+  font-size: 0.64rem;
+  border: none;
+  outline: none;
+  -webkit-appearance: none;
+  padding: 0.6rem 0 0.6rem 0.8rem;
+}
+.chargeAccountBlock .tip {
+  width: 14.2rem;
+  height: 1.6rem;
+  color: #888888;
+  font-size: 0.56rem;
+  line-height: 1.6rem;
+  padding-left: 0.8rem;
+}
+.chargeAccountBlock .accountTab {
+  width: 15rem;
+  height: 1.68rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  list-style: none;
+}
+.chargeAccountBlock .accountTab li {
+  width: 4rem;
+  height: 1.6rem;
+  border: 1px solid #cbcbcb;
+  border-radius: 0.16rem;
+  line-height: 1.6rem;
+  color: #333333;
+  font-size: 0.64rem;
+  text-align: center;
+}
+.chargeAccountBlock .accountTab .active {
+  width: 4rem;
+  height: 1.6rem;
+  border: 1px solid #ff7d00;
+  background-color: #ede2d7;
+  border-radius: 0.16rem;
+  line-height: 1.6rem;
+  color: #333333;
+  font-size: 0.64rem;
+  text-align: center;
+}
+.payBlock {
+  width: 13.4rem;
+  min-height: 2rem;
+  padding: 0 0.8rem;
+  margin-top: 3.6rem;
+}
+.payBlock .tip {
+  font-size: 0.56rem;
+  color: #888888;
+}
+.payBlock .payBtn {
+  display: block;
+  width: 13.4rem;
+  height: 2rem;
+  background-color: #ff7d00;
+  text-align: center;
+  line-height: 2rem;
+  color: #ffffff;
+  margin: 0 auto;
+  margin-top: 0.68rem;
+  border-radius: 0.16rem;
+  font-size: 0.72rem;
+  -webkit-user-select: none;
+}

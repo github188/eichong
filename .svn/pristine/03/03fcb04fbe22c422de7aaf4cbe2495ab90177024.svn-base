@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dubbox.dao.TblProductcommentMapper">
+	<resultMap type="TblProductComment" id="result_product">
+		<id property="id" column="pk_ProductComment" />
+		<result property="prdctId" column="prCo_ProductId" />
+		<result property="uid" column="prCo_UserId" />
+		<result property="uname" column="prCo_UserName" />
+		<result property="ctime" column="prCo_CreateTime" />
+		<result property="star" column="prCo_CommentStart" />
+		<result property="pic" column="prCo_CommentPic" />
+		<result property="odrId" column="prCo_OrderID" />
+		<result property="type" column="prCo_Comment_type" />
+		<result property="cdate" column="prCo_Createdate" />
+		<result property="udate" column="prCo_Updatedate" />
+		<result property="sts" column="prCo_Utatus" />
+		<result property="txt" column="prCo_Content" />
+	</resultMap>
+
+	<!-- 添加评论 -->
+	<insert id="insert" parameterType="TblProductComment">
+		insert into tbl_ProductComment (
+		prCo_ProductId,
+		prCo_UserId,
+		prCo_UserName,
+		prCo_CreateTime,
+		prCo_CommentStart,
+		prCo_CommentPic,
+		prCo_OrderID,
+		prCo_Comment_type,
+		prCo_Createdate,
+		prCo_Updatedate,
+		prCo_Utatus,
+		prCo_Content
+		)values (
+		#{prdctId},
+		#{uid},
+		#{uname},
+		#{ctime},
+		#{star},
+		#{pic},
+		#{odrId},
+		#{type},
+		sysdate(),
+		sysdate(),
+		#{sts},
+		#{txt}
+		)
+	</insert>
+
+	<!-- 删除评论列表 -->
+	<update id="update" parameterType="TblProductComment">
+		update
+		tbl_ProductComment
+		set 
+		<if test="prdctId != null">
+			prCo_ProductId=#{prdctId},
+		</if>
+		<if test="prdctId != null">
+			prCo_UserId=#{uid},
+		</if>
+		<if test="prdctId != null">
+			prCo_UserName=#{uname},
+		</if>
+		<if test="prdctId != null">
+			prCo_CreateTime=#{ctime},
+		</if>
+		<if test="prdctId != null">
+			prCo_CommentStart=#{star},
+		</if>
+		<if test="prdctId != null">
+			prCo_CommentPic=#{pic},
+		</if>
+		<if test="prdctId != null">
+			prCo_OrderID=#{odrId},
+		</if>
+		<if test="prdctId != null">
+			prCo_Comment_type=#{type},
+		</if>
+		<if test="prdctId != null">
+			prCo_Utatus=#{sts},
+		</if>
+		<if test="prdctId != null">
+			prCo_Content=#{txt},
+		</if>
+		prCo_Updatedate=sysdate()
+		where
+		pk_ProductComment=#{id}
+	</update>
+	
+
+	<!-- 取得评论条数 -->
+	<select id="getCount" parameterType="TblProductComment"
+		resultType="int">
+		select
+		count(1)
+		from
+		tbl_ProductComment
+	</select>
+
+	<!-- 取得评论列表 -->
+	<select id="getList" parameterType="TblProductComment"
+		resultMap="result_product">
+		select
+		${rtColumns}
+		from
+		tbl_ProductComment
+	</select>
+
+	<!-- 删除评论列表 -->
+	<update id="delete" parameterType="TblProductComment">
+		update
+		tbl_ProductComment
+		set prCo_Utatus = 1
+		WHERE pk_ProductComment = #{id}
+	</update>
+
+</mapper>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/style.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/admin/admin_home.css"/>
+    <title>管理员列表主页</title>
+</head>
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="ibox float-e-margins" style="margin: 0">
+                        <div class="">
+                            <div class="ibox-content">
+                                <div class="userBaseInfo col-sm-12 clearfix">
+                                    <div class="col-sm-9">
+                                       <div class="baseBlock">
+                                            <div class="perblock">
+                                                <span class="titleTip">管理员账号</span>
+                                                <span class="parmValue" id="userAccount"></span>
+                                            </div>
+                                           <div class="perblock">
+                                               <span class="titleTip">状态</span>
+                                               <span class="parmValue" id="userStatus"></span>
+                                               <span class="tipBtn" id="disableBtn" style="display: none">解禁</span>
+                                           </div>
+                                           <div class="perblock">
+                                               <span class="titleTip">角色</span>
+                                               <span class="parmValue" id="roleName">渠道公司管理员</span>
+                                               <span class="tipBtn" id="modifyRole">修改</span>
+                                           </div>
+                                       </div>
+                                        <div class="baseBlock">
+                                            <div class="perblock">
+                                                <span class="titleTip">渠道</span>
+                                                <span class="parmValue" id="cpyName">爱充</span>
+                                            </div>
+                                            <div class="perblock" style="margin-left: -60px">
+                                                <span class="titleTip">类型</span>
+                                                <span class="parmValue" id="adminType">业务管理员</span>
+                                            </div>
+                                            <div class="perblock">
+                                                <span></span>
+                                                <span></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3" style="position: relative">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="ibox float-e-margins" style="margin: 0">
+                        <div class="">
+                            <div class="ibox-content">
+                                <div class="userBaseInfo" id="adminManagementBlock">
+                                   <div class="adminDateAreaTip">管理员数据范围</div>
+                                    <form action="" id="adminHomeForm">
+                                        <div class="queryTradition">
+                                            <div class="titleTip">充电桩编号</div>
+                                            <div class="inputBlock">
+                                                <input type="text" name="electricPileCode"/>
+                                            </div>
+                                            <div class="queryBtn" onclick="adminHomeSearch()">查询</div>
+                                        </div>
+                                    </form>
+                                    <div class="btnGroup">
+                                        <div class="commonBtn" id="addPileBtn">添加电桩</div>
+                                        <div class="commonBtn" id="deletePileBtn">删除电桩</div>
+                                    </div>
+                                    <div class="queryTable table-responsive">
+                                        <table class=" table table-bordered text-center" style="border: 1px solid #DCDCDC;">
+                                            <thead>
+                                            <tr>
+                                                <th class=""><input type="checkbox" name="" class="selAll" value=""/></th>
+                                                <th>充电桩编号</th>
+                                                <th>充电桩名称</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody id="myTbody">
+                                                <!--<tr>-->
+                                                    <!--<td>2</td>-->
+                                                    <!--<td>2</td>-->
+                                                    <!--<td>2</td>-->
+                                                <!--</tr>-->
+                                                <!--<tr>-->
+                                                    <!--<td>2</td>-->
+                                                    <!--<td>2</td>-->
+                                                    <!--<td>2</td>-->
+                                                <!--</tr>-->
+                                                <!--<tr>-->
+                                                    <!--<td>2</td>-->
+                                                    <!--<td>2</td>-->
+                                                    <!--<td>2</td>-->
+                                                <!--</tr>-->
+                                            </tbody>
+                                        </table>
+                                        <div id="adminHomePage" class="pagination">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--角色修改-->
+    <div class="setAdminRole" style="display: none;">
+        <select class="form-control m-b" name="roleId" id="setRoleId">
+
+        </select>
+    </div>
+    <!--新绑定电桩-->
+    <div class="addElectricPile" style="display: none;">
+        <div class="text-center">请输入桩编号</div>
+        <div class="ucCardNumber">
+            <input type="text" name="electricPileCode1" value="" placeholder="请输入桩编号"/>
+        </div>
+
+    </div>
+    <!--删除电桩-->
+    <div class="deleteContent" style="display: none;">
+        电桩删除后，管理员无法查看电桩数据
+    </div>
+</body>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<!--<script src="../js/apiAddress.js" type="text/javascript" charset="utf-8"></script>-->
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="../../js/contabs.min.js"></script>
+<script src="../../js/admin/admin_home.js" type="text/javascript" charset="utf-8"></script>
+</html>

@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsCouponVarietyMapper">
+	<resultMap id="couponVarietyResultMap" type="TblCouponVariety">
+		<id property="pkCouponVariety" column="pk_CouponVariety" />
+		<result property="covaActivityName" column="cova_ActivityName" />
+		<result property="covaLimitation" column="cova_Limitation" />
+		<result property="covaStutas" column="cova_Stutas" />
+		<result property="covaCouponValue" column="cova_CouponValue" />
+		<result property="covaCouponCondition" column="cova_CouponCondition" />
+		<result property="covaCouponTerm" column="cova_CouponTerm" />		
+		<result property="covaCreateUserId" column="cova_CreateUserId" />		
+		<result property="covaUpdateUserId" column="cova_UpdateUserId" />		
+		<result property="covaRemark" column="cova_Remark" />	
+		<result property="covaLabel" column="cova_Label" />		
+		<result property="covaCreatedate" column="cova_Createdate" />		
+		<result property="covaUpdatedate" column="cova_Updatedate" />		
+		<result property="userAccount" column="user_account" />		
+	</resultMap>
+	
+	
+	
+	<!-- 获取现金劵列表 -->
+	<select id="getCouponVarietyList" parameterType="TblCouponVariety" resultMap="couponVarietyResultMap">
+		select
+			pk_CouponVariety,
+			cova_ActivityName,
+			cova_Limitation,
+			cova_Stutas,
+			cova_CouponValue,
+			cova_CouponCondition,
+			cova_CouponTerm,
+			cova_CreateUserId,
+			cova_UpdateUserId,
+			cova_Remark,
+			cova_Label,
+			SUBSTRING(cova_Createdate, 1,19) cova_Createdate,
+			cova_Updatedate,
+			 u.user_account,
+			(select count(*) from tbl_activityschedule where pk_CouponVariety = c.pk_CouponVariety) modifyFlag
+		from 
+			tbl_couponvariety c
+			LEFT JOIN tbl_user u ON u.user_id = c.cova_UpdateUserId
+		<where>
+		1=1
+		<if test="covaLimitation != null and  covaLimitation !='' ">
+			and	cova_Limitation=#{covaLimitation}
+	     </if>
+	     <if test="covaStutas != null  ">
+			and	cova_Stutas=#{covaStutas}
+	     </if>
+	    
+		</where>
+		order by cova_Createdate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>	
+	</select>
+	
+	<!-- 获取现金劵列表数量 -->
+	<select id="getCouponVarietyCount" parameterType="TblCouponVariety" resultType="long">
+		select
+			count(pk_CouponVariety)
+		from 
+			tbl_couponvariety
+		<where>
+		1=1
+		<if test="covaLimitation != null">
+			and	cova_Limitation=#{covaLimitation}
+	     </if>
+	     <if test="covaStutas != null">
+			and	cova_Stutas=#{covaStutas}
+	     </if>
+		</where>
+	</select>
+	<select id="getCouponVarietyById" parameterType="int" resultMap="couponVarietyResultMap">
+		select
+			pk_CouponVariety,
+			cova_ActivityName,
+			cova_Limitation,
+			cova_Stutas,
+			cova_CouponValue,
+			cova_CouponCondition,
+			cova_CouponTerm,
+			cova_Remark,
+			cova_Label
+		from 
+			tbl_couponvariety
+		where pk_CouponVariety = #{pkCouponVariety}
+	</select>
+	<insert id="addCouponVariety" parameterType="TblCouponVariety" >
+		insert into tbl_couponvariety(
+		cova_ActivityName,
+		cova_Limitation,
+		cova_Stutas,
+		cova_CouponValue,
+		cova_CouponCondition,
+		cova_CouponTerm,
+		cova_CreateUserId,
+		cova_UpdateUserId,
+		cova_Remark,
+		cova_Label
+		)values(
+		#{covaActivityName},
+		#{covaLimitation},
+		#{covaStutas},
+		#{covaCouponValue},
+		#{covaCouponCondition},
+		0,
+		#{covaCreateUserId},
+		#{covaUpdateUserId},
+		#{covaRemark},
+		#{covaLabel}
+		)
+	</insert>
+	
+	<update id="changeCouponVariety" parameterType="TblCouponVariety">
+		update tbl_couponvariety
+		set 
+		cova_ActivityName = #{covaActivityName},
+		cova_Limitation = #{covaLimitation},
+		cova_CouponValue = #{covaCouponValue},
+		cova_CouponCondition = #{covaCouponCondition},
+		cova_UpdateUserId = #{covaUpdateUserId},
+		cova_Remark = #{covaRemark},
+		cova_Stutas = #{covaStutas}
+		<if test="covaLabel != null">
+			,	cova_Label=#{covaLabel}
+	     </if>
+		where pk_CouponVariety = #{pkCouponVariety}
+	</update>
+	
+	<select id="checkCouponVariety" parameterType="int" resultType="int">
+		select
+			count(*)
+		from 
+			tbl_activityschedule
+		where pk_CouponVariety = #{pkCouponVariety}
+	</select>
+	
+	<delete id="removeCouponVariety" parameterType="TblCouponVariety">
+		delete from tbl_couponvariety
+		where pk_CouponVariety = #{pkCouponVariety}
+	</delete>
+	
+	<!--  
+	<update id="changeCovaStutas" parameterType="TblCouponVariety">
+		UPDATE tbl_couponvariety a 
+		set cova_Stutas= IF(a.cova_Stutas=0,1,0)  
+		where pk_CouponVariety = #{pkCouponVariety}
+	</update>
+	-->
+	
+	<select id="getCovaStutas" parameterType="int" resultType="int">
+		select cova_Stutas 
+		from
+		tbl_couponvariety
+		where pk_CouponVariety = #{pkCouponVariety}
+	</select>
+	
+	<update id="removeCouponByCouponVarietyId" parameterType="TblCouponVariety">
+		update tbl_coupon
+		set 
+		cp_EndDate = CURDATE()-1
+		where pk_CouponVariety =  #{pkCouponVariety} and cp_UserId = 0
+	</update>
+	<!-- 获取该现金劵品种的数量 -->
+	<select id="judgeCovaActivityName" parameterType="string" resultType="int">
+		select
+			count(pk_CouponVariety)
+		from 
+			tbl_couponvariety
+		<where>
+			cova_ActivityName=#{covaActivityName}
+		</where>
+	</select>
+	
+	
+</mapper> 

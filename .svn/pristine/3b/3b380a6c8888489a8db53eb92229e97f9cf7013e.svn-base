@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="blank" />
+		<meta name="format-detection" content="telephone=no" />
+
+	<title>about us</title>
+	<link rel="stylesheet" type="text/css" href="css/common.css">
+</head>
+<body>
+	<div class="container">
+		<div class="middle_div container-Fichild">
+			<img src="img/logo.png">
+			<p>爱充网</p>
+		</div>
+		<div class="middle_div container-Schild">
+			<p>微信公众号</p>
+			<p class="link_word">爱充会</p>
+		</div>
+		<div class="middle_div container-Tchild">
+			<p>微信服务号</p>
+			<p class="link_word">爱充网</p>
+		</div>
+		<div class="middle_div link_word container-Fifchild">
+			<p>微信关注 <br>
+				进入后扫一扫充电<br>
+				限非企政用户</p>
+		</div>
+		<div class="middle_div company-information">
+			<p>浙江爱充网络科技有限公司</p>
+		</div>
+	</div>
+</body>
+</html>

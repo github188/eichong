@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Access-Control-Allow-Origin" content="*">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"  />
+<title>费率详情</title>
+<style>
+
+@media screen and (max-width: 480px) {
+body{ padding:20px;}
+.colorA{ color:#ff8800;}
+h1{ color:#333333; font-size:18px; text-align:left;}
+.feilv{ font-size:14px;}
+.feilv dt{ height:50px; line-height:50px; width:100px; float:left; background-image:url(c-img3.png); background-repeat:no-repeat; background-position:right center; margin-right:5px;}
+.feilv dd.OneText{ }
+.feilv dd.TwoText{ padding-top:10px;}
+ul, li{ list-style:none; margin:0; padding:0;}
+ul{ border-top:1px solid #999;}
+li{ height:40px; line-height:40px; border-bottom:1px solid #999;}
+.feilvA,.feilvB,.feilvC{ display:block; float:left; text-align:center; font-size:14px;}
+.feilvA{ width:20%;}
+.feilvB{ width:40%;}
+.feilvC{ width:38%;}
+}
+@media screen and (min-width: 480px) and (max-width: 720px)  {
+body{ padding:30px;}
+.colorA{ color:#ff8800;}
+h1{ color:#333333; font-size:26px; text-align:left;}
+.feilv{ font-size:18px;}
+.feilv dt{ height:70px; line-height:70px; width:140px; float:left; background-image:url(c-img2.png); background-repeat:no-repeat; background-position:right center; margin-right:10px;}
+.feilv dd.OneText{ }
+.feilv dd.TwoText{ padding-top:14px;}
+ul, li{ list-style:none; margin:0; padding:0;}
+ul{ border-top:1px solid #999;}
+li{ height:60px; line-height:60px; border-bottom:1px solid #999;}
+.feilvA,.feilvB,.feilvC{ display:block; float:left; text-align:center; font-size:28px;}
+.feilvA{ width:20%;}
+.feilvB{ width:40%;}
+.feilvC{ width:38%;}
+}
+
+@media screen and (min-width:720px) {
+body{ padding:40px;}
+.colorA{ color:#ff8800;}
+h1{ color:#333333; font-size:36px; text-align:left;}
+.feilv{ font-size:28px;}
+.feilv dt{ height:100px; line-height:100px; width:200px; float:left; background-image:url(c-img.png); background-repeat:no-repeat; background-position:right center; margin-right:10px;}
+.feilv dd.OneText{ }
+.feilv dd.TwoText{ padding-top:20px;}
+ul, li{ list-style:none; margin:0; padding:0;}
+ul{ border-top:1px solid #999;}
+li{ height:80px; line-height:80px; border-bottom:1px solid #999;}
+.feilvA,.feilvB,.feilvC{ display:block; float:left; text-align:center; font-size:28px;}
+.feilvA{ width:20%;}
+.feilvB{ width:40%;}
+.feilvC{ width:38%;}
+}
+</style>
+</head>
+<body>
+<h1 class="colorA">当前充电费用：<t id="totalPrice"></t>元/度</h1>
+<dl class="feilv">
+<dt>充电费用包含</dt>
+<dd class="OneText">充电服务费：<t id="raInServiceCharge"></t>元/度</dd>
+<dd class="TwoText">充电电费费率：<t id="raInReservationRate"></t>元/度</dd>
+</dl>
+<br />
+
+<h1>费率详情</h1>
+<ul id="content">
+  <!-- <li><span class="feilvA">尖</span><span class="feilvB">12:01--15:00</span><span class="feilvC">1.20元/度</span></li>
+  <li><span class="feilvA">尖</span><span class="feilvB">12:01--15:00</span><span class="feilvC">1.20元/度</span></li>
+  <li><span class="feilvA">尖</span><span class="feilvB">12:01--15:00</span><span class="feilvC">1.20元/度</span></li>
+  <li><span class="feilvA">尖</span><span class="feilvB">12:01--15:00</span><span class="feilvC">1.20元/度</span></li>
+  <li><span class="feilvA">尖</span><span class="feilvB">12:01--15:00</span><span class="feilvC">1.20元/度</span></li>
+  <li><span class="feilvA">尖</span><span class="feilvB">12:01--15:00</span><span class="feilvC">1.20元/度</span></li>
+  <li><span class="feilvA">尖</span><span class="feilvB">12:01--15:00</span><span class="feilvC">1.20元/度</span></li>
+  <li><span class="feilvA">尖</span><span class="feilvB">12:01--15:00</span><span class="feilvC">1.20元/度</span></li>  -->
+</ul>
+
+</body>
+<script src="../../static/js/jquery-1.10.2.min.js" type="text/javascript"></script>
+<script src="../../static/js/common.js" type="text/javascript"></script>
+<script type="text/javascript">
+var id =getUrlParam("id");
+if(id){
+	infoDetails(id);
+}else{
+	alert('请求参数不合法！')
+}
+function infoDetails(id) {
+	$.ajax({
+	         type: 'get',
+	         url: getRootPath()+'/itf/rateinfo/'+id,
+	         dataType: "json",
+	         success: function(datas){
+	        	 if(datas.status==100){
+		        	 var data=datas.data;
+		        	 //充电服务费
+		        	 var serviceCharge = parseFloat(data.raInServiceCharge).toFixed(2);
+		        	 $("#raInServiceCharge").innerHTML=serviceCharge;
+		        	 //当前时间值(分钟),去循环中赋值
+		        	 var currentDate=new Date();
+		        	 var timeInt=currentDate.getHours()*60+currentDate.getMinutes();
+		        	 //尖峰平谷显示
+		        	 var obj=JSON.parse(data.raInQuantumDate);
+		        	 var rateArr=obj.data;
+		        	 var st,stStr,et,etStr,mark,markContent,markPrice;
+		        	 var content="";
+		        	 for(var i=0;i<rateArr.length;i++){
+		        		 st=parseInt(rateArr[i].st);
+		        		 stStr=formateTime(st);
+		        		 et=parseInt(rateArr[i].et);
+		        		 etStr=formateTime(et);
+		        		 mark=parseInt(rateArr[i].mark);
+		        		 switch(mark)
+		        		 {
+		        		 case 1:
+		        			 markContent="尖";
+		        			 markPrice=data.raInTipTimeTariff;
+		        			 break;
+		        		 case 2:
+		        			 markContent="峰";
+		        			 markPrice=data.raInPeakElectricityPrice;
+		        		   break;
+		        		 case 3:
+		        			 markContent="平";
+		        			 markPrice=data.raInUsualPrice;
+		        		   break; 
+		        		 case 4:
+		        			 markContent="谷";
+		        			 markPrice=data.raInValleyTimePrice;
+		        		   break; 
+		        		 default:
+		        		 }
+		        		 content+=' <li><span class="feilvA">'+markContent+'</span><span class="feilvB">'+stStr+'--'+etStr+'</span><span class="feilvC">'+markPrice+'元/度</span></li>'
+		        		 if(timeInt>=st&&timeInt<=et){
+		        			 $("#raInReservationRate").html(markPrice);
+		        			 $("#raInServiceCharge").html(serviceCharge);
+		        			 $("#totalPrice").html((parseFloat(markPrice)+parseFloat(serviceCharge)).toFixed(2));
+		        		 }
+		        	 }
+		        	 $("#content").html(content);
+	        	 }else{
+	        		 alert(datas.msg);
+	        	 }	 
+	         }	         
+	    });
+}
+
+function formateTime(time){
+	var hour=Math.floor(time/60);
+	var min=time%60;
+	var hourStr=hour;
+	var minStr=min;
+	if(hour<10){
+		hourStr="0"+hour;
+	}
+	if(min<10){
+		minStr="0"+min;
+	}
+	return hourStr+":"+minStr;
+}
+</script>
+</html>

@@ -1,0 +1,81 @@
+package com.wanma.ims.service;
+
+import java.util.List;
+
+import com.wanma.ims.model.UserNormalDO;
+
+/**
+ * 普通管理员Service
+ */
+public interface UserNormalService {
+    
+	/** 
+	 * 统计-普通用户
+	 * @param
+	 * @param
+	 * */
+	public Integer countUserNormal();
+	
+	/** 
+	 * 分页-普通用户
+	 * @param
+	 * @param
+	 * */
+	public List<UserNormalDO> getUserNormalPage();
+	
+	/** 
+	 * 批量-普通用户
+	 * @param
+	 * @param
+	 * */
+	public List<UserNormalDO> getUserNormalList();
+	
+	/** 
+	 * 新增-普通用户
+	 * @param
+	 * @param
+	 * */
+	public Integer addUserNormal();
+	
+	/** 
+	 * 编辑-普通用户
+	 * @param
+	 * @param
+	 * */
+	public Integer modifyUserNormal();
+	
+	/** 
+	 * 删除-普通用户
+	 * @param
+	 * @param
+	 * */
+	public Integer removeUserNormal();
+	
+	/** 
+	 * 审批（批量审批）-普通用户
+	 * @param
+	 * @param
+	 * */
+	public Integer verifyUserNormal();
+	
+	/** 
+	 * 冻结（批量冻结）-普通用户
+	 * @param
+	 * @param
+	 * */
+	public Integer freezeUserNormal();
+	
+	/** 
+	 * 解冻（批量解冻）-普通用户
+	 * @param
+	 * @param
+	 * */
+	public Integer unfreezeUserNormal();
+	
+	/** 
+	 * 绑定-普通用户
+	 * @param
+	 * @param
+	 * */
+	public Integer bindUserNormal();
+}

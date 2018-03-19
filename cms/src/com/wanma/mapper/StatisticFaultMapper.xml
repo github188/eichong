@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.StatisticFaultMapper">
+	<!-- 故障统计 根据省市区进行统计-->
+	<select id="selectFaultDataCount" parameterType="java.util.Map" resultType="java.util.Map">
+	  SELECT * FROM (SELECT
+	    b.elPi_OwnProvinceCode provinceCode,
+		b.elPi_OwnCityCode cityCode,
+		count(DISTINCT a.cFRe_ElectricPileID) as v1,
+		sum(IF(a.cFRe_FaultCause='3',1,0)) as v6,
+		sum(IF(a.cFRe_FaultCause='4',1,0)) as v11,
+		sum(IF(a.cFRe_FaultCause='5',1,0)) as v5,
+		sum(IF(a.cFRe_FaultCause='6',1,0)) as v8,
+		sum(IF(a.cFRe_FaultCause='7',1,0)) as v9,
+		sum(IF(a.cFRe_FaultCause='8',1,0)) as v10,
+		sum(IF(a.cFRe_FaultCause='9',1,0)) as v7,
+		sum(IF(a.cFRe_FaultCause='10',1,0)) as v17,
+		sum(IF(a.cFRe_FaultCause='11',1,0)) as v12,
+		sum(IF(a.cFRe_FaultCause='12',1,0)) as v18,
+		sum(IF(a.cFRe_FaultCause='13',1,0)) as v4,
+		sum(IF(a.cFRe_FaultCause='14',1,0)) as v3,
+		sum(IF(a.cFRe_FaultCause='15',1,0)) as v13,
+		sum(IF(a.cFRe_FaultCause='16',1,0)) as v14,
+		sum(IF(a.cFRe_FaultCause='17',1,0)) as v15,
+		sum(IF(a.cFRe_FaultCause='18',1,0)) as v16,
+		sum(IF(a.cFRe_FaultCause='19',1,0)) as v19
+		FROM
+			tbl_chargingfaultrecord a,
+			tbl_faultcode e,
+			tbl_electricpile b,
+		  tbl_user_business_view d 
+		WHERE
+			a.cFRe_FaultCause = e.fc_FaultID
+		AND a.cFRe_ElectricPileID = b.pk_ElectricPile
+		AND b.elPi_UserId = d.user_id
+		AND b.delete_flag=0
+		GROUP BY
+		    b.elPi_OwnProvinceCode,
+			b.elPi_OwnCityCode WITH ROLLUP) cc 
+		<where>
+		   <!-- 全部 -->
+		   <if test="(provinceCode == null or provinceCode == '') and (cityCode == null or cityCode == '')">
+		      and provinceCode is null and cityCode is null
+		   </if>
+		   <!-- 省-->
+		   <if test="provinceCode != null and provinceCode != '' and (cityCode == null or cityCode == '')">
+		      and provinceCode = #{provinceCode} and cityCode is null
+		   </if>
+		   <!-- 市 -->
+		   <if test="provinceCode != null and provinceCode != '' and cityCode != null and cityCode != ''">
+		      and provinceCode = #{provinceCode} and cityCode = #{cityCode}
+		   </if>
+		</where>
+		ORDER BY cc.provinceCode,cc.cityCode
+	</select>
+	
+	 <!-- 故障统计 统计离线 -->
+	<select id="selectFaultOfflineCount" parameterType="java.util.Map" resultType="java.util.Map">
+	   SELECT * FROM (SELECT
+			tt.elPi_OwnProvinceCode provinceCode,
+			tt.elPi_OwnCityCode cityCode,
+			COUNT(1) AS v2
+		FROM
+			tbl_electricpile tt
+		WHERE tt.comm_status=0
+		GROUP BY
+			tt.elPi_OwnProvinceCode,
+			tt.elPi_OwnCityCode with ROLLUP) cc
+		<where>
+		   <!-- 全部 -->
+		   <if test="(provinceCode == null or provinceCode == '') and (cityCode == null or cityCode == '')">
+		      and provinceCode is null and cityCode is null
+		   </if>
+		   <!-- 省-->
+		   <if test="provinceCode != null and provinceCode != '' and (cityCode == null or cityCode == '')">
+		      and provinceCode = #{provinceCode} and cityCode is null
+		   </if>
+		   <!-- 市 -->
+		   <if test="provinceCode != null and provinceCode != '' and cityCode != null and cityCode != ''">
+		      and provinceCode = #{provinceCode} and cityCode = #{cityCode}
+		   </if>
+		 </where>
+		ORDER BY cc.provinceCode,cc.cityCode
+	</select>
+	 <!-- 故障统计 故障数（今日） -->
+	<select id="selectFaultTodayCount" parameterType="java.util.Map" resultType="java.util.Map">
+	  SELECT * FROM (SELECT
+	    b.elPi_OwnProvinceCode provinceCode,
+		b.elPi_OwnCityCode cityCode,
+		count(DISTINCT a.cFRe_ElectricPileID) as v1
+		FROM
+			tbl_chargingfaultrecord a,
+			tbl_faultcode e,
+			tbl_electricpile b,
+		    tbl_user_business_view d 
+		WHERE
+			a.cFRe_FaultCause = e.fc_FaultID
+		AND a.cFRe_ElectricPileID = b.pk_ElectricPile
+		AND b.elPi_UserId = d.user_id
+		AND b.delete_flag=0
+        AND left(a.cFRe_Createdate,10) = left(sysdate(),10)
+        GROUP BY
+		    b.elPi_OwnProvinceCode,
+			b.elPi_OwnCityCode WITH ROLLUP) cc 
+		<where>
+		   <!-- 全部 -->
+		   <if test="(provinceCode == null or provinceCode == '') and (cityCode == null or cityCode == '')">
+		      and provinceCode is null and cityCode is null
+		   </if>
+		   <!-- 省-->
+		   <if test="provinceCode != null and provinceCode != '' and (cityCode == null or cityCode == '')">
+		      and provinceCode = #{provinceCode} and cityCode is null
+		   </if>
+		   <!-- 市 -->
+		   <if test="provinceCode != null and provinceCode != '' and cityCode != null and cityCode != ''">
+		      and provinceCode = #{provinceCode} and cityCode = #{cityCode}
+		   </if>
+		</where>
+		ORDER BY cc.provinceCode,cc.cityCode
+	</select>
+	<!-- 故障统计 根据日期统计 -->
+	<select id="countFaultDataDetail" parameterType="java.util.Map" resultType="int">
+	   SELECT
+		    count(1) 
+			FROM
+				tbl_chargingfaultrecord a,
+				tbl_faultcode e,
+				tbl_electricpile b,
+			    tbl_user_business_view d
+			WHERE a.cFRe_FaultCause = e.fc_FaultID
+			AND a.cFRe_ElectricPileID = b.pk_ElectricPile
+			AND b.elPi_UserId = d.user_id
+		<!-- 省 -->
+		<if test="provinceCode != null and provinceCode != ''">
+		    and b.elPi_OwnProvinceCode = #{provinceCode}
+		</if>
+		<!-- 市 -->
+		<if test="cityCode != null and cityCode != ''">
+		    and b.elPi_OwnCityCode = #{cityCode}
+		</if>
+		ORDER BY a.cFRe_Createdate  DESC
+	</select>
+	 <!-- 故障统计 根据日期统计 -->
+	<select id="selectFaultDataDetail" parameterType="java.util.Map" resultType="java.util.Map">
+	   SELECT
+		    b.elPi_OwnProvinceCode,
+			b.elPi_OwnCityCode,
+			a.cFRe_Createdate as time,
+			e.fc_FaultCause as v1,
+			b.elPi_ElectricPileCode v2,
+			b.elPi_ElectricPileAddress v3
+			FROM
+				tbl_chargingfaultrecord a,
+				tbl_faultcode e,
+				tbl_electricpile b,
+			    tbl_user_business_view d
+			WHERE a.cFRe_FaultCause = e.fc_FaultID
+			AND a.cFRe_ElectricPileID = b.pk_ElectricPile
+			AND b.elPi_UserId = d.user_id
+		<!-- 省 -->
+		<if test="provinceCode != null and provinceCode != ''">
+		    and b.elPi_OwnProvinceCode = #{provinceCode}
+		</if>
+		<!-- 市 -->
+		<if test="cityCode != null and cityCode != ''">
+		    and b.elPi_OwnCityCode = #{cityCode}
+		</if>
+		ORDER BY a.cFRe_Createdate  DESC
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+</mapper> 

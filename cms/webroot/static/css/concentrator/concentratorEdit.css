@@ -1,0 +1,220 @@
+@charset "utf-8";
+#container1 {
+	height: 100%;
+	margin-top: 22px;
+	padding: 30px;
+	padding-top: 20px;
+	font-size: 12px;
+	font-family: "微软雅黑";
+}
+#container1 .nav {
+	width: 100%;
+	padding: 10px 0 10px 0;
+	margin: 0 auto;
+	font-size: 14px;
+	border-bottom:1px solid #E1E1E1 ;
+}
+#container1 .orderDetail{
+	width: 100%;
+	padding:6px 15px;
+	padding-top: 20;
+	margin: 0 auto;
+}
+#container1 .orderDetail .lineBlock{
+	padding: 3px;
+	margin-top: 20px;
+}
+#container1 .orderDetail .lineBlock .line{
+	display: inline-block;
+	margin-left: 20px;
+	min-width: 40%;
+	height: 30px;
+	line-height: 30px;
+}
+#container1 .orderDetail .lineBlock .red{
+	color: #FF0000;
+}
+#container1 .orderDetail .lineBlock .line:first-child{
+	margin-left: 0;
+}
+#container1 .orderDetail .lineBlock .line span{
+	display: inline-block;
+	
+}
+#container1 .orderDetail .lineBlock .line .lineLeft{
+	width: 30%;
+}
+#container1 .orderDetail .lineBlock .line input{
+	width: 160px;
+	height: 26px !important;
+	outline: none;
+	border: 1px solid #E5E5E5;
+	border-radius: 4px;
+	appearance:none;
+	-moz-appearance:none;
+	-webkit-appearance:none;
+}
+#container1 .orderDetail .lineBlock .line select{
+	width: 160px;
+	height: 26px !important;
+	line-height: 22px;
+	outline: none;
+	border: 1px solid #E5E5E5;
+	border-radius: 4px;
+	appearance:none;
+	-moz-appearance:none;
+	-webkit-appearance:none;
+	background: url(../../images/triangle_right_114px_1189854_easyicon.net-down-8.png) no-repeat 90% 10px !important;
+}
+
+.pileList{
+	width: 100%;
+	padding-bottom: 50px;
+}
+.pileListTitle{
+	height: 40px;
+	line-height: 40px;
+	font-size: 14px;
+	margin-top: 20px;
+}
+.pileListTitle span{
+	display: inline;
+	text-decoration: underline;
+	margin-left: 30px;
+	cursor: pointer;
+}
+.pileListTitle span:first-child{
+	text-decoration: none;
+	margin-left: 0;
+}
+.pileList .stationEditTable{
+	width: 100%;
+	
+}
+.pileList .stationEditTable tr td{
+	padding: 3px;
+}
+.pileList .stationEditTable tr td:last-child input{
+	width: 40px;
+}
+.pileList .myTable{
+	margin-top: 10px;
+}
+#container1 .orderDetail .saveBlock{
+	padding: 5px;
+}
+#container1 .orderDetail .saveBlock .saveBtn{
+	display: inline-block;
+	width: 90px;
+	height: 26px;
+	color: #FFFFFF;
+	border: 1px solid #FF7D00;
+	background: #FF7D00;
+	border-radius: 4px;
+	text-align: center;
+	line-height: 26px;
+	margin-left: 24%;
+	margin-top: 10px;
+	cursor: pointer;
+}
+#container1 .orderDetail .saveBlock .cancelBtn{
+	display: inline-block;
+	width: 90px;
+	height: 26px;
+	color: #FFFFFF;
+	border: 1px solid #FF7D00;
+	background: #FF7D00;
+	border-radius: 4px;
+	text-align: center;
+	line-height: 26px;
+	margin-left: 30px;
+	cursor: pointer;
+}
+/*弹框设计=================*/
+.bindPile{
+	width: 94%;
+	margin: 0 auto;
+	padding:50px 20px 40px 20px;
+	position: relative;
+}
+.bindPile .bindPileSelect{
+	position: absolute;
+	position: fixed;
+	top: 42px;
+	width:90%;
+	min-height: 34px;
+	padding: 10px 0;
+	background: #FFFFFF;
+	z-index: 19891099;
+	margin: 0 auto;
+	border-bottom: 1px solid #E1E1E1;
+}
+.bindPile .bindPileSelect input{
+	width: 160px;
+	height: 26px;
+	outline: none;
+	border: none;
+	border: 1px solid #E1E1E1;
+	border-radius: 4px;
+}
+.bindPile .bindPileSelect span{
+	display: inline-block;
+	width: 50px;
+	height: 26px;
+	line-height: 26px;
+	text-align: center;
+	color: #FFFFFF;
+	border: 1px solid #FF7D00;
+	border-radius: 4px;
+	background: #FF7D00;
+	margin-left: 20px;
+	font-size: 12px;
+	cursor: pointer;
+}
+.bindPileBlock{
+	padding-top: 10px;
+}
+.bindPileBlock .bindPileTable{
+	width: 100%;
+}
+.table > thead > tr > th {
+    vertical-align: bottom;
+    border-bottom: 1px solid #ddd;
+    font-size: 12px;
+}
+.table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
+    font-size: 12px;
+}
+.bindPileTable tr:nth-child(odd) {
+	background: #FFFFFF;
+}
+.bindPileTable tr:nth-child(even) {
+	background: #f5f5f5;
+}
+.myPagination{
+	width: 90%;
+    height: 40px;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    bottom: 50px;
+    /*left: 5% !important;*/ 
+    position: fixed;
+    font-size: 12px !important;
+}
+.pagination {
+    width: 80%;
+    height: 50px;
+    margin: 0;
+    padding: 0;
+    background: #FFFFFF;
+    padding-top: 16px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    position: fixed;
+}
+.myPagination ul{
+	margin-top: 10px;margin-left: -50px;
+	font-size: 12px !important;
+}

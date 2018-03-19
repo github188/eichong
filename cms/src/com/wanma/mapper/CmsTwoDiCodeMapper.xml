@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.dao.CmsTwoDiCodeMapper">
+<!-- 可下发二维码的枪头数量 -->
+	<select id="getTwoDiCodeListCount" parameterType="map" resultType="long">
+		SELECT
+			count(h.ePHe_ElectricpileHeadId)
+		FROM 
+		tbl_electricpilehead h INNER JOIN tbl_electricpile e ON 
+				h.pk_ElectricPile = e.pk_ElectricPile 
+				and e.elPi_State = 15  
+				and e.comm_status = 1	
+				and e.elPi_ElectricPileCode is not null	
+				and e.elPi_ElectricPileCode != ''
+		<where>	
+				<if test="electricPileAddress !=null and electricPileAddress !=''">
+						and	 e.elPi_ElectricPileAddress like concat('%',#{electricPileAddress},'%')
+				</if>
+			    <choose>						
+				<when test="elPi_OwnCountyCode !=null and elPi_OwnCountyCode !=''">
+						and	 e.elPi_OwnCountyCode =#{elPi_OwnCountyCode}
+				</when>
+				<when test="elPi_OwnCityCode !=null and elPi_OwnCityCode !=''">
+						and	 e.elPi_OwnCountyCode =#{elPi_OwnCityCode}
+				</when>
+				<when test="elPi_OwnProvinceCode !=null and elPi_OwnProvinceCode !=''">
+						and	 e.elPi_OwnProvinceCode =#{elPi_OwnProvinceCode}
+				</when>
+		    	<!-- 权限控制 -->
+				<when test="userLevel==3">
+			        and exists (select 1 from tbl_user_business_view b where b.user_id=e.elPi_UserId and exists (select 1 from tbl_user_business_view b1 where  b.busi_company_id = b1.busi_company_id and b1.user_id = #{elpiUserid}))
+			    </when>
+			    <when test="userLevel==5">	
+			        and e.elPi_UserId=#{elpiUserid}
+			    </when>
+			</choose>
+		</where>		
+	</select>
+
+
+	<select id="getTwoDiCodeList" parameterType="map" resultType="hashMap">
+		select e.elPi_ElectricPileName,
+			   e.elPi_ElectricPileAddress,
+			   e.elPi_ElectricPileCode,
+			   e.elPi_OwnProvinceCode,
+			   e.elPi_OwnCityCode,
+			   e.elPi_OwnCountyCode,
+			   e.elPi_GateId,
+			   h.ePHe_ElectricpileHeadId,
+			   h.eph_num			   		    
+		from tbl_electricpilehead h INNER JOIN tbl_electricpile e ON 
+				h.pk_ElectricPile = e.pk_ElectricPile 
+				and e.elPi_State = 15  
+				and e.comm_status = 1	
+				and e.elPi_ElectricPileCode is not null	
+				and e.elPi_ElectricPileCode != ''
+		<where>	
+				<if test="electricPileAddress !=null and electricPileAddress !=''">
+						and	 e.elPi_ElectricPileAddress like concat('%',#{electricPileAddress},'%')
+				</if>
+			    <choose>						
+				<when test="elPi_OwnCountyCode !=null and elPi_OwnCountyCode !=''">
+						and	 e.elPi_OwnCountyCode =#{elPi_OwnCountyCode}
+				</when>
+				<when test="elPi_OwnCityCode !=null and elPi_OwnCityCode !=''">
+						and	 e.elPi_OwnCountyCode =#{elPi_OwnCityCode}
+				</when>
+				<when test="elPi_OwnProvinceCode !=null and elPi_OwnProvinceCode !=''">
+						and	 e.elPi_OwnProvinceCode =#{elPi_OwnProvinceCode}
+				</when>
+		    	<!-- 权限控制 -->
+				<when test="userLevel==3">
+			        and exists (select 1 from tbl_user_business_view b where b.user_id=e.elPi_UserId and exists (select 1 from tbl_user_business_view b1 where  b.busi_company_id = b1.busi_company_id and b1.user_id = #{elpiUserid}))
+			    </when>
+			    <when test="userLevel==5">	
+			        and e.elPi_UserId=#{elpiUserid}
+			    </when>
+			</choose>
+		</where>
+			 ORDER BY e.elPi_Createdate DESC			 
+		<if test="offset!= null and numPerPage !=null">limit #{offset},#{numPerPage}</if>
+	</select>
+	
+	
+	
+</mapper>

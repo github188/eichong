@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/style.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/APPissue/add_AppIndex.css"/>
+    <link rel="stylesheet" type="text/css" href="../../js/lib/My97DatePicer/skin/WdatePicker.css"/>
+    <title>首页故障通知</title>
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="container-fluid">
+        <div class="row">
+
+        </div>
+        <div class="row">
+            <div class="col-sm-12" style="padding: 0">
+                <div class="ibox float-e-margins">
+                    <div class="">
+                        <div class="ibox-content">
+                            <!--user=>company-->
+                            <div class="add_companyBlock">
+                                <div class="add_greyBlock">
+                                    <!--类型-->
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">类型<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8">
+                                            <div class=" col-sm-3 col-xs-4 model-select-box" style="width: 100%">
+                                                <div class="model-select-text messageInfoTypeBlock" data-value="1" id="messageInfoType">故障</div>
+                                                <span class="downRow messageInfoTypeBlock"></span>
+                                                <input type="text" name="messageInfoType" hidden="hidden" id="" value="" />
+                                                <ul class="model-select-option messageInfoTypeUl">
+                                                    <li data-option="1" class="seleced">故障</li>
+                                                    <li data-option="2">新建</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+
+                                        </div>
+                                    </div>
+                                    <!--标题-->
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">标题<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="messageInfoName" id="messageInfoName" class="commonStyle" placeholder="请输入标题"/>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="messageInfoNameTip">
+
+                                        </div>
+                                    </div>
+                                    <!--正文-->
+                                    <div class="container-fluid" id="payRuleDiv">
+                                        <div class="col-sm-12 comTitle">正文<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8">
+                                            <textarea id="messageInfoContent" class="messageCon" cols="" rows="" ></textarea>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="messageInfoContentTip">
+
+                                        </div>
+                                    </div>
+                                    <!--城市-->
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">城市<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8">
+                                            <div class=" col-sm-6 col-xs-6  model-select-box">
+                                                <div class="model-select-text messageInfoProvinceCodeBlock" data-value="" id="messageInfoProvinceCode">请选择</div>
+                                                <span class="downRow messageInfoProvinceCodeBlock"></span>
+                                                <input type="text" name="messageInfoProvinceCode" hidden="hidden" id="" value="" />
+                                                <ul class="model-select-option messageInfoProvinceCodeUl">
+
+                                                </ul>
+                                            </div>
+                                            <div class=" col-sm-6 col-xs-6 col-sm-offset-0 model-select-box">
+                                                <div class="model-select-text messageInfoCityCodeBlock" data-value="" id="messageInfoCityCode">请选择</div>
+                                                <span class="downRow messageInfoCityCodeBlock"></span>
+                                                <input type="text" name="messageInfoCityCode" hidden="hidden" id="" value="" id="cpyCity" />
+                                                <ul class="model-select-option messageInfoCityCodeUl">
+
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="cpyCityTip">
+
+                                        </div>
+                                    </div>
+                                    <!--开始时间-->
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">开始时间<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input  class="textInput required" id="messageInfoBegintime" name="messageInfoBegintime" class="commonStyle" readonly="readonly" style="width: 100%;height: 32px;text-indent: 20px;"
+                                                    onClick="WdatePicker({el:'messageInfoBegintime',minDate:'new Date()',dateFmt:'yyyy-MM-dd HH:mm:ss'})">
+
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="messageInfoBegintimeTip">
+
+                                        </div>
+                                    </div>
+                                    <!--关联充电点-->
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">关联充电点<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="powerstationName" id="powerstationName" class="commonStyle" placeholder="请输入关联充电点"/>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle">
+
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <ul class="stationListUl" id="stationListUl">
+
+                                            </ul>
+                                        </div>
+                                        <div class="col-sm-4">
+
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <div class="stationStyle">
+                                                <p class="stationTit">已关联的充电点：</p>
+                                                <ul class="stationTextUl" id="stationTextUl">
+
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="powerstationNameTip">
+
+                                        </div>
+                                    </div>
+
+                                    <!--按钮组合-->
+                                    <div class="saveBtn commonBtn" id="saveBtn">保存</div>
+                                    <div class="quitBtn commonBtn" id="goCancel">取消</div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<!--<script src="../js/apiAddress.js" type="text/javascript" charset="utf-8"></script>-->
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/APPissue/add_AppIndex.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../lib/My97DatePicer/WdatePicker.js" type="text/javascript" charset="utf-8"></script>
+</html>

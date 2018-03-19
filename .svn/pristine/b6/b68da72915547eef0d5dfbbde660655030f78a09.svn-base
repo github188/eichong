@@ -1,0 +1,79 @@
+package com.echong.model;
+
+/**
+ * Created by zangyaoyi on 2016/12/30.
+ */
+public class ElectricLabel {
+    private Long session_id; //此次操作的 session_id(可作为交易流水号)
+    private String pile_code;//充电桩编码
+    private Integer inter_no;//电桩上的接口(1 表示 A 口, 2 表示 B 口)
+    private Integer action;//1:启动 2:停止
+    private Integer user_id;//用户 ID,后续其它数据上报时可能需要该 user_id
+    private Integer voltage;//开关电压
+    private Integer elect;//开关电流
+    private Integer time;//上报时间（秒格式 Unix 时间戳）
+
+    public Long getSession_id() {
+        return session_id;
+    }
+
+    public void setSession_id(Long session_id) {
+        this.session_id = session_id;
+    }
+
+    public String getPile_code() {
+        return pile_code;
+    }
+
+    public void setPile_code(String pile_code) {
+        this.pile_code = pile_code;
+    }
+
+    public Integer getInter_no() {
+        return inter_no;
+    }
+
+    public void setInter_no(Integer inter_no) {
+        this.inter_no = inter_no;
+    }
+
+    public Integer getAction() {
+        return action;
+    }
+
+    public void setAction(Integer action) {
+        this.action = action;
+    }
+
+    public Integer getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(Integer user_id) {
+        this.user_id = user_id;
+    }
+
+    public Integer getVoltage() {
+        return voltage;
+    }
+
+    public void setVoltage(Integer voltage) {
+        this.voltage = voltage;
+    }
+
+    public Integer getElect() {
+        return elect;
+    }
+
+    public void setElect(Integer elect) {
+        this.elect = elect;
+    }
+
+    public Integer getTime() {
+        return time;
+    }
+
+    public void setTime(Integer time) {
+        this.time = time;
+    }
+}

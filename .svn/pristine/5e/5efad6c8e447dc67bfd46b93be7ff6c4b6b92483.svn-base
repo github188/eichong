@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/electric/param/param_list.css"/>
+    <title>电桩列表参数配置</title>
+</head>
+<body>
+<div class="container animated fadeInRight">
+    <div class="row">
+        <div class="formBlock clearfix">
+            <form id="electricParamListForm">
+                <div class="col-xs-12 col-sm-10 col-md-10 col-lg-10" >
+                    <div class="userListSelect">
+                        <input type="text" name="electricPileCode" id="" value="" class="col-sm-2 col-xs-6 pileCode" placeholder="桩体编码"/>
+                        <input type="text" name="powerStationName" id="" value="" class="col-sm-offset-1 col-sm-2 col-xs-6 pileCode" placeholder="充电点名称"/>
+                    </div>
+                    <div class="col-sm-12" style="background: #FFFFFF;height: 10px;"></div>
+                    <div class="userListSelect">
+                        <!--==============-->
+                        <div class="col-sm-2 col-xs-6 model-select-box">
+                            <div class="model-select-text cpyProvinceBlock" data-value="" id="provinceCodeHtml">选择省份</div>
+                            <span class="downRow cpyProvinceBlock"></span>
+                            <input type="text" name="provinceCode" hidden="hidden" id="" value="" />
+                            <ul class="model-select-option cpyProvinceUl">
+                                <li data-option="" class="seleced">选择省份</li>
+
+                            </ul>
+                        </div>
+                        <div class="col-sm-offset-1 col-xs-6 col-sm-2  model-select-box">
+                            <div class="model-select-text cypCityBlock" data-value="" id="cityCodeHtml">选择城市</div>
+                            <span class="downRow cypCityBlock"></span>
+                            <input type="text" name="cityCode" hidden="hidden" id="" value="" />
+                            <ul class="model-select-option cypCityUl">
+                                <li data-option="" class="seleced">选择城市</li>
+
+                            </ul>
+                        </div>
+                        <!--============-->
+
+                        <div class="col-sm-offset-1 col-sm-2 col-xs-6 model-select-box">
+                            <div class="model-select-text cpyAreaBlock" data-value="" id="areaCodeHtml">选择区/县</div>
+                            <span class="downRow cpyAreaBlock"></span>
+                            <input type="text" name="areaCode" id="" value="" hidden="hidden"/>
+                            <ul class="model-select-option areaUl">
+                                <li data-option="" class="seleced">选择区/县</li>
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-2 col-md-2 col-lg-2" style="position: relative;">
+                    <div class="queryBtn" onclick="getElectricParamList()">
+                        查询
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!--按钮部分开始==========================================================-->
+        <div class="btnBlock">
+            <div class="col-sm-12 col-xs-12 col-md-12" style="">
+                <div class="col-sm-2 col-xs-2 btnStyle showBtn" id="setBtn" style="display: none">
+                  设置
+                </div>
+            </div>
+        </div>
+        <!--表格部分开始==========================================================-->
+        <div class="showSet table-responsive">
+
+            <table class=" table table-bordered text-center" style="border: 1px solid #DCDCDC;">
+                <thead>
+                <tr>
+                    <th><input type="checkbox" name="" class="selAll" value=""/></th>
+                    <th>桩体编码</th>
+                    <th>编号</th>
+                    <th>充电点名称</th>
+                    <th>充电方式</th>
+                    <th>链接状态</th>
+                    <th>最大离线充电次数</th>
+                    <th>定时充电启动时间</th>
+                    <th>定时soc充电开关</th>
+                    <th>下发状态</th>
+                    <th>更新时间</th>
+                </tr>
+                </thead>
+                <tbody id="myTbogy">
+
+                </tbody>
+            </table>
+
+            <div id="electricParamPage" class="pagination">
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="setBlock" style="display: none;">
+    <div class="commonLine">
+        <div>定时充电</div>
+        <div>
+            <input type="radio" name="status" value="1"/>&nbsp;&nbsp;开启
+            <input type="radio" name="status" value="0" checked="checked"/>&nbsp;&nbsp;关闭
+        </div>
+    </div>
+    <div class="commonLine">
+        <div>定时充电时间</div>
+        <div>
+            <select name="hour" id="hour" disabled="disabled">
+                <!--<option value="0">0</option>-->
+            </select>时
+            <select name="minute" id="minute" disabled="disabled">
+                <!--<option value="0">0</option>-->
+            </select>分
+        </div>
+    </div>
+    <div class="commonLine">
+        <div>定soc充电</div>
+        <div>
+            <input type="radio" name="socValue" value="1"/>&nbsp;&nbsp;开启
+            <input type="radio" name="socValue" value="0" checked="checked"/>&nbsp;&nbsp;关闭
+        </div>
+    </div>
+    <div class="commonLine">
+        <div>离线充电次数</div>
+        <div>
+            <!--<input type="number" name="offlineNum" value="0" min="0" max="10"/>-->
+            <input type="text" name="offlineNum" value="0"/>
+        </div>
+    </div>
+    <div class="errorTip" style="display: none;">
+       离线充电次数离线充电次数离线充电次数
+    </div>
+</div>
+</body>
+<script src="../../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="../../../js/contabs.min.js"></script>
+<script src="../../../js/electric/param/param_list.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/checkBox.js" type="text/javascript" charset="utf-8"></script>
+</html>

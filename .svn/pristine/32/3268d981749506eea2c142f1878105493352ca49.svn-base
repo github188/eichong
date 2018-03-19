@@ -1,0 +1,103 @@
+//下拉列表
+toUnbindEvent();
+function toUnbindEvent() {
+    $('.areaCodeBlock').unbind();
+    selectModel();
+}
+//保存新增集中器信息
+$("body").off("click", "#saveBtn").on("click", "#saveBtn", function () {
+    var concentratorName = $('#concentratorName').val();
+    var simCode = $('#simCode').val();
+    var simMac = $('#simMac').val();
+    var simType = $('#areaCodeHtml').attr('data-value');
+    var obj = {
+        concentratorName: concentratorName,
+        simMac: simMac,
+        simType: simType,
+        simCode: simCode
+    };
+    if(!concentratorName){
+        $('#concentratorName').focus();
+        return false;
+    }
+    if(!simMac){
+        $('#simMac').focus();
+        return false;
+    }
+    if(!simCode){
+        $('#simCode').focus();
+        return false;
+    }
+    if(!simType){
+        layer.closeAll();
+        layer.open({
+            type: 1,
+            offset: '100px',
+            title: ["提示", "font-size:12px;text-align:center"],
+            shadeClose: false,
+            closeBtn: 2,
+            area: ['310px', '180px'],//宽高
+            content: "请选择SIM运营商",
+            btn: ["确定", "取消"],
+            yes: function (index, layero) {
+                layer.closeAll();
+                window.location.reload();
+            },
+            cancel: function (index, layero) {
+                layer.closeAll();
+                window.location.reload();
+            }
+        });
+        return false;
+    }
+    else{
+        $.ajax({
+            type: "post",
+            url: basePath + addConcentratorUrl,
+            async: true,
+            data: obj,
+            success: function (data) {
+                if (data.success == true) {
+                    layer.closeAll();
+                    layer.open({
+                        type: 1,
+                        offset: '100px',
+                        title: ["提示", "font-size:12px;text-align:center"],
+                        shadeClose: false,
+                        closeBtn: 2,
+                        area: ['310px', '180px'],//宽高
+                        content: "保存成功",
+                        time: 3000,
+                        btn: ["确定", "取消"],
+                        yes:function(index,layero){
+                            window.location.href='concentrator_list.html';
+                        }
+                    });
+                } else {
+                    layer.open({
+                        type: 1,
+                        offset: '100px',
+                        title: ["提示", "font-size:12px;text-align:center"],
+                        shadeClose: false,
+                        closeBtn: 2,
+                        area: ['310px', '160px'],//宽高
+                        content: data.msg,
+                        time: 3000,
+                        btn: ["确定", "取消"]
+                    });
+                }
+            }
+        });
+    }
+})
+
+//sim卡运营商选择
+$('.areaCodeUl').on("click","li",function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+})
+
+//刚一进页面就要执行的所有验证
+$('#toPowerStationDetail').on('click', function () {
+    window.location.href = 'concentrator_list.html';
+})

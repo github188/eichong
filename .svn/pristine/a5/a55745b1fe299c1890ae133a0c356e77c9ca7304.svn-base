@@ -1,0 +1,26 @@
+package com.wanma.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import com.wanma.model.TblChargingOrder;
+
+
+/**
+ * @Description:充电订单DAO
+ * @author lhy
+ * @createTime 2015/12/08 12:43
+ * @updater 
+ * @updateTime    
+ * @version v1.0
+ */
+public interface TblChargOrderMapper {
+	public void update(TblChargingOrder model);
+	public TblChargingOrder selectOne(TblChargingOrder model);
+	public List<TblChargingOrder> getList(TblChargingOrder model);
+	public TblChargingOrder getOderByOpenId(String openId);
+	public List<Map<String, Object>> getListGroupByPileNumByPsId(
+			TblChargingOrder odrModel);
+	public List<Map<String, Object>> getListGroupByHeadNoByPileNum(
+			TblChargingOrder odrModel);
+}

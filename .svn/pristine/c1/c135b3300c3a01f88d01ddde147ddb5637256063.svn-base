@@ -1,0 +1,162 @@
+package com.wanma.ims.mapper;
+
+import java.util.HashMap;
+import java.util.List;
+
+import com.wanma.ims.model.MenuDO;
+
+
+/**
+ * 菜单Mapper
+ * 
+ * @version V1.0
+ * @author zcy
+ * @date 2017年5月26日
+ */
+public interface MenuMapper {
+	
+	
+	
+	/**
+	 * 获取超级管理员的用户菜单
+	 * @param 
+	 */
+	public List<MenuDO> getMenuListByAdmin();
+	/**
+	 * 根据roleId获取菜单
+	 * @param roleId
+	 */
+	public List<MenuDO> getMenuListByRoleIds(String roleId);
+	/**
+	 * 统计菜单列表
+	 * @param menuDO
+	 */
+    public Long countMenuList(MenuDO menuDO);
+    /**
+	 * 查询菜单列表
+	 * @param menuDO
+	 */
+	public List<MenuDO> selectMenuListPage(MenuDO menuDO);
+	/**
+	 * 添加菜单
+	 * @param menuDO
+	 */
+	public Integer insertMenu(MenuDO menuDO);
+	/**
+	 * 根据ID查询菜单
+	 * @param menuId
+	 */
+	public MenuDO selectMenuById(String menuId);
+	/**
+	 * 根据父级ID查询菜单
+	 * @param menuId
+	 */
+	public List<MenuDO> selectMenuByParentId(String menuId);
+	/**
+	 * 编辑菜单
+	 * @param menuDO
+	 */
+	public Integer updateMenu(MenuDO menuDO);
+	/**
+	 * 删除(批量)菜单
+	 * @param menuDO
+	 */
+	public void deleteMenu(List<String> menuIds);
+	/**
+	 * 根据roleId,menuIds校验是否选中
+	 * @param menuDO
+	 */
+	public List<MenuDO> selectMenuListByRoleIdAndMenuIds(HashMap<String,String> params);
+	/***************************************以下暂时不可用******************************************************/
+	/**
+	 * 根据用户菜单ID取得菜单数
+	 * 
+	 * @author yangweir
+	 * @since Version 1.0
+	 * @param menuId
+	 *            菜单ID
+	 * @return int 菜单数
+	 * @throws 无
+	 */
+	public int getMenuCountById(String menuId);
+
+	/**
+	 * 取得菜单信息
+	 * 
+	 * @author yangweir
+	 * @since Version 1.0
+	 * @param menuId
+	 *            菜单ID
+	 * @return MenuModel 菜单信息
+	 * @throws 无
+	 */
+
+
+	/**
+	 * 取得菜单一览
+	 * 
+	 * @author yangweir
+	 * @since Version 1.0
+	 * @return List<MenuModel> 菜单一览
+	 * @throws 无
+	 */
+	public List<MenuDO> getMenuList();
+
+	/**
+	 * 查询菜单一览
+	 * 
+	 * @author yangweir
+	 * @since Version 1.0
+	 * @param menuModel
+	 *            查询用菜单对象
+	 * @return List<MenuModel> 菜单一览
+	 * @throws 无
+	 */
+	public List<MenuDO> searchMenuList(MenuDO menuModel);
+
+	public Long searchMenuListCount(MenuDO menu);
+
+	/**
+	 * 添加菜单
+	 * 
+	 * @author yangweir
+	 * @since Version 1.0
+	 * @param MenuDO
+	 *            菜单信息
+	 * @return Menu 菜单信息
+	 * @throws 无
+	 */
+	
+
+	/**
+	 * 编辑菜单
+	 * 
+	 * @author yangweir
+	 * @since Version 1.0
+	 * @param MenuDO
+	 *            菜单信息
+	 * @return String 处理结果标识
+	 * @throws 无
+	 */
+
+
+	/**
+	 * 删除菜单
+	 * 
+	 * @author yangweir
+	 * @since Version 1.0
+	 * @param menuId
+	 *            菜单ID
+	 * @return 无
+	 * @throws 无
+	 */
+	public void removeMenu(String menuId);
+
+	public List<MenuDO> getCheckedMenuListByRoleIdAndMenuIds(String roleId,
+			String menuIds);
+
+	
+
+	public void removeMenusByRoleId(String roleId);
+
+}

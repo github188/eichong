@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/style.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/cardList/card_list.css"/>
+    <title>卡管理</title>
+</head>
+<body>
+<div class="container animated fadeInRight">
+    <div class="row">
+        <div class="formBlock clearfix">
+            <form id="cardListForm">
+                <div class="col-xs-12 col-sm-11 col-md-11 col-lg-11">
+                    <div class="userListSelect row">
+                        <div class="col-sm-3 col-xs-12">
+                            <div class="col-sm-3 queryParam">
+                                外卡号
+                            </div>
+                            <div class="col-sm-9 userAccount">
+                                <input type="text" name="ucExternalCardNumber" value="" class="userAccountInput"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-xs-12">
+                            <div class="col-sm-4 queryParam">
+                                卡类型
+                            </div>
+                            <div class="col-sm-8 col-xs-12 model-select-box">
+                                <div class="model-select-text ucTypeBlock" data-value="" id="ucTypeHtml">请选择</div>
+                                <span class="downRow ucTypeBlock"></span>
+                                <input type="text" name="ucType" value="" hidden="hidden"/>
+                                <ul class="model-select-option ucTypeUl">
+                                    <li data-option="" class="seleced">请选择</li>
+                                    <li data-option="10">爱充普通公共储蓄卡</li>
+                                    <li data-option="11">爱充普通专属储蓄卡</li>
+                                    <li data-option="12">爱充企业信用卡</li>
+                                    <li data-option="13">爱充合作公共储蓄卡</li>
+                                    <li data-option="14">爱充合作专属储蓄卡</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-sm-2 col-xs-12">
+                            <div class="col-sm-4 queryParam">
+                                状态
+                            </div>
+                            <div class="col-sm-8  col-xs-12 model-select-box">
+                                <div class="model-select-text ucStatusBlock" data-value="" id="ucStatus">请选择</div>
+                                <span class="downRow ucStatusBlock"></span>
+                                <input type="text" name="ucStatus" value="" hidden="hidden"/>
+                                <ul class="model-select-option ucStatusUl">
+                                    <li data-option="" class="seleced">请选择</li>
+                                    <li data-option="0">正常</li>
+                                    <li data-option="2">已冻结</li>
+                                    <li data-option="1">已挂失</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-sm-4 col-xs-12">
+                            <div class="col-sm-4 queryParam">
+                                是否绑APP
+                            </div>
+                            <div class="col-sm-5 col-xs-12 model-select-box">
+                                <div class="model-select-text isAppBlock" data-value="" id="isAppHtml">请选择</div>
+                                <span class="downRow isAppBlock"></span>
+                                <input type="text" name="isApp" value="" hidden="hidden"/>
+                                <ul class="model-select-option isAppUl">
+                                    <li data-option="" class="seleced">请选择</li>
+                                    <li data-option="1">已绑APP</li>
+                                    <li data-option="0">未绑APP</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12" style="background: #FFFFFF;height: 20px;"></div>
+                    <div class="userListSelect row">
+                        <div class="col-sm-3 col-xs-12">
+                            <div class="col-sm-3 queryParam">
+                                内卡号
+                            </div>
+                            <div class="col-sm-9 userAccount">
+                                <input type="text" name="ucInternalCardNumber" value="" class="userAccountInput"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-1 queryParam">
+                            渠道
+                        </div>
+                        <div class=" col-xs-12 col-sm-2 model-select-box">
+                            <div class="model-select-text cpyProvinceBlock" data-value="" id="cpyProvinceCode">请选择
+                            </div>
+                            <span class="downRow cpyProvinceBlock"></span>
+                            <ul class="model-select-option cpyProvinceUl">
+
+                            </ul>
+                        </div>
+                        <div class=" col-sm-2 col-xs-6  model-select-box">
+                            <div class="model-select-text cypCityBlock" data-value="" id="cypCityCode">请选择</div>
+                            <span class="downRow cypCityBlock"></span>
+                            <ul class="model-select-option cypCityUl">
+                            </ul>
+                        </div>
+                        <div class="col-xs-6 col-sm-3 model-select-box">
+                            <div class="model-select-text cpyCompanyBlock" data-value="" id="cpyCompanyName">请选择
+                            </div>
+                            <span class="downRow cpyCompanyBlock"></span>
+                            <input type="text" name="ucCpyId" id="ucCpyId" value="" hidden="hidden"/>
+                            <ul class="model-select-option cpyCompanyUl">
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-1 col-md-1 col-lg-1" style="position: relative;">
+                    <div class="queryBtn" onclick="cardListSearch()">
+                        查询
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!--按钮部分开始==========================================================-->
+        <div class="btnBlock">
+            <div class="col-sm-10 col-xs-12 col-md-10" style="">
+                <div class="col-sm-2 col-xs-2 btnStyle showBtn" id="showSet" style="display: none;">
+                    显示
+                </div>
+                <ul class="checkList animated fadeInDown col-sm-3 col-xs-3" style="display: none;">
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name="" data-state="0" value="" disabled="disabled"
+                                   checked="checked" data-flag="cardList_ucExternalCardNumber"/>
+                        </div>
+                        <label>外卡号</label>
+                    </li>
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name="" data-state="0" value="" disabled="disabled"
+                                   checked="checked" data-flag="cardList_ucInternalCardNumber"/>
+                        </div>
+                        <label>内卡号</label>
+
+                    </li>
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name="" data-state="0" value="" disabled="disabled"
+                                   checked="checked" data-flag="cardList_ucType"/>
+                        </div>
+                        <label>卡类型</label>
+
+                    </li>
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name="" data-state="0" value="" disabled="disabled"
+                                   checked="checked" data-flag="cardList_cpyCompanyname"/>
+                        </div>
+                        <label>渠道名称</label>
+                    </li>
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name="" data-state="0" value="" disabled="disabled"
+                                   checked="checked" data-flag="cardList_ucStatus"/>
+                        </div>
+                        <label>状态</label>
+                    </li>
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name="" data-state="0" value="" data-flag="cardList_isApp"/>
+                        </div>
+                        <label>是否绑APP</label>
+                    </li>
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name="" data-state="0" value=""
+                                   data-flag="cardList_userAccount"/>
+                        </div>
+                        <label>用户账号</label>
+                    </li>
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name="" data-state="0" value=""
+                                   data-flag="cardList_cardBalance"/>
+                        </div>
+                        <label>卡内余额</label>
+                    </li>
+
+                </ul>
+                <div class="col-sm-2 col-xs-2 col-sm-offset-1 col-xs-offset-1 btnStyle" id="dataExport"  style="display: none;">
+                    导出
+                </div>
+                <div class="col-sm-2 col-xs-2 col-sm-offset-1 col-xs-offset-1 btnStyle" id="cardLossBtn" style="display: none;">
+                    挂失
+                </div>
+                <div class="col-sm-2 col-xs-2 col-sm-offset-1 col-xs-offset-1 btnStyle" id="bindBtn" style="display: none;">
+                    绑定
+                </div>
+            </div>
+            <div class="col-sm-2 col-md-2"></div>
+        </div>
+        <!--表格部分开始==========================================================-->
+        <div class="showSet table-responsive">
+            <table class=" table table-bordered text-center" style="border: 1px solid #DCDCDC;">
+                <thead>
+                <tr>
+                    <th class=""><input type="checkbox" name="" class="selAll" value=""/></th>
+                    <th class="cardList_ucExternalCardNumber">外卡号</th>
+                    <th class="cardList_ucInternalCardNumber">内卡号</th>
+                    <th class="cardList_ucType">卡类型</th>
+                    <th class="cardList_cpyCompanyname">渠道名称</th>
+                    <th class="cardList_ucStatus">状态</th>
+                    <th class="cardList_isApp">是否绑APP</th>
+                    <th class="cardList_userAccount">用户账号</th>
+                    <th class="cardList_cardBalance">卡内余额</th>
+                </tr>
+                </thead>
+                <tbody id="myTbogy">
+
+                </tbody>
+            </table>
+
+            <div id="cardListPage" class="pagination">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="cardLossContent" style="display: none;">
+    挂失后，用户使用app，绑定的卡都无法充电。用户资金账户会被冻结
+</div>
+<!--卡绑定公司-->
+<div class="newBindCompany" style="display: none;">
+    <div class="text-left">公司标识</div>
+    <div class="ucCardNumber">
+        <input type="text" name="cpyNumber" value="" placeholder="公司标识" autofocus="autofocus"/>
+    </div>
+    <div class="text-left companyTip"></div>
+    <div class="text-left m10">付费策略</div>
+    <div class="ucCardNumber">
+        <input type="text" name="paymentRule" value="" placeholder="付费策略" readonly="readonly"/>
+        <input type="text" name="paymentRule2" value="" placeholder="" hidden="hidden" style="display: none;"/>
+    </div>
+    <div class="text-left m10">资金账户</div>
+    <div class="ucCardNumber" style="border:0;">
+        <select class="form-control m-b" name="tradeType" id="setTradeType">
+
+        </select>
+    </div>
+</div>
+</body>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<!--<script src="../js/apiAddress.js" type="text/javascript" charset="utf-8"></script>-->
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="../../js/contabs.min.js"></script>
+<script src="../../js/cardList/card_list.js" type="text/javascript" charset="utf-8"></script>
+</html>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.ConcentratorMapper">
+    <resultMap type="ConcentratorDO" id="resultConcentrator">
+        <result property="concentratorId" column="concentrator_id"/>
+        <result property="concentratorName" column="concentrator_name"/>
+        <result property="simMac" column="SIM_MAC"/>
+        <result property="simCode" column="SIM_CODE"/>
+        <result property="simType" column="SIM_TYPE"/>
+        <result property="state" column="state"/>
+        <result property="typeSpanId" column="TypeSpanId"/>
+        <result property="coctUserId" column="creator_id"/>
+        <result property="isDel" column="is_del"/>
+         <result property="gmtCreate" column="gmt_create"/>
+    </resultMap>
+	<select id="getConcentratorCount" parameterType="ConcentratorDO" resultType="long">
+		select count(*) from tbl_concentrator
+		where state!=2 and  is_del = 0
+		 <if test="concentratorName !=null and concentratorName !=''">
+	            and concentrator_name like concat('%',#{concentratorName},'%')
+	     </if>
+	      <if test="simMac !=null and simMac !=''">
+	            and SIM_MAC like concat('%',#{simMac},'%')
+	     </if>
+	     <if test="simType !=null and simType !=''">
+	            and SIM_TYPE = #{simType}
+	     </if>
+	</select>
+	<select id="getConcentratorList" parameterType="ConcentratorDO" resultMap="resultConcentrator">
+		select concentrator_id,concentrator_name,SIM_MAC,SIM_CODE,
+		SIM_TYPE,state,
+		date_format(gmt_create,'%Y-%m-%d %T') creatTime
+		,creator_id,creator 
+		 from tbl_concentrator
+		where state!=2 and  is_del = 0
+		 <if test="concentratorName !=null and concentratorName !=''">
+	            and concentrator_name like concat('%',#{concentratorName},'%')
+	     </if>
+	      <if test="simMac !=null and simMac !=''">
+	            and SIM_MAC like concat('%',#{simMac},'%')
+	     </if>
+	     <if test="simType !=null and simType !=''">
+	            and SIM_TYPE = #{simType}
+	     </if>
+	     order by gmt_modified DESC
+	     <if test="pager!=null">limit #{pager.offset},#{pager.pageSize}</if>
+	</select>
+	<select id="getconcentratorInfo" parameterType="ConcentratorDO" resultType="ConcentratorDO">
+		select concentrator_id,concentrator_name,SIM_MAC,SIM_CODE,
+		SIM_TYPE,state,creator 
+		 from tbl_concentrator
+		where  concentrator_id = #{concentratorId}
+	 </select>
+	<update id="modifyConcentrator" parameterType="ConcentratorDO" >
+		update tbl_concentrator
+		set 
+		concentrator_name = #{concentratorName},
+		SIM_MAC = 	#{simMac},
+		SIM_TYPE = #{simType},
+		SIM_CODE = #{simCode},
+		state = #{state},
+		modifier = #{modifier},
+		gmt_modified = now()
+		where concentrator_id = #{concentratorId}
+	</update>
+	<insert id="addConcentrator" parameterType="ConcentratorDO">
+		insert into tbl_concentrator
+		(
+			concentrator_name,SIM_MAC,SIM_TYPE,SIM_CODE,state,is_del,
+			TypeSpanId,creator_id,creator,modifier,gmt_create,gmt_modified
+		)
+		values(
+			#{concentratorName},#{simMac},#{simType},#{simCode},#{state},0,
+			0,#{coctUserId},#{creator},#{modifier},now(),now()
+		)
+	
+	</insert>
+	<update id="deleteConcentrator" parameterType="ConcentratorDO">
+	update tbl_concentrator
+		set 
+		is_del = 1,
+		modifier = #{modifier},
+		gmt_modified = now()
+		where concentrator_id = #{concentratorId}
+	</update>
+</mapper>

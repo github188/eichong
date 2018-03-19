@@ -1,0 +1,48 @@
+package com.wanma.ims.common;
+
+/**
+ * 菜单图片URL 
+ * (默认后台写死)
+ */
+public enum MenuEnum {
+	
+   MENU_CONFIG("配置管理","http://ims_config.jpg"),MENU_ELECTRIC("桩体管理","http://ims_electric.jpg"),MENU_ORDER("订单管理","http://ims_order.jpg"),
+   MENU_SYS("系统管理","http://ims_sys.jpg"),MENU_USER("用户管理","http://ims_user.jpg"),MENU_USER_CARD("充电卡管理","http://ims_usercard.jpg"),
+   MENU_ACCOUNT("资金账户","http://ims_account.jpg"),MENU_COMPANY("公司管理","http://ims_user.jpg");
+	
+   private String menuName;
+   private String menuImgUrl;
+   
+   private MenuEnum(String menuName,String menuImgUrl){
+	   this.menuName = menuName;
+	   this.menuImgUrl = menuImgUrl;
+   }
+
+   public static String getMenuName(String menuImgUrl) {  
+       for (MenuEnum c : MenuEnum.values()) {  
+           if (c.getMenuImgUrl() == menuImgUrl) {  
+               return c.menuName;  
+           }  
+       }  
+       return null;  
+    }  
+	public String getMenuName() {
+		return menuName;
+	}
+	
+	
+	public void setMenuName(String menuName) {
+		this.menuName = menuName;
+	}
+	
+	
+	public String getMenuImgUrl() {
+		return menuImgUrl;
+	}
+	
+	
+	public void setMenuImgUrl(String menuImgUrl) {
+		this.menuImgUrl = menuImgUrl;
+	}
+	   
+}

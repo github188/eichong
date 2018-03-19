@@ -1,0 +1,61 @@
+#container1 .box .formList{
+	padding-top: 40px;
+	padding-left: 0;
+}
+.padding30 {
+    padding: 30px;
+    padding-left: 30px;
+    padding-top: 0;
+    background: #FFFFFF;
+    overflow-x: auto;
+}
+#container1 .box .formList .exportTable{
+	width: 68px;
+	height: 26px;
+	background: none;
+	text-decoration: underline;
+	color: #666666;
+	line-height: 26px;
+	cursor: pointer;
+	font-size: 12px;
+	position: absolute;
+	right: 17%;
+	top: 40px;
+}
+.marginLeft10{
+	margin-left: 10px;
+}
+.listPayOrderTable{
+	overflow: auto;
+	margin-top: 104px;
+	width: 100%;
+}
+.listPayOrderTable tr th {
+	text-align: left;
+	min-height: 39px !important;
+	line-height: 39px !important;
+	color: #333333;
+	font-size: 12px;
+	background: #F5F5F5;
+	padding-left: 10px;
+}
+.listPayOrderTable tr .smallWidth{
+	min-width: 40px;
+	text-align: left;
+	min-height: 39px !important;
+	line-height: 39px !important;
+	color: #333333;
+	font-size: 12px;
+	background: #F5F5F5;
+}
+.dataBlock{
+	display: inline-block;
+	height: 26px;
+	font-size: 12px;
+	margin-left: 10px;
+	color: #666666;
+}
+
+
+
+

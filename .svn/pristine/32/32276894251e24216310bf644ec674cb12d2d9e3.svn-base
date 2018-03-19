@@ -1,0 +1,86 @@
+@r:50rem;
+a,
+input,
+button {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+input,
+button {
+  -webkit-appearance: none;
+  border-radius: 0;
+}
+body {
+  margin:0;
+  -webkit-user-select:auto;
+  background-color: #ebebeb;
+}
+body * {
+  -webkit-user-select:auto;
+  font-family:  "微软雅黑";
+}
+body {
+  -webkit-text-size-adjust: 100%;
+  font-family:  "微软雅黑";
+}
+*{
+  padding: 0;
+  margin: 0;
+}
+.main{
+  width: 750/@r;
+  min-height: 100/@r;
+  .mainContent{
+    width: 750/@r;
+    min-height: 100/@r;
+    .month{
+      width:670/@r;
+      min-height: 100/@r;
+      padding: 0 40/@r;
+      .monthNum{
+        height: 88/@r;
+        width: 670/@r;
+        line-height: 88/@r;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        .font28{
+          font-size: 28/@r;
+          color: #666666;
+        }
+        .font26{
+          font-size: 26/@r;
+          color: #888888;
+          display: block;
+          width: 146/@r;
+          height: 88/@r;
+          padding-right: 28/@r;
+          background:url("../img/jiantou.png") no-repeat right center ;
+          background-size: 18/@r 32/@r;
+        }
+      }
+
+    }
+    ul{
+      list-style: none;
+      background-color: #FFFFFF;
+      width: 750/@r;
+      font-size: 28/@r;
+      color: #666666;
+      height: 100/@r;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      li{
+        width: 50%;
+        height: 46/@r;
+        border-right: 1px solid #ebebeb;
+        text-align: center;
+        font-size: 28/@r;
+        color: #666666;
+      }
+      li:last-child{
+        border: 0;
+      }
+    }
+  }
+}

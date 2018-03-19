@@ -1,0 +1,41 @@
+package com.wanma.ims.service;
+
+import java.util.List;
+
+import com.wanma.ims.common.domain.CountAdminEpRelaDO;
+import com.wanma.ims.common.domain.UserDO;
+
+
+public interface CommonRedisService {
+   
+	/**
+	 * 业务管理员桩权限缓存 
+	 * @param userAdmin
+	 */
+	public void initAdminWorkEpRela(Long userId);
+	
+	/**
+	 * 系统管理员桩权限缓存 
+	 * @param userAdmin
+	 */
+	public void initAdminSysEpRela(Long userId);
+	
+	/**
+	 * 获取当前登录人充电点数据权限
+	 * @param userAdmin
+	 */
+	public List<Long> getPowerStationIdsByLoginId(UserDO loginUser);
+	
+	/**
+	 * 获取当前登录人充电桩数据权限
+	 * @param userAdmin
+	 */
+	public List<Long> getElectricPileIdsByLoginId(UserDO loginUser);
+	
+	/**
+	 * 获取当前登录人充电桩数据权限
+	 * @param userAdmin
+	 */
+	public List<CountAdminEpRelaDO> getAdminEpRelaByLoginId(UserDO loginUser);
+	
+}

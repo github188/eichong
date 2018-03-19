@@ -1,0 +1,162 @@
+{
+    "data": [
+        {
+            "areaId": "330102",
+            "areaName": "上城区",
+            "cityId": "330100",
+            "createDate": 1421242515000,
+            "createUser": "system",
+            "deleteFlag": "0",
+            "hotFlag": "0",
+            "lastUpdateDate": 1421242515000,
+            "lastUpdateUsere": "system",
+            "provinceId": "330000"
+        },
+        {
+            "areaId": "330103",
+            "areaName": "下城区",
+            "cityId": "330100",
+            "createDate": 1421242515000,
+            "createUser": "system",
+            "deleteFlag": "0",
+            "hotFlag": "0",
+            "lastUpdateDate": 1421242515000,
+            "lastUpdateUsere": "system",
+            "provinceId": "330000"
+        },
+        {
+            "areaId": "330104",
+            "areaName": "江干区",
+            "cityId": "330100",
+            "createDate": 1421242515000,
+            "createUser": "system",
+            "deleteFlag": "0",
+            "hotFlag": "0",
+            "lastUpdateDate": 1421242515000,
+            "lastUpdateUsere": "system",
+            "provinceId": "330000"
+        },
+        {
+            "areaId": "330105",
+            "areaName": "拱墅区",
+            "cityId": "330100",
+            "createDate": 1421242515000,
+            "createUser": "system",
+            "deleteFlag": "0",
+            "hotFlag": "0",
+            "lastUpdateDate": 1421242515000,
+            "lastUpdateUsere": "system",
+            "provinceId": "330000"
+        },
+        {
+            "areaId": "330106",
+            "areaName": "西湖区",
+            "cityId": "330100",
+            "createDate": 1421242515000,
+            "createUser": "system",
+            "deleteFlag": "0",
+            "hotFlag": "0",
+            "lastUpdateDate": 1421242515000,
+            "lastUpdateUsere": "system",
+            "provinceId": "330000"
+        },
+        {
+            "areaId": "330108",
+            "areaName": "滨江区",
+            "cityId": "330100",
+            "createDate": 1421242515000,
+            "createUser": "system",
+            "deleteFlag": "0",
+            "hotFlag": "0",
+            "lastUpdateDate": 1421242515000,
+            "lastUpdateUsere": "system",
+            "provinceId": "330000"
+        },
+        {
+            "areaId": "330109",
+            "areaName": "萧山区",
+            "cityId": "330100",
+            "createDate": 1421242515000,
+            "createUser": "system",
+            "deleteFlag": "0",
+            "hotFlag": "0",
+            "lastUpdateDate": 1421242515000,
+            "lastUpdateUsere": "system",
+            "provinceId": "330000"
+        },
+        {
+            "areaId": "330110",
+            "areaName": "余杭区",
+            "cityId": "330100",
+            "createDate": 1421242515000,
+            "createUser": "system",
+            "deleteFlag": "0",
+            "hotFlag": "0",
+            "lastUpdateDate": 1421242515000,
+            "lastUpdateUsere": "system",
+            "provinceId": "330000"
+        },
+        {
+            "areaId": "330122",
+            "areaName": "桐庐县",
+            "cityId": "330100",
+            "createDate": 1421242515000,
+            "createUser": "system",
+            "deleteFlag": "0",
+            "hotFlag": "0",
+            "lastUpdateDate": 1421242515000,
+            "lastUpdateUsere": "system",
+            "provinceId": "330000"
+        },
+        {
+            "areaId": "330127",
+            "areaName": "淳安县",
+            "cityId": "330100",
+            "createDate": 1421242515000,
+            "createUser": "system",
+            "deleteFlag": "0",
+            "hotFlag": "0",
+            "lastUpdateDate": 1421242515000,
+            "lastUpdateUsere": "system",
+            "provinceId": "330000"
+        },
+        {
+            "areaId": "330182",
+            "areaName": "建德市",
+            "cityId": "330100",
+            "createDate": 1421242515000,
+            "createUser": "system",
+            "deleteFlag": "0",
+            "hotFlag": "0",
+            "lastUpdateDate": 1421242515000,
+            "lastUpdateUsere": "system",
+            "provinceId": "330000"
+        },
+        {
+            "areaId": "330183",
+            "areaName": "富阳市",
+            "cityId": "330100",
+            "createDate": 1421242515000,
+            "createUser": "system",
+            "deleteFlag": "0",
+            "hotFlag": "0",
+            "lastUpdateDate": 1421242515000,
+            "lastUpdateUsere": "system",
+            "provinceId": "330000"
+        },
+        {
+            "areaId": "330185",
+            "areaName": "临安市",
+            "cityId": "330100",
+            "createDate": 1421242515000,
+            "createUser": "system",
+            "deleteFlag": "0",
+            "hotFlag": "0",
+            "lastUpdateDate": 1421242515000,
+            "lastUpdateUsere": "system",
+            "provinceId": "330000"
+        }
+    ],
+    "msg": "操作成功!",
+    "status": 100
+}

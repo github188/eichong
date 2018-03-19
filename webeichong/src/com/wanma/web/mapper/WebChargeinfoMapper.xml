@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.web.dao.WebChargeMapper">
+
+	<resultMap id="tblChargeinfoResultMap" type="TblChargeinfo">
+		<id property="pkChargeinfo" column="pk_ChargeInfo" />
+		<result property="chinUsingmachinecode" column="chIn_UsingmachineCode" />
+		<result property="chinPowerstationid" column="chIn_PowerStationId" />
+		<result property="chinInterfaceidentification" column="chIn_InterfaceIdentification" />
+		<result property="chinLinkedstatus" column="chIn_linkedStatus" />
+		<result property="chinWorkingstatus" column="chIn_WorkingStatus" />
+		<result property="chinOutputvoltage" column="chIn_OutputVoltage" />
+		<result property="chinOutputcurrent" column="chIn_OutputCurrent" />
+		<result property="chinOutputstatus" column="chIn_OutputStatus" />
+		<result property="chinTotalactive" column="chIn_TotalActive" />
+		<result property="chinTotaltime" column="chIn_TotalTime" />
+		<result property="chinType" column="chIn_Type" />
+		<result property="chinCreatedate" column="chIn_Createdate" />
+		<result property="chinUpdatedate" column="chIn_Updatedate" />
+	</resultMap>
+	<resultMap id="pageResultMap"  type="java.util.HashMap" extends="tblChargeinfoResultMap"></resultMap>
+	<resultMap id="findResultMap"  type="java.util.HashMap" extends="tblChargeinfoResultMap"></resultMap>
+
+	<insert id="insert" parameterType="TblChargeinfo">
+	   insert into tbl_ChargeInfo (
+	     pk_ChargeInfo,
+	     chIn_UsingmachineCode,
+	     chIn_PowerStationId,
+	     chIn_InterfaceIdentification,
+	     chIn_linkedStatus,
+	     chIn_WorkingStatus,
+	     chIn_OutputVoltage,
+	     chIn_OutputCurrent,
+	     chIn_OutputStatus,
+	     chIn_TotalActive,
+	     chIn_TotalTime,
+	     chIn_Type,
+	     chIn_Createdate,
+	     chIn_Updatedate
+	   )values (
+	     #{pkChargeinfo},
+	     #{chinUsingmachinecode},
+	     #{chinPowerstationid},
+	     #{chinInterfaceidentification},
+	     #{chinLinkedstatus},
+	     #{chinWorkingstatus},
+	     #{chinOutputvoltage},
+	     #{chinOutputcurrent},
+	     #{chinOutputstatus},
+	     #{chinTotalactive},
+	     #{chinTotaltime},
+	     #{chinType},
+	     #{chinCreatedate},
+	     #{chinUpdatedate}
+	   )
+	</insert>
+
+	<update id="update" parameterType="TblChargeinfo">
+	   update tbl_ChargeInfo set
+	     pk_ChargeInfo=#{pkChargeinfo},
+	     chIn_UsingmachineCode=#{chinUsingmachinecode},
+	     chIn_PowerStationId=#{chinPowerstationid},
+	     chIn_InterfaceIdentification=#{chinInterfaceidentification},
+	     chIn_linkedStatus=#{chinLinkedstatus},
+	     chIn_WorkingStatus=#{chinWorkingstatus},
+	     chIn_OutputVoltage=#{chinOutputvoltage},
+	     chIn_OutputCurrent=#{chinOutputcurrent},
+	     chIn_OutputStatus=#{chinOutputstatus},
+	     chIn_TotalActive=#{chinTotalactive},
+	     chIn_TotalTime=#{chinTotaltime},
+	     chIn_Type=#{chinType},
+	     chIn_Createdate=#{chinCreatedate},
+	     chIn_Updatedate=#{chinUpdatedate}
+	   where 
+	    pk_ChargeInfo=#{pkChargeinfo} 
+	</update>
+
+	<delete id="delete" parameterType="map">
+	   delete from 
+	     tbl_ChargeInfo 
+	   where 
+	    pk_ChargeInfo=#{pkChargeinfo} 
+	</delete>
+
+	<select id="get" parameterType="map" resultMap="tblChargeinfoResultMap">
+	   select 
+	    pk_ChargeInfo,
+	    chIn_UsingmachineCode,
+	    chIn_PowerStationId,
+	    chIn_InterfaceIdentification,
+	    chIn_linkedStatus,
+	    chIn_WorkingStatus,
+	    chIn_OutputVoltage,
+	    chIn_OutputCurrent,
+	    chIn_OutputStatus,
+	    chIn_TotalActive,
+	    chIn_TotalTime,
+	    chIn_Type,
+	    chIn_Createdate,
+	    chIn_Updatedate
+	   from tbl_ChargeInfo
+	   where 
+	    pk_ChargeInfo=#{pkChargeinfo} 
+	</select>
+
+	<select id="findOne" parameterType="map" resultMap="tblChargeinfoResultMap">
+	   select 
+	    pk_ChargeInfo,
+	    chIn_UsingmachineCode,
+	    chIn_PowerStationId,
+	    chIn_InterfaceIdentification,
+	    chIn_linkedStatus,
+	    chIn_WorkingStatus,
+	    chIn_OutputVoltage,
+	    chIn_OutputCurrent,
+	    chIn_OutputStatus,
+	    chIn_TotalActive,
+	    chIn_TotalTime,
+	    chIn_Type,
+	    chIn_Createdate,
+	    chIn_Updatedate
+	   from tbl_ChargeInfo
+	   where 
+	    pk_ChargeInfo=#{pkChargeinfo} 
+	</select>
+
+	<select id="find" parameterType="map" resultMap="tblChargeinfoResultMap">
+	   select 
+	     pk_ChargeInfo,
+	     chIn_UsingmachineCode,
+	     chIn_PowerStationId,
+	     chIn_InterfaceIdentification,
+	     chIn_linkedStatus,
+	     chIn_WorkingStatus,
+	     chIn_OutputVoltage,
+	     chIn_OutputCurrent,
+	     chIn_OutputStatus,
+	     chIn_TotalActive,
+	     chIn_TotalTime,
+	     chIn_Type,
+	     chIn_Createdate,
+	     chIn_Updatedate
+	   from tbl_ChargeInfo
+	   <where>
+	     <if test="pkChargeinfo != null">
+	        pk_ChargeInfo=#{pkChargeinfo}
+	     </if>
+	     <if test="chinUsingmachinecode != null">
+	        and chIn_UsingmachineCode=#{chinUsingmachinecode}
+	     </if>
+	     <if test="chinPowerstationid != null">
+	        and chIn_PowerStationId=#{chinPowerstationid}
+	     </if>
+	     <if test="chinInterfaceidentification != null">
+	        and chIn_InterfaceIdentification=#{chinInterfaceidentification}
+	     </if>
+	     <if test="chinLinkedstatus != null">
+	        and chIn_linkedStatus=#{chinLinkedstatus}
+	     </if>
+	     <if test="chinWorkingstatus != null">
+	        and chIn_WorkingStatus=#{chinWorkingstatus}
+	     </if>
+	     <if test="chinOutputvoltage != null">
+	        and chIn_OutputVoltage=#{chinOutputvoltage}
+	     </if>
+	     <if test="chinOutputcurrent != null">
+	        and chIn_OutputCurrent=#{chinOutputcurrent}
+	     </if>
+	     <if test="chinOutputstatus != null">
+	        and chIn_OutputStatus=#{chinOutputstatus}
+	     </if>
+	     <if test="chinTotalactive != null">
+	        and chIn_TotalActive=#{chinTotalactive}
+	     </if>
+	     <if test="chinTotaltime != null">
+	        and chIn_TotalTime=#{chinTotaltime}
+	     </if>
+	     <if test="chinType != null">
+	        and chIn_Type=#{chinType}
+	     </if>
+	     <if test="chinCreatedate != null">
+	        and chIn_Createdate=#{chinCreatedate}
+	     </if>
+	     <if test="chinUpdatedate != null">
+	        and chIn_Updatedate=#{chinUpdatedate}
+	     </if>
+	   </where>
+	</select>
+	
+	<select id="page" parameterType="map" resultMap="pageResultMap">
+	   select 
+	     pk_ChargeInfo,
+	     chIn_UsingmachineCode,
+	     chIn_PowerStationId,
+	     chIn_InterfaceIdentification,
+	     chIn_linkedStatus,
+	     chIn_WorkingStatus,
+	     chIn_OutputVoltage,
+	     chIn_OutputCurrent,
+	     chIn_OutputStatus,
+	     chIn_TotalActive,
+	     chIn_TotalTime,
+	     chIn_Type,
+	     chIn_Createdate,
+	     chIn_Updatedate
+	   from tbl_ChargeInfo
+	   <where>
+	     <if test="pkChargeinfo != null">
+	        pk_ChargeInfo=#{pkChargeinfo}
+	     </if>
+	     <if test="chinUsingmachinecode != null">
+	        and chIn_UsingmachineCode=#{chinUsingmachinecode}
+	     </if>
+	     <if test="chinPowerstationid != null">
+	        and chIn_PowerStationId=#{chinPowerstationid}
+	     </if>
+	     <if test="chinInterfaceidentification != null">
+	        and chIn_InterfaceIdentification=#{chinInterfaceidentification}
+	     </if>
+	     <if test="chinLinkedstatus != null">
+	        and chIn_linkedStatus=#{chinLinkedstatus}
+	     </if>
+	     <if test="chinWorkingstatus != null">
+	        and chIn_WorkingStatus=#{chinWorkingstatus}
+	     </if>
+	     <if test="chinOutputvoltage != null">
+	        and chIn_OutputVoltage=#{chinOutputvoltage}
+	     </if>
+	     <if test="chinOutputcurrent != null">
+	        and chIn_OutputCurrent=#{chinOutputcurrent}
+	     </if>
+	     <if test="chinOutputstatus != null">
+	        and chIn_OutputStatus=#{chinOutputstatus}
+	     </if>
+	     <if test="chinTotalactive != null">
+	        and chIn_TotalActive=#{chinTotalactive}
+	     </if>
+	     <if test="chinTotaltime != null">
+	        and chIn_TotalTime=#{chinTotaltime}
+	     </if>
+	     <if test="chinType != null">
+	        and chIn_Type=#{chinType}
+	     </if>
+	     <if test="chinCreatedate != null">
+	        and chIn_Createdate=#{chinCreatedate}
+	     </if>
+	     <if test="chinUpdatedate != null">
+	        and chIn_Updatedate=#{chinUpdatedate}
+	     </if>
+	   </where>
+	</select>
+</mapper> 

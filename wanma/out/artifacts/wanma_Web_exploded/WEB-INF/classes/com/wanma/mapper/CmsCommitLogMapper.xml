@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.dao.CmsCommitLogMapper">
+	<resultMap type="CommitLog" id="result_commitLog">
+		<result property="commitLog" column="pk_CommitLog" />
+		<result property="logName" column="coLo_LogName" />
+		<result property="ipAddress" column="coLo_IpAddress" />
+		<result property="logContent" column="coLo_LogContent" />
+		<result property="status" column="coLo_Status" />
+		<result property="createdate" column="coLo_Createdate" />
+		<result property="updatedate" column="coLo_Updatedate" />
+		<result property="coLoUserId" column="coLo_user_id" />
+	</resultMap>
+	
+		<insert id="insert" parameterType="TblPowerstation" useGeneratedKeys="true" keyProperty="pkPowerstation">
+		insert into tbl_CommitLog (
+		pk_CommitLog,
+		coLo_LogName,
+		coLo_IpAddress,
+		coLo_LogContent,
+		coLo_Createdate,
+		coLo_Updatedate,
+		coLo_Status,
+		coLo_user_id
+		)values (
+		#{commitLog},
+		#{logName},
+		#{ipAddress},
+		#{logContent},
+		#{createDate},
+		#{updateDate},
+		'1',
+		#{coLoUserId}
+		)
+	</insert>
+	
+	<!--条件单个日志-->
+	<select id="findCommitLog" parameterType="map"  resultMap="result_commitLog">
+		select
+			pk_CommitLog,
+			coLo_LogName,
+			coLo_IpAddress,
+			coLo_LogContent,
+			coLo_Status,
+			coLo_Createdate
+		from 
+			tbl_CommitLog
+		where pk_CommitLog=#{commitLog} 
+	</select>
+	
+	<!--条件查询-->
+	<!-- <select id="searchCommitLogList" parameterType="CommitLog" resultType="CommitLog">
+		select
+			pk_CommitLog commitLog,
+			coLo_LogName logName,
+			coLo_IpAddress ipAddress,
+			coLo_LogContent logContent,
+			coLo_Status status,
+			coLo_Createdate createDate,
+			<if test="userLevel==0 || userLevel==1">coLo_LogName userName, '爱充网' companyName</if>
+			<if test="userLevel==3">u.company_name userName, u.company_name companyName</if>
+			<if test="userLevel==5">u.norm_real_name userName, u.norm_real_name companyName</if>
+		from 
+			tbl_CommitLog a
+		<if test="userLevel==3">inner join tbl_user_business_view u</if>
+		<if test="userLevel==5">inner join tbl_user_normal_view u</if>
+		<where>
+			1=1
+			<if test="userLevel==3">and u.user_id=a.coLo_user_id</if>
+			<if test="userLevel==5">and u.user_id=a.coLo_user_id</if>
+			<if test="logName!=null and logName !=''">
+				and coLo_LogName=#{logName}
+			</if>
+			<if test="ipAddress!=null and ipAddress !=''">
+				and coLo_IpAddress=#{ipAddress}
+			</if>
+			<if test="start_create_date !=null and start_create_date !='' ">
+			  <![CDATA[and coLo_Createdate >=#{start_create_date}]]>
+			</if>
+			
+			<if test="end_create_date !=null and end_create_date !=''">
+				 <![CDATA[and coLo_Createdate <=#{end_create_date}]]>
+			</if>
+		</where>
+		ORDER BY a.coLo_Createdate DESC
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select> -->
+	
+		<!--条件查询,查询多种用户级别的日志记录-->
+	<select id="searchCommitLogList" parameterType="CommitLog" resultType="CommitLog">
+	SELECT * FROM (
+		SELECT
+			pk_CommitLog commitLog,
+			coLo_LogName logName,
+			coLo_IpAddress ipAddress,
+			coLo_LogContent logContent,
+			coLo_Status status,
+			coLo_Createdate createDate,
+			coLo_LogName userName,
+			'爱充网' companyName 
+		FROM
+			tbl_CommitLog c
+		INNER JOIN
+			tbl_user u
+		<where>
+			1=1 
+			AND 
+				c.coLo_user_id=u.user_id
+			AND 
+				u.user_leval!=3	AND u.user_leval!=5
+			<if test="logName!=null and logName !=''">
+				and coLo_LogName=#{logName}
+			</if>
+			<if test="ipAddress!=null and ipAddress !=''">
+				and coLo_IpAddress=#{ipAddress}
+			</if>
+			<if test="start_create_date !=null and start_create_date !='' ">
+			  <![CDATA[and coLo_Createdate >=#{start_create_date}]]>
+			</if>
+			<if test="end_create_date !=null and end_create_date !=''">
+				 <![CDATA[and coLo_Createdate <=#{end_create_date}]]>
+			</if>
+		</where>
+	UNION ALL
+		SELECT
+			pk_CommitLog,
+			coLo_LogName,
+			coLo_IpAddress,
+			coLo_LogContent,
+			coLo_Status,
+			coLo_Createdate,
+			u.company_name,
+			u.company_name
+		FROM
+			tbl_CommitLog c
+		INNER JOIN
+			tbl_user_business_view u
+		<where>
+		1=1 
+			AND 
+				c.coLo_user_id=u.user_id
+			AND 
+				u.user_leval=3
+			<if test="logName!=null and logName !=''">
+				and coLo_LogName=#{logName}
+			</if>
+			<if test="ipAddress!=null and ipAddress !=''">
+				and coLo_IpAddress=#{ipAddress}
+			</if>
+			<if test="start_create_date !=null and start_create_date !='' ">
+			  <![CDATA[and coLo_Createdate >=#{start_create_date}]]>
+			</if>
+			<if test="end_create_date !=null and end_create_date !=''">
+				 <![CDATA[and coLo_Createdate <=#{end_create_date}]]>
+			</if>
+		</where>
+	UNION ALL
+		SELECT
+			pk_CommitLog,
+			coLo_LogName,
+			coLo_IpAddress,
+			coLo_LogContent,
+			coLo_Status,
+			coLo_Createdate,
+			u.norm_real_name,
+			u.norm_real_name
+		FROM
+			tbl_CommitLog c
+		INNER JOIN
+			tbl_user_normal_view u
+		<where>
+		1=1 
+			AND 
+				c.coLo_user_id=u.user_id
+			AND 
+				u.user_leval=5
+			<if test="logName!=null and logName !=''">
+				and coLo_LogName=#{logName}
+			</if>
+			<if test="ipAddress!=null and ipAddress !=''">
+				and coLo_IpAddress=#{ipAddress}
+			</if>
+			<if test="start_create_date !=null and start_create_date !='' ">
+			  <![CDATA[and coLo_Createdate >=#{start_create_date}]]>
+			</if>
+			<if test="end_create_date !=null and end_create_date !=''">
+				 <![CDATA[and coLo_Createdate <=#{end_create_date}]]>
+			</if>
+		</where>	
+	) AS commitLogList
+	order by commitLogList.createDate desc
+		<if test="pager!=null">LIMIT #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	
+	<!--删除-->
+	<delete id="removeCommitLog" parameterType="map">
+		delete from
+		tbl_CommitLog
+		where
+		pk_CommitLog=#{commitLog} 
+	</delete>
+	
+	<!--查询全部日志-->
+	<select id="getCommitLogList" resultMap="result_commitLog">
+		select
+			pk_CommitLog,
+			coLo_LogName,
+			coLo_IpAddress,
+			coLo_LogContent,
+			coLo_Status,
+			coLo_Createdate
+		from 
+			tbl_CommitLog
+	</select>
+	<!--查询总数-->
+	<!-- <select id="searchCommitLogCount" parameterType="CommitLog" resultType="long">
+		SELECT
+			count(pk_CommitLog)
+		FROM 
+			tbl_CommitLog a
+		<if test="userLevel==3">,tbl_user_business_view u</if>
+		<if test="userLevel==5">,tbl_user_normal_view u</if>
+		<where>
+			1=1
+			<if test="userLevel==3">and u.user_id=a.coLo_user_id</if>
+			<if test="userLevel==5">and u.user_id=a.coLo_user_id</if>	
+			<if test="logName!=null and logName !=''">
+				and coLo_LogName=#{logName}
+			</if>
+			<if test="ipAddress!=null and ipAddress !=''">
+				and coLo_IpAddress=#{ipAddress}
+			</if>
+			<if test="start_create_date !=null and start_create_date !='' ">
+			  <![CDATA[and coLo_Createdate >=#{start_create_date}]]>
+			</if>
+			
+			<if test="end_create_date !=null and end_create_date !=''">
+				 <![CDATA[and coLo_Createdate <=#{end_create_date}]]>
+			</if>
+		</where>
+	</select> -->
+	
+	<!--查询总数-->
+	<select id="searchCommitLogCount" parameterType="CommitLog" resultType="long">
+		SELECT
+			count(pk_CommitLog)
+		FROM 
+			tbl_CommitLog c
+		INNER JOIN
+			tbl_user u
+		<where>
+			1=1
+			AND c.coLo_user_id=u.user_id
+			<if test="logName!=null and logName !=''">
+				and coLo_LogName=#{logName}
+			</if>
+			<if test="ipAddress!=null and ipAddress !=''">
+				and coLo_IpAddress=#{ipAddress}
+			</if>
+			<if test="start_create_date !=null and start_create_date !='' ">
+			  <![CDATA[and coLo_Createdate >=#{start_create_date}]]>
+			</if>
+			
+			<if test="end_create_date !=null and end_create_date !=''">
+				 <![CDATA[and coLo_Createdate <=#{end_create_date}]]>
+			</if>
+		</where>
+	</select>	
+	
+</mapper>

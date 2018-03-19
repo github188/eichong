@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.app.dao.CouponMapper">
+
+	<select id="getCouponList" parameterType="HashMap" resultType="HashMap">
+		select cp_Limitation limitation,cp_CouponValue
+		cValue,cp_CouponCondition cCondition,cp_EndDate timeout,
+		act_ActivityRule rule,
+		(SELECT a.cova_Label from tbl_couponvariety a where a.pk_CouponVariety = c.pk_CouponVariety) cLabel,
+			(
+	SELECT
+			a.cova_Scope
+		FROM
+			tbl_couponvariety a
+		WHERE
+			a.pk_CouponVariety = c.pk_CouponVariety
+	) AS scope,
+      (
+		SELECT
+			city_name
+		FROM
+			tb_m_city
+		WHERE
+			city_id = (
+			SELECT
+			a.city_code
+		FROM
+			tbl_couponvariety a
+		WHERE
+			a.pk_CouponVariety = c.pk_CouponVariety
+			)
+	) AS ccode,
+       	(
+		SELECT
+			area_name
+		FROM
+			tb_m_area
+		WHERE
+			area_id = (
+			SELECT
+			a.area_code
+		FROM
+			tbl_couponvariety a
+		WHERE
+			a.pk_CouponVariety = c.pk_CouponVariety
+			)
+	) AS acode,
+      	(
+		SELECT
+			province_name
+		FROM
+			tb_m_province
+		WHERE
+			province_id = (
+				SELECT
+			a.province_code
+		FROM
+			tbl_couponvariety a
+		WHERE
+			a.pk_CouponVariety = c.pk_CouponVariety
+			)
+	) AS pcode,
+      	(
+		SELECT
+			powerstation_name
+		FROM
+			tbl_powerstation
+		WHERE
+			powerstation_id = (
+						SELECT
+			a.pk_Powerstation
+		FROM
+			tbl_couponvariety a
+		WHERE
+			a.pk_CouponVariety = c.pk_CouponVariety
+			)
+	) AS stationname
+		from tbl_coupon c LEFT JOIN tbl_activity a on
+		c.pk_Activity = a.pk_Activity
+		where cp_UserId = ${uId} and
+		<choose>
+			<when test="type == 1">cp_Status = 0 and now() &lt; cp_EndDate</when>
+			<when test="type == 2"> cp_Status = 1 and cp_Updatedate &gt; #{time}</when>
+			<otherwise>cp_Status = 0 and (now()+1) &gt; cp_EndDate and cp_EndDate
+				&gt; #{time}</otherwise>
+		</choose>
+		order by cp_BeginDate,cp_CouponValue desc
+	</select>
+	<select id="getCouponListCount" parameterType="HashMap" resultType="long">
+		select count(*)
+		from tbl_coupon c LEFT JOIN tbl_activity a on
+		c.pk_Activity = a.pk_Activity
+		where cp_UserId = ${uId} and
+		<choose>
+			<when test="type == 1">cp_Status = 0 and now() &lt; cp_EndDate</when>
+			<when test="type == 2"> cp_Status = 1 and cp_Updatedate &gt; #{time}</when>
+			<otherwise>cp_Status = 0 and (now()+1) &gt; cp_EndDate and cp_EndDate
+				&gt; #{time}</otherwise>
+		</choose>
+	</select>
+	<select id="getActiTimeByCode" parameterType="String"
+		resultType="HashMap">
+		select act_BeginDate,act_EndDate,cova_Stutas
+		from
+		(select pk_Activity,cp_CouponCode,pk_CouponVariety from tbl_coupon where
+		cp_CouponCode = #{code}) c
+		LEFT JOIN
+		tbl_activity a
+		on a.pk_Activity = c.pk_Activity
+		LEFT JOIN
+		tbl_couponvariety v
+		on c.pk_CouponVariety = v.pk_CouponVariety
+	</select>
+
+	<select id="getValidDaysByCode" parameterType="String"
+		resultType="HashMap">
+		select cova_CouponTerm, act_CouponEndDate,cp_UserId
+		from (select
+		pk_CouponVariety,cp_CouponCode,cp_UserId,pk_Activity from tbl_coupon where
+		cp_CouponCode = #{code}) c
+		LEFT JOIN tbl_couponvariety a
+		on a.pk_CouponVariety = c.pk_CouponVariety
+		LEFT JOIN tbl_activity b ON b.pk_Activity = c.pk_Activity
+	</select>
+
+	<select id="codeUnexchangeNum" parameterType="String"
+		resultType="int">
+		select count(*) num from tbl_coupon where cp_CouponCode =
+		#{code}
+	</select>
+
+	<update id="code2Voucher" parameterType="HashMap">
+		update tbl_coupon set
+		cp_UserId = #{uId},cp_BeginDate = #{beginDate},cp_EndDate = #{endDate}
+		where cp_CouponCode = #{code}
+	</update>
+	<select id="getGenerateCouponList" parameterType="HashMap"
+		resultType="HashMap">
+		SELECT
+		t.acsc_num,
+		t.pk_ActivitySchedule,
+		t.pk_Activity,
+		t.pk_CouponVariety,
+		s.cova_Limitation,
+		s.cova_Stutas,
+		s.cova_CouponValue,
+		s.cova_CouponCondition,
+		s.cova_CouponTerm,
+		a.act_CouponEndDate,
+		act_Scope
+		FROM
+		tbl_activityschedule t,
+		tbl_couponvariety s,
+		tbl_activity a
+		WHERE
+		t.pk_CouponVariety = s.pk_CouponVariety
+		and t.pk_Activity=a.pk_Activity
+		and s.cova_Stutas=0
+		and a.act_Status=0
+			<![CDATA[ and a.act_beginDate <= CURDATE() and a.act_endDate > CURDATE()]]>
+		and a.act_ActivityRule=#{actRule}
+	</select>
+
+	<insert id="generateCode" parameterType="list">
+		insert into tbl_coupon(
+		pk_Activity,
+		pk_CouponVariety,
+		cp_Status,
+		cp_Limitation,
+		cp_CouponValue,
+		cp_CouponCondition,
+		cp_CouponCode,
+		cp_UserId,
+		cp_BeginDate,
+		cp_EndDate,
+		cp_Createdate,
+		cp_Updatedate
+		)
+		values
+		<foreach collection="list" item="item" separator=",">
+			(
+			#{item.pk_Activity},
+			#{item.pk_CouponVariety},
+			#{item.cp_Status},
+			#{item.cova_Limitation},
+			#{item.cova_CouponValue},
+			#{item.cova_CouponCondition},
+			#{item.cp_CouponCode},
+			#{item.cp_UserId},
+			#{item.cp_BeginDate},
+			#{item.act_CouponEndDate},
+			sysdate(),
+			sysdate()
+			)
+		</foreach>
+	</insert>
+
+	<select id="getValidCPByUid" parameterType="int" resultType="int">
+		select count(*) num from tbl_coupon where cp_UserId = #{uId} and
+		cp_Status = 0 and cp_EndDate > CURDATE()
+	</select>
+
+	<!-- 根据id获取用户信息 -->
+	<select id="getMyCoupon" parameterType="map" resultType="hashMap">
+	 SELECT * from  (
+    select COUNT(A.ACT_REMARK) overCpNum , A.act_ActivityName as act_Remark FROM TBL_COUPON C ,tbl_activity A WHERE C.PK_ACTIVITY = A.PK_ACTIVITY AND
+	cp_Status = 0 and act_type = 1
+   and CURDATE() <![CDATA[ >= ]]> act_BeginDate  
+   and CURDATE() <![CDATA[ <= ]]>  cp_EndDate
+   and act_scope != 2 
+   AND (act_Scope=0 OR city_code = #{cCode}) and 
+    CP_USERid = #{uId} GROUP BY A.act_ActivityName )  a where overcpNum!=0
+	</select>
+	<select id="getMyCouponOne" parameterType="map" resultType="hashMap">
+		select count(1) overCpNum,
+		IFNULL(
+		(SELECT a.act_ActivityName FROM tbl_activity a WHERE a.act_Status=0 <![CDATA[ and a.act_beginDate <= CURDATE() and a.act_endDate >= CURDATE()]]>
+		and a.act_ActivityRule='5' LIMIT 1 ),'') act_Remark
+		from tbl_coupon where cp_Status = 0 and cp_UserId=#{uId} and
+		date_add(CURDATE(), INTERVAL  3 day) >= cp_EndDate <![CDATA[and CURDATE()<=cp_EndDate]]>
+	</select>
+</mapper>      

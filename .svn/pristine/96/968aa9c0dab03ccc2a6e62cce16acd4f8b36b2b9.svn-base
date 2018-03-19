@@ -1,0 +1,123 @@
+package com.wanma.app.service.impl;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.bluemobi.product.utils.JPushUtil;
+import com.bluemobi.product.utils.SpringContextHolder;
+import com.wanma.app.dao.CouponMapper;
+import com.wanma.app.service.AppJpushService;
+import com.wanma.app.service.CouponService;
+import com.wanma.model.TblJpush;
+
+@Service
+public class CouponServiceImpl implements CouponService {
+	
+	/**
+	 * 获取优惠券列表
+	 * @return
+	 */
+	public List<Map<String, Object>> getCouponList(Map<String, Object> params){
+		return couponMapper.getCouponList(params);
+	}
+	
+	/**
+	 * 兑换码换券
+	 * @param params
+	 * 			uId 用户id，code 兑换码，beginDate 优惠券兑换时间，endDate 优惠券过期时间
+	 */
+	public void code2Voucher(Map<String,Object> params){
+		couponMapper.code2Voucher(params);
+	}
+	
+	/**
+	 * 根据兑换码获取优惠券对应活动的生效期
+	 * @param code
+	 * @return
+	 */
+	public Map<String, Object> getActiTimeByCode(String code){
+		return couponMapper.getActiTimeByCode(code);
+	}
+	
+	/**
+	 * 从优惠券品种表获取优惠券的有效天数
+	 * @param code
+	 * @return
+	 */
+	public Map<String, Object> getValidDaysByCode(String code){
+		return couponMapper.getValidDaysByCode(code);
+	}
+	
+	/**
+	 * 检查优惠券表中未兑换的优惠券里是否存在该兑换码
+	 * @param code
+	 * @return
+	 */
+	public Boolean codeIsExist(String code){
+		int num = couponMapper.codeUnexchangeNum(code);
+		if(num == 0) return false;
+		else return true;
+	}
+	
+	/**
+	 * 根据活动规则和用户ID（可选）生成优惠券，用户ID有非零值时直接绑定优惠券
+	 * @param uId 用户id，actRule 活动规则
+	 * @return
+	 */
+	public boolean generateCode(String uId,int actRule){
+		Map<String, Object> params=new HashMap<String, Object>();
+		params.put("uId", uId);
+		params.put("actRule", actRule);
+		List<Map<String, Object>> generateList=couponMapper.getGenerateCouponList(params);
+		int acscNum=0;//生成数量
+		int couponTerm=0;//有效期
+		String genStr="";
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+		Date d=new Date();
+		List<Map<String, Object>> list=null;
+		for(Map<String, Object> obj:generateList){
+			acscNum=(Integer)obj.get("acsc_num");
+			couponTerm=(Integer)obj.get("cova_CouponTerm");
+			obj.put("genStr", genStr);
+			obj.put("cp_UserId", params.get("uId"));
+			obj.put("cp_Status", 0);
+			obj.put("cp_CouponCode", "");
+			obj.put("cp_BeginDate", sdf.format(d));
+			list=new ArrayList<Map<String,Object>>();
+			for(int i=0;i<acscNum;i++){
+				list.add(obj);
+			}
+			couponMapper.generateCode(list);
+		}
+		// AppJpushService jpushService = (AppJpushService) SpringContextHolder.getSpringContext().getBean("jpushService");
+		// 获取用户推送信息 
+		// 注册时没有设备号，这个推送有问题
+		/*TblJpush jpush = jpushService.getByuserInfo(Integer.valueOf(uId));
+		JPushUtil.point2point("新的优惠券", "",
+				 jpush.getJpushRegistrationid(),jpush.getJpushDevicetype(), "10");*/
+		return true;
+	}
+	
+	/**
+	 * 根据用户id获取用户有效优惠券数
+	 * @param uId
+	 * @return
+	 */
+	public int getValidCPByUid(int uId){
+		return couponMapper.getValidCPByUid(uId);
+	}
+	@Autowired
+	CouponMapper couponMapper;
+	
+	@Override
+	public Map<String, Object> getMyCoupon(Map<String, Object> params) {
+		return couponMapper.getMyCoupon(params);
+	}
+}

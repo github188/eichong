@@ -1,0 +1,43 @@
+package com.wanma.ims.service.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.wanma.ims.common.domain.LogCommitDO;
+import com.wanma.ims.mapper.LogCommitMapper;
+import com.wanma.ims.service.LogCommitService;
+
+@Service
+public class LogCommitServiceImpl implements LogCommitService{
+
+	@Autowired
+	private LogCommitMapper logCommitMapper;
+
+	@Override
+	public List<LogCommitDO> getLogCommitList(LogCommitDO logCommitDO) {
+		return logCommitMapper.selectLogCommitList(logCommitDO);
+	}
+
+	@Override
+	public Integer countLogCommit(LogCommitDO logCommitDO) {
+		return logCommitMapper.countLogCommitList(logCommitDO);
+	}
+
+	@Override
+	public LogCommitDO getLogCommitById(Long logId) {
+		return logCommitMapper.selectLogCommitById(logId);
+	}
+
+	@Override
+	public boolean addLogCommit(LogCommitDO logCommitDO) {
+		return logCommitMapper.insertLogCommit(logCommitDO) > 0 ?true:false;
+	}
+
+	@Override
+	public boolean removeLogCommitById(Long logId) {
+		return logCommitMapper.deleteLogCommitById(logId) > 0 ?true:false;
+	}
+
+}

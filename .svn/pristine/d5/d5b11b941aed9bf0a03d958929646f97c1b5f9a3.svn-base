@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.UserCardMapper">
+    <resultMap type="UserCardDO" id="resultCard">
+        <result property="ucId" column="uc_id"/>
+        <result property="ucInternalCardNumber" column="uc_InternalCardNumber"/>
+        <result property="ucExternalCardNumber" column="uc_ExternalCardNumber"/>
+        <result property="ucUserId" column="user_Id"/>
+        <result property="ucStatus" column="uc_Status"/>
+        <result property="ucType" column="uc_type"/>
+        <result property="ucCpyId" column="cpy_id"/>
+        <result property="userDefault" column="user_default"/>
+        <result property="accountId" column="account_id"/>
+        <result property="isValid" column="is_valid"/>
+        <result property="isApp" column="is_app"/>
+        <result property="isCredit" column="is_credit"/>
+        <result property="newUserId" column="new_user_id"/>
+    </resultMap>
+
+    <select id="getCardCount" parameterType="UserCardDO" resultType="long">
+        SELECT
+        count(*)
+        FROM
+        tbl_usercard b
+        where uc_Status != 3
+        <if test="ucCpyId !=null and ucCpyId !=''">
+            and cpy_id = #{ucCpyId}
+        </if>
+        <if test="ucStatus !=null ">
+            and uc_Status = #{ucStatus}
+        </if>
+        <if test="ucInternalCardNumber !=null and ucInternalCardNumber !=''">
+           and uc_InternalCardNumber like concat('%',#{ucInternalCardNumber},'%')
+        </if>
+        <if test="ucExternalCardNumber !=null and ucExternalCardNumber !=''">
+            and uc_ExternalCardNumber like concat('%',#{ucExternalCardNumber},'%')
+        </if>
+         <if test="ucType !=null and ucType !=''">
+            and uc_type = #{ucType}
+        </if>
+         <if test="isApp !=null ">
+            and is_app = #{isApp}
+        </if>
+        <if test="cpyIdList != null and cpyIdList.size() > 0">
+	       and cpy_id in 
+	       <foreach collection="cpyIdList" item="id" open="(" close=")" separator=",">
+	        #{id}
+	      </foreach>
+	    </if>
+    </select>
+
+    <select id="getCardList" parameterType="UserCardDO" resultMap="resultCard">
+        SELECT
+        b.uc_id ,
+        b.uc_InternalCardNumber ,
+        b.uc_ExternalCardNumber ,
+        b.account_id,
+        b.uc_Status,
+        b.user_Id,
+        b.is_valid,
+        b.uc_type,
+        b.cpy_id,
+        b.is_app,
+        b.new_user_id,
+        (select account_balance  from fin_account f  where f.account_id = b.account_id) cardBalance,
+        (SELECT c.cpy_name from tbl_company c where c.cpy_id = b.cpy_id) cpyCompanyname
+        FROM
+        tbl_usercard b
+        where uc_Status != 3
+        <if test="ucCpyId !=null and ucCpyId !=''">
+            and cpy_id = #{ucCpyId}
+        </if>
+        <if test="ucStatus !=null ">
+            and uc_Status = #{ucStatus}
+        </if>
+        <if test="ucInternalCardNumber !=null and ucInternalCardNumber !=''">
+           and uc_InternalCardNumber like concat('%',#{ucInternalCardNumber},'%')
+        </if>
+        <if test="ucExternalCardNumber !=null and ucExternalCardNumber !=''">
+            and uc_ExternalCardNumber like concat('%',#{ucExternalCardNumber},'%')
+        </if>
+        <if test="ucType !=null and ucType !=''">
+            and uc_type = #{ucType}
+        </if>
+        <if test="isApp !=null ">
+            and is_app = #{isApp}
+        </if>
+        <if test="ucUserId != null">
+            and user_Id = #{ucUserId}
+        </if>
+        <if test="cpyIdList != null and cpyIdList.size() > 0">
+	       and cpy_id in 
+	       <foreach collection="cpyIdList" item="id" open="(" close=")" separator=",">
+	        #{id}
+	      </foreach>
+	    </if>
+        order by gmt_modified desc
+        <if test="pager!=null">limit #{pager.offset},#{pager.pageSize}</if>
+    </select>
+
+    <select id="getUserCard" parameterType="UserCardDO" resultMap="resultCard">
+		SELECT uc_id, uc_InternalCardNumber,uc_ExternalCardNumber,uc_Status,new_user_id,
+		cpy_id,is_valid,account_id,user_Id
+		from tbl_usercard 
+		where uc_id = #{ucId}
+	</select>
+
+    <update id="updateUserCard" parameterType="UserCardDO">
+		update tbl_usercard 
+		set uc_Status = #{ucStatus}
+		<if test="ucCpyId !=null and ucCpyId !=''">
+           , cpy_id = #{ucCpyId}
+        </if>
+        <if test="accountId !=null and accountId !=''">
+           , account_id = #{accountId}
+        </if>
+        <if test="ucType !=null">
+           , uc_type = #{ucType}
+        </if>
+		, modifier = #{modifier}
+		where uc_id = #{ucId}
+	</update>
+	<select id="getCardInfoByUserId" parameterType="UserCardDO" resultMap="resultCard">
+		SELECT
+		uc_id,
+		uc_InternalCardNumber,
+		uc_ExternalCardNumber,
+		uc_Status,
+		cpy_id,
+		is_valid,
+		account_id,
+		user_Id
+	FROM
+		tbl_usercard u
+	WHERE
+	u.new_user_id = #{ucUserId} and
+	u.uc_Status != 3
+	</select>
+	<select id="checkExternalCardNumber" parameterType="UserCardDO" resultMap="resultCard">
+		select uc_id,uc_ExternalCardNumber,user_Id,cpy_id,new_user_id,account_id
+		 from tbl_usercard  where uc_ExternalCardNumber = #{ucExternalCardNumber}  
+		and  cpy_id = #{ucCpyId} and uc_Status !=3
+	</select>
+	<update id="disableCardByUserId" parameterType="UserCardDO" >
+		update tbl_usercard
+		set uc_Status = 2 ,
+		modifier = #{modifier}
+		 where new_user_id = #{newUserId}
+		 and uc_Status = 0
+	</update>
+	<update id="releaseCardByUserId" parameterType="UserCardDO" >
+		update tbl_usercard
+		set uc_Status = 0 ,
+		modifier = #{modifier}
+		 where new_user_id = #{newUserId}
+		 and uc_Status = 2
+	</update>
+	<select id="getCardBasicInfo" parameterType="UserCardDO" resultMap="resultCard">
+		select uc_id , uc_InternalCardNumber,uc_ExternalCardNumber,uc_Status,user_Id,cpy_id,account_id,new_user_id,
+	  (SELECT c.cpy_name from tbl_company c where c.cpy_id = b.cpy_id) cpyCompanyname,
+	  (
+		SELECT
+			level_name
+		FROM
+			tbl_level l
+		WHERE
+			l.level_id = (
+				SELECT
+					u.level_id
+				FROM
+					tbl_user u
+				WHERE
+					u.user_id = b.user_Id
+			)
+	) levelName
+	  from tbl_usercard b
+	  where uc_id = #{ucId}
+	</select>
+	<update id="bindCard" parameterType="UserCardDO">
+		update tbl_usercard set is_app = #{isApp},new_user_id=#{newUserId},account_id=#{accountId}, modifier = #{modifier}
+		where uc_id = #{ucId}
+	</update>
+	<select id="getExportCardList" parameterType="UserCardDO" resultMap="resultCard">
+	 SELECT
+        b.uc_InternalCardNumber ,
+        b.uc_ExternalCardNumber ,
+        b.uc_type,
+        b.uc_Status,
+        b.is_app,
+        b.user_Id,
+        b.new_user_id,
+        (SELECT c.cpy_name from tbl_company c where c.cpy_id = b.cpy_id) cpyCompanyname,
+        (select account_balance  from fin_account f  where f.account_id = b.account_id) cardBalance
+        FROM
+        tbl_usercard b
+        where uc_Status != 3
+        <if test="ucCpyId !=null and ucCpyId !=''">
+            and cpy_id = #{ucCpyId}
+        </if>
+        <if test="ucStatus !=null and ucStatus !=''">
+            and uc_Status = #{ucStatus}
+        </if>
+        <if test="ucExternalCardNumber !=null and ucExternalCardNumber !=''">
+            and uc_ExternalCardNumber = #{ucExternalCardNumber}
+        </if>
+        <if test="ucType !=null and ucType !=''">
+            and uc_type = #{ucType}
+        </if>
+       <if test="isApp !=null and isApp !=''">
+            and is_app = #{isApp}
+        </if>
+        order by gmt_modified desc
+	</select>
+	<select id="getTotalCpyCardNum" parameterType="UserCardDO" resultType="int">
+		SELECT count(*) from tbl_usercard where cpy_id = #{ucCpyId} and uc_Status != 3
+	</select>
+	<select id="getLossCpyCardNum" parameterType="UserCardDO" resultType="int">
+		SELECT count(*) from tbl_usercard where cpy_id = #{ucCpyId} and uc_Status = 1
+	</select>
+	<select id="getUserCardByAccountId" parameterType="long" resultMap="resultCard">
+		SELECT uc_id,new_user_id,
+		cpy_id,account_id,user_Id
+		from tbl_usercard 
+		where account_id = #{accountId}
+		and uc_Status = 0
+	
+	</select>
+</mapper>

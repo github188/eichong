@@ -1,0 +1,41 @@
+package com.wanma.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import com.wanma.model.TblElectricpile;
+import com.wanma.model.TblTypespan;
+
+public interface CmsTypespanMapper {
+
+	public long getTblTypespanListCount(TblTypespan tblTypespan);
+
+	public List<Map<String, Object>> getTblTypespanList(TblTypespan tblTypespan);
+
+	public void tblTypespanInsert(TblTypespan tblTypespan);
+
+	public TblTypespan findOne(TblTypespan tblTypespan);
+
+	public void tblTypespanUpdate(TblTypespan tblTypespan);
+
+	public Integer getTypeSpanId(String typeSpan);
+
+	public int selectTsTypeSpan(String tsTypeSpan);
+
+	public List<Map<String, Object>> getPileListById(TblElectricpile electricpile);
+
+	public long getPileListByIdCount(TblElectricpile electricpile);
+
+	public String getBomIdByEpId(String pkElectricPile);
+
+	public void updateElectricpile(TblElectricpile electricpile);
+
+	public void updateUpgradeFlagByTsId(String pkTypeSpanId);
+
+	public List<Map<String, Object>> getupdateEpVisionList(TblElectricpile electricpile);
+
+	public Map<String, Object> getElectricPile(String id);
+
+	public String getBomListIdMax(String pkTypeSpanId);
+
+}

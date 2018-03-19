@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.AreaMessageMapper">
+	<resultMap type="AreaMessage" id="result_AreaMessage">
+		<id property="provinceCode" column="PROVINCE_ID" />
+		<result property="provinceName" column="PROVINCE_NAME" />
+		<result property="cityCode" column="CITY_ID" />
+		<result property="cityName" column="CITY_NAME" />
+		<result property="areaCode" column="area_id" />
+		<result property="areaName" column="area_name" />
+	</resultMap>
+	<select id="getAllMessage"  parameterType="AreaMessage" resultMap="result_AreaMessage">
+		SELECT
+			p.PROVINCE_ID ,
+			p.PROVINCE_NAME,
+			c.CITY_ID,
+			c.CITY_NAME,
+			a.area_id,
+			a.area_name
+		FROM
+			tb_m_area a,
+			tb_m_city c,
+		tb_m_province p 
+		WHERE a.city_id = c.CITY_ID AND c.PROVINCE_ID = p.PROVINCE_ID
+		AND a.area_id = #{areaCode}
+	</select>
+	
+</mapper> 

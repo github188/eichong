@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.IntegralRulesExtensionsMapper">
+	<resultMap type="IntegralRulesExtensionsDO" id="integralRulesExtensions">
+		<result property="pkId" column="pk_id" />
+		<result property="integralRulesId" column="integral_rules_id" />
+		<result property="electricPileId" column="electricPile_id" />
+	</resultMap>
+	
+	<select id="getIntegralRulesExtensionsCount" parameterType="IntegralRulesExtensionsDO" resultType="long">
+		SELECT
+			 COUNT(1)
+		FROM 
+			 tbl_integral_rules_extensions b
+		where 1=1
+		<if test="pkId != null">
+		  and b.pk_id = #{pkId}
+		</if>
+		<if test="integralRulesId != null">
+		  and b.integral_rules_id = #{integralRulesId}
+		</if>
+		<if test="electricPileId != null">
+		  and b.electricPile_id = #{electricPileId}
+		</if>
+	</select>
+	
+	<select id="getIntegralRulesExtensionsList" parameterType="IntegralRulesExtensionsDO" resultMap="integralRulesExtensions">
+		SELECT
+			 pk_id,
+			 integral_rules_id,
+			 electricPile_id
+		FROM 
+			 tbl_integralRulesExtensions b
+		where 1=1
+		<if test="pkId != null">
+		  and b.pk_id = #{pkId}
+		</if>
+		<if test="integralRulesId != null">
+		  and b.integral_rules_id = #{integralRulesId}
+		</if>
+		<if test="electricPileId != null">
+		  and b.electricPile_id = #{electricPileId}
+		</if>
+        <if test="pager!=null">limit #{pager.offset},#{pager.pageSize}</if>
+	</select>
+
+	<!-- 添加积分表 -->
+	<insert id="addIntegralRulesExtensions" useGeneratedKeys="true" parameterType="IntegralRulesExtensionsDO" keyProperty="pkId">
+		INSERT INTO tbl_integral_rules_extensions
+		(pk_id,integral_rules_id,electricPile_id)
+		VALUES
+		(null,#{integralRulesId},#{electricPileId})
+	</insert>
+	
+	<!-- 修改积分表 -->
+	<update id="modifyIntegralRulesExtensions" parameterType="IntegralRulesExtensionsDO" >
+		UPDATE tbl_integral_rules_extensions
+		SET integral_rules_id = #{integralRulesId},
+		electricPile_id = #{electricPileId}
+		WHERE pk_id = #{pkId}
+	</update>
+</mapper>

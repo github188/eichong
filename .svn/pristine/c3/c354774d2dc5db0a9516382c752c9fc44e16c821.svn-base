@@ -1,0 +1,87 @@
+package com.wanma.ims.controller.fin;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.wanma.ims.common.domain.FinAccountSplitDetailsDO;
+import com.wanma.ims.common.domain.base.Pager;
+import com.wanma.ims.controller.BaseController;
+import com.wanma.ims.controller.result.JsonResult;
+import com.wanma.ims.service.FinAccountSplitDetailsService;
+
+/**
+ * 分账明细
+ */
+@RequestMapping("/manage/fin")
+@Controller
+public class FinAccountSplitDetailsController extends BaseController{
+	
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+
+	@Autowired
+	private FinAccountSplitDetailsService finAccountSplitDetailsService;
+
+	/**
+	 * <p>Description: 获取分账明细列表</p>
+	 * @param
+	 * @author bingo
+	 * @date 2017-11-27
+	 */
+	@RequestMapping(value = "/getFinAccountSplitDetailsList")
+	@ResponseBody
+	public void getFinAccountSplitDetailsList(@ModelAttribute("pager") Pager pager,
+											 @ModelAttribute FinAccountSplitDetailsDO finAccountSplitDetails, Model model,HttpServletRequest request){
+		JsonResult batchResult = new JsonResult();
+		Long total = finAccountSplitDetailsService.getFinAccountSplitDetailsCount(finAccountSplitDetails);
+		if (total <= pager.getOffset()) {
+			pager.setPageNo(1L);
+		}
+		pager.setTotal(total);
+		finAccountSplitDetails.setPager(pager);
+
+		List<FinAccountSplitDetailsDO> finAccountSplitConfigList = finAccountSplitDetailsService.getFinAccountSplitDetailsList(finAccountSplitDetails);
+		if (finAccountSplitConfigList == null) {
+			finAccountSplitConfigList = new ArrayList<FinAccountSplitDetailsDO>();
+		}
+
+		batchResult.setDataObject(finAccountSplitConfigList);
+		batchResult.setPager(pager);
+
+		responseJson(batchResult);
+	}
+
+//	/**
+//	 * <p>Description: 增加分账明细</p>
+//	 * @param
+//	 * @author bingo
+//	 * @date 2017-8-15
+//	 */
+//	@RequestMapping(value = "/addFinAccountSplitDetails")
+//	@ResponseBody
+//	public void addFinAccountSplitDetails(@ModelAttribute FinAccountSplitDetailsDO finAccountSplitDetails, Model model, HttpServletRequest request) {
+//		BaseResultDTO baseResultDTO = new BaseResultDTO();
+//		try {
+//			baseResultDTO = finAccountSplitDetailsService.addFinAccountSplitDetails(finAccountSplitDetails, getCurrentLoginUser());
+//		} catch (Exception e) {
+//			log.error(this.getClass() + ".addFinAccountSplitConfig() error : ", e);
+//			responseJson(new JsonResult(false, ResultCodeConstants.FAILED, e.toString()));
+//		}
+//
+//		if(!baseResultDTO.isSuccess()){
+//			responseJson(new JsonResult(false, ResultCodeConstants.FAILED, baseResultDTO.getErrorDetail()));
+//		}else {
+//			responseJson(baseResultDTO);
+//		}
+//	}
+}

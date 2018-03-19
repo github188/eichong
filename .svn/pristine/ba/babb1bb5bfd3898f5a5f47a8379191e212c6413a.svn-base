@@ -1,0 +1,221 @@
+package com.wanma.ims.controller.sys;
+
+import java.io.IOException;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.wanma.ims.common.SessionMgr;
+import com.wanma.ims.model.MenuDO;
+import com.wanma.ims.model.RoleDO;
+import com.wanma.ims.model.UserDO;
+import com.wanma.ims.model.base.Pager;
+import com.wanma.ims.result.BaseException;
+import com.wanma.ims.result.BaseResult;
+import com.wanma.ims.result.BatchResult;
+import com.wanma.ims.service.MenuService;
+import com.wanma.ims.service.RoleService;
+import com.wanma.ims.service.UserService;
+import com.wanma.ims.util.PKUtil;
+ 
+/**
+ * 系统菜单-角色管理
+ */
+
+@Controller
+@RequestMapping("/admin/role")
+public class RoleController {
+	private static Logger log = Logger.getLogger(RoleController.class);
+	@Autowired
+	private RoleService roleService;
+	@Autowired
+	private MenuService menuService;
+	@Autowired
+	private UserService userService;
+
+	/**
+	 * to菜单页面
+	 */
+	public String toRoleView() {
+		return "admin/role/role_list";
+	}
+	/**
+	 * 角色-列表(角色范围需要重新定义)
+	 */
+	@RequestMapping(value = "/getRoleListPage")
+	public String getRoleListPage(@ModelAttribute("pager") Pager pager, HttpServletRequest request) {
+		BatchResult result = new BatchResult();
+		try{
+			UserDO loginUser = SessionMgr.getWebUser(request);
+			long total = roleService.countRoleList(loginUser);
+			if(total <= pager.getOffset()){
+				pager.setPageNo(1L);
+			}
+			pager.setTotal(total);
+			loginUser.setPager(pager);
+			List<RoleDO> roleList = roleService.getRoleListPage(loginUser);
+			result.setDataObject(roleList);
+		}catch(Exception e){
+			log.error(this.getClass() + ".getRoleListPage() error:" + e.getLocalizedMessage());
+			return new BaseException().toString();
+		}
+		return result.toString();
+	}
+
+	/**
+	 * 角色-添加View
+	 */
+	@RequestMapping(value = "/addRoleView")
+	public String addRoleView(ModelMap map, HttpServletRequest request) {
+		RoleDO roleDO = new RoleDO();
+		roleDO.setRoleId(PKUtil.getPkRoleId());
+		List<MenuDO> menuList = SessionMgr.getUserMenus(request);
+		map.put("roleDO", roleDO);
+		map.put("menuList", menuList);
+		return "admin/role/add_role";
+	}
+
+	/**
+	 * 角色-添加
+	 */
+	@RequestMapping(value = "/addRole")
+	@ResponseBody
+	public String addRole(RoleDO roleDO,BindingResult bindResult, HttpServletRequest request, Model model){
+		BaseResult result = new BaseResult();
+		try {
+			if (bindResult.hasErrors()) {
+				return new BaseResult(false,"2003","绑定错误").toString();
+			}
+			String menuIds = request.getParameter("menuIds");
+			roleDO.setCreateUser(SessionMgr.getUserId(request).toString());
+			if(!roleService.addRole(roleDO, menuIds)){
+				return new BaseResult(false,"2001","角色添加失败").toString();
+			}
+			roleService.initRolesAndMenus(request);
+		} catch (Exception e) {
+			log.error(this.getClass() + ".saveRole() error:"
+					+ e.getLocalizedMessage());
+			return new BaseException().toString();
+		}
+		return result.toString();
+	}
+
+	/**
+	 * 角色-编辑View
+	 */
+	@RequestMapping(value = "/modifyRoleView")
+	public String modifyRoleView(@RequestParam("roleId") String roleId, Model model,
+			HttpServletRequest request, HttpSession session) {
+		RoleDO roleDO = roleService.getRoleById(roleId);
+		List<MenuDO> menuList = SessionMgr.getUserMenus(request);
+		String menuIds = StringUtils.join(menuList, ",");
+		List<MenuDO> menuData = menuService.getMenuListByRoleIdAndMenuIds(roleId,menuIds);
+		model.addAttribute("roleDO", roleDO);
+		model.addAttribute("menuList", menuData);
+		return "admin/role/modify_role";
+	}
+
+	/**
+	 * 角色编辑处理
+	 * 
+	 */
+	@RequestMapping(value = "/modifyRole")
+	@ResponseBody
+	public String modifyRole(@ModelAttribute("roleModel") RoleDO roleModel,
+			Model model, BindingResult result, HttpServletRequest request)
+			throws IOException {
+		BaseResult baseResult = new BaseResult();
+//		if (result.hasErrors()) {
+//			return new BaseFail2(5000).toString();
+//		}
+//		try {
+//			String menuIds = request.getParameter("menuIds");
+//			// 设置更新者用户信息
+//			CompleteUser.setUpdateUserInfo(roleModel, request);
+//			roleService.modifyRole(roleModel, menuIds);
+//			// 刷新会话中角色和菜单的缓存
+//			roleService.initRolesAndMenus(request);
+//		} catch (Exception e) {
+//			log.error(this.getClass() + ".modifyRole() error:"
+//					+ e.getLocalizedMessage());
+//			baseResult.setStatus(5001);
+//		}
+		return baseResult.toString();
+	}
+
+	/**
+	 * 角色删除处理
+	 * 
+	 * @param roleId
+	 *            角色ID
+	 * @param model
+	 *            画面显示对象
+	 * @return String 处理结果信息
+	 * @throws 无
+	 */
+	@RequestMapping(value = "/removeRole")
+	@ResponseBody
+	public String removeRole(@ModelAttribute("roleModel") RoleDO roleModel,
+			HttpServletRequest request) {
+		BaseResult baseResult = new BaseResult();
+//		try {
+//			roleModel = roleService.findRole(roleModel.getRoleId());
+//			String roleId = roleModel.getRoleId();
+//			List<User> roleUserList = userService.getRoleUserList(roleId);
+//			if (roleUserList != null && roleUserList.size() > 0) {
+//				baseResult = new BaseFail2("此角色下已有用户，请先删除用户");
+//			} else {
+//				// 执行删除处理
+//				roleService.removeRole(roleId);
+//				// 刷新会话中角色和菜单的缓存
+//				roleService.initRolesAndMenus(request);
+//			}
+//		} catch (Exception e) {
+//			log.error(this.getClass() + ".removeRole() error:"
+//					+ e.getLocalizedMessage());
+//			baseResult = new BaseFail2(5001);
+//		}
+		return baseResult.toString();
+	}
+
+
+	/**
+	 * 唯一性检查
+	 */
+	@RequestMapping(value = "/checkUnique")
+	@ResponseBody
+	public String checkUnique(HttpServletRequest request) {
+		String roleName = request.getParameter("roleName");
+		String roleId = request.getParameter("roleId");
+		UserDO user = SessionMgr.getWebUser(request);
+		List<RoleDO> roleList = roleService
+				.getParentRoleListByCurrentUser(user);
+		for (RoleDO role : roleList) {
+			if (role.getRoleName().equals(roleName)) {
+				if (StringUtils.isNotBlank(roleId)) {
+					if (!role.getRoleId().equals(roleId)) {
+						return "false";
+					}
+				} else {
+					return "false";
+				}
+			}
+		}
+		// 返回处理结果信息
+		return "true";
+	}
+
+}

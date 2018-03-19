@@ -1,0 +1,136 @@
+package com.wanma.ims.controller.integral;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.wanma.ims.common.domain.IntegralRulesDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.domain.base.Pager;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.constants.ResultCodeConstants;
+import com.wanma.ims.controller.BaseController;
+import com.wanma.ims.controller.result.JsonResult;
+import com.wanma.ims.service.IntegralRulesService;
+
+/**
+ * 积分规则
+ */
+@RequestMapping("/integral")
+@Controller
+public class IntegralRulesController extends BaseController{
+	
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+
+	@Autowired
+	private IntegralRulesService integralRulesService;
+	
+	/**
+	* <p>Description: 获取积分规则列表</p>
+	* @param
+	* @author bingo
+	* @date 2017-8-15
+	 */
+	@RequestMapping(value = "/getIntegralRulesList")
+	@ResponseBody
+	public void getIntegralRulesList(@ModelAttribute("pager") Pager pager,
+			@ModelAttribute IntegralRulesDO integralRules, Model model,HttpServletRequest request){
+		JsonResult batchResult = new JsonResult();
+		Long total = integralRulesService.getIntegralRulesCount(integralRules);
+		if (total <= pager.getOffset()) {
+			pager.setPageNo(1L);
+		}
+		pager.setTotal(total);
+		integralRules.setPager(pager);
+		
+		List<IntegralRulesDO> integralRulesList = integralRulesService.getIntegralRulesList(integralRules);
+		if (integralRulesList == null) {
+			integralRulesList = new ArrayList<IntegralRulesDO>();
+		}
+		batchResult.setDataObject(integralRulesList);
+		batchResult.setPager(pager);
+		
+		responseJson(batchResult);
+	}	
+	
+	/**
+	* <p>Description: 修改积分规则</p>
+	* @param
+	* @author bingo
+	* @date 2017-8-15
+	 */
+	@RequestMapping(value = "/modifyIntegralRules")
+	@ResponseBody
+	public void modifyIntegralRules(@ModelAttribute IntegralRulesDO integralRules, Model model, HttpServletRequest request) {
+		//取当前登录用户
+//		UserDO user = SessionMgr.getWebUser(request);
+		UserDO user = getCurrentLoginUser();
+		if (user == null) {
+			log.error(this.getClass() + ".modifyIntegralRules() error : " + ResultCodeConstants.ERROR_MSG_EMPTY_SESSION_USER);
+			responseJson(new JsonResult(false, ResultCodeConstants.FAILED, ResultCodeConstants.ERROR_MSG_EMPTY_SESSION_USER));
+			return;
+		}
+		
+		BaseResultDTO baseResultDTO = new BaseResultDTO();
+		try {
+			integralRules.setModifier(user.getUserId().toString());
+			integralRules.setGmtModified(new Date());
+			baseResultDTO = integralRulesService.modifyIntegralRules(integralRules);
+		} catch (Exception e) {
+			log.error(this.getClass() + ".modifyIntegralRules() error : ", e);
+			responseJson(new JsonResult(false, ResultCodeConstants.FAILED, e.toString()));
+		}
+		
+		if(!baseResultDTO.isSuccess()){
+			responseJson(new JsonResult(false, ResultCodeConstants.FAILED, baseResultDTO.getErrorDetail()));
+		}else {
+			responseJson(new JsonResult());
+		}
+	}
+	
+	/**
+	* <p>Description: 增加积分规则</p>
+	* @param
+	* @author bingo
+	* @date 2017-8-15
+	 */
+	@RequestMapping(value = "/addIntegralRules")
+	@ResponseBody
+	public void addIntegralRules(@ModelAttribute IntegralRulesDO integralRules, Model model, HttpServletRequest request) {
+		//取当前登录用户
+//		UserDO user = SessionMgr.getWebUser(request);
+		UserDO user = getCurrentLoginUser();
+		if (user == null) {
+			log.error(this.getClass() + ".addIntegralRules() error : " + ResultCodeConstants.ERROR_MSG_EMPTY_SESSION_USER);
+			responseJson(new JsonResult(false, ResultCodeConstants.FAILED, ResultCodeConstants.ERROR_MSG_EMPTY_SESSION_USER));
+			return;
+		}
+		
+		BaseResultDTO baseResultDTO = new BaseResultDTO();
+		try {
+			integralRules.setCreator(user.getUserId().toString());
+			integralRules.setGmtCreate(new Date());
+			baseResultDTO = integralRulesService.addIntegralRules(integralRules);
+		} catch (Exception e) {
+			log.error(this.getClass() + ".addIntegralRules() error : ", e);
+			responseJson(new JsonResult(false, ResultCodeConstants.FAILED, e.toString()));
+		}
+		
+		if(!baseResultDTO.isSuccess()){
+			responseJson(new JsonResult(false, ResultCodeConstants.FAILED, baseResultDTO.getErrorDetail()));
+		}else {
+			responseJson(new JsonResult());
+		}
+	}
+}

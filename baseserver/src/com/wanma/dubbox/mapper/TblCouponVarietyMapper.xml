@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dubbox.dao.TblCouponVarietyMapper">
+	<resultMap id="BaseResultMap" type="com.wanma.dubbox.model.TblCouponVariety">
+		<id column="pk_CouponVariety" property="id" jdbcType="INTEGER" />
+		<result column="cova_ActivityName" property="name" jdbcType="VARCHAR" />
+		<result column="cova_Limitation" property="eLmt" jdbcType="SMALLINT" />
+		<result column="cova_Stutas" property="sts" jdbcType="SMALLINT" />
+		<result column="cova_CouponValue" property="val" jdbcType="INTEGER" />
+		<result column="cova_CouponCondition" property="cdt" jdbcType="INTEGER" />
+		<result column="cova_CouponTerm" property="term" jdbcType="INTEGER" />
+		<result column="cova_CreateUserId" property="cuid" jdbcType="VARCHAR" />
+		<result column="cova_UpdateUserId" property="upUid" jdbcType="VARCHAR" />
+		<result column="cova_Remark" property="remark" jdbcType="VARCHAR" />
+		<result column="cova_Createdate" property="cdate" jdbcType="TIMESTAMP" />
+		<result column="cova_Updatedate" property="udate" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<select id="getCount" parameterType="TblCouponVariety" resultType="long">
+		select count(1)
+		from
+		tbl_couponvariety t
+		WHERE
+		1=1
+	</select>
+
+	<select id="getList" parameterType="TblCouponVariety" resultMap="BaseResultMap">
+		select
+		${rtColumns}
+		from
+		tbl_couponvariety t
+		WHERE
+		1=1
+		order by t.cova_Createdate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<select id="selectOne" parameterType="TblCouponVariety" resultMap="BaseResultMap">
+		select
+		${rtColumns}
+		from
+		tbl_couponvariety t
+		where pk_CouponVariety = #{id}
+	</select>
+
+	<delete id="delete" parameterType="TblCouponVariety">
+		delete
+		from
+		tbl_couponvariety where
+		pk_CouponVariety=#{id}
+	</delete>
+
+</mapper>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<server>
+    <description>游戏服1</description>
+	<server-name>GameServer1</server-name>
+	<server-id>10001</server-id> 
+	<pf-id>10</pf-id> <!-- 平台id，范围 10 - 99  -->
+	<zone-id>1</zone-id> <!-- 区号，范围 1 - 999 -->
+	<shutdown-port>50001</shutdown-port>  <!-- 服务器关闭端口, 2位（平台号+40） + 2位区号 + 1位当前区网关号 -->
+</server>
+
+

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsCarCompanyMapper">
+	<resultMap id="resultMap" type="TblCarcompany">
+		<id property="pkCarinfo" column="pk_CarInfo" />
+		<result property="pkCarcompany" column="pk_Carcompany" />
+		<result property="carcompanyName" column="carcompany_Name" />
+		<result property="carcompanyCreateDate" column="carcompany_CreateDate" />
+		<result property="carcompanyUpdateDate" column="carcompany_UpdateDate" />
+		<result property="carcompanyRemark" column="carcompany_Remark" />
+	</resultMap>
+	<!-- 新增电动车厂商类型 -->
+	<insert id="insertCarCompany" parameterType="TblCarcompany">
+		insert into tbl_carcompany (
+		carCompany_Name,
+		carCompany_Remark
+		)values (
+		#{carcompanyName},
+		#{carcompanyRemark}
+		)
+	</insert>
+	<!-- 更新电动车厂商类型 -->
+	<update id="updateCarCompany" parameterType="TblCarcompany">
+		update tbl_carcompany 
+		<set>  
+        <if test="carcompanyName != null and carcompanyName != '' ">  
+            carCompany_Name = #{carcompanyName},  
+        </if> 
+         <if test="carcompanyCreateDate != null and carcompanyCreateDate != '' ">  
+            carCompany_CreateDate = #{carcompanyCreateDate},  
+        </if>
+         <if test="carcompanyUpdateDate != null and carcompanyUpdateDate != '' ">  
+            carCompany_UpdateDate = #{carcompanyUpdateDate},  
+        </if>
+         <if test="carcompanyRemark != null and carcompanyRemark != '' ">  
+            carCompany_Remark = #{carcompanyRemark},  
+        </if>
+        </set>
+		where
+		pk_carCompany=#{pkCarcompany} 
+	</update>
+	<!-- 删除电动车品牌类型 -->
+	<delete id="deleteCarCompanyById" parameterType="TblCarcompany" >
+		delete  		
+		from
+	    tbl_carcompany
+		where
+		pk_carCompany=#{pkCarcompany} 
+	</delete>
+	<!-- 获取电动车品牌类型 -->
+	<select id="findCarCompanyById" parameterType="TblCarcompany" resultMap="resultMap">
+		select
+		pk_carCompany,		
+		carCompany_Name,
+		carCompany_CreateDate,
+		carCompany_UpdateDate,
+		carCompany_Remark
+		from tbl_carcompany
+		<where>
+		 <if test="pkCarcompany != null and pkCarcompany!=''">
+				pk_carCompany=#{pkCarcompany}
+	     </if>
+	     <if test="carcompanyName != null and carcompanyName !=''">
+				carCompany_Name=#{carcompanyName}
+	     </if>
+		</where>
+	</select>
+
+	<!-- 获取车型号列表 -->
+	<select id="findCarCompanyList" parameterType="TblCarcompany" resultMap="resultMap">
+		select
+		pk_carCompany,		
+		carCompany_Name,
+		left(carCompany_CreateDate,19) carcompanyCreateDate,
+		left(carCompany_UpdateDate,19) carcompanyUpdateDate,
+		carCompany_Remark
+		from tbl_carcompany
+		<where>		 
+		 <if test="pkCarcompany != null and pkCarcompany!=''">
+				pk_carCompany=#{pkCarcompany}
+	     </if>
+		 <if test="carcompanyName != null and carcompanyName !=''">
+				and carCompany_Name like concat('%',#{carcompanyName},'%')
+	     </if>	   		
+		</where>
+		order by carCompany_CreateDate desc
+		<if test="pager!=null">limit #{offset},#{numPerPage}</if>
+	</select>
+	<!--  -->
+	<select id="getByProperty" parameterType="TblCarcompany" resultMap="resultMap">
+	   SELECT
+			pk_carCompany,		
+			carCompany_Name,
+			carCompany_CreateDate,
+			carCompany_UpdateDate,
+			carCompany_Remark
+		from tbl_carcompany 
+		<where>
+		    1=1  
+		    <if test="pkCarcompany!=null and pkCarcompany !=''">
+		        and pk_carCompany !=#{pkCarcompany} 
+		    </if>
+		    and (1=0
+		 	<if test="carcompanyName!=null and carcompanyName !=''">
+					or	carCompany_Name=#{carcompanyName}
+			</if>
+			)
+		</where>
+	</select>
+	<!-- 获取车型号数量 -->
+	<select id="findCarCompanyCount" parameterType="TblCarcompany" resultType="long">
+		select count(pk_carCompany)
+		from
+		tbl_carcompany
+		<where>
+		 <if test="pkCarcompany != null and pkCarcompany!=''">
+				pk_carCompany=#{pkCarcompany}
+	     </if>
+		 <if test="carcompanyName != null and carcompanyName !=''">
+				and carCompany_Name like concat('%',#{carcompanyName},'%')
+	     </if>			
+		</where>
+	</select>
+</mapper> 

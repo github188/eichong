@@ -1,0 +1,1213 @@
+package com.wanma.model;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.List;
+
+import com.bluemobi.product.model.common.BasicListAndMutiFile;
+
+/**
+ * 
+ * tbl_ElectricPile表
+ * 
+ * @author mew
+ * 
+ */
+public class TblElectricpile extends BasicListAndMutiFile  implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3050775264484769401L;
+	private java.lang.Integer pkElectricpile; // 主键
+	private java.lang.String elpiElectricpilename; // 电桩名称
+	private java.lang.String elpiElectricpilecode; // 桩体编号
+	private java.lang.String elpiElectricpileaddress; // 地址
+	private java.math.BigDecimal elpiLongitude; // 电桩地址经度
+	private java.math.BigDecimal elpiLatitude; // 电桩地址纬度
+	private java.lang.Integer elpiPowernumber; // 电桩枪口数量
+	private java.lang.String elpiAreacode; // 电桩所属区域代码(根据省、市、区表关联)
+	private java.lang.Integer elpiState; // 电桩状态（0-草稿 5-提交审核 3-已驳回 10-离线15-上线）
+	private java.lang.String elpiRejectionreason; // 审核驳回原因
+	private java.lang.Integer elpiType; // 电桩类型，配置参数内容的ID （落地式，壁挂式，拉杆式，便携式）
+	private java.lang.String typeName; // 电桩类型，配置参数内容的ID （落地式，壁挂式，拉杆式，便携式）
+	private java.lang.Integer elpiPoweruser; // 电桩用途，配置参数内容的ID（电动车，电动自行车，多功能（电动车、电动自行车、手机USB））
+	private java.lang.Integer elpiChargingmode; // 电桩充电方式，配置参数内容的ID
+												// （直流充电桩，交流充电桩）
+	private java.lang.Integer elpiPowersize; // 电桩额定功率，配置参数内容的ID（3.5kw，7kw，20kw，50kw，75kw）
+	private java.lang.Integer elpiPowerinterface; // 电桩接口方式，配置参数内容的ID（国标、欧标、美标）7国标，19美标，20欧标
+	private java.lang.String powerName; // 电桩类型，配置参数内容的ID （落地式，壁挂式，拉杆式，便携式）
+	private java.lang.String powerSizeName; //功率名称
+	private java.lang.Integer elpiMaker; // 电桩制造商，配置参数内容的ID
+											// （万马新能源，南京循道，北京三优，上海普天）
+	private java.lang.String elpiImage; // 电桩图片
+	private java.lang.String elpiDetailimage; // 电桩详情图片
+	private java.math.BigDecimal elpiOutputvoltage; // 电桩额定输出电压
+	private java.math.BigDecimal elpiInputvoltage; // 电桩额定输入电压
+	private java.math.BigDecimal elpiOutputcurrent; // 电桩额定输出电流
+	private java.math.BigDecimal elpiInputcurrent; // 电桩额定输入电流
+	private java.lang.Integer elpiUsertype; // 电桩所属用户类型
+	private java.lang.String elpiUserid; // 电桩所属用户ID
+	private java.util.Date elpiCreatedate; // 创建时间
+	private java.util.Date elpiUpdatedate; // 修改时间
+	private java.lang.String elpiRemark; // 备注
+	private java.lang.String elpiCarid; // 电桩适用车型，根据电动车品牌类型详情表关联，id用逗号隔开
+	private java.lang.Integer elpiBinding; // 电桩是否绑定充电点（0-未绑定 1-已绑定）
+	private java.lang.Integer elpiIsappoint; // 电桩是否支持预约（0不支持，1支持）
+	private java.lang.Integer elpiPaystyle; // 电桩充电支付方式，配置参数内容的ID
+											// （刷卡方式，手机方式，人工方式）
+	private java.math.BigDecimal elpiMaxelectricity; //
+	private int elPiRelevancePowerStation;
+
+	private java.lang.Integer elPiRateInformationId;//费率id
+	private java.lang.String elPi_ChargingModeName; // 充电模式名称
+	private java.lang.String elPi_PowerUserName; // 充电模式用途名称
+	private java.lang.String elPi_Tell;// 联系电话
+	private java.lang.String  elPiUserName;//所属用户
+	private int relevancePowerStation;//所属充电点
+	private String comm_status;//连接状态
+	private java.lang.String  elPiOnlineTime; // 开放时间
+	private java.lang.String  elPiOwnProvince;//所属省份
+	private java.lang.String  elPiOwnCity;//所属城市
+	private java.lang.String  elPiOwnCounty;//所属地区区县
+	private java.lang.String  elPiOwnAreaCode;//所属地区代码
+	private java.lang.String  elPiOwnProvinceCode;//所属省份code
+	private java.lang.String  elPiOwnCityCode;//所属城市code
+	private java.lang.String  elPiOwnCountyCode;//所属地区代码code
+	private java.lang.String  offlineTime; // 下线时间
+	private java.lang.String  elPiSimMac; //SIM卡卡号
+	private java.lang.String  elPiSimPhoneNum; //SIM卡电话号码
+	private java.lang.Integer elPiHaveLedFlash; // 电桩是否有LED灯
+	private java.lang.Integer elPiHaveGps; // 电桩是否有GPS模块
+	private Integer elPiHaveConnectLine; // 电桩是否有连接线 1有，2没有 默认2
+	// 页面搜索用，不以数据库对应
+	private String electricPrices;// 价格(APP电桩查找列表模式，价格排序) 1-默认模式 2-按照最优排序
+	private String electricEvaluate;// 评价(APP电桩查找列表模式，评价排序) 1-默认模式 2-按照最优排序
+	private String screenRadius;// //距离(APP电桩查找列表模式，搜索半径) 单位m
+	private String pileHeadSum;// 电桩枪头数量
+	private String elctrcState;// 枪头状态
+	private String searchName; // 检索名称
+	private int pkUserinfo;// 用户id
+	private String isCollect;// 是否收藏 0未收藏 1已收藏
+	private String userName;
+	private String userLevel;
+	private String elPiOwner;//电桩拥有者
+	private String screenType; // 列表接口用，3充电点电桩 4电动自行车
+	private BigDecimal raIn_ReservationRate; //预约单价
+	private BigDecimal raIn_ServiceCharge; //服务费
+	private int ep_num;//电桩在充电点中的排序号
+	private String distance;
+	private String newElpiElectricpilecode;//新的电桩编号
+	private String chargingMode;//电桩冲电方式
+	private String makerRemark;//制造厂家标示
+	private java.lang.Integer gateId;//电桩id
+	private java.lang.Integer elPiOwnerCompany;
+	private List<TblElectricpilehead> headList;
+	private Integer pkConcentratorID;
+	private Integer concentratorNum;
+	private List<String> elpiImageUrl;
+	private String companyNumber; //公司标识
+	private String companyName; //公司名称
+	private java.lang.Integer elpiTypeSpanId;//产品id
+	private String provinceName; //公司名称
+	
+	private String ownerShip;//所有权
+	
+
+
+	public String getOwnerShip() {
+		return ownerShip;
+	}
+
+	public void setOwnerShip(String ownerShip) {
+		this.ownerShip = ownerShip;
+	}
+
+	public java.lang.Integer getElpiTypeSpanId() {
+		return elpiTypeSpanId;
+	}
+
+	public void setElpiTypeSpanId(java.lang.Integer elpiTypeSpanId) {
+		this.elpiTypeSpanId = elpiTypeSpanId;
+	}
+
+	public java.lang.Integer getElPiOwnerCompany() {
+		return elPiOwnerCompany;
+	}
+
+	public void setElPiOwnerCompany(java.lang.Integer elPiOwnerCompany) {
+		this.elPiOwnerCompany = elPiOwnerCompany;
+	}
+
+	public String getComm_status() {
+		return comm_status;
+	}
+
+	public void setComm_status(String comm_status) {
+		this.comm_status = comm_status;
+	}
+
+	public int getEp_num() {
+		return ep_num;
+	}
+
+	public void setEp_num(int ep_num) {
+		this.ep_num = ep_num;
+	}
+
+	public BigDecimal getRaIn_ServiceCharge() {
+		return raIn_ServiceCharge;
+	}
+
+	public void setRaIn_ServiceCharge(BigDecimal raIn_ServiceCharge) {
+		this.raIn_ServiceCharge = raIn_ServiceCharge;
+	}
+
+	public String getDistance() {
+		return distance;
+	}
+
+	public void setDistance(String distance) {
+		this.distance = distance;
+	}
+
+	public BigDecimal getRaIn_ReservationRate() {
+		return raIn_ReservationRate;
+	}
+
+	public void setRaIn_ReservationRate(BigDecimal raIn_ReservationRate) {
+		this.raIn_ReservationRate = raIn_ReservationRate;
+	}
+
+	public String getScreenType() {
+		return screenType;
+	}
+
+	public void setScreenType(String screenType) {
+		this.screenType = screenType;
+	}
+
+	/**
+	 * 获取主键属性
+	 * 
+	 * @return pkElectricpile
+	 */
+	public java.lang.Integer getPkElectricpile() {
+		return pkElectricpile;
+	}
+
+	/**
+	 * 设置主键属性
+	 * 
+	 * @param pkElectricpile
+	 */
+	public void setPkElectricpile(java.lang.Integer pkElectricpile) {
+		this.pkElectricpile = pkElectricpile;
+	}
+
+	public String getPileHeadSum() {
+		return pileHeadSum;
+	}
+
+	public void setPileHeadSum(String pileHeadSum) {
+		this.pileHeadSum = pileHeadSum;
+	}
+
+	/**
+	 * 获取电桩名称属性
+	 * 
+	 * @return elpiElectricpilename
+	 */
+	public java.lang.String getElpiElectricpilename() {
+		return elpiElectricpilename;
+	}
+
+	/**
+	 * 设置电桩名称属性
+	 * 
+	 * @param elpiElectricpilename
+	 */
+	public void setElpiElectricpilename(java.lang.String elpiElectricpilename) {
+		this.elpiElectricpilename = elpiElectricpilename;
+	}
+
+	/**
+	 * 获取桩体编号属性
+	 * 
+	 * @return elpiElectricpilecode
+	 */
+	public java.lang.String getElpiElectricpilecode() {
+		return elpiElectricpilecode;
+	}
+
+	/**
+	 * 设置桩体编号属性
+	 * 
+	 * @param elpiElectricpilecode
+	 */
+	public void setElpiElectricpilecode(java.lang.String elpiElectricpilecode) {
+		this.elpiElectricpilecode = elpiElectricpilecode;
+	}
+
+	/**
+	 * 获取地址属性
+	 * 
+	 * @return elpiElectricpileaddress
+	 */
+	public java.lang.String getElpiElectricpileaddress() {
+		return elpiElectricpileaddress;
+	}
+
+	/**
+	 * 设置地址属性
+	 * 
+	 * @param elpiElectricpileaddress
+	 */
+	public void setElpiElectricpileaddress(
+			java.lang.String elpiElectricpileaddress) {
+		this.elpiElectricpileaddress = elpiElectricpileaddress;
+	}
+
+	/**
+	 * 获取电桩地址经度属性
+	 * 
+	 * @return elpiLongitude
+	 */
+	public java.math.BigDecimal getElpiLongitude() {
+		return elpiLongitude;
+	}
+
+	public java.lang.String getElPiUserName() {
+		return elPiUserName;
+	}
+
+	public void setElPiUserName(java.lang.String elPiUserName) {
+		this.elPiUserName = elPiUserName;
+	}
+
+	/**
+	 * 设置电桩地址经度属性
+	 * 
+	 * @param elpiLongitude
+	 */
+	public void setElpiLongitude(java.math.BigDecimal elpiLongitude) {
+		this.elpiLongitude = elpiLongitude;
+	}
+
+	/**
+	 * 获取电桩地址纬度属性
+	 * 
+	 * @return elpiLatitude
+	 */
+	public java.math.BigDecimal getElpiLatitude() {
+		return elpiLatitude;
+	}
+
+	/**
+	 * 设置电桩地址纬度属性
+	 * 
+	 * @param elpiLatitude
+	 */
+	public void setElpiLatitude(java.math.BigDecimal elpiLatitude) {
+		this.elpiLatitude = elpiLatitude;
+	}
+
+	/**
+	 * 获取电桩枪口数量属性
+	 * 
+	 * @return elpiPowernumber
+	 */
+	public java.lang.Integer getElpiPowernumber() {
+		return elpiPowernumber;
+	}
+
+	/**
+	 * 设置电桩枪口数量属性
+	 * 
+	 * @param elpiPowernumber
+	 */
+	public void setElpiPowernumber(java.lang.Integer elpiPowernumber) {
+		this.elpiPowernumber = elpiPowernumber;
+	}
+
+	/**
+	 * 获取电桩所属区域代码(根据省、市、区表关联)属性
+	 * 
+	 * @return elpiAreacode
+	 */
+	public java.lang.String getElpiAreacode() {
+		return elpiAreacode;
+	}
+
+	/**
+	 * 设置电桩所属区域代码(根据省、市、区表关联)属性
+	 * 
+	 * @param elpiAreacode
+	 */
+	public void setElpiAreacode(java.lang.String elpiAreacode) {
+		this.elpiAreacode = elpiAreacode;
+	}
+
+	/**
+	 * 获取电桩状态（0-草稿 5-提交审核 3-已驳回 10-离线15-上线）属性
+	 * 
+	 * @return elpiState
+	 */
+	public java.lang.Integer getElpiState() {
+		return elpiState;
+	}
+
+	/**
+	 * 设置电桩状态（0-草稿 5-提交审核 3-已驳回 10-离线15-上线）属性
+	 * 
+	 * @param elpiState
+	 */
+	public void setElpiState(java.lang.Integer elpiState) {
+		this.elpiState = elpiState;
+	}
+
+	/**
+	 * 获取审核驳回原因属性
+	 * 
+	 * @return elpiRejectionreason
+	 */
+	public java.lang.String getElpiRejectionreason() {
+		return elpiRejectionreason;
+	}
+
+	/**
+	 * 设置审核驳回原因属性
+	 * 
+	 * @param elpiRejectionreason
+	 */
+	public void setElpiRejectionreason(java.lang.String elpiRejectionreason) {
+		this.elpiRejectionreason = elpiRejectionreason;
+	}
+
+	/**
+	 * 获取电桩类型，配置参数内容的ID （落地式，壁挂式，拉杆式，便携式）属性
+	 * 
+	 * @return elpiType
+	 */
+	public java.lang.Integer getElpiType() {
+		return elpiType;
+	}
+
+	/**
+	 * 设置电桩类型，配置参数内容的ID （落地式，壁挂式，拉杆式，便携式）属性
+	 * 
+	 * @param elpiType
+	 */
+	public void setElpiType(java.lang.Integer elpiType) {
+		this.elpiType = elpiType;
+	}
+
+	/**
+	 * 获取电桩用途，配置参数内容的ID（电动车，电动自行车，多功能（电动车、电动自行车、手机USB））属性
+	 * 
+	 * @return elpiPoweruser
+	 */
+	public java.lang.Integer getElpiPoweruser() {
+		return elpiPoweruser;
+	}
+
+	/**
+	 * 设置电桩用途，配置参数内容的ID（电动车，电动自行车，多功能（电动车、电动自行车、手机USB））属性
+	 * 
+	 * @param elpiPoweruser
+	 */
+	public void setElpiPoweruser(java.lang.Integer elpiPoweruser) {
+		this.elpiPoweruser = elpiPoweruser;
+	}
+
+	/**
+	 * 获取电桩充电方式，配置参数内容的ID （直流充电桩，交流充电桩）属性
+	 * 
+	 * @return elpiChargingmode
+	 */
+	public java.lang.Integer getElpiChargingmode() {
+		return elpiChargingmode;
+	}
+
+	/**
+	 * 设置电桩充电方式，配置参数内容的ID （直流充电桩，交流充电桩）属性
+	 * 
+	 * @param elpiChargingmode
+	 */
+	public void setElpiChargingmode(java.lang.Integer elpiChargingmode) {
+		this.elpiChargingmode = elpiChargingmode;
+	}
+
+	/**
+	 * 获取电桩额定功率，配置参数内容的ID（3.5kw，7kw，20kw，50kw，75kw）属性
+	 * 
+	 * @return elpiPowersize
+	 */
+	public java.lang.Integer getElpiPowersize() {
+		return elpiPowersize;
+	}
+
+	/**
+	 * 设置电桩额定功率，配置参数内容的ID（3.5kw，7kw，20kw，50kw，75kw）属性
+	 * 
+	 * @param elpiPowersize
+	 */
+	public void setElpiPowersize(java.lang.Integer elpiPowersize) {
+		this.elpiPowersize = elpiPowersize;
+	}
+
+	/**
+	 * 获取电桩接口方式，配置参数内容的ID（国标、欧标、美标）属性
+	 * 
+	 * @return elpiPowerinterface
+	 */
+	public java.lang.Integer getElpiPowerinterface() {
+		return elpiPowerinterface;
+	}
+
+	/**
+	 * 设置电桩接口方式，配置参数内容的ID（国标、欧标、美标）属性
+	 * 
+	 * @param elpiPowerinterface
+	 */
+	public void setElpiPowerinterface(java.lang.Integer elpiPowerinterface) {
+		this.elpiPowerinterface = elpiPowerinterface;
+	}
+
+	/**
+	 * 获取电桩制造商，配置参数内容的ID （万马新能源，南京循道，北京三优，上海普天）属性
+	 * 
+	 * @return elpiMaker
+	 */
+	public java.lang.Integer getElpiMaker() {
+		return elpiMaker;
+	}
+
+	/**
+	 * 设置电桩制造商，配置参数内容的ID （万马新能源，南京循道，北京三优，上海普天）属性
+	 * 
+	 * @param elpiMaker
+	 */
+	public void setElpiMaker(java.lang.Integer elpiMaker) {
+		this.elpiMaker = elpiMaker;
+	}
+
+	/**
+	 * 获取电桩图片属性
+	 * 
+	 * @return elpiImage
+	 */
+	public java.lang.String getElpiImage() {
+		return elpiImage;
+	}
+
+	/**
+	 * 设置电桩图片属性
+	 * 
+	 * @param elpiImage
+	 */
+	public void setElpiImage(java.lang.String elpiImage) {
+		this.elpiImage = elpiImage;
+	}
+
+	/**
+	 * 获取电桩详情图片属性
+	 * 
+	 * @return elpiDetailimage
+	 */
+	public java.lang.String getElpiDetailimage() {
+		return elpiDetailimage;
+	}
+
+	/**
+	 * 设置电桩详情图片属性
+	 * 
+	 * @param elpiDetailimage
+	 */
+	public void setElpiDetailimage(java.lang.String elpiDetailimage) {
+		this.elpiDetailimage = elpiDetailimage;
+	}
+
+	/**
+	 * 获取电桩额定输出电压属性
+	 * 
+	 * @return elpiOutputvoltage
+	 */
+	public java.math.BigDecimal getElpiOutputvoltage() {
+		return elpiOutputvoltage;
+	}
+
+	/**
+	 * 设置电桩额定输出电压属性
+	 * 
+	 * @param elpiOutputvoltage
+	 */
+	public void setElpiOutputvoltage(java.math.BigDecimal elpiOutputvoltage) {
+		this.elpiOutputvoltage = elpiOutputvoltage;
+	}
+
+	/**
+	 * 获取电桩额定输入电压属性
+	 * 
+	 * @return elpiInputvoltage
+	 */
+	public java.math.BigDecimal getElpiInputvoltage() {
+		return elpiInputvoltage;
+	}
+
+	/**
+	 * 设置电桩额定输入电压属性
+	 * 
+	 * @param elpiInputvoltage
+	 */
+	public void setElpiInputvoltage(java.math.BigDecimal elpiInputvoltage) {
+		this.elpiInputvoltage = elpiInputvoltage;
+	}
+
+	/**
+	 * 获取电桩额定输出电流属性
+	 * 
+	 * @return elpiOutputcurrent
+	 */
+	public java.math.BigDecimal getElpiOutputcurrent() {
+		return elpiOutputcurrent;
+	}
+
+	/**
+	 * 设置电桩额定输出电流属性
+	 * 
+	 * @param elpiOutputcurrent
+	 */
+	public void setElpiOutputcurrent(java.math.BigDecimal elpiOutputcurrent) {
+		this.elpiOutputcurrent = elpiOutputcurrent;
+	}
+
+	/**
+	 * 获取电桩额定输入电流属性
+	 * 
+	 * @return elpiInputcurrent
+	 */
+	public java.math.BigDecimal getElpiInputcurrent() {
+		return elpiInputcurrent;
+	}
+
+	/**
+	 * 设置电桩额定输入电流属性
+	 * 
+	 * @param elpiInputcurrent
+	 */
+	public void setElpiInputcurrent(java.math.BigDecimal elpiInputcurrent) {
+		this.elpiInputcurrent = elpiInputcurrent;
+	}
+
+	/**
+	 * 获取电桩所属用户类型属性
+	 * 
+	 * @return elpiUsertype
+	 */
+	public java.lang.Integer getElpiUsertype() {
+		return elpiUsertype;
+	}
+
+	/**
+	 * 设置电桩所属用户类型属性
+	 * 
+	 * @param elpiUsertype
+	 */
+	public void setElpiUsertype(java.lang.Integer elpiUsertype) {
+		this.elpiUsertype = elpiUsertype;
+	}
+
+	/**
+	 * 获取电桩所属用户ID属性
+	 * 
+	 * @return elpiUserid
+	 */
+	public java.lang.String getElpiUserid() {
+		return elpiUserid;
+	}
+
+	/**
+	 * 设置电桩所属用户ID属性
+	 * 
+	 * @param elpiUserid
+	 */
+	public void setElpiUserid(java.lang.String elpiUserid) {
+		this.elpiUserid = elpiUserid;
+	}
+
+	/**
+	 * 获取创建时间属性
+	 * 
+	 * @return elpiCreatedate
+	 */
+	public java.util.Date getElpiCreatedate() {
+		return elpiCreatedate;
+	}
+
+	/**
+	 * 设置创建时间属性
+	 * 
+	 * @param elpiCreatedate
+	 */
+	public void setElpiCreatedate(java.util.Date elpiCreatedate) {
+		this.elpiCreatedate = elpiCreatedate;
+	}
+
+	/**
+	 * 获取修改时间属性
+	 * 
+	 * @return elpiUpdatedate
+	 */
+	public java.util.Date getElpiUpdatedate() {
+		return elpiUpdatedate;
+	}
+
+	/**
+	 * 设置修改时间属性
+	 * 
+	 * @param elpiUpdatedate
+	 */
+	public void setElpiUpdatedate(java.util.Date elpiUpdatedate) {
+		this.elpiUpdatedate = elpiUpdatedate;
+	}
+
+	/**
+	 * 获取备注属性
+	 * 
+	 * @return elpiRemark
+	 */
+	public java.lang.String getElpiRemark() {
+		return elpiRemark;
+	}
+
+	/**
+	 * 设置备注属性
+	 * 
+	 * @param elpiRemark
+	 */
+	public void setElpiRemark(java.lang.String elpiRemark) {
+		this.elpiRemark = elpiRemark;
+	}
+
+	/**
+	 * 获取电桩适用车型，根据电动车品牌类型详情表关联，id用逗号隔开属性
+	 * 
+	 * @return elpiCarid
+	 */
+	public java.lang.String getElpiCarid() {
+		return elpiCarid;
+	}
+
+	/**
+	 * 设置电桩适用车型，根据电动车品牌类型详情表关联，id用逗号隔开属性
+	 * 
+	 * @param elpiCarid
+	 */
+	public void setElpiCarid(java.lang.String elpiCarid) {
+		this.elpiCarid = elpiCarid;
+	}
+
+	/**
+	 * 获取电桩是否绑定充电点（0-未绑定 1-已绑定）属性
+	 * 
+	 * @return elpiBinding
+	 */
+	public java.lang.Integer getElpiBinding() {
+		return elpiBinding;
+	}
+
+	/**
+	 * 设置电桩是否绑定充电点（0-未绑定 1-已绑定）属性
+	 * 
+	 * @param elpiBinding
+	 */
+	public void setElpiBinding(java.lang.Integer elpiBinding) {
+		this.elpiBinding = elpiBinding;
+	}
+
+	/**
+	 * 获取电桩是否支持预约（0不支持，1支持）属性
+	 * 
+	 * @return elpiIsappoint
+	 */
+	public java.lang.Integer getElpiIsappoint() {
+		return elpiIsappoint;
+	}
+
+	/**
+	 * 设置电桩是否支持预约（0不支持，1支持）属性
+	 * 
+	 * @param elpiIsappoint
+	 */
+	public void setElpiIsappoint(java.lang.Integer elpiIsappoint) {
+		this.elpiIsappoint = elpiIsappoint;
+	}
+
+	/**
+	 * 获取电桩充电支付方式，配置参数内容的ID （刷卡方式，手机方式，人工方式）属性
+	 * 
+	 * @return elpiPaystyle
+	 */
+	public java.lang.Integer getElpiPaystyle() {
+		return elpiPaystyle;
+	}
+
+	/**
+	 * 设置电桩充电支付方式，配置参数内容的ID （刷卡方式，手机方式，人工方式）属性
+	 * 
+	 * @param elpiPaystyle
+	 */
+	public void setElpiPaystyle(java.lang.Integer elpiPaystyle) {
+		this.elpiPaystyle = elpiPaystyle;
+	}
+
+	/**
+	 * 获取属性
+	 * 
+	 * @return elpiMaxelectricity
+	 */
+	public java.math.BigDecimal getElpiMaxelectricity() {
+		return elpiMaxelectricity;
+	}
+
+	/**
+	 * 设置属性
+	 * 
+	 * @param elpiMaxelectricity
+	 */
+	public void setElpiMaxelectricity(java.math.BigDecimal elpiMaxelectricity) {
+		this.elpiMaxelectricity = elpiMaxelectricity;
+	}
+
+	public String getElectricPrices() {
+		return electricPrices;
+	}
+
+	public void setElectricPrices(String electricPrices) {
+		this.electricPrices = electricPrices;
+	}
+
+	public String getElectricEvaluate() {
+		return electricEvaluate;
+	}
+
+	public void setElectricEvaluate(String electricEvaluate) {
+		this.electricEvaluate = electricEvaluate;
+	}
+
+	public String getScreenRadius() {
+		return screenRadius;
+	}
+
+	public void setScreenRadius(String screenRadius) {
+		this.screenRadius = screenRadius;
+	}
+
+	public int getElPiRelevancePowerStation() {
+		return elPiRelevancePowerStation;
+	}
+
+	public void setElPiRelevancePowerStation(int elPiRelevancePowerStation) {
+		this.elPiRelevancePowerStation = elPiRelevancePowerStation;
+	}
+
+	public String getElctrcState() {
+		return elctrcState;
+	}
+
+	public void setElctrcState(String elctrcState) {
+		this.elctrcState = elctrcState;
+	}
+
+	public java.lang.String getElPi_ChargingModeName() {
+		return elPi_ChargingModeName;
+	}
+
+	public void setElPi_ChargingModeName(java.lang.String elPi_ChargingModeName) {
+		this.elPi_ChargingModeName = elPi_ChargingModeName;
+	}
+
+	public java.lang.String getElPi_PowerUserName() {
+		return elPi_PowerUserName;
+	}
+
+	public void setElPi_PowerUserName(java.lang.String elPi_PowerUserName) {
+		this.elPi_PowerUserName = elPi_PowerUserName;
+	}
+
+	public java.lang.String getElPi_Tell() {
+		return elPi_Tell;
+	}
+
+	public void setElPi_Tell(java.lang.String elPi_Tell) {
+		this.elPi_Tell = elPi_Tell;
+	}
+
+	public String getSearchName() {
+		return searchName;
+	}
+
+	public void setSearchName(String searchName) {
+		this.searchName = searchName;
+	}
+
+	public int getPkUserinfo() {
+		return pkUserinfo;
+	}
+
+	public void setPkUserinfo(int pkUserinfo) {
+		this.pkUserinfo = pkUserinfo;
+	}
+
+	public String getIsCollect() {
+		return isCollect;
+	}
+
+	public void setIsCollect(String isCollect) {
+		this.isCollect = isCollect;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public int getRelevancePowerStation() {
+		return relevancePowerStation;
+	}
+
+	public void setRelevancePowerStation(int relevancePowerStation) {
+		this.relevancePowerStation = relevancePowerStation;
+	}
+
+	public String getUserLevel() {
+		return userLevel;
+	}
+
+	public void setUserLevel(String userLevel) {
+		this.userLevel = userLevel;
+	}
+
+	public String getElPiOwner() {
+		return elPiOwner;
+	}
+
+	public void setElPiOwner(String elPiOwner) {
+		this.elPiOwner = elPiOwner;
+	}
+
+	public java.lang.String  getElPiOnlineTime() {
+		return elPiOnlineTime;
+	}
+
+	public void setElPiOnlineTime(java.lang.String  elPiOnlineTime) {
+		this.elPiOnlineTime = elPiOnlineTime;
+	}
+
+	public java.lang.String getElPiOwnProvince() {
+		return elPiOwnProvince;
+	}
+
+	public void setElPiOwnProvince(java.lang.String elPiOwnProvince) {
+		this.elPiOwnProvince = elPiOwnProvince;
+	}
+
+	public java.lang.String getElPiOwnCity() {
+		return elPiOwnCity;
+	}
+
+	public void setElPiOwnCity(java.lang.String elPiOwnCity) {
+		this.elPiOwnCity = elPiOwnCity;
+	}
+
+	public java.lang.String getElPiOwnCounty() {
+		return elPiOwnCounty;
+	}
+
+	public void setElPiOwnCounty(java.lang.String elPiOwnCounty) {
+		this.elPiOwnCounty = elPiOwnCounty;
+	}
+
+	public java.lang.String getElPiOwnAreaCode() {
+		return elPiOwnAreaCode;
+	}
+
+	public void setElPiOwnAreaCode(java.lang.String elPiOwnAreaCode) {
+		this.elPiOwnAreaCode = elPiOwnAreaCode;
+	}
+
+	public java.lang.String getElPiOwnProvinceCode() {
+		return elPiOwnProvinceCode;
+	}
+
+	public void setElPiOwnProvinceCode(java.lang.String elPiOwnProvinceCode) {
+		this.elPiOwnProvinceCode = elPiOwnProvinceCode;
+	}
+
+	public java.lang.String getElPiOwnCityCode() {
+		return elPiOwnCityCode;
+	}
+
+	public void setElPiOwnCityCode(java.lang.String elPiOwnCityCode) {
+		this.elPiOwnCityCode = elPiOwnCityCode;
+	}
+
+	public java.lang.String getElPiOwnCountyCode() {
+		return elPiOwnCountyCode;
+	}
+
+	public void setElPiOwnCountyCode(java.lang.String elPiOwnCountyCode) {
+		this.elPiOwnCountyCode = elPiOwnCountyCode;
+	}
+
+	public String getNewElpiElectricpilecode() {
+		return newElpiElectricpilecode;
+	}
+
+	public void setNewElpiElectricpilecode(String newElpiElectricpilecode) {
+		this.newElpiElectricpilecode = newElpiElectricpilecode;
+	}
+	
+	public String getChargingMode() {
+		return chargingMode;
+	}
+
+	public void setChargingMode(String chargingMode) {
+		this.chargingMode = chargingMode;
+	}
+
+	public String getMakerRemark() {
+		return makerRemark;
+	}
+
+	public void setMakerRemark(String makerRemark) {
+		this.makerRemark = makerRemark;
+	}
+
+	public java.lang.Integer getElPiRateInformationId() {
+		return elPiRateInformationId;
+	}
+
+	public void setElPiRateInformationId(java.lang.Integer elPiRateInformationId) {
+		this.elPiRateInformationId = elPiRateInformationId;
+	}
+	public java.lang.String getOfflineTime() {
+		return offlineTime;
+	}
+
+	public void setOfflineTime(java.lang.String offlineTime) {
+		this.offlineTime = offlineTime;
+	}
+
+	public java.lang.Integer getGateId() {
+		return gateId;
+	}
+
+	public void setGateId(java.lang.Integer gateId) {
+		this.gateId = gateId;
+	}
+
+	
+	public java.lang.String getElPiSimMac() {
+		return elPiSimMac;
+	}
+
+	public void setElPiSimMac(java.lang.String elPiSimMac) {
+		this.elPiSimMac = elPiSimMac;
+	}
+
+	public java.lang.String getElPiSimPhoneNum() {
+		return elPiSimPhoneNum;
+	}
+
+	public void setElPiSimPhoneNum(java.lang.String elPiSimPhoneNum) {
+		this.elPiSimPhoneNum = elPiSimPhoneNum;
+	}
+	
+	
+
+	public java.lang.Integer getElPiHaveLedFlash() {
+		return elPiHaveLedFlash;
+	}
+
+	public void setElPiHaveLedFlash(java.lang.Integer elPiHaveLedFlash) {
+		this.elPiHaveLedFlash = elPiHaveLedFlash;
+	}
+
+	public java.lang.Integer getElPiHaveGps() {
+		return elPiHaveGps;
+	}
+
+	public void setElPiHaveGps(java.lang.Integer elPiHaveGps) {
+		this.elPiHaveGps = elPiHaveGps;
+	}
+
+	
+
+	public Integer getPkConcentratorID() {
+		return pkConcentratorID;
+	}
+
+	public void setPkConcentratorID(Integer pkConcentratorID) {
+		this.pkConcentratorID = pkConcentratorID;
+	}
+
+	public Integer getConcentratorNum() {
+		return concentratorNum;
+	}
+
+	public void setConcentratorNum(Integer concentratorNum) {
+		this.concentratorNum = concentratorNum;
+	}
+	
+
+	public List<String> getElpiImageUrl() {
+		return elpiImageUrl;
+	}
+
+	public void setElpiImageUrl(List<String> elpiImageUrl) {
+		this.elpiImageUrl = elpiImageUrl;
+	}
+
+	
+	public Integer getElPiHaveConnectLine() {
+		return elPiHaveConnectLine;
+	}
+
+	public void setElPiHaveConnectLine(Integer elPiHaveConnectLine) {
+		this.elPiHaveConnectLine = elPiHaveConnectLine;
+	}
+	
+
+	public List<TblElectricpilehead> getHeadList() {
+		return headList;
+	}
+
+	public void setHeadList(List<TblElectricpilehead> headList) {
+		this.headList = headList;
+	}
+
+	public java.lang.String getTypeName() {
+		return typeName;
+	}
+
+	public void setTypeName(java.lang.String typeName) {
+		this.typeName = typeName;
+	}
+
+	public java.lang.String getPowerName() {
+		return powerName;
+	}
+
+	public void setPowerName(java.lang.String powerName) {
+		this.powerName = powerName;
+	}
+
+	public java.lang.String getPowerSizeName() {
+		return powerSizeName;
+	}
+
+	public void setPowerSizeName(java.lang.String powerSizeName) {
+		this.powerSizeName = powerSizeName;
+	}
+
+	public String getCompanyNumber() {
+		return companyNumber;
+	}
+
+	public void setCompanyNumber(String companyNumber) {
+		this.companyNumber = companyNumber;
+	}
+
+	public String getCompanyName() {
+		return companyName;
+	}
+
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
+	}
+
+	public String getProvinceName() {
+		return provinceName;
+	}
+
+	public void setProvinceName(String provinceName) {
+		this.provinceName = provinceName;
+	}
+
+	@Override
+	public String toString() {
+		return "TblElectricpile [pkElectricpile=" + pkElectricpile
+				+ ", elpiElectricpilename=" + elpiElectricpilename
+				+ ", elpiElectricpilecode=" + elpiElectricpilecode
+				+ ", elpiElectricpileaddress=" + elpiElectricpileaddress
+				+ ", elpiLongitude=" + elpiLongitude + ", elpiLatitude="
+				+ elpiLatitude + ", elpiPowernumber=" + elpiPowernumber
+				+ ", elpiAreacode=" + elpiAreacode + ", elpiState=" + elpiState
+				+ ", elpiRejectionreason=" + elpiRejectionreason
+				+ ", elpiType=" + elpiType + ", typeName=" + typeName
+				+ ", elpiPoweruser=" + elpiPoweruser + ", elpiChargingmode="
+				+ elpiChargingmode + ", elpiPowersize=" + elpiPowersize
+				+ ", elpiPowerinterface=" + elpiPowerinterface + ", powerName="
+				+ powerName + ", powerSizeName=" + powerSizeName
+				+ ", elpiMaker=" + elpiMaker + ", elpiImage=" + elpiImage
+				+ ", elpiDetailimage=" + elpiDetailimage
+				+ ", elpiOutputvoltage=" + elpiOutputvoltage
+				+ ", elpiInputvoltage=" + elpiInputvoltage
+				+ ", elpiOutputcurrent=" + elpiOutputcurrent
+				+ ", elpiInputcurrent=" + elpiInputcurrent + ", elpiUsertype="
+				+ elpiUsertype + ", elpiUserid=" + elpiUserid
+				+ ", elpiCreatedate=" + elpiCreatedate + ", elpiUpdatedate="
+				+ elpiUpdatedate + ", elpiRemark=" + elpiRemark
+				+ ", elpiCarid=" + elpiCarid + ", elpiBinding=" + elpiBinding
+				+ ", elpiIsappoint=" + elpiIsappoint + ", elpiPaystyle="
+				+ elpiPaystyle + ", elpiMaxelectricity=" + elpiMaxelectricity
+				+ ", elPiRelevancePowerStation=" + elPiRelevancePowerStation
+				+ ", elPiRateInformationId=" + elPiRateInformationId
+				+ ", elPi_ChargingModeName=" + elPi_ChargingModeName
+				+ ", elPi_PowerUserName=" + elPi_PowerUserName + ", elPi_Tell="
+				+ elPi_Tell + ", elPiUserName=" + elPiUserName
+				+ ", relevancePowerStation=" + relevancePowerStation
+				+ ", comm_status=" + comm_status + ", elPiOnlineTime="
+				+ elPiOnlineTime + ", elPiOwnProvince=" + elPiOwnProvince
+				+ ", elPiOwnCity=" + elPiOwnCity + ", elPiOwnCounty="
+				+ elPiOwnCounty + ", elPiOwnAreaCode=" + elPiOwnAreaCode
+				+ ", elPiOwnProvinceCode=" + elPiOwnProvinceCode
+				+ ", elPiOwnCityCode=" + elPiOwnCityCode
+				+ ", elPiOwnCountyCode=" + elPiOwnCountyCode + ", offlineTime="
+				+ offlineTime + ", elPiSimMac=" + elPiSimMac
+				+ ", elPiSimPhoneNum=" + elPiSimPhoneNum
+				+ ", elPiHaveLedFlash=" + elPiHaveLedFlash + ", elPiHaveGps="
+				+ elPiHaveGps + ", elPiHaveConnectLine=" + elPiHaveConnectLine
+				+ ", electricPrices=" + electricPrices + ", electricEvaluate="
+				+ electricEvaluate + ", screenRadius=" + screenRadius
+				+ ", pileHeadSum=" + pileHeadSum + ", elctrcState="
+				+ elctrcState + ", searchName=" + searchName + ", pkUserinfo="
+				+ pkUserinfo + ", isCollect=" + isCollect + ", userName="
+				+ userName + ", userLevel=" + userLevel + ", elPiOwner="
+				+ elPiOwner + ", screenType=" + screenType
+				+ ", raIn_ReservationRate=" + raIn_ReservationRate
+				+ ", raIn_ServiceCharge=" + raIn_ServiceCharge + ", ep_num="
+				+ ep_num + ", distance=" + distance
+				+ ", newElpiElectricpilecode=" + newElpiElectricpilecode
+				+ ", chargingMode=" + chargingMode + ", makerRemark="
+				+ makerRemark + ", gateId=" + gateId + ", elPiOwnerCompany="
+				+ elPiOwnerCompany + ", headList=" + headList
+				+ ", pkConcentratorID=" + pkConcentratorID
+				+ ", concentratorNum=" + concentratorNum + ", elpiImageUrl="
+				+ elpiImageUrl + ", companyNumber=" + companyNumber
+				+ ", companyName=" + companyName + ", elpiTypeSpanId="
+				+ elpiTypeSpanId + "]";
+	}
+
+	
+
+	
+
+
+	
+}

@@ -1,0 +1,589 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+					
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsBespokeMapper">
+	<resultMap type="TblBespoke" id="result_Bespoke">
+		<result property="pkBespoke" column="pk_Bespoke" />
+		<result property="bespElectricpileid" column="besp_ElectricPileId" />
+		<result property="bespBespoketime" column="besp_BespokeTime" />
+		<result property="bespBespokeremark" column="besp_BespokeRemark" />
+		<result property="bespBespoketimes" column="besp_BespokeTimes" />
+		<result property="bespBespokeprice" column="besp_BespokePrice" />
+		<result property="bespBespokestatus" column="besp_BespokeStatus" />
+		<result property="bespCreatedate" column="besp_Createdate" />
+		<result property="bespUpdatedate" column="besp_Updatedate" />
+		<result property="bespElectricpilehead" column="besp_ElectricPileHead" />
+		<result property="bespUserinfo" column="besp_UserInfo" />
+		<result property="bespResepaymentcode" column="besp_ResePaymentCode" />
+		<result property="bespFrozenamt" column="besp_FrozenAmt" />
+		<result property="bespBeginTime" column="besp_BeginTime" />
+		<result property="bespEndTime" column="besp_EndTime" />
+		<result property="bespRealityTime" column="besp_RealityTime" />
+		<result property="bespOrderType" column="besp_OrderType" />
+		<result property="bespSerialNumber" column="besp_SerialNumber" />
+		<result property="bespOrderState" column="besp_OrderState" />
+		<result property="comName" column="comName"/>
+		<result property="puhiInvoiceStatus" column="puhi_InvoiceStatus"/>
+		<result property="ownerShip" column="owner_ship"/>
+		<result property="chargePointAddress" column="elPi_ElectricPileAddress"/>
+	</resultMap>
+
+	<!-- 根据ID查询预约消费信息 -->
+	<select id="findBespoke" parameterType="String" resultMap="result_Bespoke">
+		SELECT
+			pk_Bespoke,
+			besp_ResePaymentCode,
+			(ep.elPi_ElectricPileCode) AS eleCode,
+			(ui.norm_real_name) AS username,
+			(go.grou_GroupName) AS groupname,
+			besp_BespokePrice,
+			besp_BeginTime,
+			besp_EndTime,
+			besp_RealityTime,
+			(eh.ePHe_ElectricpileHeadName) AS eleHeadName,
+			besp_BespokeStatus,
+			besp_OrderType
+		FROM tbl_Bespoke bp INNER JOIN tbl_User_normal AS ui ON ui.user_id = bp.besp_UserInfo 
+				    INNER JOIN tbl_Group AS go ON go.pk_Group = ui.usIn_GroupID
+				    INNER JOIN tbl_ElectricPile AS ep ON ep.pk_ElectricPile = bp.besp_ElectricPileId
+				    INNER JOIN tbl_ElectricPileHead AS eh ON eh.pk_ElectricpileHead = ep.pk_ElectricPile 
+		where pk_Bespoke#{pkBespoke}
+	</select>
+
+	<!-- 取得查询预约消费 -->
+	<select id="getBespokeList" resultMap="result_Bespoke">
+		SELECT
+			pk_Bespoke,
+			besp_ResePaymentCode,
+			(ep.elPi_ElectricPileCode) AS eleCode,
+			(ui.norm_real_name) AS username,
+			(go.grou_GroupName) AS groupname,
+			besp_BespokePrice,
+			besp_BeginTime,
+			besp_EndTime,
+			besp_RealityTime,
+			(eh.ePHe_ElectricpileHeadName) AS eleHeadName,
+			besp_BespokeStatus,
+			besp_OrderType,
+			ep.elPi_UserName as comName
+		FROM tbl_Bespoke bp INNER JOIN tbl_User_normal AS ui ON ui.user_id = bp.besp_UserInfo 
+				    INNER JOIN tbl_Group AS go ON go.pk_Group = ui.usIn_GroupID
+				    INNER JOIN tbl_ElectricPile AS ep ON ep.pk_ElectricPile = bp.besp_ElectricPileId
+				    INNER JOIN tbl_ElectricPileHead AS eh ON eh.pk_ElectricpileHead = ep.pk_ElectricPile
+		<where>
+			<if test="bespResepaymentcode !=null and bespResepaymentcode !=''">
+				and besp_ResePaymentCode=#{bespResepaymentcode}
+			</if>
+			<if test="bespBespokestatus !=null and bespBespokestatus !=''">
+				and besp_BespokeStatus=#{bespBespokestatus}
+			</if>
+			<if test="username !=null and username !=''">
+				and ui.norm_real_name like concat('%',#{username},'%')
+			</if>
+		</where>
+		order by besp_BeginTime desc		
+	</select>
+
+	<!-- 查询全部预约消费信息 -->
+	<select id="searchBespokeList" parameterType="TblBespoke" resultMap="result_Bespoke">
+		SELECT
+			pk_Bespoke,
+			besp_ResePaymentCode,
+			(ep.elPi_ElectricPileCode) AS eleCode,
+			ep.elPi_ElectricPileAddress,
+			bp.besp_BespokePrice,
+			besp_FrozenAmt,
+			ep.owner_ship,	
+			pu.puhi_InvoiceStatus,
+			ui.user_account AS userPhone,
+			ui.norm_real_name AS username,
+			besp_BespokePrice,
+			besp_BeginTime,
+			besp_EndTime,
+			besp_RealityTime,
+			(
+				eh.ePHe_ElectricpileHeadName
+			) AS eleHeadName,
+			ep.elPi_ElectricPileName extValue1,
+			besp_BespokeStatus,
+			besp_FrozenAmt,
+			besp_OrderType
+		FROM
+			tbl_Bespoke bp
+		INNER JOIN (
+			SELECT
+				a.user_account,
+				b.user_id,
+				b.norm_real_name
+			FROM
+				tbl_user a,
+				tbl_user_normal b
+			WHERE
+				a.user_leval = '6'
+			AND a.user_id = b.user_id
+		) AS ui ON ui.user_id = bp.besp_UserInfo
+		LEFT JOIN tbl_ElectricPile AS ep ON ep.pk_ElectricPile = bp.besp_ElectricPileId
+		LEFT JOIN tbl_ElectricPileHead AS eh ON eh.pk_ElectricpileHead = bp.besp_ElectricPileHead
+		LEFT JOIN tbl_purchasehistory AS pu ON pu.puHi_BespokeNumber = bp.besp_ResePaymentCode
+		<where>
+			<if test="bespResepaymentcode !=null and bespResepaymentcode !=''">
+				(besp_ResePaymentCode  like concat('%',#{bespResepaymentcode},'%')
+				or ep.elPi_ElectricPileName like concat('%',#{bespResepaymentcode},'%')
+				or ep.elPi_ElectricPileCode like concat('%',#{bespResepaymentcode},'%')
+				or ui.user_account like concat('%',#{bespResepaymentcode},'%')
+				)
+			</if>
+			<if test="bespBespokestatus !=null and bespBespokestatus !=''">
+				and besp_BespokeStatus=#{bespBespokestatus}
+			</if>
+			<if test="bespOrderType !=null and bespOrderType !=''">
+				and besp_OrderType=#{bespOrderType}
+			</if>
+			<if test="username !=null and username !=''">
+				and ui.norm_real_name like concat('%',#{username},'%')
+			</if>
+			<if test="bespUser !=null and bespUser !=''">
+				and ep.elPi_UserName = #{bespUser}
+			</if>
+			<if test="startDate !=null and startDate !=''">
+				and besp_BeginTime>=#{startDate}
+			</if>
+			<if test="endDate !=null and endDate !=''">
+				<![CDATA[and besp_EndTime<= date_add(#{endDate}, interval 1 day)]]>
+				
+			</if>
+			<if test="provinceCode !=null and provinceCode !=''">
+				and ep.elPi_OwnProvinceCode=#{provinceCode}
+			</if>
+			<if test="cityCode !=null and cityCode !=''">
+				and ep.elPi_OwnCityCode=#{cityCode}
+			</if>
+			<if test="areaCode !=null and areaCode !=''">
+				and ep.elPi_OwnCityCode=#{areaCode}
+			</if>
+			<if test="puhiInvoiceStatus !=null and puhiInvoiceStatus !=''">
+				<![CDATA[and pu.puhi_InvoiceStatus= #{puhiInvoiceStatus}]]>
+			</if>
+		</where>
+		order by besp_BeginTime desc 
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<!-- 查询全部预约消费信息 -->
+	<select id="searchBespokeCount" parameterType="TblBespoke"
+		resultType="long">
+		select
+		count(pk_Bespoke)	
+		FROM tbl_Bespoke bp inner JOIN (select a.user_account,b.user_id,b.norm_real_name from tbl_user a,tbl_user_normal b where a.user_leval='6' and a.user_id=b.user_id) AS ui ON ui.user_id = bp.besp_UserInfo
+				    left JOIN tbl_ElectricPile AS ep ON ep.pk_ElectricPile = bp.besp_ElectricPileId
+				    left JOIN tbl_ElectricPileHead AS eh ON eh.pk_ElectricpileHead = bp.besp_ElectricPileHead
+					left JOIN tbl_purchasehistory AS pu ON pu.puHi_BespokeNumber = bp.besp_ResePaymentCode
+		<where>
+			<if test="bespResepaymentcode !=null and bespResepaymentcode !=''">
+				(besp_ResePaymentCode  like concat('%',#{bespResepaymentcode},'%')
+				or ep.elPi_ElectricPileName like concat('%',#{bespResepaymentcode},'%')
+				or ep.elPi_ElectricPileCode like concat('%',#{bespResepaymentcode},'%')
+				or ui.user_account like concat('%',#{bespResepaymentcode},'%')
+				)
+			</if>
+			<if test="bespBespokestatus !=null and bespBespokestatus !=''">
+				and besp_BespokeStatus=#{bespBespokestatus}
+			</if>
+			<if test="bespOrderType !=null and bespOrderType !=''">
+				and besp_OrderType=#{bespOrderType}
+			</if>
+			<if test="username !=null and username !=''">
+				and ui.norm_real_name like concat('%',#{username},'%')
+			</if>
+			<if test="bespUser !=null and bespUser !=''">
+				and ep.elPi_UserName = #{bespUser}
+			</if>
+			<if test="startDate !=null and startDate !=''">
+				and besp_BeginTime>=#{startDate}
+			</if>
+			<if test="endDate !=null and endDate !=''">
+				<![CDATA[and besp_EndTime<= date_add(#{endDate}, interval 1 day)]]>
+				
+			</if>
+			<if test="provinceCode !=null and provinceCode !=''">
+				and ep.elPi_OwnProvinceCode=#{provinceCode}
+			</if>
+			<if test="cityCode !=null and cityCode !=''">
+				and ep.elPi_OwnCityCode=#{cityCode}
+			</if>
+			<if test="areaCode !=null and areaCode !=''">
+				and ep.elPi_OwnCityCode=#{areaCode}
+			</if>
+			<if test="puhiInvoiceStatus !=null and puhiInvoiceStatus !=''">
+				<![CDATA[and pu.puhi_InvoiceStatus= #{puhiInvoiceStatus}]]>
+			</if>
+		</where>
+	</select>
+	
+	<!-- 删除预约消费信息 -->
+	<delete id="deleteBespoke" parameterType="map">
+	   delete from 
+	     tbl_Bespoke 
+	   where 
+	    pk_Bespoke=#{pkBespoke}
+	</delete>
+	
+	<!-- 根据ID查询预约消费信息（个体商家） -->
+	<select id="findUnitBespoke" parameterType="String" resultMap="result_Bespoke">
+		SELECT
+			pk_Bespoke,
+			besp_ResePaymentCode,
+			(ep.elPi_ElectricPileCode) as eleCode,
+			(ui.norm_real_name) as username,
+			(ui.user_account) as usPhone,
+			besp_BespokePrice,
+			besp_BeginTime,
+			besp_EndTime,
+			(eh.ePHe_ElectricpileHeadName) as eleHeadName,
+			besp_Bespokestatus,
+			besp_OrderType
+		FROM tbl_Bespoke bp INNER JOIN (SELECT a.user_account, b.* FROM tbl_user a, tbl_user_normal b 
+						WHERE a.user_id = b.user_id) AS ui ON ui.user_id = bp.besp_UserInfo 
+				    INNER JOIN tbl_ElectricPile AS ep ON ep.pk_ElectricPile = bp.besp_ElectricPileId
+				    INNER JOIN tbl_ElectricPileHead AS eh ON eh.pk_ElectricpileHead = ep.pk_ElectricPile 
+		where pk_Bespoke#{pkBespoke}
+	</select>
+
+	<!-- 取得预约消费信息（个体商家） -->
+	<select id="getUnitBespokeList" resultMap="result_Bespoke">
+		SELECT
+			pk_Bespoke,
+			besp_ResePaymentCode,
+			(ep.elPi_ElectricPileCode) as eleCode,
+			(ui.norm_real_name) as username,
+			(ui.user_account) as usPhone,
+			besp_BespokePrice,
+			besp_BeginTime,
+			besp_EndTime,
+			(eh.ePHe_ElectricpileHeadName) as eleHeadName,
+			besp_Bespokestatus,
+			besp_OrderType,
+			besp_RealityTime
+		FROM tbl_Bespoke bp INNER JOIN (SELECT a.user_account, b.* FROM tbl_user a, tbl_user_normal b 
+						WHERE a.user_id = b.user_id) AS ui ON ui.user_id = bp.besp_UserInfo 
+				    INNER JOIN tbl_ElectricPile AS ep ON ep.pk_ElectricPile = bp.besp_ElectricPileId
+				    INNER JOIN tbl_ElectricPileHead AS eh ON eh.pk_ElectricpileHead = ep.pk_ElectricPile 
+		<where>
+			<if test="bespResepaymentcode !=null and bespResepaymentcode !=''">
+				and besp_ResePaymentCode=#{bespResepaymentcode}
+			</if>
+			<if test="bespBespokestatus !=null and bespBespokestatus !=''">
+				and besp_Bespokestatus=#{bespBespokestatus}
+			</if>
+			<if test="username !=null and username !=''">
+				and ui.norm_real_name like concat('%',#{username},'%')
+			</if>
+			<if test="usPhone !=null and usPhone !=''">
+				and ui.user_account=#{usPhone}
+			</if>
+			
+		</where>
+	</select>
+
+	<!-- 查询全部预约消费信息（个体商家） -->
+	<select id="searchUnitBespokeList" parameterType="TblBespoke" resultMap="result_Bespoke">
+		SELECT
+			pk_Bespoke,
+			besp_ResePaymentCode,
+			(ep.elPi_ElectricPileCode) as eleCode,
+			ep.elPi_ElectricPileName chargePointName,
+			ep.elPi_ElectricPileAddress chargePointAddress,
+			(ui.norm_real_name) as username,
+			(ui.norm_real_name) AS comName,
+			(ui.user_account) as usPhone,
+			besp_FrozenAmt as besp_BespokePrice,
+			besp_BeginTime,
+			besp_EndTime,
+			(eh.ePHe_ElectricpileHeadName) as eleHeadName,
+			besp_Bespokestatus,
+			besp_OrderType,
+			besp_RealityTime
+		FROM tbl_Bespoke bp left JOIN tbl_ElectricPile AS ep ON ep.pk_ElectricPile = bp.besp_ElectricPileId
+						    inner join (select a.user_account, a.user_id,a.norm_real_name FROM tbl_user_normal_view a WHERE a.user_leval = '5') AS ui on ui.user_id = ep.elPi_UserId
+						    left JOIN tbl_ElectricPileHead AS eh ON eh.pk_ElectricpileHead = bp.besp_ElectricPileHead
+		<where>
+			1=1
+			<if test="userLevel==5">
+				and ep.elPi_UserId = #{bespUser}
+			</if>
+			<if test="bespResepaymentcode !=null and bespResepaymentcode !=''">
+				and besp_ResePaymentCode like concat('%',#{bespResepaymentcode},'%') 
+			</if>
+			<if test="bespBespokestatus !=null and bespBespokestatus !=''">
+				and besp_Bespokestatus=#{bespBespokestatus}
+			</if>
+			<if test="bespOrderType !=null and bespOrderType !=''">
+				and besp_OrderType=#{bespOrderType}
+			</if>
+			<if test="username !=null and username !=''">
+				and ui.norm_real_name like concat('%',#{username},'%')
+			</if>
+			<if test="usPhone !=null and usPhone !=''">
+				and ui.user_account=#{usPhone}
+			</if>
+			<if test="chargePointName !=null and chargePointName !=''">
+				and ep.elPi_ElectricPileName like concat('%',#{chargePointName},'%')
+			</if>
+			<if test="chargePointAddress !=null and chargePointAddress !=''">
+				and ep.elPi_ElectricPileAddress like concat('%',#{chargePointAddress},'%')
+			</if>
+			<if test="bespBeginTimes !=null and bespBeginTimes !=''">
+				and besp_BeginTime>=#{bespBeginTimes}
+			</if>
+			<if test="bespEndTimes !=null and bespEndTimes !=''">
+				<![CDATA[and besp_EndTime<=date_add(#{bespEndTimes}, interval 1 day)]]>
+				
+			</if>
+			<if test="eleCode !=null and eleCode !=''">
+				and ep.elPi_ElectricPileCode like concat('%',#{eleCode},'%')
+			</if>
+		</where>
+		order by besp_BeginTime desc 
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<!-- 查询预约消费数量（个体商家） -->
+	<select id="searchUnitBespokeCount" parameterType="TblBespoke"
+		resultType="long">
+		select
+		count(pk_Bespoke)	
+		from tbl_Bespoke bp LEFT JOIN tbl_ElectricPile AS ep ON ep.pk_ElectricPile = bp.besp_ElectricPileId
+						    inner join (select a.user_account, a.user_id,a.norm_real_name FROM tbl_user_normal_view a WHERE a.user_leval = '5') AS ui on ui.user_id = ep.elPi_UserId
+				    		LEFT JOIN tbl_ElectricPileHead AS eh ON eh.pk_ElectricpileHead = bp.besp_ElectricPileHead 
+		<where>
+			1=1
+			<if test="userLevel==5">
+				and ep.elPi_UserId = #{bespUser}
+			</if>
+			<if test="bespResepaymentcode !=null and bespResepaymentcode !=''">
+				and besp_ResePaymentCode like concat('%',#{bespResepaymentcode},'%') 
+			</if>
+			<if test="bespBespokestatus !=null and bespBespokestatus !=''">
+				and besp_Bespokestatus=#{bespBespokestatus}
+			</if>
+			<if test="bespOrderType !=null and bespOrderType !=''">
+				and besp_OrderType=#{bespOrderType}
+			</if>
+			<if test="username !=null and username !=''">
+				and ui.norm_real_name like concat('%',#{username},'%')
+			</if>
+			<if test="usPhone !=null and usPhone !=''">
+				and ui.user_account=#{usPhone}
+			</if>
+			<if test="chargePointName !=null and chargePointName !=''">
+				and ep.elPi_ElectricPileName like concat('%',#{chargePointName},'%')
+			</if>
+			<if test="chargePointAddress !=null and chargePointAddress !=''">
+				and ep.elPi_ElectricPileAddress like concat('%',#{chargePointAddress},'%')
+			</if>
+			<if test="bespBeginTimes !=null and bespBeginTimes !=''">
+				and besp_BeginTime>=#{bespBeginTimes}
+			</if>
+			<if test="bespEndTimes !=null and bespEndTimes !=''">
+				<![CDATA[and besp_EndTime<=date_add(#{bespEndTimes}, interval 1 day)]]>
+				
+			</if>
+			<if test="eleCode !=null and eleCode !=''">
+				and ep.elPi_ElectricPileCode like concat('%',#{eleCode},'%')
+			</if>
+		</where>
+	</select>
+	
+	
+	<!-- 根据ID查询预约消费信息（纯商家） -->
+	<select id="findFirmBespoke" parameterType="String" resultMap="result_Bespoke">
+		SELECT
+			pk_Bespoke,
+			besp_ResePaymentCode,
+			(ep.elPi_ElectricPileCode) AS eleCode,
+			(pb.puBu_CompanyName) AS comName,
+			besp_BespokePrice,
+			besp_BeginTime,
+			besp_EndTime,
+			(eh.ePHe_ElectricpileHeadName) AS eleHeadName,
+			besp_Bespokestatus,
+			besp_OrderType,
+			besp_RealityTime
+		FROM tbl_Bespoke bp INNER JOIN tbl_PureBusiness AS pb ON pb.pk_PureBusiness = bp.besp_UserInfo 
+				    INNER JOIN tbl_Group AS go ON go.pk_Group = pb.puBu_GroupID
+				    INNER JOIN tbl_ElectricPile AS ep ON ep.pk_ElectricPile = bp.besp_ElectricPileId
+				    INNER JOIN tbl_ElectricPileHead AS eh ON eh.pk_ElectricpileHead = bp.besp_ElectricPileHead  
+		where pk_Bespoke#{pkBespoke}
+	</select>
+
+	<!-- 取得预约消费信息（纯商家） -->
+	<select id="getFirmBespokeList" resultMap="result_Bespoke">
+		SELECT
+			pk_Bespoke,
+			besp_ResePaymentCode,
+			(ep.elPi_ElectricPileCode) AS eleCode,
+			(pb.puBu_CompanyName) AS comName,
+			besp_BespokePrice,
+			besp_BeginTime,
+			besp_EndTime,
+			(eh.ePHe_ElectricpileHeadName) AS eleHeadName,
+			besp_Bespokestatus,
+			besp_OrderType,
+			besp_RealityTime
+		FROM tbl_Bespoke bp INNER JOIN tbl_PureBusiness AS pb ON pb.pk_PureBusiness = bp.besp_UserInfo 
+				    INNER JOIN tbl_Group AS go ON go.pk_Group = pb.puBu_GroupID
+				    INNER JOIN tbl_ElectricPile AS ep ON ep.pk_ElectricPile = bp.besp_ElectricPileId
+				    INNER JOIN tbl_ElectricPileHead AS eh ON eh.pk_ElectricpileHead = bp.besp_ElectricPileHead 
+		<where>
+			<if test="bespResepaymentcode !=null and bespResepaymentcode !=''">
+				and besp_ResePaymentCode=#{bespResepaymentcode}
+			</if>
+			<if test="bespBespokestatus !=null and bespBespokestatus !=''">
+				and besp_Bespokestatus=#{bespBespokestatus}
+			</if>
+			<if test="comName !=null and comName !=''">
+				and pb.puBu_CompanyName like concat('%',#{comName},'%')
+			</if>
+			<if test="eleCode !=null and eleCode !=''">
+				and ep.elPi_ElectricPileCode like concat('%',#{eleCode},'%')
+			</if>
+		</where>
+	</select>
+
+	<!-- 查询全部预约消费信息（纯商家） -->
+	<select id="searchFirmBespokeList" parameterType="TblBespoke" resultType="TblBespoke">
+		SELECT
+			pk_Bespoke,
+			besp_ResePaymentCode bespResepaymentcode,
+			(ep.elPi_ElectricPileCode) AS eleCode,
+			ep.elPi_ElectricPileName extValue1,
+			(ep.elPi_ElectricPileName) AS chargePointName,
+			(ep.elPi_ElectricPileAddress) AS chargePointAddress,
+			(bv.company_name) AS comName,
+			besp_FrozenAmt as bespBespokeprice,
+			besp_BeginTime bespBeginTime,
+			besp_EndTime bespEndTime,
+			(eh.ePHe_ElectricpileHeadName) AS eleHeadName,
+			besp_Bespokestatus bespBespokestatus,
+			besp_OrderType bespOrderType,
+			besp_RealityTime bespRealityTime
+		FROM tbl_Bespoke bp
+				    left JOIN tbl_ElectricPile AS ep ON ep.pk_ElectricPile = bp.besp_ElectricPileId
+				    left JOIN tbl_ElectricPileHead AS eh ON eh.pk_ElectricpileHead = bp.besp_ElectricPileHead
+				    inner join tbl_user_business_view bv on bv.user_id=ep.elPi_UserId
+		<where>
+			1=1
+			<choose>
+			   <when test="userLevel==3">
+					<!-- and ep.elPi_UserId = #{bespUser} -->
+            and exists(
+				select 1 from tbl_user_business_view b
+				where b.user_id=ep.elPi_UserId
+				and EXISTS (select 1 from tbl_user_business_view
+				b1 where b.busi_company_id=b1.busi_company_id
+				and b1.user_id=#{bespUser}))
+			   </when>
+			   <otherwise>
+					and exists (select 1 from tbl_user a where a.user_leval = '3' and a.user_id = ep.elPi_UserId)
+			   </otherwise>
+	        </choose>
+			<if test="bespResepaymentcode !=null and bespResepaymentcode !=''">
+				and (besp_ResePaymentCode  like concat('%',#{bespResepaymentcode},'%')
+				or ep.elPi_ElectricPileName like concat('%',#{bespResepaymentcode},'%')
+				or ep.elPi_ElectricPileCode like concat('%',#{bespResepaymentcode},'%')
+				)
+			</if>
+			<if test="bespBespokestatus !=null and bespBespokestatus !=''">
+				and besp_Bespokestatus=#{bespBespokestatus}
+			</if>
+			<if test="bespOrderType !=null and bespOrderType !=''">
+				and besp_OrderType=#{bespOrderType}
+			</if>
+			<if test="comName !=null and comName !=''">
+				and bv.company_name like concat('%',#{comName},'%')
+			</if>
+			<if test="eleCode !=null and eleCode !=''">
+				and ep.elPi_ElectricPileCode like concat('%',#{eleCode},'%')
+			</if>
+			<if test="chargePointName !=null and chargePointName !=''">
+				and ep.elPi_ElectricPileName like concat('%',#{chargePointName},'%')
+			</if>
+			<if test="chargePointAddress !=null and chargePointAddress !=''">
+				and ep.elPi_ElectricPileAddress like concat('%',#{chargePointAddress},'%')
+			</if>
+			<if test="startDate !=null and startDate !=''">
+				and besp_BeginTime>=#{startDate}
+			</if>
+			<if test="endDate !=null and endDate !=''">
+				<![CDATA[and besp_EndTime<=date_add(#{endDate}, interval 1 day)]]>
+				
+			</if>
+		</where>
+		group by pk_Bespoke order by besp_BeginTime desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<!-- 查询预约消费信息数量（纯商家） -->
+	<select id="searchFirmBespokeCount" parameterType="TblBespoke"
+	resultType="long">
+	select
+	count(distinct pk_Bespoke)
+	FROM tbl_Bespoke bp
+	left JOIN tbl_ElectricPile AS ep ON ep.pk_ElectricPile =
+	bp.besp_ElectricPileId
+	left JOIN tbl_ElectricPileHead AS eh ON eh.pk_ElectricpileHead =
+	bp.besp_ElectricPileHead
+	inner join tbl_user_business_view bv on bv.user_id=ep.elPi_UserId
+	<where>
+			1=1
+			<choose>
+			   <when test="userLevel==3">
+					<!-- and ep.elPi_UserId = #{bespUser} -->
+            and exists(
+				select 1 from tbl_user_business_view b
+				where b.user_id=ep.elPi_UserId
+				and EXISTS (select 1 from tbl_user_business_view
+				b1 where b.busi_company_id=b1.busi_company_id
+				and b1.user_id=#{bespUser}))
+			   </when>
+			   <otherwise>
+					and exists (select 1 from tbl_user a where a.user_leval = '3' and a.user_id = ep.elPi_UserId)
+			   </otherwise>
+	        </choose>
+			<if test="bespResepaymentcode !=null and bespResepaymentcode !=''">
+				and (besp_ResePaymentCode  like concat('%',#{bespResepaymentcode},'%')
+				or ep.elPi_ElectricPileName like concat('%',#{bespResepaymentcode},'%')
+				or ep.elPi_ElectricPileCode like concat('%',#{bespResepaymentcode},'%')
+				)
+			</if>
+			<if test="bespBespokestatus !=null and bespBespokestatus !=''">
+				and besp_Bespokestatus=#{bespBespokestatus}
+			</if>
+			<if test="bespOrderType !=null and bespOrderType !=''">
+				and besp_OrderType=#{bespOrderType}
+			</if>
+			<if test="comName !=null and comName !=''">
+				and bv.company_name like concat('%',#{comName},'%')
+			</if>
+			<if test="eleCode !=null and eleCode !=''">
+				and ep.elPi_ElectricPileCode like concat('%',#{eleCode},'%')
+			</if>
+			<if test="chargePointName !=null and chargePointName !=''">
+				and ep.elPi_ElectricPileName like concat('%',#{chargePointName},'%')
+			</if>
+			<if test="chargePointAddress !=null and chargePointAddress !=''">
+				and ep.elPi_ElectricPileAddress like concat('%',#{chargePointAddress},'%')
+			</if>
+			<if test="startDate !=null and startDate !=''">
+				and besp_BeginTime>=#{startDate}
+			</if>
+			<if test="endDate !=null and endDate !=''">
+				<![CDATA[and besp_EndTime<=date_add(#{endDate}, interval 1 day)]]>
+				
+			</if>
+		</where>
+    </select>
+
+</mapper>

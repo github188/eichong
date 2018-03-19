@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.app.dao.AppCarGarageMapper">
+
+	<select id="getCarGarageList" parameterType="HashMap" resultType="HashMap">
+		select * from (select id,name,address,longitude,latitude,phone,
+		getFullPath('carfix', id) as img_url,
+		round(6378.138*2*asin(sqrt(pow(sin( (#{latitude}*pi()/180-latitude*pi()/180)/2),2)+cos(#{latitude}*pi()/180)*cos(latitude*pi()/180)* 
+	              pow(sin( (#{longitude}*pi()/180-longitude*pi()/180)/2),2)))*1000) as distance 
+		 from tbl_cargarage) t where 1=1
+		 <if test="kw != null">
+		 	and (name like concat('%',#{kw},'%') or address like concat('%',#{kw},'%'))
+		 	<!-- <if test="type == 1"> and name like concat('%',#{kw},'%')</if>
+		 	<if test="type == 2"> and address like concat('%',#{kw},'%')</if> -->
+		 </if>
+		 order by distance
+		 <if test="kw == null">
+		 	limit #{pagerNumber},#{pagerNum}
+		 </if>
+	</select>
+</mapper> 

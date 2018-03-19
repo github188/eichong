@@ -1,0 +1,178 @@
+package com.wanma.ims.controller.fin;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.wanma.ims.common.domain.CompanyDO;
+import com.wanma.ims.common.domain.FinAccountSplitConfigDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.domain.base.Pager;
+import com.wanma.ims.common.domain.bo.IntgeralAreaRelaBO;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.constants.ResultCodeConstants;
+import com.wanma.ims.controller.BaseController;
+import com.wanma.ims.controller.result.JsonException;
+import com.wanma.ims.controller.result.JsonResult;
+import com.wanma.ims.service.CompanyService;
+import com.wanma.ims.service.FinAccountSplitConfigService;
+
+/**
+ * 分账配置
+ */
+@RequestMapping("/manage/fin")
+@Controller
+public class FinAccountSplitConfigController extends BaseController{
+	
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+
+	@Autowired
+	private FinAccountSplitConfigService finAccountSplitConfigService;
+
+	@Autowired
+	private CompanyService companyService;
+
+	/**
+	 * <p>Description: 获取分账配置列表</p>
+	 * @param
+	 * @author bingo
+	 * @date 2017-11-27
+	 */
+	@RequestMapping(value = "/getFinAccountSplitConfigList")
+	@ResponseBody
+	public void getFinAccountSplitConfigList(@ModelAttribute("pager") Pager pager,
+								  @ModelAttribute FinAccountSplitConfigDO finAccountSplitConfig, Model model,HttpServletRequest request){
+		JsonResult batchResult = new JsonResult();
+		finAccountSplitConfig.setForListFlag(0);
+		Long total = finAccountSplitConfigService.getFinAccountSplitConfigCount(finAccountSplitConfig);
+		if (total <= pager.getOffset()) {
+			pager.setPageNo(1L);
+		}
+		pager.setTotal(total);
+		finAccountSplitConfig.setPager(pager);
+
+		List<FinAccountSplitConfigDO> finAccountSplitConfigList = finAccountSplitConfigService.getFinAccountSplitConfigList(finAccountSplitConfig);
+		if (finAccountSplitConfigList == null) {
+			finAccountSplitConfigList = new ArrayList<FinAccountSplitConfigDO>();
+		}
+		Map<Integer, String> splitModeMap = new HashMap<>();
+		splitModeMap.put(0, "服务费&电费分成");
+		splitModeMap.put(1, "电量*单价");
+		for(FinAccountSplitConfigDO config : finAccountSplitConfigList){
+			config.setSplitModeName(splitModeMap.get(config.getSplitMode()));
+		}
+
+		batchResult.setDataObject(finAccountSplitConfigList);
+		batchResult.setPager(pager);
+
+		responseJson(batchResult);
+	}
+
+	/**
+	 * <p>Description: 增加分账配置</p>
+	 * @param
+	 * @author bingo
+	 * @date 2017-8-15
+	 */
+	@RequestMapping(value = "/addFinAccountSplitConfig")
+	@ResponseBody
+	public void addFinAccountSplitConfig(@ModelAttribute FinAccountSplitConfigDO finAccountSplitConfig, Model model, HttpServletRequest request) {
+		BaseResultDTO baseResultDTO = new BaseResultDTO();
+		try {
+			baseResultDTO = finAccountSplitConfigService.addFinAccountSplitConfig(finAccountSplitConfig, getCurrentLoginUser());
+		} catch (Exception e) {
+			log.error(this.getClass() + ".addFinAccountSplitConfig() error : ", e);
+			responseJson(new JsonResult(false, ResultCodeConstants.FAILED, e.toString()));
+		}
+
+		if(!baseResultDTO.isSuccess()){
+			responseJson(new JsonResult(false, ResultCodeConstants.FAILED, baseResultDTO.getErrorDetail()));
+		}else {
+			responseJson(baseResultDTO);
+		}
+	}
+
+	/**
+	 * <p>Description: 修改分账配置</p>
+	 * @param
+	 * @author bingo
+	 * @date 2017-11-27
+	 */
+	@RequestMapping(value = "/modifyFinAccountSplitConfig")
+	@ResponseBody
+	public void modifyFinAccountSplitConfig(@ModelAttribute FinAccountSplitConfigDO finAccountSplitConfig, Model model, HttpServletRequest request) {
+		BaseResultDTO baseResultDTO = new BaseResultDTO();
+		try {
+			baseResultDTO = finAccountSplitConfigService.modifyFinAccountSplitConfig(finAccountSplitConfig, getCurrentLoginUser());
+		} catch (Exception e) {
+			log.error(this.getClass() + ".modifyFinAccountSplitConfig() error : ", e);
+			responseJson(new JsonResult(false, ResultCodeConstants.FAILED, e.toString()));
+		}
+
+		if(!baseResultDTO.isSuccess()){
+			responseJson(new JsonResult(false, ResultCodeConstants.FAILED, baseResultDTO.getErrorDetail()));
+		}else {
+			responseJson(baseResultDTO);
+		}
+	}
+
+	/**
+	 * 获取省、市、电站、桩
+	 */
+	@RequestMapping(value = "/getStationAndPile")
+	@ResponseBody
+	public void getStationAndPile(@ModelAttribute FinAccountSplitConfigDO finAccountSplitConfig) {
+		JsonResult result = new JsonResult();
+		UserDO loginUser = getCurrentLoginUser();
+
+		if(finAccountSplitConfig == null || finAccountSplitConfig.getCpyId() == null){
+			log.error(this.getClass() + ".getStationAndPile() error : 公司id不允许为空！");
+			responseJson(new JsonResult(false, ResultCodeConstants.FAILED, "公司id不允许为空！"));
+		}
+		try {
+			result.setDataObject(IntgeralAreaRelaBO.valueOf(finAccountSplitConfigService.getStationAndPile(finAccountSplitConfig, loginUser)));
+			responseJson(result);
+		} catch (Exception e) {
+			log.error(this.getClass() + "-getStationAndPile is error：", e);
+			responseJson(new JsonException("获取充电点和电桩失败，请刷新页面后重试！"));
+		}
+	}
+
+	/**
+	 * 根据公司名称获取公司列表
+	 * @param cpyName
+	 * @param request
+	 */
+	@RequestMapping(value = "/getCompanyListByCpyName")
+	@ResponseBody
+	public void getCompanyListByCpyName(String cpyName, HttpServletRequest request) {
+		JsonResult batchResult = new JsonResult();
+
+		if (cpyName == null || cpyName.equals("")) {
+			log.error(this.getClass() + ".getCompanyByCpyInfo() error : 公司名称不允许为空！");
+			responseJson(new JsonResult(false, ResultCodeConstants.FAILED, "公司名称不允许为空！"));
+		}else {
+			CompanyDO companyDO = new CompanyDO();
+			companyDO.setCpyName(cpyName);
+			List<CompanyDO> companyList = companyService.getCompanyListByCpyName(companyDO);
+			if (companyList == null) {
+				companyList = new ArrayList<CompanyDO>();
+			}
+			batchResult.setDataObject(companyList);
+
+			responseJson(batchResult);
+		}
+	}
+}

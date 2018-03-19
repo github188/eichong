@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace必须指向Dao接口 -->
+
+<mapper namespace="com.wanma.app.dao.AppGovBusiCheckMapper">
+
+	<resultMap id="tblUserMap" type="TblUser">
+		<id property="userId" column="user_id" />
+		<result property="userAccount" column="user_account" />
+		<result property="userPassword" column="user_password" />
+		<result property="userLeval" column="user_leval" />
+		<result property="userStatus" column="user_status" />
+	</resultMap>
+
+	<resultMap id="tblJpushResultMap" type="TblJpush">
+		<id property="pkJpush" column="pk_JPush" />
+		<result property="jpushUserinfo" column="jpush_UserInfo" />
+		<result property="jpushRegistrationid" column="jpush_registrationID" />
+		<result property="jpushDevicetype" column="jpush_deviceType" />
+		<result property="jpushCreatedate" column="jpush_Createdate" />
+		<result property="jpushUpdatedate" column="jpush_Updatedate" />
+	</resultMap>
+	<select id="checkUser" parameterType="TblUser" resultType="hashmap">
+	  SELECT
+			a.user_id AS userId,
+			a.user_password AS userPassword,
+			a.user_leval AS userLeval,
+			a.user_account AS userAccount,
+			b.cpy_id AS cpyId,
+			f.cpy_number cpyNumber,
+			c.account_balance AS balance,
+			c.trade_type AS tradeType,
+			d.payment_rule AS pamymentRule,
+			d.bill_account_id AS billId
+	  FROM
+			tbl_user a,
+			tbl_company f,
+			fin_account c,
+		    tbl_user_company b
+	 LEFT JOIN 
+			fin_account_config_rela  d on b.cpy_id= d.cpy_id
+	WHERE
+	    (
+		a.user_account =#{userAccount}
+		OR b.user_cpy_phone =#{userAccount}
+	)
+	AND a.user_id = b.user_id
+	AND b.account_id = c.account_id
+	AND f.cpy_id = b.cpy_id
+	AND a.user_leval = '3'
+	limit 1
+	</select>
+	<!-- 根据用户id获取用户信息 -->
+	<select id="get" parameterType="int" resultType="hashmap">
+		select
+		a.user_id,
+		user_account,
+		user_password,
+		user_leval,
+		user_status,
+		getFullPath ('userAvatar', a.user_id) AS usIn_HeadImage,
+		norm_name,
+		norm_real_name,
+		ifnull((
+		SELECT
+		j.account_balance
+		FROM
+		fin_account j
+		WHERE
+		j.account_id = b.account_id
+		),0) norm_account_balance,
+		norm_device_id,
+		norm_email,
+		norm_address,
+		a.user_idcard AS norm_id_card,
+		norm_sex,
+		norm_birthday,
+		(SELECT IFNULL(available_integrals,0) FROM tbl_integral WHERE user_id = #{pkUserinfo}) norm_integrate,
+		norm_car_company_id,
+		norm_car_type_id,
+		norm_vehicle_number,
+		norm_driving_licence,
+		a.province_code AS norm_p_code,
+		a.city_code AS norm_c_code,
+		a.area_code AS norm_a_code,
+		(
+		SELECT
+		f.account_pwd
+		FROM
+		fin_account f
+		WHERE
+		b.account_id = f.account_id
+		) AS norm_pay_password,
+		CarInfo_StyleName,
+		apply_card,
+		GROUP_CONCAT(uc_ExternalCardNumber) uc_ExternalCardNumber,
+		norm_plate_num
+		from tbl_user a inner join tbl_user_normal b on a.user_id = b.user_id
+		LEFT JOIN tbl_carinfo c on norm_car_type_id = c.pk_CarInfo
+		LEFT JOIN
+		tbl_usercard d on a.user_id = d.user_Id
+		where a.user_id =#{pkUserinfo}
+		and a.user_status != 3 and d.uc_Status = 0
+	</select >
+	
+	<!-- 更新用户的登录设备 -->
+   <update id="updateUserDeviceId">
+		update tbl_user_company set user_device_id = #{did}
+		where user_id = #{userId}
+	</update>
+	
+	<!-- 根据用户id获取用户推送信息 -->
+	<select id="getByuserInfo" parameterType="map" resultMap="tblJpushResultMap">
+	   select 
+	    pk_JPush,
+	    jpush_UserInfo,
+	    jpush_registrationID,
+	    jpush_deviceType,
+	    jpush_Createdate,
+	    jpush_Updatedate
+	   from tbl_JPush
+	   where 
+	    jpush_UserInfo=#{jpushUserInfo} 
+	</select>
+	
+	<!-- 判断用户是否存在 -->
+	<select id="userIsExist" parameterType="String" resultType="int">
+	 SELECT
+	   count(*) userNum
+     FROM
+	   tbl_user a,
+       tbl_user_company b
+     WHERE
+	   a.user_id=b.user_id
+     AND b.user_cpy_phone=#{usinPhone}
+	</select>
+	<!-- 找回密码 -->
+	<update id="resetPasswrod" parameterType="map">
+	<!-- 	update tbl_user set
+		user_password = #{usinPassword} where user_account=#{usinPhone} -->
+        update tbl_user set
+		user_password =#{usinPassword} 
+		where user_id=(select user_id from tbl_user_company where user_cpy_phone=#{usinPhone})
+	</update>
+	
+	<!-- 判断手机用户是否是政企用户 -->
+	  <select id="userPhone" parameterType="String" resultType="int">
+        SELECT
+	       count(*) userNum
+        FROM
+	       tbl_user a
+        WHERE
+	      a.user_id = (
+		    SELECT user_id
+		    FROM
+			 tbl_user_company
+		    WHERE
+			 user_cpy_phone =#{usinPhone}
+		      LIMIT 1
+          	)
+	  </select>
+	
+</mapper> 

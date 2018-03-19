@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.ElectricParamMapper">
+
+  <select id="selectOfflineList" parameterType="ElectricParamDO" resultType="ElectricParamDO">
+	 select id,ep_code as electricPileCode,arg_id,arg_value,issued_status,update_date from tbl_electricpile_workarg where delete_flag = 0 and arg_id = 3 
+	 <if test="list != null and list.size() > 0">
+		    and ep_code in 
+		   <foreach collection="list" item="id" open="(" close=")" separator=",">
+		        #{id}
+		   </foreach>
+	 </if>
+  </select>
+  <select id="selectSocList" parameterType="ElectricParamDO" resultType="ElectricParamDO">
+	 select id,ep_code as electricPileCode,arg_id,arg_value,issued_status,update_date from tbl_electricpile_workarg where delete_flag = 0 and arg_id = 1 
+	 <if test="list != null and list.size() > 0">
+		    and ep_code in 
+		   <foreach collection="list" item="id" open="(" close=")" separator=",">
+		        #{id}
+		   </foreach>
+	 </if>
+  </select>
+  <select id="selectTimeChargeList" parameterType="ElectricParamDO" resultType="ElectricParamDO">
+	  select ELPI_ELECTRICPILECODE as electricPileCode,TIMING_CHARGE as timeCharge,TIMING_CHARGE_STATUS as status,ISSUED_STATUS,UPDATE_DATE 
+	  from tbl_ep_timing_charge where delete_flag = 0
+	   <if test="list != null and list.size() > 0">
+		    and ELPI_ELECTRICPILECODE in 
+		   <foreach collection="list" item="id" open="(" close=")" separator=",">
+		        #{id}
+		   </foreach>
+	 </if>
+  </select>
+	
+  <select id="selectElectricParam" parameterType="ElectricParamDO" resultType="ElectricParamDO">
+     select id,ep_code,arg_id,arg_value,issued_status from tbl_electricpile_workarg where delete_flag = 0 and ep_code = #{electricPileCode} and arg_id = #{argId}
+  </select>
+  
+  <insert id="insertElectricParam" parameterType="ElectricParamDO">
+      insert into tbl_electricpile_workarg (id,ep_code,arg_id,arg_value,issued_status,creator)
+      values (null,#{electricPileCode},#{argId},#{argValue},#{issuedStatus},#{creator})
+  </insert>
+    
+  <update id="updateElectricParam" parameterType="ElectricParamDO">
+      update tbl_electricpile_workarg set modifier = #{modifier}
+      <if test="argValue != null and argValue != 0">
+         arg_value = #{argValue},
+      </if>
+      <if test="issuedStatus != null">
+         issued_status = #{issuedStatus},
+      </if>
+      where delete_flag = 0 and id = #{id}
+  </update>
+  
+  
+  <!-- 定时充电 -->
+   <select id="selectElectricTimeCharge" parameterType="String" resultType="ElectricParamDO">
+		select PK_TIMING_CHARGE_ID as id from tbl_ep_timing_charge where delete_flag = 0 and ELPI_ELECTRICPILECODE = #{electricPileCode}
+   </select>
+	
+  <insert id="insertTimeCharge" parameterType="ElectricParamDO">
+		insert into tbl_ep_timing_charge
+			(ELPI_ELECTRICPILECODE,TIMING_CHARGE,TIMING_CHARGE_STATUS,ISSUED_STATUS,CREATE_DATE,UPDATE_DATE)values(
+			 #{electricPileCode},#{chargeTime},#{timeStatus}, #{issuedStatus}, now(), now())
+	</insert>
+	<update id="updateTimeCharge" parameterType="ElectricParamDO">
+		update tbl_ep_timing_charge
+		set TIMING_CHARGE= #{chargeTime},TIMING_CHARGE_STATUS=#{timeStatus},ISSUED_STATUS = #{issuedStatus},UPDATE_DATE=now()
+		where PK_TIMING_CHARGE_ID =  #{id} and delete_flag = 0 
+	</update>
+	
+</mapper>

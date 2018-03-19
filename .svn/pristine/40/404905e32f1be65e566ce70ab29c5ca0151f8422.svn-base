@@ -1,0 +1,133 @@
+/**
+ * @Title: DataConversionTask.java
+ * @Package com.wanma.task
+ * @Description: TODO
+ * @author: Android_Robot
+ * @date: 2015年11月26日 上午9:44:23
+ * @version V1.0
+ */
+package com.sgcc.task;
+
+import com.google.common.base.Strings;
+import com.sgcc.constant.CommonConsts;
+import com.sgcc.service.SGCCService;
+import com.sgcc.utils.DateUtil;
+import com.wanma.support.common.RedisService;
+import com.wanma.support.common.SpringContextHolder;
+import com.wanma.support.common.WanmaConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
+
+import java.util.Calendar;
+import java.util.Date;
+
+/**
+ * @author bc
+ */
+public class QuartzTask {
+    private final Logger log = LoggerFactory.getLogger(QuartzTask.class);
+    private static SGCCService sgccService;
+    private static RedisService redisService;
+
+    public void init() {
+        ApplicationContext ac = SpringContextHolder.getSpringContext();
+        sgccService = (SGCCService) ac.getBean("sgccServiceImpl");
+        redisService = (RedisService) ac.getBean("redisService");
+
+    }
+
+    public void doStatWork() {
+        log.info("QuartzTask is begin");
+        init();
+        runSGCCTask();
+        log.info("QuartzTask is end");
+    }
+
+    public void runSGCCTask() {
+        log.info("runSGCCTask is begin");
+        Date beginTime = new Date();
+        Date endTime = new Date();
+        dateHandle(beginTime, endTime);
+        sgccService.syncStationInfo(beginTime, endTime);
+        sgccService.syncStationStatsInfo(beginTime, endTime);
+        sgccService.syncEquipmentInfo(beginTime, endTime);
+        sgccService.syncEquipmentStatsInfo(beginTime, endTime);
+        sgccService.syncConnectorInfo(beginTime, endTime);
+
+    }
+
+    public void run1() {
+    /*    init();
+        String reqTime = getLatestSyncTime();
+        TcbElectric electric = new TcbElectric();
+        electric.setCityCode(cityCode);
+        electric.setRunDate(reqTime);
+        List<TcbElectric> electricPileList = tcbElectricService.getElectricList(electric);
+        Map<String, Object> map = Maps.newHashMap();
+        map.put("data", electricPileList);
+//		System.out.println(JSON.toJSONString(map));
+        //上传桩
+        String pileListUrl = basePath + "api/pipe/pmon-records";
+
+        String token = RandomStringUtils.randomAlphanumeric(16);
+        String timestamp = String.valueOf(System.currentTimeMillis());
+        String toSign = token + "#" + timestamp;
+        String sign = ApiSecurityUtils.encrypt(toSign, partnerKey,
+                ApiSecurityUtils.HS256);
+        Map<String, String> contentMap = Maps.newHashMap();
+        contentMap.put("partnerId", partnerId);
+        contentMap.put("timestamp", timestamp);
+        contentMap.put("token", token);
+        contentMap.put("input", JSON.toJSONString(map));
+        contentMap.put("sign", sign);
+        String rt = httpClientUtil.doPost(pileListUrl, contentMap);
+        System.out.println(rt);
+        //上传站----------------------------------------------
+        String stationListUrl = basePath + "api/pipe/station_records";
+        TcbStation station = new TcbStation();
+        station.setCityCode(cityCode);
+        station.setRunDate(reqTime);
+        List<TcbStation> stationList = tcbElectricService.getStationList(station);
+        map = Maps.newHashMap();
+        map.put("data", stationList);
+        contentMap.put("input", JSON.toJSONString(map));
+//		System.out.println(JSON.toJSONString(map));
+        String rt2 = httpClientUtil.doPost(stationListUrl, contentMap);
+        System.out.println(rt2);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        setLatestSyncTime(sdf.format(new Date()));*/
+    }
+
+    private String getStatusByState(Integer state) {
+        //0-草稿 5-提交审核 3-已驳回 10-离线15-上线
+        if (state == 0) return "01";
+        if (state == 10) return "08";
+        if (state == 15) return "03";
+        return "08";
+    }
+
+    private String getLatestSyncTime() {
+        return redisService.strGet(CommonConsts.SGCC_SYNC_TIME);
+    }
+
+    private void setLatestSyncTime(String time) {
+        redisService.strSet(WanmaConstants.SYNC_TIME, time);
+    }
+
+    private void dateHandle(Date beginTime, Date endTime) {
+        String latestSyncTime = getLatestSyncTime();
+        log.info("latestSyncTime is :", latestSyncTime);
+        if (Strings.isNullOrEmpty(latestSyncTime)) {
+            beginTime = null;
+            endTime = new Date();
+            Calendar yesterdayEndTime = Calendar.getInstance();
+            DateUtil.getYesterdayEndTime(yesterdayEndTime);
+            endTime = yesterdayEndTime.getTime();
+        } else {
+            Date lastTime = new Date(latestSyncTime);
+            beginTime = DateUtil.getDailyStartTime(lastTime);
+            endTime = DateUtil.getDailyEndTime(lastTime);
+        }
+    }
+}

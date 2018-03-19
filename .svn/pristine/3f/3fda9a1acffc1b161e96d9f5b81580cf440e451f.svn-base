@@ -1,0 +1,152 @@
+//获取资金账户列表的menuId
+var getMenuMap = window.localStorage.getItem('menuMap');
+var getCurruntMap = JSON.parse(getMenuMap);
+var menuId = getCurruntMap['资金账户列表'];
+function dealJumpBtn(){
+    var accountId=getUrlParam('accountId');
+    //去加载表格的数据
+    if(accountId){
+        $('input[name=accountId]').val(accountId);
+        finAccountListSearch();
+
+    }else{
+        $('input[name=accountId]').val('');
+        finAccountListSearch();
+    }
+}
+$(function () {
+    ctrlMenu(menuId);
+    setTimeout('dealJumpBtn()',100);
+
+})
+function ctrlMenu(menuId) {
+    $.ajax({
+        type: "post",
+        url: basePath + getSelfButtonTreeUrl,
+        async: true,
+        data: {
+            menuId: menuId
+        },
+        success: function (req) {
+            var data = req.dataObject;
+            if(data==null){
+                return;
+            }
+            if (data.length == 0) {
+                return;
+            } else {
+                for (var i = 0; i < data.length; i++) {
+                    var contents = data[i].contents;
+                    if (contents.indexOf('显示') > -1) {
+                        $('#showBtn').show();
+                    }
+                    if (contents.indexOf('导出') > -1) {
+                        $('#dataExport').show();
+                    }
+                }
+            }
+
+
+        }
+    });
+}
+
+function toUnbindEvent() {
+    $('.tradeTypeBlock').unbind();
+    $('.accountStatusBlock').unbind();
+    selectModel();
+}
+toUnbindEvent();
+
+
+function finAccountListSearch() {
+    toGiveHiddenInput();
+    initTable("finAccountForm", "finAccountListPage", getFinAccountUrl, finAccountListCallback);
+}
+function finAccountListCallback(req) {
+    var data = req.dataObject;
+    //var pageNum = req.pager.pageNo;
+    var listTr = "";
+    for (var i = 0; i < data.length; i++) {
+        var accountStatusHtml = '';
+        if (data[i].accountStatus == 1) {
+            accountStatusHtml = '正常';
+        }
+        if (data[i].accountStatus == 2) {
+            accountStatusHtml = '冻结';
+        }
+        if (data[i].accountStatus == 3) {
+            accountStatusHtml = '删除';
+        }
+
+        var tradeTypeHtml = '';
+        if (data[i].tradeType == 1) {
+            tradeTypeHtml = '储值账号';
+        }
+        if (data[i].tradeType == 2) {
+            tradeTypeHtml = '信用账号';
+        }
+
+        listTr += '<tr><td><input type="checkbox" name="id" class="selectedBox" value="' + data[i].pkId + '"/></td>'
+        + '<td class="finAccount_accountNO">' + data[i].accountNO
+        + '</td><td class="finAccount_accountBalance">' + data[i].accountBalance
+        + '</td><td class="finAccount_accountStatus">' + accountStatusHtml
+        + '</td><td class="finAccount_tradeType">' + tradeTypeHtml
+        + '</td><td class="finAccount_accountWarn">' + data[i].accountWarn
+        + '</td></tr>';
+
+    }
+    $("#myTbogy").html(listTr);
+    var arr = ['finAccount_accountNO', 'finAccount_accountBalance', 'finAccount_accountStatus', 'finAccount_tradeType', 'finAccount_userCardNo',
+        'finAccount_accountWarn', 'finAccount_cpyName'];
+    toGetLocalStorageInfo(arr);
+}
+function toGiveHiddenInput() {
+    var tradeTypeHtmlValue = $('#tradeTypeHtml').attr('data-value');
+    var accountStatusValue = $('#accountStatus').attr('data-value');
+    var accountNO=$('input[name=accountNO]').val();
+    if (tradeTypeHtmlValue == "") {
+        $('input[name=tradeType]').val('');
+    } else {
+        $('input[name=tradeType]').val(tradeTypeHtmlValue);
+    }
+    if (accountStatusValue == "") {
+        $('input[name=accountStatus]').val('');
+    } else {
+        $('input[name=accountStatus]').val(accountStatusValue);
+    }
+    if(accountNO==""){
+        $('input[name=accountNO]').val('');
+    }else{
+        $('input[name=accountNO]').val(accountNO);
+    }
+
+}
+$('.tradeTypeUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+});
+$('.accountStatusUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+});
+
+//数据导出	=====================
+$('#dataExport').on("click", function () {
+    toGiveHiddenInput();
+    var obj = {
+        accountNO: $('input[name=accountNO]').val(),
+        accountStatus: $('input[name=accountStatus]').val(),
+        tradeType: $('input[name=tradeType]').val()
+    };
+    window.location.href = basePath + exportFinAccountUrl + '?accountNO='
+    + obj.accountNO + '&accountStatus='
+    + obj.accountStatus + '&tradeType='
+    + obj.tradeType;
+});
+//监听回车键
+$(document).keyup(function (event) {
+    if (event.keyCode == 13) {
+        finAccountListSearch();
+    }
+});

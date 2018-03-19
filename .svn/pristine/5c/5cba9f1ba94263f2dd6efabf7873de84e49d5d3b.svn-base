@@ -1,0 +1,91 @@
+package com.echong.service.impl;
+
+import com.alibaba.fastjson.JSON;
+import com.ec.usrcore.server.CommonServer;
+import com.echong.constant.CommonConsts;
+import com.echong.constant.OperatelLabelConsts;
+import com.wanma.model.PileState;
+import com.echong.model.ElectricLabel;
+import com.echong.model.Result;
+import com.echong.service.OperateLabelService;
+import com.echong.utils.HttpUtils;
+import com.wanma.dao.TblElectricpileMapper;
+import com.wanma.support.common.WanmaConstants;
+import com.wanma.support.utils.MD5Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+/**
+ * Created by zangyaoyi on 2017/1/5.
+ */
+@Service
+public class OperateLabelServiceImpl implements OperateLabelService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(OperateLabelServiceImpl.class);
+    private static CommonServer commonServer = CommonServer.getInstance();
+    @Autowired
+    private TblElectricpileMapper tblElectricpileMapper;
+
+    @Override
+    public Result startOperate(ElectricLabel electricLabel) {
+        short chargeStyle = 1;
+        String userId = null == electricLabel.getUser_id() ? "" : electricLabel.getUser_id().toString();
+        String sessionId = null == electricLabel.getSession_id() ? "" : electricLabel.getSession_id().toString();
+        LOGGER.debug("OperateLabelService startOperate is begin");
+        int ret = 1;
+        try {
+            ret = commonServer.startChange(WanmaConstants.ECW_CODE, userId, electricLabel.getPile_code(), electricLabel.getInter_no(), chargeStyle, 50000, 2, "", "", 0, sessionId);
+        } catch (Exception e) {
+            LOGGER.error("commonServer.startChange is fail ; electricLabel:{}|e:{}", JSON.toJSON(electricLabel), e);
+        }
+        LOGGER.debug("OperateLabelService startOperate is end");
+        return getResult(ret);
+    }
+
+    @Override
+    public Result stopOperate(ElectricLabel electricLabel) {
+        LOGGER.debug("OperateLabelService stopOperate is begin");
+        int ret = 1;
+        try {
+            ret = commonServer.stopChange(electricLabel.getPile_code(), electricLabel.getInter_no(), WanmaConstants.ECW_CODE, electricLabel.getUser_id().toString(), electricLabel.getSession_id().toString());
+        } catch (Exception e) {
+            LOGGER.error("commonServer.stopOperate is fail ; electricLabel:{}|e:{}", JSON.toJSON(electricLabel), e);
+        }
+        LOGGER.debug("OperateLabelService stopOperate is end");
+        return getResult(ret);
+    }
+
+    @Override
+    public void queryOffLinePile(Integer companyId) {
+        List<PileState> pileStates = tblElectricpileMapper.queryOffLinePileByCompanyNumber(companyId);
+        LOGGER.info("OperateLabelService queryOffLinePile is begin,pileStates.length:", pileStates.size());
+        for (PileState pileState : pileStates) {
+            PileState.convertPileState(pileState);
+            HttpUtils.send2EChong(CommonConsts.E_CHONG_STATUS_CHANGE_URL, JSON.toJSONString(pileState));
+        }
+    }
+
+    private static Result getResult(int ret) {
+        Result result = new Result();
+        if (ret > 0) {
+            result.setRet("6001");
+            result.setMsg("系统错误:" + OperatelLabelConsts.getMeg(ret));
+            LOGGER.error("OperateLabelService is fail,errorCode:{}", ret);
+        }
+        return result;
+    }
+
+
+    public static void main(String[] args) {
+        /*ApplicationContext context = SpringContextHolder.getSpringContext();
+        ((RedisService) context.getBean("redisService")).strSet(WanmaConstants.PREFIX_ORG + "1004", "1000");*/
+        long time = System.currentTimeMillis() / 1000;
+        String date = time + "";
+        System.out.println(date);
+        String t = MD5Util.Md5("1010" + "0CD01B9EDF285AEFA38E8D3DAD8F18B7" + date.substring(5));
+        System.out.println(t);
+    }
+}

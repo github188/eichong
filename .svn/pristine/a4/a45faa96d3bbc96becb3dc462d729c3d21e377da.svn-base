@@ -1,0 +1,68 @@
+package com.wanma.ims.model;
+import com.wanma.ims.model.base.Entity;
+
+/**
+ * User实体类 （基表）
+ */
+public class UserDO extends Entity{
+
+	private static final long serialVersionUID = -974398451786148136L;
+	// 用户ID
+	private Long userId;
+	// 用户帐号
+	private String userAccount;
+	// 用户密码
+	private String userPassword;
+	// 用户等级1：超级管理员 2：系统管理员 3:渠道用户   6:普通用户 7：业务管理员
+	private Integer userLevel;
+	// 用户状态 1:正常 2:冻结 3:删除
+	private Integer userStatus;
+	
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public String getUserAccount() {
+		return userAccount;
+	}
+
+	public void setUserAccount(String userAccount) {
+		this.userAccount = userAccount;
+	}
+
+	public String getUserPassword() {
+		return userPassword;
+	}
+
+	public void setUserPassword(String userPassword) {
+		this.userPassword = userPassword;
+	}
+
+	public Integer getUserLevel() {
+		return userLevel;
+	}
+
+	public void setUserLevel(Integer userLevel) {
+		this.userLevel = userLevel;
+	}
+
+	public Integer getUserStatus() {
+		return userStatus;
+	}
+
+	public void setUserStatus(Integer userStatus) {
+		this.userStatus = userStatus;
+	}
+
+	
+	@Override
+	public String toString() {
+		return "UserDO [userId=" + userId + ", userAccount=" + userAccount
+				+ ", userPassword=" + userPassword + ", userLevel=" + userLevel
+				+ ", userStatus=" + userStatus +  "]";
+	}
+}

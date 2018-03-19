@@ -1,0 +1,367 @@
+//获取账务关系列表的menuId
+var getMenuMap = window.localStorage.getItem('menuMap');
+var getCurruntMap = JSON.parse(getMenuMap);
+var menuId = getCurruntMap['账务关系列表'];
+$(function () {
+    ctrlMenu(menuId);
+    getPerInfo();
+    setTimeout('finAccountRelationListSearch()', 100);
+    //获取账单科目
+    setTimeout("getFinBillAccountComboBox()", 300);
+
+})
+
+function getPerInfo() {
+    var userAccount = getUrlParam('userAccount');
+    var accountId = getUrlParam('accountId');
+    //去加载表格的数据
+    if (userAccount) {
+        $('input[name=userAccount]').val(userAccount);
+        toGiveHiddenInput()
+    }
+    if (accountId) {
+        $('input[name=accountId]').val(accountId);
+        toGiveHiddenInput()
+    }
+}
+function ctrlMenu(menuId) {
+    $.ajax({
+        type: "post",
+        url: basePath + getSelfButtonTreeUrl,
+        async: true,
+        data: {
+            menuId: menuId
+        },
+        success: function (req) {
+            var data = req.dataObject;
+            //console.log(data);
+            if(data==null){
+                return;
+            }
+            if (data.length == 0) {
+                return;
+            } else {
+                for (var i = 0; i < data.length; i++) {
+                    var contents = data[i].contents;
+                    if (contents.indexOf('新建') > -1) {
+                        $('#addFinAccountRelation').show();
+                    }
+                    if (contents.indexOf('删除') > -1) {
+                        $('#deleteFinAccountRelation').show();
+                    }
+                }
+            }
+        }
+    });
+}
+toUnbindEvent();
+function toUnbindEvent() {
+    $('.billAccountCodeBlock').unbind();
+    $('.priorityBlock').unbind();
+    selectModel();
+}
+
+function finAccountRelationListSearch() {
+    toGiveHiddenInput();
+    initTable("finAccountRelationForm", "finAccountRelationPage", getFinAccountRelationUrl, finAccountRelationListCallback);
+}
+function finAccountRelationListCallback(req) {
+    var data = req.dataObject;
+    var listTr = "";
+    for (var i = 0; i < data.length; i++) {
+        var priorityHtml = '';
+        if (data[i].priority == 1) {
+            priorityHtml = '优先执行';
+        }
+        if (data[i].priority == 2) {
+            priorityHtml = '最后执行';
+        }
+        listTr += '<tr><td><input type="checkbox" name="id" class="selectedBox" data-accountId="' + data[i].accountId + '" data-userId="' + data[i].userId + '"  data-billAccountId="' + data[i].billAccountId + '" value="' + data[i].pkId + '"/></td><td><span>' + data[i].userAccount
+        + '</span></td><td>' + data[i].billAccountName
+        + '</td><td>' + data[i].accountNO
+        + '</td><td>' + priorityHtml
+        + '</td></tr>';
+    }
+    $("#myTbody").html(listTr);
+}
+function toGiveHiddenInput() {
+    var billAccountCodeHtmlValue = $('#billAccountCodeHtml').attr('data-value');
+    var cpyCompanyValue = $('#cpyCompanyName').attr('data-value');
+    var priorityHtmlValue = $('#priorityHtml').attr('data-value');
+
+    if (billAccountCodeHtmlValue == "") {
+        $('input[name=billAccountId]').val('');
+    } else {
+        $('input[name=billAccountId]').val(billAccountCodeHtmlValue);
+    }
+    if (cpyCompanyValue == "") {
+        $('input[name=ucCpyId]').val('');
+    } else {
+        $('input[name=ucCpyId]').val(cpyCompanyValue);
+    }
+
+    if (priorityHtmlValue == "") {
+        $('input[name=priority]').val('');
+    } else {
+        $('input[name=priority]').val(priorityHtmlValue);
+    }
+
+}
+
+function getFinBillAccountComboBox() {
+    $.ajax({
+        type: "post",
+        url: basePath + getFinBillAccountComboBoxUrl,
+        async: true,
+        success: function (data) {
+            if (data.success == true) {
+                if (data.success == true) {
+                    var dataModule = data.dataObject;
+                    var billAccountCodeLi = '<li data-option="" class="data-selected">请选择</li>';
+                    for (var i = 0; i < dataModule.length; i++) {
+                        billAccountCodeLi += '<li data-option="' + dataModule[i].pkId + '">' + dataModule[i].billAccountName + '</li>';
+                    }
+                    $('.billAccountCodeBlockUl').html(billAccountCodeLi);
+                    toUnbindEvent();
+                }
+            }
+        }
+    });
+
+}
+//账单科目
+$('.billAccountCodeBlockUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+});
+//优先级
+$('.priorityUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+});
+//删除账单
+//点击删除，只能单个删除
+$('body').off('click', '#deleteFinAccountRelation').on('click', '#deleteFinAccountRelation', function () {
+    layer.closeAll();
+    layer.open({
+        type: 1,
+        offset: '100px',
+        title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+        shadeClose: false,
+        closeBtn: 1,
+        area: ['310px', '180px'],//宽高
+        content: '确定删除吗？',
+        btn: ["确定", "取消"],
+        yes: function (index, layero) {
+            layer.closeAll();
+            toDeleteFinAccountRelation();
+        },
+        cancel: function (index, layero) {
+            layer.closeAll();
+        }
+    });
+});
+function toDeleteFinAccountRelation() {
+    var ids = '';
+    var billAccountIds = '';
+    var userId='';
+    var accountId=''
+    $('input[name=id]').each(function () {
+        var flag = $(this).prop('checked');
+        if (flag == true) {
+            ids += $(this).attr('value');
+            billAccountIds += $(this).attr('data-billAccountId');
+            userId += $(this).attr('data-userId');
+            accountId += $(this).attr('data-accountId');
+        }
+    });
+    if (!ids) {
+        layer.open({
+            type: 1,
+            offset: '100px',
+            title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+            shadeClose: false,
+            closeBtn: 1,
+            area: ['310px', '160px'],//宽高
+            content: '请指定表单元素',
+            time: 3000,
+            btn: ["确定"]
+        });
+    } else {
+        $.ajax({
+            type: "post",
+            url: basePath + removeFinAccountRelationUrl,
+            async: true,
+            data: {
+                pkId: ids,
+                billAccountId: billAccountIds,
+                userId:userId,
+                accountId:accountId
+            },
+            success: function (data) {
+                if (data.success == true) {
+                    layer.closeAll();
+                    layer.open({
+                        type: 1,
+                        offset: '100px',
+                        title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+                        shadeClose: false,
+                        closeBtn: 1,
+                        area: ['310px', '160px'],//宽高
+                        content: '删除成功',
+                        btn: ["确定"],
+                        yes: function (index, layero) {
+                            layer.closeAll();
+                            window.location.reload();
+                        },
+                        cancel: function (index, layero) {
+                            layer.closeAll();
+                            window.location.reload();
+                        }
+                    });
+
+                } else {
+                    layer.open({
+                        type: 1,
+                        offset: '100px',
+                        title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+                        shadeClose: false,
+                        closeBtn: 1,
+                        area: ['310px', '160px'],//宽高
+                        content: data.msg,
+                        time: 3000,
+                        btn: ["确定"]
+                    });
+                }
+            }
+        });
+    }
+}
+$('body').on('click', 'input[name=id]', function () {
+    var flag = $(this).prop('checked');
+    if (flag == true) {
+        $(this).parents('td').parents('tr').siblings().find('input[name=id]').prop('checked', false).attr('disabled', true);
+    } else {
+        $(this).parents('td').parents('tr').siblings().find('input[name=id]').attr('disabled', false);
+    }
+
+})
+//新建addFinAccountRelation
+$('body').off('click', '#addFinAccountRelation').on('click', '#addFinAccountRelation', function () {
+    //获取账单科目
+    getAccountBox();
+    layer.closeAll();
+    layer.open({
+        type: 1,
+        offset: '100px',
+        title: ["新建账务关系", "font-size:12px;text-align:center"],
+        shadeClose: false,
+        closeBtn: 1,
+        area: ['320px', '350px'],//宽高
+        content: $('.addFinAccountRelationContent'),
+        btn: ["确定", "取消"],
+        yes: function (index, layero) {
+            layer.closeAll();
+            toAddFinAccount();
+        },
+        cancel: function (index, layero) {
+            layer.closeAll();
+        }
+    });
+})
+function getAccountBox() {
+    $.ajax({
+        type: "post",
+        url: basePath + getFinBillAccountComboBoxUrl,
+        async: true,
+        success: function (data) {
+            var liHtml = ' <option value="">请选择</option>';
+            var data = data.dataObject;
+            for (var i = 0; i < data.length; i++) {
+                liHtml += '<option value="' + data[i].pkId + '">' + data[i].billAccountName + '</option>';
+            }
+            $('#billAccountComboBox').html(liHtml);
+        }
+
+    })
+
+}
+//新增公司标识
+function toAddFinAccount() {
+    var billAccountComboBox = $('#billAccountComboBox').val();
+    var userAccount = $('input[name=userNumber]').val();
+    var accountNO = $('input[name=billNumber]').val();
+    var priority = $('#addPriority').val();
+    var cpyNumber = $('input[name=cpyNumber]').val();
+    $.ajax({
+        type: "post",
+        url: basePath + addFinAccountRelationUrl,
+        async: true,
+        data: {
+            billAccountId: billAccountComboBox,
+            userAccount: userAccount,
+            accountNO: accountNO,
+            priority: priority,
+            cpyNumber:cpyNumber
+        },
+        success: function (data) {
+            if (data.success == true) {
+                layer.closeAll();
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+                    shadeClose: false,
+                    closeBtn: 1,
+                    area: ['310px', '160px'],//宽高
+                    content: data.msg,
+                    btn: ["确定"],
+                    yes:function(index,layero){
+                        layer.closeAll();
+                        finAccountRelationListSearch();
+                        $('#billAccountComboBox').val('');
+                        $('input[name=userNumber]').val('');
+                        $('input[name=billNumber]').val('');
+                        $('input[name=cpyNumber]').val('');
+                        $('#addPriority').val('');
+                    },
+                    cancel: function (index, layero) {
+                        layer.closeAll();
+                        finAccountRelationListSearch();
+                        $('#billAccountComboBox').val('');
+                        $('input[name=userNumber]').val('');
+                        $('input[name=billNumber]').val('');
+                        $('input[name=cpyNumber]').val('');
+                        $('#addPriority').val('');
+                    }
+                });
+
+            } else {
+                layer.closeAll();
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+                    shadeClose: false,
+                    closeBtn: 1,
+                    area: ['310px', '160px'],//宽高
+                    content: data.msg,
+                    time: 2000,
+                    btn: ["确定"]
+                });
+                $('#billAccountComboBox').val('');
+                $('input[name=userNumber]').val('');
+                $('input[name=billNumber]').val('');
+                $('input[name=cpyNumber]').val('');
+                $('#addPriority').val('');
+            }
+        }
+
+    });
+}
+//监听回车键
+$(document).keyup(function (event) {
+    if (event.keyCode == 13) {
+        finAccountRelationListSearch();
+    }
+});

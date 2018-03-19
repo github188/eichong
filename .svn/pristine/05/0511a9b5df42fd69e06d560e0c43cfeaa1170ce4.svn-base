@@ -1,0 +1,139 @@
+package com.wanma.ims.controller.fin.invoice;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.wanma.ims.common.domain.InvoiceDO;
+import com.wanma.ims.common.domain.base.Pager;
+import com.wanma.ims.constants.ResultCodeConstants;
+import com.wanma.ims.controller.BaseController;
+import com.wanma.ims.controller.result.JsonResult;
+import com.wanma.ims.service.FinInvoiceService;
+
+@Controller
+@RequestMapping("/fin/invoice/app")
+public class FinAppInvoiceController extends BaseController{
+	/** 日志文件生成器 */
+	private static Logger log = Logger.getLogger(FinAppInvoiceController.class);
+	@Autowired
+	private FinInvoiceService finInvoiceService;
+	
+	/**
+	 * 个人发票管理列表
+	 * @author mb
+	 * @param 
+	 * @return
+	 */
+	@RequestMapping(value = "/getFinAppInvoiceList")
+	@ResponseBody
+	public void getFinAppInvoiceList(@ModelAttribute("pager") Pager pager,
+			@ModelAttribute InvoiceDO invoice,HttpServletRequest request) {
+		JsonResult result = new JsonResult();
+		List<InvoiceDO> userInvoiceList = null;
+		long total = 0;
+		try {
+			total = finInvoiceService.getUserInvoiceCount(invoice);
+			if (total <= pager.getOffset()) {
+				pager.setPageNo(1L);
+			}
+			invoice.setPager(pager);
+			userInvoiceList = finInvoiceService.getUserInvoiceList(invoice);
+			pager.setTotal(total);
+			result.setDataObject(userInvoiceList);
+			result.setPager(pager);
+		} catch (Exception e) {
+			log.error(this.getClass()+".getUserInvoiceList() error:",e);
+		}
+		responseJson(result);
+		
+	}
+	/**
+	 * 发票管理详情
+	 * @author mb
+	 * @param 
+	 * @return
+	 */
+	@RequestMapping(value = "/getFinInvoiceById")
+	@ResponseBody
+	public void getFinInvoiceById(@ModelAttribute InvoiceDO invoice,HttpServletRequest request) {
+		JsonResult result = new JsonResult();
+		try {
+			invoice = finInvoiceService.getFinInvoiceById(invoice);
+			result.setDataObject(invoice);
+		} catch (Exception e) {
+			log.error(this.getClass()+".getUserInvoiceById() error:",e);
+		}
+		responseJson(result);
+	}
+	/**
+	 * 编辑发票管理详情
+	 * @author mb
+	 * @param 
+	 * @return
+	 */
+	@RequestMapping(value = "/modifyFinInvoice")
+	@ResponseBody
+	public void modifyFinInvoice(@ModelAttribute InvoiceDO invoice,HttpServletRequest request) {
+		JsonResult result = new JsonResult();
+		try {
+			if(!finInvoiceService.modifyFinInvoice(invoice)){
+				responseJson(new JsonResult(false,ResultCodeConstants.FAILED,"编辑发票管理详情失败"));
+				return;
+			}
+		} catch (Exception e) {
+			log.error(this.getClass()+".confirmInvoice() error:",e);
+		}
+		responseJson(result);
+	}
+	
+	/**
+	 * 确定开票
+	 * @author mb
+	 * @param 
+	 * @return
+	 */
+	@RequestMapping(value = "/confirmInvoice")
+	@ResponseBody
+	public void confirmInvoice(@ModelAttribute InvoiceDO invoice,HttpServletRequest request) {
+		JsonResult result = new JsonResult();
+		try {
+			invoice.setIvInvoiceStatus(1);
+			if(!finInvoiceService.confirmInvoice(invoice)){
+				responseJson(new JsonResult(false,ResultCodeConstants.FAILED,"确认开票失败"));
+				return;
+			}
+		} catch (Exception e) {
+			log.error(this.getClass()+".confirmInvoice() error:",e);
+		}
+		responseJson(result);
+	}
+	/**
+	 * 拒绝开票
+	 * @author mb
+	 * @param 
+	 * @return
+	 */
+	@RequestMapping(value = "/refuseInvoice")
+	@ResponseBody
+	public void refuseInvoice(@ModelAttribute InvoiceDO invoice,HttpServletRequest request) {
+		JsonResult result = new JsonResult();
+		try {
+			invoice.setIvInvoiceStatus(3);
+			if(!finInvoiceService.refuseInvoice(invoice)){
+				responseJson(new JsonResult(false,ResultCodeConstants.FAILED,"拒绝开票失败"));
+				return;
+			}
+		} catch (Exception e) {
+			log.error(this.getClass()+".confirmInvoice() error:",e);
+		}
+		responseJson(result);
+	}
+}

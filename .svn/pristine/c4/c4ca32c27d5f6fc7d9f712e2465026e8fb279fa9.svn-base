@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/monitor/electric_map.css"/>
+    <title>系统首页</title>
+</head>
+<body>
+<div class="container animated fadeInRight">
+
+    <div class="row">
+        <div class="formBlock clearfix mapBlock">
+            <div class="mapIndexBlock">
+                <div class="titleFlag"></div>
+                <div class="companyFlag">Copyright &copy;2011 浙江爱充网络科技有限公司</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+</html>

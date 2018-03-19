@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.ChargingFaultRecordMapper">
+	<resultMap type="ChargingFaultRecord" id="resultFaultRecord">
+		<result property="pkChargingFaultRecord" column="pk_ChargingFaultRecord" />
+		<result property="cFReUsingMachineCode" column="cFRe_UsingMachineCode" />
+		<result property="cFReEphNo" column="cFRe_EphNo" />
+		<result property="cFReElectricPileID" column="cFRe_ElectricPileID" />
+		<result property="cFReElectricPileName" column="cFRe_ElectricPileName" />
+		<result property="cFReChargingSarttime" column="cFRe_ChargingSarttime" />
+		<result property="cFReTransactionNumber" column="cFRe_TransactionNumber" />
+		<result property="cFReFaultCause" column="cFRe_FaultCause" />
+		<result property="cFReCreatedate" column="cFRe_Createdate" />
+		<result property="cFReUpdatedate" column="cFRe_Updatedate" />
+		<result property="powerStationName" column="powerStation_name" />
+		<result property="epNum" column="ep_num" />
+	</resultMap>
+	<select id="getChargingFaultRecordCount" parameterType="ChargingFaultRecord" resultType="Long">
+		SELECT
+		count(*)
+		FROM
+		tbl_chargingfaultrecord f,
+		tbl_electricpile e
+		LEFT JOIN tbl_powerstation p ON p.powerStation_id = e.elPi_RelevancePowerStation
+		WHERE f.cFRe_ElectricPileID = e.pk_ElectricPile
+		<if test="cFReUsingMachineCode !=null and cFReUsingMachineCode !=''  ">
+			AND 	f.cFRe_UsingMachineCode = #{cFReUsingMachineCode}
+		</if>
+		<if test="powerStationId !=null and powerStationId !=''  ">
+			AND	p.powerStation_id = #{powerStationId}
+		</if>
+		<if test="provinceCode !=null and provinceCode !=''  ">
+			AND	e.elPi_OwnProvinceCode = #{provinceCode}
+		</if>
+		<if test="cityCode !=null and cityCode !=''  ">
+			AND	e.elPi_OwnCityCode = #{cityCode}
+		</if>
+		<if test="areaCode !=null and areaCode !=''  ">
+			AND	e.elPi_OwnCountyCode = #{areaCode}
+		</if>
+	</select>
+	<select id="getChargingFaultRecordList" parameterType="ChargingFaultRecord" resultMap="resultFaultRecord">
+		SELECT
+		date_format(f.cFRe_ChargingSarttime,'%Y-%m-%d %T') cFRe_ChargingSarttime,
+			f.cFRe_FaultCause,
+			f.cFRe_EphNo,
+			f.cFRe_UsingMachineCode,
+			f.cFRe_TransactionNumber,
+			e.ep_num,
+			p.powerStation_name
+		FROM
+			tbl_chargingfaultrecord f,
+			tbl_electricpile e
+		LEFT JOIN tbl_powerstation p ON p.powerStation_id = e.elPi_RelevancePowerStation
+		WHERE f.cFRe_ElectricPileID = e.pk_ElectricPile
+		<if test="cFReUsingMachineCode !=null and cFReUsingMachineCode !=''  ">
+			AND 	f.cFRe_UsingMachineCode = #{cFReUsingMachineCode}
+		</if>
+		<if test="powerStationId !=null and powerStationId !=''  ">
+			AND	p.powerStation_id = #{powerStationId}
+		</if>
+		<if test="provinceCode !=null and provinceCode !=''  ">
+			AND	e.elPi_OwnProvinceCode = #{provinceCode}
+		</if>
+		<if test="cityCode !=null and cityCode !=''  ">
+			AND	e.elPi_OwnCityCode = #{cityCode}
+		</if>
+		<if test="areaCode !=null and areaCode !=''  ">
+			AND	e.elPi_OwnCountyCode = #{areaCode}
+		</if>
+		ORDER BY f.cFRe_ChargingSarttime DESC
+		<if test="pager!=null">limit #{pager.offset},#{pager.pageSize}</if>
+	</select>
+
+</mapper>

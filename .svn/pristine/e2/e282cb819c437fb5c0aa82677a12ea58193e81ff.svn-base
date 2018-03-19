@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.PileMakerMapper">
+
+    <resultMap id="resultPileMaker" type="PileMakerDO">
+        <id column="pk_Carmaker" property="id"/>
+        <result column="maker_Name" property="makerName"/>
+        <result column="maker_Remark" property="makerRemark"/>
+        <result column="is_del" property="isDel"/>
+        <result column="maker_Createdate" property="gmtCreate"/>
+        <result column="maker_Updatedate" property="gmtModified"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        pk_Carmaker, maker_Name, maker_Remark, is_del, maker_Createdate, maker_Updatedate
+    </sql>
+
+    <sql id="condition">
+        <where>
+            <if test="id != null">
+                AND pk_Carmaker = #{id}
+            </if>
+            <if test="makerName != null">
+                AND maker_Name = #{makerName}
+            </if>
+            AND is_del = 0
+        </where>
+    </sql>
+
+    <select id="getPileMakerList" parameterType="Map" resultMap="resultPileMaker">
+        select
+        <include refid="Base_Column_List"/>
+        from tbl_pilemaker
+        <include refid="condition"/>
+        ORDER BY maker_Updatedate DESC
+        <if test="pager!=null">
+            limit #{pager.offset},#{pager.pageSize}
+        </if>
+    </select>
+
+    <select id="countPileMaker" parameterType="Map" resultType="Long">
+        select count(1)
+        from tbl_pilemaker
+        <include refid="condition"/>
+    </select>
+
+    <select id="getPileMakerById" parameterType="Long" resultMap="resultPileMaker">
+        select
+        <include refid="Base_Column_List"/>
+        from tbl_pilemaker
+        where pk_Carmaker = #{id} and is_del = 0
+    </select>
+
+    <select id="getPileMakerListByIds" parameterType="Long" resultMap="resultPileMaker">
+        select
+        <include refid="Base_Column_List"/>
+        from tbl_pilemaker
+        where is_del = 0 and pk_Carmaker in
+        <if test="ids != null and ids.size() > 0">
+            <foreach collection="ids" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </if>
+    </select>
+
+    <delete id="deletePileMakerById" parameterType="Long">
+        UPDATE tbl_pilemaker
+        SET is_del           = 1,
+            maker_Updatedate = now()
+        WHERE pk_Carmaker = #{id}
+    </delete>
+
+    <insert id="insertPileMaker" parameterType="PileMakerDO">
+        INSERT INTO tbl_pilemaker (pk_Carmaker, maker_Name, maker_Remark, is_del,
+                                   maker_Createdate, maker_Updatedate)
+        VALUES (#{id}, #{makerName}, #{makerRemark}, #{isDel}, now(), now())
+    </insert>
+
+    <update id="updatePileMakerByIdSelective" parameterType="PileMakerDO">
+        update tbl_pilemaker
+        <set>
+            <if test="makerName != null">
+                maker_Name = #{makerName},
+            </if>
+            <if test="makerRemark != null">
+                maker_Remark = #{makerRemark},
+            </if>
+            <if test="isDel != null">
+                is_del = #{isDel},
+            </if>
+            maker_Updatedate = now(),
+        </set>
+        where pk_Carmaker = #{id}
+    </update>
+
+    <update id="updatePileMakerById" parameterType="PileMakerDO">
+        UPDATE tbl_pilemaker
+        SET maker_Name       = #{makerName},
+            maker_Remark     = #{makerRemark},
+            is_del           = #{isDel},
+            maker_Updatedate = now()
+        WHERE pk_Carmaker = #{id}
+    </update>
+</mapper>

@@ -1,0 +1,164 @@
+package com.wanma.ims.controller.config;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.wanma.ims.common.domain.RateInfoDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.domain.base.Pager;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.constants.ResultCodeConstants;
+import com.wanma.ims.controller.BaseController;
+import com.wanma.ims.controller.result.JsonResult;
+import com.wanma.ims.service.RateInfoService;
+
+/**
+ * 配置管理-费率管理 
+ */
+@Controller
+@RequestMapping("/config/rateinfo")
+public class RateInfoController extends BaseController{
+
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	
+	@Autowired
+	private RateInfoService rateInfoService;
+	
+	/**
+	* <p>Description: 获取费率管理列表</p>
+	* @param
+	* @author bingo
+	* @date 2017-6-26
+	 */
+	@RequestMapping(value = "/getRateInfo")
+	@ResponseBody
+	public void getRateInfoList(@ModelAttribute("pager") Pager pager,
+			@ModelAttribute RateInfoDO rateInfo, HttpServletRequest request){
+		JsonResult batchResult = new JsonResult();
+		Long total = rateInfoService.getRateInfoCount(rateInfo);
+		if (total <= pager.getOffset()) {
+			pager.setPageNo(1L);
+		}
+		pager.setTotal(total);
+		rateInfo.setPager(pager);
+		
+		List<RateInfoDO> rateInfoList = rateInfoService.getRateInfoList(rateInfo);
+		if (rateInfoList == null) {
+			rateInfoList = new ArrayList<RateInfoDO>();
+		}
+		batchResult.setDataObject(rateInfoList);
+		batchResult.setPager(pager);
+		
+		responseJson(batchResult);
+	}	
+	
+	/**
+	* <p>Description: 新增费率信息</p>
+	* @param
+	* @author bingo
+	* @date 2017-6-26
+	 */
+	@RequestMapping(value = "/addRateInfo")
+	@ResponseBody
+	public void addRateInfo(@ModelAttribute RateInfoDO rateInfo, Model model, HttpServletRequest request) {
+		//取当前登录用户
+//		UserDO user = SessionMgr.getWebUser(request);
+		UserDO user = getCurrentLoginUser();
+		BaseResultDTO baseResultDTO = new BaseResultDTO();
+		try {
+			baseResultDTO = rateInfoService.addRateInfo(rateInfo, user);
+		} catch (Exception e) {
+			log.error(this.getClass() + ".addRateInfo() error : ", e);
+			responseJson(new JsonResult(false, ResultCodeConstants.FAILED, e.toString()));
+		}
+		
+		if(!baseResultDTO.isSuccess()){
+			responseJson(new JsonResult(false, ResultCodeConstants.FAILED, baseResultDTO.getErrorDetail()));
+		}else {			
+			responseJson(new JsonResult());
+		}
+	}
+	
+	/**
+	* <p>Description: 修改费率管理</p>
+	* @param
+	* @author bingo
+	* @date 2017-6-26
+	 */
+	@RequestMapping(value = "/modifyRateInfo")
+	@ResponseBody
+	public void modifyRateInfo(@ModelAttribute RateInfoDO rateInfo, Model model) {
+		//取当前登录用户
+//		UserDO user = SessionMgr.getWebUser(request);
+		UserDO user = getCurrentLoginUser();
+		BaseResultDTO baseResultDTO = new BaseResultDTO();
+		try {
+			baseResultDTO = rateInfoService.modifyRateInfo(rateInfo, user);
+		} catch (Exception e) {
+			log.error(this.getClass() + ".modifyRateInfo() error : ", e);
+			responseJson(new JsonResult(false, ResultCodeConstants.FAILED, e.toString()));
+		}
+		
+		if(!baseResultDTO.isSuccess()){
+			responseJson(new JsonResult(false, ResultCodeConstants.FAILED, baseResultDTO.getErrorDetail()));
+		}else {
+			responseJson(new JsonResult());
+		}
+	}
+	
+	
+	/**
+	* <p>Description: 删除费率信息</p>
+	* @param
+	* @author bingo
+	* @date 2017-6-26
+	 */
+	@RequestMapping(value = "/removeRateInfo")
+	@ResponseBody
+	public void removeRateInfo(@ModelAttribute RateInfoDO rateInfo, Model model, HttpServletRequest request) {
+		BaseResultDTO baseResultDTO = new BaseResultDTO();
+		try {
+			baseResultDTO = rateInfoService.removeRateInfo(rateInfo);
+		} catch (Exception e) {
+			log.error(this.getClass() + ".removeRateInfo() error : ", e);
+			responseJson(new JsonResult(false, ResultCodeConstants.FAILED, e.toString()));
+		}
+		
+		if(!baseResultDTO.isSuccess()){
+			responseJson(new JsonResult(false, ResultCodeConstants.FAILED, baseResultDTO.getErrorDetail()));
+		}else {
+			responseJson(new JsonResult());
+		}
+	}
+	
+	/**
+	* <p>Description: 通过Id获取费率</p>
+	* @param
+	* @author bingo
+	* @date 2017-8-30
+	 */
+	@RequestMapping(value = "/getRateInfoById")
+	@ResponseBody
+	public void getRateInfoById(@ModelAttribute RateInfoDO rateInfo, HttpServletRequest request){
+		JsonResult batchResult = new JsonResult();
+		
+		RateInfoDO result = rateInfoService.getRateInfoById(rateInfo);
+		if (result == null) {
+			result = new RateInfoDO();
+		}
+		batchResult.setDataObject(result);
+		
+		responseJson(batchResult);
+	}	
+}

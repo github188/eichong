@@ -1,0 +1,468 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bluemobi.product.dao.DepartmentMapper">
+	<resultMap type="DepartmentModel" id="result_department">
+		<result property="companyId" column="company_id" />
+		<result property="companyName" column="company_name" />
+		<result property="departmentId" column="department_id" />
+		<result property="departmentName" column="department_name" />
+		<result property="responsible_company" column="responsibleCompany" />
+		<result property="responsibleDepart" column="responsible_depart" />
+		<result property="responsibleDepartName" column="responsible_depart_name" />
+		<result property="provinceId" column="province_id" />
+		<result property="provinceId" column="province_id" />
+		<result property="cityId" column="city_id" />
+		<result property="areaId" column="area_id" />
+		<result property="address1" column="address1" />
+		<result property="address2" column="address2" />
+		<result property="telephoneNumber" column="telephone_number" />
+		<result property="faxNumber" column="fax_number" />
+		<result property="extensionNumber" column="extension_number" />
+		<result property="extensionFaxNumber" column="extension_fax_number" />
+		<result property="countryId" column="country_id" />
+		<result property="zipCode" column="zip_code" />
+		<result property="emailAddress1" column="email_address1" />
+		<result property="emailAddress2" column="email_address2" />
+		<result property="url" column="url" />
+		<result property="createDate" column="create_date" />
+		<result property="createUser" column="create_user" />
+		<result property="lastUpdateDate" column="last_update_date" />
+		<result property="lastUpdateUser" column="last_update_user" />
+	</resultMap>
+
+	<insert id="addDepartment" parameterType="DepartmentModel"
+		keyProperty="department_id">
+		insert into p_m_department
+		(
+		company_id,
+		department_id,
+		department_name,
+		responsible_company,
+		responsible_depart,
+		province_id,
+		city_id,
+		area_id,
+		address1,
+		address2,
+		telephone_number,
+		fax_number,
+		extension_number,
+		extension_fax_number,
+		country_id,
+		zip_code,
+		email_address1,
+		email_address2,
+		url,
+		create_user,
+		last_update_user
+		)
+		values
+		(
+		#{companyId},
+		#{departmentId},
+		#{departmentName},
+		#{responsibleCompany},
+		#{responsibleDepart},
+		#{provinceId},
+		#{cityId},
+		#{areaId},
+		#{address1},
+		#{address2},
+		#{telephoneNumber},
+		#{faxNumber},
+		#{extensionNumber},
+		#{extensionFaxNumber},
+		#{countryId},
+		#{zipCode},
+		#{emailAddress1},
+		#{emailAddress2},
+		#{url},
+		#{createUser},
+		#{lastUpdateUser}
+		)
+	</insert>
+
+	<update id="modifyDepartment" parameterType="DepartmentModel">
+		update p_m_department
+		<set>
+			<if test="companyId!=null"> company_id=#{companyId}, </if>
+			<if test="departmentId!=null"> department_id=#{departmentId}, </if>
+			<if test="departmentName!=null"> department_name=#{departmentName}, </if>
+			<if test="address1!=null"> address1=#{address1}, </if>
+			<if test="address2!=null"> address2=#{address2}, </if>
+			<if test="telephoneNumber!=null"> telephone_number=#{telephoneNumber}, </if>
+			<if test="faxNumber!=null"> fax_number=#{faxNumber}, </if>
+			<if test="extensionNumber!=null"> extension_number=#{extensionNumber}, </if>
+			<if test="extensionFaxNumber!=null"> extension_fax_number=#{extensionFaxNumber}, </if>
+			<if test="countryId!=null"> country_id=#{countryId}, </if>
+			<if test="zipCode!=null"> zip_code=#{zipCode}, </if>
+			<if test="emailAddress1!=null"> email_address1=#{emailAddress1}, </if>
+			<if test="emailAddress2!=null"> email_address2=#{emailAddress2}, </if>
+			<if test="url!=null"> url=#{url}, </if>
+			responsible_company = #{responsibleCompany},
+			responsible_depart=#{responsibleDepart},
+			province_id=#{provinceId},
+			city_id=#{cityId},
+			area_id=#{areaId},
+			last_update_date=sysdate(),
+			<if test="lastUpdateUser!=null"> last_update_user=#{lastUpdateUser}, </if>
+		</set>
+		<where>
+			company_id=#{companyId}
+			and department_id=#{departmentId}
+		</where>
+	</update>
+
+	<select id="getDepartmentCountById" parameterType="DepartmentModel"
+		resultType="int">
+		select count(department_id) as data_count from
+		p_m_department
+		where
+		company_id=#{companyId}
+		and
+		department_id=#{departmentId}
+	</select>
+
+
+	<select id="findDepartment" parameterType="DepartmentModel"
+		resultMap="result_department">
+		select
+		p_m_department.company_id,
+		p_m_company.company_name,
+		p_m_department.department_id,
+		p_m_department.department_name,
+		p_m_department.responsible_company,
+		p_m_department.responsible_depart,
+		(select resdepart.department_name from p_m_department resdepart where
+		p_m_department.responsible_depart = resdepart.department_id) as
+		responsible_depart_name,
+		p_m_department.province_id,
+		p_m_department.city_id,
+		p_m_department.area_id,
+		p_m_department.address1,
+		p_m_department.address2,
+		p_m_department.telephone_number,
+		p_m_department.fax_number,
+		p_m_department.extension_number,
+		p_m_department.extension_fax_number,
+		p_m_department.country_id,
+		p_m_department.zip_code,
+		p_m_department.email_address1,
+		p_m_department.email_address2,
+		p_m_department.url,
+		p_m_department.create_date,
+		p_m_department.create_user,
+		p_m_department.last_update_date,
+		p_m_department.last_update_user
+		from
+		p_m_department,p_m_company
+		where
+		p_m_company.company_id =
+		p_m_department.company_id
+		and
+		p_m_department.company_id = #{companyId}
+		and
+		p_m_department.department_id = #{departmentId}
+	</select>
+
+	<select id="getDepartmentList" resultMap="result_department">
+		select
+		p_m_department.company_id,
+		p_m_company.company_name,
+		p_m_department.department_id,
+		p_m_department.department_name,
+		p_m_department.province_id,
+		p_m_department.city_id,
+		p_m_department.area_id,
+		p_m_department.address1,
+		p_m_department.address2,
+		p_m_department.telephone_number,
+		p_m_department.fax_number,
+		p_m_department.extension_number,
+		p_m_department.extension_fax_number,
+		p_m_department.country_id,
+		p_m_department.zip_code,
+		p_m_department.email_address1,
+		p_m_department.email_address2,
+		p_m_department.url,
+		p_m_department.create_date,
+		p_m_department.create_user,
+		p_m_department.last_update_date,
+		p_m_department.last_update_user
+		from
+		p_m_department,p_m_company
+		where
+		p_m_company.company_id =
+		p_m_department.company_id
+
+		<!-- 物业权限控制 -->
+		<if test="authUserType == '002'">
+			and exists( select
+			*
+			from
+			p_m_department
+			pmd,
+			p_m_company pmc,
+			p_m_user_department pmud
+			where
+			p_m_department.company_id =
+			pmc.company_id
+			and
+			p_m_department.company_id =
+			pmd.company_id
+			and
+			p_m_department.department_id = pmd.department_id
+			and
+			pmud.user_id =
+			#{authUserId}
+			and pmud.company_id = pmd.company_id
+			and
+			exists( select
+			*
+			from
+			p_m_department_inclusion pmdi
+			where
+			pmd.department_id =
+			pmdi.department_id
+			and pmd.company_id =
+			pmdi.company_id
+			and
+			pmdi.parent_department_id = pmud.department_id))
+		</if>
+	</select>
+
+	<select id="searchDepartmentCount" parameterType="DepartmentModel"
+		resultType="long">
+		select
+		count(p_m_department.department_id) as data_count
+		from
+		p_m_department,p_m_company
+		where
+		p_m_company.company_id =
+		p_m_department.company_id
+		<if test="departmentId!=null"> and department_id like concat('%',#{departmentId},'%')
+		</if>
+		<if test="companyType!=null and companyType!=''"> and p_m_company.company_type = #{companyType}
+		</if>
+		<if test="departmentName!=null"> and department_name like
+			concat('%',#{departmentName},'%')</if>
+
+		<!-- 物业权限控制 -->
+		<if test="authUserType == '002'">
+			and exists( select
+			*
+			from
+			p_m_department
+			pmd,
+			p_m_company pmc,
+			p_m_user_department pmud
+			where
+			p_m_department.company_id =
+			pmc.company_id
+			and
+			p_m_department.company_id =
+			pmd.company_id
+			and
+			p_m_department.department_id = pmd.department_id
+			and
+			pmud.user_id =
+			#{authUserId}
+			and pmud.company_id = pmd.company_id
+			and
+			exists( select
+			*
+			from
+			p_m_department_inclusion pmdi
+			where
+			pmd.department_id =
+			pmdi.department_id
+			and pmd.company_id =
+			pmdi.company_id
+			and
+			pmdi.parent_department_id = pmud.department_id))
+		</if>
+	</select>
+
+	<select id="searchDepartmentList" parameterType="DepartmentModel"
+		resultMap="result_department">
+		select
+		p_m_department.company_id,
+		p_m_company.company_name,
+		p_m_department.department_id,
+		p_m_department.department_name,
+		p_m_department.create_date,
+		p_m_department.create_user,
+		p_m_department.last_update_date,
+		p_m_department.last_update_user
+		from
+		p_m_department,p_m_company
+		where
+		p_m_company.company_id =
+		p_m_department.company_id
+		<if test="departmentId!=null"> and department_id like concat('%',#{departmentId},'%')
+		</if>
+		<if test="companyType!=null and companyType!=''"> and p_m_company.company_type = #{companyType}
+		</if>
+		<if test="departmentName!=null"> and department_name like
+			concat('%',#{departmentName},'%')</if>
+
+		<!-- 物业权限控制 -->
+		<if test="authUserType == '002'">
+			and exists( select
+			*
+			from
+			p_m_department
+			pmd,
+			p_m_company pmc,
+			p_m_user_department pmud
+			where
+			p_m_department.company_id =
+			pmc.company_id
+			and
+			p_m_department.company_id =
+			pmd.company_id
+			and
+			p_m_department.department_id = pmd.department_id
+			and
+			pmud.user_id =
+			#{authUserId}
+			and pmud.company_id = pmd.company_id
+			and
+			exists( select
+			*
+			from
+			p_m_department_inclusion pmdi
+			where
+			pmd.department_id =
+			pmdi.department_id
+			and pmd.company_id =
+			pmdi.company_id
+			and
+			pmdi.parent_department_id = pmud.department_id))
+		</if>
+
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<delete id="removeDepartment" parameterType="DepartmentModel">
+		delete from p_m_department
+		<where>
+			<if test="companyId!=null"> and company_id=#{companyId}</if>
+			<if test="departmentId!=null"> and department_id=#{departmentId} </if>
+		</where>
+	</delete>
+
+	<delete id="removeSelfAndChildDept" parameterType="DepartmentModel">
+		delete from
+		p_m_department
+		where
+		company_id=#{companyId} and exists( select
+		p_m_department_inclusion.department_id
+		from
+		p_m_department_inclusion
+		where
+		p_m_department_inclusion.parent_department_id = #{departmentId}
+		and
+		p_m_department_inclusion.department_id =
+		p_m_department.department_id)
+	</delete>
+
+	<select id="getParentDeptName" parameterType="DepartmentModel"
+		resultType="String">
+		select
+		p_m_department.department_name
+		from
+		p_m_department
+		where
+		p_m_department.company_id = #{companyId}
+		and
+		p_m_department.department_id = (select
+		p_m_department_inclusion.parent_department_id
+		from
+		p_m_department_inclusion
+		where
+		p_m_department.company_id =
+		p_m_department_inclusion.company_id
+		and
+		p_m_department_inclusion.department_id = #{departmentId}
+		and
+		p_m_department_inclusion.DEPTH = 1)
+	</select>
+
+	<select id="getMenuDepartmentList" parameterType="String"
+		resultMap="result_department">
+		select
+		p_m_department.company_id,
+		p_m_company.company_name,
+		p_m_department.department_id,
+		p_m_department.department_name
+		from
+		p_m_menu_department,
+		p_m_department
+		left join
+		p_m_company on
+		p_m_department.company_id =
+		p_m_company.company_id
+		where
+		p_m_department.company_id =
+		p_m_menu_department.company_id
+		and
+		p_m_department.department_id =
+		p_m_menu_department.department_id
+		and
+		p_m_menu_department.menu_id =
+		#{menuId}
+	</select>
+
+	<select id="getActionDepartmentList" parameterType="String"
+		resultMap="result_department">
+		select
+		p_m_department.company_id,
+		p_m_company.company_name,
+		p_m_department.department_id,
+		p_m_department.department_name
+		from
+		p_m_action_department,
+		p_m_department
+		left join
+		p_m_company on
+		p_m_department.company_id =
+		p_m_company.company_id
+		where
+		p_m_department.company_id =
+		p_m_action_department.company_id
+		and
+		p_m_department.department_id =
+		p_m_action_department.department_id
+		and
+		p_m_action_department.action_id
+		=
+		#{actionId}
+	</select>
+
+	<select id="getAppApiDepartmentList" parameterType="String"
+		resultMap="result_department">
+		select
+		p_m_department.company_id,
+		p_m_company.company_name,
+		p_m_department.department_id,
+		p_m_department.department_name
+		from
+		p_m_app_api_department,
+		p_m_department
+		left join
+		p_m_company on
+		p_m_department.company_id =
+		p_m_company.company_id
+		where
+		p_m_department.company_id =
+		p_m_app_api_department.company_id
+		and
+		p_m_department.department_id =
+		p_m_app_api_department.department_id
+		and
+		p_m_app_api_department.app_api_id =
+		#{appApiId}
+	</select>
+</mapper>

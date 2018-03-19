@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+			
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="blank" />
+		<meta name="format-detection" content="telephone=no" />
+		<title>填写基本信息</title>
+		<!--<link rel="stylesheet" type="text/css" href="dist/css/bootstrap.min.css"/>-->
+		<link rel="stylesheet" type="text/css" href="dist/css/bootstrap.css"/>
+		<link rel="stylesheet" type="text/css" href="css/writeInfo.css"/>
+		<link rel="stylesheet" type="text/css" href="css/app.css"/>
+		<link href="css/mui.picker.css" rel="stylesheet" />
+		<link href="css/mui.poppicker.css" rel="stylesheet" />
+		
+		<!--[if lt IE 9]>
+			<script src="dist/js/html5shiv.min.js"></script>
+			<script src="dist/js/respond.min.js"></script>
+		<![endif]-->
+	</head>
+	<body>
+		<!--第一块头部================================================================-->
+		<div class="container navbar-fixed-top">
+			<div class="row">
+				<div class="col-xs-2 back">
+					<a id="giveBack"><img src="img/back.png"/></a>
+				</div>
+				<div class="col-xs-10 head">
+					填写基本信息
+				</div>
+			</div>
+		</div>
+		<!--第二块列表================================================================-->
+		<div class="content-list">
+			<div class="detailList" id="typeInfoBlock">
+				<div class="col-xs-4 textTip">
+					申请类型
+				</div>
+				<div class="col-xs-8 choice-enter">
+					<!--<span id="typeInfo">
+						111111111111
+					</span>-->
+					<form action="">
+						<select  name="typeInfo" id="typeInfo" class="typeInfo">
+							<option value="1">免费建桩</option>
+							<option value="2">自费建桩</option>
+						</select>
+					</form>
+					<!--<a href="###"><img src="img/enter.png"/></a>-->
+				</div>
+				
+			</div>
+			<div class="detailList" id="classInfoBlock">
+				<div class="col-xs-4 textTip">
+					分类
+				</div>
+				<div class="col-xs-8 choice-enter">
+					
+					<form action="">
+						<select name="classInfo" id="classInfo" class="classInfo">
+							<option value="1">个人</option>
+							<option value="2">企业</option>
+						</select>
+					</form>
+					<!--<a href="###"><img src="img/enter.png"/></a>-->
+				</div>
+			</div>
+			<div class="detailList">
+				<div class="col-xs-4 textTip">
+					联系人
+				</div>
+				<div class="col-xs-8 choice-enter">
+					<input type="text" id="people" value="" class="peopleInfo" placeholder="填写联系人"/>
+				</div>
+			</div>
+			<div class="detailList">
+				<div class="col-xs-4 textTip">
+					电话
+				</div>
+				<div class="col-xs-8 choice-enter">
+					<input type="text" id="telNumber" value="" class="peopleInfo" placeholder="填写电话"/>
+					<!--<span id="telTip">
+						
+					</span>-->
+				</div>
+			</div>
+			<div class="detailList" id="areaBlock">
+				<div class="col-xs-4 textTip">
+					建桩地区
+				</div>
+				<div class="col-xs-8 choice-enter" id='showCityPicker3'>
+					<!--一个三级菜单============================================================-->
+					<span id='cityResult3' class="ui-alert"></span>
+					<input type="hidden" id="provinceId"/>
+					<input type="hidden" id="cityId"/>
+					<input type="hidden" id="areaId"/>
+					<a href="###"><img src="img/enter.png"/></a>
+					
+				</div>
+			</div>
+			<div class="detailList">
+				<div class="col-xs-4 textTip ">
+					详细地址
+				</div>
+				<div class="col-xs-8 choice-enter">
+					<input type="text" id="detailInfo" value="" class="peopleInfo peopleInfo2" placeholder="填写详细地址"/>
+				</div>
+			</div>
+			
+		</div>
+		<!--第三块下一步按钮===========================================================================-->
+		<form action="" method="post" class="nextStep">
+			<button type="button" class="btn btn-default" id="rightApply">下一步</button>
+		</form>
+		
+
+	</body>
+	<!--<script type="text/javascript" src="dist/js/jquery-1.11.0.js" ></script>-->
+	<script type="text/javascript" src="dist/js/jquery-1.11.1.min.js" ></script>
+	<!--<script src="dist/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>-->
+	<!--<script type="text/javascript" src="dist/js/bootstrap.js" ></script>-->
+	<script src="js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/mui.picker.js"></script>
+	<script src="js/mui.poppicker.js"></script>
+	<script src="js/city.data-3.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript" src="js/url.js" ></script>
+	<script src="js/writeInfo.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		$("#giveBack").click(function(){
+			window.history.back(-1);
+		})
+	</script>
+</html>

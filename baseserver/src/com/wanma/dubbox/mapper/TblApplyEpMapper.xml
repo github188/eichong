@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dubbox.dao.TblApplyEpMapper">
+	<resultMap id="listResultMap" type="TblApplyEp">
+		<id property="id" column="aep_id" />
+		<result property="atp" column="aep_a_type" />
+		<result property="ctp" column="aep_c_type" />
+		<result property="name" column="aep_name" />
+		<result property="pho" column="aep_phone" />
+		<result property="pcd" column="aep_p_code" />
+		<result property="ccd" column="aep_c_code" />
+		<result property="acd" column="aep_a_code" />
+		<result property="adr" column="aep_addr" />
+		<result property="hpk" column="aep_h_park" />
+		<result property="pnum" column="aep_park_num" />
+		<result property="etype" column="aep_ep_type" />
+		<result property="igre" column="aep_i_agree" />
+		<result property="irpt" column="aep_i_report" />
+		<result property="igrd" column="aep_i_ground" />
+		<result property="uid" column="aep_user_id" />
+		<result property="sts" column="aep_status" />
+		<result property="cdate" column="createdate" />
+		<result property="udate" column="updatedate" />
+		<result property="org" column="aep_origin" />
+	</resultMap>
+
+	<insert id="insert" parameterType="TblApplyEp" keyProperty="id">
+		insert
+		into tbl_apply_ep
+		(
+		aep_a_type,
+		aep_c_type,
+		aep_name,
+		aep_phone,
+		aep_p_code,
+		aep_c_code,
+		aep_a_code,
+		aep_addr,
+		aep_h_park,
+		aep_park_num,
+		aep_ep_type,
+		aep_i_agree,
+		aep_i_report,
+		aep_i_ground,
+		aep_user_id,
+		aep_status,
+		aep_origin,
+		createdate,
+		updatedate
+		)
+		values
+		(
+		#{atp},
+		#{ctp},
+		#{name},
+		#{pho},
+		#{pcd},
+		#{ccd},
+		#{acd},
+		#{adr}
+		#{hpk},
+		#{pnum},
+		#{etype},
+		#{igre},
+		#{irpt},
+		#{igrd},
+		#{uid},
+		#{sts},
+		#{org},
+		sysdate(),
+		sysdate()
+		)
+	</insert>
+
+	<!-- 更新申请状态 -->
+	<update id="update" parameterType="TblApplyEp">
+		update
+		tbl_apply_ep set
+		aep_status = #{sts}
+		where 1=1
+		<if test="id !=null">and aep_id=#{id}</if>
+		<if test="pkIds != null">
+			and aep_id in
+			<foreach item="item" index="index" collection="pkIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+	</update>
+
+	<select id="getCount" parameterType="TblApplyEp" resultType="int">
+		select
+		count(1)
+		from
+		tbl_apply_ep a
+		where 1=1
+		<if test="ctp !=null and ctp !=''">
+			and a.aep_c_type = #{ctp}
+		</if>
+		<if test="sts !=null and sts !=''">
+			and a.aep_status = #{sts}
+		</if>
+		<if test="name and name !=''">
+			and a.aep_name like concat('%',#{name},'%')
+		</if>
+		<if test="pho and pho !=''">
+			and a.aep_phone like concat('%',#{pho},'%')
+		</if>
+		<if test="adr and adr !=''">
+			and a.aep_addr like concat('%',#{adr},'%')
+		</if>
+		<if test="pcd !=null and pcd !=''">
+			and a.aep_p_code = #{pcd}
+		</if>
+		<if test="ccd !=null and ccd !=''">
+			and a.aep_c_code = #{ccd}
+		</if>
+		<if test="acd !=null and acd !=''">
+			and a.aep_a_code = #{acd}
+		</if>
+	</select>
+
+	<select id="getList" parameterType="TblApplyEp" resultMap="listResultMap">
+		select
+		${rtColumns}
+		from
+		tbl_apply_ep a
+		where 1=1
+		<if test="ctp !=null and ctp !=''">
+			and a.aep_c_type = #{ctp}
+		</if>
+		<if test="sts !=null and sts !=''">
+			and a.aep_status = #{sts}
+		</if>
+		<if test="name and name !=''">
+			and a.aep_name like concat('%',#{name},'%')
+		</if>
+		<if test="pho and pho !=''">
+			and a.aep_phone like concat('%',#{pho},'%')
+		</if>
+		<if test="adr and adr !=''">
+			and a.aep_addr like concat('%',#{adr},'%')
+		</if>
+		<if test="pcd !=null and pcd !=''">
+			and a.aep_p_code = #{pcd}
+		</if>
+		<if test="ccd !=null and ccd !=''">
+			and a.aep_c_code = #{ccd}
+		</if>
+		<if test="acd !=null and acd !=''">
+			and a.aep_a_code = #{acd}
+		</if>
+		order by a.updatedate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<select id="selectOne" parameterType="TblApplyEp" resultMap="listResultMap">
+		select
+		${rtColumns}
+		from
+		tbl_apply_ep a
+		where
+		aep_id = #{id}
+	</select>
+</mapper> 

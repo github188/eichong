@@ -1,0 +1,235 @@
+{
+    "data": [
+        {
+            "pk_TypeSpanId": 5,
+            "ts_Createdate": 1467783458000,
+            "ts_FactTag": "7kw",
+            "ts_FileName": "爱充产品硬件固件对应表.xlsx",
+            "ts_ModelName": "交流落地桩",
+            "ts_ProductNumber": "",
+            "ts_Remarks": "",
+            "ts_TypeSpan": "ICPAC-32102-11",
+            "ts_Updatedate": 1477977260000
+        },
+        {
+            "pk_TypeSpanId": 25,
+            "ts_Createdate": 1477365525000,
+            "ts_FactTag": "16",
+            "ts_FileName": "1",
+            "ts_ModelName": "1",
+            "ts_ProductNumber": "",
+            "ts_Remarks": "",
+            "ts_TypeSpan": "ICPAC-32101122",
+            "ts_Updatedate": 1477365525000
+        },
+        {
+            "pk_TypeSpanId": 24,
+            "ts_Createdate": 1476869238000,
+            "ts_FactTag": "16",
+            "ts_FileName": "1",
+            "ts_ModelName": "测试",
+            "ts_ProductNumber": "",
+            "ts_Remarks": "",
+            "ts_TypeSpan": "ICPAC-3210111",
+            "ts_Updatedate": 1476869238000
+        },
+        {
+            "pk_TypeSpanId": 23,
+            "ts_Createdate": 1476177991000,
+            "ts_FactTag": "测试用",
+            "ts_FileName": "测试用",
+            "ts_ModelName": "测试用",
+            "ts_ProductNumber": "",
+            "ts_Remarks": "",
+            "ts_TypeSpan": "测试用",
+            "ts_Updatedate": 1476177991000
+        },
+        {
+            "pk_TypeSpanId": 21,
+            "ts_Createdate": 1474348423000,
+            "ts_FactTag": "16kw",
+            "ts_FileName": "法师法师",
+            "ts_ModelName": "爱充交流壁挂桩123",
+            "ts_ProductNumber": "123",
+            "ts_Remarks": "范德萨发生大",
+            "ts_TypeSpan": "ICPAC-16201",
+            "ts_Updatedate": 1474348542000
+        },
+        {
+            "pk_TypeSpanId": 20,
+            "ts_Createdate": 1472377742000,
+            "ts_FactTag": "7kW",
+            "ts_FileName": "MC12AA-V3.0.1.bin",
+            "ts_ModelName": "爱充交流壁挂桩",
+            "ts_ProductNumber": "",
+            "ts_Remarks": "",
+            "ts_TypeSpan": "ICPAC-32101(3.0.1)09",
+            "ts_Updatedate": 1474338151000
+        },
+        {
+            "pk_TypeSpanId": 19,
+            "ts_Createdate": 1471835946000,
+            "ts_FactTag": "16w",
+            "ts_FileName": "爱充产品硬件固件对应表.xlsx",
+            "ts_ModelName": "爱充交流壁挂桩",
+            "ts_ProductNumber": "2",
+            "ts_Remarks": "1",
+            "ts_TypeSpan": "ICPAC-16101",
+            "ts_Updatedate": 1471835946000
+        },
+        {
+            "pk_TypeSpanId": 18,
+            "ts_Createdate": 1471573114000,
+            "ts_FactTag": "70kw",
+            "ts_FileName": "爱充产品硬件固件对应表.xlsx",
+            "ts_ModelName": "爱充交流壁挂桩",
+            "ts_ProductNumber": "2",
+            "ts_Remarks": "1",
+            "ts_TypeSpan": "ICPAC-16101",
+            "ts_Updatedate": 1471573114000
+        },
+        {
+            "pk_TypeSpanId": 17,
+            "ts_Createdate": 1471572814000,
+            "ts_FactTag": "16w",
+            "ts_FileName": "爱充产品硬件固件对应表.xlsx",
+            "ts_ModelName": "爱充交流壁挂桩",
+            "ts_ProductNumber": "1",
+            "ts_Remarks": "1",
+            "ts_TypeSpan": "ICPAC-16101",
+            "ts_Updatedate": 1471572814000
+        },
+        {
+            "pk_TypeSpanId": 16,
+            "ts_Createdate": 1471508057000,
+            "ts_FactTag": "16w",
+            "ts_FileName": "MC21AA-V3.0.4.bin",
+            "ts_ModelName": "爱充交流壁挂桩",
+            "ts_ProductNumber": "2",
+            "ts_Remarks": "123",
+            "ts_TypeSpan": "ICPAC-16101",
+            "ts_Updatedate": 1471508064000
+        },
+        {
+            "pk_TypeSpanId": 15,
+            "ts_Createdate": 1471507621000,
+            "ts_FactTag": "16w",
+            "ts_FileName": "爱充产品硬件固件对应表.xlsx",
+            "ts_ModelName": "爱充交流壁挂桩",
+            "ts_ProductNumber": "2",
+            "ts_Remarks": "1",
+            "ts_TypeSpan": "ICPAC-16101",
+            "ts_Updatedate": 1471508009000
+        },
+        {
+            "pk_TypeSpanId": 14,
+            "ts_Createdate": 1471504772000,
+            "ts_FactTag": "16w",
+            "ts_FileName": "爱充产品硬件固件对应表.xlsx",
+            "ts_ModelName": "爱充交流壁挂桩",
+            "ts_ProductNumber": "2",
+            "ts_Remarks": "",
+            "ts_TypeSpan": "ICPAC-16101",
+            "ts_Updatedate": 1471507582000
+        },
+        {
+            "pk_TypeSpanId": 12,
+            "ts_Createdate": 1470998469000,
+            "ts_FactTag": "70kw",
+            "ts_FileName": "MC21AA-V2.3.15.bin",
+            "ts_ModelName": "5810-1",
+            "ts_ProductNumber": "",
+            "ts_Remarks": "",
+            "ts_TypeSpan": "ICPAC-161061(2.3.15)",
+            "ts_Updatedate": 1471399986000
+        },
+        {
+            "pk_TypeSpanId": 13,
+            "ts_Createdate": 1471399428000,
+            "ts_FactTag": "16w",
+            "ts_FileName": "爱充产品硬件固件对应表.xlsx",
+            "ts_ModelName": "爱充交流壁挂桩",
+            "ts_ProductNumber": "1",
+            "ts_Remarks": "1",
+            "ts_TypeSpan": "ICPAC-16101",
+            "ts_Updatedate": 1471399451000
+        },
+        {
+            "pk_TypeSpanId": 2,
+            "ts_Createdate": 1465960816000,
+            "ts_FactTag": "30kw",
+            "ts_FileName": "爱充产品硬件固件对应表.xlsx",
+            "ts_ModelName": "30kW直流一体机",
+            "ts_ProductNumber": "",
+            "ts_Remarks": "5810单板",
+            "ts_TypeSpan": "ICPDC-53101",
+            "ts_Updatedate": 1471399411000
+        },
+        {
+            "pk_TypeSpanId": 4,
+            "ts_Createdate": 1466736194000,
+            "ts_FactTag": "7kw",
+            "ts_FileName": "爱充产品硬件固件对应表.xlsx",
+            "ts_ModelName": "爱充C型交流广告桩",
+            "ts_ProductNumber": "",
+            "ts_Remarks": "",
+            "ts_TypeSpan": "ICPAC-32103",
+            "ts_Updatedate": 1471399389000
+        },
+        {
+            "pk_TypeSpanId": 10,
+            "ts_Createdate": 1469606578000,
+            "ts_FactTag": "60kw",
+            "ts_FileName": "爱充产品硬件固件对应表.xlsx",
+            "ts_ModelName": "60kW直流一体机",
+            "ts_ProductNumber": "",
+            "ts_Remarks": "5820双板",
+            "ts_TypeSpan": "ICPDC-56102",
+            "ts_Updatedate": 1471399347000
+        },
+        {
+            "pk_TypeSpanId": 11,
+            "ts_Createdate": 1470733361000,
+            "ts_FactTag": "7kw",
+            "ts_FileName": "MC11BA-V3.0.1.bin",
+            "ts_ModelName": "交流3.0.1",
+            "ts_ProductNumber": "",
+            "ts_Remarks": "",
+            "ts_TypeSpan": "ICPAC-32101(3.0.1)",
+            "ts_Updatedate": 1470734249000
+        },
+        {
+            "pk_TypeSpanId": 9,
+            "ts_Createdate": 1469606454000,
+            "ts_FactTag": "45kw",
+            "ts_FileName": "爱充产品硬件固件对应表.xlsx",
+            "ts_ModelName": "45kW直流一体机",
+            "ts_ProductNumber": "",
+            "ts_Remarks": "5820双板",
+            "ts_TypeSpan": "ICPDC-54102",
+            "ts_Updatedate": 1469606454000
+        },
+        {
+            "pk_TypeSpanId": 8,
+            "ts_Createdate": 1469606351000,
+            "ts_FactTag": "60kw",
+            "ts_FileName": "爱充产品硬件固件对应表.xlsx",
+            "ts_ModelName": "60kW直流一体机",
+            "ts_ProductNumber": "",
+            "ts_Remarks": "5810单板",
+            "ts_TypeSpan": "ICPDC-56101",
+            "ts_Updatedate": 1469606351000
+        }
+    ],
+    "msg": "操作成功!",
+    "pager": {
+        "keywords": "",
+        "numPerPage": 20,
+        "offset": 0,
+        "pageNum": 1,
+        "pageTotal": 2,
+        "status": "",
+        "total": 24
+    },
+    "status": 100
+}

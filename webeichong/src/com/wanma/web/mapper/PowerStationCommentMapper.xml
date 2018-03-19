@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.web.dao.PowerStationCommentMapper">
+
+	<resultMap id="tblPSCommentResultMap" type="com.wanma.model.PowerStationComment">
+		<id property="pk_PsComment" column="pk_PsComment" />
+		<result property="psc_PsId" column="psc_PsId" />
+		<result property="psc_UserId" column="psc_UserId" />
+		<result property="psc_UserName" column="psc_UserName" />
+		<result property="psc_CommentPic" column="psc_CommentPic" />
+		<result property="psc_Createdate" column="psc_Createdate" />
+		<result property="psc_Updatedate" column="psc_Updatedate" />
+		<result property="psc_Utatus" column="psc_Utatus" />
+		<result property="psc_Content" column="psc_Content" />
+		<result property="up_commentId" column="up_commentId" />
+	</resultMap>
+	<resultMap id="pageResultMap"  type="java.util.HashMap" extends="tblPSCommentResultMap"></resultMap>
+	<resultMap id="findResultMap"  type="java.util.HashMap" extends="tblPSCommentResultMap"></resultMap>
+
+	<insert id="insert" parameterType="map" useGeneratedKeys="true" keyProperty="pk_PsComment">
+	   insert into tbl_powerstationcomment (
+	     psc_PsId,
+	     psc_UserId,
+	     psc_UserName,
+	     psc_Utatus,
+	     psc_Content,
+	     psc_Createdate
+	   )values (
+	     #{psc_PsId},
+	     #{psc_UserId},
+	     #{psc_UserName},
+	     0,
+	     #{psc_Content},
+	     #{psc_Createdate}
+	   )
+	</insert>
+
+	<insert id="insertReply" parameterType="map">
+	   insert into tbl_powerstationcomment (
+	     psc_PsId,
+	     psc_UserId,
+	     psc_UserName,
+	     psc_Utatus,
+	     psc_Content,
+	     up_commentId,
+	     psc_Createdate
+	   )values (
+	     #{prCoProductId},
+	     #{uId},
+	     #{uName},
+	     0,
+	     #{psContent},
+	     #{upCommentId},
+	     #{createdate}
+	   )
+	</insert>
+	
+	<update id="update" parameterType="PowerStationComment">
+	   update tbl_powerstationcomment set
+	     psc_UserId=#{psc_UserId},
+	     psc_UserName=#{psc_UserName},
+	     psc_CommentPic=#{psc_CommentPic},
+	     psc_Utatus=#{psc_Utatus},
+	     psc_Content=#{psc_Content},
+	    
+	   where 
+	    psc_PsId=#{psc_PsId} 
+	</update>
+	
+	
+	
+	<update id="updatePsReplyCount" parameterType="map">
+	    update tbl_powerstationcomment set reply_count=#{replyCount} where pk_PsComment=#{upCommentId}
+	</update>
+
+	<delete id="delete" parameterType="int">
+	   delete from 
+	     tbl_powerstationcomment 
+	   where 
+	    pk_PsComment=#{cId} 
+	</delete>
+	
+	 <select id="countPsCommentsByPowerId" parameterType="map" resultType="long">
+	    SELECT count(1) powerCommentCount
+	    from  tbl_powerstationcomment 
+	    where 1=1 and psc_PsId=#{prCoProductId} and up_commentId = '0'
+	      
+	  </select>
+	
+	<select id="getPsCommentsRowNum" parameterType="Map" resultType="int">
+		select count(1)+1 as linkPageNum from tbl_powerstationcomment a
+			where a.pk_PsComment > (select b.up_commentId from tbl_powerstationcomment b where b.pk_PsComment =#{commentId}) and 
+			a.psc_PsId = #{powerStationId} and a.psc_Utatus=0
+			and up_commentId = '0'
+	</select>
+	
+	 <select id="getPsCommentsPageList" parameterType="Map" resultType="HashMap">
+		select		
+		pk_PsComment,
+		psc_PsId,
+		psc_UserName,
+		getFullPath('proImage',pk_PsComment) as psc_CommentPic,
+		getFullPath('userAvatar',psc_UserId) as userImage,
+		psc_Createdate,
+		psc_Content,
+		praise_count,
+		reply_count
+		from tbl_powerstationcomment
+		where 
+		psc_PsId = #{prCoProductId} and psc_Utatus=0
+		and up_commentId = '0'
+		order by pk_PsComment desc
+		limit #{pageNumber},#{pageNum}
+	</select>
+	
+	 <select id="getPsReplyCommentsList" parameterType="String" resultType="HashMap">
+		select		
+		pk_PsComment,
+		psc_PsId,
+		psc_UserName,
+		getFullPath('proImage',pk_PsComment) as psc_CommentPic,
+		getFullPath('userAvatar',psc_UserId) as userImage,
+		psc_Createdate,
+		psc_Content,
+		up_commentId
+		from tbl_powerstationcomment
+		where 
+		psc_PsId = #{prCoProductId} and psc_Utatus=0
+		and up_commentId > 0
+		order by up_commentId desc
+	</select> 
+	
+</mapper> 

@@ -1,0 +1,52 @@
+*{
+				margin: 0;
+				padding: 0;
+			}
+			#pkPowerstation {
+				width: 300px;
+				height:24px;
+				font-family: "微软雅黑";
+				font-size: 14px;
+			}
+			#listAdd {
+				width: 304px;
+				border:  1px solid #ccc;
+				display: none;
+					max-height: 300px;
+				overflow-y: auto;
+			}
+			#listAdd li {
+			cursor:pointer;
+				width: 300px;
+				height: 24px;
+				list-style:none;
+				font-size: 14px;
+				font-family: "微软雅黑";
+				line-height: 24px;
+			}
+			
+			.pic {
+				float: left;
+				display: block;
+				width: 20px;
+				margin-top: 5px;
+				height: 20px;
+				background: url(../../images/buttons/5-140FG95151-51.png) no-repeat center;
+			}
+			
+			
+			.topInputAdd {
+				display: block;
+				float: left;
+				border: 0;
+				font-size: 14px;
+				height: 24px;
+				width: 283px;
+				line-height: 15px;
+				font-family: "微软雅黑";
+				outline: none;
+			}
+			.historyTip{
+				display: block;
+				clear: both;
+			}

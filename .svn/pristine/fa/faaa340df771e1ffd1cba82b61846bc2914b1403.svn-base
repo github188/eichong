@@ -1,0 +1,104 @@
+package com.wanma.ims.controller.user;
+
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.wanma.ims.common.domain.CardApplicationFormDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.domain.base.Pager;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.controller.BaseController;
+import com.wanma.ims.controller.result.JsonException;
+import com.wanma.ims.controller.result.JsonResult;
+import com.wanma.ims.service.CardApplicationFormService;
+
+
+/**
+ * 用戶管理-点卡申请列表
+ */
+@RequestMapping("/manage/user")
+@Controller
+public class CardApplicationFormController extends BaseController {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CardApplicationFormController.class);
+
+    @Autowired
+    private CardApplicationFormService cardApplicationFormService;
+
+    /**
+     * 查询申请卡列表
+     */
+    @RequestMapping(value = "/getCardApplicationFormList", method = RequestMethod.POST)
+    @ResponseBody
+    public void getCardApplicationFormList(CardApplicationFormDO searchModel, Pager pager) {
+        JsonResult result = new JsonResult();
+        UserDO loginUser = getCurrentLoginUser();
+
+        try {
+            long total = cardApplicationFormService.countCardApplicationForm(searchModel);
+            if (total <= pager.getOffset()) {
+                pager.setPageNo(1L);
+            }
+            pager.setTotal(total);
+            searchModel.setPager(pager);
+            List<CardApplicationFormDO> cardApplicationFormList = cardApplicationFormService.getCardApplicationFormList(searchModel);
+            result.setPager(pager);
+            result.setDataObject(cardApplicationFormList);
+
+            responseJson(result);
+        } catch (Exception e) {
+            LOGGER.error(this.getClass() + "-getCardApplicationFormList is error|searchModel={}|loginUser={}", searchModel, loginUser, e);
+            responseJson(new JsonException("查询申请卡列表失败，请刷新页面后重试！"));
+        }
+    }
+
+    /**
+     * 新增申请卡
+     */
+    @RequestMapping(value = "/addCardApplicationForm", method = RequestMethod.POST)
+    @ResponseBody
+    public void addCardApplicationForm(CardApplicationFormDO cardApplicationForm) {
+        JsonResult result = new JsonResult();
+        UserDO loginUser = getCurrentLoginUser();
+
+        try {
+            BaseResultDTO resultDTO = cardApplicationFormService.addCardApplicationForm(cardApplicationForm, loginUser);
+            if (resultDTO.isFailed()) {
+                result = new JsonResult(false, resultDTO.getResultCode(), resultDTO.getErrorDetail());
+            }
+
+            responseJson(result);
+        } catch (Exception e) {
+            LOGGER.error(this.getClass() + "-addCardApplicationForm is error|addCardApplicationForm={}|loginUser={}", cardApplicationForm, loginUser, e);
+            responseJson(new JsonException("新增申请卡失败，请刷新页面后重试！"));
+        }
+    }
+
+    /**
+     * 申请驳回
+     */
+    @RequestMapping(value = "/rejectionApply", method = RequestMethod.POST)
+    @ResponseBody
+    public void rejectionApply(String cardApplicationFormIds) {
+        JsonResult result = new JsonResult();
+        UserDO loginUser = getCurrentLoginUser();
+
+        try {
+            BaseResultDTO resultDTO = cardApplicationFormService.rejectionApply(cardApplicationFormIds, loginUser);
+            if (resultDTO.isFailed()) {
+                result = new JsonResult(false, resultDTO.getResultCode(), resultDTO.getErrorDetail());
+            }
+
+            responseJson(result);
+        } catch (Exception e) {
+            LOGGER.error(this.getClass() + "-rejectionApply is error|searchModel={}|loginUser={}", cardApplicationFormIds, loginUser, e);
+            responseJson(new JsonException("申请驳回失败，请刷新页面后重试！"));
+        }
+    }
+}

@@ -1,0 +1,80 @@
+/**     
+ * @Title:  TblElectricpileService.java   
+ * @Package com.wanma.service   
+ * @Description:    TODO  
+ * @author: Android_Robot     
+ * @date:   2015年11月19日 下午4:24:10   
+ * @version V1.0     
+ */  
+package com.wanma.service;
+
+import java.util.List;
+import java.util.Map;
+
+import com.wanma.model.TblPowerstation;
+
+/**
+ * @author lhy
+ *
+ */
+public interface TblPowerstationService {
+	public int getCount(TblPowerstation model);
+	
+	public List<TblPowerstation> getList(TblPowerstation model);
+
+	public int getNewlyUpdatedCount(Map<String, Object> param);
+	
+	public List<TblPowerstation> getNewlyUpdatedList(Map<String, Object> param);
+	
+	public TblPowerstation selectOne(TblPowerstation model);
+	
+	/**
+	 * 根据城市编号查询充电点信息
+	 * @param TblPowerstation
+	 * @return
+	 */
+	public List<Map<String,String>> getPointsInfoByCityCode(TblPowerstation model);
+
+	
+	/**
+	 * 查询站点详情
+	 * @param TblPowerstation
+	 * @return
+	 */
+	public Map<String,Object> selectDetail(TblPowerstation model);
+	
+	
+	/**
+	 * 查询全部电站数量
+	 * @param model
+	 * @return
+	 */
+    public int getPowerStationCount(TblPowerstation model);
+	/**
+	 * 查询全部电站
+	 * @param model
+	 * @return
+	 */
+	public List<TblPowerstation> getPowerStationList(TblPowerstation model);
+	/**
+	 * 查询最近更新电站数量
+	 * @param param
+	 * @return
+	 */
+	public int getUpdatedCount(Map<String, Object> param);
+	/**
+	 * 查询最近更新的电站
+	 * @param param
+	 * @return
+	 */
+	public List<TblPowerstation> getUpdatedList(Map<String, Object> param);
+	
+	/**
+	 * 通过组织机构编号查询密钥签名信息
+	 * @param params
+	 * @return
+	 */
+	public Map<String, String> getPartnerKeyList(Map<String, Object> map);
+	
+	
+}

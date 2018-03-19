@@ -1,0 +1,337 @@
+package com.wanma.service.impl;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.security.KeyStore;
+import java.util.Calendar;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
+import javax.net.ssl.SSLContext;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContexts;
+import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.ec.utils.JudgeNullUtils;
+import com.wanma.controller.wechat.utils.PayConfig;
+import com.wanma.dao.WeChatMapper;
+import com.wanma.model.Message;
+import com.wanma.model.RateInfo;
+import com.wanma.model.TblWeChatNews;
+import com.wanma.model.WxAccount;
+import com.wanma.model.WxAccountDetail;
+import com.wanma.model.WxCharge;
+import com.wanma.model.WxElectircpile;
+import com.wanma.model.WxRepay;
+import com.wanma.service.WeChatService;
+import com.wanma.support.utils.WeChatUtil;
+
+@Service
+public class WeChatServiceImpl implements WeChatService {
+
+	@Autowired
+	private WeChatMapper weChatMapper;
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(WeChatServiceImpl.class);
+
+	@Override
+	public WxElectircpile getElectricPile(String epCodes) {
+
+		// TODO Auto-generated method stub
+		WxElectircpile item = weChatMapper.getElectricPile(epCodes);
+		if (item == null) {
+			return item;
+		}
+
+		if (item.getElPiRateId() == null) {
+			item.setCurrentRate(new BigDecimal(0));
+		} else {
+			RateInfo de = new RateInfo();
+			de.setRateId(item.getElPiRateId());
+			RateInfo rate = weChatMapper.getRateInfo(de);
+
+			// 电费格式化
+			String mark = getCurrentPowerRateMark(JudgeNullUtils.nvlStr(rate
+					.getRaInQuantumDate()));
+
+			switch (mark) {
+			case "1":
+				item.setCurrentRate(new BigDecimal(JudgeNullUtils.nvlStr(rate
+						.getRaInTipTimeTariff())).add(new BigDecimal(
+						JudgeNullUtils.nvlStr(rate.getRaInServiceCharge()))));
+				break;
+			case "2":
+				item.setCurrentRate(new BigDecimal(JudgeNullUtils.nvlStr(rate
+						.getRaInPeakElectricityPrice())).add(new BigDecimal(
+						JudgeNullUtils.nvlStr(rate.getRaInServiceCharge()))));
+				break;
+			case "3":
+				item.setCurrentRate(new BigDecimal(JudgeNullUtils.nvlStr(rate
+						.getRaInUsualPrice())).add(new BigDecimal(
+						JudgeNullUtils.nvlStr(rate.getRaInServiceCharge()))));
+				break;
+			case "4":
+				item.setCurrentRate(new BigDecimal(JudgeNullUtils.nvlStr(rate
+						.getRaInValleyTimePrice())).add(new BigDecimal(
+						JudgeNullUtils.nvlStr(rate.getRaInServiceCharge()))));
+				break;
+			default:
+				item.setCurrentRate(new BigDecimal(0));
+			}
+		}
+
+		return item;
+
+	}
+
+	/**
+	 * 获取当前时间对应的尖峰平谷那个段
+	 * 
+	 * @param jsonRate
+	 *            格式化的费率字符串
+	 * @return 1尖2峰3平4谷
+	 */
+	public static String getCurrentPowerRateMark(String jsonRate) {
+		if (StringUtils.isEmpty(jsonRate)) {
+			return "0";
+		}
+		JSONObject jo = JSONObject.parseObject(jsonRate);
+		JSONArray ja = jo.getJSONArray("data");
+		Calendar c = Calendar.getInstance();
+		for (int i = 0; i < ja.size(); i++) {
+			JSONObject cjo = ja.getJSONObject(i);
+			int currentM = (c.get(Calendar.HOUR_OF_DAY) * 60 + c
+					.get(Calendar.MINUTE));
+			if (Integer.parseInt(cjo.getString("st")) < currentM
+					&& Integer.parseInt(cjo.getString("et")) > currentM) {
+				return cjo.getString("mark");
+			}
+		}
+		return "0";
+	}
+
+	@Override
+	public String toEvent(Message postData) {
+
+		TblWeChatNews weChat = weChatMapper.getWeChatNews("1");
+
+		String timestamp = WeChatUtil.getTimeStamp();
+
+		// 初始化返回xml
+		String result = "<xml>" + "<ToUserName><![CDATA["
+				+ postData.getFromUserName() + "]]></ToUserName>"
+				+ "<FromUserName><![CDATA[" + postData.getToUserName()
+				+ "]]></FromUserName>" + "<CreateTime>" + timestamp
+				+ "</CreateTime>" + "<MsgType><![CDATA[text]]></MsgType>"
+				+ "<Content><![CDATA[欢迎使用爱充网-！]]></Content>"
+				+ "<MsgId>6406096807945649155</MsgId>" + "</xml>";
+		// 关注事件
+		if ("subscribe".equals(postData.getEvent())) {
+			// TODO Auto-generated method stub
+			result = "<xml>" + "<ToUserName><![CDATA["
+					+ postData.getFromUserName() + "]]></ToUserName>"
+					+ "<FromUserName><![CDATA[" + postData.getToUserName()
+					+ "]]></FromUserName>" + "<CreateTime>" + timestamp
+					+ "</CreateTime>" + "<MsgType><![CDATA[news]]></MsgType>"
+					+ "<ArticleCount>1</ArticleCount>" + "<Articles><item>"
+					+ "<Title><![CDATA[" + weChat.getWeTitle() + "]]></Title>"
+					+ "<Description><![CDATA[" + weChat.getDescription()
+					+ "]]></Description>" + "<PicUrl><![CDATA["
+					+ weChat.getWePictureUrl() + "]]></PicUrl>"
+					+ "<Url><![CDATA[" + weChat.getWeContentUrl() + "]]></Url>"
+					+ "</item></Articles>" + "</xml>";
+		}
+
+		// 返回文本消息
+		return result;
+	}
+
+	@Override
+	public String toText(Message postData) {
+
+		TblWeChatNews weChat = weChatMapper.getWeChatNews("1");
+		String timestamp = WeChatUtil.getTimeStamp();
+		// TODO Auto-generated method stub
+		String result = "<xml>" + "<ToUserName><![CDATA["
+				+ postData.getFromUserName() + "]]></ToUserName>"
+				+ "<FromUserName><![CDATA[" + postData.getToUserName()
+				+ "]]></FromUserName>" + "<CreateTime>1491535643</CreateTime>"
+				+ "<MsgType><![CDATA[text]]></MsgType>"
+				+ "<Content><![CDATA[欢迎使用爱充网！]]></Content>"
+				+ "<MsgId>6406096807945649155</MsgId>" + "</xml>";
+		if (postData.getContent().contains("充电")
+				|| postData.getContent().contains("流程")) {
+			result = "<xml>" + "<ToUserName><![CDATA["
+					+ postData.getFromUserName() + "]]></ToUserName>"
+					+ "<FromUserName><![CDATA[" + postData.getToUserName()
+					+ "]]></FromUserName>" + "<CreateTime>" + timestamp
+					+ "</CreateTime>" + "<MsgType><![CDATA[news]]></MsgType>"
+					+ "<ArticleCount>1</ArticleCount>" + "<Articles><item>"
+					+ "<Title><![CDATA[" + weChat.getWeTitle() + "]]></Title>"
+					+ "<Description><![CDATA[" + weChat.getDescription()
+					+ "]]></Description>" + "<PicUrl><![CDATA["
+					+ weChat.getWePictureUrl() + "]]></PicUrl>"
+					+ "<Url><![CDATA[" + weChat.getWeContentUrl() + "]]></Url>"
+					+ "</item></Articles>" + "</xml>";
+		}
+		// 返回文本消息
+		return result;
+	}
+
+	@Override
+	public long getChgStatus(String openId) {
+		// TODO Auto-generated method stub
+		return weChatMapper.getChgStatus(openId);
+	}
+
+	@Override
+	public List<WxAccount> getWeChatAccount(String openId) {
+		// TODO Auto-generated method stub
+		return weChatMapper.getWeChatAccount(openId);
+	}
+
+	@Override
+	public List<WxAccountDetail> getWxAccountDetail(Map<String, String> map) {
+		// TODO Auto-generated method stub
+		return weChatMapper.getWxAccountDetail(map);
+	}
+
+	/*
+	 * @Override public String startCharge(WxCharge wxCharge) {
+	 * 
+	 * LOGGER.info("下发充电命令开始，微信标识：" + wxCharge.getOpenid() + ";第三方标识：" +
+	 * wxCharge.getOrg()); try {
+	 * 
+	 * int rtCode = WanmaConstants.cs.startChange(
+	 * Integer.parseInt(wxCharge.getOrg()), wxCharge.getOpenid(),
+	 * wxCharge.getEpCode(), Integer.parseInt(wxCharge.getEpGunCode()), new
+	 * Short("1"), Integer.parseInt(wxCharge.getChargingAmt()), 2, "", "", 0,
+	 * wxCharge.getOrderId());// 下发充电命令 // LOGGER.info("下发充电命令结束！"); if (rtCode
+	 * > 0) { return "0"; } String
+	 * result=ControllerUtil.back(WanmaConstants.startCgEvt,
+	 * wxCharge.getOpenid()); if("success".equals(result)){ return "1";
+	 * 
+	 * } return "0"; } catch (Exception e) { e.printStackTrace(); return "0"; }
+	 * }
+	 */
+
+	@SuppressWarnings("deprecation")
+	public void wxRepay(WxRepay item) throws Exception {
+		SortedMap<String, String> parameters = new TreeMap<String, String>();
+
+		parameters.put("appid", PayConfig.WX_APP_ID);
+		parameters.put("mch_id", PayConfig.MCH_ID);
+		parameters.put("nonce_str", WeChatUtil.getNonceStr());
+		// 在notify_url中解析微信返回的信息获取到 transaction_id，此项不是必填，详细请看上图文档
+		// parameters.put("transaction_id",
+		// "微信支付订单中调用统一接口后微信返回的 transaction_id");
+		parameters.put("out_trade_no", item.getOutTradeNo());
+		parameters.put("out_refund_no", item.getOutTradeNo()); // 我们自己设定的退款申请号，约束为UK
+		parameters.put("total_fee", item.getTotalFee()); // 单位为分
+		parameters.put("refund_fee", item.getRefundFee()); // 单位为分
+		parameters.put("op_user_id", PayConfig.MCH_ID);
+		String sign = WeChatUtil.createSign("utf-8", parameters);
+		parameters.put("sign", sign);
+
+		String reuqestXml = getRequestXml(parameters);
+		KeyStore keyStore = KeyStore.getInstance("PKCS12");
+		String cert = this.getClass().getClassLoader().getResource("")
+				.getPath();
+		//LOGGER.info("密匙所在路径" + cert);
+
+		FileInputStream instream = new FileInputStream(new File(cert
+				+ "apiclient_cert.p12"));// 放退款证书的路径
+		try {
+			keyStore.load(instream, PayConfig.MCH_ID.toCharArray());
+		} finally {
+			instream.close();
+		}
+
+		SSLContext sslcontext = SSLContexts.custom()
+				.loadKeyMaterial(keyStore, PayConfig.MCH_ID.toCharArray())
+				.build();
+		SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
+				sslcontext, new String[] { "TLSv1" }, null,
+				SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
+		CloseableHttpClient httpclient = HttpClients.custom()
+				.setSSLSocketFactory(sslsf).build();
+		try {
+
+			HttpPost httpPost = new HttpPost(
+					"https://api.mch.weixin.qq.com/secapi/pay/refund");// 退款接口
+
+			System.out.println("executing request" + httpPost.getRequestLine());
+			StringEntity reqEntity = new StringEntity(reuqestXml);
+			// 设置类型
+			reqEntity.setContentType("application/x-www-form-urlencoded");
+			httpPost.setEntity(reqEntity);
+			CloseableHttpResponse response = httpclient.execute(httpPost);
+			try {
+				HttpEntity entity = response.getEntity();
+				if (entity != null) {
+					LOGGER.info("Response content length: "
+							+ entity.getContentLength());
+					BufferedReader bufferedReader = new BufferedReader(
+							new InputStreamReader(entity.getContent(), "UTF-8"));
+					String text;
+					while ((text = bufferedReader.readLine()) != null) {
+						LOGGER.info(text);
+					}
+
+				}
+				EntityUtils.consume(entity);
+			} finally {
+				response.close();
+			}
+		} finally {
+			httpclient.close();
+		}
+	}
+
+	public static String getRequestXml(SortedMap<String, String> parameters) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("<xml>");
+		Set es = parameters.entrySet();
+		Iterator it = es.iterator();
+		while (it.hasNext()) {
+			Map.Entry entry = (Map.Entry) it.next();
+			String k = (String) entry.getKey();
+			String v = (String) entry.getValue();
+			if ("attach".equalsIgnoreCase(k) || "body".equalsIgnoreCase(k)
+					|| "sign".equalsIgnoreCase(k)) {
+				sb.append("<" + k + ">" + "<![CDATA[" + v + "]]></" + k + ">");
+			} else {
+				sb.append("<" + k + ">" + v + "</" + k + ">");
+			}
+		}
+		sb.append("</xml>");
+		return sb.toString();
+	}
+
+	@Override
+	public WxCharge getepCode(String epcodes) {
+		return weChatMapper.getepCode(epcodes);
+	}
+
+}

@@ -1,0 +1,304 @@
+@charset "utf-8";
+*{
+    margin: 0;
+    padding: 0;
+}
+body {
+    background: #F3F3F4;
+    font-family: "微软雅黑";
+    font-size: 12px;
+}
+.orange{
+    color: #FF7D00;
+}
+.orange:hover{
+    cursor: pointer;
+}
+.cpyNameStyle{
+    color: #003333;
+}
+.openDisable{
+    background: #f19149;
+    color: #FFFFFF;
+    width: 42px;
+    height: 24px;
+    border-radius: 4px;
+    text-align: center;
+    line-height: 24px;
+    margin-top: -4px;
+}
+.openDisable:hover{
+    cursor: pointer;
+}
+.leftBorder{
+    display: inline-block;
+    border-left: 1px solid #C0C4CD;
+    margin-left: 10px;
+    padding-left: 8px;
+    color: #FF7D00;
+}
+.leftBorder:hover{
+    cursor: pointer;
+}
+.borderRight{
+    border-right:1px solid #E7EAEC ;
+}
+.tdBlock{
+    padding: 14px;
+    display: flex;
+    justify-content: space-between;
+}
+.tdBlock span{
+    display: inline-block;
+}
+.container {
+    width: 98%;
+    padding: 2px 24px 20px 20px;
+}
+.btnLine{
+    width: 100%;
+    height: 40px;
+    background: #F3F3F4;
+    position: relative;
+}
+.btnLine .goBack:hover{
+    background: #FF7D00;
+    color: #FFFFFF;
+    border: 1px solid #ff7d00;
+    cursor: pointer;
+}
+.btnLine .goBack{
+    width: 68px;
+    height: 24px;
+    border: 1px solid #C0C0C0;
+    color: #666666;
+    text-align: center;
+    line-height: 24px;
+    border-radius: 4px;
+    position: absolute;
+    top: 6px;
+    right: 14px;
+}
+
+.grayBlock{
+    min-height: 138px;
+    height: auto !important;
+    background: #F06E57;
+    border-top: 3px solid #E5E5E5;
+    padding: 26px 18px 20px 20px;
+}
+.clearfix{
+    　　zoom:1;
+}
+
+.clearfix:after{
+    content:"";
+    display:block;
+    clear:both;
+}
+.emptyDiv{
+    width: 100%;
+    height: 16px;
+    background: #F3F3F4;
+}
+.userBaseInfo{
+    padding:20px 20px 14px 28px;
+    display: flex;
+    flex-direction: row;
+    border-top: 4px solid #E7EAEC;
+}
+
+.userBaseInfo .headImage{
+    width: 94px;
+    min-height: 94px;
+    /*background: #0055AA;*/
+    margin-right: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #666666;
+}
+.userBaseInfo .headImage img{
+    display: block;
+    width: 94px;
+    height: 94px;
+}
+.userBaseInfo .headImage .editBtn{
+    margin-top: 6px;
+}
+.userBaseInfo .headImage .editBtn:hover{
+    color: #FF7D00;
+    cursor: pointer;
+}
+.userBaseInfo .headTable{
+    flex: 1;
+    /*background: #00625A;*/
+    padding-bottom: 20px;
+}
+.userBaseInfo .headTable .headList{
+    border: 1px solid #E7EAEC;
+    list-style: none;
+}
+.userBaseInfo .headTable .headList li{
+    /*padding: 18px;*/
+    font-size: 12px;
+}.userBaseInfo .headTable .headList li:first-child{
+     border-bottom: 1px solid #E7EAEC;
+ }
+/*基本资料列表部分*/
+.userBaseInfoList{
+    padding: 20px 20px 12px 20px;
+    border-top: 4px solid #E7EAEC;
+}
+.userBaseInfoList .baseInfoShow{
+    display: flex;
+    padding-bottom: 12px;
+    padding-left: 4px;
+    justify-content: space-between;
+}
+.userBaseInfoList .baseInfoShow .baseInfoTitle{
+    font-size: 14px;
+    color: #000000;
+    font-family: "微软雅黑";
+}
+.userBaseInfoList .baseInfoShow .baseBtnInfoUl{
+    list-style: none;
+    display: flex;
+    border: 0;
+    /*background-color: #f0ad4e;*/
+}
+.userBaseInfoList .baseInfoShow .baseBtnInfoUl li{
+    flex-direction: row;
+    min-width: 36px;
+    height: 24px;
+    border-radius: 4px;
+    background: #f19149;
+    color: #FFFFFF;
+    text-align: center;
+    line-height: 14px;
+    padding: 4px 10px;
+    margin-left: 18px;
+}
+.userBaseInfoList .baseInfoShow .baseInfoBtn:hover,
+.userBaseInfoList .baseInfoShow .baseInfoBtn:active,
+.userBaseInfoList .baseInfoShow .baseInfoBtn:focus{
+    background-color: #f19149;
+    cursor: pointer;
+}
+.userBaseInfoList .baseInfoUl{
+    list-style: none;
+    border: 1px solid #E7EAEC;
+}
+.userBaseInfoList .editUserInfo li{
+    padding: 0 !important;
+}
+.userBaseInfoList .editUserInfo li span{
+    display: block;
+    padding: 14px 18px 10px;
+}
+.userBaseInfoList .editUserInfo li input{
+    text-align: right;
+    border: 0;
+    outline: none;
+    padding-right: 15px;
+    /*display: block;*/
+}
+/*下拉框样式===========*/
+
+ul {
+    list-style: none;
+}
+.model-select-box {
+    float: left;
+    text-indent: 5px;
+    position: relative;
+}
+.downRow {
+    width: 10%;
+    height: 100%;
+    background: url(../../img/downR.png) no-repeat center;
+    position: absolute;
+    right: 0;
+    top: 0;
+    border-left: 1px solid #DCDCDC;
+    cursor: pointer;
+    z-index: 0;
+}
+
+.model-select-text {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color: #666666;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.model-select-option {
+    display: none;
+    position: absolute;
+    background: #fff;
+    width: 100%;
+    left: -1px;
+    border: 1px solid #aaa;
+    z-index: 5000;
+    max-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.model-select-option li {
+    height: 32px;
+    line-height: 32px;
+    color: #666666;
+    cursor: pointer;
+    padding-left: 15px !important;
+}
+
+.model-select-option li.seleced {
+    background: #C0C0C0;
+    color: #fff;
+}
+.userBaseInfoList .editUserInfo li input:focus{
+    border: 1px solid #FF7D00;
+}
+.userBaseInfoList .editUserInfo li span:first-child{
+    border-right: 1px solid #E7EAEC;
+}
+.userBaseInfoList .baseInfoUl li{
+    border-bottom: 1px solid #E7EAEC;
+    padding: 14px 18px 10px;
+    display: flex;
+    justify-content: space-between;
+    color: #666666;
+    font-size: 12px;
+}
+.userBaseInfoList .baseInfoUl li:last-child{
+    border: 0;
+}
+.ucCardNumber{
+    width: 100%;
+    border: 1px solid #e1edf7;
+    margin-top: 10px;
+}
+.ucCardNumber input{
+    width: 100%;
+    height: 28px;
+    outline: none;
+    border: 0;
+    line-height: 28px;
+}
+.colorUnderLine:hover{
+    color: #ff7d00;
+    text-decoration: underline;
+    cursor: pointer;
+}
+.tdBlockTop{
+    padding: 14px;
+    display: flex;
+    text-align: center;
+    flex-direction: column;
+}

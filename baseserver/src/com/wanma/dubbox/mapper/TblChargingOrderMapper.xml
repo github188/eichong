@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wanma.dubbox.dao.TblChargingOrderMapper">
+	<resultMap id="BaseResultMap" type="com.wanma.dubbox.model.TblChargingOrder">
+		<id column="pk_ChargingOrder" property="id" jdbcType="BIGINT" />
+		<result column="chOr_Code" property="code" jdbcType="VARCHAR" />
+		<result column="chOr_AppointmenCode" property="apotmcd"
+			jdbcType="VARCHAR" />
+		<result column="chOr_PileNumber" property="pilenber" jdbcType="VARCHAR" />
+		<result column="chOr_UserId" property="uId" jdbcType="INTEGER" />
+		<result column="chOr_Type" property="type" jdbcType="INTEGER" />
+		<result column="chOr_Moeny" property="moeny" jdbcType="DECIMAL" />
+		<result column="chOr_tippower" property="tpow" jdbcType="DECIMAL" />
+		<result column="chOr_peakPower" property="ppow" jdbcType="DECIMAL" />
+		<result column="chOr_usualPower" property="upow" jdbcType="DECIMAL" />
+		<result column="chOr_valleyPower" property="vpow" jdbcType="DECIMAL" />
+		<result column="chOr_QuantityElectricity" property="qlty"
+			jdbcType="DECIMAL" />
+		<result column="chOr_TimeQuantum" property="tqtum" jdbcType="VARCHAR" />
+		<result column="chOr_Muzzle" property="muzzle" jdbcType="SMALLINT" />
+		<result column="chOr_ChargingStatus" property="cgsts" jdbcType="INTEGER" />
+		<result column="chOr_TransType" property="tstype" jdbcType="INTEGER" />
+		<result column="chOr_Createdate" property="cdate" jdbcType="TIMESTAMP" />
+		<result column="chOr_Updatedate" property="udate" jdbcType="TIMESTAMP" />
+		<result column="chOr_UserName" property="uname" jdbcType="VARCHAR" />
+		<result column="chOr_TransactionNumber" property="tranum"
+			jdbcType="VARCHAR" />
+		<result column="chOr_OrderType" property="ordtp" jdbcType="INTEGER" />
+		<result column="chOr_ChargeMoney" property="cgmny" jdbcType="DECIMAL" />
+		<result column="chOr_ServiceMoney" property="sermny" jdbcType="DECIMAL" />
+		<result column="begin_charge_time" property="btime" jdbcType="VARCHAR" />
+		<result column="end_charge_time" property="etime" jdbcType="VARCHAR" />
+		<result column="chOr_UserOrigin" property="uogn" jdbcType="TINYINT" />
+		<result column="pk_UserCard" property="pkUcard" jdbcType="INTEGER" />
+		<result column="chOr_OrgNo" property="orgno" jdbcType="INTEGER" />
+	</resultMap>
+	<delete id="delete" parameterType="TblChargingOrder">
+		delete from tbl_chargingorder
+		where pk_ChargingOrder = #{id,jdbcType=BIGINT}
+	</delete>
+	<insert id="insert" parameterType="TblChargingOrder">
+		insert into tbl_chargingorder
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				pk_ChargingOrder,
+			</if>
+			<if test="code != null">
+				chOr_Code,
+			</if>
+			<if test="apotmcd != null">
+				chOr_AppointmenCode,
+			</if>
+			<if test="pilenber != null">
+				chOr_PileNumber,
+			</if>
+			<if test="uId != null">
+				chOr_UserId,
+			</if>
+			<if test="type != null">
+				chOr_Type,
+			</if>
+			<if test="moeny != null">
+				chOr_Moeny,
+			</if>
+			<if test="tpow != null">
+				chOr_tippower,
+			</if>
+			<if test="ppow != null">
+				chOr_peakPower,
+			</if>
+			<if test="upow != null">
+				chOr_usualPower,
+			</if>
+			<if test="vpow != null">
+				chOr_valleyPower,
+			</if>
+			<if test="qlty != null">
+				chOr_QuantityElectricity,
+			</if>
+			<if test="tqtum != null">
+				chOr_TimeQuantum,
+			</if>
+			<if test="muzzle != null">
+				chOr_Muzzle,
+			</if>
+			<if test="cgsts != null">
+				chOr_ChargingStatus,
+			</if>
+			<if test="tstype != null">
+				chOr_TransType,
+			</if>
+			<if test="cdate != null">
+				chOr_Createdate,
+			</if>
+			<if test="udate != null">
+				chOr_Updatedate,
+			</if>
+			<if test="uname != null">
+				chOr_UserName,
+			</if>
+			<if test="tranum != null">
+				chOr_TransactionNumber,
+			</if>
+			<if test="ordtp != null">
+				chOr_OrderType,
+			</if>
+			<if test="cgmny != null">
+				chOr_ChargeMoney,
+			</if>
+			<if test="sermny != null">
+				chOr_ServiceMoney,
+			</if>
+			<if test="btime != null">
+				begin_charge_time,
+			</if>
+			<if test="etime != null">
+				end_charge_time,
+			</if>
+			<if test="uogn != null">
+				chOr_UserOrigin,
+			</if>
+			<if test="pkUcard != null">
+				pk_UserCard,
+			</if>
+			<if test="orgno != null">
+				chOr_OrgNo,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=BIGINT},
+			</if>
+			<if test="code != null">
+				#{code,jdbcType=VARCHAR},
+			</if>
+			<if test="apotmcd != null">
+				#{apotmcd,jdbcType=VARCHAR},
+			</if>
+			<if test="pilenber != null">
+				#{pilenber,jdbcType=VARCHAR},
+			</if>
+			<if test="uId != null">
+				#{uId,jdbcType=INTEGER},
+			</if>
+			<if test="type != null">
+				#{type,jdbcType=INTEGER},
+			</if>
+			<if test="moeny != null">
+				#{moeny,jdbcType=DECIMAL},
+			</if>
+			<if test="tpow != null">
+				#{tpow,jdbcType=DECIMAL},
+			</if>
+			<if test="ppow != null">
+				#{ppow,jdbcType=DECIMAL},
+			</if>
+			<if test="upow != null">
+				#{upow,jdbcType=DECIMAL},
+			</if>
+			<if test="vpow != null">
+				#{vpow,jdbcType=DECIMAL},
+			</if>
+			<if test="qlty != null">
+				#{qlty,jdbcType=DECIMAL},
+			</if>
+			<if test="tqtum != null">
+				#{tqtum,jdbcType=VARCHAR},
+			</if>
+			<if test="muzzle != null">
+				#{muzzle,jdbcType=SMALLINT},
+			</if>
+			<if test="cgsts != null">
+				#{cgsts,jdbcType=INTEGER},
+			</if>
+			<if test="tstype != null">
+				#{tstype,jdbcType=INTEGER},
+			</if>
+			<if test="cdate != null">
+				#{cdate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="udate != null">
+				#{udate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="uname != null">
+				#{uname,jdbcType=VARCHAR},
+			</if>
+			<if test="tranum != null">
+				#{tranum,jdbcType=VARCHAR},
+			</if>
+			<if test="ordtp != null">
+				#{ordtp,jdbcType=INTEGER},
+			</if>
+			<if test="cgmny != null">
+				#{cgmny,jdbcType=DECIMAL},
+			</if>
+			<if test="sermny != null">
+				#{sermny,jdbcType=DECIMAL},
+			</if>
+			<if test="btime != null">
+				#{btime,jdbcType=VARCHAR},
+			</if>
+			<if test="etime != null">
+				#{etime,jdbcType=VARCHAR},
+			</if>
+			<if test="uogn != null">
+				#{uogn,jdbcType=TINYINT},
+			</if>
+			<if test="pkUcard != null">
+				#{pkUcard,jdbcType=INTEGER},
+			</if>
+			<if test="orgno != null">
+				#{orgno,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	<update id="update" parameterType="TblChargingOrder">
+		update tbl_chargingorder
+		<set>
+			<if test="code != null">
+				chOr_Code = #{code,jdbcType=VARCHAR},
+			</if>
+			<if test="apotmcd != null">
+				chOr_AppointmenCode = #{apotmcd,jdbcType=VARCHAR},
+			</if>
+			<if test="pilenber != null">
+				chOr_PileNumber = #{pilenber,jdbcType=VARCHAR},
+			</if>
+			<if test="uId != null">
+				chOr_UserId = #{uId,jdbcType=INTEGER},
+			</if>
+			<if test="type != null">
+				chOr_Type = #{type,jdbcType=INTEGER},
+			</if>
+			<if test="moeny != null">
+				chOr_Moeny = #{moeny,jdbcType=DECIMAL},
+			</if>
+			<if test="tpow != null">
+				chOr_tippower = #{tpow,jdbcType=DECIMAL},
+			</if>
+			<if test="ppow != null">
+				chOr_peakPower = #{ppow,jdbcType=DECIMAL},
+			</if>
+			<if test="upow != null">
+				chOr_usualPower = #{upow,jdbcType=DECIMAL},
+			</if>
+			<if test="vpow != null">
+				chOr_valleyPower = #{vpow,jdbcType=DECIMAL},
+			</if>
+			<if test="qlty != null">
+				chOr_QuantityElectricity = #{qlty,jdbcType=DECIMAL},
+			</if>
+			<if test="tqtum != null">
+				chOr_TimeQuantum = #{tqtum,jdbcType=VARCHAR},
+			</if>
+			<if test="muzzle != null">
+				chOr_Muzzle = #{muzzle,jdbcType=SMALLINT},
+			</if>
+			<if test="cgsts != null">
+				chOr_ChargingStatus = #{cgsts,jdbcType=INTEGER},
+			</if>
+			<if test="tstype != null">
+				chOr_TransType = #{tstype,jdbcType=INTEGER},
+			</if>
+			<if test="cdate != null">
+				chOr_Createdate = #{cdate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="udate != null">
+				chOr_Updatedate = #{udate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="uname != null">
+				chOr_UserName = #{uname,jdbcType=VARCHAR},
+			</if>
+			<if test="tranum != null">
+				chOr_TransactionNumber = #{tranum,jdbcType=VARCHAR},
+			</if>
+			<if test="ordtp != null">
+				chOr_OrderType = #{ordtp,jdbcType=INTEGER},
+			</if>
+			<if test="cgmny != null">
+				chOr_ChargeMoney = #{cgmny,jdbcType=DECIMAL},
+			</if>
+			<if test="sermny != null">
+				chOr_ServiceMoney = #{sermny,jdbcType=DECIMAL},
+			</if>
+			<if test="btime != null">
+				begin_charge_time = #{btime,jdbcType=VARCHAR},
+			</if>
+			<if test="etime != null">
+				end_charge_time = #{etime,jdbcType=VARCHAR},
+			</if>
+			<if test="uogn != null">
+				chOr_UserOrigin = #{uogn,jdbcType=TINYINT},
+			</if>
+			<if test="pkUcard != null">
+				pk_UserCard = #{pkUcard,jdbcType=INTEGER},
+			</if>
+			<if test="orgno != null">
+				chOr_OrgNo = #{orgno,jdbcType=INTEGER},
+			</if>
+		</set>
+		where pk_ChargingOrder = #{id,jdbcType=BIGINT}
+	</update>
+
+	<select id="selectOne" resultMap="BaseResultMap" parameterType="TblChargingOrder">
+		select ${rtColumns}
+		from tbl_chargingorder
+		<where>
+			1=1
+			<if test="id != null">
+				and pk_ChargingOrder = #{id}
+			</if>
+		</where>
+	</select>
+
+	<select id="getCount" resultType="int" parameterType="TblChargingOrder">
+		select count(1) from tbl_chargingorder t
+		<where>
+			1=1
+			<if test="bslev != null">
+				and exists (select 1 from tbl_user u where u.user_id =
+				t.chOr_UserId and u.user_leval = #{bslev})
+			</if>
+			<if test="code != null and code !=''">
+				and chOr_Code like concat('%',#{code},'%')
+			</if>
+			<if test="cgsts != null and cgsts !=''">
+				and chOr_ChargingStatus = #{cgsts}
+			</if>
+			<if test="slcBgDate !=null and slcBgDate !=''">
+				<![CDATA[AND TO_DAYS(begin_charge_time) >= TO_DAYS(#{slcBgDate})]]>
+			</if>
+			<if test="slcEdDate !=null and slcEdDate !=''">
+				<![CDATA[AND TO_DAYS(begin_charge_time) <= TO_DAYS(#{slcEdDate})]]>
+			</if>
+			<if test="userIds != null">
+				and chOr_UserId in
+				<foreach item="item" index="index" collection="userIds"
+					open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			<if test="pilenbers != null">
+				and chOr_PileNumber in
+				<foreach item="item0" index="index" collection="pilenbers"
+					open="(" separator="," close=")">
+					#{item0}
+				</foreach>
+			</if>
+			<if test="tranums != null">
+				and chOr_TransactionNumber in
+				<foreach item="item1" index="index" collection="tranums"
+					open="(" separator="," close=")">
+					#{item1}
+				</foreach>
+			</if>
+		</where>
+	</select>
+
+	<select id="getList" resultMap="BaseResultMap" parameterType="TblChargingOrder">
+		select ${rtColumns} from tbl_chargingorder t
+		<where>
+			1=1
+			<if test="bslev != null">
+				and exists (select 1 from tbl_user u where u.user_id =
+				t.chOr_UserId and u.user_leval = #{bslev})
+			</if>
+			<if test="code != null and code !=''">
+				and chOr_Code like concat('%',#{code},'%')
+			</if>
+			<if test="cgsts != null and cgsts !=''">
+				and chOr_ChargingStatus = #{cgsts}
+			</if>
+			<if test="slcBgDate !=null and slcBgDate !=''">
+				<![CDATA[AND TO_DAYS(begin_charge_time) >= TO_DAYS(#{slcBgDate})]]>
+			</if>
+			<if test="slcEdDate !=null and slcEdDate !=''">
+				<![CDATA[AND TO_DAYS(begin_charge_time) <= TO_DAYS(#{slcEdDate})]]>
+			</if>
+			<if test="userIds != null">
+				and chOr_UserId in
+				<foreach item="item" index="index" collection="userIds"
+					open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			<if test="pilenbers != null">
+				and chOr_PileNumber in
+				<foreach item="item0" index="index" collection="pilenbers"
+					open="(" separator="," close=")">
+					#{item0}
+				</foreach>
+			</if>
+			<if test="tranums != null">
+				and chOr_TransactionNumber in
+				<foreach item="item1" index="index" collection="tranums"
+					open="(" separator="," close=")">
+					#{item1}
+				</foreach>
+			</if>
+			<if test="pager !=null">limit #{pager.offset},#{pager.numPerPage}</if>
+		</where>
+	</select>
+
+</mapper>

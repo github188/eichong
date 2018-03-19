@@ -1,0 +1,9 @@
+package com.wanma.service;
+
+
+public interface PileFilterService {
+
+	boolean checkPileIsOk(String org, String stubId);
+
+	
+}

@@ -1,0 +1,93 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+		<meta name="HandheldFriendly" content="true"/>
+		<meta name="MobileOptimized" content="320"/>
+		<title>桩体信息</title>
+		<!--<link rel="stylesheet" type="text/css" href="css/base.css"/>-->
+		<link rel="stylesheet" type="text/css" href="css/mui.css"/>
+		<link rel="stylesheet" type="text/css" href="dist/css/bootstrap.css"/>
+		<link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8"/>
+		<link rel="stylesheet" type="text/css" href="css/barcode.css"/>
+	</head>
+	<body onload="img=document.getElementById('bimg');">
+<!--头部========================================================-->
+		<div class="head">
+			<div class="headLeft">
+				<img src="img/nav_btn_back.png" class="return" onclick="returnPre();"/>
+			</div>
+		</div>
+		<div id="dcontent" class="dcontent" style="display: none;">
+			<ul id="history" class="dlist" style="text-align:left;">
+				<li id="nohistory" class="ditem" onclick="onempty();">无历史记录	</li>
+			</ul>
+			<!--<div class="button button-waring" onclick="cleanHistroy();">清空历史记录</div>-->
+		</div>
+		<div class="detailInfo">
+			<!--电桩地址-->
+			<div class="baseClass">
+				<div class="baseClassLeft">
+					电桩地址：
+				</div>
+				<div class="baseClassRight">
+					<span id="elpiElectricpileaddress">
+					</span>
+				</div>
+			</div>
+			<!--充电方式-->
+			<div class="baseClass">
+				<div class="baseClassLeft">
+					充电方式：
+				</div>
+				<div class="baseClassRight">
+					<span id="elPiChargingMode">
+					</span>
+				</div>
+			</div>
+			<!--充电接口-->
+			<div class="baseClass">
+				<div class="baseClassLeft">
+					充电接口：
+				</div>
+				<div class="baseClassRight">
+					<span id="elPiPowerInterface">
+					</span>
+				</div>
+			</div>
+			<!--枪口编号-->
+			<div class="baseClass">
+				<div class="baseClassLeft">
+					枪口编号：
+				</div>
+				<div class="baseClassRight">
+					<span id="ePHeElectricpileHeadId">
+					</span>
+				</div>
+			</div>
+			<!--电桩额定功率-->
+			<div class="baseClass">
+				<div class="baseClassLeft">
+					电桩额定功率：
+				</div>
+				<div class="baseClassRight">
+					<span id="elPiPowerSize">
+					</span>
+					
+				</div>
+			</div>
+			
+		</div>
+		<!--下一步充电按钮-->
+		<a class="nextBtn" style="display: block; text-align: center; line-height: 4rem;" id="nextBtn" onclick="toCharge()">下一步</a>
+	</body>
+	
+</html>
+<script src="dist/js/jquery-1.11.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/url.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="js/common.js"></script>
+<script src="js/userinfo.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/barcodeInfo.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="js/immersed.js" ></script>
+<script src="js/mui.min.js" type="text/javascript" charset="utf-8"></script>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.web.dao.WebSearchhistoryMapper">
+
+	<resultMap id="tblSearchhistoryResultMap" type="TblSearchhistory">
+		<id property="pkSearchhistory" column="pk_SearchHistory" />
+		<result property="sehiSearchhistory" column="seHi_SearchHistory" />
+		<result property="sehiStatus" column="seHi_Status" />
+		<result property="sehiCreatedate" column="seHi_Createdate" />
+		<result property="sehiUpdatedate" column="seHi_Updatedate" />
+	</resultMap>
+	<resultMap id="pageResultMap"  type="java.util.HashMap" extends="tblSearchhistoryResultMap"></resultMap>
+	<resultMap id="findResultMap"  type="java.util.HashMap" extends="tblSearchhistoryResultMap"></resultMap>
+
+	<insert id="insert" parameterType="TblSearchhistory">
+	   insert into tbl_SearchHistory (
+	     pk_SearchHistory,
+	     seHi_SearchHistory,
+	     seHi_Status,
+	     seHi_Createdate,
+	     seHi_Updatedate
+	   )values (
+	     #{pkSearchhistory},
+	     #{sehiSearchhistory},
+	     #{sehiStatus},
+	     #{sehiCreatedate},
+	     #{sehiUpdatedate}
+	   )
+	</insert>
+
+	<update id="update" parameterType="TblSearchhistory">
+	   update tbl_SearchHistory set
+	     pk_SearchHistory=#{pkSearchhistory},
+	     seHi_SearchHistory=#{sehiSearchhistory},
+	     seHi_Status=#{sehiStatus},
+	     seHi_Createdate=#{sehiCreatedate},
+	     seHi_Updatedate=#{sehiUpdatedate}
+	   where 
+	    pk_SearchHistory=#{pkSearchhistory} 
+	</update>
+
+	<delete id="delete" parameterType="map">
+	   delete from 
+	     tbl_SearchHistory 
+	   where 
+	    pk_SearchHistory=#{pkSearchhistory} 
+	</delete>
+	<delete id="removeMallSearchHistory" parameterType="map">
+	   delete from 
+	     tbl_SearchHistory 
+	</delete>
+	<select id="get" parameterType="map" resultMap="tblSearchhistoryResultMap">
+	   select 
+	    pk_SearchHistory,
+	    seHi_SearchHistory,
+	    seHi_Status,
+	    seHi_Createdate,
+	    seHi_Updatedate
+	   from tbl_SearchHistory
+	   where 
+	    pk_SearchHistory=#{pkSearchhistory} 
+	</select>
+
+	<select id="findOne" parameterType="map" resultMap="findResultMap">
+	   select 
+	    pk_SearchHistory,
+	    seHi_SearchHistory,
+	    seHi_Status,
+	    seHi_Createdate,
+	    seHi_Updatedate
+	   from tbl_SearchHistory
+	   where 
+	    pk_SearchHistory=#{pkSearchhistory} 
+	</select>
+
+	<select id="find" parameterType="map" resultMap="findResultMap">
+	   select 
+	     pk_SearchHistory,
+	     seHi_SearchHistory,
+	     seHi_Status,
+	     seHi_Createdate,
+	     seHi_Updatedate
+	   from tbl_SearchHistory
+	   <where>
+	     <if test="pkSearchhistory != null">
+	        pk_SearchHistory=#{pkSearchhistory}
+	     </if>
+	     <if test="sehiSearchhistory != null">
+	        and seHi_SearchHistory=#{sehiSearchhistory}
+	     </if>
+	     <if test="sehiStatus != null">
+	        and seHi_Status=#{sehiStatus}
+	     </if>
+	     <if test="sehiCreatedate != null">
+	        and seHi_Createdate=#{sehiCreatedate}
+	     </if>
+	     <if test="sehiUpdatedate != null">
+	        and seHi_Updatedate=#{sehiUpdatedate}
+	     </if>
+	   </where>
+	</select>
+	
+	<select id="page" parameterType="map" resultMap="pageResultMap">
+	   select 
+	     pk_SearchHistory,
+	     seHi_SearchHistory,
+	     seHi_Status,
+	     seHi_Createdate,
+	     seHi_Updatedate
+	   from tbl_SearchHistory
+	   <where>
+	     <if test="pkSearchhistory != null">
+	        pk_SearchHistory=#{pkSearchhistory}
+	     </if>
+	     <if test="sehiSearchhistory != null">
+	        and seHi_SearchHistory=#{sehiSearchhistory}
+	     </if>
+	     <if test="sehiStatus != null">
+	        and seHi_Status=#{sehiStatus}
+	     </if>
+	     <if test="sehiCreatedate != null">
+	        and seHi_Createdate=#{sehiCreatedate}
+	     </if>
+	     <if test="sehiUpdatedate != null">
+	        and seHi_Updatedate=#{sehiUpdatedate}
+	     </if>
+	   </where>
+	</select>
+</mapper> 

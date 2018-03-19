@@ -1,0 +1,10 @@
+
+base_url=http://49.4.130.116:8083/evcs/v0.0.1/
+test=true
+operator_id=321895837
+operator_secret=zpfB5cEqVqXFEYtL
+data_secret=EeA7JzJzrf4bbOA1
+sig_secret=gZFpcUfiWQ9FhwT0
+data_secret_iv=GzNHw7klZcGGAT76
+
+company_number=9007

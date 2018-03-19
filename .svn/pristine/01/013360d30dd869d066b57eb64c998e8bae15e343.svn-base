@@ -1,0 +1,175 @@
+{
+    "data": [
+        {
+            "cityId": "610800",
+            "cityName": "榆林市",
+            "createDate": 1421242466000,
+            "lastUpdatedate": 1456888850000,
+            "provinceId": "610000",
+            "serviceLimit": 0
+        },
+        {
+            "cityId": "620500",
+            "cityName": "天水市",
+            "createDate": 1421242466000,
+            "lastUpdatedate": 1421242466000,
+            "provinceId": "620000",
+            "serviceLimit": 0
+        },
+        {
+            "cityId": "610700",
+            "cityName": "汉中市",
+            "createDate": 1421242466000,
+            "lastUpdatedate": 1421242466000,
+            "provinceId": "610000",
+            "serviceLimit": 0
+        },
+        {
+            "cityId": "610400",
+            "cityName": "咸阳市",
+            "createDate": 1421242466000,
+            "lastUpdatedate": 1421242466000,
+            "provinceId": "610000",
+            "serviceLimit": 0
+        },
+        {
+            "cityId": "610900",
+            "cityName": "安康市",
+            "createDate": 1421242466000,
+            "lastUpdatedate": 1421242466000,
+            "provinceId": "610000",
+            "serviceLimit": 0
+        },
+        {
+            "cityId": "620400",
+            "cityName": "白银市",
+            "createDate": 1421242466000,
+            "lastUpdatedate": 1421242466000,
+            "provinceId": "620000",
+            "serviceLimit": 0
+        },
+        {
+            "cityId": "620900",
+            "cityName": "酒泉市",
+            "createDate": 1421242466000,
+            "lastUpdatedate": 1421242466000,
+            "provinceId": "620000",
+            "serviceLimit": 0
+        },
+        {
+            "cityId": "610500",
+            "cityName": "渭南市",
+            "createDate": 1421242466000,
+            "lastUpdatedate": 1421242466000,
+            "provinceId": "610000",
+            "serviceLimit": 0
+        },
+        {
+            "cityId": "621200",
+            "cityName": "陇南市",
+            "createDate": 1421242466000,
+            "lastUpdatedate": 1421242466000,
+            "provinceId": "620000",
+            "serviceLimit": 0
+        },
+        {
+            "cityId": "610300",
+            "cityName": "宝鸡市",
+            "createDate": 1421242466000,
+            "lastUpdatedate": 1421242466000,
+            "provinceId": "610000",
+            "serviceLimit": 0
+        },
+        {
+            "cityId": "654300",
+            "cityName": "阿勒泰地区",
+            "createDate": 1421242466000,
+            "lastUpdatedate": 1421242466000,
+            "provinceId": "650000",
+            "serviceLimit": 0
+        },
+        {
+            "cityId": "621000",
+            "cityName": "庆阳市",
+            "createDate": 1421242466000,
+            "lastUpdatedate": 1421242466000,
+            "provinceId": "620000",
+            "serviceLimit": 0
+        },
+        {
+            "cityId": "611000",
+            "cityName": "商洛市",
+            "createDate": 1421242466000,
+            "lastUpdatedate": 1421242466000,
+            "provinceId": "610000",
+            "serviceLimit": 0
+        },
+        {
+            "cityId": "620100",
+            "cityName": "兰州市",
+            "createDate": 1421242466000,
+            "lastUpdatedate": 1421242466000,
+            "provinceId": "620000",
+            "serviceLimit": 0
+        },
+        {
+            "cityId": "620300",
+            "cityName": "金昌市",
+            "createDate": 1421242466000,
+            "lastUpdatedate": 1421242466000,
+            "provinceId": "620000",
+            "serviceLimit": 0
+        },
+        {
+            "cityId": "620700",
+            "cityName": "张掖市",
+            "createDate": 1421242466000,
+            "lastUpdatedate": 1421242466000,
+            "provinceId": "620000",
+            "serviceLimit": 0
+        },
+        {
+            "cityId": "620800",
+            "cityName": "平凉市",
+            "createDate": 1421242466000,
+            "lastUpdatedate": 1421242466000,
+            "provinceId": "620000",
+            "serviceLimit": 0
+        },
+        {
+            "cityId": "621100",
+            "cityName": "定西市",
+            "createDate": 1421242466000,
+            "lastUpdatedate": 1421242466000,
+            "provinceId": "620000",
+            "serviceLimit": 0
+        },
+        {
+            "cityId": "620600",
+            "cityName": "武威市",
+            "createDate": 1421242466000,
+            "lastUpdatedate": 1421242466000,
+            "provinceId": "620000",
+            "serviceLimit": 0
+        },
+        {
+            "cityId": "620200",
+            "cityName": "嘉峪关市",
+            "createDate": 1421242466000,
+            "lastUpdatedate": 1421242466000,
+            "provinceId": "620000",
+            "serviceLimit": 0
+        }
+    ],
+    "msg": "操作成功!",
+    "pager": {
+        "keywords": "",
+        "numPerPage": 20,
+        "offset": 0,
+        "pageNum": 1,
+        "pageTotal": 17,
+        "status": "",
+        "total": 337
+    },
+    "status": 100
+}

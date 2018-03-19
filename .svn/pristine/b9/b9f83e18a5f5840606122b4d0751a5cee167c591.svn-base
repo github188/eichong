@@ -1,0 +1,30 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.cn.wanma</groupId>
+		<artifactId>third</artifactId>
+		<version>4.0.0</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+
+	<groupId>com.cn.wanma.third</groupId>
+	<artifactId>third-core</artifactId>
+	<packaging>jar</packaging>
+	<version>${third-core.version}</version>
+	<name>Third-core</name>
+	
+<!-- 	<reporting>
+		 <outputDirectory>../site/</outputDirectory>
+	</reporting> -->
+	<dependencies>
+	<!-- 导入java ee jar 包 -->
+		<dependency>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+			<version>7.0</version>
+		</dependency>
+		
+	</dependencies>
+</project>

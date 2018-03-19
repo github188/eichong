@@ -1,0 +1,427 @@
+@charset "utf-8";
+* {
+    padding: 0;
+    margin: 0;
+}
+.col-sm-1,.col-sm-2,.col-sm-3,.col-sm-4,.col-sm-5,.col-sm-6,.col-sm-7,.col-sm-8,.col-sm-9,.col-sm-10,.col-sm-11,.col-sm-12{
+    padding: 0;
+}
+body {
+    background: #F3F3F4;
+    font-family: "微软雅黑";
+    font-size: 12px;
+}
+.companyLogosInput{
+    display: inline;
+    width: 80%;
+    height: 28px;
+    border: 1px solid #DCDCDC;
+    outline: none;
+    color: #666666;
+}
+.companyNameInput{
+    display: inline;
+    width: 80%;
+    height: 28px;
+    border: 1px solid #DCDCDC;
+    outline: none;
+    color: #666666;
+}
+
+.container {
+    width: 98%;
+    padding: 24px 24px 20px 20px;
+}
+
+.formBlock {
+    width: 100%;
+    min-height: 138px;
+    height: auto !important;
+    /*overflow: hidden;*/
+    background: #FFFFFF;
+    border-top: 3px solid #E5E5E5;
+    padding: 26px 18px 20px 20px;
+}
+.clearfix{
+    　　zoom:1;
+}
+
+.clearfix:after{
+    content:"";
+    display:block;
+    clear:both;
+}
+.btnBlock{
+    width: 100%;
+    /*min-height: 54px;*/
+    padding: 10px 0 10px 20px;
+    background: #F3F3F4;
+    /*overflow: hidden;*/
+    position: relative;
+    margin-top: 4px;
+}
+.btnBlock .btnStyle{
+    background: #ff7d00;
+    color: #ffffff;
+    border-radius: 4px;
+    text-align: center;
+    height: 28px;
+    line-height: 28px;
+}
+.btnBlock .btnStyle:hover{
+    cursor: pointer;
+    background: #FF7D00;
+    color: #FFFFFF;
+}
+.companyLogo{
+    /*border: 1px solid #DCDCDC;*/
+    height: 32px;
+}
+.companyLogo .companyLogoInput{
+    display: inline;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #DCDCDC;
+    outline: none;
+    color: #666666;
+}
+.companyLogo .companyLogoInput:focus{
+    display: inline;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #ff7d00;
+    color: #666666;
+}
+.queryParam{
+    line-height: 32px;
+    font-size: 14px;
+    text-align: center;
+}
+.queryBtn{
+    width: 76px;
+    height: 26px;
+    text-align: center;
+    line-height: 26px;
+    border: 1px solid #DCDCDC;
+    border-radius: 4px;
+    color: #666666;
+    margin: 10px auto;
+    margin-top: 0;
+}
+.queryBtn:hover{
+    width: 76px;
+    height: 26px;
+    text-align: center;
+    line-height: 26px;
+    background: #FF7D00;
+    border: 1px solid #FF7D00;
+    border-radius: 4px;
+    color: #FFFFFF;
+    cursor: pointer;
+}
+/*下拉框样式===========*/
+
+ul {
+    list-style: none;
+}
+
+p {
+    margin-bottom: 20px;
+}
+
+.model-select-box {
+    height: 32px;
+    line-height: 32px;
+    border: 1px solid #E7EAEC;
+    float: left;
+    text-indent: 5px;
+    position: relative;
+    margin:0 1%;
+}
+
+.downRow {
+    width: 32px;
+    height: 31px;
+    background: url(../../img/downR.png) no-repeat center;
+    position: absolute;
+    right: 0;
+    top: 0;
+    border-left: 1px solid #DCDCDC;
+    cursor: pointer;
+    z-index: 0;
+}
+
+.model-select-text {
+    height: 32px;
+    cursor: pointer;
+    color: #666666;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.model-select-option {
+    display: none;
+    position: absolute;
+    background: #fff;
+    width: 100%;
+    left: -1px;
+    border: 1px solid #aaa;
+    z-index: 5000;
+    max-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.model-select-option li {
+    min-height: 22px;
+    line-height: 22px;
+    color: #666666;
+    cursor: pointer;
+}
+
+.model-select-option li.seleced {
+    background: #ff7d00;
+    color: #fff;
+}
+/*结束下拉框*/
+.checkList {
+    list-style: none;
+    min-height: 30px;
+    position: absolute;
+    left: 0;
+    top: 30px;
+    z-index: 10000;
+    background: #FFFFFF;
+    color: #000000;
+    padding: 10px 20px 10px 40px;
+}
+@media only screen and (max-width:890px) {
+    .checkList {
+        list-style: none;
+        min-height: 30px;
+        position: absolute;
+        left: 0;
+        top: 30px;
+        z-index: 10000;
+        background: #FFFFFF;
+        color: #000000;
+        padding: 10px;
+    }
+    .checkList li {
+        height: 24px;
+        line-height: 24px;
+        width: 100% !important;
+        clear: left;
+    }
+
+}
+.checkList li {
+    height: 24px;
+    line-height: 24px;
+    width: 50%;
+    float: left;
+}
+
+.checkList li input {
+    opacity: 0;
+    filter: alpha(opacity=0);
+    width: 12px;
+    height: 12px;
+    cursor: pointer;
+    position: relative;
+    top: -3px;
+}
+
+.checkbox li label {
+    height: 30px;
+    line-height: 30px;
+    float: right;
+}
+
+.checkboxActiveStyle {
+    width: 12px;
+    height: 12px;
+    background: #ff9d00;
+    float: left;
+    margin-top: 5px;
+    margin-right: 4px;
+}
+
+.checkboxStyle {
+    width: 12px;
+    height: 12px;
+    background: #DCDCDC;
+    float: left;
+    margin-top: 5px;
+    margin-right: 4px;
+}
+.showSet{
+    max-width: 100%;
+    min-height: 138px;
+    height: auto !important;
+    overflow: hidden;
+    background: #FFFFFF;
+    border-top: 4px solid #E7EAEC;
+    padding: 26px 18px 20px 20px;
+    margin-top: 30px;
+    overflow-x: scroll;
+}
+table thead th{
+    text-align: center;
+    font-size: 14px;
+    font-family: "微软雅黑";
+}
+
+table tbody tr td:nth-child(2) a:hover{
+    color: #FF7D00 !important;
+    text-decoration: underline;
+    cursor: pointer;
+}
+/*.disabledBtn{
+    width: 104px;
+    height: 26px;
+    display: block;
+    margin: 0 auto;
+    color: #000000;
+    background: #fce6c4;
+    text-align: center;
+    line-height: 26px;
+    border-radius: 4px;
+}
+.disabledBtn:hover{
+    cursor: pointer;
+}
+.disabledContent{
+    text-align: center;
+    padding: 14px;
+    line-height: 20px;
+}*/
+/*分页部分开始*/
+/*新添加的部分*/
+.userBaseInfo{
+    background-color: #ffffff;
+    padding:14px 14px 0;
+}
+.clearfix{
+    　　zoom:1;
+}
+
+.clearfix:after{
+    content:"";
+    display:block;
+    clear:both;
+}
+.ibox-content {
+    background-color: #F3F3F4 !important;
+    color: inherit;
+    border-color: #e7eaec;
+    -webkit-border-image: none;
+    -o-border-image: none;
+    border-image: none;
+}
+.goBack{
+    display: inline-block;
+    width: 80px;
+    height: 30px;
+    line-height: 30px;
+    color: #ffffff;
+    border-radius: 4px;
+    text-align: center;
+    background-color: #bfbfbf;
+    margin-right: 20px;
+
+}
+.cursor{
+    cursor: pointer;
+}
+.editBtn{
+    display: inline-block;
+    width: 80px;
+    height: 30px;
+    line-height: 30px;
+    color: #ffffff;
+    background-color: #ff7d00;
+    text-align: center;
+    border-radius:4px;
+    font-size: 13px;
+    margin-right: 20px;
+}
+.btnBlock{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-top: 5px;
+}
+.queryBtn{
+    width: 80px;
+    height: 32px;
+    text-align: center;
+    line-height: 32px;
+    border: 1px solid #DCDCDC;
+    border-radius: 4px;
+    color: #fff;
+    background-color: #999;
+    margin: 10px auto;
+    margin-top: 0;
+}
+.queryBtn:hover{
+    width: 80px;
+    height: 32px;
+    text-align: center;
+    line-height: 32px;
+    background: #FF7D00;
+    border: 1px solid #FF7D00;
+    border-radius: 4px;
+    color: #FFFFFF;
+    cursor: pointer;
+}
+.tableBaseInfo{
+    background-color: #ffffff;
+    border-top: 2px solid #E5E5E5;
+    margin-top: 10px;
+    padding:14px 14px 20px 14px;
+    margin-right: 1%;
+}
+table thead th{
+    text-align: center;
+    font-size: 14px;
+    font-family: "微软雅黑";
+    background-color: #ffffff !important;
+}
+table tbody tr td{
+    text-align: center;
+    font-size: 14px;
+    font-family: "微软雅黑";
+    background-color: #ffffff !important;
+}
+.rateBtn{
+    display: inline-block;
+    min-width: 68px;
+    height: 24px;
+    border-radius: 4px;
+    background: #f19149;
+    color: #FFFFFF;
+    text-align: center;
+    line-height: 14px;
+    padding: 4px 10px;
+    margin-left: 18px;
+    cursor: pointer;
+}
+.chargeLevelLi{
+    /*padding:10px;*/
+    margin:5px;
+}
+.chargeFont{
+    font-family: "微软雅黑";
+    font-size: 14px;
+}
+.levelBaseInfo{
+    background:#fff;
+    padding:0 14px;
+}
+.userBaseInfo{
+    background-color: #ffffff;
+    margin-top: 10px;
+    padding:14px 14px 20px 14px;
+}

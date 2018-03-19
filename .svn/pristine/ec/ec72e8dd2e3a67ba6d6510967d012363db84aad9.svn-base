@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/style.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/userList/add_user.css"/>
+    <title>修改电动车车型</title>
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12" style="padding: 0">
+                <div class="ibox float-e-margins">
+                    <div class="">
+                        <div class="ibox-content">
+                            <div class="add_userBlock">
+                                <div class="add_greyBlock">
+                                    <input type="hidden" id="carInfoId" name="carInfoId"/>
+
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">电动车类型名称<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="styleName" id="styleName" class="commonStyle"/>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="styleNameTip">
+                                        </div>
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">电动车品牌名称<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="brandName" id="brandName" class="commonStyle"/>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="brandNameTip">
+                                        </div>
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">电动车最大续航里程<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="maxOdometer" id="maxOdometer" class="commonStyle"
+                                                   placeholder="请输入电动车最大续航里程"/>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="maxOdometerTip">
+                                        </div>
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">电动车电池容量</div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="batteryCapacity" id="batteryCapacity"
+                                                   class="commonStyle"
+                                                   placeholder="请输入电动车电池容量"/>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="batteryCapacityTip">
+                                        </div>
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">充电时间<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="chargingTime" id="chargingTime" class="commonStyle"
+                                                   placeholder="请输入充电时间"/>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="chargingTimeTip">
+                                        </div>
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">汽车厂家<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8">
+                                            <div class=" col-sm-3 col-xs-4 model-select-box" style="width: 100%">
+                                                <div class="model-select-text carCompanyBlock" data-value=""
+                                                     id="carCompanyId">请选择
+                                                </div>
+                                                <span class="downRow levelBlock"></span>
+                                                <ul class="model-select-option carCompanyUl">
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="carCompanyIdTip">
+                                        </div>
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">充电模式<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8">
+                                            <div class=" col-sm-3 col-xs-4 model-select-box" style="width: 100%">
+                                                <div class="model-select-text statusBlock" data-value=""
+                                                     id="chargingMode">
+                                                </div>
+                                                <span class="downRow statusBlock"></span>
+                                                <ul class="model-select-option chargingModeUl">
+                                                    <li data-option="1">交流直流</li>
+                                                    <li data-option="5">直流</li>
+                                                    <li data-option="14">交流</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                        </div>
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">接口标准<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8">
+                                            <div class=" col-sm-3 col-xs-4 model-select-box" style="width: 100%">
+                                                <div class="model-select-text accountBlock" data-value=""
+                                                     id="powerInterface">
+                                                </div>
+                                                <span class="downRow accountBlock"></span>
+                                                <ul class="model-select-option powerInterfaceUl">
+                                                    <li data-option="7">国标</li>
+                                                    <li data-option="19">美标</li>
+                                                    <li data-option="20">欧标</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                        </div>
+                                    </div>
+                                    <!--按钮组合-->
+                                    <div class="saveBtn cursor" id="saveBtn" onclick="modifyCarInfo()">保存</div>
+                                    <div class="quitBtn commonBtn" id="goback">返回</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/config/modifyCarInfo.js" type="text/javascript" charset="utf-8"></script>
+</html>

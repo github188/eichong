@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <style type="text/css">
+      body,html,#container{
+        height: 100%;
+        margin: 0px;
+        font: 12px Helvetica, 'Hiragino Sans GB', 'Microsoft Yahei', '微软雅黑', Arial;
+      }
+      .info-title{
+        color: white;
+        font-size: 14px;
+        background-color: rgba(0,155,255,0.8);
+        line-height: 26px;
+        padding: 0px 0 0 6px;
+        font-weight: lighter;
+        letter-spacing: 1px
+      }
+      .info-content{
+        padding: 4px;
+        color: #666666;
+        line-height: 23px;
+      }
+      .info-content img{
+        float: left;
+        margin: 3px;
+      }
+    </style>
+    <title>快速入门</title>
+  </head>
+  <body>
+   <div id="container" tabindex="0"></div>
+   <div id='panel'></div>
+   
+  </body>
+  <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=您申请的key值"></script>
+  <script type="text/javascript">
+   var datas=[{powerUser:10,lon:116.88091,lat:33.989621},{powerUser:15,lon:116.38092,lat:39.989622},{lon:116.28094,lat:39.989624}];
+    var map = new AMap.Map('container',{
+            resizeEnable: true,
+            zoom: 12
+    });
+    for(var i=0;i<datas.length;i++){
+    	drawMarker(datas[i]);
+    }
+    
+    /*AMap.plugin('AMap.AdvancedInfoWindow',function(){
+       infowindow = new AMap.AdvancedInfoWindow({
+        content: '<div class="info-title">高德地图</div><div class="info-content">'+
+                '<img src="http://webapi.amap.com/images/amap.jpg">'+
+                '高德是中国领先的数字地图内容、导航和位置服务解决方案提供商。<br/>'+
+                '<a target="_blank" href = "http://mobile.amap.com/">点击下载高德地图</a></div>',
+        offset: new AMap.Pixel(0, -30)
+      });
+      infowindow.open(map,[116.480983, 39.989628]);
+    })
+    AMap.plugin(['AMap.ToolBar','AMap.Scale'],function(){
+        var toolBar = new AMap.ToolBar();
+        var scale = new AMap.Scale();
+        map.addControl(toolBar);
+        map.addControl(scale);
+    })*/
+    
+    function drawMarker(data){
+    	var marker = new AMap.Marker({
+            position: [data.lon, data.lat],
+            map:map
+    	});
+    //marker.setMap(map);
+    var infowindow = new AMap.InfoWindow({
+        content: '<div class="info-title">测试</div><div class="info-content">'+data.lon+':::'+data.lat+'</div>',
+        offset: new AMap.Pixel(0, -30)
+      });
+    AMap.event.addListener(marker,'click',function() {
+      	alert(data.lon+':::'+data.lat)
+    	})
+    }
+   </script>
+</html>

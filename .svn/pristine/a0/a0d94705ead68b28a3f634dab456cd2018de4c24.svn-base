@@ -1,0 +1,53 @@
+package com.wanma.ims.service.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.wanma.ims.common.domain.OrderDO;
+import com.wanma.ims.common.domain.OrderInvoiceDO;
+import com.wanma.ims.mapper.OrderMapper;
+import com.wanma.ims.service.OrderService;
+
+@Service
+public class OrderServiceImpl implements OrderService{
+
+	@Autowired
+	private OrderMapper orderMapper;
+
+	@Override
+	public Long countOrderInvoiceDetail(OrderInvoiceDO orderInvoiceDO) {
+		return orderMapper.countOrderInvoiceDetail(orderInvoiceDO);
+	}
+	
+	@Override
+	public List<OrderInvoiceDO> getOrderInvoiceDetail(OrderInvoiceDO orderInvoiceDO) {
+		return orderMapper.selectOrderInvoiceDetail(orderInvoiceDO);
+	}
+
+	@Override
+	public Long countOrderList(OrderDO orderDO) {
+		return orderMapper.countOrderList(orderDO);
+	}
+
+	@Override
+	public List<OrderDO> getOrderList(OrderDO orderDO) {
+		return orderMapper.selectOrderList(orderDO);
+	}
+
+	@Override
+	public Long countThirdOrderList(OrderDO orderDO) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<OrderDO> getThirdOrderList(OrderDO orderDO) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+}

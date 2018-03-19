@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsApplyStationMapper">
+	<resultMap id="listResultMap" type="TblApplyStation">
+		<id property="pkApplyStation" column="pk_ApplyStation" />
+		<result property="apStUserInfoId" column="apSt_UserInfoId" />
+		<result property="apStUserFacticityName" column="apSt_UserFacticityName" />
+		<result property="apStUserPhone" column="apSt_UserPhone" />
+		<result property="apStUserEmail" column="apSt_UserEmail" />
+		<result property="apStStationAddress" column="apSt_StationAddress" />
+		<result property="apStPropertyNature" column="apSt_PropertyNature" />
+		<result property="apStCreatedate" column="apSt_Createdate" />
+		<result property="apStUpdatedate" column="apSt_Updatedate" />
+		<result property="apStRemark" column="apSt_Remark" />
+		<result property="apStProcessState" column="apSt_ProcessState" />
+		<result property="apStDealReason" column="apSt_DealReason" />
+	</resultMap>
+	<insert id="insertCmsApplyStation" parameterType="TblApplyStation">
+		  insert into tbl_applystation(
+		     pk_ApplyStation,
+		     apSt_UserInfoId,
+		     apSt_UserFacticityName,
+		     apSt_UserPhone,
+		     apSt_UserEmail,
+		     apSt_StationAddress,
+		     apSt_PropertyNature,
+		     apSt_Createdate,
+		     apSt_Updatedate,
+		     apSt_Remark,
+		     apSt_DealReason,
+		     apSt_ProcessState
+		   )values (
+		     #{pkApplyStation},
+		     #{apStUserInfoId},
+		     #{apStUserFacticityName},
+		     #{apStUserPhone},
+		     #{apStUserEmail},
+		     #{apStStationAddress},
+		     #{apStPropertyNature},
+		     now(),
+		     now(),
+		     #{apStRemark},
+		     #{apStDealReason},
+		     #{apStProcessState}
+		   )	
+	</insert>
+	
+	<select id="getCmsApplyStationCount" parameterType="TblApplyStation" resultType="long">
+			select 
+				count(pk_ApplyStation) 
+			 from
+		  	 tbl_applystation ap ,tbl_user u
+		  	where  		 
+		  	    ap.apSt_UserInfoId = u.user_id
+		    <if test="pkApplyStation != null and pkApplyStation !=''">
+		      	and ap.pk_ApplyStation=#{pkApplyStation}
+		     </if>
+		     <if test="apStUserPhone != null and apStUserPhone !=''">
+		        and ap.apSt_UserPhone like CONCAT('%','${apStUserPhone}','%' ) 
+		     </if>
+		     <if test="userInfoPhone != null and userInfoPhone !=''">
+		        and u.user_account like CONCAT('%','${userInfoPhone}','%' )
+		     </if>
+		     <if test="apStUserInfoId != null and apStUserInfoId !=''">
+		        and ap.apSt_UserInfoId=#{apStUserInfoId}
+		     </if>
+		     <if test="apStStationAddress != null and apStStationAddress !=''">
+		        and ap.apSt_StationAddress like CONCAT('%','${apStStationAddress}','%' ) 
+		     </if>
+		     <if test="apStPropertyNature != null and apStPropertyNature !=''">
+		        and ap.apSt_PropertyNature=#{apStPropertyNature}
+		     </if>
+		     <if test="apStProcessState != null and apStProcessState !=''">
+		        and ap.apSt_ProcessState=#{apStProcessState}
+		     </if>
+		     <if test="createDateStarte !=null and createDateStarte !='' ">
+			  <![CDATA[and ap.apSt_Createdate >=#{createDateStarte}]]>
+			 </if>			
+			 <if test="createDateEnd !=null and createDateEnd !=''">
+				 <![CDATA[and ap.apSt_Createdate <=#{createDateEnd}]]>
+			 </if>
+			  <if test="updateDateStart !=null and updateDateStart !='' ">
+			  <![CDATA[and ap.apSt_Updatedate >=#{updateDateStart}]]>
+			 </if>			
+			 <if test="updateDateEnd !=null and updateDateEnd !=''">
+				 <![CDATA[and ap.apSt_Updatedate <=#{updateDateEnd}]]>
+			 </if>			
+	</select>		
+	<select id="getCmsApplyStationList" parameterType="TblApplyStation" resultMap="listResultMap">
+	     select 
+	     	 ap.pk_ApplyStation,
+		     ap.apSt_UserInfoId,
+		     ap.apSt_UserFacticityName,
+		     ap.apSt_UserPhone,
+		     u.user_account as userInfoPhone,
+		     ap.apSt_UserEmail,
+		     ap.apSt_StationAddress,
+		     ap.apSt_PropertyNature,
+		     ap.apSt_Createdate,
+		     ap.apSt_Updatedate,
+		     ap.apSt_Remark,
+		     ap.apSt_DealReason,
+		     ap.apSt_ProcessState
+		  from
+		  	 tbl_applystation ap ,tbl_user u
+		  	where  		 
+		  	    ap.apSt_UserInfoId = u.user_id
+		     <if test="pkApplyStation != null and pkApplyStation !=''">
+		      	and ap.pk_ApplyStation=#{pkApplyStation}
+		     </if>
+		     <if test="apStUserPhone != null and apStUserPhone !=''">
+		        and ap.apSt_UserPhone like CONCAT('%','${apStUserPhone}','%' ) 
+		     </if>
+		     <if test="userInfoPhone != null and userInfoPhone !=''">
+		        and u.user_account like CONCAT('%','${userInfoPhone}','%' )
+		     </if>
+		     <if test="apStUserInfoId != null and apStUserInfoId !=''">
+		        and ap.apSt_UserInfoId=#{apStUserInfoId}
+		     </if>
+		     <if test="apStStationAddress != null and apStStationAddress !=''">
+		        and ap.apSt_StationAddress like CONCAT('%','${apStStationAddress}','%' ) 
+		     </if>
+		     <if test="apStPropertyNature != null and apStPropertyNature !=''">
+		        and ap.apSt_PropertyNature=#{apStPropertyNature}
+		     </if>
+		     <if test="apStProcessState != null and apStProcessState !=''">
+		        and ap.apSt_ProcessState=#{apStProcessState}
+		     </if>
+		     <if test="createDateStarte !=null and createDateStarte !='' ">
+			  <![CDATA[and ap.apSt_Createdate >=#{createDateStarte}]]>
+			 </if>			
+			 <if test="createDateEnd !=null and createDateEnd !=''">
+				 <![CDATA[and ap.apSt_Createdate <=#{createDateEnd}]]>
+			 </if>
+			  <if test="updateDateStart !=null and updateDateStart !='' ">
+			  <![CDATA[and ap.apSt_Updatedate >=#{updateDateStart}]]>
+			 </if>			
+			 <if test="updateDateEnd !=null and updateDateEnd !=''">
+				 <![CDATA[and ap.apSt_Updatedate <=#{updateDateEnd}]]>
+			 </if>		  
+	     		order by ap.apSt_Updatedate desc
+	   <if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>	
+	</select>
+	
+		<select id="getCmsApplyStationById" parameterType="Integer" resultMap="listResultMap">
+		select
+	     	 ap.pk_ApplyStation,
+		     ap.apSt_UserInfoId,
+		     ap.apSt_UserFacticityName,
+		     ap.apSt_UserPhone,
+		     u.user_account as userInfoPhone,
+		     ap.apSt_UserEmail,
+		     ap.apSt_StationAddress,
+		     ap.apSt_PropertyNature,
+		     ap.apSt_Createdate,
+		     ap.apSt_Updatedate,
+		     ap.apSt_Remark,
+		     ap.apSt_DealReason,
+		     ap.apSt_ProcessState
+		  from
+		  	 tbl_applystation ap ,tbl_user u
+		  where  		 
+	  	     ap.apSt_UserInfoId = u.user_id
+	  	  and
+	         ap.pk_ApplyStation=#{pkApplyStation}		     		      
+	</select>
+	
+		<!-- 更新申请状态 -->
+	<update id="updateApplyStationState" parameterType="map">
+		update tbl_applystation set apSt_ProcessState = #{apStProcessState} where pk_ApplyStation = #{pkApplyStation}
+	</update>
+	    <!-- 插入处理原因 -->
+	<update id="updateApplyStationReason" parameterType="map">
+	    update tbl_applystation set 
+	    apSt_DealReason = #{apStDealReason}, 
+	    apSt_ProcessState = 10
+	    where 
+	    pk_ApplyStation = #{pkApplyStation}
+	</update>
+	
+	
+	<delete id="deleteApplyStationById" parameterType="Integer">
+		delete  from 
+		tbl_applystation	
+		where 
+		pk_ApplyStation = #{pkApplyStation}
+	</delete>
+</mapper> 

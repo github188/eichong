@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wanma.dubbox.dao.TblUserMapper">
+	<resultMap id="BaseResultMap" type="com.wanma.dubbox.model.TblUser">
+		<id column="user_id" property="id" jdbcType="INTEGER" />
+		<result column="user_account" property="uAcc" jdbcType="VARCHAR" />
+		<result column="user_password" property="uPw" jdbcType="VARCHAR" />
+		<result column="user_leval" property="uLev" jdbcType="SMALLINT" />
+		<result column="user_status" property="uSts" jdbcType="SMALLINT" />
+		<result column="createdate" property="cdate" jdbcType="TIMESTAMP" />
+		<result column="updatedate" property="udate" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<delete id="delete" parameterType="TblUser">
+		update tbl_user
+		set user_status
+		= 3
+		where user_id = #{id,jdbcType=INTEGER}
+	</delete>
+
+	<insert id="insert" parameterType="TblUser" useGeneratedKeys="true"
+		keyProperty="id">
+		insert into tbl_user
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				user_id,
+			</if>
+			<if test="uAcc != null">
+				user_account,
+			</if>
+			<if test="uPw != null">
+				user_password,
+			</if>
+			<if test="uLev != null">
+				user_leval,
+			</if>
+			<if test="uSts != null">
+				user_status,
+			</if>
+			createdate,
+			updatedate
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="uAcc != null">
+				#{uAcc,jdbcType=VARCHAR},
+			</if>
+			<if test="uPw != null">
+				#{uPw,jdbcType=VARCHAR},
+			</if>
+			<if test="uLev != null">
+				#{uLev,jdbcType=SMALLINT},
+			</if>
+			<if test="uSts != null">
+				#{uSts,jdbcType=SMALLINT},
+			</if>
+			now(),
+			now()
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="TblUser">
+		update tbl_user
+		<set>
+			<if test="uAcc != null">
+				user_account = #{uAcc,jdbcType=VARCHAR},
+			</if>
+			<if test="uPw != null">
+				user_password = #{uPw,jdbcType=VARCHAR},
+			</if>
+			<if test="uLev != null">
+				user_leval = #{uLev,jdbcType=SMALLINT},
+			</if>
+			<if test="uSts != null">
+				user_status = #{uSts,jdbcType=SMALLINT},
+			</if>
+			updatedate = now()
+		</set>
+		where user_id = #{id,jdbcType=INTEGER}
+	</update>
+
+	<select id="selectOne" resultMap="BaseResultMap" parameterType="TblUser">
+		select ${rtColumns}
+		from tbl_user
+		<where>
+			1=1
+			<if test="id != null">
+				and user_id = #{id}
+			</if>
+			<if test="uAcc != null">
+				and user_account = #{uAcc}
+			</if>
+		</where>
+	</select>
+
+	<select id="getCount" resultMap="BaseResultMap" parameterType="TblUser">
+		select count(1)
+		from tbl_user
+		<where>
+			user_status != 3
+			<if test="id != null">
+				and user_id = #{id}
+			</if>
+			<if test="uLev != null">
+				and user_leval = #{uLev}
+			</if>
+			<if test="uAcc != null">
+				and user_account like concat('%',#{uAcc},'%')
+			</if>
+			<if test="pkIds != null">
+				and user_id in
+				<foreach item="item" index="index" collection="pkIds" open="("
+					separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+		</where>
+	</select>
+
+	<select id="getList" resultMap="BaseResultMap" parameterType="TblUser">
+		select ${rtColumns}
+		from tbl_user
+		<where>
+			user_status != 3
+			<if test="id != null">
+				and user_id = #{id}
+			</if>
+			<if test="uLev != null">
+				and user_leval = #{uLev}
+			</if>
+			<if test="uAcc != null">
+				and user_account like concat('%',#{uAcc},'%')
+			</if>
+			<if test="pkIds != null">
+				and user_id in
+				<foreach item="item" index="index" collection="pkIds" open="("
+					separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+		</where>
+	</select>
+</mapper>

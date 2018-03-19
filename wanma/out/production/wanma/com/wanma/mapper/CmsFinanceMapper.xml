@@ -1,0 +1,1615 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsFinanceMapper">
+	<resultMap id="tblInvoiceMap" type="TblInvoice">
+		<id property="pkInvoice" column="pk_Invoice" />
+		<result property="ivCompanyName" column="iv_CompanyName" />
+		<result property="ivInvoiceAmount" column="iv_InvoiceAmount" />
+		<result property="ivTaxpayerNumber" column="iv_TaxpayerNumber" />
+		<result property="ivCompanyAddress" column="iv_CompanyAddress" />
+		<result property="ivPhoneNumbe" column="iv_PhoneNumbe" />
+		<result property="ivBankName" column="iv_BankName" />
+
+		<result property="ivBankAccount" column="iv_BankAccount" />
+		<result property="ivConsigneeAddress" column="iv_ConsigneeAddress" />
+		<result property="ivRecipientsNumber" column="iv_RecipientsNumber" />
+
+	</resultMap>
+
+	<resultMap id="tblChargeOrderMap" type="TblChargingOrder">
+		<id property="pkChargingorder" column="pk_Chargingorder" />
+		<result property="chorChargingstatus" column="chor_Chargingstatus" />
+	</resultMap>
+
+	<select id="personChargeDetail" parameterType="map"
+		resultType="java.util.LinkedHashMap">
+		SELECT
+		pk_ChargingOrder as '主键',
+		chOr_ChargingStatus as '订单状态',
+		CITY_NAME AS '城市',
+		user_account as '手机号',
+		norm_real_name AS '姓名',
+		chOr_PileNumber AS '电桩编号',
+		chOr_Code AS '充电订单编号',
+		chOr_QuantityElectricity AS '总电量(度数)',
+		chOr_Moeny AS '收益金额(元)',
+		chOr_ChargeMoney AS '充电电费(元)',
+		chOr_ServiceMoney AS '充电服务费(元)',
+		begin_charge_time AS '充电开始时间',
+		end_charge_time AS '充电结束时间',
+		elPi_RateInformationId AS '费率',
+		cr.chRe_QuantumDate,
+		cr.chRe_JPrice,
+		cr.chRe_FPrice,
+		cr.chRe_PPrice,
+		cr.chRe_GPrice,
+		cr.chRe_ServiceCharge,
+		chOr_CouponMoney AS '实际优惠金额(元)'
+		FROM 
+		<!-- tbl_purchasehistory ph, -->
+		tbl_ChargingOrder co,
+		tbl_ElectricPile ep,
+		tbl_User tu,
+		tbl_user_normal tun,
+		tbl_chargingrecord cr,
+		tb_m_city tc
+		WHERE
+		tu.user_id = ep.elPi_UserId
+		AND tu.user_id =
+		tun.user_id
+		<!-- AND
+		ph.puHi_TransactionNumber = co.chOr_TransactionNumber -->
+		AND
+		ep.elPi_ElectricPileCode = co.chOr_PileNumber
+		AND
+		ep.elPi_OwnCityCode = tc.CITY_ID
+		AND cr.chRe_Code = co.chOr_Code
+		AND user_leval = '5'
+	    AND chOr_ChargingStatus !='4'
+		<!-- AND ph.puhi_type =
+		'1' -->
+		<!-- AND chOr_ChargingStatus = '2' -->
+		<if test="userLevel == 5"> AND tu.user_id = #{userId}</if>
+		<if test="startDate !=null and startDate !=''"><![CDATA[ AND TO_DAYS(chOr_Createdate) >= TO_DAYS(#{startDate}) ]]></if>
+		<if test="endDate !=null and endDate !=''"><![CDATA[ AND TO_DAYS(chOr_Createdate) <= TO_DAYS(#{endDate}) ]]></if>
+		<if test="userAccount !=null and userAccount !=''">AND user_account like CONCAT('%','${userAccount}','%' )
+		</if>
+		<if test="normRealName !=null and normRealName !=''">AND norm_real_name like CONCAT('%','${normRealName}','%' )
+		</if>
+		<if test="cityCode !=null and cityCode !=''">AND CITY_id = #{cityCode}</if>
+		<if test="chOrChargingStatus !=null and chOrChargingStatus !=''">AND chOr_ChargingStatus = #{chOrChargingStatus}</if>
+		<if test="provinceCode !=null and provinceCode !=''">AND PROVINCE_ID = #{provinceCode}</if>
+		ORDER BY
+		begin_charge_time DESC
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+<select id="personChargeDetail_ept" parameterType="map"
+		resultType="java.util.LinkedHashMap">
+		SELECT
+		CITY_NAME AS '城市',
+		user_account as '手机号',
+		norm_real_name AS '姓名',
+		chOr_PileNumber AS '电桩编号',
+		chOr_Code AS '充电订单编号',
+		CASE chOr_ChargingStatus
+            WHEN '1' THEN '待支付'
+            WHEN '2' THEN '支付完成'
+            WHEN '3' THEN '完成未结算'
+            ELSE '-'
+         END as '订单状态',
+		chOr_QuantityElectricity AS '总电量(度数)',
+		chOr_Moeny AS '收益金额(元)',
+		chOr_ChargeMoney AS '充电电费(元)',
+		chOr_ServiceMoney AS '充电服务费(元)',
+		begin_charge_time AS '充电开始时间',
+		end_charge_time AS '充电结束时间',
+		chOr_CouponMoney AS '实际优惠金额(元)'
+		FROM
+		<!-- tbl_purchasehistory ph, -->
+		tbl_ChargingOrder co,
+		tbl_ElectricPile ep,
+		tbl_User tu,
+		tbl_user_normal tun,
+		tbl_chargingrecord cr,
+		tb_m_city tc
+		WHERE
+		tu.user_id = ep.elPi_UserId
+		AND tu.user_id =
+		tun.user_id
+		<!-- AND
+		ph.puHi_TransactionNumber = co.chOr_TransactionNumber -->
+		AND
+		ep.elPi_ElectricPileCode = co.chOr_PileNumber
+		AND
+		ep.elPi_OwnCityCode = tc.CITY_ID
+		AND cr.chRe_Code = co.chOr_Code
+		AND user_leval = '5'
+	    AND chOr_ChargingStatus !='4'
+		<!-- AND ph.puhi_type =
+		'1' -->
+		<!-- AND chOr_ChargingStatus = '2' -->
+		<if test="userLevel == 5"> AND tu.user_id = #{userId}</if>
+		<if test="startDate !=null and startDate !=''"><![CDATA[ AND TO_DAYS(chOr_Createdate) >= TO_DAYS(#{startDate}) ]]></if>
+		<if test="endDate !=null and endDate !=''"><![CDATA[ AND TO_DAYS(chOr_Createdate) <= TO_DAYS(#{endDate}) ]]></if>
+		<if test="userAccount !=null and userAccount !=''">AND user_account like CONCAT('%','${userAccount}','%' )
+		</if>
+		<if test="normRealName !=null and normRealName !=''">AND norm_real_name like CONCAT('%','${normRealName}','%' )
+		</if>
+		<if test="cityCode !=null and cityCode !=''">AND CITY_id = #{cityCode}</if>
+		<if test="chOrChargingStatus !=null and chOrChargingStatus !=''">AND chOr_ChargingStatus = #{chOrChargingStatus}</if>
+		<if test="provinceCode !=null and provinceCode !=''">AND PROVINCE_ID = #{provinceCode}</if>
+		ORDER BY
+		begin_charge_time DESC
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	<select id="personChargeDetailCount" parameterType="map"
+		resultType="long">
+		SELECT
+		count(1)
+		FROM
+		<!-- tbl_purchasehistory ph, -->
+		tbl_ChargingOrder co,
+		tbl_ElectricPile ep,
+		tbl_User tu,
+		tbl_user_normal tun,
+		tbl_chargingrecord cr,
+		tb_m_city tc
+		WHERE
+		tu.user_id = ep.elPi_UserId
+		AND tu.user_id =
+		tun.user_id
+		<!-- AND
+		ph.puHi_TransactionNumber = co.chOr_TransactionNumber -->
+		AND
+		ep.elPi_ElectricPileCode = co.chOr_PileNumber
+		AND
+		ep.elPi_OwnCityCode = tc.CITY_ID
+		AND cr.chRe_Code = co.chOr_Code
+		AND user_leval = '5'
+	    AND chOr_ChargingStatus !='4'
+		<if test="userLevel == 5"> AND tu.user_id = #{userId}</if>
+		<if test="startDate !=null and startDate !=''"><![CDATA[ AND TO_DAYS(chOr_Createdate) >= TO_DAYS(#{startDate}) ]]></if>
+		<if test="endDate !=null and endDate !=''"><![CDATA[ AND TO_DAYS(chOr_Createdate) <= TO_DAYS(#{endDate}) ]]></if>
+		<if test="userAccount !=null and userAccount !=''">AND user_account like CONCAT('%','${userAccount}','%' )
+		</if>
+		<if test="normRealName !=null and normRealName !=''">AND norm_real_name like CONCAT('%','${normRealName}','%' )
+		</if>
+		<if test="cityCode !=null and cityCode !=''">AND CITY_id = #{cityCode}</if>
+		<if test="chOrChargingStatus !=null and chOrChargingStatus !=''">AND chOr_ChargingStatus = #{chOrChargingStatus}</if>
+		<if test="provinceCode !=null and provinceCode !=''">AND PROVINCE_ID = #{provinceCode}</if>
+		<!-- <if test="userLevel == 5"> AND tu.user_id = #{userId}</if>
+		<if test="startDate !=null and startDate !=''"><![CDATA[ AND TO_DAYS(chOr_Createdate) >= TO_DAYS(#{startDate}) ]]></if>
+		<if test="endDate !=null and endDate !=''"><![CDATA[ AND TO_DAYS(chOr_Createdate) <= TO_DAYS(#{endDate}) ]]></if>
+		<if test="userAccount !=null and userAccount !=''">AND user_account like CONCAT('%','${userAccount}','%' )
+		</if>
+		<if test="normRealName !=null and normRealName !=''">AND norm_real_name like CONCAT('%','${normRealName}','%' )
+
+		</if>
+		<if test="chOrChargingStatus !=null and chOrChargingStatus !=''">AND chOr_ChargingStatus = #{chOrChargingStatus}</if>
+		<if test="cityCode !=null and cityCode !=''">AND CITY_id = #{cityCode}</if>
+		<if test="provinceCode !=null and provinceCode !=''">AND PROVINCE_ID = #{provinceCode}</if> -->
+	</select>
+
+	<select id="personBespokeDetail" parameterType="map"
+		resultType="java.util.LinkedHashMap">
+		SELECT
+		CITY_NAME AS '城市',
+		user_account as '手机号',
+		norm_real_name AS '姓名',
+		left(besp_BeginTime, 7) AS '月份',
+		elPi_ElectricPileCode AS '电桩编号',
+		besp_ResePaymentCode AS '预约订单编号',
+		besp_BespokePrice AS '预约单价(元/分钟)',
+		besp_FrozenAmt AS '收益金额(元)',
+		besp_BeginTime AS '预约开始时间',
+		besp_BespokeTime AS '预约时长'
+		FROM
+		tbl_Bespoke bp,
+		tbl_purchasehistory ph,
+		tbl_user u,
+		tbl_user_normal un,
+		tbl_electricpile ep,
+		tb_m_city tc
+		WHERE
+		u.user_id = ep.elPi_UserId
+		AND u.user_id = un.user_id
+		AND
+		ep.pk_ElectricPile = bp.besp_ElectricPileId
+		AND ph.puHi_BespokeNumber =
+		bp.besp_ResePaymentCode
+		AND ep.elPi_OwnCityCode = tc.CITY_ID
+		AND
+		u.user_leval = '5'
+		AND ph.puhi_type = '2'
+		AND bp.besp_OrderType = '1'
+		AND bp.besp_BespokeStatus = '2'
+		<if test="userLevel == 5"> AND u.user_id = #{userId}</if>
+		<if test="startDate !=null and startDate !=''"><![CDATA[ AND TO_DAYS(besp_BeginTime) >= TO_DAYS(#{startDate}) ]]></if>
+		<if test="endDate !=null and endDate !=''"><![CDATA[ AND TO_DAYS(besp_BeginTime) <= TO_DAYS(#{endDate}) ]]></if>
+		<if test="userAccount !=null and userAccount !=''">AND user_account like CONCAT('%','${userAccount}','%' )
+		</if>
+		<if test="normRealName !=null and normRealName !=''">AND norm_real_name like CONCAT('%','${normRealName}','%' )
+		</if>
+		<if test="cityCode !=null and cityCode !=''">AND CITY_id = #{cityCode}</if>
+		<if test="provinceCode !=null and provinceCode !=''">AND PROVINCE_ID = #{provinceCode}</if>
+		ORDER BY
+		user_account,besp_BeginTime DESC
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<select id="personBespokeDetailCount" parameterType="map"
+		resultType="long">
+		SELECT
+		count(1)
+		FROM
+		tbl_Bespoke bp,
+		tbl_purchasehistory ph,
+		tbl_user u,
+		tbl_user_normal un,
+		tbl_electricpile ep,
+		tb_m_city tc
+		WHERE
+		u.user_id =
+		ep.elPi_UserId
+		AND u.user_id = un.user_id
+		AND ep.pk_ElectricPile =
+		bp.besp_ElectricPileId
+		AND ph.puHi_BespokeNumber =
+		bp.besp_ResePaymentCode
+		AND ep.elPi_OwnCityCode = tc.CITY_ID
+		AND
+		u.user_leval = '5'
+		AND ph.puhi_type = '2'
+		AND bp.besp_OrderType = '1'
+		AND bp.besp_BespokeStatus = '2'
+		<if test="userLevel == 5"> AND u.user_id = #{userId}</if>
+		<if test="startDate !=null and startDate !=''"><![CDATA[ AND TO_DAYS(besp_BeginTime) >= TO_DAYS(#{startDate}) ]]></if>
+		<if test="endDate !=null and endDate !=''"><![CDATA[ AND TO_DAYS(besp_BeginTime) <= TO_DAYS(#{endDate}) ]]></if>
+		<if test="userAccount !=null and userAccount !=''">AND user_account like CONCAT('%','${userAccount}','%' )
+		</if>
+		<if test="normRealName !=null and normRealName !=''">AND norm_real_name like CONCAT('%','${normRealName}','%' )
+		</if>
+		<if test="cityCode !=null and cityCode !=''">AND CITY_id = #{cityCode}</if>
+		<if test="provinceCode !=null and provinceCode !=''">AND PROVINCE_ID = #{provinceCode}</if>
+	</select>
+<select id="personChargeStatisticCount" parameterType="map"
+		resultType="long">
+	select count(1) from( SELECT
+		CITY_NAME AS '城市',
+		user_account as '手机号',
+		norm_real_name AS '姓名',
+		left(begin_charge_time, 7) AS '月份',
+		count(*) AS '总充电次数',
+		sum(chOr_QuantityElectricity) AS '总电量(度数)',
+		sum(chOr_Moeny) AS
+		'收益金额(元)',
+		sum(chOr_ChargeMoney) AS '充电电费(元)',
+		sum(chOr_ServiceMoney) AS
+		'充电服务费(元)'
+		FROM
+		tbl_purchasehistory ph,
+		tbl_ChargingOrder co,
+		tbl_ElectricPile ep,
+		tbl_User u,
+		tbl_user_normal un,
+		tb_m_city tc
+		WHERE
+		u.user_id = ep.elPi_UserId
+		AND u.user_id = un.user_id
+		AND
+		ph.puHi_TransactionNumber = co.chOr_TransactionNumber
+		AND
+		ep.elPi_ElectricPileCode = co.chOr_PileNumber
+		AND ep.elPi_OwnCityCode =
+		tc.CITY_ID
+		AND user_leval = '5'
+		AND ph.puhi_type = '1'
+		AND
+		chOr_ChargingStatus = '2'
+		<if test="userLevel == 5"> AND u.user_id = #{userId}</if>
+		<if test="startDate !=null and startDate !=''"><![CDATA[ AND TO_DAYS(begin_charge_time) >= TO_DAYS(#{startDate}) ]]></if>
+		<if test="endDate !=null and endDate !=''"><![CDATA[ AND TO_DAYS(begin_charge_time) <= TO_DAYS(#{endDate}) ]]></if>
+		<if test="userAccount !=null and userAccount !=''">AND user_account like CONCAT('%','${userAccount}','%' )
+		</if>
+		<if test="normRealName !=null and normRealName !=''">AND norm_real_name like CONCAT('%','${normRealName}','%' )
+		</if>
+		<if test="cityCode !=null and cityCode !=''">AND CITY_id = #{cityCode}</if>
+		<if test="provinceCode !=null and provinceCode !=''">AND PROVINCE_ID = #{provinceCode}</if>
+		GROUP BY
+		CITY_NAME,
+		left(begin_charge_time, 7)) a
+	</select>
+
+	<select id="personChargeStatistic" parameterType="map"
+		resultType="java.util.LinkedHashMap">
+		SELECT
+		CITY_NAME AS '城市',
+		user_account as '手机号',
+		norm_real_name AS '姓名',
+		left(begin_charge_time, 7) AS '月份',
+		count(*) AS '总充电次数',
+		sum(chOr_QuantityElectricity) AS '总电量(度数)',
+		sum(chOr_Moeny) AS
+		'收益金额(元)',
+		sum(chOr_ChargeMoney) AS '充电电费(元)',
+		sum(chOr_ServiceMoney) AS
+		'充电服务费(元)'
+		FROM
+		tbl_purchasehistory ph,
+		tbl_ChargingOrder co,
+		tbl_ElectricPile ep,
+		tbl_User u,
+		tbl_user_normal un,
+		tb_m_city tc
+		WHERE
+		u.user_id = ep.elPi_UserId
+		AND u.user_id = un.user_id
+		AND
+		ph.puHi_TransactionNumber = co.chOr_TransactionNumber
+		AND
+		ep.elPi_ElectricPileCode = co.chOr_PileNumber
+		AND ep.elPi_OwnCityCode =
+		tc.CITY_ID
+		AND user_leval = '5'
+		AND ph.puhi_type = '1'
+		AND
+		chOr_ChargingStatus = '2'
+		<if test="userLevel == 5"> AND u.user_id = #{userId}</if>
+		<if test="startDate !=null and startDate !=''"><![CDATA[ AND TO_DAYS(begin_charge_time) >= TO_DAYS(#{startDate}) ]]></if>
+		<if test="endDate !=null and endDate !=''"><![CDATA[ AND TO_DAYS(begin_charge_time) <= TO_DAYS(#{endDate}) ]]></if>
+		<if test="userAccount !=null and userAccount !=''">AND user_account like CONCAT('%','${userAccount}','%' )
+		</if>
+		<if test="normRealName !=null and normRealName !=''">AND norm_real_name like CONCAT('%','${normRealName}','%' )
+		</if>
+		<if test="cityCode !=null and cityCode !=''">AND CITY_id = #{cityCode}</if>
+		<if test="provinceCode !=null and provinceCode !=''">AND PROVINCE_ID = #{provinceCode}</if>
+		GROUP BY
+		CITY_NAME,
+		left(begin_charge_time, 7)
+		ORDER BY
+		begin_charge_time
+		DESC
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+<select id="personBespokeStatisticCount" parameterType="map"
+		resultType="long">
+	select count(1) from( 	SELECT
+		CITY_NAME AS '城市',
+		user_account as '手机号',
+		norm_real_name AS '姓名',
+		left(besp_BeginTime, 7) AS '月份',
+		count(1) AS '总预约支付次数',
+		sum(besp_FrozenAmt) AS '总收益金额(元)'
+		FROM
+		tbl_Bespoke bp,
+		tbl_purchasehistory ph,
+		tbl_user u,
+		tbl_user_normal un,
+		tbl_electricpile
+		ep,
+		tb_m_city tc
+		WHERE
+		u.user_id = ep.elPi_UserId
+		AND u.user_id =
+		un.user_id
+		AND ep.pk_ElectricPile =
+		bp.besp_ElectricPileId
+		AND
+		ph.puHi_BespokeNumber =
+		bp.besp_ResePaymentCode
+		AND ep.elPi_OwnCityCode
+		= tc.CITY_ID
+		AND
+		u.user_leval = '5'
+		AND ph.puhi_type = '2'
+		AND
+		bp.besp_OrderType = '1'
+		AND bp.besp_BespokeStatus = '2'
+		<if test="userLevel == 5"> AND u.user_id = #{userId}</if>
+		<if test="startDate !=null and startDate !=''"><![CDATA[ AND TO_DAYS(besp_BeginTime) >= TO_DAYS(#{startDate}) ]]></if>
+		<if test="endDate !=null and endDate !=''"><![CDATA[ AND TO_DAYS(besp_BeginTime) <= TO_DAYS(#{endDate}) ]]></if>
+		<if test="userAccount !=null and userAccount !=''">AND user_account like CONCAT('%','${userAccount}','%' )
+		</if>
+		<if test="normRealName !=null and normRealName !=''">AND norm_real_name like CONCAT('%','${normRealName}','%' )
+		</if>
+		<if test="cityCode !=null and cityCode !=''">AND CITY_id = #{cityCode}</if>
+		<if test="provinceCode !=null and provinceCode !=''">AND PROVINCE_ID = #{provinceCode}</if>
+		GROUP BY
+		CITY_NAME,
+		user_account,
+		left(besp_BeginTime, 7)
+		ORDER BY
+		user_account,
+		besp_BeginTime DESC) a
+	</select>
+
+
+	<select id="personBespokeStatistic" parameterType="map"
+		resultType="java.util.LinkedHashMap">
+		SELECT
+		CITY_NAME AS '城市',
+		user_account as '手机号',
+		norm_real_name AS '姓名',
+		left(besp_BeginTime, 7) AS '月份',
+		count(1) AS '总预约支付次数',
+		sum(besp_FrozenAmt) AS '总收益金额(元)'
+		FROM
+		tbl_Bespoke bp,
+		tbl_purchasehistory ph,
+		tbl_user u,
+		tbl_user_normal un,
+		tbl_electricpile
+		ep,
+		tb_m_city tc
+		WHERE
+		u.user_id = ep.elPi_UserId
+		AND u.user_id =
+		un.user_id
+		AND ep.pk_ElectricPile =
+		bp.besp_ElectricPileId
+		AND
+		ph.puHi_BespokeNumber =
+		bp.besp_ResePaymentCode
+		AND ep.elPi_OwnCityCode
+		= tc.CITY_ID
+		AND
+		u.user_leval = '5'
+		AND ph.puhi_type = '2'
+		AND
+		bp.besp_OrderType = '1'
+		AND bp.besp_BespokeStatus = '2'
+		<if test="userLevel == 5"> AND u.user_id = #{userId}</if>
+		<if test="startDate !=null and startDate !=''"><![CDATA[ AND TO_DAYS(besp_BeginTime) >= TO_DAYS(#{startDate}) ]]></if>
+		<if test="endDate !=null and endDate !=''"><![CDATA[ AND TO_DAYS(besp_BeginTime) <= TO_DAYS(#{endDate}) ]]></if>
+		<if test="userAccount !=null and userAccount !=''">AND user_account like CONCAT('%','${userAccount}','%' )
+		</if>
+		<if test="normRealName !=null and normRealName !=''">AND norm_real_name like CONCAT('%','${normRealName}','%' )
+		</if>
+		<if test="cityCode !=null and cityCode !=''">AND CITY_id = #{cityCode}</if>
+		<if test="provinceCode !=null and provinceCode !=''">AND PROVINCE_ID = #{provinceCode}</if>
+		GROUP BY
+		CITY_NAME,
+		user_account,
+		left(besp_BeginTime, 7)
+		ORDER BY
+		user_account,
+		besp_BeginTime DESC
+			<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<select id="personConsumeDetail" parameterType="map"
+		resultType="java.util.LinkedHashMap">
+		SELECT CITY_NAME '城市',
+		user_account '手机号',
+		norm_real_name '姓名',
+		puHi_Monetary '消费金额(元)',
+		puHi_PurchASeHistoryTime
+		'消费时间',
+		chOr_QuantityElectricity '充电电量',
+		puHi_Type '消费类型',
+		chOr_CouponMoney '实际优惠金额(元)'
+		FROM (SELECT
+		PROVINCE_ID,
+		CITY_ID,
+		CITY_NAME,
+		user_account,
+		norm_name,
+		norm_real_name,
+		puHi_Monetary,
+		puHi_PurchASeHistoryTime,
+		chOr_QuantityElectricity,
+		'充电消费' puHi_Type,
+		chOr_CouponMoney
+		FROM
+		tbl_purchASehistory ph,
+		tbl_chargingorder co,
+		tbl_ElectricPile ep,
+		tbl_user_normal_view u,
+		tb_m_city mc
+		WHERE
+		ph.puHi_TransactionNumber = co.chOr_TransactionNumber
+		AND
+		co.chOr_PileNumber = ep.elPi_ElectricPileCode
+		AND ph.puHi_UserId =
+		u.user_id
+		AND co.chOr_UserId = u.user_id
+		AND mc.CITY_ID =
+		ep.elPi_OwnCityCode
+		AND u.user_leval = '5'
+		AND puHi_Type = '1'
+		<!-- AND
+		chOr_Type = '2' -->
+		AND chOr_ChargingStatus = '2'
+		<if test="userLevel == 5"> AND u.user_id = #{userId}</if>
+		UNION
+		SELECT
+		PROVINCE_ID,
+		CITY_ID,
+		CITY_NAME,
+		user_account,
+		norm_name,
+		norm_real_name,
+		puHi_Monetary,
+		puHi_PurchASeHistoryTime,
+		''
+		chOr_QuantityElectricity,
+		'预约消费' puHi_Type,
+		chOr_CouponMoney
+		FROM
+		tbl_purchASehistory ph,
+		tbl_bespoke bs,
+		tbl_chargingorder co,
+		tbl_ElectricPile ep,
+		tbl_user_normal_view u,
+		tb_m_city mc
+		WHERE
+		ph.puHi_BespokeNumber = bs.besp_ResePaymentCode
+		AND
+		bs.besp_ElectricPileId = ep.pk_ElectricPile
+		AND ph.puHi_UserId =
+		u.user_id
+		AND bs.besp_UserInfo = u.user_id
+		AND mc.CITY_ID =
+		ep.elPi_OwnCityCode
+		AND u.user_leval = '5'
+		AND puHi_Type = '2'
+		AND
+		bs.besp_OrderType = '1'
+		AND bs.besp_BespokeStatus = '2'
+		AND bs.besp_BespokeStatus = '2'
+		AND ph.puHi_TransactionNumber = co.chOr_TransactionNumber
+		AND co.chOr_PileNumber = ep.elPi_ElectricPileCode
+		AND co.chOr_UserId = u.user_id
+		<if test="userLevel == 5"> AND u.user_id = #{userId}</if>
+		) a where
+		1 = 1
+		<if test="startDate !=null and startDate !=''"><![CDATA[ AND TO_DAYS(a.puHi_PurchASeHistoryTime) >= TO_DAYS(#{startDate}) ]]></if>
+		<if test="endDate !=null and endDate !=''"><![CDATA[ AND TO_DAYS(a.puHi_PurchASeHistoryTime) <= TO_DAYS(#{endDate}) ]]></if>
+		<if test="userAccount !=null and userAccount !=''">AND a.user_account like CONCAT('%','${userAccount}','%' )
+		</if>
+		<if test="normName !=null and normName !=''">AND a.norm_name like CONCAT('%','${normName}','%' ) </if>
+		<if test="normRealName !=null and normRealName !=''">AND norm_real_name like CONCAT('%','${normRealName}','%' )
+		</if>
+		<if test="cityCode !=null and cityCode !=''">AND CITY_ID = #{cityCode}</if>
+		<if test="provinceCode !=null and provinceCode !=''">AND PROVINCE_ID = #{provinceCode}</if>
+		ORDER BY
+		a.CITY_NAME,
+		a.user_account,
+		puHi_PurchASeHistoryTime DESC
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<select id="personConsumeDetailCount" parameterType="map"
+		resultType="long">
+		SELECT count(1) FROM (SELECT CITY_NAME '城市',
+		user_account '手机号',
+		norm_real_name '姓名',
+		puHi_Monetary '消费金额(元)',
+		puHi_PurchASeHistoryTime
+		'消费时间',
+		chOr_QuantityElectricity '充电电量',
+		puHi_Type '消费类型',
+		chOr_CouponMoney '实际优惠金额(元)'
+		FROM (SELECT
+		PROVINCE_ID,
+		CITY_ID,
+		CITY_NAME,
+		user_account,
+		norm_name,
+		norm_real_name,
+		puHi_Monetary,
+		puHi_PurchASeHistoryTime,
+		chOr_QuantityElectricity,
+		'充电消费' puHi_Type,
+		chOr_CouponMoney
+		FROM
+		tbl_purchASehistory ph,
+		tbl_chargingorder co,
+		tbl_ElectricPile ep,
+		tbl_user_normal_view u,
+		tb_m_city mc
+		WHERE
+		ph.puHi_TransactionNumber = co.chOr_TransactionNumber
+		AND
+		co.chOr_PileNumber = ep.elPi_ElectricPileCode
+		AND ph.puHi_UserId =
+		u.user_id
+		AND co.chOr_UserId = u.user_id
+		AND mc.CITY_ID =
+		ep.elPi_OwnCityCode
+		AND u.user_leval = '5'
+		AND puHi_Type = '1'
+		<!-- AND
+		chOr_Type = '2' -->
+		AND chOr_ChargingStatus = '2'
+		<if test="userLevel == 5"> AND u.user_id = #{userId}</if>
+		UNION
+		SELECT
+		PROVINCE_ID,
+		CITY_ID,
+		CITY_NAME,
+		user_account,
+		norm_name,
+		norm_real_name,
+		puHi_Monetary,
+		puHi_PurchASeHistoryTime,
+		''
+		chOr_QuantityElectricity,
+		'预约消费' puHi_Type,
+		chOr_CouponMoney
+		FROM
+		tbl_purchASehistory ph,
+		tbl_bespoke bs,
+		tbl_chargingorder co,
+		tbl_ElectricPile ep,
+		tbl_user_normal_view u,
+		tb_m_city mc
+		WHERE
+		ph.puHi_BespokeNumber = bs.besp_ResePaymentCode
+		AND
+		bs.besp_ElectricPileId = ep.pk_ElectricPile
+		AND ph.puHi_UserId =
+		u.user_id
+		AND bs.besp_UserInfo = u.user_id
+		AND mc.CITY_ID =
+		ep.elPi_OwnCityCode
+		AND u.user_leval = '5'
+		AND puHi_Type = '2'
+		AND
+		bs.besp_OrderType = '1'
+		AND bs.besp_BespokeStatus = '2'
+		AND bs.besp_BespokeStatus = '2'
+		AND ph.puHi_TransactionNumber = co.chOr_TransactionNumber
+		AND co.chOr_PileNumber = ep.elPi_ElectricPileCode
+		AND co.chOr_UserId = u.user_id
+		<if test="userLevel == 5"> AND u.user_id = #{userId}</if>
+		) a where
+		1 = 1
+		<if test="startDate !=null and startDate !=''"><![CDATA[ AND TO_DAYS(a.puHi_PurchASeHistoryTime) >= TO_DAYS(#{startDate}) ]]></if>
+		<if test="endDate !=null and endDate !=''"><![CDATA[ AND TO_DAYS(a.puHi_PurchASeHistoryTime) <= TO_DAYS(#{endDate}) ]]></if>
+		<if test="userAccount !=null and userAccount !=''">AND a.user_account like CONCAT('%','${userAccount}','%' )
+		</if>
+		<if test="normName !=null and normName !=''">AND a.norm_name like CONCAT('%','${normName}','%' ) </if>
+		<if test="normRealName !=null and normRealName !=''">AND norm_real_name like CONCAT('%','${normRealName}','%' )
+		</if>
+		<if test="cityCode !=null and cityCode !=''">AND CITY_ID = #{cityCode}</if>
+		<if test="provinceCode !=null and provinceCode !=''">AND PROVINCE_ID = #{provinceCode}</if>
+		ORDER BY
+		a.CITY_NAME,
+		a.user_account,
+		puHi_PurchASeHistoryTime DESC) aa
+	</select>
+
+	<select id="personConsumeStatistic" parameterType="map"
+		resultType="java.util.LinkedHashMap">
+		SELECT
+		a.CITY_NAME '城市',
+		a.user_account '手机号',
+		a.norm_real_name '姓名',
+		a.puHi_PurchASeHistoryTime '月份',
+		b.consumpCount '充电次数',
+		b.chOr_QuantityElectricitySUM '充电电量',
+		b.puHi_MonetarySUM '充电金额(元)',
+		c.consumpCount '预约次数',
+		c.chOr_QuantityElectricitySUM '预约电量',
+		c.puHi_MonetarySUM '预约金额(元)'
+		FROM
+		(
+		SELECT
+		PROVINCE_ID,
+		CITY_ID,
+		CITY_NAME,
+		user_account,
+		norm_name,
+		norm_real_name,
+		left(puHi_PurchASeHistoryTime,
+		7) puHi_PurchASeHistoryTime
+		FROM
+		tbl_purchASehistory ph,
+		tbl_chargingorder co,
+		tbl_ElectricPile ep,
+		tbl_user_normal_view u,
+		tb_m_city mc
+		WHERE
+		ph.puHi_TransactionNumber = co.chOr_TransactionNumber
+		AND co.chOr_PileNumber = ep.elPi_ElectricPileCode
+		AND ph.puHi_UserId =
+		u.user_id
+		AND co.chOr_UserId = u.user_id
+		AND mc.CITY_ID =
+		ep.elPi_OwnCityCode
+		AND u.user_leval = '5'
+		AND ph.puHi_Type = '1'
+		<!-- AND
+		co.chOr_Type = '2' -->
+		AND chOr_ChargingStatus = '2'
+		<if test="userLevel == 5"> AND u.user_id = #{userId}</if>
+		<if test="startDate !=null and startDate !=''"><![CDATA[ AND TO_DAYS(puHi_PurchASeHistoryTime) >= TO_DAYS(#{startDate}) ]]></if>
+		<if test="endDate !=null and endDate !=''"><![CDATA[ AND TO_DAYS(puHi_PurchASeHistoryTime) <= TO_DAYS(#{endDate}) ]]></if>
+		GROUP BY
+		CITY_NAME,
+		user_account,
+		left(puHi_PurchASeHistoryTime, 7)
+		UNION
+		SELECT
+		PROVINCE_ID,
+		CITY_ID,
+		CITY_NAME,
+		user_account,
+		norm_name,
+		norm_real_name,
+		left(puHi_PurchASeHistoryTime, 7)
+		puHi_PurchASeHistoryTime
+		FROM
+		tbl_purchASehistory ph,
+		tbl_bespoke bs,
+		tbl_ElectricPile ep,
+		tbl_user_normal_view u,
+		tb_m_city mc
+		WHERE
+		ph.puHi_BespokeNumber = bs.besp_ResePaymentCode
+		AND
+		bs.besp_ElectricPileId = ep.pk_ElectricPile
+		AND ph.puHi_UserId =
+		u.user_id
+		AND bs.besp_UserInfo = u.user_id
+		AND mc.CITY_ID =
+		ep.elPi_OwnCityCode
+		AND u.user_leval = '5'
+		AND ph.puHi_Type = '2'
+		AND
+		bs.besp_OrderType = '1'
+		AND bs.besp_BespokeStatus = '2'
+		<if test="userLevel == 5"> AND u.user_id = #{userId}</if>
+		<if test="startDate !=null and startDate !=''"><![CDATA[ AND TO_DAYS(puHi_PurchASeHistoryTime) >= TO_DAYS(#{startDate}) ]]></if>
+		<if test="endDate !=null and endDate !=''"><![CDATA[ AND TO_DAYS(puHi_PurchASeHistoryTime) <= TO_DAYS(#{endDate}) ]]></if>
+		GROUP BY
+		CITY_NAME,
+		user_account,
+		left(puHi_PurchASeHistoryTime, 7)
+		) a
+		LEFT JOIN (
+		SELECT
+		CITY_NAME,
+		user_account,
+		norm_name,
+		norm_real_name,
+		left(puHi_PurchASeHistoryTime, 7) puHi_PurchASeHistoryTime,
+		count(1)
+		consumpCount,
+		sum(puHi_Monetary) puHi_MonetarySUM,
+		sum(chOr_QuantityElectricity) chOr_QuantityElectricitySUM,
+		puHi_Type
+		FROM
+		tbl_purchASehistory ph,
+		tbl_chargingorder co,
+		tbl_ElectricPile ep,
+		tbl_user_normal_view u,
+		tb_m_city mc
+		WHERE
+		ph.puHi_TransactionNumber =
+		co.chOr_TransactionNumber
+		AND co.chOr_PileNumber =
+		ep.elPi_ElectricPileCode
+		AND ph.puHi_UserId = u.user_id
+		AND
+		co.chOr_UserId = u.user_id
+		AND mc.CITY_ID = ep.elPi_OwnCityCode
+		AND
+		u.user_leval = '5'
+		AND ph.puHi_Type = '1'
+		<!-- AND co.chOr_Type = '2' -->
+		AND
+		chOr_ChargingStatus = '2'
+		<if test="userLevel == 5"> AND u.user_id = #{userId}</if>
+		<if test="startDate !=null and startDate !=''"><![CDATA[ AND TO_DAYS(puHi_PurchASeHistoryTime) >= TO_DAYS(#{startDate}) ]]></if>
+		<if test="endDate !=null and endDate !=''"><![CDATA[ AND TO_DAYS(puHi_PurchASeHistoryTime) <= TO_DAYS(#{endDate}) ]]></if>
+		GROUP BY
+		CITY_NAME,
+		user_account,
+		left(puHi_PurchASeHistoryTime, 7)
+		) b ON
+		a.CITY_NAME = b.CITY_NAME
+		AND a.norm_name = b.norm_name
+		AND
+		a.user_account = b.user_account
+		AND a.puHi_PurchASeHistoryTime =
+		b.puHi_PurchASeHistoryTime
+		LEFT JOIN (
+		SELECT
+		CITY_NAME,
+		user_account,
+		norm_name,
+		norm_real_name,
+		left(puHi_PurchASeHistoryTime, 7)
+		puHi_PurchASeHistoryTime,
+		count(1) consumpCount,
+		sum(puHi_Monetary)
+		puHi_MonetarySUM,
+		'' chOr_QuantityElectricitySUM,
+		puHi_Type
+		FROM
+		tbl_purchASehistory ph,
+		tbl_bespoke bs,
+		tbl_ElectricPile ep,
+		tbl_user_normal_view u,
+		tb_m_city mc
+		WHERE
+		ph.puHi_BespokeNumber =
+		bs.besp_ResePaymentCode
+		AND bs.besp_ElectricPileId = ep.pk_ElectricPile
+		AND ph.puHi_UserId = u.user_id
+		AND bs.besp_UserInfo = u.user_id
+		AND
+		mc.CITY_ID = ep.elPi_OwnCityCode
+		AND u.user_leval = '5'
+		AND ph.puHi_Type
+		= '2'
+		AND bs.besp_OrderType = '1'
+		AND bs.besp_BespokeStatus = '2'
+		<if test="userLevel == 5"> AND u.user_id = #{userId}</if>
+		<if test="startDate !=null and startDate !=''"><![CDATA[ AND TO_DAYS(puHi_PurchASeHistoryTime) >= TO_DAYS(#{startDate}) ]]></if>
+		<if test="endDate !=null and endDate !=''"><![CDATA[ AND TO_DAYS(puHi_PurchASeHistoryTime) <= TO_DAYS(#{endDate}) ]]></if>
+		GROUP BY
+		CITY_NAME,
+		user_account,
+		left(puHi_PurchASeHistoryTime, 7)
+		) c ON
+		a.CITY_NAME = c.CITY_NAME
+		AND a.norm_name = c.norm_name
+		AND
+		a.user_account = c.user_account
+		AND a.puHi_PurchASeHistoryTime =
+		c.puHi_PurchASeHistoryTime
+		where 1 = 1
+		<if test="userAccount !=null and userAccount !=''">AND a.user_account like CONCAT('%','${userAccount}','%' )
+		</if>
+		<if test="normName !=null and normName !=''">AND a.norm_name like CONCAT('%','${normName}','%' ) </if>
+		<if test="normRealName !=null and normRealName !=''">AND a.norm_real_name like CONCAT('%','${normRealName}','%'
+			)
+		</if>
+		<if test="cityCode !=null and cityCode !=''">AND a.CITY_ID = #{cityCode}</if>
+		<if test="provinceCode !=null and provinceCode !=''">AND PROVINCE_ID = #{provinceCode}</if>
+		ORDER BY
+		a.CITY_NAME,a.puHi_PurchASeHistoryTime,
+		a.user_account DESC
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<select id="personConsumeStatisticCount" parameterType="map"
+		resultType="long">
+		SELECT
+		count(1)
+		FROM
+		(
+		SELECT
+		PROVINCE_ID,
+		CITY_ID,
+		CITY_NAME,
+		user_account,
+		norm_name,
+		norm_real_name,
+		left(puHi_PurchASeHistoryTime, 7)
+		puHi_PurchASeHistoryTime
+		FROM
+		tbl_purchASehistory ph,
+		tbl_chargingorder
+		co,
+		tbl_ElectricPile ep,
+		tbl_user_normal_view u,
+		tb_m_city mc
+		WHERE
+		ph.puHi_TransactionNumber = co.chOr_TransactionNumber
+		AND
+		co.chOr_PileNumber = ep.elPi_ElectricPileCode
+		AND ph.puHi_UserId =
+		u.user_id
+		AND co.chOr_UserId = u.user_id
+		AND mc.CITY_ID =
+		ep.elPi_OwnCityCode
+		AND u.user_leval = '5'
+		AND ph.puHi_Type = '1'
+		<!-- AND
+		co.chOr_Type = '2' -->
+		AND chOr_ChargingStatus = '2'
+		<if test="userLevel == 5"> AND u.user_id = #{userId}</if>
+		<if test="startDate !=null and startDate !=''"><![CDATA[ AND TO_DAYS(puHi_PurchASeHistoryTime) >= TO_DAYS(#{startDate}) ]]></if>
+		<if test="endDate !=null and endDate !=''"><![CDATA[ AND TO_DAYS(puHi_PurchASeHistoryTime) <= TO_DAYS(#{endDate}) ]]></if>
+		GROUP BY
+		CITY_NAME,
+		user_account,
+		left(puHi_PurchASeHistoryTime, 7)
+		UNION
+		SELECT
+		PROVINCE_ID,
+		CITY_ID,
+		CITY_NAME,
+		user_account,
+		norm_name,
+		norm_real_name,
+		left(puHi_PurchASeHistoryTime, 7)
+		puHi_PurchASeHistoryTime
+		FROM
+		tbl_purchASehistory ph,
+		tbl_bespoke bs,
+		tbl_ElectricPile ep,
+		tbl_user_normal_view u,
+		tb_m_city mc
+		WHERE
+		ph.puHi_BespokeNumber = bs.besp_ResePaymentCode
+		AND
+		bs.besp_ElectricPileId = ep.pk_ElectricPile
+		AND ph.puHi_UserId =
+		u.user_id
+		AND bs.besp_UserInfo = u.user_id
+		AND mc.CITY_ID =
+		ep.elPi_OwnCityCode
+		AND u.user_leval = '5'
+		AND ph.puHi_Type = '2'
+		AND
+		bs.besp_OrderType = '1'
+		AND bs.besp_BespokeStatus = '2'
+		<if test="userLevel == 5"> AND u.user_id = #{userId}</if>
+		<if test="startDate !=null and startDate !=''"><![CDATA[ AND TO_DAYS(puHi_PurchASeHistoryTime) >= TO_DAYS(#{startDate}) ]]></if>
+		<if test="endDate !=null and endDate !=''"><![CDATA[ AND TO_DAYS(puHi_PurchASeHistoryTime) <= TO_DAYS(#{endDate}) ]]></if>
+		GROUP BY
+		CITY_NAME,
+		user_account,
+		left(puHi_PurchASeHistoryTime, 7)
+		) a
+		where 1 = 1
+		<if test="userAccount !=null and userAccount !=''">AND a.user_account like CONCAT('%','${userAccount}','%' )
+		</if>
+		<if test="normName !=null and normName !=''">AND a.norm_name like CONCAT('%','${normName}','%' ) </if>
+		<if test="normRealName !=null and normRealName !=''">AND a.norm_real_name like CONCAT('%','${normRealName}','%'
+			)
+		</if>
+		<if test="cityCode !=null and cityCode !=''">AND a.CITY_ID = #{cityCode}</if>
+		<if test="provinceCode !=null and provinceCode !=''">AND PROVINCE_ID = #{provinceCode}</if>
+	</select>
+	<!-- 优化后sql -->
+	<select id="businessChargeDetail" parameterType="map"
+		resultType="java.util.LinkedHashMap">
+		SELECT
+		pk_ChargingOrder AS '主键',
+		chOr_ChargingStatus AS '订单状态',
+		(SELECT CITY_NAME FROM tb_m_city tc WHERE  tc.CITY_ID = ep.elPi_OwnCityCode) AS '城市',
+		(SELECT company_name FROM tbl_user_business_view as tb WHERE tb.user_id=ep.elpi_userid AND user_leval = '3' ) AS '纯商家名称',
+		LEFT (co.chOr_Createdate, 7) AS '月份',
+		chOr_PileNumber AS '电桩编号',
+		chOr_Code AS '充电订单编号',
+		chOr_QuantityElectricity AS '总电量(度数)',
+		chOr_Moeny AS '收益金额(元)',
+		chOr_ChargeMoney AS '充电金额(元)',
+		chOr_ServiceMoney AS '充电服务费(元)',
+		begin_charge_time AS '充电开始时间',
+		end_charge_time AS '充电结束时间',
+		ep.elPi_RateInformationId AS '费率',
+		cr.chRe_QuantumDate,
+		cr.chRe_JPrice,
+		cr.chRe_FPrice,
+		cr.chRe_PPrice,
+		cr.chRe_GPrice,
+		cr.chRe_ServiceCharge,
+		chOr_CouponMoney AS '优惠券抵扣'
+		FROM
+		tbl_ChargingOrder co,
+		tbl_ElectricPile ep,
+		tbl_chargingrecord cr
+		WHERE
+		ep.elPi_ElectricPileCode = co.chOr_PileNumber
+		AND cr.chRe_Code = co.chOr_Code
+		AND chOr_ChargingStatus != '4'
+		<if test="userLevel == 3"> AND tu.busi_company_id = #{companyId}</if>
+		<if test="startDate !=null and startDate !=''"><![CDATA[ AND TO_DAYS(begin_charge_time) >= TO_DAYS(#{startDate}) ]]></if>
+		<if test="endDate !=null and endDate !=''"><![CDATA[ AND TO_DAYS(end_charge_time) <= TO_DAYS(#{endDate}) ]]></if>
+		<if test="companyName !=null and companyName !=''">
+		AND exists
+		(SELECT company_name FROM tbl_user_business_view as tb WHERE tb.user_id=ep.elpi_userid AND user_leval = '3' AND company_name like CONCAT('%','${companyName}','%' )) 
+		</if>
+		<if test="chOrChargingStatus !=null and chOrChargingStatus !=''">AND chOr_ChargingStatus = #{chOrChargingStatus}</if>
+		<if test="cityCode !=null and cityCode !=''">AND ep.elPi_OwnCityCode  = #{cityCode}</if>
+		<if test="provinceCode !=null and provinceCode !=''">AND ep.elPi_OwnProvinceCode  = #{provinceCode}</if>
+		ORDER BY pk_ChargingOrder DESC
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+<select id="businessChargeDetail_ept" parameterType="map"
+		resultType="java.util.LinkedHashMap">
+		SELECT
+		CITY_NAME AS '城市',
+		company_name AS '纯商家名称',
+		left(co.chOr_Createdate, 7)
+		as '月份',
+		chOr_PileNumber AS '电桩编号',
+		chOr_Code AS '充电订单编号',
+		CASE chOr_ChargingStatus
+            WHEN '1' THEN '待支付'
+            WHEN '2' THEN '支付完成'
+            WHEN '3' THEN '完成未结算'
+            ELSE '-'
+         END as '订单状态',
+		chOr_QuantityElectricity AS '总电量(度数)',
+		chOr_Moeny AS '收益金额(元)',
+		chOr_ChargeMoney AS '充电金额(元)',
+		chOr_ServiceMoney AS '充电服务费(元)',
+		begin_charge_time AS '充电开始时间',
+		end_charge_time AS '充电结束时间'
+		<!-- ep.elPi_RateInformationId AS '费率',
+		cr.chRe_QuantumDate,
+		cr.chRe_JPrice,
+		cr.chRe_FPrice,
+		cr.chRe_PPrice,
+		cr.chRe_GPrice,
+		cr.chRe_ServiceCharge -->
+		FROM
+		<!-- tbl_purchasehistory ph, -->
+		tbl_ChargingOrder co,
+		tbl_user_business_view tu,
+		tbl_ElectricPile ep,
+		tb_m_city tc,
+		tbl_chargingrecord cr
+		WHERE
+		ep.elpi_userid = tu.user_id
+		<!-- AND
+		ph.puHi_TransactionNumber = co.chOr_TransactionNumber
+		AND
+		ph.puHi_ElectricPileCode = co.chOr_PileNumber -->
+		AND
+		ep.elPi_ElectricPileCode = co.chOr_PileNumber
+		AND ep.elPi_OwnCityCode =
+		tc.CITY_ID
+		AND cr.chRe_Code = co.chOr_Code
+		AND chOr_ChargingStatus!='4'
+		AND user_leval = '3'
+	    <!-- AND cr.chRe_PayMode = '2' -->
+		<!-- AND chOr_ChargingStatus = '2' -->
+		<if test="userLevel == 3"> AND tu.busi_company_id = #{companyId}</if>
+		<if test="startDate !=null and startDate !=''"><![CDATA[ AND TO_DAYS(chOr_Createdate) >= TO_DAYS(#{startDate}) ]]></if>
+		<if test="endDate !=null and endDate !=''"><![CDATA[ AND TO_DAYS(chOr_Createdate) <= TO_DAYS(#{endDate}) ]]></if>
+		<if test="companyName !=null and companyName !=''">AND company_name like CONCAT('%','${companyName}','%' )
+		</if>
+		<if test="chOrChargingStatus !=null and chOrChargingStatus !=''">AND chOr_ChargingStatus = #{chOrChargingStatus}</if>
+		<if test="cityCode !=null and cityCode !=''">AND tc.CITY_id = #{cityCode}</if>
+		<if test="provinceCode !=null and provinceCode !=''">AND PROVINCE_ID = #{provinceCode}</if>
+		ORDER BY
+		begin_charge_time DESC
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<select id="businessChargeDetailCount" parameterType="map"
+		resultType="long">
+		SELECT
+		count(1) 
+		FROM
+		tbl_ChargingOrder co,
+		tbl_ElectricPile ep,
+		tbl_chargingrecord cr
+		WHERE
+		ep.elPi_ElectricPileCode = co.chOr_PileNumber
+		AND cr.chRe_Code = co.chOr_Code
+		AND chOr_ChargingStatus != '4'
+		<if test="userLevel == 3"> AND tu.busi_company_id = #{companyId}</if>
+		<if test="startDate !=null and startDate !=''"><![CDATA[ AND TO_DAYS(begin_charge_time) >= TO_DAYS(#{startDate}) ]]></if>
+		<if test="endDate !=null and endDate !=''"><![CDATA[ AND TO_DAYS(end_charge_time) <= TO_DAYS(#{endDate}) ]]></if>
+		<if test="companyName !=null and companyName !=''">
+		AND exists
+		(SELECT company_name FROM tbl_user_business_view as tb WHERE tb.user_id=ep.elpi_userid AND user_leval = '3' AND company_name like CONCAT('%','${companyName}','%' )) 
+		</if>
+		<if test="chOrChargingStatus !=null and chOrChargingStatus !=''">AND chOr_ChargingStatus = #{chOrChargingStatus}</if>
+		<if test="cityCode !=null and cityCode !=''">AND ep.elPi_OwnCityCode  = #{cityCode}</if>
+		<if test="provinceCode !=null and provinceCode !=''">AND ep.elPi_OwnProvinceCode  = #{provinceCode}</if>
+		ORDER BY pk_ChargingOrder DESC
+	</select>
+
+	<select id="businessBespokeDetail" parameterType="map"
+		resultType="java.util.LinkedHashMap">
+		SELECT
+		CITY_NAME AS '城市',
+		company_name AS '纯商家名称',
+		left(besp_BeginTime,
+		7) AS '月份',
+		elPi_ElectricPileCode AS '电桩编号',
+		besp_ResePaymentCode AS
+		'预约订单编号',
+		besp_BespokePrice AS '预约单价(元/分钟)',
+		besp_FrozenAmt AS
+		'收益金额(元)',
+		besp_BeginTime AS '开始时间',
+		besp_BespokeTime AS '预约时长'
+		FROM
+		tbl_Bespoke bp,
+		tbl_user_business_view tu,
+		tbl_electricpile ep,
+		tb_m_city tc,
+		tbl_purchasehistory ph
+		WHERE
+		ep.elpi_userid = tu.user_id
+		AND ep.pk_ElectricPile = bp.besp_ElectricPileId
+		AND
+		ph.puHi_BespokeNumber = bp.besp_ResePaymentCode
+		AND ep.elPi_OwnCityCode
+		= tc.CITY_ID
+		AND user_leval = '3'
+		AND besp_OrderType = '1'
+		AND
+		besp_BespokeStatus = '2'
+		AND ph.puHi_Type = '2'
+		<if test="userLevel == 3"> AND tu.busi_company_id = #{companyId}</if>
+		<if test="startDate !=null and startDate !=''"><![CDATA[ AND TO_DAYS(besp_BeginTime) >= TO_DAYS(#{startDate}) ]]></if>
+		<if test="endDate !=null and endDate !=''"><![CDATA[ AND TO_DAYS(besp_BeginTime) <= TO_DAYS(#{endDate}) ]]></if>
+		<if test="companyName !=null and companyName !=''">AND company_name like CONCAT('%','${companyName}','%' )
+		</if>
+		<if test="cityCode !=null and cityCode !=''">AND tc.CITY_id = #{cityCode}</if>
+		<if test="provinceCode !=null and provinceCode !=''">AND PROVINCE_ID = #{provinceCode}</if>
+		ORDER BY
+		user_account,
+		besp_BeginTime DESC
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<select id="businessBespokeDetailCount" parameterType="map"
+		resultType="long">
+		SELECT
+		count(1)
+		FROM
+		tbl_Bespoke bp,
+		tbl_user_business_view tu,
+		tbl_electricpile ep,
+		tb_m_city tc,
+		tbl_purchasehistory ph
+		WHERE
+		ep.elpi_userid = tu.user_id
+		AND ep.pk_ElectricPile =
+		bp.besp_ElectricPileId
+		AND
+		ph.puHi_BespokeNumber =
+		bp.besp_ResePaymentCode
+		AND ep.elPi_OwnCityCode
+		= tc.CITY_ID
+		AND
+		user_leval = '3'
+		AND besp_OrderType = '1'
+		AND
+		besp_BespokeStatus = '2'
+		AND ph.puHi_Type = '2'
+		<if test="userLevel == 3"> AND tu.busi_company_id = #{companyId}</if>
+		<if test="startDate !=null and startDate !=''"><![CDATA[ AND TO_DAYS(besp_BeginTime) >= TO_DAYS(#{startDate}) ]]></if>
+		<if test="endDate !=null and endDate !=''"><![CDATA[ AND TO_DAYS(besp_BeginTime) <= TO_DAYS(#{endDate}) ]]></if>
+		<if test="companyName !=null and companyName !=''">AND company_name like CONCAT('%','${companyName}','%' )
+		</if>
+		<if test="cityCode !=null and cityCode !=''">AND tc.CITY_id = #{cityCode}</if>
+		<if test="provinceCode !=null and provinceCode !=''">AND PROVINCE_ID = #{provinceCode}</if>
+	</select>
+
+	<select id="businessChargeStatistic" parameterType="map"
+		resultType="java.util.LinkedHashMap">
+		SELECT
+		CITY_NAME AS '城市',
+		company_name AS '纯商家名称',
+		left(begin_charge_time, 7) AS '月份',
+		count(1) AS '总充电次数',
+		sum(chOr_QuantityElectricity) AS '总电量(度数)',
+		sum(chOr_Moeny) AS
+		'收益金额(元)',
+		sum(chOr_ChargeMoney) AS '充电电费(元)',
+		sum(chOr_ServiceMoney) AS
+		'充电服务费(元)'
+		FROM
+		tbl_ChargingOrder co,
+		tbl_user_business_view tu,
+		tbl_ElectricPile ep,
+		tb_m_city tc
+		WHERE
+		ep.elpi_userid = tu.user_id
+		AND
+		ep.elPi_ElectricPileCode = co.chOr_PileNumber
+		AND
+		ep.elPi_OwnCityCode =
+		tc.CITY_ID
+		AND user_leval = '3'
+		AND
+		chOr_ChargingStatus = '2'
+		<if test="userLevel == 3"> AND tu.busi_company_id = #{companyId}</if>
+		<if test="startDate !=null and startDate !=''"><![CDATA[ AND TO_DAYS(begin_charge_time) >= TO_DAYS(#{startDate}) ]]></if>
+		<if test="endDate !=null and endDate !=''"><![CDATA[ AND TO_DAYS(begin_charge_time) <= TO_DAYS(#{endDate}) ]]></if>
+		<if test="companyName !=null and companyName !=''">AND company_name like CONCAT('%','${companyName}','%' )</if>
+		<if test="cityCode !=null and cityCode !=''">AND tc.CITY_id = #{cityCode}</if>
+		<if test="provinceCode !=null and provinceCode !=''">AND PROVINCE_ID = #{provinceCode}</if>
+		GROUP BY
+		user_account,
+		CITY_NAME,
+		left(begin_charge_time, 7)
+		ORDER BY
+		begin_charge_time DESC
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<select id="businessChargeStatisticCount" parameterType="map"
+		resultType="long">
+		select count(1) from
+		(
+		SELECT
+		CITY_NAME AS '城市',
+		company_name AS '纯商家名称',
+		left(begin_charge_time, 7) AS '月份',
+		count(1) AS '总充电次数',
+		sum(chOr_QuantityElectricity) AS '总电量(度数)',
+		sum(chOr_Moeny) AS
+		'收益金额(元)',
+		sum(chOr_ChargeMoney) AS '充电电费(元)',
+		sum(chOr_ServiceMoney) AS
+		'充电服务费(元)'
+		FROM
+		tbl_ChargingOrder co,
+		tbl_user_business_view tu,
+		tbl_ElectricPile ep,
+		tb_m_city tc
+		WHERE
+		ep.elpi_userid = tu.user_id
+		AND
+		ep.elPi_ElectricPileCode = co.chOr_PileNumber
+		AND
+		ep.elPi_OwnCityCode =
+		tc.CITY_ID
+		AND user_leval = '3'
+		AND
+		chOr_ChargingStatus = '2'
+		<if test="userLevel == 3"> AND tu.busi_company_id = #{companyId}</if>
+		<if test="startDate !=null and startDate !=''"><![CDATA[ AND TO_DAYS(begin_charge_time) >= TO_DAYS(#{startDate}) ]]></if>
+		<if test="endDate !=null and endDate !=''"><![CDATA[ AND TO_DAYS(begin_charge_time) <= TO_DAYS(#{endDate}) ]]></if>
+		<if test="companyName !=null and companyName !=''">AND company_name like CONCAT('%','${companyName}','%' )
+		</if>
+		<if test="cityCode !=null and cityCode !=''">AND tc.CITY_id = #{cityCode}</if>
+		<if test="provinceCode !=null and provinceCode !=''">AND PROVINCE_ID = #{provinceCode}</if>
+		GROUP BY
+		user_account,
+		CITY_NAME,
+		left(begin_charge_time, 7)) a
+	</select>
+
+	<select id="businessBespokeStatistic" parameterType="map"
+		resultType="java.util.LinkedHashMap">
+		SELECT
+		CITY_NAME AS '城市',
+		company_name AS '纯商家名称',
+		left(besp_BeginTime,
+		7) AS '月份',
+		count(*) AS '总预约支付次数',
+		sum(puHi_Monetary) AS '总收益金额(元)'
+		FROM
+		tbl_Bespoke bp,
+		tbl_user_business_view tu,
+		tbl_electricpile ep,
+		tb_m_city tc,
+		tbl_purchasehistory ph
+		WHERE
+		ep.elpi_userid = tu.user_id
+		AND ep.pk_ElectricPile = bp.besp_ElectricPileId
+		AND
+		ph.puHi_BespokeNumber = bp.besp_ResePaymentCode
+		AND ep.elPi_OwnCityCode
+		= tc.CITY_ID
+		AND user_leval = '3'
+		AND besp_OrderType = '1'
+		AND
+		besp_BespokeStatus = '2'
+		AND ph.puHi_Type = '2'
+		<if test="userLevel == 3"> AND tu.busi_company_id = #{companyId}</if>
+		<if test="startDate !=null and startDate !=''"><![CDATA[ AND TO_DAYS(besp_BeginTime) >= TO_DAYS(#{startDate}) ]]></if>
+		<if test="endDate !=null and endDate !=''"><![CDATA[ AND TO_DAYS(besp_BeginTime) <= TO_DAYS(#{endDate}) ]]></if>
+		<if test="companyName !=null and companyName !=''">AND company_name like CONCAT('%','${companyName}','%' )
+		</if>
+		<if test="cityCode !=null and cityCode !=''">AND tc.CITY_id = #{cityCode}</if>
+		<if test="provinceCode !=null and provinceCode !=''">AND PROVINCE_ID = #{provinceCode}</if>
+		GROUP BY
+		user_account,
+		CITY_NAME,
+		left(besp_BeginTime, 7)
+		ORDER BY
+		user_account,
+		besp_BeginTime DESC
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<select id="businessBespokeStatisticCount" parameterType="map"
+		resultType="long">
+		select count(1) from
+		(SELECT
+		CITY_NAME AS '城市',
+		user_account AS '纯商家名称',
+		left(besp_BeginTime, 7) AS '月份',
+		count(1) AS '总预约支付次数',
+		sum(puHi_Monetary) AS '总收益金额(元)'
+		FROM
+		tbl_Bespoke bp,
+		tbl_user_business_view tu,
+		tbl_electricpile ep,
+		tb_m_city tc,
+		tbl_purchasehistory ph
+		WHERE
+		ep.elpi_userid = tu.user_id
+		AND
+		ep.pk_ElectricPile = bp.besp_ElectricPileId
+		AND
+		ph.puHi_BespokeNumber =
+		bp.besp_ResePaymentCode
+		AND ep.elPi_OwnCityCode
+		= tc.CITY_ID
+		AND
+		user_leval = '3'
+		AND besp_OrderType = '1'
+		AND
+		besp_BespokeStatus = '2'
+		AND ph.puHi_Type = '2'
+		<if test="userLevel == 3"> AND tu.busi_company_id = #{companyId}</if>
+		<if test="startDate !=null and startDate !=''"><![CDATA[ AND TO_DAYS(besp_BeginTime) >= TO_DAYS(#{startDate}) ]]></if>
+		<if test="endDate !=null and endDate !=''"><![CDATA[ AND TO_DAYS(besp_BeginTime) <= TO_DAYS(#{endDate}) ]]></if>
+		<if test="companyName !=null and companyName !=''">AND company_name like CONCAT('%','${companyName}','%' )
+		</if>
+		<if test="cityCode !=null and cityCode !=''">AND tc.CITY_id = #{cityCode}</if>
+		<if test="provinceCode !=null and provinceCode !=''">AND PROVINCE_ID = #{provinceCode}</if>
+		GROUP BY
+		user_account,
+		CITY_NAME,
+		left(besp_BeginTime, 7)) a
+	</select>
+
+	<select id="getInvoiceManageCount" parameterType="map"
+		resultType="long">
+		select count(1) from (
+		select
+		*
+		from
+		tbl_invoice a,
+		tbl_user b
+		WHERE
+		b.user_id = a.iv_UserID
+		<!-- <if test="ivPhoneNumber != null and ivPhoneNumber != ''">
+			and iv_PhoneNumber like concat('%',#{ivPhoneNumber},'%')
+		</if> -->
+		<if test="ivRecipientsNumber != null and ivRecipientsNumber != ''">
+			and a.iv_RecipientsNumber like concat('%',#{ivRecipientsNumber},'%')
+		</if>
+		<if test="ivNumber != null and ivNumber != ''">
+			and iv_InvoiceNumber like concat('%',#{ivNumber},'%')
+		</if>
+		<if test="ivState != null and ivState != ''">
+			and iv_InvoiceStatus=#{ivState}
+		</if>
+		<if test="ivType != null and ivType != ''">
+			and iv_InvoiceType=#{ivType}
+		</if>
+		<if test="createDates !=null and createDates !='' ">
+			  <![CDATA[and a.iv_Createdate >=#{createDates}]]>
+		</if>
+		<if test="updateDates !=null and updateDates !=''">
+				 <![CDATA[and a.iv_Createdate <=date_add(#{updateDates}, INTERVAL 1 day)]]>
+		</if>
+		) aa
+
+	</select>
+	<select id="getInvoiceManageList" resultMap="tblInvoiceMap">
+
+		select
+		a.pk_Invoice pkInvoice,
+        b.user_account userAccount,
+		a.iv_PhoneNumber ivPhoneNumber,
+		a.iv_InvoiceNumber ivNumber,
+		a.iv_InvoiceType ivType,
+		a.iv_InvoiceStatus ivState,
+		a.iv_Pay_Freight ivPayFreight,
+		date_format(a.iv_CreateDate,'%Y-%m-%d %T') createDates,
+		date_format(a.iv_UpdateDate,'%Y-%m-%d %T') updateDates,
+		
+		a.iv_CompanyName ivCompanyName,
+		a.iv_InvoiceAmount ivInvoiceAmount,
+		a.iv_TaxpayerNumber ivTaxpayerNumber,
+		a.iv_CompanyAddress ivCompanyAddress,
+		a.iv_BankName ivBankName,
+		a.iv_BankAccount ivBankAccount,
+		a.iv_Recipients ivRecipients,
+		a.iv_RecipientsNumber ivRecipientsNumber
+		from
+		tbl_invoice a,
+		tbl_user b
+		WHERE
+		b.user_id = a.iv_UserID
+		<if test="ivRecipientsNumber != null and ivRecipientsNumber != ''">
+			and a.iv_RecipientsNumber like concat('%',#{ivRecipientsNumber},'%')
+		</if>
+
+		<if test="ivNumber != null and ivNumber != ''">
+			and a.iv_InvoiceNumber like concat('%',#{ivNumber},'%')
+		</if>
+		<if test="ivState != null and ivState != ''">
+			and a.iv_InvoiceStatus=#{ivState}
+		</if>
+		<if test="ivType != null and ivType != ''">
+			and a.iv_InvoiceType=#{ivType}
+		</if>
+		<if test="createDates !=null and createDates !='' ">
+			  <![CDATA[and a.iv_Createdate >=#{createDates}]]>
+		</if>
+
+		<if test="updateDates !=null and updateDates !=''">
+				 <![CDATA[and a.iv_Createdate <=date_add(#{updateDates}, INTERVAL 1 day)]]>
+		</if>
+		order by a.iv_CreateDate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	<select id="getInvoiceManageList_export" resultMap="tblInvoiceMap">
+
+		select
+		a.pk_Invoice pkInvoice,
+		a.iv_PhoneNumber ivPhoneNumber,
+		a.iv_InvoiceNumber ivNumber,
+		a.iv_InvoiceType ivType,
+		a.iv_InvoiceStatus ivState,
+		a.iv_Pay_Freight ivPayFreight,
+		date_format(a.iv_CreateDate,'%Y-%m-%d %T') createDates,
+		date_format(a.iv_UpdateDate,'%Y-%m-%d %T') updateDates,
+		a.iv_CompanyName ivCompanyName,
+		a.iv_InvoiceAmount ivInvoiceAmount,
+		a.iv_TaxpayerNumber ivTaxpayerNumber,
+		a.iv_CompanyAddress ivCompanyAddress,
+		a.iv_BankName ivBankName,
+		a.iv_BankAccount ivBankAccount,
+		a.iv_Recipients ivRecipients,
+		a.iv_RecipientsNumber ivRecipientsNumber,
+		a.iv_ConsigneeAddress ivConsigneeAddress,
+		concat(
+		(
+			SELECT
+				p.province_name
+			FROM
+				tb_m_province p
+			WHERE
+				a.iv_OwnProvinceCode = p.province_id
+		),
+		(
+			SELECT
+				c.city_name
+			FROM
+				tb_m_city c
+			WHERE
+				a.iv_OwnCityCode = c.city_id
+		),
+		(
+			SELECT
+				r.area_name
+			FROM
+				tb_m_area r
+			WHERE
+				a.iv_OwnCountyCode = r.area_id
+		)
+	) belongArea
+		from
+		tbl_invoice a,
+		tbl_user b
+		WHERE
+		b.user_id = a.iv_UserID
+		<if test="ivRecipientsNumber != null and ivRecipientsNumber != ''">
+			and a.iv_RecipientsNumber like concat('%',#{ivRecipientsNumber},'%')
+		</if>
+
+		<if test="ivNumber != null and ivNumber != ''">
+			and a.iv_InvoiceNumber like concat('%',#{ivNumber},'%')
+		</if>
+		<if test="ivState != null and ivState != ''">
+			and a.iv_InvoiceStatus=#{ivState}
+		</if>
+		<if test="ivType != null and ivType != ''">
+			and a.iv_InvoiceType=#{ivType}
+		</if>
+		<if test="createDates !=null and createDates !='' ">
+			  <![CDATA[and a.iv_Createdate >=#{createDates}]]>
+		</if>
+
+		<if test="updateDates !=null and updateDates !=''">
+				 <![CDATA[and a.iv_Createdate <=date_add(#{updateDates}, INTERVAL 1 day)]]>
+		</if>
+		order by a.iv_CreateDate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	<select id="getInvoiceById" parameterType="map" resultMap="tblInvoiceMap">
+
+		SELECT
+		t.iv_CompanyName ivCompanyName,
+		t.iv_InvoiceAmount
+		ivInvoiceAmount,
+		t.iv_TaxpayerNumber ivTaxpayerNumber,
+		t.iv_CompanyAddress ivCompanyAddress,
+		t.iv_PhoneNumber ivPhoneNumber,
+		t.iv_BankName ivBankName,
+		t.iv_BankAccount ivBankAccount,
+		t.iv_Recipients ivRecipients,
+		t.iv_RecipientsNumber ivRecipientsNumber,
+		t.iv_ConsigneeAddress ivConsigneeAddress,
+		concat(
+		(
+			SELECT
+				p.province_name
+			FROM
+				tb_m_province p
+			WHERE
+				t.iv_OwnProvinceCode = p.province_id
+		),
+		(
+			SELECT
+				c.city_name
+			FROM
+				tb_m_city c
+			WHERE
+				t.iv_OwnCityCode = c.city_id
+		),
+		(
+			SELECT
+				a.area_name
+			FROM
+				tb_m_area a
+			WHERE
+				t.iv_OwnCountyCode = a.area_id
+		)
+	) belongArea
+		
+		FROM
+		tbl_invoice t
+		WHERE
+		t.pk_Invoice =#{pkInvoice}
+
+	</select>
+	<update id="changeIvNumberById" parameterType="map">
+		update tbl_invoice
+		set iv_InvoiceNumber=#{ivNumber},
+		iv_InvoiceStatus=1
+		where
+		pk_Invoice=#{pkInvoice}
+	</update>
+	<update id="changePurHistoryById" parameterType="map">
+		update tbl_purchasehistory
+		set puhi_InvoiceStatus=2
+		where
+		pk_Invoice=#{pkInvoice}
+	</update>
+	<update id="updateChargingSate" parameterType="map">
+		update
+		tbl_ChargingOrder set chOr_ChargingStatus=#{chOrChargingStatus}
+		where
+		pk_ChargingOrder=#{pkChargingOrder}
+	</update>
+
+	<select id="getChargingOrderById" parameterType="map"
+		resultMap="tblChargeOrderMap">
+		SELECT	
+		 pk_ChargingOrder pkChargingOrder, chOr_Code chorCode, chOr_AppointmenCode chorAppointmencode, 
+		 chOr_PileNumber chorPilenumber, chOr_UserId chorUserid, chOr_Type chorType, 
+	     chOr_Moeny chorMoeny, chOr_QuantityElectricity chorQuantityelectricity, 
+	     chOr_ChargingStatus chOrChargingStatus,chOr_Createdate chorCreatedate, 
+	     chOr_Updatedate chorUpdatedate,chOr_TransactionNumber chorTransactionnumber, chOr_OrderType chorOrdertype, 
+	     chOr_ChargeMoney chorChargemoney,chOr_ServiceMoney chorServicemoney, begin_charge_time, end_charge_time, 
+	     chOr_UserOrigin chOrUserOrigin, pk_UserCard pkUserCard
+		FROM
+		tbl_ChargingOrder co where
+		co.pk_ChargingOrder=#{pkChargingOrder}
+	</select>
+  <insert id="insert" parameterType="com.wanma.model.TblPurchasehistory" >
+    insert into tbl_purchasehistory ( puHi_Type, puHi_PurchaseHistoryTime, 
+      puHi_Monetary, puHi_ConsumerRemark, puHi_Createdate, 
+      puHi_Updatedate, 
+      puHi_UserId, puHi_ChargeType, puHi_UserOrigin, 
+      puHi_ElectricPileCode, puHi_ExternalCardNumber, 
+      puHi_TransactionNumber, puHi_BespokeNumber, 
+      puHi_PaymentNumber, puhi_InvoiceStatus)
+    values (#{puhiType}, #{puhiPurchasehistorytime}, 
+      #{puhiMonetary}, #{puhiConsumerremark}, #{puhiCreatedate}, 
+      #{puhiUpdatedate}, 
+      #{puhiUserid}, #{puhiChargeType}, #{puHiUserOrigin}, 
+      #{puHiElectricPileCode}, #{puHiExternalCardNumber}, 
+      #{puHiTransactionNumber}, #{puHiBespokeNumber}, 
+      #{puHiPaymentNumber},0)
+  </insert>
+	
+</mapper>

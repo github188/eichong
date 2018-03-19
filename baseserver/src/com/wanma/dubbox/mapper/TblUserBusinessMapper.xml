@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wanma.dubbox.dao.TblUserBusinessMapper">
+	<resultMap id="BaseResultMap" type="com.wanma.dubbox.model.TblUserBusiness">
+		<id column="user_id" property="id" jdbcType="INTEGER" />
+		<result column="busi_company_id" property="comId" jdbcType="INTEGER" />
+		<result column="busi_parent_id" property="pid" jdbcType="INTEGER" />
+		<result column="createdate" property="cdate" jdbcType="TIMESTAMP" />
+		<result column="updatedate" property="udate" jdbcType="TIMESTAMP" />
+		<result column="busi_name" property="name" jdbcType="VARCHAR" />
+		<result column="busi_phone" property="pho" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<select id="selectOne" resultMap="BaseResultMap" parameterType="TblUserBusiness">
+		select ${rtColumns}
+		from tbl_user_business
+		where user_id =
+		#{id,jdbcType=INTEGER}
+	</select>
+
+	<delete id="delete" parameterType="TblUserBusiness">
+		delete from tbl_user_business
+		where user_id = #{id,jdbcType=INTEGER}
+	</delete>
+
+	<insert id="insert" parameterType="TblUserBusiness"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into tbl_user_business
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				user_id,
+			</if>
+			<if test="comId != null">
+				busi_company_id,
+			</if>
+			<if test="pid != null">
+				busi_parent_id,
+			</if>
+			<if test="name != null">
+				busi_name,
+			</if>
+			<if test="pho != null">
+				busi_phone,
+			</if>
+			createdate,
+			updatedate
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="comId != null">
+				#{comId,jdbcType=INTEGER},
+			</if>
+			<if test="pid != null">
+				#{pid,jdbcType=INTEGER},
+			</if>
+			<if test="name != null">
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="pho != null">
+				#{pho,jdbcType=VARCHAR},
+			</if>
+			sysdate(),
+			sysdate()
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="TblUserBusiness">
+		update tbl_user_business
+		<set>
+			<if test="comId != null">
+				busi_company_id = #{comId,jdbcType=INTEGER},
+			</if>
+			<if test="pid != null">
+				busi_parent_id = #{pid,jdbcType=INTEGER},
+			</if>
+			<if test="name != null">
+				busi_name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="pho != null">
+				busi_phone = #{pho,jdbcType=VARCHAR},
+			</if>
+			updatedate = sysdate()
+		</set>
+		where user_id = #{id,jdbcType=INTEGER}
+	</update>
+
+	<select id="getCount" resultType="int" parameterType="TblUserBusiness">
+		select
+		count(1)
+		from tbl_user_business t
+		where exists(select 1 from
+		tbl_user a where a.user_id = t.user_id and a.user_status = '1'
+		<if test="bsAcc != null and bsAcc !=''">
+			and a.user_account like concat('%',#{bsAcc},'%')
+		</if>
+		)
+		<if test="id != null">
+			and user_id = #{id}
+		</if>
+		<if test="comId != null">
+			and busi_company_id = #{comId}
+		</if>
+		<if test="fkIds != null">
+			and busi_company_id in
+			<foreach item="item" index="index" collection="fkIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+	</select>
+
+	<select id="getList" resultMap="BaseResultMap" parameterType="TblUserBusiness">
+		select ${rtColumns}
+		from tbl_user_business t
+		where exists(select 1 from
+		tbl_user a where a.user_id = t.user_id and a.user_status = '1'
+		<if test="bsAcc != null and bsAcc !=''">
+			and a.user_account like concat('%',#{bsAcc},'%')
+		</if>
+		)
+		<if test="id != null">
+			and user_id = #{id}
+		</if>
+		<if test="comId != null">
+			and busi_company_id = #{comId}
+		</if>
+		<if test="fkIds != null">
+			and busi_company_id in
+			<foreach item="item" index="index" collection="fkIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		order by updatedate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+</mapper>

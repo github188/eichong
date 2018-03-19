@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/style.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/APPissue/add_androidUpdate.css"/>
+    <title>新建安卓升级</title>
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="container-fluid">
+        <div class="row">
+        </div>
+        <div class="row">
+            <div class="col-sm-12" style="padding: 0">
+                <div class="ibox float-e-margins">
+                    <div class="">
+                        <div class="ibox-content">
+                            <div class="add_userBlock">
+                                <div class="add_greyBlock">
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">应用<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8">
+                                            <div class=" col-sm-3 col-xs-4 model-select-box" style="width: 100%">
+                                                <div class="model-select-text versTypeBlock" data-value="1" id="versTypeHtml">爱充App</div>
+                                                <span class="downRow versTypeBlock"></span>
+                                                <input type="text" name="versType" hidden="hidden" id="" value="" />
+                                                <ul class="model-select-option versTypeUl">
+                                                    <li data-option="1">爱充App</li>
+                                                    <li data-option="3">政企App</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="versTypeTip">
+
+                                        </div>
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">序号<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="versNumber" id="" class="commonStyle" placeholder="请输入序号"/>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="verNumTip">
+
+                                        </div>
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">版本描述<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="versRemark" id="" class="commonStyle" placeholder="请输入版本描述"/>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="versRemarkTip">
+
+                                        </div>
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">是否强制更新<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8">
+                                            <div class=" col-sm-3 col-xs-4 model-select-box" style="width: 100%">
+                                                <div class="model-select-text isAutoUpdateBlock" data-value="1" id="isAutoUpdateHtml">是</div>
+                                                <span class="downRow isAutoUpdateBlock"></span>
+                                                <input type="text" name="isAutoUpdate" hidden="hidden" id="" value="" />
+                                                <ul class="model-select-option isAutoUpdateUl">
+                                                    <li data-option="1">是</li>
+                                                    <li data-option="0">否</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="isAutoUpdateTip">
+
+                                        </div>
+                                    </div>
+                                    <!--按钮组合-->
+                                    <div class="saveBtn commonBtn" id="saveBtn" onclick="toSaveUpdateInfo()">保存</div>
+                                    <div class="quitBtn commonBtn" id="goback">取消</div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/APPissue/add_androidUpdate.js" type="text/javascript" charset="utf-8"></script>
+</html>

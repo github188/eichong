@@ -1,0 +1,489 @@
+/**     
+ * @Title:  test1.java   
+ * @Package test   
+ * @Description:    TODO  
+ * @author: Android_Robot     
+ * @date:   2016年2月23日 下午1:16:18   
+ * @version V1.0     
+ */
+package com.wanma.hbase;
+
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.HColumnDescriptor;
+import org.apache.hadoop.hbase.HTableDescriptor;
+import org.apache.hadoop.hbase.KeyValue;
+import org.apache.hadoop.hbase.client.Get;
+import org.apache.hadoop.hbase.client.HBaseAdmin;
+import org.apache.hadoop.hbase.client.HTable;
+import org.apache.hadoop.hbase.client.Put;
+import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.client.ResultScanner;
+import org.apache.hadoop.hbase.client.Scan;
+import org.apache.hadoop.hbase.filter.CompareFilter.CompareOp;
+import org.apache.hadoop.hbase.filter.Filter;
+import org.apache.hadoop.hbase.filter.FilterList;
+import org.apache.hadoop.hbase.filter.PrefixFilter;
+import org.apache.hadoop.hbase.filter.SingleColumnValueFilter;
+import org.apache.hadoop.hbase.filter.SubstringComparator;
+import org.apache.hadoop.hbase.util.Bytes;
+
+public class HBaseUtil {
+	private static String seperator = ":";
+	static Configuration cfg = null;
+	// 声明静态配置 HBaseConfiguration
+	static {
+		//String hostName=MessageManager.getMessageManager().getSystemProperties("hostName");
+		cfg = HBaseConfiguration.create();
+//		cfg.set("hbase.zookeeper.quorum", hostName);
+		cfg.set("hbase.zookeeper.property.clientPort", "2181");
+		Configuration csd = cfg;
+		System.out.println(csd);
+	}
+
+	/**
+	 * 
+	 * @Description: 创建一张表，通过HBaseAdmin HTableDescriptor来创建
+	 * @param tablename
+	 *            表名
+	 * @param columnFamily
+	 *            列簇
+	 * @author wbc 2016年2月24日
+	 * @return: boolean
+	 */
+	public boolean creat(String tablename, String... columnFamily) {
+		try {
+			HBaseAdmin admin = new HBaseAdmin(cfg);
+			if (admin.tableExists(tablename)) {
+				// System.out.println(tablename+" exists!");
+				return false;
+				// System.exit(0);
+			} else {
+				HTableDescriptor tableDesc = new HTableDescriptor(tablename);
+				for (String cf : columnFamily) {
+					tableDesc.addFamily(new HColumnDescriptor(cf));
+				}
+				admin.createTable(tableDesc);
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public HTable getTable(String tablename) {
+		HTable table = null;
+		try {
+			table = new HTable(cfg, tablename);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return table;
+	}
+
+	/**
+	 * 
+	 * @Description: 添加一条数据，通过HTable Put为已经存在的表来添加数据
+	 * @param tablename
+	 *            表名
+	 * @param row
+	 *            列ID
+	 * @param columnFamily
+	 *            列簇
+	 * @param column
+	 *            列名
+	 * @param data
+	 *            值
+	 * @author wbc 2016年2月24日
+	 * @return: boolean
+	 */
+	public boolean put(String tablename, String row, String columnFamily,
+			String column, String data) {
+		try {
+			HTable table = new HTable(cfg, tablename);
+			Put p1 = new Put(Bytes.toBytes(row));
+			p1.add(Bytes.toBytes(columnFamily), Bytes.toBytes(column),
+					Bytes.toBytes(data));
+			table.put(p1);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * 
+	 * @Description: 添加一条数据，通过HTable Put为已经存在的表来添加数据
+	 * @param tablename
+	 *            表名
+	 * @param row
+	 *            列ID
+	 * @param columnFamily
+	 *            列簇
+	 * @param column
+	 *            列名
+	 * @param data
+	 *            值
+	 * @author wbc 2016年2月24日
+	 * @return: boolean
+	 */
+	public boolean put(String tablename, String row, String columnFamily,
+			String[] column, String[] data) {
+		try {
+			HTable table = new HTable(cfg, tablename);
+			Put p1 = new Put(Bytes.toBytes(row));
+			for (int i = 0; i < column.length; i++) {
+				p1.add(Bytes.toBytes(columnFamily), Bytes.toBytes(column[i]),
+						Bytes.toBytes(data[i]));
+			}
+			table.put(p1);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * 
+	 * @Description: 添加一条数据，通过HTable Put为已经存在的表来添加数据
+	 * @param tablename
+	 *            表名
+	 * @param row
+	 *            列ID
+	 * @param columnFamily
+	 *            列簇
+	 * @param bean
+	 *            对象
+	 * @author wbc 2016年2月24日
+	 * @return: boolean
+	 */
+	public boolean put(String tablename, String row, String columnFamily,
+			Object object) {
+		try {
+			HTable table = new HTable(cfg, tablename);
+			Put p1 = new Put(Bytes.toBytes(row));
+			Field[] fields = object.getClass().getDeclaredFields();
+			for (Field f : fields) {
+				f.setAccessible(true);
+				p1.add(Bytes.toBytes(columnFamily), Bytes.toBytes(f.getName()),
+						Bytes.toBytes(f.get(object) + ""));
+			}
+			table.put(p1);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * 
+	 * @Description:批量添加一条数据，通过HTable Put为已经存在的表来添加数据
+	 * @param tablename
+	 *            表名
+	 * @param row
+	 *            列ID
+	 * @param columnFamily
+	 *            列簇
+	 * @param bean
+	 *            对象
+	 * @author wbc 2016年2月24日
+	 * @return: boolean
+	 */
+	public boolean putBatch(String tablename, String rowProperty,
+			String columnFamily, List<Object> list, boolean addRowVariable) {
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhhmmss");
+			HTable table = new HTable(cfg, tablename);
+			table.setAutoFlush(false);
+			for (Object object : list) {
+				Put p1 = null;
+				Field[] fields = object.getClass().getDeclaredFields();
+				for (Field f : fields) {
+					f.setAccessible(true);
+					if (f.getName().equals(rowProperty)) {
+						String row = f.get(object).toString()
+								+ (addRowVariable ? "_"
+										+ sdf.format(new Date()) : "");
+						p1 = new Put(Bytes.toBytes(row));
+					}
+					System.out.println(f.getName() + ":" + f.get(object));
+					if (f.get(object) != null) {
+						p1.add(Bytes.toBytes(columnFamily),
+								Bytes.toBytes(f.getName()),
+								Bytes.toBytes(f.get(object) + ""));
+					}
+				}
+				table.put(p1);
+			}
+			table.flushCommits();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * 
+	 * @Description: 获取行数据(结果集中key属性为columnFamily+":"+key组合)
+	 * @param tablename
+	 *            表名
+	 * @param row
+	 *            列ID
+	 * @author wbc 2016年2月24日
+	 * @return: Map<String,String>
+	 */
+	public Map<String, String> getDataWithColumnFamily(String tablename,
+			String row) {
+		HTable table;
+		Result result = null;
+		try {
+			table = new HTable(cfg, tablename);
+			Get g = new Get(Bytes.toBytes(row));
+			result = table.get(g);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return formatResultWithColumnFamily(result);
+	}
+
+	/**
+	 * 
+	 * @Description: 获取行数据
+	 * @param tablename
+	 *            表名
+	 * @param row
+	 *            列ID
+	 * @author wbc 2016年2月24日
+	 * @return: Map<String,String>
+	 */
+	public Map<String, String> getDataWithRowKey(String tablename, String row) {
+		HTable table;
+		Result result = null;
+		try {
+			table = new HTable(cfg, tablename);
+			Get g = new Get(Bytes.toBytes(row));
+			result = table.get(g);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return formatResult(result);
+	}
+	
+	//根据过滤器查结果"equal,zl,ep_code,3301020010000001"
+	@SuppressWarnings("deprecation")
+	public  List<Map<String, String>> selectByFilter(String tablename,
+			List<Filter> conditions,List<String> columns,long minStamp,long maxStamp) {
+		List<Map<String, String>> resultList=new ArrayList<Map<String,String>>();
+		try {
+			HTable table = new HTable(cfg, tablename);
+			FilterList filterList = new FilterList();
+			Scan s1 = new Scan();
+			s1.setTimeRange(minStamp, maxStamp);
+			for (Filter v : conditions) { // 各个条件之间是“与”的关系
+				filterList.addFilter(v);
+			}
+//			for(String column:columns){
+//				String[] s = column.split(",");
+//				// 添加下面这一行后，则只返回指定的cell，同一行中的其他cell不返回
+//				s1.addColumn(Bytes.toBytes(s[0]), Bytes.toBytes(s[1]));
+//			}
+			if(filterList.filterRow()){
+				s1.setFilter(filterList);
+			}
+			ResultScanner ResultScannerFilterList = table.getScanner(s1);
+			Map<String, String> map = null;
+			for (Result rr = ResultScannerFilterList.next(); rr != null; rr = ResultScannerFilterList
+					.next()) {
+				map = new HashMap<String, String>();
+				List<KeyValue> kvList=rr.list();
+				map.put("ts", kvList.get(0).getTimestamp()+"");
+				for (KeyValue kv : kvList) {
+					map.put(new String(kv.getQualifier()),
+							new String(kv.getValue()));
+				}
+				resultList.add(map);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return resultList;
+	}
+	
+	private Filter getFilterByParam(String param){
+		if(StringUtils.isBlank(param))return null;
+		String[] s = param.split(",");
+		if(s.length==3){
+			SingleColumnValueFilter scvf=new SingleColumnValueFilter(Bytes
+					.toBytes(s[0]), Bytes.toBytes(s[1]), CompareOp.EQUAL, new SubstringComparator(s[2])
+					);
+			scvf.setFilterIfMissing(true);
+			return scvf;
+		}else if(s.length!=4){
+			return null;
+		}else{
+			String condition=s[0];
+			if(condition.equals(RealtimeConstant.FITER_EQUAL)){
+				SingleColumnValueFilter scvf=new SingleColumnValueFilter(Bytes
+						.toBytes(s[1]), Bytes.toBytes(s[2]), CompareOp.EQUAL, new SubstringComparator(s[3])
+						);
+				scvf.setFilterIfMissing(true);
+				return scvf;
+			}else if(condition.equals(RealtimeConstant.FITER_NOT_EQUAL)){
+				SingleColumnValueFilter scvf=new SingleColumnValueFilter(Bytes
+						.toBytes(s[1]), Bytes.toBytes(s[2]), CompareOp.NOT_EQUAL, new SubstringComparator(s[3])
+						);
+				scvf.setFilterIfMissing(true);
+				return scvf;
+			}else if(condition.equals(RealtimeConstant.FITER_PREFIX)){
+				PrefixFilter fiter=new PrefixFilter(s[3].getBytes());
+				return fiter;
+			}else{
+				return null;
+			}
+		}
+	}
+
+	/*
+	 * public List<RealData> QueryRealData(String name) throws Exception {
+	 * HTable table = new HTable(cfg, "history".getBytes()); Scan scan = new
+	 * Scan(); scan.addColumn("zl".getBytes(), "ep_code".getBytes());
+	 * scan.addColumn("zl".getBytes(), "output_voltage".getBytes());
+	 * scan.addColumn("zl".getBytes(), "output_current".getBytes());
+	 * scan.addColumn("zl".getBytes(), "soc".getBytes());
+	 * scan.addColumn("zl".getBytes(), "bp_lowest_temperature".getBytes());
+	 * scan.addColumn("zl".getBytes(), "bp_highest_temperature".getBytes());
+	 * RowFilter filter = new RowFilter(CompareOp.EQUAL, new
+	 * RegexStringComparator(name)); scan.setFilter(filter); List<RealData> list
+	 * = new ArrayList<RealData>(); ResultScanner rScanner =
+	 * table.getScanner(scan); for (Result rs : rScanner) { RealData e = new
+	 * RealData(); for (KeyValue kValue : rs.list()) { System.out.print(new
+	 * String(kValue.getQualifier()) + ":" + new String(kValue.getValue())); if
+	 * ("output_voltage".equalsIgnoreCase(new String(kValue .getQualifier()))) {
+	 * e.setOutput_voltage(new String(kValue.getValue())); } if
+	 * ("output_current".equalsIgnoreCase(new String(kValue .getQualifier()))) {
+	 * e.setOutput_current(new String(kValue.getValue())); } } System.out
+	 * .println("------------------------------------------------");
+	 * list.add(e); } return list; }
+	 */
+
+	/**
+	 * 
+	 * @Description: 根据列簇和 key名获取属性值
+	 * @param tablename
+	 *            表名
+	 * @param row
+	 *            列ID
+	 * @param columnFamily
+	 *            列簇
+	 * @param column
+	 *            列名
+	 * @author wbc 2016年2月24日
+	 * @return: String
+	 */
+	public String getValueByColumnFamilyAndKey(String tablename, String row,
+			String columnFamily, String column) {
+		return getDataWithColumnFamily(tablename, row).get(
+				columnFamily + seperator + column);
+	}
+
+	/**
+	 * 
+	 * @Description: 根据 key名获取属性值
+	 * @param tablename
+	 *            表名
+	 * @param row
+	 *            列ID
+	 * @param column
+	 *            列名
+	 * @author wbc 2016年2月24日
+	 * @return: String
+	 */
+	public String getValueByKey(String tablename, String row, String key) {
+		return getDataWithRowKey(tablename, row).get(key);
+	}
+
+	/**
+	 * 
+	 * @Description: 获取全表
+	 * @param tablename
+	 *            表名
+	 * @author wbc 2016年2月24日
+	 * @return: List<Map<String,String>>
+	 */
+	public List scanWithColumnFamily(String tablename) {
+		List list = new ArrayList();
+		try {
+			HTable table = new HTable(cfg, tablename);
+			Scan s = new Scan();
+			s.setCaching(10000);
+			s.setCacheBlocks(false);
+			long time = System.currentTimeMillis();
+			s.setTimeRange(time - (3600000L * 60 * 20), time);
+			ResultScanner rs = table.getScanner(s);
+			for (Result r : rs) {
+				list.add(formatResultWithColumnFamily(r));
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+
+	private Map<String, String> formatResultWithColumnFamily(Result result) {
+		Map<String, String> map = new HashMap<String, String>();
+		for (KeyValue kv : result.raw()) {
+			map.put(new String(kv.getFamily()) + seperator
+					+ new String(kv.getQualifier()), new String(kv.getValue()));
+		}
+		return map;
+	}
+
+	private Map<String, String> formatResult(Result result) {
+		if (result == null)
+			return null;
+		Map<String, String> map = new HashMap<String, String>();
+		for (KeyValue kv : result.raw()) {
+			map.put(new String(kv.getQualifier()), new String(kv.getValue()));
+		}
+		return map;
+	}
+
+	/**
+	 * 
+	 * @Description: 删除表
+	 * @param tablename
+	 *            表名
+	 * @author wbc 2016年2月24日
+	 * @return: boolean
+	 */
+	public boolean delete(String tablename) {
+		try {
+			HBaseAdmin admin = new HBaseAdmin(cfg);
+			if (admin.tableExists(tablename)) {
+				admin.disableTable(tablename);
+				admin.deleteTable(tablename);
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+
+}

@@ -1,0 +1,10 @@
+package com.cn.wanma.dao;
+
+
+
+public interface CommonMapper {
+
+
+	String getKey(int comNum);
+    
+}

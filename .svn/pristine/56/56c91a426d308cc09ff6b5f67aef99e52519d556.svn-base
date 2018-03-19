@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+			
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsInstallMapper">
+	<resultMap type="TblAppointmentinstallationorder" id="result_install">
+		<id property="pkAppointmentinstallationorder" column="pk_AppointmentInstallationOrder" />
+		<result property="alorInstallationordercode" column="aLOr_InstallationOrderCode" />
+		<result property="alorInstallationorderproductid" column="aLOr_InstallationOrderProductID" />
+		<result property="alorInstallationorderproductname" column="aLOr_InstallationOrderProductName" />
+		<result property="alorUserid" column="aLOr_UserID" />
+		<result property="alorTellogin" column="aLOr_TelLogin" />
+		<result property="alorMoney" column="aLOr_Money" />
+		<result property="alorInstallationorderstatus" column="aLOr_InstallationOrderStatus" />
+		<result property="alorBuyingtime" column="aLOr_BuyingTime" />
+		<result property="aiorInstallationaddress" column="aiOr_InstallationAddress" />
+		<result property="alorInstallationperson" column="aLOr_InstallationPerson" />
+		<result property="alorLnstallationtel" column="aLOr_LnstallationTel" />
+		<result property="alorCommoditytotal" column="aLOr_CommodityTotal" />
+		<result property="alorCommodityshops" column="aLOr_CommodityShops" />
+		<result property="aLorOrderType" column="aLor_OrderType" />
+		<result property="aLorOrderId" column="aLor_OrderId" />
+	</resultMap>
+	
+	<!-- 根据ID查询预约安装信息 -->
+	<select id="findInstall" parameterType="String" resultMap="result_install">
+		SELECT 
+			pk_AppointmentInstallationOrder,
+			aLOr_InstallationOrderCode,
+			aLOr_InstallationOrderProductID,
+			aLOr_InstallationOrderProductName,
+			aLOr_UserID,
+			aLOr_TelLogin,
+			aLOr_Money,
+			aLOr_InstallationOrderStatus,
+			aLOr_BuyingTime,
+			aiOr_InstallationAddress,
+			aLOr_InstallationPerson,
+			aLOr_LnstallationTel,
+			aLOr_CommodityTotal,
+			aLOr_CommodityShops,
+			aLor_OrderType
+		FROM tbl_AppointmentInstallationOrder ao 
+		INNER JOIN tbl_user_normal_view AS ui ON ui.user_id = ao.aLOr_UserID
+		where pk_AppointmentInstallationOrder=#{pkAppointmentinstallationorder}
+	</select>
+
+	<!-- 取得预约安装信息列表 -->
+	<select id="getInstallList" resultMap="result_install">
+		SELECT 
+			pk_AppointmentInstallationOrder,
+			aLOr_InstallationOrderCode,
+			aLOr_InstallationOrderProductID,
+			aLOr_InstallationOrderProductName,
+			(ui.usIn_FacticityName) as factNames,
+			aLOr_TelLogin,
+			aLOr_Money,
+			aLOr_InstallationOrderStatus,
+			aLOr_BuyingTime,
+			aiOr_InstallationAddress,
+			aLOr_InstallationPerson,
+			aLOr_LnstallationTel,
+			aLOr_CommodityTotal,
+			aLOr_CommodityShops,
+			aLor_OrderType
+		FROM tbl_AppointmentInstallationOrder ao 
+		INNER JOIN tbl_user_normal_view AS ui ON ui.user_id = ao.aLOr_UserID
+	</select>
+
+	<!-- 查询全部预约安装信息 -->
+	<select id="searchInstallList" parameterType="TblAppointmentinstallationorder" resultMap="result_install">
+		SELECT 
+			pk_AppointmentInstallationOrder,
+			aLOr_InstallationOrderCode,
+			<!-- ind.inDe_ProductName aLOr_InstallationOrderProductID,
+			ind.inDe_ProductCode aLOr_InstallationOrderProductName, -->
+			ui.user_account as userPhone,
+			(ui.norm_real_name) AS factNames,
+			aLOr_TelLogin,
+			aLOr_Money,
+			<!-- ind.inDe_TotalAmount aLOr_Money, -->
+			aLOr_InstallationOrderStatus,
+			aLOr_BuyingTime,
+			aiOr_InstallationAddress,
+			aLOr_InstallationPerson,
+			aLOr_LnstallationTel,
+			aLOr_CommodityTotal,
+			aLOr_CommodityShops,
+			aLor_OrderType
+		FROM tbl_AppointmentInstallationOrder ao 
+		inner JOIN tbl_user_normal_view AS ui ON ui.user_id = ao.aLOr_UserID
+		<!-- left join tbl_InstallDetail ind on ao.pk_AppointmentInstallationOrder = ind.inDe_ParentId -->
+		<where>
+			<if test="alorInstallationordercode !=null and alorInstallationordercode !=''">
+				and aLOr_InstallationOrderCode like concat('%',#{alorInstallationordercode},'%') 
+			</if>
+			<if test="alorInstallationorderstatus !=null and alorInstallationorderstatus !=''">
+				and aLOr_InstallationOrderStatus=#{alorInstallationorderstatus}
+			</if>
+			<if test="factNames !=null and factNames !=''">
+				and (ui.norm_real_name like concat('%',#{factNames},'%') or ui.user_account like concat('%',#{factNames},'%'))
+			</if>
+			<if test="alorTellogin !=null and alorTellogin !=''">
+				and aLOr_TelLogin like concat('%',#{alorTellogin},'%')   
+			</if>
+		</where>
+		ORDER BY aLOr_BuyingTime DESC
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<!-- 查询预约安装数量 -->
+	<select id="searchInstallCount" parameterType="TblAppointmentinstallationorder"
+		resultType="long">
+		select
+		count(pk_AppointmentInstallationOrder)	
+		FROM tbl_AppointmentInstallationOrder ao 
+		inner JOIN tbl_user_normal_view AS ui ON ui.user_id = ao.aLOr_UserID
+		<where>
+			<if test="alorInstallationordercode !=null and alorInstallationordercode !=''">
+				and aLOr_InstallationOrderCode like concat('%',#{alorInstallationordercode},'%') 
+			</if>
+			<if test="alorInstallationorderstatus !=null and alorInstallationorderstatus !=''">
+				and aLOr_InstallationOrderStatus=#{alorInstallationorderstatus}
+			</if>
+			<if test="factNames !=null and factNames !=''">
+				and (ui.norm_real_name like concat('%',#{factNames},'%') or ui.user_account like concat('%',#{factNames},'%'))
+			</if>
+			 <if test="alorTellogin !=null and alorTellogin !=''">
+				and aLOr_TelLogin like concat('%',#{alorTellogin},'%')   
+			</if>
+		</where>
+	</select>
+</mapper>

@@ -1,0 +1,67 @@
+*{
+	margin: 0;
+	padding: 0;
+}
+body,html{
+	font-size: 62.5%;
+	background: #FFFFFF;
+}
+/*第一块===================================================*/
+.container{
+	padding: 0;
+	width: 100%;
+	height: 4rem;
+	background-color: #FF7D00;
+}
+.container .row{
+	padding: 0;
+	margin: 0;
+}
+.container .row .back{
+	padding: 0;
+	padding: 1.2rem 0 0 1.5rem;
+}
+.container .row .back img{
+	width: 1rem;
+	height: 1.5rem;
+	
+}
+.container .row .head{
+	line-height: 4rem;
+	
+	padding: 0;
+	padding-left:5.8rem ;
+	font-size: 1.6rem;
+	color:#FFFFFF;
+	font-weight: 900;
+	font-family: "微软雅黑";
+}
+/*第二块======================================================*/
+.content{
+	width: 100%;
+	height: auto;
+	
+}
+.content .tel-list{
+	width: 86%;
+	height: 4rem;
+	margin: 0 auto;
+	border-bottom: 0.2rem solid #CCCCCC;
+	padding: 0 1.2rem;
+}
+.content .tel-list .kinds{
+	display: block;
+	float: left;
+	line-height: 4rem;
+	color: #808080;
+	font-size: 1.4rem;
+	font-family: "微软雅黑";
+}
+.content .tel-list .tel-phone{
+	display: block;
+	float: right;
+	line-height: 4rem;
+	color: #808080;
+	font-size: 1.4rem;
+	font-family: "微软雅黑";
+}

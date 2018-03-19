@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.OrderStatisticMapper">
+
+	<!-- 用户总充电量 -->
+	<select id="countTotalElectricCharge" parameterType="Long" resultType="Double">
+	     SELECT sum(chOr_QuantityElectricity) FROM tbl_chargingorder where chOr_ChargingStatus in (2,3) and chOr_UserId = #{userId} GROUP BY chOr_UserId
+	</select>
+	
+	<!-- 用户总订单 -->
+	<select id="countTotalOrder" parameterType="Long" resultType="string">
+	    SELECT count(1) FROM tbl_chargingorder where chOr_ChargingStatus in (2,3) and chOr_UserId = #{userId} GROUP BY chOr_UserId
+	</select>
+	
+	<!-- 用户今日订单 -->
+	<select id="countTotalTodayOrder" parameterType="Long" resultType="string">
+	 SELECT count(1) FROM tbl_chargingorder where chOr_ChargingStatus in (2,3) and chOr_UserId = #{userId}
+	     AND <![CDATA[ DATE_FORMAT(chOr_Createdate,'%Y-%m-%d') = DATE_FORMAT(NOW(),'%Y-%m-%d')  ]]>
+	     GROUP BY chOr_UserId
+	</select>
+	
+	<!-- 公司总充电量 -->
+	<select id="countTotalCpyElectricCharge" parameterType="Integer" resultType="Double">
+	     SELECT sum(chOr_QuantityElectricity) FROM tbl_chargingorder where chOr_ChargingStatus in (2,3) and chOr_OrgNo = #{cpyNumber} GROUP BY chOr_OrgNo
+	</select>
+	
+	<!-- 公司总订单 -->
+	<select id="countTotalCpyOrder" parameterType="Integer" resultType="string">
+	    SELECT count(1) FROM tbl_chargingorder where chOr_ChargingStatus in (2,3) and chOr_OrgNo = #{cpyNumber} GROUP BY chOr_OrgNo
+	</select>
+	
+	<!-- 公司总消费 -->
+	<select id="countTotalCpyConsume" parameterType="Integer" resultType="Double">
+	    SELECT SUM(chOr_ChargeMoney)+SUM(chOr_ServiceMoney)-SUM(chOr_CouponMoney) FROM tbl_chargingorder where chOr_ChargingStatus in (2,3) and chOr_OrgNo = #{cpyNumber} GROUP BY chOr_OrgNo
+	</select>
+	
+	<!-- 公司今日订单 -->
+	<select id="countTotalTodayCpyOrder" parameterType="Integer" resultType="string">
+	 SELECT count(1) FROM tbl_chargingorder where chOr_ChargingStatus in (2,3) and chOr_OrgNo = #{cpyNumber}
+	     AND <![CDATA[ DATE_FORMAT(chOr_Createdate,'%Y-%m-%d') = DATE_FORMAT(NOW(),'%Y-%m-%d')  ]]>
+	     GROUP BY chOr_OrgNo
+	</select>
+	
+</mapper>

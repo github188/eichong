@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+			
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="blank" />
+		<meta name="format-detection" content="telephone=no" />
+		<title>我的首页</title>
+		<!--<link rel="stylesheet" type="text/css" href="dist/css/bootstrap.min.css"/>-->
+		<link rel="stylesheet" type="text/css" href="dist/css/bootstrap.css"/>
+		<link rel="stylesheet" type="text/css" href="css/base.css"/>
+		<link rel="stylesheet" type="text/css" href="css/mui.css"/>
+		<link rel="stylesheet" type="text/css" href="css/myPage.css"/>
+		<!--[if lt IE 9]>
+			<script src="dist/js/html5shiv.min.js"></script>
+			<script src="dist/js/respond.min.js"></script>
+		<![endif]-->
+	</head>
+	<body>
+	<!--顶部==========================================================================-->
+	<div class="headTop">
+		<div class="headLeft col-xs-5">
+			<div class="round">
+				<!--<img src="img/bg_map_head2.png"/>-->
+				<img src="img/img_my_money.png"  style="border-radius: 50%; border:1px solid #CCCCCC;" id="usinHeadimage"/>
+			</div>
+		</div>
+		<div class="headRight col-xs-7">
+			<div class="userName" id="userName">
+				<span class="nick" id="usinUsername">爱充用户</span>
+				<span class="info" id="talkbubble" style="display: none;">
+					消息
+					<span class="redDot"></span>
+				</span>
+				
+			</div>
+			<div class="operationBtn" style="display: block;" id="operationBtn">
+				<span class="login" id="toLogin" onclick="toLogin()">
+					登录
+				</span>
+				<span class="login">
+					注册
+				</span>
+			</div>
+			<div class="showInfo" id="showInfo" style="display: none;">
+				<span class="moreFree">
+					余额:
+				</span>
+				<span class="moreFree" id="userAccountbalance">
+					2000
+				</span>
+			</div>
+		</div>
+	</div>
+	<!--列表部分===========================================================================-->
+	<div class="myList">
+		<div class="myVallet" onclick="toMyWallet()">
+			<div class="col-xs-3 icon">
+				<img src="img/img_my_money.png"/>
+			</div>
+			<div class="col-xs-9 text">
+				我的钱包
+			</div>
+		</div>
+		<div class="MyCollection myVallet" onclick="toMyFavorite()">
+			<div class="col-xs-3 icon">
+				<img src="img/img_my_collection.png"/>
+			</div>
+			<div class="col-xs-9 text">
+				我的收藏
+			</div>
+		</div>
+		<div class="myVallet apply_pile" onclick="toApplyPile()">
+			<div class="col-xs-3 icon">
+				<img src="img/img_help_apply.png"/>
+			</div>
+			<div class="col-xs-9 text">
+				申请建桩
+			</div>
+		</div>
+	</div>
+	<!--第四块底部=====================================================================================-->
+	<nav class="mui-bar mui-bar-tab menuBtn" id="menuBtn">
+			<a class="mui-tab-item mui-active " href="#tabbar" style="color: #929292;" onclick="toMapIndex()">
+				<span class="mui-icon iconfont">&#xe635;</span>
+				<span class="mui-tab-label">首页</span>
+				
+			</a>
+			<a class="mui-tab-item" href="#tabbar-with-map" style="color: #929292;" onclick="toOrderDetail()">
+				<span class="mui-icon iconfont">&#xe606;</span>
+				<span class="mui-tab-label">订单</span>
+			</a>
+			<a class="mui-tab-item" href="#tabbar-with-contact" style="color: #FF7D00;">
+				<span class="mui-icon iconfont">&#xe613;</span>
+				<span class="mui-tab-label">我的</span>
+			</a>
+	</nav>
+	</body>
+	<script type="text/javascript" src="dist/js/jquery-1.11.0.js" ></script>
+	<!--<script src="dist/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>-->
+	<script type="text/javascript" src="dist/js/bootstrap.js" ></script>
+	<script src="js/url.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/userinfo.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/myPage.js" type="text/javascript" charset="utf-8"></script>
+</html>

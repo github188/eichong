@@ -1,0 +1,236 @@
+package com.wanma.ims.service.impl;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import com.wanma.ims.common.domain.ElectricPileDO;
+import com.wanma.ims.common.domain.LogCommitDO;
+import com.wanma.ims.common.domain.RateInfoDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.constants.ResultCodeConstants;
+import com.wanma.ims.core.GlobalSystem;
+import com.wanma.ims.core.SessionMgr;
+import com.wanma.ims.mapper.ElectricPileMapper;
+import com.wanma.ims.mapper.LogCommitMapper;
+import com.wanma.ims.mapper.RateInfoMapper;
+import com.wanma.ims.service.RateInfoService;
+import com.wanma.ims.util.ApiUtil;
+import com.wanma.ims.util.DateUtil;
+import com.wanma.ims.util.HttpRequestUtil;
+import com.wanma.ims.util.HttpsUtil;
+import com.wanma.ims.util.ObjectUtil;
+
+@Service("RateInfoService")
+public class RateInfoServiceImpl implements RateInfoService {
+
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	@Autowired
+	private RateInfoMapper rateInfoMapper;
+
+	@Autowired
+	private LogCommitMapper logCommitMapper;
+	
+	@Autowired
+	private ElectricPileMapper electricPileMapper;
+	
+	@Override
+	public Long getRateInfoCount(RateInfoDO rateInfo) {
+		return rateInfoMapper.getRateInfoCount(rateInfo);
+	}
+	
+	@Override
+	public List<RateInfoDO> getRateInfoList(RateInfoDO rateInfo) {
+		return rateInfoMapper.getRateInfoList(rateInfo);
+	}
+	
+	@Override
+	public BaseResultDTO addRateInfo(RateInfoDO rateInfo, UserDO loginUser) throws Exception{
+		BaseResultDTO baseResultDTO = new BaseResultDTO();
+		//验证费率信息
+		if (rateInfo == null) {
+			log.error(this.getClass() + ".addRateInfo() error : " + ResultCodeConstants.ERROR_MSG_EMPTY_RATEINFO);
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail(ResultCodeConstants.ERROR_MSG_EMPTY_RATEINFO);
+			return baseResultDTO;
+		}
+		if (loginUser == null || loginUser.getUserId() == null) {
+			log.error(this.getClass() + ".addRateInfo() error : " + loginUser.getUserId() + ResultCodeConstants.ERROR_MSG_EMPTY_USER_INFO);
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail(ResultCodeConstants.ERROR_MSG_EMPTY_USER_INFO);
+			return baseResultDTO;
+		}
+		
+		rateInfo.setCreator_id(loginUser.getUserId() + "_" + loginUser.getUserName());
+		// 取系统当前时间
+		Date now = DateUtil.parse(DateUtil.getNow(DateUtil.TYPE_COM_YMDHMS));
+		rateInfo.setRaIn_Createdate(now);
+		rateInfo.setRaIn_Updatedate(now);
+
+		//告警金额使用默认值10元
+		rateInfo.setRaIn_WarnMoney(new BigDecimal(10));
+		//最小欲动结金额默认10元
+		if(rateInfo.getRaIn_MinFreezingMoney()==null||rateInfo.getRaIn_MinFreezingMoney()+""==""){
+			rateInfo.setRaIn_MinFreezingMoney(new BigDecimal(10));
+		}
+		
+		rateInfo.setRaIn_EffectiveDates(new Date());
+		rateInfo.setRaIn_ExpiryDate(DateUtil.parse(DateUtil.addYear(DateUtil.format(new Date()), 20)));
+		
+		rateInfo.setRaIn_StartQuantumDate(new Date());
+		rateInfo.setRaIn_EndQuantumDate(DateUtil.parse(DateUtil.addYear(DateUtil.format(new Date()), 20)));
+		
+		rateInfo.setRaIn_area_id("");
+		rateInfo.setRaIn_city_id("");
+		rateInfo.setRaIn_province_id("");
+		
+		if (rateInfo.getUniformPrice() != null && rateInfo.getUniformPrice() != BigDecimal.ZERO) {
+			BigDecimal uniformPrice = rateInfo.getUniformPrice();
+			rateInfo.setRaIn_TipTimeTariffMoney(uniformPrice.subtract(rateInfo.getRaIn_TipTimeTariffPrice()));
+			rateInfo.setRaIn_PeakElectricityMoney(uniformPrice.subtract(rateInfo.getRaIn_PeakElectricityPrice()));
+			rateInfo.setRaIn_UsualMoney(uniformPrice.subtract(rateInfo.getRaIn_UsualPrice()));
+			rateInfo.setRaIn_ValleyTimeMoney(uniformPrice.subtract(rateInfo.getRaIn_ValleyTimePrice()));
+		}
+		
+		int result = rateInfoMapper.addRateInfo(rateInfo);
+		if (result == 0) {
+			log.error(this.getClass() + ".addRateInfo() error : " + ResultCodeConstants.ERROR_MSG_ERROR_ADD);
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail(ResultCodeConstants.ERROR_MSG_ERROR_ADD);
+		}
+		
+		return baseResultDTO;
+	}
+	
+	@Override
+	public BaseResultDTO modifyRateInfo(RateInfoDO rateInfo, UserDO user) throws Exception{
+		BaseResultDTO baseResultDTO = new BaseResultDTO();
+		if (user == null) {
+			log.error(this.getClass() + ".modifyRateInfo() error : " + ResultCodeConstants.ERROR_MSG_EMPTY_SESSION_USER);
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail(ResultCodeConstants.ERROR_MSG_EMPTY_SESSION_USER);
+			return baseResultDTO;
+		}
+		
+		Long rateInformation = rateInfo.getPk_RateInformation();
+		RateInfoDO qryRateInfo = new RateInfoDO();
+		qryRateInfo.setPk_RateInformation(rateInformation);
+		Long qryResult = rateInfoMapper.getRateInfoCount(qryRateInfo);
+		if (qryResult < 1) {
+			log.error(this.getClass() + ".modifyRateInfo() error : " + ResultCodeConstants.ERROR_MSG_EMPTY_MODIFY_RATEINFO);
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail(ResultCodeConstants.ERROR_MSG_EMPTY_MODIFY_RATEINFO);
+			return baseResultDTO;
+		}
+
+		rateInfo.setGmtModified(DateUtil.parse(DateUtil.getNow(DateUtil.TYPE_COM_YMDHMS)));
+
+		int result = rateInfoMapper.modifyRateInfo(rateInfo);
+		
+		if (result > 0) {
+			if (rateInfo.getIs_default() == 0) {
+				ElectricPileDO qryElectricPile = new ElectricPileDO();
+				qryElectricPile.setRateInformationId(rateInformation);
+				List<ElectricPileDO> list = electricPileMapper.selectElectricPileList(qryElectricPile);
+				//将桩体编号拼成要发送的格式
+				String sendStr = "";
+				for(ElectricPileDO electricPileDO : list){
+					sendStr += electricPileDO.getCode() + ",";
+				}
+				if(sendStr.length() > 0){
+					sendStr = sendStr.substring(0, sendStr.length() - 1);
+					sendStr += ":" + rateInformation;
+					String apiBaseUrl = GlobalSystem.getConfig("apiRoot");
+					String token = ApiUtil.getToken();
+					//调用接口更新费率
+					HttpsUtil.getResponseParam(apiBaseUrl + "/app/net/sendRate.do?paramStrs=" + sendStr + "&t=" + token, "status");
+					insertLogCommit("费率更新命令下发，主键：["+ rateInformation + "]");
+				}
+			}
+		}
+		
+		return baseResultDTO;
+	}
+	
+	/**
+	 * 加入日志列表
+	 * 
+	 * @param logContent
+	 *            操作内容
+	 * @return
+	 */
+	public void insertLogCommit(String logContent) {
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
+				.getRequestAttributes()).getRequest();
+		// 获取登陆用户
+		UserDO loginUser = SessionMgr.getWebUser(request);
+		// 请求的IP
+		String ip = request.getRemoteAddr();
+		LogCommitDO logCommit = new LogCommitDO();
+		logCommit.setLogName(ObjectUtil.nvlStrEmpty(loginUser.getUserAccount()));
+		logCommit.setLogIpAddress(ip);
+		logCommit.setLogContent(logContent);
+		logCommit.setIsDel(0);
+		logCommit.setCreatorId(loginUser.getUserId());
+		logCommit.setGmtCreate(new Date());
+		logCommit.setGmtModified(new Date());
+		logCommitMapper.insertLogCommit(logCommit);
+		addHbaseLog(logCommit);
+	}
+	
+	/**
+	 * 添加日志到hbase
+	 * @param logCommitDO
+	 */
+	private void addHbaseLog(LogCommitDO logCommitDO) {
+		Map<String, String> params = new HashMap<String, String>();
+		GlobalSystem.putConfig("logName", logCommitDO.getLogName());
+		GlobalSystem.putConfig("logIpAddress", logCommitDO.getLogIpAddress());
+		GlobalSystem.putConfig("logContent", logCommitDO.getLogContent());
+		GlobalSystem.putConfig("creatorId", String.valueOf(logCommitDO.getCreatorId()));
+		HttpRequestUtil.post(GlobalSystem.getConfig("hbaseUrl")+"/addLogCommit", params);
+	}
+	
+	@Override
+	public BaseResultDTO removeRateInfo(RateInfoDO rateInfo) throws Exception{
+		BaseResultDTO baseResultDTO = new BaseResultDTO();
+		
+		Long rateInformation = rateInfo.getPk_RateInformation();
+		ElectricPileDO qryElectricPile = new ElectricPileDO();
+		qryElectricPile.setRateInformationId(rateInformation);
+		List<ElectricPileDO> list = electricPileMapper.selectElectricPileList(qryElectricPile);
+		if (list != null && list.size() > 0) {
+			log.error(this.getClass() + ".removeRateInfo() error : " + ResultCodeConstants.ERROR_MSG_ROMOVE_RELATION_RATEINFO);
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail(ResultCodeConstants.ERROR_MSG_ROMOVE_RELATION_RATEINFO);
+			return baseResultDTO;
+		}
+		
+		int result = rateInfoMapper.removeRateInfo(rateInfo);
+		if (result == 0) {
+			log.error(this.getClass() + ".addRateInfo() error : " + ResultCodeConstants.ERROR_MSG_ERROR_REMOVE);
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail(ResultCodeConstants.ERROR_MSG_ERROR_REMOVE);
+		}
+		
+		return baseResultDTO;
+	}
+
+	@Override
+	public RateInfoDO getRateInfoById(RateInfoDO rateInfo) {
+		return rateInfoMapper.getRateInfoById(rateInfo);
+	}
+	
+}

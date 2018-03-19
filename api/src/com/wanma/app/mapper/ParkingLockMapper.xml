@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.app.dao.ParkingLockMapper">
+    <resultMap id="resultParkingLock" type="com.wanma.model.ParkingLock">
+        <id column="id" property="id"/>
+        <result column="code" property="code"/>
+        <result column="status" property="status"/>
+        <result column="parking_lock_platform" property="parkingLockPlatform"/>
+        <result column="power_station_id" property="powerStationId"/>
+        <result column="province_code" property="provinceCode"/>
+        <result column="city_code" property="cityCode"/>
+        <result column="area_code" property="areaCode"/>
+        <result column="address" property="address"/>
+        <result column="platform_lock_key" property="platformLockKey"/>
+        <result column="platform_modify_time" property="platformModifyTime"/>
+        <result column="platform_status" property="platformStatus"/>
+        <result column="platform_error_code" property="platformErrorCode"/>
+        <result column="platform_error_msg" property="platformErrorMsg"/>
+        <result column="is_del" property="isDel"/>
+        <result column="creator_id" property="creatorId"/>
+        <result column="creator" property="creator"/>
+        <result column="modifier" property="modifier"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="gmt_modified" property="gmtModified"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, code, status, parking_lock_platform, power_station_id, province_code, city_code, 
+    area_code, address, platform_lock_key, platform_modify_time, platform_status, platform_error_code, platform_error_msg
+    </sql>
+
+    <select id="selectById" parameterType="Long" resultMap="resultParkingLock">
+        select
+        <include refid="Base_Column_List"/>
+        from parking_lock
+        where id = #{id}
+    </select>
+
+    <select id="selectByCodeAndPlatform" parameterType="Map" resultMap="resultParkingLock">
+        select
+        <include refid="Base_Column_List"/>
+        from parking_lock
+        where code = #{code} and parking_lock_platform = #{parkingLockPlatform}
+    </select>
+
+    <delete id="deleteById" parameterType="Long">
+    delete from parking_lock
+    where id = #{id}
+  </delete>
+
+    <insert id="insertParkingLock" parameterType="ParkingLock">
+    insert into parking_lock (id, code, status, 
+      parking_lock_platform, power_station_id, province_code, 
+      city_code, area_code, address, platform_lock_key,
+      platform_modify_time, platform_status, platform_error_code, 
+      platform_error_msg)
+    values (#{id}, #{code}, #{status}, 
+      #{parkingLockPlatform}, #{powerStationId}, #{provinceCode}, 
+      #{cityCode}, #{areaCode}, #{address}, #{platformLockKey},
+      #{platformModifyTime}, #{platformStatus}, #{platformErrorCode}, 
+      #{platformErrorMsg})
+  </insert>
+
+    <update id="updateByIdSelective" parameterType="ParkingLock">
+        update parking_lock
+        <set>
+            <if test="code != null">
+                code = #{code},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="parkingLockPlatform != null">
+                parking_lock_platform = #{parkingLockPlatform},
+            </if>
+            <if test="powerStationId != null">
+                power_station_id = #{powerStationId},
+            </if>
+            <if test="provinceCode != null">
+                province_code = #{provinceCode},
+            </if>
+            <if test="cityCode != null">
+                city_code = #{cityCode},
+            </if>
+            <if test="areaCode != null">
+                area_code = #{areaCode},
+            </if>
+            <if test="address != null">
+                address = #{address},
+            </if>
+            <if test="platformLockKey != null">
+                platform_lock_key = #{platformLockKey},
+            </if>
+            <if test="platformModifyTime != null">
+                platform_modify_time = #{platformModifyTime},
+            </if>
+            <if test="platformStatus != null">
+                platform_status = #{platformStatus},
+            </if>
+            <if test="platformErrorCode != null">
+                platform_error_code = #{platformErrorCode},
+            </if>
+            <if test="platformErrorMsg != null">
+                platform_error_msg = #{platformErrorMsg},
+            </if>
+            gmt_modified = now()
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="updateLockPlatformInfo" parameterType="ParkingLock">
+        update parking_lock
+        SET
+        status = #{status},
+        platform_modify_time = #{platformModifyTime},
+        platform_status = #{platformStatus},
+        platform_error_code = #{platformErrorCode},
+        platform_error_msg = #{platformErrorMsg},
+        gmt_modified = now()
+        where id = #{id}
+    </update>
+</mapper>

@@ -1,0 +1,20 @@
+package com.wanma.ims.mapper;
+
+import com.wanma.ims.common.domain.MultiMediaDO;
+
+import java.util.List;
+
+public interface MultiMediaMapper {
+    int insertMultiMedia(MultiMediaDO multiMedia);
+
+    int deleteByFileId(String fileId);
+
+    int deleteByReferenceId(String businessType, String referenceId, String fileName);
+
+    int updateByFileId(MultiMediaDO multiMedia);
+
+    MultiMediaDO selectByFileId(String fileId);
+
+    List<MultiMediaDO> selectByReferenceId(String businessType, String referenceId);
+
+}

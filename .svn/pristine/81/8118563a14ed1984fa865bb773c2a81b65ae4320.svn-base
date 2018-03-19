@@ -1,0 +1,60 @@
+package com.wanma.ims.controller.config;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.wanma.ims.common.domain.TypeSpanDO;
+import com.wanma.ims.common.domain.base.Pager;
+import com.wanma.ims.controller.BaseController;
+import com.wanma.ims.controller.result.JsonResult;
+import com.wanma.ims.service.TypeSpanService;
+
+/**
+ * 产品型号管理
+ */
+@Controller
+@RequestMapping("/config/typeSpan")
+public class TypeSpanController extends BaseController{
+	private static Logger log = Logger.getLogger(TypeSpanController.class);
+	@Autowired
+	private TypeSpanService typeSpanService;
+	
+	/**
+	 * 产品型号管理
+	 * @author mb
+	 * @param 
+	 * @return
+	 */
+	@RequestMapping(value = "/getTypeSpanList")
+	@ResponseBody
+	public void getTypeSpanList(@ModelAttribute("pager") Pager pager,
+			@ModelAttribute TypeSpanDO typeSpanDO,HttpServletRequest request) {
+		JsonResult result = new JsonResult();
+		List<TypeSpanDO> typeSpanList = null;
+		long total = 0;
+		try {
+			total = typeSpanService.getTypeSpanCount(typeSpanDO);
+			if (total <= pager.getOffset()) {
+				pager.setPageNo(1L);
+			}
+			typeSpanDO.setPager(pager);
+			typeSpanList = typeSpanService.getTypeSpanList(typeSpanDO);
+			pager.setTotal(total);
+			result.setDataObject(typeSpanList);
+			result.setPager(pager);
+		} catch (Exception e) {
+			log.error(this.getClass()+".getTypeSpanList() error:",e);
+		}
+		responseJson(result);
+		
+	}
+	
+}

@@ -1,0 +1,114 @@
+package com.wanma.ims.service.impl;
+
+import com.wanma.ims.common.domain.ConcentratorDO;
+import com.wanma.ims.common.domain.ElectricPileDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.dto.ResultDTO;
+import com.wanma.ims.constants.ResultCodeConstants;
+import com.wanma.ims.constants.WanmaConstants;
+import com.wanma.ims.core.GlobalSystem;
+import com.wanma.ims.mapper.ConcentratorMapper;
+import com.wanma.ims.mapper.ElectricPileMapper;
+import com.wanma.ims.service.ConcentratorService;
+import com.wanma.ims.service.ElectricPileService;
+import com.wanma.ims.service.LogCommitService;
+import com.wanma.ims.util.ApiUtil;
+import com.wanma.ims.util.HttpsUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
+
+@Service("concentratorService")
+public class ConcentratorServiceImpl implements ConcentratorService{
+	 private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+	@Autowired
+	private ConcentratorMapper concentratorMapper;
+	@Autowired
+	private LogCommitService logCommitService;
+	@Autowired
+	private ElectricPileService electricPileService;
+	@Autowired
+	private ElectricPileMapper electricPileMapper;
+	
+	@Override
+	public long getConcentratorCount(ConcentratorDO concentrator) {
+		return concentratorMapper.getConcentratorCount(concentrator);
+	}
+
+	@Override
+	public List<ConcentratorDO> getConcentratorList(ConcentratorDO concentrator) {
+		return concentratorMapper.getConcentratorList(concentrator);
+	}
+
+	@Override
+	public ConcentratorDO getconcentratorInfo(ConcentratorDO concentrator) {
+		return concentratorMapper.getconcentratorInfo(concentrator);
+	}
+
+	@Override
+	@Transactional
+	public void modifyConcentrator(ConcentratorDO concentrator, String ids,UserDO loginUser,HttpServletRequest request) throws Exception {
+		// 获取登陆用户
+		concentrator.setModifier(loginUser.getUserAccount());
+		concentratorMapper.modifyConcentrator(concentrator);//修改集中器基本信息
+		List<ElectricPileDO> electricPileList = new ArrayList<ElectricPileDO>();
+		if(ids!=null&&!"".equals(ids)){
+			String[] idArr = ids.split(",");
+			for(int i=0;i<idArr.length;i++){
+				ElectricPileDO electricPile = new ElectricPileDO();
+				electricPile.setId(Long.parseLong(idArr[i]));
+				electricPileList.add(electricPile);
+			}
+			electricPileService.bandElectricPile(electricPileList, WanmaConstants.CONCENTRATOR_BIND_ELECTRIC_PILE, concentrator.getConcentratorId(), loginUser);
+		}
+	    try {
+	    	String apiBaseUrl = GlobalSystem.getConfig("apiRoot");
+			String cId = concentrator.getConcentratorId().toString();
+			HttpsUtil.getResponseParam(apiBaseUrl + "/app/net/sendConcentrator.do?cId=" + cId + "&t="
+							+ ApiUtil.getToken(), "status");
+			   LOGGER.error(apiBaseUrl + "/app/net/sendConcentrator.do?cId=" + cId + "&t="+ ApiUtil.getToken());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	 
+		logCommitService.addHbaseLogCommit("集中器更新命令下发，主键：["+ concentrator.getConcentratorId() + "]", loginUser);
+	}
+
+	@Override
+	@Transactional
+	public boolean addConcentrator(ConcentratorDO concentrator) {
+		return concentratorMapper.addConcentrator(concentrator)>0?true:false;
+	}
+
+	@Override
+	@Transactional
+	public ResultDTO<String> removeConcentrator(ConcentratorDO concentrator,
+			HttpServletRequest request,UserDO loginUser) {
+		ResultDTO<String> result = new ResultDTO<>();
+		// 获取登陆用户
+			concentrator.setModifier(loginUser.getUserAccount());
+			ElectricPileDO electricPileDO = new ElectricPileDO();
+			electricPileDO.setConcentratorId(concentrator.getConcentratorId());
+			 List<ElectricPileDO> eleList = electricPileMapper.selectElectricPileList(electricPileDO);
+			 if(eleList.size()>0){
+				 result.setSuccess(false);
+		            result.setResultCode(ResultCodeConstants.FAILED);
+		            result.setErrorDetail("已绑定电桩的集中器不能删除！");
+		            return result;
+			 }else {
+				concentratorMapper.deleteConcentrator(concentrator);
+			}
+			return result;	
+		}
+		
+		
+		
+
+		
+	}

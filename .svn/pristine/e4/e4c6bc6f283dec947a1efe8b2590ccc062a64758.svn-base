@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.app.dao.ElectricMapMapper">
+
+
+	<resultMap id="BaseResultMap" type="com.wanma.model.ElectricMap">
+		<id column="pk_PowerStation" property="pkPowerStation" jdbcType="INTEGER" />
+		<result column="poSt_Address" property="poStAddress" jdbcType="VARCHAR" />
+		<result column="poSt_Latitude" property="poStLatitude"
+			jdbcType="VARCHAR" />
+		<result column="poSt_Longitude" property="poStLongitude"
+			jdbcType="VARCHAR" />
+		<result column="poSt_Name" property="poStName" jdbcType="VARCHAR" />
+		<result column="dc" property="dc" jdbcType="VARCHAR" />
+		<result column="ac" property="ac" jdbcType="VARCHAR" />
+		<result column="freeHeadNum" property="freeHeadNum" jdbcType="VARCHAR" />
+		<result column="distance" property="distance" jdbcType="VARCHAR" />
+		<result column="rateId" property="rateId" jdbcType="INTEGER" />
+
+	</resultMap>
+
+	<resultMap id="RateResultMap" type="com.wanma.model.RateInfo">
+		<id column="pk_RateInformation" property="rateId" jdbcType="INTEGER" />
+		<result column="raIn_QuantumDate" property="raInQuantumDate"
+			jdbcType="VARCHAR" />
+		<result column="raIn_TipTimeTariff" property="raInTipTimeTariff"
+			jdbcType="VARCHAR" />
+		<result column="raIn_PeakElectricityPrice" property="raInPeakElectricityPrice"
+			jdbcType="VARCHAR" />
+		<result column="raIn_UsualPrice" property="raInUsualPrice"
+			jdbcType="VARCHAR" />
+		<result column="raIn_ValleyTimePrice" property="raInValleyTimePrice"
+			jdbcType="VARCHAR" />
+		<result column="raIn_ServiceCharge" property="raInServiceCharge"
+			jdbcType="VARCHAR" />
+
+
+	</resultMap>
+
+	<select id="getElectricMap" resultMap="BaseResultMap">
+		select v.distance,v.ac,v.dc,v.ac+v.dc as freeHeadNum, v.rateId,
+		v.pk_PowerStation,
+		v.poSt_Name,
+		v.poSt_Address,
+		v.poSt_Latitude,
+		v.poSt_Longitude
+		,v.haslock 
+		 from (
+		SELECT
+		round(
+		6378.138 * 2 * asin(
+		sqrt(
+		pow(
+		sin(
+		(
+		#{currentlat} * pi() / 180
+		- t.latitude * pi() / 180
+		) / 2
+		),
+		2
+		) +
+		cos(#{currentlat} * pi() / 180)
+		* cos(t.latitude * pi() / 180) *
+		pow(
+		sin(
+		(
+		#{currentlng} * pi() /
+		180 - t.longitude * pi() / 180
+		) / 2
+		),
+		2
+		)
+		)
+		) * 1000
+		) AS distance,
+	    (select count(1) from parking_lock where  parking_lock.power_station_id = pk_PowerStation) as haslock, 
+		a.ac,
+		a.dc,
+		(
+		SELECT
+		c.elPi_RateInformationId
+		FROM
+		tbl_electricpile c
+		WHERE
+		t.powerStation_id =
+		c.elPi_RelevancePowerStation
+		LIMIT 1
+		) AS rateId,
+		t.powerStation_id pk_PowerStation,
+		t.powerStation_name poSt_Name,
+		t.address poSt_Address,
+		t.latitude poSt_Latitude,
+		t.longitude poSt_Longitude
+		FROM
+		(
+		SELECT
+		c.pk_id,
+		c.pk_cpy_operate_id,
+		c.pk_PowerStation,
+		c.pk_ElectricPile,
+		sum(
+		CASE
+		WHEN c.elPi_ChargingMode = 5 THEN
+		c.num
+		ELSE
+		0
+		END
+		) AS dc,
+		sum(
+		CASE
+		WHEN c.elPi_ChargingMode = 14 THEN
+		c.num
+		ELSE
+		0
+		END
+		) AS
+		ac
+		FROM
+		(
+		SELECT
+		t1.pk_id,
+		t1.pk_cpy_operate_id,
+		t1.pk_PowerStation,
+		t1.pk_ElectricPile,
+		(
+		SELECT
+		count(1)
+		FROM
+		tbl_electricpilehead head
+		WHERE
+		t1.pk_ElectricPile = head.pk_ElectricPile
+		AND
+		head.ePHe_ElectricpileHeadState = 0
+		) AS num,
+		t2.elPi_ChargingMode
+		FROM
+		tbl_company_rela t1,
+		tbl_electricpile t2
+		WHERE
+		t1.pk_ElectricPile =
+		t2.pk_ElectricPile
+		AND t1.pk_cpy_operate_id = (
+		SELECT
+		cpy_id 
+		FROM
+		tbl_company
+		WHERE
+		cpy_number = #{cpyNum}
+		)
+		) c
+		GROUP BY
+		c.pk_PowerStation
+		) a,
+		tbl_powerstation t
+		WHERE
+		a.pk_PowerStation = t.powerstation_id
+		and
+		<![CDATA[ 
+		round(6378.138*2*asin(sqrt(pow(sin(
+		(#{poStLatitude}*pi()/180-t.latitude*pi()/180)/2),2)+cos(#{poStLatitude}*pi()/180)*cos(t.latitude*pi()/180)*
+		pow(sin(
+		(#{poStLongitude}*pi()/180-t.longitude*pi()/180)/2),2)))*1000)
+		<=60000
+        ]]>
+		<if test="freeparking==1">
+			and EXISTS (
+			select 1 from tbl_electricpile o
+			where
+			o.elPi_RelevancePowerStation =t.powerstation_id
+			and
+			o.elPi_Parking_Fee=0
+			)
+		</if>
+		<!-- 含有交流的桩:不空闲、不直流、交流 -->
+		<if test="freetime==0 and ac==1 and dc==0">
+			and EXISTS (
+			SELECT
+			1
+			FROM
+			tbl_electricpile p
+			WHERE
+			p.elPi_RelevancePowerStation=t.powerstation_id
+			and
+			p.elPi_ChargingMode=14
+		
+			<!-- and p.comm_status = 1 -->
+			)
+		</if>
+		<!-- 含有直流的桩:不空闲，不交流、直流 -->
+		<if test="freetime==0 and ac==0 and dc==1">
+			and EXISTS (
+			SELECT
+			1
+			FROM
+			tbl_electricpile p
+			WHERE
+			p.elPi_RelevancePowerStation=t.powerstation_id
+			and
+			p.elPi_ChargingMode=5
+			
+			<!-- and p.comm_status = 1 -->
+			)
+		</if>
+
+		<!-- 含有空闲的交流充电桩:空闲、不直流 、交流 -->
+		<if test="freetime==1 and ac==1 and dc==0">
+			and EXISTS (
+			SELECT
+			1
+			FROM
+			tbl_electricpile p,tbl_electricpilehead o
+			WHERE
+			p.elPi_RelevancePowerStation=t.powerstation_id
+			and
+			p.pk_ElectricPile=o.pk_ElectricPile
+			and p.elPi_ChargingMode=14
+			and
+			o.ePHe_ElectricpileHeadState=0
+			
+			<!-- and p.comm_status = 1 -->
+			)
+		</if>
+		<!--含有空闲的直流充电桩: 空闲 、直流 、不交流 -->
+		<if test="freetime==1 and ac==0 and dc==1">
+			and EXISTS (
+			SELECT
+			1
+			FROM
+			tbl_electricpile p,tbl_electricpilehead o
+			WHERE
+			p.elPi_RelevancePowerStation=t.powerstation_id
+			and
+			p.pk_ElectricPile=o.pk_ElectricPile
+			and p.elPi_ChargingMode=5
+			and
+			o.ePHe_ElectricpileHeadState=0
+			
+			<!-- and p.comm_status = 1 -->
+			)
+
+		</if>
+		<!--含有空闲的桩: 不空闲 直流 交流 or 空闲 不直流 不交流 or 空闲 直流 交流 -->
+		<if test="(ac==1 and dc==1) or (ac==0 and dc==0)">
+			and EXISTS (
+			SELECT
+			1
+			FROM
+			tbl_electricpile p,tbl_electricpilehead o
+			WHERE
+			p.elPi_RelevancePowerStation=t.powerstation_id
+			and
+			p.pk_ElectricPile=o.pk_ElectricPile
+			and o.ePHe_ElectricpileHeadState=0
+			
+			<!-- and p.comm_status = 1 -->
+			)
+		</if>
+		) v
+	</select>
+
+	<select id="getRateInfo" resultMap="RateResultMap">
+		SELECT
+			t.pk_RateInformation,
+			t.raIn_QuantumDate,
+			t.raIn_TipTimeTariffPrice raIn_TipTimeTariff,
+			t.raIn_ValleyTimePrice raIn_ValleyTimePrice,
+			t.raIn_PeakElectricityPrice raIn_PeakElectricityPrice,
+			t.raIn_UsualPrice raIn_UsualPrice,
+			t.raIn_ServiceCharge
+		FROM tbl_rateinformation t
+		WHERE pk_RateInformation=#{rateId}
+
+	</select>
+	<select id="getElectricMapBysearch" resultMap="BaseResultMap">
+		SELECT
+		round(
+		6378.138 * 2 * asin(
+		sqrt(
+		pow(
+		sin(
+		(
+		#{poStLatitude} * pi() /
+		180
+		- t.latitude * pi() / 180
+		) / 2
+		),
+		2
+		) + cos(#{poStLatitude} *
+		pi() / 180)
+		* cos(t.latitude * pi() / 180) *
+		pow(
+		sin(
+		(
+		#{poStLongitude} * pi() /
+		180 - t.longitude * pi() / 180
+		) / 2
+		),
+		2
+		)
+		)
+		) * 1000
+		) AS distance,
+		
+		a.ac,
+		a.dc,
+		(
+		select c.elPi_RateInformationId from tbl_electricpile c where
+		t.powerStation_id=c.elPi_RelevancePowerStation limit 1
+		) AS rateId,
+		t.powerStation_id pk_PowerStation,
+		t.powerStation_name poSt_Name,
+		t.address poSt_Address,
+		t.latitude poSt_Latitude,
+		t.longitude poSt_Longitude
+	     ,(select count(1) from parking_lock where  parking_lock.power_station_id = t.powerStation_id) as haslock 
+		FROM
+		(
+		SELECT
+		c.pk_id,
+		c.pk_cpy_operate_id,
+		c.pk_PowerStation,
+		c.pk_ElectricPile,
+		sum(
+		CASE
+		WHEN c.elPi_ChargingMode = 5 THEN
+		c.num
+		ELSE
+		0
+		END
+		) AS dc,
+		sum(
+		CASE
+		WHEN c.elPi_ChargingMode = 14 THEN
+		c.num
+		ELSE
+		0
+		END
+		) AS ac
+		FROM
+		(
+		SELECT
+		t1.pk_id,
+		t1.pk_cpy_operate_id,
+		t1.pk_PowerStation,
+		t1.pk_ElectricPile,
+		(
+		SELECT
+		count(1)
+		FROM
+		tbl_electricpilehead head
+		WHERE
+		t1.pk_ElectricPile = head.pk_ElectricPile
+		AND head.ePHe_ElectricpileHeadState = 0
+		) AS num,
+		t2.elPi_ChargingMode
+		FROM
+		tbl_company_rela t1,
+		tbl_electricpile t2
+		WHERE
+		t1.pk_ElectricPile = t2.pk_ElectricPile
+		AND t1.pk_cpy_operate_id = (
+		SELECT
+		cpy_id 
+		FROM
+		tbl_company
+		WHERE
+		cpy_number = #{cpyNum}
+		)
+		) c
+		GROUP BY
+		c.pk_PowerStation
+		) a,tbl_powerstation t
+		WHERE
+		a.pk_PowerStation = t.powerStation_id
+		and (t.powerStation_name LIKE concat('%',#{keyword},'%') OR t.address
+		LIKE concat('%',#{keyword},'%'))
+
+	</select>
+</mapper> 

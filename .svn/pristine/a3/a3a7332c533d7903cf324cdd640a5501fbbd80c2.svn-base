@@ -1,0 +1,28 @@
+package com.wanma.ims.service;
+
+import java.util.List;
+
+import com.wanma.ims.common.domain.OrderDO;
+import com.wanma.ims.common.domain.OrderInvoiceDO;
+
+
+public interface OrderService {
+    
+	/**
+	 * 开票详情 
+	 */
+	public Long countOrderInvoiceDetail(OrderInvoiceDO orderInvoiceDO);
+	public List<OrderInvoiceDO> getOrderInvoiceDetail(OrderInvoiceDO orderInvoiceDO);
+	
+	/**
+	 * 非第三方订单 
+	 */
+	public Long countOrderList(OrderDO orderDO);
+	public List<OrderDO> getOrderList(OrderDO orderDO);
+	
+	/**
+	 * 第三方 
+	 */
+	public Long countThirdOrderList(OrderDO orderDO);
+	public List<OrderDO> getThirdOrderList(OrderDO orderDO);
+}

@@ -1,0 +1,75 @@
+package com.wanma.ims.mapper;
+
+
+import java.util.List;
+
+import com.wanma.ims.model.UserDO;
+
+
+
+public interface UserMapper {
+	
+	// 用户登录
+	public UserDO loginUser(UserDO tblUser);
+	
+	/*********************************/
+	public UserDO get(UserDO tblUser);
+	//插入tbl_user表
+	public int insert(UserDO tblUser);
+	//插入tbl_user_normal表
+	public int insertNormalUser(UserDO tblUser);
+	//更新tbl_user表,本系统内只能更新userAccount和userPassword
+	public int update(UserDO tblUser);
+	//更新tbl_user_normal表
+	public int updateNormalUser(UserDO tblUser);
+	//获取普通用户表信息
+	public UserDO findNomalUser(Long userId);
+	//获取普通用列表
+	public List<UserDO> getNomalUserList(UserDO user);
+	//获取普通用户数量
+	public long getNomalUserCount(UserDO user);
+	//修改用户状态
+	public void updateStatus(UserDO user);
+	//获取纯商家列表
+	public List<UserDO> getBusinessUserList(UserDO user);
+	//获取纯商家信息数量
+	public long getBusinessUserCount(UserDO user);
+	//保存纯商家信息
+	public void insertBusinessUser(UserDO user);
+	//修改纯商家信息
+	public void updateBusinessUser(UserDO user);
+	//获取商家信息
+	public UserDO findBusinessUser(Long userId);
+	//校验账号一致性
+	public int checkAccount(UserDO user);
+	//校验商家账号一致性
+	public int checkBusinessAccount(UserDO user);
+	public List<UserDO> getAdminUserList(UserDO user);
+	public long getAdminUserCount(UserDO user);
+	public UserDO findUser(Long userId);
+	public List<UserDO> getRoleUserList(String roleId);
+	public List<UserDO> getSelectRoleUserList(UserDO user);
+	public long getSelectRoleUserCount(UserDO user);
+	//有消费记录的用户数量
+	public int getUserConsumeCount(UserDO user);
+	//得到商家用户拥有的电桩数和子商家数
+	public UserDO getPileAndChildCount(Long userId);
+	//插入tbl_user_admin表
+	public int insertAdminUser(UserDO tblUser);
+	public UserDO findAdminUser(Long userId);
+	public void updateAdminUser(UserDO user);
+	
+	//校验卡号是否存在
+	public String findUnbindCardByCardNo(String cardNo);
+	public int checkBusinessPhone(UserDO user);
+	public int checkAdminPhone(UserDO user);
+	public UserDO findPhoneByAccount(UserDO user);
+	public int findUserCountByPhone(UserDO user);
+	public UserDO getAllUserByAccount(UserDO user);
+	public List<UserDO> getApplyCardUserList(UserDO user);
+	public long getApplyCardUserListCount(UserDO user);
+	public List<UserDO> getQuicklyApplyCardUserList(UserDO user);
+	public long getQuicklyApplyCardUserListCount(UserDO user);
+	
+    
+}

@@ -1,0 +1,326 @@
+package com.wanma.ims.service.impl;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Maps;
+import com.wanma.ims.common.domain.CityDO;
+import com.wanma.ims.common.domain.ElectricPileDO;
+import com.wanma.ims.common.domain.PowerStationDO;
+import com.wanma.ims.common.domain.RateUniqueRelaDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.constants.ResultCodeConstants;
+import com.wanma.ims.mapper.CompanyChargeRelaMapper;
+import com.wanma.ims.mapper.RateUniqueRelaMapper;
+import com.wanma.ims.service.CompanyChargeRelaService;
+import com.wanma.ims.service.InitialService;
+import com.wanma.ims.service.RateUniqueRelaService;
+
+@Service
+public class RateUniqueRelaServiceImpl implements RateUniqueRelaService {
+
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	@Autowired
+	private RateUniqueRelaMapper rateUniqueRelaMapper;
+	
+	@Autowired
+	private CompanyChargeRelaMapper companyChargeRelaMapper;
+	
+	@Autowired
+	private CompanyChargeRelaService companyChargeRelaService;
+	
+	@Autowired
+    private InitialService initialService;
+	
+	@Override
+	public Long getRateUniqueRelaCount(RateUniqueRelaDO rateUniqueRela) {
+		return rateUniqueRelaMapper.getRateUniqueRelaCount(rateUniqueRela);
+	}
+	
+	@Override
+	public List<RateUniqueRelaDO> getRateUniqueRelaList(RateUniqueRelaDO rateUniqueRela) {
+		return rateUniqueRelaMapper.getRateUniqueRelaList(rateUniqueRela);
+	}
+	
+	@Override
+	public BaseResultDTO addRateUniqueRela(RateUniqueRelaDO rateUniqueRela, UserDO loginUser) throws Exception{
+		BaseResultDTO baseResultDTO = new BaseResultDTO();
+		if (rateUniqueRela == null) {
+			log.error(this.getClass() + ".addRateUniqueRela() error : 唯一费率信息不能为空！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("唯一费率信息不能为空！");
+			return baseResultDTO;
+		}
+		
+		if (rateUniqueRela.getCpyId() == null) {
+			log.error(this.getClass() + ".addRateUniqueRela() error : 渠道信息不能为空！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("渠道信息不能为空！");
+			return baseResultDTO;
+		}
+		
+		if (rateUniqueRela.getLevelId() == null) {
+			log.error(this.getClass() + ".addRateUniqueRela() error : 级别信息不能为空！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("级别信息不能为空！");
+			return baseResultDTO;
+		}
+		
+		if (rateUniqueRela.getRateinfoId() == null) {
+			log.error(this.getClass() + ".addRateUniqueRela() error : 费率信息不能为空！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("费率信息不能为空！");
+			return baseResultDTO;
+		}
+		
+		if (rateUniqueRela.getElectricpileIds() == null || "".equals(rateUniqueRela.getElectricpileIds())) {
+			log.error(this.getClass() + ".addRateUniqueRela() error : 桩信息不能为空！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("桩信息不能为空！");
+			return baseResultDTO;
+		}
+		
+		RateUniqueRelaDO addRateUniqueRela;
+		//删除这个公司、等级和费率 下的所有桩数据
+		RateUniqueRelaDO oldRateUniqueRelaDO = new RateUniqueRelaDO();
+		oldRateUniqueRelaDO.setCpyId(rateUniqueRela.getCpyId());
+		oldRateUniqueRelaDO.setLevelId(rateUniqueRela.getLevelId());
+		oldRateUniqueRelaDO.setRateinfoId(rateUniqueRela.getRateinfoId());
+		rateUniqueRelaMapper.removeRateUniqueRela(oldRateUniqueRelaDO);
+		
+		List<RateUniqueRelaDO> rateUniqueRelaList = new ArrayList<RateUniqueRelaDO>();
+		String[] electricPileIdArray = rateUniqueRela.getElectricpileIds().split(",");
+		for (String str : electricPileIdArray) {
+			addRateUniqueRela = new RateUniqueRelaDO();
+			addRateUniqueRela.setElectricpileId(Long.parseLong(str));
+			addRateUniqueRela.setCpyId(rateUniqueRela.getCpyId());
+			addRateUniqueRela.setLevelId(rateUniqueRela.getLevelId());
+			addRateUniqueRela.setRateinfoId(rateUniqueRela.getRateinfoId());
+			addRateUniqueRela.setCreator(loginUser.getUserId().toString());
+			addRateUniqueRela.setGmtCreate(new Date());
+			rateUniqueRelaList.add(addRateUniqueRela);
+		}
+		
+		int result = rateUniqueRelaMapper.batchAddRateUniqueRela(rateUniqueRelaList);
+		if (result < 1) {
+			log.error(this.getClass() + ".addRateUniqueRela() error : " + ResultCodeConstants.ERROR_MSG_ERROR_ADD);
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail(ResultCodeConstants.ERROR_MSG_ERROR_ADD);
+			return baseResultDTO;
+		}
+		return baseResultDTO;
+	}
+
+	@Override
+	public List<RateUniqueRelaDO> getRateUniqueRelaGroup(
+			RateUniqueRelaDO rateUniqueRela) {
+		return rateUniqueRelaMapper.getRateUniqueRelaGroup(rateUniqueRela);
+	}
+
+	@Override
+	public List<CityDO> getStationAndPile(RateUniqueRelaDO rateUniqueRela,
+			UserDO loginUser) throws Exception {
+		//选中的电桩
+		List<RateUniqueRelaDO> rateUniqueRelaDOList = rateUniqueRelaMapper.getRateUniqueRelaList(rateUniqueRela);
+		Map<Long, RateUniqueRelaDO> relaMap = Maps.uniqueIndex(rateUniqueRelaDOList, new Function<RateUniqueRelaDO, Long>() {
+            @Override
+            public Long apply(RateUniqueRelaDO input) {
+                return input.getElectricpileId();
+            }
+        });
+		
+		List<CityDO> resultList = new ArrayList<>();
+        Map<String, CityDO> cityMap = new HashMap<>();
+		CityDO city;
+		List<RateUniqueRelaDO> tempCityList = rateUniqueRelaMapper.getRateUniqueRelaCity(rateUniqueRela);
+		
+		for (RateUniqueRelaDO rateUniqueRelaDO : tempCityList) {
+			city = new CityDO();
+            city.setCityId(rateUniqueRelaDO.getCityCode());
+            city.setList(new ArrayList<PowerStationDO>());
+            city.setIsSelected(false);
+            city.setName(rateUniqueRelaDO.getCityName());
+            cityMap.put(rateUniqueRelaDO.getCityCode(), city);
+            resultList.add(city);
+		}
+		
+		List<PowerStationDO> tempPowerStationList = new ArrayList<PowerStationDO>();
+		List<ElectricPileDO> tempElectricPileList = new ArrayList<ElectricPileDO>();
+		RateUniqueRelaDO tempPowerStationDO;
+		RateUniqueRelaDO tempElectricPileDO;
+		PowerStationDO powerStationDO;
+		ElectricPileDO electricPileDO;
+		boolean isSelected = false;
+		int checkedNum;
+		int i = 0;
+		int j = 0;
+		int count = 0;
+		int count2 = 0;
+		List<RateUniqueRelaDO> powerStationList = rateUniqueRelaMapper.getRateUniqueRelaPowerStation(rateUniqueRela);
+		//选中的电站
+		Map<Long, RateUniqueRelaDO> powerStationMap = Maps.uniqueIndex(powerStationList, new Function<RateUniqueRelaDO, Long>() {
+            @Override
+            public Long apply(RateUniqueRelaDO input) {
+                return input.getPowerStationId();
+            }
+        });
+		
+		List<RateUniqueRelaDO> electricPileList = rateUniqueRelaMapper.getRateUniqueRelaElectricPile(rateUniqueRela);
+		for (CityDO tempCity : resultList) {
+			tempPowerStationList = new ArrayList<PowerStationDO>();
+			for ( ; i < powerStationList.size(); i++) {
+				tempPowerStationDO = powerStationList.get(i);
+				if (tempCity.getCityId().equals(tempPowerStationDO.getCityCode())) {
+					powerStationDO = new PowerStationDO();
+					powerStationDO.setPowerstationId(tempPowerStationDO.getPowerStationId());
+					powerStationDO.setName(tempPowerStationDO.getPowerStationName());
+					powerStationDO.setIsSelected(false);
+					tempElectricPileList = new ArrayList<ElectricPileDO>();
+					checkedNum = 0;
+					for ( ; j < electricPileList.size(); j++) {
+						tempElectricPileDO = electricPileList.get(j);
+						if (tempPowerStationDO.getPowerStationId().equals(tempElectricPileDO.getPowerStationId())) {
+							electricPileDO = new ElectricPileDO();
+							electricPileDO.setId(tempElectricPileDO.getElectricpileId());
+							electricPileDO.setName(tempElectricPileDO.getElectricpileName());
+							isSelected = false;
+							if (relaMap.containsKey(tempElectricPileDO.getElectricpileId())) {
+								checkedNum++;
+								isSelected = true;
+							}
+							electricPileDO.setIsSelected(isSelected);
+							tempElectricPileList.add(electricPileDO);
+							count++;
+						}else{
+							if (powerStationMap.containsKey(powerStationDO.getPowerstationId())
+									&& checkedNum == tempElectricPileList.size()) {
+								powerStationDO.setIsSelected(true);
+							}
+							powerStationDO.setList(tempElectricPileList);
+							checkedNum = 0;
+							break;
+						}
+						if (count == electricPileList.size()) {
+							if (powerStationMap.containsKey(powerStationDO.getPowerstationId())
+									&& checkedNum == tempElectricPileList.size()) {
+								powerStationDO.setIsSelected(true);
+							}
+							powerStationDO.setList(tempElectricPileList);
+							checkedNum = 0;
+						}
+					}
+					tempPowerStationList.add(powerStationDO);
+					count2++;
+				}else {
+					tempCity.setList(tempPowerStationList);
+					break;
+				}
+				if (count2 == powerStationList.size()) {
+					tempCity.setList(tempPowerStationList);
+				}
+			}
+		}
+		
+		return resultList;
+	}
+
+	@Override
+	public BaseResultDTO modifyRateUniqueRela(RateUniqueRelaDO rateUniqueRela, UserDO loginUser)throws Exception {
+		BaseResultDTO baseResultDTO = new BaseResultDTO();
+		if (rateUniqueRela == null) {
+			log.error(this.getClass() + ".modifyRateUniqueRela() error : 唯一费率信息不能为空！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("唯一费率信息不能为空！");
+			return baseResultDTO;
+		}
+		
+		if (rateUniqueRela.getCpyId() == null) {
+			log.error(this.getClass() + ".modifyRateUniqueRela() error : 渠道信息不能为空！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("渠道信息不能为空！");
+			return baseResultDTO;
+		}
+		
+		if (rateUniqueRela.getLevelId() == null) {
+			log.error(this.getClass() + ".modifyRateUniqueRela() error : 级别信息不能为空！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("级别信息不能为空！");
+			return baseResultDTO;
+		}
+		
+		rateUniqueRelaMapper.removeRateUniqueRela(rateUniqueRela);
+		
+		if (rateUniqueRela.getRateinfoId() == null) {
+			log.error(this.getClass() + ".modifyRateUniqueRela() error : 费率信息不能为空！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("费率信息不能为空！");
+			return baseResultDTO;
+		}
+		
+		if (rateUniqueRela.getElectricpileIds() == null || rateUniqueRela.getElectricpileIds().length() == 0) {
+			log.error(this.getClass() + ".modifyRateUniqueRela() error : 请选择电桩！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("请选择电桩！");
+			return baseResultDTO;
+		}
+		String[] electricpileIds = rateUniqueRela.getElectricpileIds().split(",");
+		List<RateUniqueRelaDO> rateUniqueRelaList = new ArrayList<RateUniqueRelaDO>();
+		RateUniqueRelaDO obj = new RateUniqueRelaDO();
+		for (String string : electricpileIds) {
+			obj.setCpyId(rateUniqueRela.getCpyId());
+			obj.setElectricpileId(Long.getLong(string));
+			obj.setLevelId(rateUniqueRela.getLevelId());
+			obj.setRateinfoId(rateUniqueRela.getRateinfoId());
+			obj.setCreator(loginUser.getUserId().toString());
+			obj.setGmtCreate(new Date());
+			
+			rateUniqueRelaList.add(obj);
+		}
+		
+		int count = rateUniqueRelaMapper.batchAddRateUniqueRela(rateUniqueRelaList);
+		if (count != 1) {
+			log.error(this.getClass() + ".modifyRateUniqueRela() error : 更新数据失败！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("更新数据失败！");
+			return baseResultDTO;
+		}
+		return baseResultDTO;
+	}
+	
+	@Override
+	public BaseResultDTO modifyRateUniqueRelaRateinfoId(RateUniqueRelaDO rateUniqueRela, UserDO loginUser)throws Exception {
+		BaseResultDTO baseResultDTO = new BaseResultDTO();
+		if (rateUniqueRela == null || rateUniqueRela.getPkId() == null) {
+			log.error(this.getClass() + ".modifyRateUniqueRela() error : 唯一费率信息不能为空！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("唯一费率信息不能为空！");
+			return baseResultDTO;
+		}
+		
+		if (rateUniqueRela.getRateinfoId() == null) {
+			log.error(this.getClass() + ".modifyRateUniqueRela() error : 费率值不能为空！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("费率值不能为空！");
+			return baseResultDTO;
+		}
+		
+		int result = rateUniqueRelaMapper.modifyRateUniqueRelaRateinfoId(rateUniqueRela);
+		if (result != 1) {
+			log.error(this.getClass() + ".modifyRateUniqueRelaRateinfoId() error : 更新数据失败！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("更新数据失败！");
+			return baseResultDTO;
+		}
+		return baseResultDTO;
+	}
+}

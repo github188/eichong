@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/style.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/electric/electricPile/electricPile_detail.css"/>
+    <title>电桩详细主页</title>
+</head>
+<body>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 ">
+                <div class="ibox float-e-margins" style="margin: 0">
+                    <div class="">
+                        <div class="ibox-content clearfix">
+                            <div class="userBaseInfo col-sm-12 ">
+                                <div class="col-sm-12 titleTip">
+                                    <span>电桩详细</span>
+                                </div>
+                                <div class="col-sm-6" style="padding: 0">
+                                    <ul class="baseInfoLeft">
+                                        <li>
+                                            <span class="infoTip">桩体编码</span>
+                                            <span class="infoValue" id="code"></span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">充电方式</span>
+                                            <span class="infoValue" id="chChargingMethod"></span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">功率</span>
+                                            <span class="infoValue" id="chPower"></span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">资产归属</span>
+                                            <span class="infoValue" id="ownerShip"></span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">产品型号</span>
+                                            <span class="infoValue" id="productModel"></span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">渠道</span>
+                                            <span class="infoValue" id="company"></span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">省份</span>
+                                            <span class="infoValue" id="province">浙江省</span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">区/县</span>
+                                            <span class="infoValue" id="area">西湖区</span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">经度</span>
+                                            <span class="infoValue" id="longitude">12.3456</span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">枪头数量</span>
+                                            <span class="infoValue" id="muzzleNumber">2</span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">sim卡运营商</span>
+                                            <span class="infoValue" id="simName"></span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">最大输出电压</span>
+                                            <span class="infoValue" id="maxVoltage"></span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">创建时间</span>
+                                            <span class="infoValue" id="gmtCreate"></span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-sm-6" style="padding: 0">
+                                    <ul class="baseInfoRight">
+                                        <li>
+                                            <span class="infoTip">编号</span>
+                                            <span class="infoValue"><t id="num"></t>号桩</span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">电桩状态</span>
+                                            <span class="infoValue" id="chStatus"></span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">类型</span>
+                                            <span class="infoValue" id="type"></span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">制造厂商</span>
+                                            <span class="infoValue" id="pileMaker"></span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">默认费率</span>
+                                            <span class="infoValue rateValue cursor" id="rateInformationId"></span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">城市</span>
+                                            <span class="infoValue" id="city"></span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">具体地址</span>
+                                            <span class="infoValue" id="address"></span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">纬度</span>
+                                            <span class="infoValue" id="latitude">12.123456</span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">接口标准</span>
+                                            <span class="infoValue" id="interfaceStandard">GB2313456</span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">sim卡编码</span>
+                                            <span class="infoValue" id="simMac"></span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">最大输出电流</span>
+                                            <span class="infoValue" id="maxElectricity"></span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">备注</span>
+                                            <span class="infoValue" id="remark"></span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip"></span>
+                                            <span class="infoValue"></span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <!--按钮组合-->
+                                <div class="editBtn cursor" id="editBtn" style="display: none;">编辑</div>
+                                <div class="goBack cursor" id="toPileList">返回</div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+<script src="../../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<!--<script src="../js/apiAddress.js" type="text/javascript" charset="utf-8"></script>-->
+<script src="../../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="../../../js/contabs.min.js"></script>
+<script src="../../../js/electric/electricPile/electricPile_detail.js" type="text/javascript" charset="utf-8"></script>
+</html>

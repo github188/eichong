@@ -1,0 +1,201 @@
+package com.wanma.model;
+
+/**
+ * @Description:费率信息DO
+ * @author Dongyu
+ * @createTime 2015/12/08 12:43
+ * @updater 
+ * @updateTime    
+ * @version v1.0
+ */
+public class TblRateInformation {
+	private java.lang.Long pkRateInformation; 				// 主键
+	private java.lang.Integer raInModelId; 					// 计费模型ID
+	private java.util.Date raInEffectiveDates; 				// 生效日期
+	private java.util.Date raInExpiryDate; 					// 失效日期
+	private java.math.BigDecimal raInFreezingMoney; 		// 预冻结金额
+	private java.math.BigDecimal raInMinFreezingMoney; 		// 最小冻结金额
+	private java.lang.String raInQuantumDate; 				// 采用JSON形式存储的费率
+	private java.util.Date raInStartQuantumDate; 			// 开始时间段
+	private java.util.Date raInEndQuantumDate; 				// 结束时间段
+	private java.lang.Integer raInTimeMarker; 				// 时段标志
+	private java.math.BigDecimal raInTipTimeTariff; 		// 尖时段电价
+	private java.math.BigDecimal raInPeakElectricityPrice; 	// 峰时段电价
+	private java.math.BigDecimal raInUsualPrice; 			// 平时段电价
+	private java.math.BigDecimal raInValleyTimePrice; 		// 谷时段电价
+	private java.math.BigDecimal raInReservationRate; 		// 预约单价
+	private java.math.BigDecimal raInServiceCharge; 		// 服务费
+	private java.math.BigDecimal raInWarnMoney; 			// 告警余额
+	private java.lang.Long elcId; 							// 电桩主键
+	private java.lang.Long psId; 							// 电站主键
+	
+//	private java.lang.String userId;		// 添加费率的用户，p_m_user表的id
+//	private java.lang.String raInAreaId;	// 区县编号
+//	private java.lang.String raInCityId;	// 市级编号
+//	private java.lang.String raInProviceId;	// 省级编号
+	
+	public java.lang.Long getPkRateInformation() {
+		return pkRateInformation;
+	}
+
+	public void setPkRateInformation(java.lang.Long pkRateInformation) {
+		this.pkRateInformation = pkRateInformation;
+	}
+
+	public java.lang.Integer getRaInModelId() {
+		return raInModelId;
+	}
+
+	public void setRaInModelId(java.lang.Integer raInModelId) {
+		this.raInModelId = raInModelId;
+	}
+
+	public java.util.Date getRaInEffectiveDates() {
+		return raInEffectiveDates;
+	}
+
+	public void setRaInEffectiveDates(java.util.Date raInEffectiveDates) {
+		this.raInEffectiveDates = raInEffectiveDates;
+	}
+
+	public java.util.Date getRaInExpiryDate() {
+		return raInExpiryDate;
+	}
+
+	public void setRaInExpiryDate(java.util.Date raInExpiryDate) {
+		this.raInExpiryDate = raInExpiryDate;
+	}
+
+	public java.math.BigDecimal getRaInFreezingMoney() {
+		return raInFreezingMoney;
+	}
+
+	public void setRaInFreezingMoney(java.math.BigDecimal raInFreezingMoney) {
+		this.raInFreezingMoney = raInFreezingMoney;
+	}
+
+	public java.math.BigDecimal getRaInMinFreezingMoney() {
+		return raInMinFreezingMoney;
+	}
+
+	public void setRaInMinFreezingMoney(java.math.BigDecimal raInMinFreezingMoney) {
+		this.raInMinFreezingMoney = raInMinFreezingMoney;
+	}
+
+	public java.lang.String getRaInQuantumDate() {
+		return raInQuantumDate;
+	}
+
+	public void setRaInQuantumDate(java.lang.String raInQuantumDate) {
+		this.raInQuantumDate = raInQuantumDate;
+	}
+
+	public java.util.Date getRaInStartQuantumDate() {
+		return raInStartQuantumDate;
+	}
+
+	public void setRaInStartQuantumDate(java.util.Date raInStartQuantumDate) {
+		this.raInStartQuantumDate = raInStartQuantumDate;
+	}
+
+	public java.util.Date getRaInEndQuantumDate() {
+		return raInEndQuantumDate;
+	}
+
+	public void setRaInEndQuantumDate(java.util.Date raInEndQuantumDate) {
+		this.raInEndQuantumDate = raInEndQuantumDate;
+	}
+
+	public java.lang.Integer getRaInTimeMarker() {
+		return raInTimeMarker;
+	}
+
+	public void setRaInTimeMarker(java.lang.Integer raInTimeMarker) {
+		this.raInTimeMarker = raInTimeMarker;
+	}
+
+	public java.math.BigDecimal getRaInTipTimeTariff() {
+		return raInTipTimeTariff;
+	}
+
+	public void setRaInTipTimeTariff(java.math.BigDecimal raInTipTimeTariff) {
+		this.raInTipTimeTariff = raInTipTimeTariff;
+	}
+
+	public java.math.BigDecimal getRaInPeakElectricityPrice() {
+		return raInPeakElectricityPrice;
+	}
+
+	public void setRaInPeakElectricityPrice(
+			java.math.BigDecimal raInPeakElectricityPrice) {
+		this.raInPeakElectricityPrice = raInPeakElectricityPrice;
+	}
+
+	public java.math.BigDecimal getRaInUsualPrice() {
+		return raInUsualPrice;
+	}
+
+	public void setRaInUsualPrice(java.math.BigDecimal raInUsualPrice) {
+		this.raInUsualPrice = raInUsualPrice;
+	}
+
+	public java.math.BigDecimal getRaInValleyTimePrice() {
+		return raInValleyTimePrice;
+	}
+
+	public void setRaInValleyTimePrice(java.math.BigDecimal raInValleyTimePrice) {
+		this.raInValleyTimePrice = raInValleyTimePrice;
+	}
+
+	public java.math.BigDecimal getRaInReservationRate() {
+		return raInReservationRate;
+	}
+
+	public void setRaInReservationRate(java.math.BigDecimal raInReservationRate) {
+		this.raInReservationRate = raInReservationRate;
+	}
+
+	public java.math.BigDecimal getRaInServiceCharge() {
+		return raInServiceCharge;
+	}
+
+	public void setRaInServiceCharge(java.math.BigDecimal raInServiceCharge) {
+		this.raInServiceCharge = raInServiceCharge;
+	}
+
+	public java.math.BigDecimal getRaInWarnMoney() {
+		return raInWarnMoney;
+	}
+
+	public void setRaInWarnMoney(java.math.BigDecimal raInWarnMoney) {
+		this.raInWarnMoney = raInWarnMoney;
+	}
+
+	public java.lang.Long getElcId() {
+		return elcId;
+	}
+
+	public void setElcId(java.lang.Long elcId) {
+		this.elcId = elcId;
+	}
+
+	@Override
+	public String toString() {
+		return "TblRateInformation [pkRateInformation=" + pkRateInformation
+				+ ", raInModelId=" + raInModelId + ", raInEffectiveDates="
+				+ raInEffectiveDates + ", raInExpiryDate=" + raInExpiryDate
+				+ ", raInFreezingMoney=" + raInFreezingMoney
+				+ ", raInMinFreezingMoney=" + raInMinFreezingMoney
+				+ ", raInQuantumDate=" + raInQuantumDate
+				+ ", raInStartQuantumDate=" + raInStartQuantumDate
+				+ ", raInEndQuantumDate=" + raInEndQuantumDate
+				+ ", raInTimeMarker=" + raInTimeMarker + ", raInTipTimeTariff="
+				+ raInTipTimeTariff + ", raInPeakElectricityPrice="
+				+ raInPeakElectricityPrice + ", raInUsualPrice="
+				+ raInUsualPrice + ", raInValleyTimePrice="
+				+ raInValleyTimePrice + ", raInReservationRate="
+				+ raInReservationRate + ", raInServiceCharge="
+				+ raInServiceCharge + ", raInWarnMoney=" + raInWarnMoney + "]";
+	}
+
+}

@@ -1,0 +1,92 @@
+package com.wanma.ims.service;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
+
+import com.wanma.ims.common.domain.ActivityDO;
+import com.wanma.ims.common.domain.FavCouponDO;
+import com.wanma.ims.common.domain.UserCardDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.dto.BaseResultDTO;
+
+public interface FavCouponService {
+	/**
+	 * 获取用户可用的优惠券数量
+	 * @author mb
+	 * @param coupon
+	 * @return
+	 */
+	public int getUserAvailableCoupon(FavCouponDO coupon);
+	/**
+	 * 获取用户实际优惠的总金额
+	 * @author mb
+	 * @param coupon
+	 * @return
+	 */
+	public String getUserDiscountAmount(FavCouponDO coupon);
+	/**
+	 * 当现金券品种下架，优惠券里绑定此现金券的且还未兑换的状态变成已过期
+	 * @author mb
+	 * @param pkCouponVariety
+	 */
+	public void removeCouponByCouponVarietyId(Integer pkCouponVariety);
+	/**
+	 * 获取优惠券列表数量
+	 * @author mb
+	 * @param coupon
+	 * @return
+	 */
+	public long getCouponCount(FavCouponDO coupon);
+	/**
+	 * 获取优惠券列表
+	 * @author mb
+	 * @param coupon
+	 * @return
+	 */
+	public List<FavCouponDO> getCouponList(FavCouponDO coupon);
+	/**
+	 * 获取优惠券的状态
+	 * @param id
+	 * @return
+	 */
+	public int getCouponStatus(String id);
+	/**
+	 * 删除优惠券
+	 * @param id
+	 */
+	public void deleteCoupon(String id);
+	/**
+	 * 导出优惠券
+	 * @param response
+	 * @param searchModel
+	 * @param loginUser
+	 * @return
+	 */
+	public BaseResultDTO exportCoupon(HttpServletResponse response,
+			FavCouponDO searchModel, UserDO loginUser);
+	/**
+	 * 用户优惠券管理数量
+	 * @author mb
+	 * @param 
+	 * @return
+	 */
+	public long getUserCouponCount(FavCouponDO coupon);
+	/**
+	 * 用户优惠券管理列表
+	 * @author mb
+	 * @param 
+	 * @return
+	 */
+	public List<FavCouponDO> getUserCouponList(FavCouponDO coupon);
+	/**
+	 * 修改优惠券表失效时间
+	 * @author mb
+	 * @param 
+	 * @return
+	 */
+	public void changeEndDate(ActivityDO activity);
+
+
+
+}

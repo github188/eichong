@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			*{
+				padding: 0;
+				margin: 0;
+			}
+			.aaa{
+				width: 100%;
+				min-height: 400px;
+				background: #0000FF;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="aaa">
+			
+		</div>
+	</body>
+</html>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bluemobi.product.dao.CityMapper">
+	<resultMap type="City" id="result_city">
+		<result property="provinceId" column="province_id" />
+		<result property="cityId" column="city_id" />
+		<result property="keyWord" column="key_word" />
+		<result property="cityName" column="city_name" />
+	</resultMap>
+	<select id="getCityName" parameterType="City" resultType="String">
+		select
+		tb_m_city.city_name
+		from tb_m_province ,
+		tb_m_city
+		where
+		tb_m_province.province_id = tb_m_city.province_id
+		and
+		tb_m_city.province_id= #{provinceId}
+		and tb_m_city.city_id = #{cityId}
+	</select>
+
+	<select id="getCityList" parameterType="City" resultMap="result_city">
+		select
+		cdd.city_id,
+		cdd.city_name,
+		case cdd.hot_flag when '1' then 'HOT' else get_first_pinyin_char(cdd.city_name) end as key_word
+		from
+		tb_m_province cdg,
+		tb_m_city cdd
+		where cdg.province_id = cdd.province_id
+		<if test="provinceId!=null"> and cdg.province_id= #{provinceId} </if>
+		order by cdd.hot_flag desc,cdd.city_id asc
+	</select>
+	<select id="getCityList1" parameterType="City" resultMap="result_city">
+			select
+			cdd.city_id,
+			cdd.city_name
+			
+			from
+			tb_m_province cdg,
+			tb_m_city cdd
+			where cdg.province_id = cdd.province_id
+			<if test="provinceId!=null"> and cdg.province_id= #{provinceId} </if>
+			order by cdd.hot_flag desc,cdd.city_id asc
+		</select>
+	
+	<select id="getCityListByAuth" parameterType="City" resultMap="result_city">
+		select
+		cdd.city_id,
+		cdd.city_name,
+		case cdd.hot_flag when '1' then 'HOT' else get_first_pinyin_char(cdd.city_name) end as key_word
+		from
+		tb_m_province cdg,
+		tb_m_city cdd
+		where cdg.province_id = cdd.province_id
+		<if test="provinceId!=null"> and cdg.province_id= #{provinceId} </if>
+		<!-- 物业权限控制 -->
+		<if test="authUserType == '002'">
+			and exists( select
+			*
+			from
+			tb_community tc,
+			p_m_department
+			pmd,
+			p_m_company pmc,
+			p_m_user_department pmud
+			where
+			tc.province_id = cdd.province_id
+			and tc.city_id = cdd.city_id
+			and tc.company_id = pmc.company_id
+			and tc.company_id =
+			pmd.company_id
+			and tc.department_id = pmd.department_id
+			and
+			pmud.user_id = #{authUserId}
+			and pmud.company_id = pmd.company_id
+			and
+			exists( select
+			*
+			from
+			p_m_department_inclusion pmdi
+			where
+			pmd.department_id = pmdi.department_id
+			and pmd.company_id =
+			pmdi.company_id
+			and pmdi.parent_department_id = pmud.department_id))
+		</if>
+		order by cdd.hot_flag desc,cdd.city_id asc
+	</select>
+</mapper>

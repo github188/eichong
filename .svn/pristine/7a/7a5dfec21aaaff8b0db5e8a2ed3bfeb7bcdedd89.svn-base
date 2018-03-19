@@ -1,0 +1,20 @@
+package com.wanma.service.impl;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.wanma.dao.TcbPartnerMapper;
+import com.wanma.service.TcbPartnerService;
+
+@Service
+public class TcbPartnerServiceImpl implements TcbPartnerService{
+	@Autowired
+	private TcbPartnerMapper  partnerMapper;
+
+	@Override
+	public String getKey(int comNum) {
+		return partnerMapper.getKey(comNum);
+	}
+	
+}

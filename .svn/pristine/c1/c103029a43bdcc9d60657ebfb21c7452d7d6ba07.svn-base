@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="blank" />
+		<meta name="format-detection" content="telephone=no" />
+		<title>预约费率说明</title>
+		<!--<link rel="stylesheet" type="text/css" href="dist/css/bootstrap.min.css"/>-->
+		<link rel="stylesheet" type="text/css" href="dist/css/bootstrap.css"/>
+		<link rel="stylesheet" type="text/css" href="css/base.css"/>
+		<link rel="stylesheet" type="text/css" href="css/YrateExplain.css"/>
+<!--[if lt IE 9]>
+			<script src="dist/js/html5shiv.min.js"></script>
+			<script src="dist/js/respond.min.js"></script>
+		<![endif]-->
+	</head>
+	<body>
+	<!--头部=============================================================================================-->
+	<header>
+		<div class="col-xs-2 headLeft">
+		</div>
+		<div class="col-xs-8 headCenter">
+			预约费用计算说明
+		</div>
+		<div class="col-xs-2 headLeft">
+			<span>关闭</span>
+		</div>
+	</header>
+	<!--主体部分===========================================================================================-->
+	
+	<section>
+		<h4 class="price">预约单价：0.50元/分钟</h4>
+		<h4 class="yExplain">预约费用计算说明</h4>
+		<p class="math">预约费用=预约单价*预约时长</p>
+		<h4 class="youKnow">预约须知</h4>
+		<p class="detailKnow">
+			用户预约之后，可以买断从当前时间开始到用户本人预计到达充电点的这段时间，以确保用户到了之后可以顺利充电。设置时间，以30分钟为最小单位，最大预约时长为6小时。
+		</p>
+	</section>
+	
+	</body>
+	<script type="text/javascript" src="dist/js/jquery-1.11.0.js" ></script>
+	<!--<script src="dist/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>-->
+	<script type="text/javascript" src="dist/js/bootstrap.js" ></script>
+	<!--<script src="js/checkError.js" type="text/javascript" charset="utf-8"></script>-->
+</html>

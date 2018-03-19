@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no"/>
+    <title>充电</title>
+    <script>
+        (function(){
+            var html = document.documentElement;
+            var hWidth = html.getBoundingClientRect().width;
+            html.style.fontSize = hWidth/15 + "px";
+        })()
+    </script>
+    <link rel="stylesheet" href="../../css/common.css">
+    <link rel="stylesheet" href="../../css/finishedCharge.css">
+</head>
+<body>
+<div class="chargeStatus">
+    <div class="pic">
+        <img src="../../img/img_complete@2x.png" alt="">
+        <span class="statusValue">充电完成</span>
+    </div>
+    <div class="title">充电详情</div>
+</div>
+<ul class="chargeList">
+    <li>
+        <span>时&nbsp;&nbsp;长</span>
+        <span id="timeChargeF">00:25:54</span>
+    </li>
+    <li>
+        <span>电&nbsp;&nbsp;量</span>
+        <span id="powerF"></span>
+    </li>
+    <li>
+        <span>电&nbsp;&nbsp;费</span>
+        <span id="feeTotalF"></span>
+    </li>
+    <li>
+        <span>退&nbsp;&nbsp;还</span>
+        <span id="feeBack"></span>
+    </li>
+</ul>
+<div class="smallTip">1-5个工作日退还到您到微信钱包</div>
+<div class="doneBtn" id="haveDone">完成</div>
+</body>
+</html>
+<script src="../../js/jquery-2.1.0.js"></script>
+<script src="../../lib/layer_mobile/layer.js"></script>
+<script src="../../js/finishedCharge.js"></script>

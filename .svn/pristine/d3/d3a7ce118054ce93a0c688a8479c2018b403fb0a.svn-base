@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/style.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/fav/couponVariety_detail.css"/>
+    <title>现金券品种详细</title>
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="container-fluid">
+        <div class="row">
+        </div>
+        <div class="row">
+            <div class="col-sm-12" style="padding: 0">
+                <div class="ibox float-e-margins">
+                    <div class="">
+                        <div class="ibox-content">
+                            <div class="add_userBlock">
+                                <div class="add_greyBlock">
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">现金券名称<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="covaActivityName" id="" class="commonStyle"
+                                                   readonly="readonly"/>
+                                        </div>
+                                    </div>
+
+                                    <!--<div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">电桩限制<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8">
+                                            <div class=" col-sm-3 col-xs-4 model-select-box" style="width: 100%">
+                                                <div class="model-select-text covaLimitationBlock" data-value=""
+                                                     id="covaLimitationHtml">
+                                                </div>
+                                                <span class="downRow covaLimitationBlock"></span>
+
+                                            </div>
+                                        </div>
+
+                                    </div>-->
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">范围<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8">
+                                            <div class=" col-sm-3 col-xs-4 model-select-box" style="width: 100%">
+                                                <div class="model-select-text covaScopeBlock" data-value="0" id="covaScopeHtml">全国通用</div>
+                                                <span class="downRow covaScopeBlock"></span>
+                                                <ul class="model-select-option covaScopeUl">
+                                                    <li data-option="0" class="seleced">全国通用</li>
+                                                    <li data-option="1">城市通用</li>
+                                                    <li data-option="2">站点用</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="covaScopeTip">
+
+                                        </div>
+
+                                    </div>
+                                    <!--范围选择的所有框父元素-->
+                                    <div class="ctrAllChoice" style="display:none;">
+                                        <div class="container-fluid cityChoice">
+                                            <div class="col-sm-12 comTitle">选择<span class="errorStyle">*</span></div>
+                                            <!--省份-->
+                                            <div class="col-sm-4">
+                                                <div class=" col-sm-3 col-xs-4 model-select-box" style="width: 100%">
+                                                    <div class="model-select-text cpyProvinceBlock" data-value="" id="provinceCodeHtml">选择省份</div>
+                                                    <span class="downRow cpyProvinceBlock"></span>
+                                                    <!--<input type="text" name="provinceCode" hidden="hidden" id="" value="" />-->
+                                                    <ul class="model-select-option cpyProvinceUl">
+
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <!--城市-->
+                                            <div class="col-sm-4">
+                                                <div class=" col-sm-3 col-xs-4 model-select-box" style="width: 100%">
+                                                    <div class="model-select-text cypCityBlock" data-value="" id="cityCodeHtml">选择城市</div>
+                                                    <span class="downRow cypCityBlock"></span>
+                                                    <!--<input type="text" name="cityCode" hidden="hidden" id="" value="" />-->
+                                                    <ul class="model-select-option cypCityUl">
+
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4 errorStyle" id="cityTip">
+
+                                            </div>
+                                        </div>
+                                        <div class="container-fluid powerStationChoice">
+                                            <div class="col-sm-12 comTitle" style="height: 5px"><span class="errorStyle"></span></div>
+                                            <!--区域-->
+                                            <div class="col-sm-4">
+                                                <div class=" col-sm-3 col-xs-4 model-select-box" style="width: 100%">
+                                                    <div class="model-select-text cpyAreaBlock" data-value="" id="areaCodeHtml">请选择区域</div>
+                                                    <span class="downRow cpyAreaBlock"></span>
+                                                    <!--<input type="text" name="areaCode" id="" value="" hidden="hidden"/>-->
+                                                    <ul class="model-select-option areaUl">
+
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <!--站点-->
+                                            <div class="col-sm-4">
+                                                <div class=" col-sm-3 col-xs-4 model-select-box" style="width: 100%">
+                                                    <div class="model-select-text powerstationBlock" data-value="" id="powerstationHtml">请选择充电点</div>
+                                                    <span class="downRow powerstationBlock"></span>
+                                                    <ul class="model-select-option powerstationUl">
+                                                        <li data-option="1" class="seleced">dd</li>
+                                                        <li data-option="2">dd</li>
+                                                        <li data-option="3">站点ddddd通用</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4 errorStyle" id="powerstationTip">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">面值(元)<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="covaCouponValue" id="covaCouponValue" class="commonStyle"
+                                                   readonly="readonly"/>
+                                        </div>
+
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">使用条件<span class="errorStyle">*</span>(满x元使用)</div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="covaCouponCondition" id="covaCouponCondition" class="commonStyle"
+                                                   readonly="readonly"/>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">状态<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8">
+                                            <div class=" col-sm-3 col-xs-4 model-select-box" style="width: 100%">
+                                                <div class="model-select-text covaStutasBlock" data-value="" id="covaStutasHtml">
+                                                </div>
+                                                <span class="downRow covaStutasBlock"></span>
+                                               <!-- <ul class="model-select-option covaStutasUl">
+                                                    <li data-option="0" class="seleced">上架</li>
+                                                    <li data-option="1">下架</li>
+                                                </ul>-->
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">标签</div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="covaLabel" id="covaLabel" class="commonStyle"
+                                                   readonly="readonly"/>
+                                        </div>
+
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">备注</div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="covaRemark" id="covaRemark" class="commonStyle"
+                                                   readonly="readonly"/>
+                                        </div>
+
+                                    </div>
+                                    <!--按钮组合-->
+                                    <div class="saveBtn commonBtn" id="saveBtn" onclick="editCouponVariety()">编辑</div>
+                                    <div class="quitBtn commonBtn" id="goback">取消</div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/fav/couponVariety_detail.js" type="text/javascript" charset="utf-8"></script>
+</html>

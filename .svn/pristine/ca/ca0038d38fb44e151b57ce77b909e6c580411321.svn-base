@@ -1,0 +1,284 @@
+package com.wanma.ims.controller.company;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.google.common.collect.Lists;
+import com.wanma.ims.common.domain.CompanyDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.domain.base.Pager;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.constants.DownFileConstants;
+import com.wanma.ims.constants.ResultCodeConstants;
+import com.wanma.ims.constants.WanmaConstants;
+import com.wanma.ims.controller.BaseController;
+import com.wanma.ims.controller.result.JsonException;
+import com.wanma.ims.controller.result.JsonResult;
+import com.wanma.ims.controller.vo.CompanyVO;
+import com.wanma.ims.service.CompanyService;
+import com.wanma.ims.util.ImsBaseUtil;
+
+/**
+ * 公司管理-公司管理
+ */
+@Controller
+@RequestMapping("/company")
+public class CompanyController extends BaseController {
+
+	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+
+	@Autowired
+	private CompanyService companyService;
+
+	/**
+	 * 公司-分页
+	 */
+	@RequestMapping(value = "/getCompanyListPage", method = RequestMethod.POST)
+	@ResponseBody
+	public void getCompanyListPage(Pager pager, CompanyDO companyDO) {
+		JsonResult result = new JsonResult();
+		try {
+			companyDO.setCpyIdList(getCurrentLoginUser().getCpyIdList());
+			Long total = companyService.countCompanyList(companyDO);
+			if (total <= pager.getOffset()) {
+				pager.setPageNo(1L);
+			}
+			pager.setTotal(total);
+			companyDO.setPager(pager);
+			List<CompanyDO> list = companyService.getCompanyList(companyDO);
+			List<CompanyVO> VOList = new ArrayList<CompanyVO>();
+			for (CompanyDO company : list) {
+				VOList.add(new CompanyVO(company));
+			}
+			result.setPager(pager);
+			result.setDataObject(VOList);
+		} catch (Exception e) {
+			LOGGER.debug(this.getClass() + ".getCompanyListPage() error : ", e);
+			responseJson(new JsonException("公司分页列表失败"));
+			return;
+		}
+		responseJson(result);
+	}
+
+	/**
+	 * 公司-新增
+	 */
+	@RequestMapping(value = "/addCompany", method = RequestMethod.POST)
+	@ResponseBody
+	public void addCompany(CompanyDO companyDO) {
+		JsonResult result = new JsonResult();
+		try {
+			UserDO loginUser = getCurrentLoginUser();
+			companyDO.setCreator(loginUser.getUserAccount());
+			companyDO.setCreatorId(loginUser.getUserId());
+			BaseResultDTO dto = companyService.addCompany(companyDO,loginUser);
+			if(!dto.isSuccess()){
+				responseJson(new JsonResult(false, ResultCodeConstants.FAILED, dto.getErrorDetail()));
+				return;
+			}
+		} catch (Exception e) {
+			LOGGER.debug(this.getClass() + ".addCompany() error : ", e);
+			responseJson(new JsonException(ResultCodeConstants.ERROR_MSG_ADD_COMPANY));
+			return;
+		}
+		responseJson(result);
+	}
+
+	/**
+	 * 公司-编辑
+	 */
+	@RequestMapping(value = "/modifyCompany")
+	@ResponseBody
+	public void modifyCompany(CompanyDO companyDO) {
+		JsonResult result = new JsonResult();
+		try {
+			companyDO.setModifier(getCurrentUserName());
+			if(!companyService.modifyCompany(companyDO)){
+				responseJson(new JsonResult(false, ResultCodeConstants.FAILED, ResultCodeConstants.ERROR_MSG_MODIFY_COMPANY));
+				return;
+			}
+		} catch (Exception e) {
+			LOGGER.debug(this.getClass() + ".modifyCompany() error : ", e);
+			responseJson(new JsonException(ResultCodeConstants.ERROR_MSG_MODIFY_COMPANY));
+			return;
+		}
+		responseJson(result);
+	}
+	
+	/**
+	 * 公司-禁用|解禁
+	 * type:1.禁用
+	 *      2.解禁
+	 */
+	@RequestMapping(value = "/disableCompany")
+	@ResponseBody
+	public void disableCompany(Long cpyId,int type) {
+		JsonResult result = new JsonResult();
+		try {
+			CompanyDO companyDO = new CompanyDO();
+			companyDO.setCpyId(cpyId);
+			companyDO.setCpyStatus(WanmaConstants.COMPANY_STATE_DISABLE);
+			companyDO.setModifier(getCurrentUserName());
+			String errorMsg = ResultCodeConstants.ERROR_MSG_DISABLE_COMPANY;
+			CompanyDO company = companyService.getCompanyListById(cpyId);
+			if(type == WanmaConstants.COMPANY_STATE_ENABLE){
+				companyDO.setCpyStatus(WanmaConstants.COMPANY_STATE_ENABLE);
+				errorMsg = ResultCodeConstants.ERROR_MSG_ENABLE_COMPANY;
+			}else{
+				if(company.getCpyStatus() == WanmaConstants.COMPANY_STATE_DISABLE){
+					responseJson(new JsonResult(false, ResultCodeConstants.FAILED, "公司已是禁用状态"));
+					return;
+				}
+			}
+			if(!companyService.disableCompany(companyDO)){
+				responseJson(new JsonResult(false, ResultCodeConstants.FAILED, errorMsg));
+				return;
+			}
+		} catch (Exception e) {
+			LOGGER.debug(this.getClass() + ".disableCompany() error : ", e);
+			responseJson(new JsonException());
+			return;
+		}
+		responseJson(result);
+	}
+    /**
+     * 公司-公司标识是否存在 
+     */
+	@RequestMapping(value = "/checkCompanyUnique")
+	@ResponseBody
+	public void checkCompanyUnique(String cpyNumber,String cpyName) {
+		JsonResult result = new JsonResult();
+		try {
+			Map<String,String> param = new HashMap<String,String>();
+			param.put("cpyNumber", cpyNumber);
+			param.put("cpyName", cpyName);
+			String errorCode = ResultCodeConstants.ERROR_MSG_COMPANY_UNIQUE_NUMBER;
+			if(StringUtils.isBlank(cpyNumber+"")){
+				errorCode = ResultCodeConstants.ERROR_MSG_COMPANY_UNIQUE_NAME;
+			}
+			if(!companyService.checkCompanyUnique(param)){
+				responseJson(new JsonResult(false, ResultCodeConstants.FAILED, errorCode));
+				return;
+			}
+		} catch (Exception e) {
+			LOGGER.debug(this.getClass() + ".checkCompanyNumber() error : ", e);
+			responseJson(new JsonException("判断公司标识是否存在失败"));
+			return;
+		}
+		responseJson(result);
+
+	}
+	/**
+     * 公司-上级公司
+     */
+	@RequestMapping(value = "/getParentCompanyList")
+	@ResponseBody
+	public void getParentCompanyList(Integer cpyType) {
+		JsonResult result = new JsonResult();
+		try {
+			CompanyDO company = new CompanyDO();
+			company.setCpyType(cpyType);
+			company.setCpyStatus(0);
+			List<CompanyDO> list = companyService.getCompanyList(company);
+			result.setDataObject(list);
+		} catch (Exception e) {
+			LOGGER.debug(this.getClass() + ".getParentCompanyList() error : ", e);
+			responseJson(new JsonException("获取公司上级数据失败"));
+			return;
+		}
+		responseJson(result);
+
+	}
+	/**
+	 * 公司-导出
+	 */
+	@RequestMapping(value = "/exportCompany")
+	@ResponseBody
+	public void exportCompany(CompanyDO companyDO) {
+		try{
+			companyDO.setCpyIdList(getCurrentLoginUser().getCpyIdList());
+			List<CompanyDO> list = companyService.getCompanyList(companyDO);
+			if(CollectionUtils.isEmpty(list)){
+				responseJson(new JsonResult(false, ResultCodeConstants.FAILED, ResultCodeConstants.ERROR_MSG_EXPORT_DATA_EMPTY));
+				return;
+			}
+			List<CompanyVO> VOList = new ArrayList<CompanyVO>();
+			for (CompanyDO company : list) {
+				VOList.add(new CompanyVO(company));
+			}
+			List<String> headList = Lists.newArrayList("cpyNumber,公司标识 ","cpyName,公司名称","cpyCity,地区","cpyTypeText,类型","isValideText,盗刷校验","cpyParentName,上级公司","slaveCpyName,管理单位");
+			List<Map<String, Object>> datalist = createDataExcelList(VOList);
+			ImsBaseUtil.responseExcel(response,headList,datalist, DownFileConstants.FILE_COMPANY_EXPORT, DownFileConstants.FILE_COMPANY_EXPOR_SHEET);
+		}catch(Exception e){
+			LOGGER.error(this.getClass() + ".exportCompany() error : ", e);
+			responseJson(new JsonException("导出公司数据失败"));
+			return;
+		}
+	}
+	
+	/**
+	 * 公司-主页 
+	 */
+	@RequestMapping(value = "/companyHome")
+	@ResponseBody
+	public void companyHome(Long cpyId) {
+		JsonResult result = new JsonResult();
+		try {
+			CompanyDO companyDO = companyService.getCompanyListById(cpyId);
+			result.setDataObject(new CompanyVO(companyDO));
+		} catch (Exception e) {
+			LOGGER.debug(this.getClass() + ".getCompanyHome() error : ", e);
+			responseJson(new JsonException("跳转公司主页失败"));
+			return;
+		}
+		responseJson(result);
+
+	}
+	
+	/**
+	 * 公司主页-管辖公司
+	 */
+	@RequestMapping(value = "/getCompanyByMaster")
+	@ResponseBody
+	public void getCompanyByMaster(Long cpyId) {
+		JsonResult result = new JsonResult();
+		try {
+			List<CompanyDO> list = companyService.getCompanyByMaster(cpyId);
+			result.setDataObject(list);
+		} catch (Exception e) {
+			LOGGER.debug(this.getClass() + ".getCompanyByMaster() error : ", e);
+			responseJson(new JsonException("公司主页-管辖公司失败"));
+			return;
+		}
+		responseJson(result);
+
+	}
+	
+	private List<Map<String, Object>> createDataExcelList(List<CompanyVO> list){
+		List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
+		for (CompanyVO company : list) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("cpyNumber", company.getCpyNumber());
+			map.put("cpyName", company.getCpyName());
+			map.put("cpyCity", company.getCpyCity());
+			map.put("cpyTypeText", company.getCpyTypeText());
+			map.put("isValideText", company.getIsValidText());
+			map.put("cpyParentName", company.getCpyParentName());
+			map.put("slaveCpyName", company.getSlaveCpyName());
+			dataList.add(map);
+		}
+		return dataList;
+	}
+}

@@ -1,0 +1,38 @@
+.content{
+	width: 1162px;
+	margin: 0 auto;
+}
+.content a:link,.content a:visited,.content a:hover,.content a:active{
+	color: #999;   
+}
+.content .padding{
+	padding: 0 100px;
+}
+.padding li{
+	line-height: 40px;
+	margin: 10px 0;
+}
+.con-l,.con-r{
+	float: left;
+}
+.con-l{
+	width: 100px;
+}
+.con-r a{
+	margin-right:10px
+}
+.con-r select,.con-r .search{
+	width: 230px;
+	height: 40px;
+	color: #999;  
+	border: 1px solid #ffa74a; 
+}
+.con-r .search{
+	padding-left: 10px;
+	width: 218px;
+}
+.letter .con-l{
+	width: 50px;
+	text-align: center;
+}
+

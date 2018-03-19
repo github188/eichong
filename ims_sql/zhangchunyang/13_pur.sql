@@ -1,0 +1,30 @@
+DELIMITER //
+CREATE PROCEDURE `proc_purchase_history_accountId`()
+BEGIN
+        DECLARE userId        BIGINT(11);
+        DECLARE accountId     BIGINT(11);
+        DECLARE num           BIGINT DEFAULT 0;
+        DECLARE i 						INT;
+
+        DECLARE purchasehistory_cursor CURSOR FOR
+            SELECT puHi_UserId FROM tbl_purchasehistory GROUP BY puHi_UserId;
+
+        SET i = 0;
+        SELECT COUNT(*) INTO num FROM (SELECT puHi_UserId FROM tbl_purchasehistory GROUP BY puHi_UserId) s;
+        OPEN purchasehistory_cursor;
+            WHILE i < num DO
+                FETCH purchasehistory_cursor INTO userId ;
+
+                SELECT account_id INTO accountId FROM fin_account_relation 
+                        WHERE user_id = userId AND bill_account_id = 1 AND priority = 1;
+
+                IF(accountId IS NOT NULL) THEN
+                    UPDATE tbl_purchasehistory SET account_id = accountId WHERE puHi_UserId = userId;
+                END IF;
+
+                SET i = i + 1;
+            END WHILE;
+        CLOSE purchasehistory_cursor;
+END;//
+DELIMITER ;
+call proc_purchase_history_accountId;

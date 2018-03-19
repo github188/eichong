@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.WeChatMapper">
+	<resultMap id="RateResultMap" type="com.wanma.model.RateInfo">
+		<id column="pk_RateInformation" property="rateId" jdbcType="INTEGER" />
+		<result column="raIn_QuantumDate" property="raInQuantumDate"
+			jdbcType="VARCHAR" />
+		<result column="raIn_TipTimeTariff" property="raInTipTimeTariff"
+			jdbcType="VARCHAR" />
+		<result column="raIn_PeakElectricityPrice" property="raInPeakElectricityPrice"
+			jdbcType="VARCHAR" />
+		<result column="raIn_UsualPrice" property="raInUsualPrice"
+			jdbcType="VARCHAR" />
+		<result column="raIn_ValleyTimePrice" property="raInValleyTimePrice"
+			jdbcType="VARCHAR" />
+		<result column="raIn_ServiceCharge" property="raInServiceCharge"
+			jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="tblElectricpileMap" type="com.wanma.model.WxElectircpile">
+		<result property="elPiElectricPileName" column="elPi_ElectricPileName" />
+		<result property="elPiElectricPileCode" column="elPi_ElectricPileCode" />
+		<result property="elPiState" column="elPi_State" />
+		<result property="elPiChargingMode" column="elPi_ChargingMode" />
+		<result property="elPiPowerSize" column="elPi_PowerSize" />
+		<result property="elPiOutputVoltage" column="elPi_OutputVoltage" />
+		<result property="elPiOutputCurrent" column="elPi_OutputCurrent" />
+		<result property="elPiRateId" column="elPi_RateInformationId" />
+		<result property="commStatus" column="comm_status" />
+		<result property="elPiParkingFee" column="elPiParking_Fee" />
+		<result property="ePHeElectricpileHeadName" column="ePHe_ElectricpileHeadName" />
+		<result property="ePHeElectricpileHeadState" column="ePHe_ElectricpileHeadState" />
+	</resultMap>
+	<resultMap id="accountMap" type="com.wanma.model.WxAccount">
+		<result property="month" column="month" />
+		<result property="monetary" column="monetary" />
+		<result property="chargeDegree" column="chargeDegree" />
+	</resultMap>
+	<resultMap id="accountDetailMap" type="com.wanma.model.WxAccountDetail">
+		<result property="chOrCode" column="chOrCode" />
+		<result property="chargeDegree" column="chargeDegree" />
+		<result property="ChargeMoney" column="ChargeMoney" />
+		<result property="ServiceMoney" column="ServiceMoney" />
+		<result property="beginChargeTime" column="beginChargeTime" />
+		<result property="endChargeTime" column="endChargeTime" />
+	</resultMap>
+
+	<resultMap id="wxChargeMap" type="com.wanma.model.WxCharge">
+		<result property="epCode" column="epCode" />
+		<result property="epGunCode" column="epGunCode" />
+	</resultMap>
+	<resultMap id="result_weChat" type="com.wanma.model.TblWeChatNews">
+		<id column="we_id" property="weId" jdbcType="INTEGER" />
+		<result column="we_title" property="weTitle" jdbcType="VARCHAR" />
+		<result column="we_content_url" property="weContentUrl"
+			jdbcType="VARCHAR" />
+		<result column="we_picture_url" property="wePictureUrl"
+			jdbcType="VARCHAR" />
+		<result column="description" property="description" jdbcType="VARCHAR" />
+		<result column="we_type" property="weType" jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<select id="getChgStatus" parameterType="String" resultType="long">
+		select count(1) from (
+		select * from tbl_chargingorder where
+		chor_parter_user_logo=#{openId}
+		and
+		chOr_ChargingStatus=1
+		)
+		aa
+
+	</select>
+
+	<select id="getElectricPile" parameterType="String" resultMap="tblElectricpileMap">
+		SELECT
+		b.elPi_ElectricPileName,
+		b.elPi_ElectricPileCode,
+		b.elPi_State,
+		b.elPi_ChargingMode,
+		b.elPi_PowerSize,
+		b.elPi_OutputVoltage,
+		b.elPi_OutputCurrent,
+		b.comm_status,
+		b.elPi_Parking_Fee,
+		a.ePHe_ElectricpileHeadName,
+		a.ePHe_ElectricpileHeadState,
+		b.elPi_RateInformationId
+		FROM
+		tbl_electricpilehead a,
+		tbl_electricpile b
+		WHERE
+		a.ePHe_qr_codes =#{epCodes}
+		AND a.pk_ElectricPile =
+		b.pk_ElectricPile
+	</select>
+	<select id="getRateInfo" resultMap="RateResultMap">
+		SELECT
+		t.pk_RateInformation,
+		t.raIn_QuantumDate,
+		t.raIn_TipTimeTariff,
+		t.raIn_ValleyTimePrice,
+		t.raIn_PeakElectricityPrice,
+		t.raIn_UsualPrice,
+		t.raIn_ServiceCharge
+		FROM
+		tbl_rateinformation t
+		where pk_RateInformation=#{rateId}
+	</select>
+
+	<select id="getWeChatAccount" resultMap="accountMap">
+		SELECT
+		sum(t.chOr_ChargeMoney)+
+		SUM(chOr_ServiceMoney) as monetary,
+		sum(t.chOr_QuantityElectricity) as chargeDegree,
+		date_format(t.end_charge_time, '%Y-%m') as month
+		FROM
+		tbl_chargingorder
+		t
+		WHERE
+		t.chor_parter_user_logo = #{openId}
+		and t.chOr_ChargingStatus=3
+		group by
+		date_format(t.end_charge_time, '%Y-%m')
+		order by
+		date_format(t.end_charge_time, '%Y-%m') desc;
+	</select>
+
+
+	<select id="getWxAccountDetail" parameterType="map" resultMap="accountDetailMap">
+		SELECT
+		t.chOr_Code as chOrCode,
+		t.chOr_ChargeMoney as ChargeMoney,
+		t.chOr_ServiceMoney as ServiceMoney,
+		t.chOr_QuantityElectricity as
+		chargeDegree,
+		t.begin_charge_time as beginChargeTime,
+		t.end_charge_time
+		as endChargeTime
+		FROM
+		tbl_chargingorder t
+		WHERE
+		t.chor_parter_user_logo =
+		#{openId}
+		and t.chOr_ChargingStatus=3
+		and date_format(t.end_charge_time,
+		'%Y-%m')= #{month}
+		order by t.end_charge_time desc;
+	</select>
+
+	<select id="getepCode" parameterType="String" resultMap="wxChargeMap">
+		SELECT
+		a.ePHe_ElectricpileHeadId as epGunCode,
+		b.elPi_ElectricPileCode as
+		epCode
+		FROM
+		tbl_electricpilehead a,
+		tbl_electricpile b
+		WHERE
+		a.pk_ElectricPile = b.pk_ElectricPile
+		AND a.ePHe_qr_codes = #{epcodes}
+
+	</select>
+
+	<select id="getWeChatNews" resultMap="result_weChat">
+		select * from tbl_wechat_news t where t.we_type=#{type}
+	</select>
+</mapper>

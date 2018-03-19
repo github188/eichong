@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.AdvertisementMapper">
+	<resultMap type="AdvertisementDO" id="result_advertisement">
+			<id column="pk_ad_id" property="pkAdId" />
+		<result column="ad_name" property="adName" />
+		<result column="ad_type" property="adType" />
+		<result column="ad_is_goto" property="adIsGoto" />
+		<result column="ad_desc" property="adDesc" />
+		<result column="ad_URL" property="adURL" />
+		<result column="ad_status" property="adStatus" />
+		<result column="ad_time" property="adTime" />
+		<result column="ad_location" property="adLocation" />
+		<result column="ad_createdate" property="adCreatedate" />
+		<result column="ad_updatedate" property="adUpdatedate" />
+		<result column="begin_ad_time" property="beginAdTimeDate" />
+		<result column="end_ad_time" property="endAdTimeDate" />
+		<result column="fk_user_id" property="fkUserId" />
+		<result column="advPicUrl" property="advPicUrl" />
+		<result column="advListPicUrl" property="advListPicUrl" />
+		<result column="user_account" property="userAccount" />
+	</resultMap>
+ <insert id="insertAdvertisement" parameterType="AdvertisementDO"
+		useGeneratedKeys="true" keyProperty="pkAdId">
+		insert into
+		tbl_advertisement
+		(
+		<if test="adName != null and adName !=''">
+			ad_name,
+		</if>
+		<if test="adType != null">
+			ad_type,
+		</if>
+		<if test="adIsGoto != null">
+			ad_is_goto,
+		</if>
+		<if test="adDesc != null and adDesc !=''">
+			ad_desc,
+		</if>
+		<if test="adURL != null and adURL !=''">
+			ad_URL,
+		</if>
+		<if test="adStatus != null">
+			ad_status,
+		</if>
+		<if test="adTime != null">
+			ad_time,
+		</if>
+		<if test="adLocation != null">
+			ad_location,
+		</if>
+		<if test="beginAdTime != null">
+			begin_ad_time,
+		</if>
+		<if test="endAdTime != null">
+			end_ad_time,
+		</if>
+		<if test="fkUserId != null">
+			fk_user_id,
+		</if>
+		ad_createdate,
+		ad_updatedate
+		)
+		values
+		(
+		<if test="adName != null and adName !=''">
+			#{adName},
+		</if>
+		<if test="adType != null">
+			#{adType},
+		</if>
+		<if test="adIsGoto != null">
+			#{adIsGoto},
+		</if>
+		<if test="adDesc != null and adDesc !=''">
+			#{adDesc},
+		</if>
+		<if test="adURL != null and adURL !=''">
+			#{adURL},
+		</if>
+		<if test="adStatus != null">
+			#{adStatus},
+		</if>
+		<if test="adTime != null">
+			#{adTime},
+		</if>
+		<if test="adLocation != null">
+			#{adLocation},
+		</if>
+		<if test="beginAdTime != null">
+			#{beginAdTime},
+		</if>
+		<if test="endAdTime != null">
+			#{endAdTime},
+		</if>
+		<if test="fkUserId != null">
+			#{fkUserId},
+		</if>
+		now(),
+		now()
+		)
+	</insert>
+
+	<update id="updateAdvertisement" parameterType="AdvertisementDO">
+		update tbl_advertisement set
+		
+		<if test="adName != null and adName !=''">
+			ad_name = #{adName},
+		</if>
+		<if test="adType != null">
+			ad_type = #{adType},
+		</if>
+		<if test="adIsGoto != null">
+			ad_is_goto = #{adIsGoto},
+		</if>
+		<if test="adDesc != null and adDesc !=''">
+			ad_desc = #{adDesc},
+		</if>
+		<if test="adURL != null and adURL !=''">
+			ad_URL = #{adURL},
+		</if>
+		<if test="adStatus != null">
+			ad_status = #{adStatus},
+		</if>
+		<if test="adTime != null">
+			ad_time = #{adTime},
+		</if>
+		<if test="adLocation != null">
+			ad_location = #{adLocation},
+		</if>
+		<if test="beginAdTimeDate != null">
+			begin_ad_time = #{beginAdTimeDate},
+		</if>
+		<if test="endAdTimeDate != null">
+			end_ad_time = #{endAdTimeDate},
+		</if>
+		<if test="fkUserId != null">
+			fk_user_id = #{fkUserId},
+		</if>
+		ad_updatedate = now()
+		where pk_ad_id = #{pkAdId}
+	</update>
+
+	<select id="getLimitCount" parameterType="AdvertisementDO"
+		resultType="int">
+		select count(1) from (
+		select 1 from tbl_advertisement
+		where end_ad_time >= now()
+		<if test="pkAdId != null">
+			and pk_ad_id != #{pkAdId}
+		</if>
+		<if test="adType != null">
+			and ad_type = #{adType}
+		</if>
+		<if test="adLocation != null">
+			and ad_location = #{adLocation}
+		</if>
+		and #{beginAdTime} between begin_ad_time and end_ad_time
+		union
+		select 1 from tbl_advertisement
+		where end_ad_time >= now()
+		<if test="pkAdId != null">
+			and pk_ad_id != #{pkAdId}
+		</if>
+		<if test="adType != null">
+			and ad_type = #{adType}
+		</if>
+		<if test="adLocation != null">
+			and ad_location = #{adLocation}
+		</if>
+		and #{endAdTime} between begin_ad_time and end_ad_time
+		union
+		select 1 from tbl_advertisement
+		where end_ad_time >= now()
+		<if test="pkAdId != null">
+			and pk_ad_id != #{pkAdId}
+		</if>
+		<if test="adType != null">
+			and ad_type = #{adType}
+		</if>
+		<if test="adLocation != null">
+			and ad_location = #{adLocation}
+		</if>
+		<![CDATA[
+		 	and #{beginAdTime} < begin_ad_time 
+		 	and #{endAdTime} > end_ad_time
+		 ]]>
+		) a
+	</select>
+
+	<select id="selectAdvertisementCount" parameterType="AdvertisementDO"
+		resultType="long">
+		select count(1) from tbl_advertisement where 1=1
+		<if test="advSts != null and advSts == 0">
+		 	<![CDATA[
+		 		and NOW() < begin_ad_time and ad_status = '0'
+		 	]]>
+		</if>
+		<if test="advSts != null and advSts == 1">
+		 	<![CDATA[
+		 		and NOW() between begin_ad_time and end_ad_time and ad_status = '0'
+		 	]]>
+		</if>
+		<if test="advSts != null and advSts == 2">
+		 	<![CDATA[
+		 		and (NOW() > end_ad_time or ad_status = '1')
+		 	]]>
+		</if>
+		<if test="adType != null">
+			and ad_type = #{adType}
+		</if>
+	</select>
+
+	<select id="selectAdvertisementList" parameterType="AdvertisementDO" resultMap="result_advertisement">
+		SELECT *,b.user_account ,getFullPath('advPic',pk_ad_id) as advPicUrl,
+		getFullPath('advListPic',pk_ad_id) as advListPicUrl
+		FROM
+		tbl_advertisement a
+		LEFT JOIN tbl_user b ON a.fk_user_id = b.user_id
+		WHERE 1 = 1
+		<if test="advSts != null and advSts == 0">
+		 	<![CDATA[
+		 		and NOW() < begin_ad_time and ad_status = '0'
+		 	]]>
+		</if>
+		<if test="advSts != null and advSts == 1">
+		 	<![CDATA[
+		 		and NOW() between begin_ad_time and end_ad_time and ad_status = '0'
+		 	]]>
+		</if>
+		<if test="advSts != null and advSts == 2">
+		 	<![CDATA[
+		 		and (NOW() > end_ad_time or ad_status = '1')
+		 	]]>
+		</if>
+		<if test="adType != null">
+			and ad_type = #{adType}
+		</if>
+		order by ad_createdate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.pageSize}</if>
+	</select>
+
+	<select id="getAdvertisementById" parameterType="AdvertisementDO"
+		resultMap="result_advertisement">
+		SELECT *,getFullPath('advPic',pk_ad_id) as
+		advPicUrl,getFullPath('advListPic',pk_ad_id) as advListPicUrl
+		FROM
+		tbl_advertisement a
+		WHERE pk_ad_id = #{pkAdId}
+	</select>
+ 
+</mapper>

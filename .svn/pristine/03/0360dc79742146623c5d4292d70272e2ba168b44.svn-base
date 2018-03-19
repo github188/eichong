@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.dao.StatisticRealtimeMapper">
+
+	<select id="realtimeData" resultType="hashmap">
+		<![CDATA[
+		SELECT
+		sum(if(b.puHi_Type=4,b.puHi_Monetary,0)) AS 'v1',
+		sum(if(b.puHi_Type=4,1,0)) AS 'v2',
+		sum(if(b.puHi_Type=1,b.puHi_Monetary,0)) AS 'v3',
+		sum(if(b.puHi_Type=1,1,0)) AS 'v4'
+		FROM
+		tbl_user a,
+		tbl_purchasehistory b
+		WHERE
+		a.user_id=b.puHi_UserId
+		AND a.user_leval=6
+		AND DATE_FORMAT(b.puHi_Createdate, '%Y%m%d')=CURRENT_DATE
+		AND b.puHi_Type in ('1','4')
+		AND b.puHi_ChargeType in ('0','1','2','3')
+		]]>
+	</select>
+
+
+	<select id="realtimeDataForHour" resultType="hashmap">
+	 	<![CDATA[
+		SELECT
+		DATE_FORMAT(b.puHi_Createdate,'%H') AS 'hour',
+		count(*) AS 'num',
+		sum(b.puHi_Monetary) AS 'money'
+		FROM
+		tbl_user a,
+		tbl_purchasehistory b
+		WHERE
+		a.user_id=b.puHi_UserId
+		AND a.user_leval=6
+		AND DATE_FORMAT(b.puHi_Createdate, '%Y%m%d')=CURRENT_DATE
+		AND b.puHi_Type = '1'
+		GROUP BY
+		DATE_FORMAT(b.puHi_Createdate,'%H')
+		]]>
+	</select>
+
+
+
+	<select id="realtimeDataList"  resultType="map">
+		SELECT
+		DATE_FORMAT(b.puHi_Createdate,'%H:00') AS 'v1',
+		sum(if(b.puHi_Type=4,1,0)) AS 'v2',
+		sum(if(b.puHi_Type=4,b.puHi_Monetary,0)) AS 'v3',
+		sum(if(b.puHi_Type=1,1,0)) AS 'v4',
+		sum(if(b.puHi_Type=1,b.puHi_Monetary,0)) AS 'v5'
+		FROM
+		tbl_user a,
+		tbl_purchasehistory b
+		WHERE
+		a.user_id=b.puHi_UserId
+		AND a.user_leval=6
+		AND DATE_FORMAT(b.puHi_Createdate, '%Y%m%d')=CURRENT_DATE
+		AND b.puHi_Type in('1', '4')
+		AND b.puHi_ChargeType in ('0','1','2','3')
+		GROUP BY
+		DATE_FORMAT(b.puHi_Createdate,'%H')
+	</select>
+
+
+</mapper>

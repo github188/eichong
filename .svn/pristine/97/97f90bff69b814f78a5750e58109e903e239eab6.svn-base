@@ -1,0 +1,4 @@
+jdbc.driver=com.mysql.jdbc.Driver
+jdbc.url=jdbc:mysql://10.9.2.239:3306/eichong?useUnicode=true&characterEncoding=UTF-8
+jdbc.username=root
+jdbc.password=123456

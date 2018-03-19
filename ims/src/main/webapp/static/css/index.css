@@ -1,0 +1,305 @@
+/*body{ overflow: auto !important;} 
+.modal{ overflow: auto !important;} */
+body {
+	padding-top: 50px;
+	font-family: "微软雅黑" !important;
+	font-size: 14px;
+	background: #FFFFFF;
+}
+@font-face {
+	/*font-family:;*/
+	src: url(../static/fonts/glyphicons-halflings-regular.svg);
+}
+.sub-header {
+	padding-bottom: 10px;
+	border-bottom: 1px solid #eee;
+}
+.toggleClass {
+	width: 100%;
+	min-height: 990px;
+}
+.col-sm-offset-2,.col-md-offset-2{
+	margin-left: 0;
+}
+.navbar-brand {
+    float: left;
+    height: 50px;
+    padding: 26px 15px;
+    font-size: 18px;
+    line-height: 20px;
+}
+/*.sidebar {
+	position: fixed;
+	top: 51px;
+	bottom: 0;
+	left: 0;
+	z-index: 1000;
+	display: block;
+	padding: 20px;
+	overflow-x: hidden;
+	overflow-y: auto;
+	background-color: #f5f5f5;
+	border-right: 1px solid #eee;
+}*/
+.sidebar {
+  display: none;
+}
+@media (min-width: 768px) {
+  .sidebar {
+    position: fixed;
+    /*top: 97px;*/
+   top: 84px;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    display: block;
+    padding: 20px;
+    padding-top: 10px;
+    overflow-x: hidden;
+    overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+    background-color: #FFFFFF;
+    border-right: 1px solid #eee;
+  }
+  .col-md-2 , .col-sm-2{
+	    width: 14.6667%;
+	}
+	.col-md-10, .col-sm-8 {
+	    width: 85.3333%;
+	}
+	.col-sm-offset-2,.col-md-offset-2{
+		margin-left: 14.6667%;
+	}
+}
+.toggleClass {
+	width: 100%;
+	min-height: 990px;
+}
+/* Sidebar navigation */
+
+.nav-sidebar {
+	margin-right: -21px;
+	/* 20px padding + 1px border */
+	margin-bottom: 20px;
+	margin-left: -20px;
+}
+.navbar-fixed-top {
+	border: 0;
+}
+.nav-sidebar> li> span {
+	display: block;
+	padding-right: 20px;
+	padding-left: 20px;
+}
+
+.nav-sidebar> .active> span,
+.nav-sidebar> .active> span:hover,
+.nav-sidebar> .active> span:focus {
+	color: #fff;
+	background-color: #428bca;
+}
+.main .page-header {
+	margin-top: 0;
+}
+/*
+ * Placeholder dashboard ideas
+ */
+
+.placeholders {
+	margin-bottom: 30px;
+	text-align: center;
+}
+
+.placeholders h4 {
+	margin-bottom: 0;
+}
+
+.placeholder {
+	margin-bottom: 20px;
+}
+
+.placeholder img {
+	display: inline-block;
+	border-radius: 50%;
+}
+/*
+ * Base structure
+ */
+.greyDiv{
+	background: #EAEAEA !important;
+	padding-bottom: 14px;
+}
+.controlGrey{
+	background: #FFFFFF !important;
+	padding-bottom:8px !important;
+}
+.navbar-inverse{
+	background-color:#FFFFFF;
+	color: #000000;
+}
+.myMenu{
+	padding-bottom: 4px;
+	padding-top: 4px;
+}
+.myMenu li{
+	margin-left: 20px;
+}
+
+.myMenu li a{
+	padding-bottom: 6px;
+	color: #333333 !important;
+	font-size: 16px;
+	border-bottom: 2px solid #FFFFFF;
+}
+.myMenu li a:hover{
+	padding-bottom: 6px;
+	color: #FF9900 !important;
+	border-bottom: 2px solid #FF9900;
+}
+/*默认进来的时候选中运营管理的样式*/
+.myMenu li .headMenu{
+	color: #FF9900 !important;
+	border-bottom: 2px solid #FF9900;
+}
+/*.nav-sidebar li a:hover{
+	background: #FF9900;
+}*/
+.loginName{
+	width: 100px;
+	height: 30px;
+	list-style: none;
+	cursor: pointer;
+	position: absolute; 
+	right: 2%; top: 20px;
+	padding: 0;
+	background: url(../images/triangle_right_114px_1189854_easyicon.net-down-8.png) no-repeat 80% 7px;
+}
+.loginName ul{
+	list-style: none;
+	padding: 0;
+	position: absolute;
+	left: 0;
+	top: 30px;
+	display: none;
+	width: 100px;
+	min-height: 30px;
+	background: #FFFFFF;
+	border: 1px solid #C0C0C0;
+	
+}
+.loginName ul li{
+	height: 40px;
+	line-height: 40px;
+	padding-left: 12px;
+	cursor: pointer;
+	font-size: 12px;
+}
+.loginName ul li:hover{
+	height: 40px;
+	line-height: 40px;
+	padding-left: 12px;
+	cursor: pointer;
+	font-size: 12px;
+	background: #E6E6E6;
+}
+/*左侧导航逻辑====================================*/
+.mainList li ul{
+	display: none;
+}
+.mainList li:first-child ul{
+	display: block;
+}
+.mainList li h2:hover{
+	background: #E5E5E5;
+	opacity: 0.8;
+}
+.mainList li:first-child h2{
+	margin-top: 0;
+}
+.down{
+	padding-left: 30px;
+	margin: 0;
+	font-size: 14px;
+	color: #333333;
+	cursor: pointer;
+	height: 44px;
+	line-height: 44px;
+	background: url(../images/Rectangle-15-copy-5-down.png) no-repeat 96% 20px;
+}
+.up{
+	padding-left: 30px;
+	margin: 0;
+	font-size: 14px;
+	color: #333333;
+	cursor: pointer;
+	height: 44px;
+	line-height: 44px;
+	background: url(../images/Rectangle-15-copy-5.png)  no-repeat 96% 20px;
+}
+.mainList li ul{
+	list-style: none;
+	padding-left: 0;
+}
+.mainList li ul li{
+	height: 30px;
+	line-height: 30px;
+}
+.mainList li ul li a{
+	text-decoration: none;
+	color: #666666;
+	font-size: 12px;
+	padding-left: 50px;
+	cursor: pointer;
+	display: block;
+	width: 100%;
+	height: 30px;
+}
+.mainList li ul li a:hover{
+	/*color: #FF9900 !important;*/
+	background-color:#E6E6E6 !important;
+	font-size: 12px;
+}
+.activeStyle{
+	color: #FF7D00 !important;
+	font-size: 12px;
+}
+.h2ActiveStyle{
+	color: #FF7D00 !important;
+	font-size: 14px;
+}
+/*.mainList li ul li:hover{
+	background: #FF9900;
+	color: #FFFFFF !important;
+	font-size: 18px;
+}*/
+/*logo部分*/
+.logoText{
+	list-style: none;
+	padding-top: 10px;
+	margin-right: 50px;
+}
+.logoText li a{
+	float: left;
+	height: 18px;
+	font-size: 16px;
+	color: #666666;
+}
+.logoText li a img{
+	display: inline-block;
+	border: 0;
+	margin-top:-12px;
+}
+/*.logoText li a:visited, .logoText li a:hover, .logoText li a:active{
+	float: left;
+	font-size: 16px !important;
+	color: #666666 !important;
+}*/
+input{
+	font-size: 12px !important;
+}
+select{
+	font-size: 12px !important;
+	width: 100px;
+	/*width: 100px !important;*/
+}
+input::-webkit-input-placeholder,select::-webkit-input-placeholder{ color:#666666; font-size: 12px;}
+input::-moz-placeholder { color:#666666; font-size: 12px;}

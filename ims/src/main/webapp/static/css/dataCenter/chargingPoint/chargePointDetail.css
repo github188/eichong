@@ -1,0 +1,418 @@
+*{
+    margin:0;
+    padding:0;
+}
+body,html{
+    background:#f3f3f4;
+}
+i{
+    font-style:normal;
+}
+li{
+    list-style:none;
+}
+ol,ul{
+    margin-bottom:0;
+}
+
+.container{
+    width:98%;
+    padding:24px 20px 0 20px;
+}
+.el-main{
+    padding-top:0;
+}
+.el-table .cell, .el-table th div{
+    padding-right:0px;!important;
+}
+.el-table .cell, .el-table th div, .el-table--border td:first-child .cell, .el-table--border th:first-child .cell{
+    padding-left:0px;!important;
+}
+.el-table td, .el-table th.is-leaf{
+    border-bottom:1px solid #c9c9c9;
+}
+.el-table::before{
+    bottom:-1px;
+}
+.el-table_1_column_3{
+    text-align:right;
+}
+.el-table_1_column_2{
+    text-align:center;
+}
+.header{
+    position:absolute;
+    top:9px;
+    left:20px;
+    z-index:10;
+    font-size:18px;
+    font-weight:900;
+    color:#ff7d00;
+}
+.active{
+    color:#ff9d00;
+}
+.el-table_2_column_4,.el-table_2_column_5,.el-table_2_column_6,.el-table_2_column_7 {
+    text-align:center;
+}
+tbody .el-table__row .el-table_2_column_4 {
+    border-left:1px solid #c9c9c9;
+}
+tbody .el-table__row .el-table_2_column_7{
+    border-right:1px solid #c9c9c9;
+}
+.title{
+    margin: 0;
+    width: 100%;
+    padding: 20px;
+    font-size: 17px;
+    font-weight: 900;
+    color: #ff7d00;
+    border-top: 4px solid #c9c9c9;
+}
+.stationHeadUl{
+    margin: 0;
+    padding:0 20px 40px 20px;
+}
+.stationHeadUl li:first-child{
+    border-top:1px solid #c9c9c9;
+}
+.stationHeadLi{
+    margin:0;
+    min-height:36px;
+    padding:9px 0;
+    cursor:pointer;
+    border-bottom:1px solid #c9c9c9;
+    font-size:12px;
+}
+.col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12{
+    padding:0;
+}
+.col-xs-1, .col-xs-10, .col-xs-11, .col-xs-12, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9{
+    padding:0;
+}
+.col-md-1, .col-md-10, .col-md-11, .col-md-12, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9{
+
+}
+
+.headStatusCon{
+    text-align:right;
+
+}
+.chargingModeCon{
+    text-align:center;
+}
+
+.gun{
+    margin-right:8px;
+}
+.circle{
+    display: inline-block;
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    background:#666;
+    margin-top:5px;
+    margin-right:5px;
+
+}
+
+.offLineSpan{
+    height:60px;
+    line-height:60px;
+    position:relative;
+    float:left;
+    font-size:13px;
+    font-weight:900;
+    color:#666;
+    padding-left:10px;
+}
+.offLineState{
+    font-size:13px;
+    font-weight:900;
+    color:#666;
+}
+.search{
+    background:#fff;
+    margin:0;
+    padding:0 10px 25px 10px;
+}
+.searchCon{
+    padding:0;
+    border-top:4px solid #c9c9c9;
+    margin-top:20px;
+}
+.informationDetailLeft{
+    padding:0 10px;
+}
+.informationDetailLeft .ibox{
+    height:100%;
+}
+.informationDetailRight{
+    padding:0 10px;
+}
+.informationDetailRight .ibox{
+    height:100%;
+}
+.electricPilePhoto{
+    padding:0 10px;
+    height:270px;
+}
+.electricPilePhoto img{
+    width:100%;
+    height:100%;
+}
+.carPhoto{
+    padding:0 10px;
+    height:270px;
+}
+.carPhoto img{
+    width:100%;
+    height:100%;
+}
+
+#electricPileInformationUl,#carUl,#chargeOrderUl,#costUl,#electricPileUl,#carRealTimeUl{
+    border:1px solid #c9c9c9;
+    border-bottom:0;
+}
+#electricPileInformationUl li,#carUl li,#chargeOrderUl li,#costUl li,#electricPileUl li,#carRealTimeUl li{
+    font-size:12px;
+    color:#666;
+    margin:0;
+    padding:10px;
+    border-bottom:1px solid #c9c9c9;
+}
+.left{
+    float:left;
+}
+.right{
+    float:right;
+}
+.cost{
+    margin:0;
+    text-align:center;
+    padding:10px;
+    border:1px solid #c9c9c9;
+    border-bottom:0;
+    font-size:13px;
+    font-weight:900;
+    color:#666;
+}
+.ammeter{
+    padding:0 10px;
+}
+.output{
+    margin:0;
+    text-align:center;
+    padding:18px 10px;
+    border:1px solid #c9c9c9;
+    border-bottom:0;
+    font-size:13px;
+    font-weight:900;
+    color:#666;
+}
+.line{
+    display: inline-block;
+    width:2px;
+    height:15px;
+    background:#666;
+    position:absolute;
+    top:0;
+}
+.lineLeft{
+    margin-right:10px;
+}
+.lineRight{
+    margin-left:13px;
+}
+.costCon{
+    position: relative;
+}
+.thickLine{
+    width:5px;
+    height:17px;
+    display: inline-block;
+    background:#bfbfbf;
+    position: absolute;
+    top:12px;
+}
+.electricPileInfor{
+    margin-left:10px;
+}
+.muzzle{
+    margin:0;
+}
+.emptyDiv{
+    width:100%;
+    height:20px;
+    background:#F3F3F4;
+}
+.btnLine{
+    width:100%;
+    height:20px;
+    background:#F3F3F4;
+    position: relative;
+}
+.state1{
+    color:#009944;
+}
+.state1 .circle{
+    background:#009944;
+}
+
+.state2{
+    color:#ff7d00;
+}
+.state2 .circle{
+    background:#ff7d00;
+}
+.state3{
+    color:#f93347;
+}
+.state3 .circle{
+    background:#f93347;
+}
+@media only screen and (min-width: 1200px) {
+    .box{
+        display: flex;
+    }
+    .boxLeft{
+        width:285px;
+    }
+    .boxRight{
+        flex:1;
+    }
+}
+@media only screen and (min-width: 1920px) {
+    .box{
+        display: flex;
+    }
+    .boxLeft{
+        width:285px;
+    }
+    .boxRight{
+        flex:1;
+    }
+}
+
+/*分页*/
+/*分页部分开始*/
+.pagination {
+    width: 100%;
+    height: 50px;
+    margin: 0;
+    padding: 0 20px;
+    background: #FFFFFF;
+    padding-top:16px ;
+}
+.pagination ul li{
+    float: left;
+    margin-right: 10px;
+}
+.pagination ul li:last-Child{
+    list-style: none;
+    float: left;
+    margin-left: 0;
+}
+.pagination ul li:nth-last-child(2){
+    margin-right: 0;
+    font-size: 12px;
+    height:20px;
+    line-height:20px;
+    color: #333333 !important;
+    text-decoration: none !important;
+}
+.pagination ul li:last-Child a{
+    pointer-events: none;
+    font-size: 12px;
+    color: #333333 !important;
+    text-decoration: none !important;
+    cursor: pointer;
+}
+.pagination ul li:nth-last-child(2) a{
+    pointer-events: none;
+    font-size: 12px;
+    color: #333333 !important;
+    text-decoration: none !important;
+    cursor: pointer;
+}
+.pagination ul li:last-Child a:hover{
+    color: #666666;
+    text-decoration: none;
+}
+.pagination ul li:nth-last-child(2) a:hover{
+    color: #666666;
+    text-decoration: none;
+}
+.pagination ul .jump{
+    margin-top: -4px;
+}
+.pagination ul li a{
+    font-size: 12px;
+    color: #333333;
+    text-decoration: underline;
+    cursor: pointer;
+}
+.pagination ul li a:hover{
+    font-size: 12px;
+    color: #FF9900 !important;
+    text-decoration: none;
+}
+.pagination ul li a:active{
+    font-size: 12px;
+    color: #ff6600 !important;
+    text-decoration: none;
+}
+.newactive a{
+    font-size: 12px;
+    color: #ff7d00 !important;
+    text-decoration: none !important;
+}
+.gun{
+    display: inline-block;
+    width:24px;
+    height:24px;
+    background:#959595;
+    border:1px solid #b1b1b1;
+    color:#fff;
+    font-size:9px;
+    text-align:center;
+    line-height:24px;
+    margin-right:5px;
+}
+.chargingModeCon,.headNumCon,.headStatusCon {
+    line-height:24px;
+}
+.state0{
+    color:#009944;
+}
+.state0 .circle{
+    background:#009944;
+}
+
+.state6{
+    color:#ff7d00;
+}
+.state6 .circle{
+    background:#ff7d00;
+}
+.state9{
+    color:#f93347;
+}
+.state9 .circle{
+    background:#f93347;
+}
+.state17{
+    color:#448aca;
+}
+.state17 .circle{
+    background:#448aca;
+}
+
+.mainTab span{
+    display: inline-block;
+    width:80px;
+    height:30px;
+    line-height: 30px;
+    text-align:center;
+}

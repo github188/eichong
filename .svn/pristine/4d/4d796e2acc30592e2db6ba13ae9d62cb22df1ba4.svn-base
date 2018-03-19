@@ -1,0 +1,39 @@
+ .content {
+        width: 1162px;
+        height: 555px;
+        border-radius: 15px;
+        margin: 0px auto;
+        color: #4a4a4a;
+    }
+    .btn-wrap button{
+        padding:5px 15px;
+        margin-right: 20px;
+        background-color: #d8d8d8;
+        border-radius: 10px;
+        border: none;
+        cursor: pointer;
+    }
+    .btn-wrap button.current{
+        background-color: #f37814; 
+        color: #fff; 
+    }
+    .area{
+        width: 100%;
+        padding: 10px;
+        height: 192px;
+        border: 1px solid #ccc;
+        text-indent: 10px;
+        resize: none;
+        color: #4a4a4a;
+        font-size: 16px;
+    }
+    .submit-btn{
+        width: 252px;
+        height: 60px;
+        line-height: 60px;
+        color: #fff;
+        background-color: #f37814;
+        border-radius: 10px;
+        border: none;
+        cursor: pointer;
+    }

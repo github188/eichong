@@ -1,0 +1,176 @@
+//获取订单列表的menuId
+var getMenuMap = window.localStorage.getItem('menuMap');
+var getCurruntMap = JSON.parse(getMenuMap);
+var menuId = getCurruntMap['第三方API订单'];
+$(function () {
+    ctrlMenu(menuId);
+    setTimeout('thirdOrderListSearch()', 190);
+})
+
+function ctrlMenu(menuId) {
+    $.ajax({
+        type: "post",
+        url: basePath + getSelfButtonTreeUrl,
+        async: true,
+        data: {
+            menuId: menuId
+        },
+        success: function (data) {
+            var data = data.dataObject;
+            if (data.length == 0) {
+                return;
+            } else {
+                for (var i = 0; i < data.length; i++) {
+                    var contents = data[i].contents;
+                    if (contents.indexOf('显示') > -1) {
+                        $('#showSet').show();
+                    }
+                    if (contents.indexOf('导出') > -1) {
+                        $('#dataExport').show();
+                    }
+
+                }
+            }
+        }
+    });
+}
+//去加载表格的数据
+
+function thirdOrderListSearch() {
+    toGiveHiddenInput();
+    initTable("thirdOrderListForm", "thirdOrderListPage", getThirdOrderListPageUrl, thirdOrderListCallback);
+}
+
+//下拉选项
+toUnbindEvent();
+function toUnbindEvent() {
+    $('.orderStatusBlock').unbind();
+    selectModel();
+}
+//表格数据
+function thirdOrderListCallback(req) {
+    var data = req.dataObject;
+    var pageNum = req.pager.pageNo;
+    var listTr = "";
+    for (var i = 0; i < data.length; i++) {
+        var startChargeTime = data[i].startChargeTime;
+        var endChargeTime = data[i].endChargeTime;
+        endtime = Date.parse(endChargeTime);
+        starttime = Date.parse(startChargeTime);
+        var s = endtime / 1000 - starttime / 1000;
+        var ChargeTime = sec_to_time(s);
+        listTr += '<tr><td><input type="checkbox" name="ids" class="selectedBox" value="' + data[i].orderId + '"/>'
+        + '</td><td class="orderList_orderCode">' + data[i].orderCode
+        + '</td><td class="orderList_electricPileCode">' + data[i].electricPileCode
+        + '</td><td class="orderList_totalElectricMoney">' + data[i].totalElectricMoney
+        + '</td><td class="orderList_totalServiceMoney">' + data[i].totalServiceMoney
+        + '</td><td class="orderList_totalfavMoney">' + data[i].totalfavMoney
+        + '</td><td class="orderList_totalElectricCharge">' + data[i].totalElectricCharge
+        + '</td><td class="orderList_orderStatus">' + data[i].orderStatus
+        + '</td><td class="orderList_powerstationName">' + data[i].powerstationName
+        + '</td><td class="orderList_invoiceStatus">' + data[i].invoiceStatus
+        + '</td><td class="orderList_soc">' + data[i].startSoc
+        + '</td><td class="orderList_soc">' + data[i].endSoc
+        + '</td><td class="orderList_carNum">000</td><td class="orderList_TIME">' + ChargeTime
+        + '</td><td class="orderList_accountNO">' + data[i].userAccount
+        + '</td><td class="orderList_VIN">000</td><td class="orderList_timeQuantum">' + data[i].timeQuantum
+        + '</td><td class="orderList_cardNum">' + data[i].cardNum
+        + '</td><td class="orderList_eMoney">' + data[i].JMoney
+        + '</td><td class="orderList_eMoney">' + data[i].FMoney
+        + '</td><td class="orderList_eMoney">' + data[i].PMoney
+        + '</td><td class="orderList_eMoney">' + data[i].GMoney
+        + '</td><td class="orderList_sMoney">' + data[i].JServiceMoney
+        + '</td><td class="orderList_sMoney">' + data[i].FServiceMoney
+        + '</td><td class="orderList_sMoney">' + data[i].PServiceMoney
+        + '</td><td class="orderList_sMoney">' + data[i].GServiceMoney
+        + '</td></tr>';
+    }
+    $("#myTbogy").html(listTr);
+    var arr = ['orderList_orderCode', 'orderList_electricPileCode', 'orderList_totalElectricMoney', 'orderList_totalServiceMoney',
+        'orderList_totalfavMoney', 'orderList_totalElectricCharge', 'orderList_orderStatus', 'orderList_powerstationName', 'orderList_invoiceStatus',
+        'orderList_soc', 'orderList_carNum', 'orderList_accountNO', 'orderList_VIN', 'orderList_cardNum', 'orderList_TIME', 'orderList_timeQuantum', 'orderList_eMoney', 'orderList_sMoney'];
+    toGetLocalStorageInfo(arr);
+}
+
+//数据导出	=====================
+$('#dataExport').on("click", function () {
+    toGiveHiddenInput();
+    var obj = {
+        orderCode: $('input[name=orderCode]').val(),
+        electricPileCode: $('input[name=electricPileCode]').val(),
+        cpyNumber: $('input[name=cpyNumber]').val(),
+        orderStatus: $('input[name=orderStatus]').val(),
+        startGmtCreate: $('input[name=startGmtCreate]').val(),
+        endGmtCreate: $('input[name=endGmtCreate]').val()
+    };
+    window.location.href = basePath + exportThirdOrderUrl + '?orderCode='
+    + obj.orderCode + '&electricPileCode='
+    + obj.electricPileCode + '&cpyNumber='
+    + obj.cpyNumber + '&orderStatus='
+    + obj.orderStatus + '&startGmtCreate='
+    + obj.startGmtCreate + '&endGmtCreate='
+    + obj.endGmtCreate;
+});
+//查询条件部分=========================
+function toGiveHiddenInput() {
+    var orderCodeValue = $('#orderCode').val();
+    var electricPileCodeValue = $('#electricPileCode').val();
+    var cpyNumberValue = $('#cpyNumber').val();
+    var orderStatusValue = $('#orderStatus').attr('data-value');
+    if (orderCodeValue == "") {
+        $('input[name=orderCode]').val('');
+    } else {
+        $('input[name=orderCode]').val(orderCodeValue);
+    }
+    if (electricPileCodeValue == "") {
+        $('input[name=electricPileCode]').val('');
+    } else {
+        $('input[name=electricPileCode]').val(electricPileCodeValue);
+    }
+    if (cpyNumberValue == "") {
+        $('input[name=cpyNumber]').val('');
+    } else {
+        $('input[name=cpyNumber]').val(cpyNumberValue);
+    }
+    if (orderStatusValue == "") {
+        $('input[name=orderStatus]').val('');
+    } else {
+        $('input[name=orderStatus]').val(orderStatusValue);
+    }
+    getDateValue();
+}
+
+//订单状态筛选部分
+$('.orderStatusUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+})
+
+//日期选择
+laydate.render({
+    elem: '#datePicker'
+    , range: true,
+    theme: '#ff7d00'
+});
+
+function getDateValue() {
+    var dateValue = $('#datePicker').val();
+    if (dateValue == "") {
+        $('input[name=startGmtCreate]').val('');
+        $('input[name=endGmtCreate]').val('');
+    } else {
+        var dateValue = $('#datePicker').val();
+        var startGmtCreate = dateValue.substring(0, 10);
+        var endGmtCreate = dateValue.substring(13, 23);
+        $('input[name=startGmtCreate]').val(startGmtCreate);
+        $('input[name=endGmtCreate]').val(endGmtCreate);
+    }
+
+}
+
+//监听回车键
+$(document).keyup(function (event) {
+    if (event.keyCode == 13) {
+        thirdOrderListSearch();
+    }
+});

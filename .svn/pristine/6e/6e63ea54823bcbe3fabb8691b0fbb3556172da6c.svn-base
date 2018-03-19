@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+					
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.TblChargOrderMapper">
+	<resultMap type="TblChargingOrder" id="result_Charge">
+		<result property="pkChargingorder" column="pk_ChargingOrder" />
+		<result property="chorCode" column="chOr_Code" />
+		<result property="chorAppointmencode" column="chOr_AppointmenCode" />
+		<result property="chorPilenumber" column="chOr_PileNumber" />
+		<result property="chorUserid" column="chOr_UserId" />
+		<result property="chorType" column="chOr_Type" />
+		<result property="chorMoeny" column="chOr_Moeny" />
+		<result property="chorQuantityelectricity" column="chOr_QuantityElectricity" />
+		<result property="chorTimequantum" column="chOr_TimeQuantum" />
+		<result property="chorMuzzle" column="chOr_Muzzle" />
+		<result property="chorChargingstatus" column="chOr_ChargingStatus" />
+		<result property="chorTranstype" column="chOr_TransType" />
+		<result property="chorCreatedate" column="chOr_Createdate" />
+		<result property="chorUpdatedate" column="chOr_Updatedate" />
+		<result property="chorUsername" column="chOr_UserName" />
+		<result property="chorTransactionnumber" column="chOr_TransactionNumber" />
+		<result property="chorOrdertype" column="chOr_OrderType" />
+		<result property="chorParterUserLogo" column="chor_parter_user_logo" />
+		<result property="chorParterExtradata" column="chor_parter_extradata" />
+		<result property="beginChargetime" column="begin_charge_time" />
+		<result property="endChargetime" column="end_charge_time" />
+		<result property="chorServicemoney" column="chOr_ServiceMoney" />
+		<result property="chorChargemoney" column="chOr_ChargeMoney" />
+        <result property="chOr_tipPower" column="chOr_tipPower" />
+		<result property="chOr_peakPower" column="chOr_peakPower" />
+		<result property="chOr_usualPower" column="chOr_usualPower" />
+		<result property="chOr_valleyPower" column="chOr_valleyPower" />
+		
+	</resultMap>
+
+	<update id="update" parameterType="TblChargingOrder">
+		update tbl_chargingorder set
+		<if test="chorTransactionnumber != null and chorTransactionnumber !=''">
+			chorTransactionnumber=#{chOr_TransactionNumber},
+	    </if>
+	    <if test="chorChargingstatus != null and chorChargingstatus !=''">
+			chOr_ChargingStatus=#{chorChargingstatus},
+	    </if>
+	    <if test="chorTranstype != null and chorTranstype !=''">
+			chOr_TransType=#{chorTranstype},
+	    </if>
+	    chOr_Updatedate = sysdate()
+		where chOr_Code=#{chorCode}
+	</update>
+	
+	<select id="getList" parameterType="TblChargingOrder" resultMap="result_Charge">
+	    select * from tbl_chargingorder t
+	   <where>
+	   	1=1
+	   <if test="beginChargetime !=null and beginChargetime !=''">
+	    	and end_charge_time >= #{beginChargetime}
+	   </if>
+	   <if test="endChargetime !=null and endChargetime !=''">
+	   		<![CDATA[and end_charge_time <= #{endChargetime} ]]>
+	   </if>
+	   <if test="chOrOrgNo !=null and chOrOrgNo !=''">
+	    	and chOr_OrgNo=#{chOrOrgNo} 
+	   </if>
+	   </where>
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	
+	<select id="selectOne" parameterType="TblChargingOrder" resultMap="result_Charge">
+	    select * from tbl_chargingorder
+	    <where>
+	   	1=1
+	   <if test="pkChargingorder !=null and pkChargingorder !=''">
+	    	and pk_ChargingOrder=#{pkChargingorder} 
+	   </if>
+	   <if test="chorCode !=null and chorCode !=''">
+	    	and chOr_Code=#{chorCode}  limit 1
+	   </if>
+	   </where>
+	</select>
+	<select id="getListGroupByPileNumByPsId" parameterType="TblChargingOrder" resultType="hashMap">
+	    select t.chOr_PileNumber EquipmentID,sum(t.chOr_QuantityElectricity) EquipmentElectricity from tbl_chargingorder t
+	   <where>
+	   	1=1
+	   <if test="beginChargetime !=null and beginChargetime !=''">
+	    	and begin_charge_time >= #{beginChargetime} 
+	   </if>
+	   <if test="endChargetime !=null and endChargetime !=''">
+	   		<![CDATA[and begin_charge_time <= #{endChargetime} ]]>
+	   </if>
+		<if test="psId !=null">
+	    	and exists(select 1 from tbl_electricpile e where e.elPi_ElectricPileCode=t.chOr_PileNumber and e.elPi_RelevancePowerStation=#{psId})
+	    </if>
+	   </where>
+	   group by t.chOr_PileNumber
+	</select>
+	
+	<select id="getListGroupByHeadNoByPileNum" parameterType="TblChargingOrder" resultType="hashMap">
+	    select t.chOr_Muzzle ConnectorID,sum(t.chOr_QuantityElectricity) ConnectorElectricity from tbl_chargingorder t
+	   <where>
+	   	1=1
+	   <if test="beginChargetime !=null and beginChargetime !=''">
+	    	and begin_charge_time >= #{beginChargetime} 
+	   </if>
+	   <if test="endChargetime !=null and endChargetime !=''">
+	   		<![CDATA[and begin_charge_time <= #{endChargetime} ]]>
+	   </if>
+		<if test="chorPilenumber !=null">
+	    	and t.chOr_PileNumber = #{chorPilenumber}
+	    </if>
+	   </where>
+	   group by t.chOr_Muzzle
+	</select>
+<select id="getOderByOpenId"  resultMap="result_Charge">
+	    select * from tbl_chargingorder
+	    <where>
+	   1=1 and chor_parter_user_logo=#{openId} order by chOr_Createdate desc limit 1
+	  
+	   </where>
+	</select>
+	<!-- 根据第三方订单号查询数据 -->
+	<select id="selectChargeOrder" parameterType="TblChargingOrder" resultMap="result_Charge">
+	 SELECT
+	    *
+    FROM
+	   tbl_chargingorder c
+   WHERE
+	c.chor_parter_extradata =#{chorParterExtradata}  
+	limit 1
+	</select>
+	
+	<!-- 校验第三方订单号是否重复-->
+	<select id ="checkChargeOrderNum" parameterType="String" resultType="int">
+	SELECT
+	  count(1)
+   FROM
+	  tbl_chargingorder c
+   WHERE
+	  c.chor_parter_extradata =#{StartChargeSeq}
+	</select>
+	
+	<!-- 中电联订单推送 (订单汇总) -->
+	<select id="fandChargeOrderSummary" parameterType="hashMap" resultType="hashMap">
+	SELECT
+	FORMAT(SUM(aa.TotalPower), 4) AS TotalOrderPower,
+	SUM(aa.TatalMoney) AS TotalOrderMoney,
+	( SELECT count(1) FROM tbl_chargingorder b WHERE b.chOr_OrgNo = #{cpyNumber}
+		AND end_charge_time &gt; #{beginTime}
+		AND end_charge_time &lt; #{endTime}
+	 ) AS OrderCount
+  FROM
+	( SELECT a.chor_parter_extradata AS StartChargeSeq,
+			      a.chOr_QuantityElectricity AS TotalPower,
+	   FORMAT( a.chOr_ChargeMoney + a.chOr_ServiceMoney,2) AS TatalMoney
+	   FROM
+			tbl_chargingorder a
+		WHERE
+			a.chOr_OrgNo =#{cpyNumber}
+		AND end_charge_time &gt; #{beginTime}
+		AND end_charge_time &lt;#{endTime}
+	) aa
+	</select>
+	<!-- 根据时间查询相关订单 -->
+	<select id="findChargeOrder" parameterType="TblChargingOrder" resultMap="result_Charge">
+	 SELECT a.chor_parter_extradata AS StartChargeSeq,
+			      a.chOr_QuantityElectricity AS TotalPower,
+	   FORMAT( a.chOr_ChargeMoney + a.chOr_ServiceMoney,2) AS TatalMoney
+	   FROM
+			tbl_chargingorder a
+		WHERE
+			a.chOr_OrgNo =#{cpyNumber}
+		AND end_charge_time &gt; #{beginTime}
+		AND end_charge_time &lt;#{endTime}
+	</select>
+	<!-- 更新订单对账的状态 -->
+	<update id="ChargeOrderById" parameterType="hashMap">
+	update tbl_chargingorder
+	set reconciliation_id =#{Id},
+	reconciliation_status=#{Status}
+	where chor_parter_extradata=#{StartChargeSeq}
+	</update>
+	
+	<!-- 中电联接口  -->
+	<select id="checkChargeOrderIsExist" parameterType="string" resultType="int">
+		SELECT count(1) FROM tbl_chargingorder WHERE chor_parter_extradata = #{StartChargeSeq}
+	</select>
+	
+	<select id="getChargeOrderInfo" parameterType="string" resultType="hashMap">
+		SELECT
+			chOr_PileNumber epCode,
+			chOr_Muzzle ehId,
+			begin_charge_time startTime,
+			end_charge_time endTime,
+			chOr_QuantityElectricity totalPower,
+			chOr_ChargeMoney elecMoney,
+			chOr_ServiceMoney serviceMoney,
+			chOr_Moeny totalMoney,
+			chRe_StopCause stopCause
+		FROM
+			tbl_chargingrecord r
+		LEFT JOIN tbl_chargingorder d ON d.chOr_Code = r.chRe_Code
+		WHERE chre_parter_extradata = #{StartChargeSeq} 
+	</select>
+	
+	<select id="getChargingOrderState" parameterType="string" resultType="hashMap">
+		SELECT
+			chOr_ChargingStatus orderStatus,
+			chOr_PileNumber epCode,
+			chOr_Muzzle ehId,
+			ePHe_ElectricpileHeadState ehState,
+			end_soc endSoc,
+			begin_charge_time startTime,
+			end_charge_time endTime,
+			chOr_QuantityElectricity totalPower,
+			chOr_ChargeMoney elecMoney,
+			chOr_ServiceMoney serviceMoney,
+			chOr_Moeny totalMoney,
+			elPi_ChargingMode chargeMode,
+			(SELECT raIn_ServiceCharge FROM tbl_rateinformation ra 
+			LEFT JOIN tbl_electricpile e ON ra.pk_RateInformation= e.elPi_RateInformationId  
+			WHERE e.pk_ElectricPile = r.chRe_ElectricPileID) raInServiceCharge
+		FROM
+			tbl_chargingrecord r
+		LEFT JOIN tbl_electricpilehead d ON r.chRe_ElectricPileID = d.pk_ElectricPile
+		AND r.chRe_ChargingNumber = d.ePHe_ElectricpileHeadId 
+		LEFT JOIN tbl_chargingorder tc ON tc.chOr_Code = r.chRe_Code
+		LEFT JOIN tbl_electricpile e ON e.pk_ElectricPile = r.chRe_ElectricPileID
+		WHERE chre_parter_extradata = #{StartChargeSeq}
+	</select>
+	
+	<!-- 获取所有第三方对接的公司标识 -->
+	<select id ="checkCpyNum" parameterType="int" resultType="int">
+		SELECT COUNT(1) FROM tbl_partner p LEFT JOIN tbl_company c ON p.cpy_id = c.cpy_id
+		WHERE p.Secret != 'null' AND p.Secret != '' AND c.cpy_status = 0 AND c.cpy_number = #{org}
+	</select>
+	
+	<!-- 查询需要所有的推送公司 -->
+	<select id="selectCpynumber" resultType="hashMap">
+	SELECT
+		b.cpy_number AS cpyNumber,
+		a.partnerName AS partnerName,
+		a.time_interval AS timeInteval
+	FROM
+		tbl_partner a,
+		tbl_company b
+	WHERE
+		a.cpy_id = b.cpy_id
+	AND a.tokenSecret != ''
+	AND a.tokenUrl != ''
+	AND a.pushOrderCheckUrl != ''
+	AND a.time_interval != ''
+	</select>
+		
+	<!-- 南京南瑞 -->
+	<select id="getNariChargeOrder" parameterType="map" resultType="HashMap">
+		SELECT		
+			chOr_PileNumber epCode,
+			chOr_Muzzle ehId,
+			chOr_Code startChargeSeq,
+			IFNULL(user_phone,0) userPhone,
+			chOr_QuantityElectricity totalPower,
+			chOr_ChargeMoney elecMoney,
+			chOr_ServiceMoney serviceMoney,
+			chOr_Moeny totalMoney,
+			chOr_tipPower cuspElect,
+			chOr_peakPower peakElect,
+			chOr_usualPower flatElect,
+			chOr_valleyPower valleyElect,
+			begin_charge_time startTime,
+			end_charge_time endTime
+		FROM
+			tbl_chargingorder r
+		LEFT JOIN tbl_chargingrecord d ON r.chOr_Code = d.chRe_Code
+		LEFT JOIN tbl_company_rela a ON a.electricpile_code = r.chOr_PileNumber
+		LEFT JOIN tbl_partner p ON p.cpy_id = a.pk_cpy_operate_id
+		WHERE p.partnerKey = '01294771X'
+		AND end_charge_time BETWEEN #{startTime} AND #{endTime}	
+	</select>
+	
+</mapper>

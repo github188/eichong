@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/activity/userActivity/activity_list.css"/>
+    <title>用户活动</title>
+</head>
+<body>
+<div class="container animated fadeInRight">
+    <div class="row">
+        <div class="formBlock clearfix">
+            <form id="activityForm">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" >
+                    <div class="activityListSelect activityContent">
+                        <div class="row" style="padding:0 15px;">
+                            <div class="col-sm-3 col-xs-12">
+                                <div class="col-sm-11 col-xs-12 model-select-box">
+                                    <div class="model-select-text statusTypeBlock" data-value="2" id="statusType">状态-进行中</div>
+                                    <span class="downRow statusTypeBlock clickRotateSpan"></span>
+                                    <input type="text" name="actStatus" id="" value="" hidden="hidden"/>
+                                    <ul class="model-select-option statusUl">
+                                        <li data-option="">全部状态</li>
+                                        <li data-option="0">未开始</li>
+                                        <li data-option="2" class="seleced" >进行中</li>
+                                        <li data-option="3">已结束</li>
+                                        <li data-option="1">终止</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-sm-3 col-xs-12 row" style="margin:0;">
+                                <div class="col-sm-11 col-xs-12 model-select-box">
+                                    <div class="model-select-text ruleTypeBlock" data-value="1" id="actActivityrule">规则-注册送</div>
+                                    <span class="downRow ruleTypeBlock clickRotateSpan"></span>
+                                    <input type="text" name="actActivityrule" id="" value="" hidden="hidden"/>
+                                    <ul class="model-select-option ruleUl">
+                                        <li data-option="" >全部规则</li>
+                                        <li data-option="1" class="seleced">注册送</li>
+                                        <li data-option="5">充值送</li>
+                                        <li data-option="6">消费送</li>
+                                        <li data-option="7">指定送</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-sm-3 col-xs-12">
+                                <div class="col-sm-11 col-xs-12 model-select-box">
+                                    <div class="model-select-text actScopeBlock" data-value="" id="actScope">范围</div>
+                                    <span class="downRow actScopeBlock clickRotateSpan"></span>
+                                    <input type="text" name="actScope" id="" value="" hidden="hidden"/>
+                                    <ul class="model-select-option actScopeUl">
+                                        <li data-option="" class="seleced">全部</li>
+                                        <li data-option="0">全国通用</li>
+                                        <li data-option="1">城市通用</li>
+                                        <li data-option="2">站点通用</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-sm-3 col-xs-12">
+                                <div class="col-sm-11 col-xs-12 model-select-box">
+                                    <div class="model-select-text cityCodeBlock" data-value="" id="cityCode">选择市</div>
+                                    <span class="downRow cityCodeBlock clickRotateSpan"></span>
+                                    <input type="text" name="cityCode" id="" value="" hidden="hidden"/>
+                                    <ul class="model-select-option cityCodeUl">
+
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12" style="height: 25px;"></div>
+                    <div class="row" style="padding:0 15px;">
+                        <div class="col-sm-3 col-xs-12">
+                            <div class="col-sm-11 col-xs-12 model-select-box">
+                                <div class="model-select-text issuerBlock" data-value="" id="actChanneltype">活动组织方/优惠券发行方/成本承担方</div>
+                                <span class="downRow issuerBlock clickRotateSpan"></span>
+                                <input type="text" name="actChanneltype" id="" value="" hidden="hidden"/>
+                                <ul class="model-select-option issuerUl">
+                                    <li data-option="" class="seleced">请选择</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="position: relative;">
+                        <div class="queryBtn" onclick="activityListSearch()">
+                            查询
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!--按钮部分开始==========================================================-->
+        <div class="btnBlock">
+            <div class="row">
+                <div class="col-sm-2" style="">
+                    <div class="col-sm-10 col-xs-2  btnStyle" id="addActivity" style="display: none;">
+                        新建
+                    </div>
+                </div>
+                <div class="col-sm-2" style="">
+                    <div class="col-sm-10 col-xs-2 btnStyle" id="endActivity" style="display: none;margin-left:5px;">
+                        终止
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2 col-md-2"></div>
+        </div>
+        <!--表格部分开始==========================================================-->
+        <div class="showSet table-responsive">
+            <div class="commonDiv">
+                <table class=" table table-bordered text-center" style="border: 1px solid #DCDCDC;">
+                    <thead>
+                    <tr>
+                        <th class="" style="min-width: 80px;">选择</th>
+                        <th class="activityList_number" style="min-width: 80px;">编号</th>
+                        <th class="activityList_name" style="min-width: 120px;">活动名称</th>
+                        <th class="activityList_rule" style="min-width: 120px;">活动规则</th>
+                        <th class="activityList_range" style="min-width: 80px;">范围</th>
+                        <th class="activityList_status" style="min-width: 80px;">状态</th>
+                        <th class="activityList_prizes" style="min-width: 120px;">奖品</th>
+                        <th class="activityList_cpyCompanyName" style="min-width: 120px;">优惠券发行方</th>
+                        <th class="activityList_startTime" style="min-width: 120px;">开始时间</th>
+                        <th class="activityList_endTime" style="min-width: 120px;">结束时间</th>
+                        <th class="activityList_setTime" style="min-width: 120px;">创建时间</th>
+                        <th class="activityList_remark" style="min-width: 80px;">备注</th>
+                        <th class="activityList_operation" style="min-width: 80px;">操作人</th>
+                    </tr>
+                    </thead>
+                    <tbody id="myCompanyTb">
+
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="avtivityListPage" class="pagination">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="endActivityLayer" style="display: none;">
+    <ul>
+        <li>终止是活动的最终形态，终止后不可恢复。</li>
+        <li>活动终止后，原本触发获取优惠券的行为，将不再获取。</li>
+        <li>活动的结束时间，更改为终止活动的时间。</li>
+    </ul>
+</div>
+</body>
+<script src="../../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<!--<script src="../js/apiAddress.js" type="text/javascript" charset="utf-8"></script>-->
+<script src="../../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/contabs.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/activity/userActivity/activity_list.js" type="text/javascript" charset="utf-8"></script>
+</html>

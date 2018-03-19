@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.app.dao.AppOrderdetailMapper">
+
+	<resultMap id="tblOrderdetailResultMap" type="TblOrderdetail">
+		<id property="pkOrderdetail" column="pk_OrderDetail" />
+		<result property="ordeParentid" column="orDe_ParentId" />
+		<result property="ordeProductid" column="orDe_ProductId" />
+		<result property="ordeProductname" column="orDe_ProductName" />
+		<result property="ordePrice" column="orDe_Price" />
+		<result property="ordeQuantity" column="orDe_Quantity" />
+		<result property="ordeTotalamount" column="orDe_TotalAmount" />
+		<result property="ordeCreatedate" column="orDe_Createdate" />
+		<result property="ordeUpdatedate" column="orDe_Updatedate" />
+	</resultMap>
+	<resultMap id="pageResultMap"  type="java.util.HashMap" extends="tblOrderdetailResultMap"></resultMap>
+	<resultMap id="findResultMap"  type="java.util.HashMap" extends="tblOrderdetailResultMap"></resultMap>
+
+	<insert id="insert" parameterType="TblOrderdetail">
+	   insert into tbl_OrderDetail (
+	     orDe_ParentId,
+	     orDe_ProductId,
+	     orDe_ProductName,
+	     orDe_Price,
+	     orDe_Quantity,
+	     orDe_TotalAmount,
+	     orDe_Createdate,
+	     orDe_Updatedate
+	   )values (
+	     #{ordeParentid},
+	     #{ordeProductid},
+	     #{ordeProductname},
+	     #{ordePrice},
+	     #{ordeQuantity},
+	     #{ordeTotalamount},
+	     #{ordeCreatedate},
+	     #{ordeUpdatedate}
+	   )
+	</insert>
+
+	<update id="update" parameterType="TblOrderdetail">
+	   update tbl_OrderDetail set
+	     orDe_ParentId=#{ordeParentid},
+	     orDe_ProductId=#{ordeProductid},
+	     orDe_ProductName=#{ordeProductname},
+	     orDe_Price=#{ordePrice},
+	     orDe_Quantity=#{ordeQuantity},
+	     orDe_TotalAmount=#{ordeTotalamount},
+	     orDe_Createdate=#{ordeCreatedate},
+	     orDe_Updatedate=#{ordeUpdatedate}
+	   where 
+	    pk_OrderDetail=#{pkOrderdetail} 
+	</update>
+
+	<delete id="delete" parameterType="map">
+	   delete from 
+	     tbl_OrderDetail 
+	   where 
+	    orDe_ParentId=#{ordeParentid} 
+	</delete>
+
+	<select id="get" parameterType="map" resultMap="tblOrderdetailResultMap">
+	   select 
+	    pk_OrderDetail,
+	    orDe_ParentId,
+	    orDe_ProductId,
+	    orDe_ProductName,
+	    orDe_Price,
+	    orDe_Quantity,
+	    orDe_TotalAmount,
+	    orDe_Createdate,
+	    orDe_Updatedate
+	   from tbl_OrderDetail
+	   where 
+	    pk_OrderDetail=#{pkOrderdetail} 
+	</select>
+
+	<select id="findOne" parameterType="map" resultMap="findResultMap">
+	   select 
+	    pk_OrderDetail,
+	    orDe_ParentId,
+	    orDe_ProductId,
+	    orDe_ProductName,
+	    orDe_Price,
+	    orDe_Quantity,
+	    orDe_TotalAmount,
+	    orDe_Createdate,
+	    orDe_Updatedate
+	   from tbl_OrderDetail
+	   where 
+	    pk_OrderDetail=#{pkOrderdetail} 
+	</select>
+
+	<select id="find" parameterType="map" resultMap="findResultMap">
+	   select 
+	     pk_OrderDetail,
+	     orDe_ParentId,
+	     orDe_ProductId,
+	     orDe_ProductName,
+	     orDe_Price,
+	     orDe_Quantity,
+	     orDe_TotalAmount,
+	     orDe_Createdate,
+	     orDe_Updatedate
+	   from tbl_OrderDetail
+	   <where>
+	     <if test="pkOrderdetail != null">
+	        pk_OrderDetail=#{pkOrderdetail}
+	     </if>
+	     <if test="ordeParentid != null">
+	        and orDe_ParentId=#{ordeParentid}
+	     </if>
+	     <if test="ordeProductid != null">
+	        and orDe_ProductId=#{ordeProductid}
+	     </if>
+	     <if test="ordeProductname != null">
+	        and orDe_ProductName=#{ordeProductname}
+	     </if>
+	     <if test="ordePrice != null">
+	        and orDe_Price=#{ordePrice}
+	     </if>
+	     <if test="ordeQuantity != null">
+	        and orDe_Quantity=#{ordeQuantity}
+	     </if>
+	     <if test="ordeTotalamount != null">
+	        and orDe_TotalAmount=#{ordeTotalamount}
+	     </if>
+	     <if test="ordeCreatedate != null">
+	        and orDe_Createdate=#{ordeCreatedate}
+	     </if>
+	     <if test="ordeUpdatedate != null">
+	        and orDe_Updatedate=#{ordeUpdatedate}
+	     </if>
+	   </where>
+	</select>
+	
+	<select id="page" parameterType="map" resultMap="pageResultMap">
+	   select 
+	     pk_OrderDetail,
+	     orDe_ParentId,
+	     orDe_ProductId,
+	     orDe_ProductName,
+	     orDe_Price,
+	     orDe_Quantity,
+	     orDe_TotalAmount,
+	     orDe_Createdate,
+	     orDe_Updatedate
+	   from tbl_OrderDetail
+	   <where>
+	     <if test="pkOrderdetail != null">
+	        pk_OrderDetail=#{pkOrderdetail}
+	     </if>
+	     <if test="ordeParentid != null">
+	        and orDe_ParentId=#{ordeParentid}
+	     </if>
+	     <if test="ordeProductid != null">
+	        and orDe_ProductId=#{ordeProductid}
+	     </if>
+	     <if test="ordeProductname != null">
+	        and orDe_ProductName=#{ordeProductname}
+	     </if>
+	     <if test="ordePrice != null">
+	        and orDe_Price=#{ordePrice}
+	     </if>
+	     <if test="ordeQuantity != null">
+	        and orDe_Quantity=#{ordeQuantity}
+	     </if>
+	     <if test="ordeTotalamount != null">
+	        and orDe_TotalAmount=#{ordeTotalamount}
+	     </if>
+	     <if test="ordeCreatedate != null">
+	        and orDe_Createdate=#{ordeCreatedate}
+	     </if>
+	     <if test="ordeUpdatedate != null">
+	        and orDe_Updatedate=#{ordeUpdatedate}
+	     </if>
+	   </where>
+	</select>
+	
+	<!-- 获取订单中商品信息 -->
+	<select id="selectProductByOrderId" parameterType="int" resultMap="tblOrderdetailResultMap">
+		select 
+	    od.pk_OrderDetail,
+	    od.orDe_ParentId,
+	    od.orDe_ProductId,
+	    od.orDe_ProductName,
+	    od.orDe_Price,
+	    od.orDe_Quantity,
+	    od.orDe_TotalAmount,
+	    getFullPath('proImage',od.orDe_ProductId) as prodProductimage,
+	    p.prod_ProductCode prodProductCode,
+	    o.orde_Updatedate ordeUpdatedate
+	   from tbl_OrderDetail od left join tbl_Product p
+	   on
+	   od.orDe_ProductId = p.pk_Product
+	   left join tbl_Order o 
+	   on
+	   od.orDe_ParentId = o.pk_Order
+	   where 
+	    od.orDe_ParentId=#{orDeParentId} 
+	</select>
+	
+</mapper> 

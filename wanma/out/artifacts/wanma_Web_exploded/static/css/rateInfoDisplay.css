@@ -1,0 +1,116 @@
+
+.FengZhi {
+	position: relative;
+	cursor: pointer;
+}
+
+.FengZhi .JFPG {
+	width: 286px;
+	height: auto;
+	position: relative;
+	display: none;
+	border: 1px solid #fff;
+	top: 20px;
+	left: -145px;
+	background: #f6f6f6;
+	z-index: 999;
+}
+
+.FengZhi:hover .JFPG {
+	display: block;
+}
+
+.FengZhi a span {
+	display: block;
+	color: #666
+}
+
+.JFPG_BOX {
+	width: 286px;
+}
+
+.JFPG_BOX li {
+	border-bottom: 1px #FFFFFF solid;
+	height: 40px;
+	line-height: 40px;
+	color: #fff;
+}
+
+.JFPG_BOX li.Jian {
+	background: #bc1212;
+}
+
+.JFPG_BOX li.Feng {
+	background: #ff8800;
+}
+
+.JFPG_BOX li.Ping {
+	background: #474747;
+}
+
+.JFPG_BOX li.Gu {
+	background: #207a19;
+}
+.JFPG_BOX .Service {
+	background: #0f72c1;
+}
+.JFPG_BOX .Service #ServiceTitle{
+	display: block;
+	float: left;
+	text-align: center;
+	line-height: 40px;
+	width: 181px;
+	height: 40px;
+	border-right: 1px #fff solid;
+	font-size: 16px
+}
+.JFPG_BOX .Service #ServiceMoney{
+	display: block;
+	float: right;
+	text-align: center;
+	line-height: 40px;
+	width: 100px;
+	height: 40px;
+	font-size: 16px
+}
+
+.JFPG_BOX li span.JFPG_BOX_l, .JFPG_BOX li span.JFPG_BOX_c, .JFPG_BOX li span.JFPG_BOX_r
+	{
+	display: block;
+	float: left;
+	text-align: center;
+	font-size: 16px
+}
+
+.JFPG_BOX li span.JFPG_BOX_l {
+	width: 130px;
+	height: 40px;
+	line-height: 40px;
+}
+
+.JFPG_BOX li span.JFPG_BOX_c {
+	width: 50px;
+	height: 40px;
+	line-height: 40px;
+	border-right: 1px #fff solid;
+	border-left: 1px #fff solid;
+}
+
+.JFPG_BOX li span.JFPG_BOX_r {
+	width: 100px;
+	height: 40px;
+	line-height: 40px;
+}
+
+.closeP {
+	display: block;
+	height: 18px;
+	width: 18px;
+	line-height: 18px;
+	text-align: center;
+	cursor: pointer;
+	position: absolute;
+	top: 0;
+	right: 0;
+	color:#ffffff;
+}

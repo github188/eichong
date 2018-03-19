@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.app.dao.AppUserMessageMapper">
+
+	<select id="getUserMessageList" resultType="HashMap" parameterType="int">
+		select id,from_user_id,from_user_name,title,content,edittime 
+		 from tbl_user_message
+		 where to_user_id in (#{userId},0) and status &lt;&gt; 2 order by edittime desc 
+	</select>
+	
+	<select id="getUserMessageTitleList" parameterType="map" resultType="HashMap">
+		select id as messate_id,title
+		 from tbl_user_message
+		 where to_user_id in (#{userId},0) and status &lt;&gt; 2
+		 limit #{pageNumber},#{pageNum}
+	</select>
+	
+	<select id="getMyMessageContent" resultType="HashMap" parameterType="int">
+		select id as messate_id,from_user_id,from_user_name,title,content,edittime 
+		 from tbl_user_message
+		 where id = #{messageId}
+	</select>
+</mapper> 

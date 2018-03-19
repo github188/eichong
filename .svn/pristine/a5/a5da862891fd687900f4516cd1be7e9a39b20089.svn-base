@@ -1,0 +1,19 @@
+package com.wanma.ims.mapper;
+
+
+public interface OrderStatisticMapper {
+
+	public Double countTotalElectricCharge(Long userId);
+	
+	public String countTotalOrder(Long userId);
+	
+	public String countTotalTodayOrder(Long userId);
+	
+	public Double countTotalCpyElectricCharge(Integer cpyNumber);
+	
+	public String countTotalCpyOrder(Integer cpyNumber);
+	
+	public Double countTotalCpyConsume(Integer cpyNumber);
+	
+	public String countTotalTodayCpyOrder(Integer Integer);
+}

@@ -1,0 +1,64 @@
+package com.wanma.ims.controller.fin.report;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.wanma.ims.common.domain.ReportOrderDO;
+import com.wanma.ims.common.domain.base.Pager;
+import com.wanma.ims.controller.BaseController;
+import com.wanma.ims.controller.result.JsonException;
+import com.wanma.ims.controller.result.JsonResult;
+import com.wanma.ims.service.PowerStationChargeStatisticsService;
+
+/**
+ * 充电点统计报表
+ */
+@Controller
+@RequestMapping("/manage/fin/report")
+public class ReportPowerStationOrderController extends BaseController {
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+
+    @Autowired
+    private PowerStationChargeStatisticsService powerStationChargeStatisticsService;
+
+    @RequestMapping(value = "/statisticsPowerStationChargeOrder", method = RequestMethod.POST)
+    @ResponseBody
+    public void statisticsPowerStationChargeOrder(ReportOrderDO searchModel, Pager pager) {
+        JsonResult result = new JsonResult();
+        try {
+            Long total = powerStationChargeStatisticsService.countOrderWithPowerStation(searchModel);
+            if (total <= pager.getOffset()) {
+                pager.setPageNo(1L);
+            }
+            pager.setTotal(total);
+            searchModel.setPager(pager);
+            List<ReportOrderDO> resultList = powerStationChargeStatisticsService.statisticsOrderWithPowerStation(searchModel);
+            result.setPager(pager);
+            result.setDataObject(resultList);
+            responseJson(result);
+        } catch (Exception e) {
+            LOGGER.error(this.getClass() + "-statisticsChargeOrder error", e);
+            responseJson(new JsonException("获取统计充电点列表失败！"));
+        }
+    }
+
+    @RequestMapping(value = "/exportStatisticsPowerStationChargeOrder", method = RequestMethod.GET)
+    @ResponseBody
+    public void exportStatisticsPowerStationChargeOrder(HttpServletResponse response, ReportOrderDO searchModel) {
+        try {
+            powerStationChargeStatisticsService.exportStatisticsPowerStationChargeOrder(response, searchModel);
+        } catch (Exception e) {
+            LOGGER.error(this.getClass() + "-statisticsChargeOrder error", e);
+            responseJson(new JsonException("导出统计充电点列表失败！"));
+        }
+    }
+}

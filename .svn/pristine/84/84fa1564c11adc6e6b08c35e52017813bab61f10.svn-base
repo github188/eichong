@@ -1,0 +1,154 @@
+var cpyId = getUrlParam('cpyId');
+console.log(cpyId)
+//加载公司名称
+setTimeout('getCompanyBasicInfo()', 90);
+function getCompanyBasicInfo() {
+    $.ajax({
+        type: "post",
+        url: basePath + companyHomeUrl,
+        async: true,
+        data: {
+            cpyId: cpyId
+        },
+        success: function ( req ) {
+            console.log( req )
+            var data = req.dataObject;
+            var cpyName = data.cpyName;//公司名称
+            $('#companyNameInfo').html(cpyName);
+        }
+    });
+}
+//加载充电站、桩数量信息
+setTimeout('companyIndexChargeRelaInfo()', 120);
+function companyIndexChargeRelaInfo() {
+    $.ajax({
+        type: "post",
+        url: basePath + companyIndexChargeRelaUrl,
+        async: true,
+        data: {
+            cpyId: cpyId
+        },
+        success: function ( req ) {
+            var data = req.dataObject;
+            var siteNum = data[0];//电站数
+            var pileNum = data[1];//电桩数
+            $('#siteNum').html(siteNum);
+            $('#pileNum').html(pileNum);
+        }
+    });
+}
+//下拉列表
+toUnbindEvent();
+function toUnbindEvent() {
+    $('.cpyProvinceBlock').unbind();
+    $('.cypCityBlock').unbind();
+    $('.cpyAreaBlock').unbind();
+    selectModel();
+}
+//省市区的加载、选择
+setTimeout("toLoadProvince('','#provinceCodeHtml','.cpyProvinceUl','toUnbindEvent')",100)
+$('.cpyProvinceUl').on("click", "li", function () {
+    $('#cityCodeHtml').html('请选择城市');
+    $('.cypCityUl').html('');
+    $('#cityCodeHtml').attr('data-value', '');
+    $('#areaCodeHtml').html('请选择区/县');
+    $('.areaUl').html('');
+    $('#areaCodeHtml').attr('data-value', '');
+    var provinceCodeId = $(this).attr('data-option');
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+    var flag = $(this).attr('data-option');
+    if (flag == "") {
+        $('#cityCodeHtml').html('请选择城市');
+        $('.cypCityUl').html('');
+        $('#cityCodeHtml').attr('data-value', '');
+        $('#areaCodeHtml').html('请选择区/县');
+        $('.areaUl').html('');
+        $('#areaCodeHtml').attr('data-value', '');
+    } else {
+        toLoadCity(provinceCodeId, '', '#cityCodeHtml', '.cypCityUl', 'toUnbindEvent');
+    }
+})
+//点击市加载区
+$('.cypCityUl').on("click", "li", function () {
+    $('#areaCodeHtml').html('请选择区/县');
+    $('.areaUl').html('');
+    $('#areaCodeHtml').attr('data-value', '');
+    var cityCodeId = $(this).attr('data-option');
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+    var flag= $(this).attr('data-option');
+    if (flag == "") {
+        $('#areaCodeHtml').html('请选择区/县');
+        $('.areaUl').html('');
+        $('#areaCodeHtml').attr('data-value', '');
+    } else {
+        $('.areaUl').html('');
+        toLoadArea(cityCodeId, '', '#areaCodeHtml', '.areaUl', 'toUnbindEvent');
+    }
+})
+//点击区获取值
+$('.areaUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+})
+
+//点击查询加载站点列表//////////////////////////////////
+/*$("body").off("click", "#searchListBtn").on("click", "#searchListBtn", function () {
+    searchListBtn();
+})*/
+function searchListBtn() {
+    var provinceValue = $('#provinceCodeHtml').attr('data-value');
+    var cityValue = $('#cityCodeHtml').attr('data-value');
+    var areaValue = $('#areaCodeHtml').attr('data-value');
+    if(!provinceValue){
+        alert('请选择省');
+        return false;
+    }else if(!cityValue){
+        alert('请选择市');
+        return false;
+    }else if(!areaValue){
+        alert('请选择区');
+        return false;
+    }else{
+        var obj = {
+            cpyId: cpyId,
+            provinceCode: provinceValue,
+            cityCode: cityValue,
+            areaCode: areaValue
+        };
+        $.ajax({
+            type: "post",
+            url: basePath + getStationAndPileUrl,
+            async: true,
+            data: obj,
+            success: function (req) {
+                console.log( req )
+                /*var data = req.dataObject;
+                var listTr = "";
+                for (var i = 0; i < data.length; i++) {
+                    listTr += '<tr>'
+                        + '<td class="siteList_checkbox"><input type="text" name="ids" value="'+data[i].cypId+'" />'
+                        + '</td><td class="siteList_siteName">' + data[i].name
+                        + '</td><td class="siteList_num">' + data[i].num
+                        + '</td></tr>';
+                }*/
+                //$("#myTbogySite").html(listTr);
+                //$("#myTbogyPile").html(listTr);
+            }
+        });
+    }
+}
+//加载右侧
+$("body").off("click", ".siteList_checkbox").on("click", ".siteList_checkbox", function () {
+    toLoadPileList();
+})
+function toLoadPileList() {
+    ////
+}
+//点击保存提交数据
+
+//点击取消返回公司主页
+$('#goCancel').on('click', function () {
+    window.location.href = 'company_home.html?cpyId=' + cpyId;
+})

@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsExcelReportMapper">
+	<!-- 个体商家消费统计 -->
+	<select id="queryGtsjConsumeList" parameterType="ExcelParamModel"
+		resultType="hashmap">
+		SELECT ui.user_account AS '手机号码',
+		ui.norm_real_name AS '姓名',
+		cast(DATE_FORMAT(puHi_PurchASeHistoryTime,'%Y%m') as signed integer) AS '月份',
+		count(*) AS '次数',
+		sum(puHi_Monetary) AS '总消费金额(元)',
+		(cASe when puHi_Type='1' then '充电消费' 
+			when puHi_Type='2' then '预约消费'
+			when puHi_Type='3' then '购物消费' 
+			when puHi_Type='4' then '充值' 
+			else '其他'
+		end) AS '消费类型'
+		FROM (SELECT a.user_account, b.* FROM tbl_user a, tbl_user_normal b 
+						WHERE a.user_id = b.user_id) ui 
+		INNER JOIN tbl_purchASehistory ph ON ui.user_id =ph.puHi_UserId 
+		LEFT JOIN tbl_user u ON ui.user_account = u.user_account
+		WHERE u.user_status != '3'
+		<if test="begin_date !=null and begin_date !=''">
+			<![CDATA[and date_format(puHi_PurchASeHistoryTime,'%Y-%m-%d') >= #{begin_date}]]>
+		</if>
+		<if test="end_date !=null and end_date !=''">
+			<![CDATA[ and date_format(puHi_PurchASeHistoryTime,'%Y-%m-%d') <= #{end_date} ]]>
+		</if>
+		GROUP by ui.user_account,puHi_Type
+		ORDER BY ui.user_account,norm_real_name DESC;
+	</select>
+
+	<select id="queryGtsjConsumeExtList" parameterType="ExcelParamModel"
+		resultType="hashmap">
+		SELECT user_account AS '手机号码',
+		norm_real_name AS '姓名',
+		puHi_Monetary AS '消费金额(元)',
+		puHi_PurchASeHistoryTime AS '消费时间',
+		(case when puHi_Type='1' then '充电消费' 
+			  when puHi_Type='2' then '预约消费' 
+			  when puHi_Type='3' then '购物消费' 
+			  when puHi_Type='4' then '充值' 
+			  else '其他' 
+		end) AS '消费类型'
+		FROM tbl_purchASehistory ph 
+		INNER JOIN (SELECT a.user_account,a.user_leval,a.user_status, b.* FROM tbl_user a, tbl_user_normal b 
+						WHERE a.user_id = b.user_id) ui ON ui.user_id =ph.puHi_UserId 
+		WHERE  ui.USER_LEVaL=6 AND ui.user_status=1
+		<if test="begin_date !=null and begin_date !=''">
+			<![CDATA[and date_format(puHi_PurchaseHistoryTime,'%Y-%m-%d') >= #{begin_date}]]>
+		</if>
+		<if test="end_date !=null and end_date !=''">
+			<![CDATA[ and date_format(puHi_PurchaseHistoryTime,'%Y-%m-%d') <= #{end_date} ]]>
+		</if>
+		ORDER BY puHi_Type,puHi_Createdate DESC;
+	</select>
+
+	<select id="queryGtsjChargeIncomeExtList" parameterType="ExcelParamModel"
+		resultType="hashmap">
+		SELECT norm_name AS '个体商家名称',
+		chOr_PileNumber AS '桩体编号',
+		eh.ePHe_ElectricpileHeadName as '枪头编号',
+		chOr_Code AS '充电订单编号',
+		chOr_AppointmenCode AS '预约流水号',
+		chOr_QuantityElectricity AS '总电量(度数)',
+		chOr_Moeny AS '收益金额(元)',
+		chOr_ChargeMoney AS '充电金额(元)' ,
+		chOr_ServiceMoney AS '充电服务费(元)',
+		chOr_Createdate AS '创建时间',
+		(cASe when chOr_ChargingStatus = '1' then '待支付' 
+			  when chOr_ChargingStatus = '2' then '支付成功' 
+			  when chOr_ChargingStatus = '3' then '完成操作' 
+			  else '其他' 
+		end) AS  '支付状态'
+		FROM tbl_ChargingOrder co
+		LEFT JOIN (SELECT a.user_account,a.user_leval,a.user_status, b.* FROM tbl_user a, tbl_user_normal b 
+						WHERE a.user_id = b.user_id) AS ui ON ui.user_id = co.chOr_UserId
+		LEFT JOIN tbl_ElectricPile ep ON ep.elPi_ElectricPileCode = co.chOr_PileNumber
+		LEFT JOIN tbl_ElectricPileHead eh ON eh.pk_ElectricPile = ep.pk_ElectricPile AND eh.ePHe_ElectricpileHeadId = co.chOr_Muzzle
+		WHERE ui.user_leval = '6'
+		<if test="begin_date !=null and begin_date !=''">
+			<![CDATA[and date_format(chOr_Createdate,'%Y-%m-%d') >= #{begin_date}]]>
+		</if>
+		<if test="end_date !=null and end_date !=''">
+			<![CDATA[ and date_format(chOr_Createdate,'%Y-%m-%d') <= #{end_date} ]]>
+		</if>
+		order by chOr_Createdate DESC;
+	</select>
+
+	<select id="queryGtsjChargeIncomeList" parameterType="ExcelParamModel"
+		resultType="hashmap">
+		SELECT ui.norm_name AS '个体商家名称',
+		cast(DATE_FORMAT(chOr_Createdate,'%Y%m') as signed integer) AS '月份',
+		count(*) AS '次数',
+		sum(chOr_QuantityElectricity) AS '总电量(度数)',
+		sum(chOr_ChargeMoney) AS '充电金额(元)' ,
+		sum(chOr_ServiceMoney) AS '充电服务费(元)',
+		sum(chOr_Moeny) AS '总收益金额(元)'
+		FROM tbl_ChargingOrder co 
+		LEFT JOIN tbl_user_normal_view ui ON ui.user_id = co.chOr_UserId
+		LEFT JOIN tbl_ElectricPile ep ON ep.elPi_ElectricPileCode = co.chOr_PileNumber
+		LEFT JOIN tbl_ElectricPileHead eh ON eh.pk_ElectricPile = ep.pk_ElectricPile AND eh.ePHe_ElectricpileHeadId = co.chOr_Muzzle
+		WHERE ui.USER_LEVAL = 6
+		<if test="begin_date !=null and begin_date !=''">
+			<![CDATA[and date_format(chOr_Createdate,'%Y-%m-%d') >= #{begin_date}]]>
+		</if>
+		<if test="end_date !=null and end_date !=''">
+			<![CDATA[ and date_format(chOr_Createdate,'%Y-%m-%d') <= #{end_date} ]]>
+		</if>
+		GROUP by norm_name
+		order by chOr_UserId DESC;
+	</select>
+
+	<select id="queryGtsjBespokeIncomeExtList" parameterType="ExcelParamModel"
+		resultType="hashmap">
+		SELECT norm_name AS '个体商家名称',	
+		elPi_ElectricPileCode AS '桩体编号',
+		ePHe_ElectricpileHeadName AS '枪头编号', 
+		besp_ResePaymentCode AS '预约订单编号',
+		besp_BespokeTime AS "预约时长(分钟)", 
+		besp_BespokePrice AS '预约单价(元/分钟)',
+		besp_FrozenAmt AS '消费金额(元)',
+		(case when besp_Bespokestatus='1' then '取消预约' 
+			  when besp_Bespokestatus='2' then '预约结束(完成)' 
+			  when besp_Bespokestatus='3' then '续预约中' 
+			  when besp_Bespokestatus='4' then '预约中' 
+			  when besp_Bespokestatus='5' then '预约确认中' 
+			  when besp_Bespokestatus='6' then '预约失败'  
+			  else '其他' 
+		end) AS '预约状态',
+		(case when besp_OrderType = 0 then '未支付' 
+			  when besp_OrderType = '1' then '已经支付' 
+			  else '其他' 
+		end )AS '订单支付类型',
+		besp_BeginTime AS '开始时间',
+		besp_RealityTime AS '实际预约结束时间'
+		FROM tbl_Bespoke bp 
+		LEFT JOIN tbl_User_normal_view AS ui ON ui.user_id = bp.besp_UserInfo
+		LEFT JOIN tbl_ElectricPile AS ep ON ep.pk_ElectricPile = bp.besp_ElectricPileId
+		LEFT JOIN tbl_ElectricPileHead AS eh ON eh.pk_ElectricpileHead = bp.besp_ElectricPileHead
+		WHERE ui.user_leval = 6
+		<if test="begin_date !=null and begin_date !=''">
+			<![CDATA[and date_format(besp_RealityTime,'%Y-%m-%d') >= #{begin_date}]]>
+		</if>
+		<if test="end_date !=null and end_date !=''">
+			<![CDATA[ and date_format(besp_RealityTime,'%Y-%m-%d') <= #{end_date} ]]>
+		</if>
+		ORDER BY besp_RealityTime DESC;	
+	</select>
+
+	<select id="queryGtsjBespokeIncomeList" parameterType="ExcelParamModel"
+		resultType="hashmap">
+		SELECT norm_name AS '个体商家名称',
+		cast(DATE_FORMAT(besp_RealityTime,'%Y%m') as signed integer) AS '月份',
+		count(*) AS '总预约支付次数',
+		sum(besp_BespokeTime) as "总预约时间(分钟)",
+		besp_BespokePrice AS '预约单价(元/分钟)',
+		sum(besp_FrozenAmt) AS '消费金额(元)',
+		(case when besp_Bespokestatus='1' then '取消预约' 
+			when besp_Bespokestatus='2' then '预约结束(完成)' 
+			when besp_Bespokestatus='3' then '预约结束(完成)' 
+			when besp_Bespokestatus='4' then '4：预约中' 
+			when besp_Bespokestatus='5' then '预约确认中' 
+			when besp_Bespokestatus='6' then '预约失败'  
+			else '其他' 
+		end ) AS '预约状态',
+		(case when besp_OrderType = 0 then '未支付' 
+			when besp_OrderType = '1' then '已经支付' 
+			else '其他' 
+		end )AS '订单支付类型'
+		FROM tbl_Bespoke bp LEFT JOIN tbl_User_normal_view AS ui ON ui.user_id = bp.besp_UserInfo
+		LEFT JOIN tbl_ElectricPile AS ep ON ep.pk_ElectricPile = bp.besp_ElectricPileId
+		LEFT JOIN tbl_ElectricPileHead AS eh ON eh.pk_ElectricpileHead = bp.besp_ElectricPileHead
+		WHERE ui.USER_LEVAL = 6
+		<if test="begin_date !=null and begin_date !=''">
+			<![CDATA[and date_format(besp_RealityTime,'%Y-%m-%d') >= #{begin_date}]]>
+		</if>
+		<if test="end_date !=null and end_date !=''">
+			<![CDATA[ and date_format(besp_RealityTime,'%Y-%m-%d') <= #{end_date} ]]>
+		</if>
+		AND besp_Bespokestatus = '2'
+		AND besp_OrderType = '1'
+		GROUP BY norm_name,besp_Bespokestatus,besp_OrderType
+		ORDER BY besp_RealityTime DESC;	
+	</select>
+	
+	<select id="queryCsjChargeIncomeExtList" parameterType="ExcelParamModel"
+		resultType="hashmap">
+		select
+		ep.elPi_UserId,
+		u.company_name as '纯商家名称',
+		chOr_PileNumber as '桩体编号',
+		eh.ePHe_ElectricpileHeadName as '枪头编号',
+		chOr_Code as '充电订单编号',
+		chOr_AppointmenCode as '预约流水号',
+		chOr_QuantityElectricity as '总电量(度数)',
+		chOr_Moeny as '收益金额(元)' ,
+		chOr_ChargeMoney as '充电金额(元)' ,
+		chOr_ServiceMoney as '充电服务费(元)',
+		(cASe when chOr_ChargingStatus = '1' then '待支付' 
+			when chOr_ChargingStatus = '2' then '支付成功' 
+			when chOr_ChargingStatus = '3' then '完成操作' 
+			else '其他' 
+		end) AS  '支付状态',
+		chOr_TimeQuantum AS '充电时间',
+		chOr_Createdate as '创建时间'
+		from tbl_ChargingOrder co 
+		LEFT JOIN tbl_ElectricPile AS ep ON ep.elPi_ElectricPileCode = co.chOr_PileNumber
+		LEFT JOIN tbl_ElectricPileHead AS eh ON eh.pk_ElectricPile = ep.pk_ElectricPile AND eh.ePHe_ElectricpileHeadId = co.chOr_Muzzle
+		LEFT JOIN tbl_user_business_view u ON u.user_id = ep.elPi_UserId
+		WHERE 1=1
+		<if test="begin_date !=null and begin_date !=''">
+			<![CDATA[and date_format(chOr_Createdate,'%Y-%m-%d') >= #{begin_date}]]>
+		</if>
+		<if test="end_date !=null and end_date !=''">
+			<![CDATA[ and date_format(chOr_Createdate,'%Y-%m-%d') <= #{end_date} ]]>
+		</if>
+		order by chOr_UserId;
+	</select>
+
+	<select id="queryCsjChargeIncomeList" parameterType="ExcelParamModel"
+		resultType="hashmap">
+		SELECT 
+		u.company_name as '企业名称',
+		cast(DATE_FORMAT(chOr_Createdate,'%Y%m') as signed integer) AS '月份',
+		count(*) AS '次数',
+		sum(chOr_QuantityElectricity) AS '总电量(度数)',
+		sum(chOr_Moeny) AS '收益金额(元)' ,
+		sum(chOr_ChargeMoney) AS '充电金额(元)' ,
+		sum(chOr_ServiceMoney) AS '充电服务费(元)'
+		FROM tbl_ChargingOrder co 
+		LEFT JOIN tbl_ElectricPile AS ep ON ep.elPi_ElectricPileCode = co.chOr_PileNumber
+		LEFT JOIN tbl_ElectricPileHead AS eh ON eh.pk_ElectricPile = ep.pk_ElectricPile AND eh.ePHe_ElectricpileHeadId = co.chOr_Muzzle
+		LEFT JOIN tbl_user_business_view u ON u.user_id = ep.elPi_UserId
+		WHERE 1=1
+		<if test="begin_date !=null and begin_date !=''">
+			<![CDATA[and date_format(chOr_Createdate,'%Y-%m-%d') >= #{begin_date}]]>
+		</if>
+		<if test="end_date !=null and end_date !=''">
+			<![CDATA[ and date_format(chOr_Createdate,'%Y-%m-%d') <= #{end_date} ]]>
+		</if>
+		GROUP BY u.company_name,cast(DATE_FORMAT(chOr_Createdate,'%Y%m') as signed integer)
+		ORDER BY chOr_UserId;
+	</select>
+	
+	<select id="queryCsjBespokeIncomeExtList" parameterType="ExcelParamModel"
+		resultType="hashmap">
+		SELECT pk_Bespoke,
+		besp_ResePaymentCode AS '预约订单编号',
+		u.company_name as '纯商家名称',
+		elPi_ElectricPileCode AS '电桩编号', 
+		ePHe_ElectricpileHeadName AS '枪头编号', 
+		besp_BespokeTime as "预约时长(分钟)", 
+		besp_BespokePrice AS '预约单价(元)',  
+		besp_FrozenAmt AS '冻结金额(元)',	
+		puHi_Monetary AS '消费金额',
+		(case when besp_Bespokestatus='1' then '取消预约' 
+			when besp_Bespokestatus='2' then '预约结束(完成)' 
+			when besp_Bespokestatus='3' then '续预约中' 
+			when besp_Bespokestatus='4' then '预约中' 
+			when besp_Bespokestatus='5' then '预约确认中' 
+			when besp_Bespokestatus='6' then '预约失败'  
+			else '其他' 
+		end ) AS '预约状态',
+		(case when besp_OrderType = 0 then '未支付' 
+			when besp_OrderType = '1' then '已经支付' 
+			else '其他' 
+		end )AS '订单支付类型',
+		besp_BeginTime AS '开始时间',	
+		besp_EndTime AS '结束时间',	
+		besp_RealityTime AS '实际预约结束时间'
+		FROM tbl_Bespoke bp 
+		LEFT JOIN tbl_purchasehistory ph ON ph.puHi_ConsumerRemark = bp.besp_ResePaymentCode
+		LEFT JOIN tbl_ElectricPile ep ON ep.pk_ElectricPile = bp.besp_ElectricPileId
+		LEFT JOIN tbl_ElectricPileHead eh ON eh.pk_ElectricpileHead = bp.besp_ElectricPileHead
+		LEFT JOIN tbl_user_business_view u ON u.user_id = ep.elPi_UserId
+		WHERE 1=1
+		<if test="begin_date !=null and begin_date !=''">
+			<![CDATA[and date_format(besp_RealityTime,'%Y-%m-%d') >= #{begin_date}]]>
+		</if>
+		<if test="end_date !=null and end_date !=''">
+			<![CDATA[ and date_format(besp_RealityTime,'%Y-%m-%d') <= #{end_date} ]]>
+		</if>
+		ORDER BY pk_Bespoke;
+	</select>
+
+	<select id="queryCsjBespokeIncomeList" parameterType="ExcelParamModel"
+		resultType="hashmap">
+		SELECT 
+		u.company_name as '纯商家名称',
+		cast(DATE_FORMAT(besp_RealityTime,'%Y%m') as signed integer) AS '月份', 
+		count(*) as '总预约成功次数',
+		sum(besp_BespokeTime) as "总预约时间(分钟)", 
+		sum(puHi_Monetary) AS '总收益金额(元)'
+		FROM tbl_Bespoke bp 
+		LEFT JOIN tbl_purchasehistory ph ON ph.puHi_ConsumerRemark = bp.besp_ResePaymentCode
+		LEFT JOIN tbl_ElectricPile AS ep ON ep.pk_ElectricPile = bp.besp_ElectricPileId
+		LEFT JOIN tbl_ElectricPileHead AS eh ON eh.pk_ElectricpileHead = bp.besp_ElectricPileHead
+		LEFT JOIN tbl_user_business_view u ON u.user_id = ep.elPi_UserId
+		WHERE besp_Bespokestatus = '2'
+		<if test="begin_date !=null and begin_date !=''">
+			<![CDATA[and date_format(besp_RealityTime,'%Y-%m-%d') >= #{begin_date}]]>
+		</if>
+		<if test="end_date !=null and end_date !=''">
+			<![CDATA[ and date_format(besp_RealityTime,'%Y-%m-%d') <= #{end_date} ]]>
+		</if>
+		GROUP BY u.company_name
+		ORDER BY pk_Bespoke;
+	</select>
+	
+	<select id="queryWanmaChargeIncomeExtList" parameterType="ExcelParamModel"
+		resultType="hashmap">
+		select 
+		u.company_name as '纯商家名称',
+		chOr_PileNumber as '桩体编号',
+		eh.ePHe_ElectricpileHeadName as '枪头编号',
+		chOr_Code as '充电订单编号',
+		chOr_AppointmenCode as '预约流水号',
+		chOr_QuantityElectricity as '总电量(度数)',
+		chOr_Moeny as '收益金额(元)' ,
+		chOr_ChargeMoney as '充电金额(元)' ,
+		chOr_ServiceMoney as '充电服务费(元)',
+		(cASe when chOr_ChargingStatus = '1' then '待支付' 
+			when chOr_ChargingStatus = '2' then '支付成功' 
+			when chOr_ChargingStatus = '3' then '完成操作' 
+			else '其他' 
+		end) AS  '支付状态',
+		chOr_TimeQuantum AS '充电时间',
+		chOr_Createdate as '创建时间'
+		from tbl_ChargingOrder co 
+		LEFT JOIN tbl_ElectricPile AS ep ON ep.elPi_ElectricPileCode = co.chOr_PileNumber
+		LEFT JOIN tbl_ElectricPileHead AS eh ON eh.pk_ElectricPile = ep.pk_ElectricPile AND eh.ePHe_ElectricpileHeadId = co.chOr_Muzzle
+		LEFT JOIN tbl_user_business_view u ON u.user_id = ep.elPi_UserId
+		WHERE u.company_name like '%爱充%' 
+		<if test="begin_date !=null and begin_date !=''">
+			<![CDATA[and date_format(chOr_Createdate,'%Y-%m-%d') >= #{begin_date}]]>
+		</if>
+		<if test="end_date !=null and end_date !=''">
+			<![CDATA[ and date_format(chOr_Createdate,'%Y-%m-%d') <= #{end_date} ]]>
+		</if>
+		order by chOr_UserId;
+	</select>
+
+	<select id="queryWanmaChargeIncomeList" parameterType="ExcelParamModel"
+		resultType="hashmap">
+		select
+		u.company_name as '企业名称',
+		cast(DATE_FORMAT(chOr_Createdate,'%Y%m') as signed integer) AS '月份',
+		count(*) AS '次数',
+		sum(chOr_QuantityElectricity) AS '总电量(度数)',
+		sum(chOr_Moeny) AS '收益金额(元)' ,
+		sum(chOr_ChargeMoney) AS '充电金额(元)' ,
+		sum(chOr_ServiceMoney) AS '充电服务费(元)'
+		FROM tbl_ChargingOrder co 
+		LEFT JOIN tbl_ElectricPile AS ep ON ep.elPi_ElectricPileCode = co.chOr_PileNumber
+		LEFT JOIN tbl_ElectricPileHead AS eh ON eh.pk_ElectricPile = ep.pk_ElectricPile AND eh.ePHe_ElectricpileHeadId = co.chOr_Muzzle
+		LEFT JOIN tbl_user_business_view u ON u.user_id = ep.elPi_UserId
+		WHERE u.company_name like '%爱充%' 
+		<if test="begin_date !=null and begin_date !=''">
+			<![CDATA[and date_format(chOr_Createdate,'%Y-%m-%d') >= #{begin_date}]]>
+		</if>
+		<if test="end_date !=null and end_date !=''">
+			<![CDATA[ and date_format(chOr_Createdate,'%Y-%m-%d') <= #{end_date} ]]>
+		</if>
+		GROUP BY cast(DATE_FORMAT(chOr_Createdate,'%Y%m') as signed integer)
+		ORDER BY chOr_UserId;
+	</select>
+	
+	<select id="queryWanmaBespokeIncomeExtList" parameterType="ExcelParamModel"
+		resultType="hashmap">
+		SELECT pk_Bespoke,
+		besp_ResePaymentCode AS '预约订单编号',
+		u.company_name as '纯商家名称',
+		elPi_ElectricPileCode AS '电桩编号', 
+		ePHe_ElectricpileHeadName AS '枪头编号', 
+		 besp_BespokePrice AS '预约单价(元)',  
+		 besp_FrozenAmt AS '冻结金额(元)',	
+		(case when besp_Bespokestatus='1' then '取消预约' 
+			when besp_Bespokestatus='2' then '预约结束(完成)' 
+			when besp_Bespokestatus='3' then '预约结束(完成)' 
+			when besp_Bespokestatus='4' then '4：预约中' 
+			when besp_Bespokestatus='5' then '预约确认中' 
+			when besp_Bespokestatus='6' then '预约失败'  
+			else '其他' 
+		end ) AS '预约状态',
+		(case when besp_OrderType = 0 then '未支付' 
+			when besp_OrderType = '1' then '已经支付' 
+			else '其他' 
+		end )AS '订单支付类型',
+		besp_BeginTime AS '开始时间',	
+		besp_EndTime AS '结束时间',	
+		besp_RealityTime AS '实际预约结束时间'
+		FROM tbl_Bespoke bp 
+		LEFT JOIN tbl_ElectricPile ep ON ep.pk_ElectricPile = bp.besp_ElectricPileId
+		LEFT JOIN tbl_ElectricPileHead eh ON eh.pk_ElectricpileHead = bp.besp_ElectricPileHead
+		LEFT JOIN tbl_user_business_view u ON u.user_id = ep.elPi_UserId
+		WHERE u.company_name like '%爱充%' 
+		<if test="begin_date !=null and begin_date !=''">
+			<![CDATA[and date_format(besp_RealityTime,'%Y-%m-%d') >= #{begin_date}]]>
+		</if>
+		<if test="end_date !=null and end_date !=''">
+			<![CDATA[ and date_format(besp_RealityTime,'%Y-%m-%d') <= #{end_date} ]]>
+		</if>
+		ORDER BY pk_Bespoke;
+	</select>
+
+	<select id="queryWanmaBespokeIncomeList" parameterType="ExcelParamModel"
+		resultType="hashmap">
+		SELECT u.company_name as '纯商家名称',
+		cast(DATE_FORMAT(besp_RealityTime,'%Y%m') as signed integer) AS '月份', 
+		count(*) as '总预约成功次数', 
+		sum(puHi_Monetary) AS '总收益金额(元)'
+		FROM tbl_Bespoke bp 
+		LEFT JOIN tbl_purchasehistory ph ON ph.puHi_ConsumerRemark = bp.besp_ResePaymentCode
+		LEFT JOIN tbl_ElectricPile AS ep ON ep.pk_ElectricPile = bp.besp_ElectricPileId
+		LEFT JOIN tbl_ElectricPileHead AS eh ON eh.pk_ElectricpileHead = bp.besp_ElectricPileHead
+		LEFT JOIN tbl_user_business_view u ON u.user_id = ep.elPi_UserId
+		WHERE u.company_name like '%爱充%' 
+		AND besp_Bespokestatus = '2'
+		<if test="begin_date !=null and begin_date !=''">
+			<![CDATA[and date_format(besp_RealityTime,'%Y-%m-%d') >= #{begin_date}]]>
+		</if>
+		<if test="end_date !=null and end_date !=''">
+			<![CDATA[ and date_format(besp_RealityTime,'%Y-%m-%d') <= #{end_date} ]]>
+		</if>
+		ORDER BY pk_Bespoke;
+	</select>
+
+</mapper>

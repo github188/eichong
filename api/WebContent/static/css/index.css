@@ -1,0 +1,93 @@
+@charset "UTF-8";
+
+.content {
+    width: 1160px;
+    margin: 0 auto;
+    /*border: 1px solid green;*/
+}
+
+.list-tool {
+    width: 100%;
+    height: 220px;
+    margin-top: 50px;
+
+}
+
+.header {
+    font-size: 18px;
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.list-tool ul li {
+    list-style-type: none;
+    width: 25%;
+    height: 100%;
+    float: left;
+    text-align: center;
+}
+
+.font-big {
+    font-size: 24px;
+    color: #575757;
+}
+
+.font-small {
+    line-height: 30px;
+    font-size: 14px;
+    color: #575757;
+}
+
+.weixin {
+    width: 100%;
+    height: 319px;
+}
+
+.content-foot {
+    width: 100%;
+    height: 240px;
+    margin-top: 40px;
+    overflow: hidden;
+    position: relative;
+}
+.content-foot ul{
+    position: absolute;
+    left:0;
+}
+
+.content-foot .leftBtn {
+    background:url("../images/icon/btn-left.png");
+    display: block;
+    width:25px;
+    height:78px;
+    position:absolute;
+    left:30px;
+    top:83px;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.content-foot .rightBtn {
+    background:url("../images/icon/btn-right.png");
+    display: block;
+    width:25px;
+    height:78px;
+    position:absolute;
+    top:83px;
+    right:30px;
+    cursor: pointer;
+}
+
+.con-foot-li {
+
+    width: 385px;
+    margin-right: 3px;
+    float: left;
+}
+
+#banner .items a, #banner .items img {
+    width: 100%;
+}
+.tips{
+    opacity: 0;
+}

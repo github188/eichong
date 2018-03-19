@@ -1,0 +1,145 @@
+@charset "utf-8";
+.head{
+	width: 100%;
+	height: 5rem;
+	background: #FF7D00;
+}
+.headLeft{
+	height: 100%;
+	width: 20%;
+	text-align: center;
+	line-height: 5rem;
+	position: relative;
+}
+.headLeft img{
+	width: 50%;
+	height: 55%;
+	position: absolute;
+	top: 20%;
+	left: 15%;
+}
+.bigTip{
+	width: 100%;
+	min-height: 5rem;
+	=background: #008000;
+	text-align: center;
+	padding: 9% 3%;
+}
+.bigTip .account{
+	font-size: 2.4rem;
+	color: #FF7D00;
+}
+.bigTip .accountValue{
+	font-size: 2rem;
+	color: #666666;
+	margin-top: 5%;
+	margin-bottom: 10%;
+}
+.purseTip{
+	width: 86%;
+	height: 4.4rem;
+	border-radius: 0.5rem;
+	border: 0.1rem solid #666;
+	padding-left: 2%;
+	font-size: 1.6rem;
+	color: #888888;
+	=margin-bottom: 1rem;
+	margin-left: 7%;
+}
+
+.purseTip .purseValue{
+	width: 93%;
+	height: 3.9rem;
+	border: 0;
+	outline-style:none ;
+	margin-top: 0.2rem;
+	text-align: left;
+	font-size: 1.8rem;
+	background:#efeff4;
+	color: #000000;
+	margin-bottom: 0;
+	/*background: #F0AD4E;*/
+}
+.nextStep{
+	width: 84%;
+	height: 4rem;
+	background: #FF7D00;
+	color: #FFFFFF;
+	margin: 0 auto;
+	font-size: 1.6rem;
+}
+.nextStep:focus,.nextStep:hover,.nextStep:active{
+	outline: none;
+	border: 0.1rem solid #FF7D00;
+	color: #FFFFFF;
+}
+/*模态框样式=====*/
+.modal-content{
+	width: 80%;
+	height: 50%;
+	margin: 0 auto;
+}
+
+.modal-content .modal-header {
+  min-height: 16.42857143px;
+  padding: 1.5rem;
+  text-align: center;
+  color: #FF7D00;
+  border-bottom: 0.1rem solid #C0C0C0;
+}
+.modal-content .modal-header,.modal-content .modal-footer{
+  padding: 1.5rem;
+  text-align: center;
+  border-top: 0 !important;
+  /*border-bottom: 0 !important;*/
+}
+.modal-content .modal-header .modal-title{
+	font-size: 2rem;
+	
+}
+.modal-content .modal-footer .certain{
+	background: #dcdcdc;
+	color: #FFFFFF;
+	border: 0;
+	outline-style:none ;
+	width: 30%;
+	font-size: 1.6rem;
+}
+.modal-content .modal-footer .certain2{
+	background: #FF7D00;
+	color: #FFFFFF;
+	border: 0;
+	outline-style:none ;
+	width: 30%;
+	font-size: 1.6rem;
+}
+.modal-content .modal-footer .return{
+	background: #808080;
+	color: #FFFFFF;
+	border: 0;
+	outline-style:none ;
+	width: 30%;
+	font-size: 1.6rem;
+}
+.modal-content .modal-body{
+	text-align: center;
+}
+.modal-content .modal-body-new{
+	padding-bottom: 0;
+}
+.modal-content .modal-body .putCharge{
+	width: 100%;
+	min-height: 0.8rem;
+	margin-bottom: 5%;
+}
+.modal-content .modal-body .pass{
+	border: 0.1rem solid #FF7D00;
+}
+.modal-content .modal-body .tipText{
+	color: #FF7D00;
+	font-size: 1.6rem;
+}
+.balance{
+	color: #666666;
+	font-size: 1.6rem;
+}

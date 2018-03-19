@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsCouponDetailMapper">
+	<resultMap id="BaseResultMap" type="com.wanma.model.TblCoupon">
+		<id column="pk_Coupon" property="pkCoupon" jdbcType="INTEGER" />
+		<result column="pk_Activity" property="pkActivity" jdbcType="INTEGER" />
+		<result column="pk_CouponVariety" property="pkCouponvariety"
+			jdbcType="INTEGER" />
+		<result column="cp_Status" property="cpStatus" jdbcType="SMALLINT" />
+		<result column="cp_Limitation" property="cpLimitation"
+			jdbcType="SMALLINT" />
+		<result column="cp_CouponValue" property="cpCouponvalue"
+			jdbcType="INTEGER" />
+		<result column="cp_CouponCondition" property="cpCouponcondition"
+			jdbcType="INTEGER" />
+		<result column="cp_CouponCode" property="cpCouponcode"
+			jdbcType="VARCHAR" />
+		<result column="cp_UserId" property="cpUserid" jdbcType="INTEGER" />
+		<result column="cp_BeginDate" property="cpBegindate" jdbcType="DATE" />
+		<result column="cp_EndDate" property="cpEnddate" jdbcType="DATE" />
+		<result column="cp_Createdate" property="cpCreatedate"
+			jdbcType="TIMESTAMP" />
+		<result column="cp_Updatedate" property="cpUpdatedate"
+			jdbcType="TIMESTAMP" />
+		<result column="row" property="row" jdbcType="INTEGER" />
+		<result column="cova_ActivityName" property="covaActivityname"
+			jdbcType="VARCHAR" />
+
+		<result column="act_ActivityName" property="actActivityname"
+			jdbcType="VARCHAR" />
+	</resultMap>
+	<select id="getCouponCount" parameterType="map" resultType="long">
+		select count(1) from (
+		select
+		1
+		from
+		tbl_coupon t,tbl_activity b
+		WHERE
+		1=1
+		and t.pk_Activity=b.pk_Activity
+		<if test="cpstates ==1 ">
+			and t.cp_userid=0 and t.cp_status!=1
+		</if>
+		<if test="cpstates ==2 ">
+			and t.cp_status!=1 and t.cp_userid!=0 and
+			t.cp_EndDate>#{currentDate}
+		</if>
+		<if test="cpstates ==3 ">
+			and t.cp_status=1
+		</if>
+		<if test="cpstates ==4 ">
+			and t.cp_status!=1 and
+			#{currentDate}>t.cp_EndDate
+		</if>
+		<if test="pkCoupon != null and pkCoupon !=''">
+			and t.pk_coupon= #{pkCoupon}
+		</if>
+		<if test="pkActivity != null and pkActivity !=''">
+			and t.pk_activity= #{pkActivity}
+		</if>
+		<if test="pkCouponvariety != null and pkCouponvariety!=''">
+			and t.pk_CouponVariety= #{pkCouponvariety}
+		</if>
+		<if test="cpStatus != null and cpStatus!=''">
+			and t.cp_status=#{cpStatus}
+		</if>
+		<if test="cpLimitation != null and cpLimitation!=''">
+			and t.cp_Limitation=#{cpLimitation}
+		</if>
+		<if test="cpActivitytype != null and cpActivitytype!=''">
+			and b.act_Type=#{cpActivitytype}
+		</if>
+		<if test="cpCouponcode != null and cpCouponcode!=''">
+			and t.cp_CouponCode=#{cpCouponcode}
+		</if>
+		order by t.cp_Createdate desc
+		) aa
+
+	</select>
+
+	<select id="getCouponList" resultMap="BaseResultMap">
+
+		select
+		<!-- @row := @row +1 AS row , -->
+		t.pk_Coupon,
+		t.pk_Activity,
+		(select act_ActivityName from tbl_activity where
+		pk_Activity=t.pk_Activity ) actActivityname,
+		t.pk_CouponVariety,
+		(select cova_ActivityName from tbl_couponvariety where
+		pk_CouponVariety=t.pk_CouponVariety ) covaActivityname,
+		t.cp_Status,
+		t.cp_Limitation,
+		t.cp_CouponValue,
+		t.cp_CouponCondition,
+		t.cp_CouponCode,
+		t.cp_UserId,
+		date_format(t.cp_BeginDate,'%Y-%m-%d %T')
+		cpBeginDate,
+		date_format(t.cp_EndDate,'%Y-%m-%d %T') cpEndDate,
+		date_format(t.cp_Createdate,'%Y-%m-%d %T') cpCreatedate,
+		date_format(t.cp_Updatedate,'%Y-%m-%d %T') cpUpdatedate
+		from
+		tbl_coupon
+		t,tbl_activity b<!-- , ( SELECT @row :=0 )r -->
+		WHERE
+		1=1 and t.pk_Activity=b.pk_Activity
+		<if test="cpstates ==1 ">
+			and t.cp_userid=0
+		</if>
+		<if test="cpstates ==2 ">
+			and t.cp_status!=1 and t.cp_userid!=0 and
+			t.cp_EndDate>#{currentDate}
+		</if>
+		<if test="cpstates ==3 ">
+			and t.cp_status=1
+		</if>
+		<if test="cpstates ==4 ">
+			and t.cp_status!=1  and t.cp_userid!=0 and
+			#{currentDate}>t.cp_EndDate
+		</if>
+		<if test="pkCoupon != null and pkCoupon !=''">
+			and t.pk_coupon= #{pkCoupon}
+		</if>
+		<if test="pkActivity != null and pkActivity !=''">
+			and t.pk_activity= #{pkActivity}
+		</if>
+		<if test="pkCouponvariety != null and pkCouponvariety!=''">
+			and t.pk_CouponVariety= #{pkCouponvariety}
+		</if>
+		<if test="cpStatus != null and cpStatus!=''">
+			and t.cp_status=#{cpStatus}
+		</if>
+		<if test="cpLimitation != null and cpLimitation!=''">
+			and t.cp_Limitation=#{cpLimitation}
+		</if>
+		<if test="cpActivitytype != null and cpActivitytype!=''">
+			and b.act_Type=#{cpActivitytype}
+		</if>
+		<if test="cpCouponcode != null and cpCouponcode!=''">
+			and t.cp_CouponCode=#{cpCouponcode}
+		</if>
+		order by t.cp_Createdate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<select id="getCouponType" parameterType="com.wanma.model.TblCoupon"
+		resultMap="BaseResultMap">
+		select
+		t.pk_CouponVariety,
+		t.cova_ActivityName
+		from
+		tbl_couponvariety t
+		where t.cova_Stutas=0
+		and t.cova_CouponTerm>0
+		order by t.cova_Createdate desc
+	</select>
+
+	<select id="getActivityType" parameterType="com.wanma.model.TblCoupon"
+		resultMap="BaseResultMap">
+		select
+		t.pk_Activity,
+		t.act_ActivityName
+		from
+		tbl_activity t
+		order by t.act_Createdate desc
+	</select>
+	<select id="selectCoupon" parameterType="String" resultType="long">
+		select cp_Status from tbl_coupon where pk_Coupon=#{pkCoupon}
+	</select>
+
+	<delete id="deteleCouponDetail" parameterType="String">
+		delete
+		from tbl_coupon where pk_Coupon=#{pkCoupon}
+	</delete>
+	<update id="changeEndDate" parameterType="map">
+		update tbl_coupon
+		set
+		cp_EndDate=date_sub(CURDATE(),INTERVAL 1 DAY)
+		where
+		pk_Activity=#{pkActivity} and t.cp_userid=0 and t.cp_status!=1
+	</update>
+	<select id="checkCommonUnique" parameterType="map" resultType="int">
+		select count(1) from ${tName}
+		<where>
+			${tProperty}=#{value}
+			<if test="pkTProperty!=null">and ${pkTProperty}!=#{pkTValue}</if>
+		</where>
+	</select>
+</mapper>

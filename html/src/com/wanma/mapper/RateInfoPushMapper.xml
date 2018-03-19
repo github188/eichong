@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.dao.RateInfoPushMapper">
+
+	<select id="selectMinPriceByPsId" parameterType="int" resultType="Double">
+		SELECT min(t.raIn_ValleyTimePrice) FROM tbl_rateinformation t WHERE 1=1
+		and exists (select 1 from tbl_electricpile e 
+		where e.elPi_RateInformationId = t.pk_RateInformation and e.elPi_RelevancePowerStation = #{value})
+		
+	</select>
+</mapper>

@@ -1,0 +1,16 @@
+package com.wanma.ims.controller.order.record;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.wanma.ims.controller.BaseController;
+
+
+/**
+ * 充电明细表
+ */
+@RequestMapping("/manage/order/detail")
+@Controller
+public class OrderDetailController extends BaseController{
+    
+}

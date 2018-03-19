@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsUserMessageMapper">
+	<resultMap id="tblUsermessage" type="TblUsermessage">
+		<id property="id" column="id" />
+		<result property="userId" column="to_user_id" />
+		<result property="fromUserid" column="from_user_id" />
+		<result property="fromUsername" column="from_user_name" />
+		<result property="title" column="title" />
+		<result property="content" column="content" />
+		<result property="status" column="status" />
+		<result property="createTime" column="createTime" />
+		<result property="editTime" column="editTime" />
+	</resultMap>
+	
+	<insert id="addUserMassage" parameterType="map">
+		insert into tbl_user_message(
+			to_user_id,
+			from_user_id,
+			from_user_name,
+			title,
+			content,
+			createTime,
+			editTime
+		) 
+		values (
+			#{to_user_id},
+			#{from_user_id},
+			#{from_user_name},
+			#{title},
+			#{content},
+			#{createTime},
+			#{editTime}
+		)
+		
+	</insert>
+	
+	<select id="getUserMessageList" resultType="HashMap" parameterType="int">
+		select id,from_user_id,from_user_name,title,content,edittime,status
+		 from tbl_user_message
+		 where to_user_id in (#{userId},0) and status=0
+	</select>
+	<select id="getAll" parameterType="TblUsermessage" resultMap="tblUsermessage">
+		SELECT id,a.norm_real_name userName,from_user_id,from_user_name,
+		title,content,edittime,status,a.user_account userPhone
+		from tbl_user_message t left join (select a.user_account,b.user_id,b.norm_real_name from tbl_user a,tbl_user_normal b where a.user_id=b.user_id) a 
+		on  a.user_id =t.to_user_id
+		  <if test="userId!=null">and to_user_id in (0,#{userId})</if> 
+		 order by edittime desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	<select id="getCount" parameterType="TblUsermessage" resultType="int">
+		SELECT count(1)
+		from tbl_user_message t
+		where  1=1 
+		 <if test="userId!=null"> and to_user_id in (0 ,#{userId})</if> 
+	</select>
+	
+	<select id="getOne" parameterType="TblUsermessage" resultMap="tblUsermessage">
+	   SELECT
+			id,to_user_id,from_user_id,from_user_name,title,content,edittime,status
+		from tbl_user_message t
+		where 
+	    id=#{id}  
+	</select>
+	<insert id="insert" parameterType="TblUsermessage">
+	   insert into tbl_user_message (
+	    to_user_id,from_user_id,from_user_name,title,content,status,createTime,editTime
+	   )values (
+		 #{userId},		   	
+	     #{fromUserid},
+	     #{fromUsername},
+	     #{title},
+	     #{content},
+	     #{status},
+	     #{createTime},
+		 #{editTime}
+	   )
+	</insert>
+	<update id="update" parameterType="TblUsermessage">
+	   update tbl_user_message set
+	     to_user_id=#{userId},
+	     from_user_id=#{fromUserid},
+	     from_user_name=#{fromUsername},
+	     title=#{title},
+	     content=#{content},
+	     status=#{status}
+	   where 
+	    id=#{id} 
+	</update>
+
+	<delete id="delete" parameterType="TblUsermessage">
+	   delete from 
+	     tbl_user_message 
+	   where 
+	    id=#{id} 
+	</delete>
+	<delete id="deleteBatch" parameterType="String">
+	   delete from 
+	     tbl_user_message 
+	   where 
+	    id in (${_parameter}) 
+	</delete>
+</mapper> 

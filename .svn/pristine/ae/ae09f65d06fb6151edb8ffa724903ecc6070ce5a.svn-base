@@ -1,0 +1,44 @@
+{
+	"dataObject": {
+		"errorDetail": "",
+		"exist": true,
+		"failed": false,
+		"faileds": {},
+		"module": [
+			{
+				"accountId": 0,
+				"cpyAddress": "",
+				"cpyArea": "",
+				"cpyCity": "",
+				"cpyEmail": "",
+				"cpyId": 16,
+				"cpyName": "测试",
+				"cpyNumber": 1,
+				"cpyOfflineNum": "",
+				"cpyOperate": 0,
+				"cpyParentId": 0,
+				"cpyParentType": 0,
+				"cpyPhone": "",
+				"cpyProvince": "",
+				"cpyType": 0,
+				"creator": "",
+				"creatorId": 0,
+				"gmtCreate": null,
+				"gmtModified": null,
+				"isDel": 0,
+				"isValid": 0,
+				"modifier": "",
+				"pager": null,
+				"slaveCpyId": 0,
+				"tradeType": 0
+			}
+		],
+		"resultCode": "",
+		"success": true
+	},
+	"failed": false,
+	"msg": "操作成功",
+	"pager": null,
+	"status": "",
+	"success": true
+}

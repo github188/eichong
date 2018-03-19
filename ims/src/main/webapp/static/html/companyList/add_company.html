@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/style.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/companyList/add_company.css"/>
+    <title>公司主页</title>
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="container-fluid">
+        <div class="row">
+
+        </div>
+        <div class="row">
+            <div class="col-sm-12" style="padding: 0">
+                <div class="ibox float-e-margins">
+                    <div class="">
+                        <div class="ibox-content">
+                            <!--user=>company-->
+                            <div class="add_companyBlock">
+                                <div class="add_greyBlock">
+                                    <!--公司标识-->
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">公司标识<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="cpyNumber" id="cpyNumber" value="" class="commonStyle" placeholder="请输入公司标识"/>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="cpyNumberTip">
+
+                                        </div>
+                                    </div>
+                                    <!--公司名称-->
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">公司名称<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="cpyName" id="cpyName" class="commonStyle" placeholder="请输入公司名称"/>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="cpyNameTip">
+
+                                        </div>
+                                    </div>
+                                    <!--公司类型-->
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">公司类型<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8">
+                                            <div class=" col-sm-3 col-xs-4 model-select-box" style="width: 100%">
+                                                <div class="model-select-text cpyTypeBlock" data-value="1" id="cpyType">投资公司</div>
+                                                <span class="downRow cpyTypeBlock clickRotateSpan"></span>
+                                                <input type="text" name="cpyType" hidden="hidden" id="" value="" />
+                                                <ul class="model-select-option cpyTypeUl">
+                                                    <li data-option="1" class="seleced">投资公司</li>
+                                                    <li data-option="2">渠道公司</li>
+                                                    <!--<li data-option="3">桩主公司</li>-->
+                                                    <!--<li data-option="4">业主公司</li>-->
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+
+                                        </div>
+                                    </div>
+                                    <!--付费策略-->
+                                    <div class="container-fluid" id="payRuleDiv">
+                                        <div class="col-sm-12 comTitle">付费策略<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8">
+                                            <div class=" col-sm-3 col-xs-4 model-select-box" style="width: 100%">
+                                                <div class="model-select-text payTypeBlock" data-value="0" id="payRule">无付费策略</div>
+                                                <span class="downRow payTypeBlock clickRotateSpan"></span>
+                                                <input type="text" name="payRule" hidden="hidden" id="" value="" />
+                                                <ul class="model-select-option payTypeUl" id="payRuleUl">
+                                                    <li data-option="0" class="seleced">无付费策略</li>
+                                                    <li data-option="1">大账户付费</li>
+                                                    <li data-option="2">个人付费</li>
+                                                    <li data-option="3">大账户为个人配资</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="payRuleTip">
+
+                                        </div>
+                                    </div>
+                                    <!--大账户类型-->
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">大账户类型<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8">
+                                            <div class=" col-sm-3 col-xs-4 model-select-box" style="width: 100%">
+                                                <div class="model-select-text tradeTypeBlock" data-value="2" id="tradeType">储值账户</div>
+                                                <span class="downRow tradeTypeBlock clickRotateSpan"></span>
+                                                <input type="text" name="tradeType" hidden="hidden" id="" value="" />
+                                                <ul class="model-select-option tradeTypeUl">
+                                                    <li data-option="2" class="seleced">储值账户</li>
+                                                    <li data-option="1">信用账户</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+
+                                        </div>
+                                    </div>
+                                    <!--上级公司-->
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">上级公司</div>
+                                        <div class="col-sm-8">
+                                            <div class=" col-sm-3 col-xs-4 model-select-box" style="width: 100%">
+                                                <div class="model-select-text cpyParentIdBlock" data-value="1" id="cpyParentId">无</div>
+                                                <span class="downRow cpyParentIdBlock clickRotateSpan"></span>
+                                                <input type="text" name="cpyParentId" hidden="hidden" id="" value="" />
+                                                <ul class="model-select-option cpyParentIdUl">
+
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+
+                                        </div>
+                                    </div>
+                                    <!--管理单位-->
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">管理单位</div>
+                                        <div class="col-sm-8">
+                                            <div class=" col-sm-3 col-xs-4 model-select-box" style="width: 100%">
+                                                <div class="model-select-text slaveParentIdBlock" data-value="" id="slaveParentIdCode">请选择</div>
+                                                <span class="downRow slaveParentIdBlock clickRotateSpan"></span>
+                                                <input type="text" name="slaveParentId" hidden="hidden" id="slaveParentId" value="" />
+                                                <ul class="model-select-option slaveParentIdUl">
+
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+
+                                        </div>
+                                    </div>
+
+                                    <!--城市-->
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">城市<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8">
+                                            <div class=" col-sm-6 col-xs-6  model-select-box" style="border-right:0;">
+                                                <div class="model-select-text cpyProvinceBlock" data-value="" id="provinceCode">请选择</div>
+                                                <span class="downRow cpyProvinceBlock clickRotateSpan"></span>
+                                                <input type="text" name="cpyProvince" hidden="hidden" id="" value="" />
+                                                <ul class="model-select-option provinceUl">
+
+                                                </ul>
+                                            </div>
+                                            <div class=" col-sm-6 col-xs-6 col-sm-offset-0 model-select-box">
+                                                <div class="model-select-text cpyCityBlock" data-value="" id="cityCode">请选择</div>
+                                                <span class="downRow cityBlock clickRotateSpan"></span>
+                                                <input type="text" name="cpyCity" hidden="hidden" id="" value="" id="cpyCity" />
+                                                <ul class="model-select-option cityUl">
+
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="cpyCityTip">
+
+                                        </div>
+                                    </div>
+                                    <!--地址-->
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">地址</div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="cpyAddress" id="cpyAddress" class="commonStyle" placeholder="请输入地址"/>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="cpyAddressTip">
+
+                                        </div>
+                                    </div>
+                                    <!--联系方式-->
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">联系方式</div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="cpyPhone" id="cpyPhone" class="commonStyle" placeholder="请输入联系方式"/>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="cpyPhoneTip">
+
+                                        </div>
+                                    </div>
+                                    <!--按钮组合-->
+                                    <div class="saveBtn commonBtn" id="saveCompanyBtn">保存</div>
+                                    <div class="quitBtn commonBtn" id="goCancel">取消</div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<!--<script src="../js/apiAddress.js" type="text/javascript" charset="utf-8"></script>-->
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/companyList/add_company.js" type="text/javascript" charset="utf-8"></script>
+</html>

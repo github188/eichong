@@ -1,0 +1,102 @@
+package com.wanma.ims.service.impl;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.wanma.ims.common.domain.CityDO;
+import com.wanma.ims.common.domain.FavCouponVarietyDO;
+import com.wanma.ims.mapper.FavCouponVarietyMapper;
+import com.wanma.ims.mapper.InitialMapper;
+import com.wanma.ims.service.FavCouponVarietyService;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service("userCouponVarietyService")
+public class FavCouponVarietyServiceImpl implements FavCouponVarietyService{
+	private static Logger log = Logger.getLogger(FavCouponVarietyServiceImpl.class);
+	
+	@Autowired
+	private FavCouponVarietyMapper couponVarietyMapper;
+	@Autowired
+	private InitialMapper initialMapper;
+
+	@Override
+	public long getCouponVarietyCount(FavCouponVarietyDO couponVariety) {
+		return couponVarietyMapper.getCouponVarietyCount(couponVariety);
+	}
+
+	@Override
+	public List<FavCouponVarietyDO> getCouponVarietyList(
+			FavCouponVarietyDO couponVariety) {
+		List<FavCouponVarietyDO> couponVarietyList = couponVarietyMapper.getCouponVarietyList(couponVariety);
+		List<CityDO>  cityList  =  initialMapper.selectCityList(null, null);
+		for(int j=0;j<couponVarietyList.size();j++){
+			if(couponVarietyList.get(j).getCovaScope()==0){
+				couponVarietyList.get(j).setCovaCityScope("全国通用");
+			}else if (couponVarietyList.get(j).getCovaScope()==2) {
+				couponVarietyList.get(j).setCovaCityScope("站点通用");;
+			}else{
+				for(int i=0;i<cityList.size();i++){
+					if(cityList.get(i).getCityId().equals(couponVarietyList.get(j).getCityCode())){
+						couponVarietyList.get(j).setCovaCityScope(cityList.get(i).getCityName()+"通用");
+					}	
+				}
+			}
+		}
+		return couponVarietyList;
+	}
+
+	@Override
+	public int judgeCovaActivityName(String covaActivityName) {
+		return couponVarietyMapper.judgeCovaActivityName(covaActivityName);
+	}
+
+	@Override
+	@Transactional
+	public boolean addCouponVariety(FavCouponVarietyDO couponVariety) {
+		return couponVarietyMapper.addCouponVariety(couponVariety)>0?true:false;
+	}
+
+	@Override
+	public FavCouponVarietyDO getCouponVarietyById(Integer pkCouponVariety) {
+		return couponVarietyMapper.getCouponVarietyById(pkCouponVariety);
+	}
+
+	@Override
+	@Transactional
+	public void changeCouponVariety(FavCouponVarietyDO couponVariety) {
+		couponVarietyMapper.changeCouponVariety(couponVariety);
+	}
+
+	@Override
+	public List<FavCouponVarietyDO> getCouponVarietyForList(FavCouponVarietyDO couponVariety) {
+		return couponVarietyMapper.getCouponVarietyForList(couponVariety);
+	}
+
+	@Override
+	public List<Map<String, String>> getCityScope() {
+		List<Map<String, String>> returnList = new ArrayList<Map<String, String>>();
+		List<Map<String, String>> cityScopeList = couponVarietyMapper.getCityScope();
+		List<CityDO>  cityList  =  initialMapper.selectCityList(null, null);
+		for(int j=0;j<cityScopeList.size();j++){
+			if (!cityScopeList.get(j).get("cityCode").isEmpty()) {
+				for (int i = 0; i < cityList.size(); i++) {
+					if(cityList.get(i).getCityId().equals(cityScopeList.get(j).get("cityCode"))){
+						HashMap<String, String> map = new HashMap<String, String>();
+						map.put(cityScopeList.get(j).get("cityCode"), cityList.get(i).getCityName()+"通用");
+						returnList.add(map);
+					}	
+				}
+			}
+		}
+		return returnList;
+	}
+
+
+
+}

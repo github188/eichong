@@ -1,0 +1,29 @@
+{
+    "data": {
+        "bomList": [
+            {
+                "blCreatedate": 1465960738000,
+                "blFileMd5": "32aa9a2f8f120d892d0710d0054c3f71",
+                "blFirmwareNumber": "MC11BA",
+                "blFirmwareVersion": "2.3.9",
+                "blForceUpdate": 1,
+                "blHardwareNumber": "ICHMC-101",
+                "blHardwareVersion": "1.6",
+                "blUpdatedate": 1467166344000,
+                "pkBomListId": 1,
+                "pkTypeSpanId": 1
+            }
+        ],
+        "pkTypeSpanId": 1,
+        "tsCreatedate": 1465960738000,
+        "tsFactTag": "7kw",
+        "tsFileName": "爱充产品硬件固件对应表.xlsx",
+        "tsModelName": "交流壁挂桩",
+        "tsProductNumber": "",
+        "tsRemarks": "",
+        "tsTypeSpan": "ICPAC-32101",
+        "tsUpdatedate": 1467783483000
+    },
+    "msg": "操作成功!",
+    "status": 100
+}

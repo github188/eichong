@@ -1,0 +1,476 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsFilterMapper">
+	<resultMap id="BaseResultMap" type="com.wanma.model.Cooperate">
+		<result property="pkCompanyId" column="pkCompanyId" />
+		<result property="companyName" column="companyName" />
+		<result property="cpy_CompanyNumber" column="cpy_CompanyNumber" />
+		<result property="powerStationNum" column="powerStationNum" />
+		<result property="pileNum" column="pileNum" />
+	</resultMap>
+	<resultMap id="PowertMap" type="com.wanma.model.TblPowerstation">
+		<id property="pkPowerstation" column="pk_PowerStation" />
+		<result property="postName" column="poSt_Name" />
+		<result property="postAddress" column="poSt_Address" />
+		<result property="poStUserName" column="poSt_UserName" />
+		<result property="postOwnProvinceCode" column="poSt_OwnProvinceCode" />
+		<result property="postOwnCityCode" column="poSt_OwnCityCode" />
+		<result property="postOwnCountyCode" column="poSt_OwnCountyCode" />
+		<result property="cityName" column="cityName" />
+		<result property="powerStationSum" column="powerStationSum" />
+	</resultMap>
+	<resultMap id="PileMap" type="com.wanma.model.TblElectricpile">
+		<id property="pkElectricpile" column="pk_ElectricPile" />
+		<result property="elpiElectricpilename" column="elPi_ElectricPileName" />
+		<result property="elpiElectricpilecode" column="elPi_ElectricPileCode" />
+		<result property="elpiChargingmode" column="elPi_ChargingMode" />
+		<result property="elpiPowersize" column="elPi_PowerSize" />
+		<result property="elpiMaker" column="elPi_Maker" />
+		<result property="makerRemark" column="makerRemark" />
+		<result property="elPiRelevancePowerStation" column="elPi_RelevancePowerStation" />
+		<result property="comm_status" column="comm_status" />
+		<result property="pileHeadSum" column="pileHeadSum" />
+		<result property="elpiState" column="elPi_State" />
+		<result property="pileFreeHeadSum" column="pileFreeHeadSum" />
+		
+
+	</resultMap>
+	<select id="getCooperateCount" parameterType="map" resultType="long">
+		select count(1) from (
+		select * from tbl_company where cpy_operate=1
+		<if test="companyName != null and companyName!=''">
+			and cpy_CompanyName like concat('%',#{companyName},'%')
+		</if>
+
+		order by cpy_Createdate desc
+		) aa
+
+	</select>
+
+	<select id="getCooperateList" resultMap="BaseResultMap">
+		SELECT
+		a.pk_CompanyId AS pkCompanyId,
+		a.cpy_CompanyName AS companyName,
+		a.cpy_CompanyNumber AS companyNumber,
+		(SELECT count(distinct
+		b.pk_PowerStation) from tbl_company_rela b where
+		a.pk_CompanyId=b.pk_cpy_operate_id) as powerStationNum,
+		(SELECT
+		count(c.pk_ElectricPile) from tbl_company_rela c where
+		a.pk_CompanyId=c.pk_cpy_operate_id) as pileNum
+		FROM
+		tbl_company a
+		WHERE
+		cpy_operate = 1
+		<if test="companyName != null and companyName!=''">
+			and cpy_CompanyName like concat('%',#{companyName},'%')
+		</if>
+		order by cpy_Createdate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	<select id="getCpyCompany" resultMap="BaseResultMap">
+		select pk_CompanyId as
+		pkCompanyId,cpy_CompanyName as companyName from tbl_company where
+		cpy_operate=0 order by cpy_Createdate desc
+	</select>
+
+	<update id="ChangeCpyOperate" parameterType="map">
+		update tbl_company
+		set cpy_operate=#{status}
+		where
+		pk_CompanyId=#{pkId}
+	</update>
+
+	<select id="getFilterPwCount" parameterType="map" resultType="long">
+		select count(1) from (
+		SELECT
+		a.pk_PowerStation
+		FROM
+		tbl_company_rela a,
+		tbl_powerstation b,
+		tb_m_city c
+		WHERE
+		a.pk_PowerStation =
+		b.pk_PowerStation
+		AND c.CITY_ID = b.poSt_OwnCityCode
+		and
+		a.pk_cpy_operate_id=#{companyId}
+		<if test="postName != null and postName!=''">
+			and b.poSt_Name like concat('%',#{postName},'%')
+		</if>
+		<if test="postOwnProvinceCode != null and postOwnProvinceCode!=''">
+			and b.poSt_OwnProvinceCode =#{postOwnProvinceCode}
+		</if>
+		<if test="postOwnCityCode != null and postOwnCityCode!=''">
+			and b.poSt_OwnCityCode =#{postOwnCityCode}
+		</if>
+		<if test="postOwnCountyCode != null and postOwnCountyCode!=''">
+			and b.poSt_OwnCountyCode = #{postOwnCountyCode}
+		</if>
+		group by a.pk_PowerStation
+		) aa
+
+	</select>
+
+	<select id="getFilterPwList" resultMap="PowertMap">
+		SELECT
+		a.pk_PowerStation ,
+		b.poSt_Name,
+		b.poSt_Address,
+		c.CITY_NAME as
+		cityName,
+		b.poSt_UserName,
+		count(a.pk_ElectricPile) as powerStationSum
+		FROM
+		tbl_company_rela a,
+		tbl_powerstation b,
+		tb_m_city c
+		WHERE
+		a.pk_PowerStation = b.pk_PowerStation
+		AND c.CITY_ID =
+		b.poSt_OwnCityCode
+		and a.pk_cpy_operate_id=#{companyId}
+		<if test="postName != null and postName!=''">
+			and b.poSt_Name like concat('%',#{postName},'%')
+		</if>
+		<if test="postOwnProvinceCode != null and postOwnProvinceCode!=''">
+			and b.poSt_OwnProvinceCode =#{postOwnProvinceCode}
+		</if>
+		<if test="postOwnCityCode != null and postOwnCityCode!=''">
+			and b.poSt_OwnCityCode =#{postOwnCityCode}
+		</if>
+		<if test="postOwnCountyCode != null and postOwnCountyCode!=''">
+			and b.poSt_OwnCountyCode = #{postOwnCountyCode}
+		</if>
+		group by a.pk_PowerStation
+		order by a.createdate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<select id="getAllPwCount" parameterType="map" resultType="long">
+		select count(1) from (
+		SELECT
+		bb.pk_PowerStation,
+		bb.poSt_Name,
+		bb.cityName,
+		bb.poSt_Address,
+		bb.poSt_UserName,
+		bb.powerStationSum
+		FROM
+		(
+		SELECT
+		a.pk_PowerStation,
+		a.poSt_Name,
+		c.CITY_NAME AS cityName,
+		a.poSt_Address,
+		a.poSt_UserName,
+		count(b.pk_ElectricPile) AS powerStationSum
+		FROM
+		tbl_powerstation a,
+		tbl_electricpile b,
+		tb_m_city c
+		WHERE
+		c.CITY_ID = a.poSt_OwnCityCode
+		AND a.pk_PowerStation =
+		b.elPi_RelevancePowerStation
+		AND b.elPi_Binding = 1
+		and (b.elPi_State=10 or b.elPi_State=15)
+		and b.delete_flag='0'
+		<if test="postName != null and postName!=''">
+			and a.poSt_Name like concat('%',#{postName},'%')
+		</if>
+		<if test="postOwnProvinceCode != null and postOwnProvinceCode!=''">
+			and a.poSt_OwnProvinceCode =#{postOwnProvinceCode}
+		</if>
+		<if test="postOwnCityCode != null and postOwnCityCode!=''">
+			and a.poSt_OwnCityCode =#{postOwnCityCode}
+		</if>
+		<if test="postOwnCountyCode != null and postOwnCountyCode!=''">
+			and a.poSt_OwnCountyCode = #{postOwnCountyCode}
+		</if>
+		GROUP BY
+		a.pk_PowerStation
+		) bb
+		LEFT JOIN (
+		SELECT DISTINCT
+		d.pk_PowerStation
+		FROM
+		tbl_company_rela d
+		WHERE
+		d.pk_cpy_operate_id = #{companyId}
+		) cc ON bb.pk_PowerStation = cc.pk_PowerStation
+		WHERE
+		cc.pk_PowerStation IS NULL
+		) aa
+
+	</select>
+
+	<select id="getAllPwList" resultMap="PowertMap">
+		<!-- SELECT a.pk_PowerStation, a.poSt_Name, c.CITY_NAME as cityName, a.poSt_Address, 
+			a.poSt_UserName, count(b.pk_ElectricPile) AS powerStationSum FROM tbl_powerstation 
+			a, tbl_electricpile b, tb_m_city c WHERE c.CITY_ID = a.poSt_OwnCityCode and 
+			a.pk_PowerStation=b.elPi_RelevancePowerStation and b.elPi_Binding=1 and b.elPi_State=15 
+			<if test="postName != null and postName!=''"> and a.poSt_Name like concat('%',#{postName},'%') 
+			</if> <if test="postOwnProvinceCode != null and postOwnProvinceCode!=''"> 
+			and a.poSt_OwnProvinceCode =#{postOwnProvinceCode} </if> <if test="postOwnCityCode 
+			!= null and postOwnCityCode!=''"> and a.poSt_OwnCityCode =#{postOwnCityCode} 
+			</if> <if test="postOwnCountyCode != null and postOwnCountyCode!=''"> and 
+			a.poSt_OwnCountyCode = #{postOwnCountyCode} </if> group by a.pk_PowerStation -->
+
+
+		SELECT
+		bb.pk_PowerStation,
+		bb.poSt_Name,
+		bb.cityName,
+		bb.poSt_Address,
+		bb.poSt_UserName,
+		bb.powerStationSum
+		FROM
+		(
+		SELECT
+		a.pk_PowerStation,
+		a.poSt_Name,
+		c.CITY_NAME AS cityName,
+		a.poSt_Address,
+		a.poSt_UserName,
+		count(b.pk_ElectricPile) AS powerStationSum
+		FROM
+		tbl_powerstation a,
+		tbl_electricpile b,
+		tb_m_city c
+		WHERE
+		c.CITY_ID = a.poSt_OwnCityCode
+		AND a.pk_PowerStation =
+		b.elPi_RelevancePowerStation
+		AND b.elPi_Binding = 1
+			and (b.elPi_State=10 or b.elPi_State=15)
+		and b.delete_flag='0'
+		<if test="postName != null and postName!=''">
+			and a.poSt_Name like concat('%',#{postName},'%')
+		</if>
+		<if test="postOwnProvinceCode != null and postOwnProvinceCode!=''">
+			and a.poSt_OwnProvinceCode =#{postOwnProvinceCode}
+		</if>
+		<if test="postOwnCityCode != null and postOwnCityCode!=''">
+			and a.poSt_OwnCityCode =#{postOwnCityCode}
+		</if>
+		<if test="postOwnCountyCode != null and postOwnCountyCode!=''">
+			and a.poSt_OwnCountyCode = #{postOwnCountyCode}
+		</if>
+		GROUP BY
+		a.pk_PowerStation
+		) bb
+		LEFT JOIN (
+		SELECT DISTINCT
+		d.pk_PowerStation
+		FROM
+		tbl_company_rela d
+		WHERE
+		d.pk_cpy_operate_id = #{companyId}
+		) cc ON bb.pk_PowerStation = cc.pk_PowerStation
+		WHERE
+		cc.pk_PowerStation IS NULL
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<select id="getFilterPileCount" parameterType="map" resultType="long">
+		select count(1) from (
+		SELECT
+		b.pk_ElectricPile,
+		b.elPi_ElectricPileCode,
+		b.elPi_ElectricPileName,
+		b.elPi_ChargingMode,
+		b.elPi_PowerSize,
+		b.elPi_Maker,
+		b.comm_status,
+		b.elPi_RelevancePowerStation
+		FROM
+		tbl_company_rela a,
+		tbl_electricpile b
+		WHERE
+		a.pk_ElectricPile = b.pk_ElectricPile
+		AND
+		a.pk_cpy_operate_id=#{comPanyId}
+		and
+		a.pk_PowerStation=#{relevancePowerStation}
+		<if test="elpiChargingmode != null and elpiChargingmode!=''">
+			and b.elPi_ChargingMode like
+			concat('%',#{elpiChargingmode},'%')
+		</if>
+		<if test="elpiElectricpilecode != null and elpiElectricpilecode!=''">
+			and b.elPi_ElectricPileCode =#{elpiElectricpilecode}
+		</if>
+
+
+		) aa
+
+	</select>
+
+	<select id="getFilterPileList" resultMap="PileMap">
+		SELECT
+		b.pk_ElectricPile,
+		b.elPi_ElectricPileCode,
+		b.elPi_ElectricPileName,
+		b.elPi_ChargingMode,
+		b.elPi_PowerSize,
+		c.maker_Name as makerRemark,
+		(select count(pk_ElectricpileHead) from
+		tbl_electricpilehead where pk_ElectricPile=b.pk_ElectricPile)
+		as
+		pileHeadSum,
+		(select count(pk_ElectricpileHead) from
+		tbl_electricpilehead where pk_ElectricPile=b.pk_ElectricPile
+		and ePHe_ElectricpileHeadState=0)
+		as
+		pileFreeHeadSum,
+		b.comm_status,
+		b.elPi_RelevancePowerStation,
+		b.elPi_State
+		FROM
+		tbl_company_rela a,
+		tbl_electricpile b,
+		tbl_pilemaker c
+		WHERE
+		a.pk_ElectricPile =
+		b.pk_ElectricPile
+		and b.elPi_Maker=c.pk_Carmaker
+		AND
+		a.pk_cpy_operate_id=#{comPanyId}
+		and
+		a.pk_PowerStation=#{relevancePowerStation}
+		<if test="elpiChargingmode != null and elpiChargingmode!=''">
+			and b.elPi_ChargingMode like
+			concat('%',#{elpiChargingmode},'%')
+		</if>
+		<if test="elpiElectricpilecode != null and elpiElectricpilecode!=''">
+			and b.elPi_ElectricPileCode =#{elpiElectricpilecode}
+		</if>
+
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	<delete id="deletePwStation" parameterType="map">
+		delete from
+		tbl_company_rela where pk_cpy_operate_id=#{companyId} and
+		pk_PowerStation=#{id}
+	</delete>
+	<insert id="addPwStation" parameterType="map">
+		INSERT INTO
+		tbl_company_rela (
+		pk_cpy_operate_id,
+		pk_PowerStation,
+		pk_ElectricPile
+		)
+		SELECT
+		#{companyId},
+		a.elPi_RelevancePowerStation,
+		a.pk_ElectricPile
+		FROM
+		tbl_electricpile a
+		WHERE
+		a.elPi_RelevancePowerStation =#{id}
+		and
+		a.elPi_Binding=1
+		and (a.elPi_State=15 or a.elPi_State=10)
+		and a.delete_flag='0'
+
+	</insert>
+	<delete id="deleteComRela" parameterType="map">
+		delete from
+		tbl_company_rela where pk_cpy_operate_id=#{pkId}
+	</delete>
+
+	<select id="getFilterAddPileCount" parameterType="map"
+		resultType="long">
+		select count(1) from (
+		SELECT
+		b.pk_ElectricPile,
+		b.elPi_ElectricPileCode,
+		b.elPi_ElectricPileName,
+		b.elPi_ChargingMode,
+		b.elPi_PowerSize,
+		b.elPi_Maker,
+		b.comm_status,
+		b.elPi_RelevancePowerStation
+		FROM
+		tbl_electricpile b
+		LEFT JOIN
+		tbl_company_rela a ON a.pk_ElectricPile =
+		b.pk_ElectricPile
+		AND
+		a.pk_cpy_operate_id =#{comPanyId} and
+		a.pk_PowerStation=#{relevancePowerStation}
+		WHERE
+		a.pk_ElectricPile IS
+		NULL
+		and b.elPi_Binding=1
+			and (b.elPi_State=10 or b.elPi_State=15)
+		and b.delete_flag='0'
+		and
+		b.elPi_RelevancePowerStation=#{relevancePowerStation}
+		<if test="elpiElectricpilecode != null and elpiElectricpilecode!=''">
+			and b.elPi_ElectricPileCode =#{elpiElectricpilecode}
+		</if>
+		) aa
+
+	</select>
+
+	<select id="getFilterAddPileList" resultMap="PileMap">
+
+		SELECT
+		b.pk_ElectricPile,
+		b.elPi_ElectricPileCode,
+		b.elPi_ElectricPileName,
+		b.elPi_ChargingMode,
+		b.elPi_PowerSize,
+		(select
+		maker_Name from tbl_pilemaker where pk_Carmaker=b.elPi_Maker) as
+		makerRemark ,
+		(select count(pk_ElectricpileHead) from
+		tbl_electricpilehead where pk_ElectricPile=b.pk_ElectricPile)
+		as
+		pileHeadSum,
+		<!-- (select count(pk_ElectricpileHead) from
+		tbl_electricpilehead where pk_ElectricPile=b.pk_ElectricPile
+		where ePHe_ElectricpileHeadState=0)
+		as
+		pileFreeHeadSum, -->
+		b.comm_status,
+		b.elPi_RelevancePowerStation,
+		b.elPi_State
+		FROM
+		tbl_electricpile b
+		LEFT JOIN tbl_company_rela a ON a.pk_ElectricPile =
+		b.pk_ElectricPile
+		AND a.pk_cpy_operate_id =#{comPanyId} and
+		a.pk_PowerStation=#{relevancePowerStation}
+		WHERE
+		a.pk_ElectricPile IS
+		NULL
+		and b.elPi_Binding=1
+			and (b.elPi_State=10 or b.elPi_State=15)
+		and b.delete_flag='0'
+		and
+		b.elPi_RelevancePowerStation=#{relevancePowerStation}
+		<if test="elpiElectricpilecode != null and elpiElectricpilecode!=''">
+			and b.elPi_ElectricPileCode =#{elpiElectricpilecode}
+		</if>
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	<delete id="deletePile" parameterType="map">
+		delete from
+		tbl_company_rela where pk_cpy_operate_id=#{companyId} and
+		pk_PowerStation=#{powerId} and pk_ElectricPile=#{id}
+	</delete>
+	<insert id="savePile" parameterType="map">
+		INSERT INTO tbl_company_rela
+		(
+		pk_cpy_operate_id,
+		pk_PowerStation,
+		pk_ElectricPile
+		)
+		values(#{companyId},#{powerId},#{id})
+
+	</insert>
+</mapper>

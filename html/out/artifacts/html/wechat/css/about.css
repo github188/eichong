@@ -1,0 +1,71 @@
+a,
+input,
+button {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+input,
+button {
+  -webkit-appearance: none;
+  border-radius: 0;
+}
+body {
+  margin: 0;
+  -webkit-user-select: auto;
+  background-color: #ebebeb;
+}
+body * {
+  -webkit-user-select: auto;
+  font-family: "微软雅黑";
+}
+body {
+  -webkit-text-size-adjust: 100%;
+  font-family: "微软雅黑";
+}
+* {
+  padding: 0;
+  margin: 0;
+}
+.main {
+  width: 13.4rem;
+  min-height: 2rem;
+  padding: 1.48rem 0.8rem 1.48rem;
+}
+.main .pic {
+  width: 13.4rem;
+  min-height: 2rem;
+}
+.main .pic img {
+  display: block;
+  width: 5.32rem;
+  height: 1.92rem;
+  margin: 0 auto;
+}
+.main .content {
+  width: 13.4rem;
+  min-height: 2rem;
+}
+.main .content p {
+  font-size: 0.64rem;
+  color: #333333;
+  margin-top: 0.92rem;
+}
+.main .code {
+  width: 13.4rem;
+  min-height: 2rem;
+  margin-top: 1.76rem;
+}
+.main .code .codeTitle {
+  font-size: 0.64rem;
+  color: #333333;
+}
+.main .code .smallTip {
+  font-size: 0.64rem;
+  color: #333333;
+  text-align: center;
+}
+.main .code img {
+  display: block;
+  width: 8rem;
+  height: 8rem;
+  margin: 1.08rem auto 2.2rem;
+}

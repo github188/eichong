@@ -1,0 +1,160 @@
+var pkCouponVariety=getUrlParam('pkCouponVariety');
+getDetailById(pkCouponVariety);
+function getDetailById(pkCouponVariety){
+    $.ajax({
+        type: "post",
+        url: basePath + getCouponVarietyInfoUrl,
+        async: true,
+        data: {
+            pkCouponVariety: pkCouponVariety
+        },
+        success: function (data) {
+            var data=data.dataObject;
+            var covaActivityName=data.covaActivityName;
+            $('input[name=covaActivityName]').val(covaActivityName);
+
+            var covaCouponValue=data.covaCouponValue;
+            $('input[name=covaCouponValue]').val(covaCouponValue);
+
+            var covaCouponCondition=data.covaCouponCondition;
+            $('input[name=covaCouponCondition]').val(covaCouponCondition);
+
+            var covaRemark=data.covaRemark;
+            $('input[name=covaRemark]').val(covaRemark);
+
+
+            var covaLabel=data.covaLabel;
+            $('input[name=covaLabel]').val(covaLabel);
+
+            var covaLimitation=data.covaLimitation;
+            if(covaLimitation==1){
+                $('#covaLimitationHtml').attr('data-value',1).html('仅限交流充电桩');
+            }
+            if(covaLimitation==2){
+                $('#covaLimitationHtml').attr('data-value',2).html('仅限直流充电桩');
+            }
+            if(covaLimitation==3){
+                $('#covaLimitationHtml').attr('data-value',3).html('不限充电桩');
+            }
+            var covaStutas=data.covaStutas;
+            if(covaStutas==0){
+                $('#covaStutasHtml').attr('data-value',0).html('上架');
+            }
+            if(covaStutas==1){
+                $('#covaStutasHtml').attr('data-value',1).html('下架');
+            }
+        }
+    });
+}
+$('#goback').off('click').on('click', function () {
+    window.location.href = 'couponVariety_detail.html?pkCouponVariety='+pkCouponVariety;
+})
+function toUnbindEvent() {
+    $('.covaLimitationBlock').unbind();
+    $('.covaStutasBlock').unbind();
+    selectModel();
+}
+toUnbindEvent();
+$('.covaLimitationUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+});
+$('.covaStutasUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+});
+//保存优惠券按钮addCouponVarietyUrl
+function saveCouponVariety() {
+    if (testCovaActivityName()) {
+        if (isInteger('#covaCouponValue', '#covaCouponValueTip')) {
+            if (isInteger('#covaCouponCondition', '#covaCouponConditionTip')) {
+                var covaActivityName = $('input[name=covaActivityName]').val();
+                var covaLabelValue = $('input[name=covaLabel]').val();
+                var covaCouponValue = $('input[name=covaCouponValue]').val();
+                var covaCouponCondition = $('input[name=covaCouponCondition]').val();
+                var covaRemark = $('input[name=covaRemark]').val();
+                var covaLimitationHtml = $('#covaLimitationHtml').attr('data-value');
+                var covaStutasHtml = $('#covaStutasHtml').attr('data-value');
+                var obj = {
+                    covaActivityName: covaActivityName,
+                    covaCouponValue: covaCouponValue,
+                    covaCouponCondition: covaCouponCondition,
+                    covaRemark: covaRemark,
+                    covaStutas: covaStutasHtml,
+                    covaLabel:covaLabelValue,
+                    covaLimitation: covaLimitationHtml
+                };
+                $.ajax({
+                    type: "post",
+                    url: basePath + changeCouponVarietyUrl,
+                    async: true,
+                    data: obj,
+                    success: function (data) {
+                        if (data.success == true) {
+                            layer.closeAll();
+                            layer.open({
+                                type: 1,
+                                offset: '100px',
+                                title: ["提示", "font-size:12px;text-align:center"],
+                                shadeClose: false,
+                                closeBtn: 2,
+                                area: ['310px', '160px'],//宽高
+                                content: '修改成功',
+                                btn: ["确定", "取消"],
+                                yes:function(index,layero){
+                                    layer.closeAll();
+                                    window.location.href = 'couponVariety_list.html';
+                                }
+
+                            });
+
+                        } else {
+                            layer.open({
+                                type: 1,
+                                offset: '100px',
+                                title: ["提示", "font-size:12px;text-align:center"],
+                                shadeClose: false,
+                                closeBtn: 2,
+                                area: ['310px', '160px'],//宽高
+                                content: data.msg,
+                                time: 3000,
+                                btn: ["确定", "取消"]
+                            });
+                        }
+                    }
+                });
+            }
+        }
+    }
+}
+
+//现金券名称校验
+function testCovaActivityName() {
+    var covaActivityName = $('input[name=covaActivityName]').val();
+    if (covaActivityName == '') {
+        $('#covaActivityNameTip').html('现金券名称不能为空');
+        return false;
+    }
+    if (covaActivityName.length > 20) {
+        $('#covaActivityNameTip').html('现金券名称长度少于20');
+        return false;
+    }
+    $('#covaActivityNameTip').html('');
+    return true;
+}
+//验证纯数字
+function isInteger(obj, tipClass) {
+    var objValue = $(obj).val();
+    var reg = /^[0-9][\d]*$/;
+    if (!objValue) {
+        $(obj).focus();
+        $(tipClass).html('不能为空');
+        return false;
+    } else if (!reg.test(objValue)) {
+        $(obj).focus();
+        $(tipClass).html('必须为纯数字');
+        return false;
+    }
+    $(tipClass).html('');
+    return true;
+}

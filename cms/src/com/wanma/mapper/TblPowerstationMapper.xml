@@ -1,0 +1,586 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.TblPowerstationMapper">
+
+
+	<resultMap id="tblPowerstationResultMap" type="TblPowerstation">
+		<id property="pkPowerstation" column="pk_PowerStation" />
+		<result property="postName" column="poSt_Name" />
+		<!-- <result property="postPic" column="poSt_Pic" /> -->
+		<!-- <result property="postDetailpic" column="poSt_DetailPic" /> -->
+		<result property="postAddress" column="poSt_Address" />
+		<result property="postLongitude" column="poSt_Longitude" />
+		<result property="postLatitude" column="poSt_Latitude" />
+		<result property="postPhone" column="poSt_Phone" />
+		<result property="postEleids" column="poSt_Eleids" />
+		<result property="postStatus" column="poSt_Status" />
+		<!-- <result property="postAreacode" column="poSt_AreaCode" /> -->
+		<result property="postCreatedate" column="poSt_Createdate" />
+		<result property="postUpdatedate" column="poSt_Updatedate" />
+		<result property="postRemark" column="poSt_Remark" />
+		<result property="postPoweruser" column="poSt_PowerUser" />
+		<result property="postIsappoint" column="poSt_IsAppoint" />
+		<result property="distance" column="distance"/>
+	</resultMap>
+	<resultMap id="pageResultMap"  type="java.util.HashMap" extends="tblPowerstationResultMap"></resultMap>
+	<resultMap id="findResultMap"  type="java.util.HashMap" extends="tblPowerstationResultMap"></resultMap>
+	<resultMap id="findMap"  type="java.util.HashMap"></resultMap>
+	
+	<!--分享页查询充电点信息-->
+	<select id="getSharPowerstation" parameterType="TblPowerstation" resultMap="tblPowerstationResultMap">
+		select
+			pk_PowerStation,
+			poSt_Name,
+			<!-- poSt_Pic, -->
+			poSt_Phone,
+			poSt_Address
+		from 
+	        tbl_PowerStation
+	    where
+	    pk_PowerStation=#{pkPowerstation}
+	</select>
+	
+	<!--分享页查询充电点电桩数量-->
+	<select id="searchCount" parameterType="TblPowerstation" resultType="long">
+		select
+			count(pk_ElectricPile)
+		from 
+			tbl_ElectricPile
+		where
+			elPi_RelevancePowerStation=#{pkPowerstation}
+	</select>
+
+
+	<insert id="insert" parameterType="TblPowerstation">
+	   insert into tbl_PowerStation (
+	     poSt_Name,
+	     <!-- poSt_Pic, -->
+	     <!-- poSt_DetailPic, -->
+	     poSt_Address,
+	     poSt_Longitude,
+	     poSt_Latitude,
+	     poSt_Phone,
+	     poSt_Eleids,
+	     poSt_Status,
+	     <!--  poSt_AreaCode, -->
+	     poSt_Createdate,
+	     poSt_Updatedate,
+	     poSt_Remark,
+	     poSt_PowerUser,
+	     poSt_IsAppoint
+	   )values (
+	     #{postName},
+	     <!-- #{postPic}, -->
+	     <!-- #{postDetailpic}, -->
+	     #{postAddress},
+	     #{postLongitude},
+	     #{postLatitude},
+	     #{postPhone},
+	     #{postEleids},
+	     #{postStatus},
+	     <!-- #{postAreacode}, -->
+	     #{postCreatedate},
+	     #{postUpdatedate},
+	     #{postRemark},
+	     #{postPoweruser},
+	     #{postIsappoint}
+	   )
+	</insert>
+
+	<update id="update" parameterType="TblPowerstation">
+	   update tbl_PowerStation set
+	     poSt_Name=#{postName},
+	     <!-- poSt_Pic=#{postPic}, -->
+	     <!-- poSt_DetailPic=#{postDetailpic}, -->
+	     poSt_Address=#{postAddress},
+	     poSt_Longitude=#{postLongitude},
+	     poSt_Latitude=#{postLatitude},
+	     poSt_Phone=#{postPhone},
+	     poSt_Eleids=#{postEleids},
+	     poSt_Status=#{postStatus},
+	     <!-- poSt_AreaCode=#{postAreacode}, -->
+	     poSt_Createdate=#{postCreatedate},
+	     poSt_Updatedate=#{postUpdatedate},
+	     poSt_Remark=#{postRemark},
+	     poSt_PowerUser=#{postPoweruser},
+	     poSt_IsAppoint=#{postIsappoint}
+	   where 
+	    pk_PowerStation=#{pkPowerstation} 
+	</update>
+
+	<delete id="delete" parameterType="map">
+	   delete from 
+	     tbl_PowerStation 
+	   where 
+	    pk_PowerStation=#{pkPowerstation} 
+	</delete>
+
+	<select id="get" parameterType="map" resultMap="tblPowerstationResultMap">
+	   select 
+	    pk_PowerStation,
+	    poSt_Name,
+	    <!-- poSt_Pic, -->
+	    <!-- poSt_DetailPic, -->
+	    poSt_Address,
+	    poSt_Longitude,
+	    poSt_Latitude,
+	    poSt_Phone,
+	    poSt_Eleids,
+	    poSt_Status,
+	    <!-- poSt_AreaCode, -->
+	    poSt_Createdate,
+	    poSt_Updatedate,
+	    poSt_Remark,
+	    poSt_PowerUser,
+	    poSt_IsAppoint
+	   from tbl_PowerStation
+	   where 
+	    pk_PowerStation=#{pkPowerstation} 
+	</select>
+
+	<select id="findOne" parameterType="map" resultMap="findResultMap">
+	   select 
+	    pk_PowerStation,
+	    poSt_Name,
+	    <!-- poSt_Pic, -->
+	    <!-- poSt_DetailPic, -->
+	    poSt_Address,
+	    poSt_Longitude,
+	    poSt_Latitude,
+	    poSt_Phone,
+	    poSt_Eleids,
+	    poSt_Status,
+	    <!--poSt_AreaCode,  -->
+	    poSt_Createdate,
+	    poSt_Updatedate,
+	    poSt_Remark,
+	    poSt_PowerUser,
+	    poSt_IsAppoint
+	   from tbl_PowerStation
+	   where 
+	    pk_PowerStation=#{pkPowerstation} 
+	</select>
+	<select id="getPowerstationById" parameterType="map" resultMap="findResultMap">
+	  select  last.pk_PowerStation,
+		     last.poSt_Name,
+		     getFullPath('powerListImage', last.pk_PowerStation) as poSt_Pic,
+		     getFullPath('powerDetailImage', last.pk_PowerStation) as poSt_DetailPic,
+		     last.poSt_Address,
+		     last.poSt_Longitude,
+		     last.poSt_Latitude,
+		     last.poSt_Phone,
+		     last.poSt_Eleids,
+		     last.poSt_Status,
+	    	<!--last.poSt_AreaCode,  -->
+		     last.poSt_Createdate,
+		     last.poSt_Updatedate,
+		     last.poSt_Remark,
+		     last.poSt_PowerUser,
+		     last.poSt_OnlineTime,
+		     last.poSt_IsAppoint, last.ePSC_Name powerState, last.powerStationSum,
+		     <if test="postLatitude != null">
+		     distance,
+		     </if>
+		     (select count(pk_UserCollect) from tbl_UserCollect where usCo_Userid = #{pkUserinfo} and usCo_Type = '2' and usCo_Objectid=#{pkPowerstation}) isCollect
+		      from 
+	  ( select   pk_PowerStation, poSt_Name, <!-- poSt_Pic, --> <!-- poSt_DetailPic, --> poSt_Address, poSt_Longitude, poSt_Latitude, poSt_Phone,
+		     poSt_Eleids, poSt_Status, <!-- poSt_AreaCode, --> poSt_Createdate, poSt_Updatedate, poSt_Remark,  poSt_PowerUser,
+		     poSt_IsAppoint,epf.ePSC_Name,poSt_OnlineTime,
+		     <if test="postLatitude != null">
+		     round(6378.138*2*asin(sqrt(pow(sin( (#{postLatitude}*pi()/180-pst.poSt_Latitude*pi()/180)/2),2)+cos(#{postLatitude}*pi()/180)*cos(pst.poSt_Latitude*pi()/180)* 
+                                  pow(sin( (#{postLongitude}*pi()/180-pst.poSt_Longitude*pi()/180)/2),2)))*1000) as distance,
+             </if>
+             elpe.powerStationSum 
+		   from tbl_PowerStation pst
+	      LEFT JOIN tbl_ElctrcPlScrnConfgurtn epf on pst.poSt_Status=epf.pk_ElctrcPlScrnConfgurtn
+	      LEFT JOIN (select COUNT(*) powerStationSum,elPi_RelevancePowerStation from tbl_ElectricPile epl GROUP BY epl.elPi_RelevancePowerStation) elpe
+	       on elpe.elPi_RelevancePowerStation=pst.pk_PowerStation
+       ) last
+	   where 
+	     last.pk_PowerStation=#{pkPowerstation} 
+	</select>
+	<select id="find" parameterType="map" resultMap="findResultMap">
+	   select 
+	     pk_PowerStation,
+	     poSt_Name,
+	     <!-- poSt_Pic, -->
+	     <!-- poSt_DetailPic, -->
+	     poSt_Address,
+	     poSt_Longitude,
+	     poSt_Latitude,
+	     poSt_Phone,
+	     poSt_Eleids,
+	     poSt_Status,
+	     <!-- poSt_AreaCode, -->
+	     poSt_Createdate,
+	     poSt_Updatedate,
+	     poSt_Remark,
+	     poSt_PowerUser,
+	     poSt_IsAppoint
+	   from tbl_PowerStation
+	   <where>
+	     <if test="pkPowerstation != null">
+	        pk_PowerStation=#{pkPowerstation}
+	     </if>
+	     <if test="postName != null">
+	        and poSt_Name=#{postName}
+	     </if>
+	     <!-- 
+	     <if test="postPic != null">
+	        and poSt_Pic=#{postPic}
+	     </if> -->
+	     <!-- 
+	     <if test="postDetailpic != null">
+	        and poSt_DetailPic=#{postDetailpic}
+	     </if> -->
+	     <if test="postAddress != null">
+	        and poSt_Address=#{postAddress}
+	     </if>
+	     <if test="postLongitude != null">
+	        and poSt_Longitude=#{postLongitude}
+	     </if>
+	     <if test="postLatitude != null">
+	        and poSt_Latitude=#{postLatitude}
+	     </if>
+	     <if test="postPhone != null">
+	        and poSt_Phone=#{postPhone}
+	     </if>
+	     <if test="postEleids != null">
+	        and poSt_Eleids=#{postEleids}
+	     </if>
+	     <if test="postStatus != null">
+	        and poSt_Status=#{postStatus}
+	     </if>
+	     <!-- 
+	     <if test="postAreacode != null">
+	        and poSt_AreaCode=#{postAreacode}
+	     </if> -->
+	     <if test="postCreatedate != null">
+	        and poSt_Createdate=#{postCreatedate}
+	     </if>
+	     <if test="postUpdatedate != null">
+	        and poSt_Updatedate=#{postUpdatedate}
+	     </if>
+	     <if test="postRemark != null">
+	        and poSt_Remark=#{postRemark}
+	     </if>
+	     <if test="postPoweruser != null">
+	        and poSt_PowerUser=#{postPoweruser}
+	     </if>
+	     <if test="postIsappoint != null">
+	        and poSt_IsAppoint=#{postIsappoint}
+	     </if>
+	   </where>
+	</select>
+	
+	<select id="page" parameterType="map" resultMap="pageResultMap">
+	   select 
+	     pk_PowerStation,
+	     poSt_Name,
+	     <!-- poSt_Pic, -->
+	     <!-- poSt_DetailPic, -->
+	     poSt_Address,
+	     poSt_Longitude,
+	     poSt_Latitude,
+	     poSt_Phone,
+	     poSt_Eleids,
+	     poSt_Status,
+	     <!-- 
+	     poSt_AreaCode, -->
+	     poSt_Createdate,
+	     poSt_Updatedate,
+	     poSt_Remark,
+	     poSt_PowerUser,
+	     poSt_IsAppoint
+	   from tbl_PowerStation
+	   <where>
+	     <if test="pkPowerstation != null">
+	        pk_PowerStation=#{pkPowerstation}
+	     </if>
+	     <if test="postName != null">
+	        and poSt_Name=#{postName}
+	     </if>
+	     <!-- 
+	     <if test="postPic != null">
+	        and poSt_Pic=#{postPic}
+	     </if> -->
+	     <!-- 
+	     <if test="postDetailpic != null">
+	        and poSt_DetailPic=#{postDetailpic}
+	     </if> -->
+	     <if test="postAddress != null">
+	        and poSt_Address=#{postAddress}
+	     </if>
+	     <if test="postLongitude != null">
+	        and poSt_Longitude=#{postLongitude}
+	     </if>
+	     <if test="postLatitude != null">
+	        and poSt_Latitude=#{postLatitude}
+	     </if>
+	     <if test="postPhone != null">
+	        and poSt_Phone=#{postPhone}
+	     </if>
+	     <if test="postEleids != null">
+	        and poSt_Eleids=#{postEleids}
+	     </if>
+	     <if test="postStatus != null">
+	        and poSt_Status=#{postStatus}
+	     </if>
+	     <!-- <if test="postAreacode != null">
+	        and poSt_AreaCode=#{postAreacode}
+	     </if> -->
+	     
+	     <if test="postCreatedate != null">
+	        and poSt_Createdate=#{postCreatedate}
+	     </if>
+	     <if test="postUpdatedate != null">
+	        and poSt_Updatedate=#{postUpdatedate}
+	     </if>
+	     <if test="postRemark != null">
+	        and poSt_Remark=#{postRemark}
+	     </if>
+	     <if test="postPoweruser != null">
+	        and poSt_PowerUser=#{postPoweruser}
+	     </if>
+	     <if test="postIsappoint != null">
+	        and poSt_IsAppoint=#{postIsappoint}
+	     </if>
+	     
+	     
+	     
+	     
+	     
+	   </where>
+	</select>
+  <select id="getPowerstation" parameterType="map" resultMap="findMap">
+   select last.pk_PowerStation,last.poSt_Name,last.poSt_Address,<!-- last.poSt_Pic, -->last.electricPileCount,last.avgServiceCharge,last.avgCommentStart,last.poSt_PowerUser,last.poSt_Longitude,last.poSt_Latitude 
+   ,round(6378.138*2*asin(sqrt(pow(sin( (#{postLatitude}*pi()/180-last.poSt_Latitude*pi()/180)/2),2)+cos(#{postLatitude}*pi()/180)*cos(last.poSt_Latitude*pi()/180)* 
+              pow(sin( (#{postLongitude}*pi()/180-last.poSt_Longitude*pi()/180)/2),2)))*1000) distance
+	 from (
+		select pst.pk_PowerStation,pst.poSt_Name,pst.poSt_Address,<!-- pst.poSt_Pic, -->count(epl2.pk_ElectricPile) electricPileCount,avg(epl2.raIn_ServiceCharge) avgServiceCharge
+		,avg(epl2.prCo_CommentStart) avgCommentStart,pst.poSt_PowerUser,pst.poSt_Longitude,pst.poSt_Latitude
+		from (select * from tbl_PowerStation where poSt_Status!=0 and poSt_Status!=3 and poSt_Status!=5) pst
+			LEFT JOIN  
+			(
+				select epl.elPi_RelevancePowerStation,rif.raIn_ServiceCharge,epl.pk_ElectricPile,pct2.prCo_CommentStart
+					from tbl_ElectricPile epl 
+					left JOIN  tbl_RateInformation rif on rif.pk_RateInformation = epl.elPi_RateInformationId
+					left JOIN 
+					(select avg(prCo_CommentStart) prCo_CommentStart,prCo_ProductId from tbl_ProductComment pct where pct.prCo_Comment_type=1 GROUP BY prCo_ProductId)
+					pct2 on epl.pk_ElectricPile=pct2.prCo_ProductId
+			) epl2
+			on pst.pk_PowerStation=epl2.elPi_RelevancePowerStation  GROUP BY pst.pk_PowerStation
+	) last  
+	 <choose>
+            <when test="(electricPrices!=null and electricPrices==2) or (electricEvaluate!= null and electricEvaluate==2)">
+					  <where>
+					     1=1
+					     <if test="postPoweruser != null">
+					      and   last.poSt_PowerUser=#{postPoweruser}<!-- 电桩查找 列表模式，车辆类型 -->
+					     </if>
+					     	<!-- 
+							 * mysql 通过两点经纬度，算两点之间距离(单位米)
+							 * 第一点经纬度：@lng1 @lat1
+					                             第二点经纬度：@lng2 @lat2
+					                范例：round(6378.138*2*asin(sqrt(pow(sin( (@lat1*pi()/180-@lat2*pi()/180)/2),2)+cos(@lat1*pi()/180)*cos(@lat2*pi()/180)* pow(sin( (@lng1*pi()/180-@lng2*pi()/180)/2),2)))*1000) 
+					                 电桩查找 列表模式，距离排序  默认5km以内-->
+					      <if test="screenRadius != null">
+					       <![CDATA[ 
+					        and round(6378.138*2*asin(sqrt(pow(sin( (#{postLatitude}*pi()/180-last.poSt_Latitude*pi()/180)/2),2)+cos(#{postLatitude}*pi()/180)*cos(last.poSt_Latitude*pi()/180)* 
+				              pow(sin( (#{postLongitude}*pi()/180-last.poSt_Longitude*pi()/180)/2),2)))*1000) 
+					        <=#{screenRadius}
+					       ]]>
+					     </if>
+					     	     <if test="searchName != null">
+	                             and last.poSt_Name like concat('%',#{searchName},'%')
+	                        </if>
+					   </where>
+					   
+					       order by
+					  <if test="electricPrices!=null and electricPrices==2">
+					       last.avgServiceCharge asc<!-- 电桩查找 列表模式，价格排序  price:默认值为1  2-按照价高最优排序  -->
+					     </if>
+					     <if test="electricEvaluate!= null and electricEvaluate==2">
+					       <if test="electricPrices!=null and electricPrices==2">,</if>
+					       last.avgCommentStart desc<!-- 电桩查找 列表模式，好评排序  price:默认值为1  2-按照好评最优排序  -->
+					     </if>
+            </when>
+            <otherwise>
+	               <where>
+					     1=1
+					     <if test="postPoweruser != null">
+					      and   last.poSt_PowerUser=#{postPoweruser}<!-- 电桩查找 列表模式，车辆类型 -->
+					     </if>
+					     	<!-- 
+							 * mysql 通过两点经纬度，算两点之间距离(单位米)
+							 * 第一点经纬度：@lng1 @lat1
+					                             第二点经纬度：@lng2 @lat2
+					                范例：round(6378.138*2*asin(sqrt(pow(sin( (@lat1*pi()/180-@lat2*pi()/180)/2),2)+cos(@lat1*pi()/180)*cos(@lat2*pi()/180)* pow(sin( (@lng1*pi()/180-@lng2*pi()/180)/2),2)))*1000) 
+					                 电桩查找 列表模式，距离排序  默认5km以内-->
+					      <if test="screenRadius != null">
+					       <![CDATA[ 
+					        and round(6378.138*2*asin(sqrt(pow(sin( (#{postLatitude}*pi()/180-last.poSt_Latitude*pi()/180)/2),2)+cos(#{postLatitude}*pi()/180)*cos(last.poSt_Latitude*pi()/180)* 
+				              pow(sin( (#{postLongitude}*pi()/180-last.poSt_Longitude*pi()/180)/2),2)))*1000) 
+					        <=#{screenRadius}
+					       ]]>
+					     </if>
+					       <if test="searchName != null">
+	                             and last.poSt_Name like concat('%',#{searchName},'%')
+	                        </if>
+					   </where>
+            </otherwise>
+        </choose>
+        
+	 
+	</select>
+	<select id="getSearchPowerStationList" parameterType="map" resultMap="findMap">
+		select last.pk_PowerStation,last.poSt_Name,last.poSt_Address,<!-- last.poSt_Pic, -->last.electricPileCount,last.avgServiceCharge,last.avgCommentStar,last.poSt_PowerUser,last.poSt_Longitude,last.poSt_Latitude, 
+	   round(6378.138*2*asin(sqrt(pow(sin( (#{Latitude}*pi()/180-last.poSt_Latitude*pi()/180)/2),2)+cos(#{Latitude}*pi()/180)*cos(last.poSt_Latitude*pi()/180)* 
+	              pow(sin( (#{Longitude}*pi()/180-last.poSt_Longitude*pi()/180)/2),2)))*1000) distance
+		 from (
+			select pst.pk_PowerStation,pst.poSt_Name,pst.poSt_Address,<!-- pst.poSt_Pic, -->count(epl2.pk_ElectricPile) electricPileCount,avg(epl2.raIn_ServiceCharge) avgServiceCharge
+			,avg(epl2.prCo_CommentStar) avgCommentStar,pst.poSt_PowerUser,pst.poSt_Longitude,pst.poSt_Latitude
+			from (select * from tbl_PowerStation where poSt_Status!=0 and poSt_Status!=3 and poSt_Status!=5 and poSt_Address like concat('%',#{keyword},'%') ) pst
+				LEFT JOIN  
+				(
+					select epl.elPi_RelevancePowerStation,rif.raIn_ServiceCharge,epl.pk_ElectricPile,pct2.prCo_CommentStar
+						from tbl_ElectricPile epl 
+						left JOIN  tbl_RateInformation rif on rif.pk_RateInformation = epl.elPi_RateInformationId
+						left JOIN 
+						(select avg(pss_CommentStar) prCo_CommentStar,pss_PsId prCo_ProductId from tbl_powerstationstar pct where pct.pss_Utatus=0 GROUP BY pss_PsId)
+						pct2 on epl.pk_ElectricPile=pct2.prCo_ProductId
+				) epl2
+				on pst.pk_PowerStation=epl2.elPi_RelevancePowerStation GROUP BY pst.pk_PowerStation
+		) last where 1=1
+		<if test="orderType==1">
+			 order by distance
+		</if>
+		<if test="orderType==2">
+			 order by  avgServiceCharge
+		</if>
+		<if test="orderType==3">
+			 order by avgCommentStar
+		</if>
+	</select>
+	
+	<select id="getPowerstationN" parameterType="map" resultMap="findMap">
+   select * from (select last.pk_PowerStation,last.poSt_Name,last.poSt_Address,<!-- last.poSt_Pic, -->last.electricPileCount,last.avgServiceCharge,last.avgCommentStart,last.poSt_PowerUser,last.poSt_Longitude,last.poSt_Latitude, 
+   round(6378.138*2*asin(sqrt(pow(sin( (#{postLatitude}*pi()/180-last.poSt_Latitude*pi()/180)/2),2)+cos(#{postLatitude}*pi()/180)*cos(last.poSt_Latitude*pi()/180)* 
+              pow(sin( (#{postLongitude}*pi()/180-last.poSt_Longitude*pi()/180)/2),2)))*1000) distance
+	 from (
+		select pk_PowerStation,poSt_Name,poSt_Address,<!-- poSt_Pic, -->count(epl2.pk_ElectricPile) electricPileCount,avg(epl2.raIn_ServiceCharge) avgServiceCharge
+		,avg(epl2.prCo_CommentStart) avgCommentStart,poSt_PowerUser,poSt_Longitude,poSt_Latitude
+		from (select * from tbl_PowerStation  where poSt_Status!=0 and poSt_Status!=3 and poSt_Status!=5) pst
+			RIGHT JOIN  
+			(
+				select epl.elPi_RelevancePowerStation,rif.raIn_ServiceCharge,epl.pk_ElectricPile,pct2.prCo_CommentStart
+					from (
+						select elPi_RelevancePowerStation,pk_ElectricPile,elPi_RateInformationId from tbl_electricpile where elPi_Binding = 1 
+						and elPi_State!= 0 and elPi_State!=3 and elPi_State!=5 
+						<if test="screenType!=1">
+							 and (elPi_PowerUser = #{screenType} or elPi_PowerUser=13) 
+						</if>
+						<if test="chargingMode != null">
+							 and elPi_ChargingMode = #{chargingMode} 
+						</if>
+						<if test="postStatus != null">
+							 and elPi_State = #{postStatus} 
+						</if>
+						<if test="elpiPowerinterface != null">
+							and elPi_PowerInterface = #{elpiPowerinterface}
+						</if>
+					) epl 
+					left JOIN  tbl_RateInformation rif on rif.pk_RateInformation = epl.elPi_RateInformationId
+					left JOIN 
+					(select avg(pss_CommentStar) prCo_CommentStart,pss_PsId prCo_ProductId from tbl_powerstationstar pct where pct.pss_Utatus=0 GROUP BY pss_PsId)
+					pct2 on epl.pk_ElectricPile=pct2.prCo_ProductId
+			) epl2
+			on pst.pk_PowerStation=epl2.elPi_RelevancePowerStation  GROUP BY pst.pk_PowerStation
+	) last) a  where distance &lt; 10000 
+	
+        <if test="electricPrices!=null">
+			 order by avgServiceCharge
+		</if>
+		<if test="electricEvaluate!=null">
+			 order by avgCommentStart desc
+		</if>
+		<if test="screenRadius!=null">
+			 order by distance
+		</if>
+	 
+	</select>
+	
+	  <!-- <select id="getPowerstationForMap" parameterType="map" resultMap="findMap">
+	   select last.pk_PowerStation,last.poSt_Status,last.poSt_Longitude,last.poSt_Latitude from tbl_PowerStation last where 1=1
+	      <if test="postPoweruser != null">
+	        and last.poSt_PowerUser=#{postPoweruser}
+	     </if>
+	      <if test="postStatus != null">
+	       and last.poSt_Status=#{postStatus}
+	     </if>
+	      <if test="postIsappoint != null">
+	        and last.poSt_IsAppoint=#{postIsappoint}
+	     </if>
+	      <if test="screenRadius != null">
+   					     	
+			 * mysql 通过两点经纬度，算两点之间距离(单位米)
+			 * 第一点经纬度：@lng1 @lat1
+	                             第二点经纬度：@lng2 @lat2
+	                范例：round(6378.138*2*asin(sqrt(pow(sin( (@lat1*pi()/180-@lat2*pi()/180)/2),2)+cos(@lat1*pi()/180)*cos(@lat2*pi()/180)* pow(sin( (@lng1*pi()/180-@lng2*pi()/180)/2),2)))*1000) 
+	                 电桩查找 列表模式，距离排序  默认5km以内
+             <![CDATA[ 
+			        and round(6378.138*2*asin(sqrt(pow(sin( (#{postLatitude}*pi()/180-last.poSt_Latitude*pi()/180)/2),2)+cos(#{postLatitude}*pi()/180)*cos(last.poSt_Latitude*pi()/180)* 
+		              pow(sin( (#{postLongitude}*pi()/180-last.poSt_Longitude*pi()/180)/2),2)))*1000) 
+			        <=#{screenRadius}
+			       ]]>
+	     </if>
+	  </select> -->
+	  
+	  <select id="getPowerstationForMap" parameterType="map" resultMap="findMap">
+	   select last.pk_PowerStation,last.poSt_Status,last.poSt_Longitude,last.poSt_Latitude,last.elPi_PowerUser 
+	   from
+			(SELECT * from (select * from tbl_powerstation where poSt_Status!=3 and poSt_Status!=5 and poSt_Status!=0) a 
+			LEFT JOIN 
+			(select pk_ElectricPile,elPi_Binding,elPi_RelevancePowerStation,elPi_ChargingMode,elPi_ChargingModeName,elPi_PowerUser 
+			from tbl_electricpile  where elPi_Binding=1 
+			<if test="chargingMode != null">
+				 and elPi_ChargingMode = #{chargingMode} 
+			</if>
+			<if test="elpiPowerinterface != null">
+				 and elPi_PowerInterface = #{elpiPowerinterface} 
+			</if>
+			<if test="postPoweruser != null">
+	        and (elPi_PowerUser=#{postPoweruser} or elPi_PowerUser=13) 
+	     </if>
+			) b on a.pk_PowerStation = b.elPi_RelevancePowerStation 
+			where elPi_RelevancePowerStation is not null GROUP BY a.pk_PowerStation) last 
+		where 1=1 
+	      <if test="postStatus != null and postStatus!=0">
+	       and last.poSt_Status=#{postStatus}
+	     </if>
+	      <if test="postIsappoint != null and postIsappoint!=0">
+	        and last.poSt_IsAppoint=#{postIsappoint}
+	     </if>
+	      <if test="screenRadius != null">
+   					     	<!-- 
+			 * mysql 通过两点经纬度，算两点之间距离(单位米)
+			 * 第一点经纬度：@lng1 @lat1
+	                             第二点经纬度：@lng2 @lat2
+	                范例：round(6378.138*2*asin(sqrt(pow(sin( (@lat1*pi()/180-@lat2*pi()/180)/2),2)+cos(@lat1*pi()/180)*cos(@lat2*pi()/180)* pow(sin( (@lng1*pi()/180-@lng2*pi()/180)/2),2)))*1000) 
+	                 电桩查找 列表模式，距离排序  默认5km以内-->
+             <![CDATA[ 
+			        and round(6378.138*2*asin(sqrt(pow(sin( (#{postLatitude}*pi()/180-last.poSt_Latitude*pi()/180)/2),2)+cos(#{postLatitude}*pi()/180)*cos(last.poSt_Latitude*pi()/180)* 
+		              pow(sin( (#{postLongitude}*pi()/180-last.poSt_Longitude*pi()/180)/2),2)))*1000) 
+			        <=#{screenRadius}
+			       ]]>
+	     </if>
+	  </select>
+	  
+	  <select id="getAllPsList" resultType="HashMap">
+	  	select pk_PowerStation,poSt_Name,poSt_Address,poSt_Longitude,poSt_Latitude
+	  	from tbl_powerstation
+	  	where poSt_Status in (10,15) 
+	  </select>
+</mapper> 

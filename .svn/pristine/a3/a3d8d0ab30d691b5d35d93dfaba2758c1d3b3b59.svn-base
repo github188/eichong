@@ -1,0 +1,61 @@
+package com.wanma.ims.service.impl;
+
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.wanma.ims.common.domain.AppButtonDO;
+import com.wanma.ims.mapper.AppButtonMapper;
+import com.wanma.ims.service.AppButtonService;
+
+@Service("appButtonService")
+public class AppButtonServiceImpl implements AppButtonService{
+	@Autowired
+	private AppButtonMapper appButtonMapper;
+	
+	
+	@Override
+	public long selectAppButtonCount(AppButtonDO appButtonDO) {
+		return appButtonMapper.selectAppButtonCount(appButtonDO);
+	}
+
+	@Override
+	public List<AppButtonDO> selectAppButtonList(AppButtonDO appButtonDO) {
+		return appButtonMapper.selectAppButtonList(appButtonDO);
+	}
+
+	@Override
+	public boolean insertAppButton(AppButtonDO appButtonDO) {
+		return appButtonMapper.insertAppButton(appButtonDO);
+	}
+
+	@Override
+	public AppButtonDO getAppButtonById(AppButtonDO appButtonDO) {
+		return appButtonMapper.getAppButtonById(appButtonDO);
+	}
+
+	@Override
+	public boolean updateButton(AppButtonDO appButtonDO) {
+		return appButtonMapper.updateButton(appButtonDO)>0;
+	}
+
+	@Override
+	public boolean deleteAppButton(AppButtonDO appButtonDO) {
+		return appButtonMapper.deleteAppButton(appButtonDO)>0;
+	}
+
+	@Override
+	public boolean downAppButton(AppButtonDO appButtonDO) {
+		return appButtonMapper.downAppButton(appButtonDO);
+	}
+
+	@Override
+	public boolean changeButtonSort(AppButtonDO appButtonDO) {
+		return appButtonMapper.changeButtonSort(appButtonDO);
+	}
+
+	
+
+}

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.web.dao.WebElecPileCommentMapper">	
+
+	<resultMap id="tblEpCommentResultMap" type="com.wanma.model.ElectricPileComment">
+		<id property="pk_EpcComment" column="pk_EpcComment" />
+		<result property="epc_EpId" column="epc_EpId" />
+		<result property="epc_UserId" column="epc_UserId" />
+		<result property="epc_UserName" column="epc_UserName" />
+		<result property="epc_CommentPic" column="epc_CommentPic" />
+		<result property="epc_Createdate" column="epc_Createdate" />
+		<result property="epc_Updatedate" column="epc_Updatedate" />
+		<result property="epc_Utatus" column="epc_Utatus" />
+		<result property="epc_Content" column="epc_Content" />
+		<result property="up_commentId" column="up_commentId" />
+	</resultMap>
+	
+	<insert id="insert" parameterType="map" useGeneratedKeys="true" keyProperty="pk_EpcComment">
+	   insert into tbl_electricpilecomment (
+	     epc_EpId,
+	     epc_UserId,
+	     epc_UserName,
+	     epc_Utatus,
+	     epc_Content,
+	     epc_Createdate
+	   )values (
+	     #{epc_EpId},
+	     #{epc_UserId},
+	     #{epc_UserName},
+	     0,
+	     #{epc_Content},
+	     #{epc_Createdate}
+	   )
+	</insert>
+
+	<insert id="insertEpReply" parameterType="map">
+	   insert into tbl_electricpilecomment (
+	     epc_EpId,
+	     epc_UserId,
+	     epc_UserName,
+	     epc_Utatus,
+	     epc_Content,
+	     up_commentId,
+	     epc_Createdate
+	   )values (
+	     #{epId},
+	     #{uId},
+	     #{uName},
+	     0,
+	     #{epContent},
+	     #{upCommentId},
+	     #{createdate}
+	   )
+	</insert>
+	
+	
+	<update id="updateEpReplyCount" parameterType="map">
+	    update tbl_electricpilecomment set reply_count=#{replyCount} where pk_EpcComment=#{upCommentId}
+	</update>
+
+
+	<delete id="delete" parameterType="int">
+	   delete from 
+	     tbl_electricpilecomment 
+	   where 
+	    pk_EpcComment=#{cId} 
+	</delete>
+	
+	 <select id="countEpCommentsByPowerId" parameterType="map" resultType="long">
+	    SELECT count(1) powerCommentCount
+	    from  tbl_electricpilecomment 
+	    where 1=1 and epc_EpId=#{prCoProductId} and up_commentId = '0'
+	      
+	  </select>
+	
+	<select id="getEpCommentsRowNum" parameterType="Map" resultType="int">
+		select count(1)+1 as linkPageNum from tbl_electricpilecomment a
+			where a.pk_EpcComment > (select b.up_commentId from tbl_electricpilecomment b where b.pk_EpcComment =#{commentId}) and 
+			a.epc_EpId = #{electricPileId} and a.epc_Utatus=0
+			and up_commentId = '0'
+	</select>
+	
+	<select id="getEpCommentsPageList" parameterType="map" resultType="hashmap">
+		select		
+		pk_EpcComment,
+		epc_EpId,
+		epc_Createdate,
+		epc_Content,
+		epc_UserName,
+		getFullPath('proImage',pk_EpcComment) as epc_CommentPic,
+		getFullPath('userAvatar',epc_UserId) as userImage,
+		epc_Createdate,
+		praise_count,
+		reply_count
+		from tbl_electricpilecomment 
+		where 
+		epc_EpId = #{prCoProductId} and epc_Utatus=0
+		and up_commentId = 0 
+		order by pk_EpcComment desc
+		limit #{pageNumber},#{pageNum}
+	</select>
+	
+	 <select id="getEpReplyCommentsList" parameterType="String" resultType="HashMap">
+		select		
+		pk_EpcComment,
+		epc_EpId,
+		epc_Createdate,
+		epc_Content,
+		epc_UserName,
+		getFullPath('proImage',pk_EpcComment) as epc_CommentPic,
+		getFullPath('userAvatar',epc_UserId) as userImage,
+		epc_Createdate,
+		epc_Content,
+		up_commentId
+		from tbl_electricpilecomment
+		where 
+		epc_EpId = #{prCoProductId} and epc_Utatus=0
+		and up_commentId > 0
+		order by up_commentId desc
+	</select> 
+	
+</mapper> 

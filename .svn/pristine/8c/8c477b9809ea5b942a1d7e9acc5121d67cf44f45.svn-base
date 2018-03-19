@@ -1,0 +1,656 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.DataCenterMapper">
+
+
+	 <!-- 获取历史数据 -->
+	 <select id="getHistoryDataForOrder" parameterType="Map" resultType="Map">
+	 SELECT * FROM
+	(
+		SELECT
+			SUM(IFNULL(TRUNCATE ((UNIX_TIMESTAMP(c.end_charge_time) - UNIX_TIMESTAMP(c.begin_charge_time)) / 3600,2),0)) chargeTime,
+			SUM(chOr_QuantityElectricity) chargeCount
+		FROM
+			tbl_chargingorder c
+			inner JOIN (SELECT ps.powerStation_name,ep.elPi_ElectricPileCode FROM tbl_electricpile ep,tbl_powerstation ps where ep.elPi_RelevancePowerStation = ps.powerStation_id
+		            <if test="provinceCode != null and provinceCode !=''">
+		               and ps.province_code = #{provinceCode}
+		           </if>
+		           <if test="cityCode !=null and cityCode !=''">
+		               and ps.city_code = #{cityCode}
+		           </if>
+		           <if test="areaCode !=null and areaCode !=''">
+		               and ps.area_code = #{areaCode}
+		           </if>
+		       ) ep ON ep.elPi_ElectricPileCode = c.chOr_PileNumber
+	        inner join tbl_company cpy on cpy.cpy_number= c.chOr_OrgNo
+		       <if test="cpyId !=null and cpyId !=0 and cpyId !=''">
+		           and cpy.cpy_id = #{cpyId}
+		       </if>
+		WHERE chOr_ChargingStatus != 4
+		 AND c.end_charge_time &lt; DATE_FORMAT(CURDATE(),'%Y-%m-%d %H:%i:%s') AND end_charge_time > begin_charge_time
+	)aa,
+	(
+		SELECT
+				count(*) orderCount
+		FROM
+			tbl_chargingorder c
+			inner JOIN (SELECT ps.powerStation_name,ep.elPi_ElectricPileCode FROM tbl_electricpile ep,tbl_powerstation ps where ep.elPi_RelevancePowerStation = ps.powerStation_id
+		            <if test="provinceCode != null and provinceCode !=''">
+		               and ps.province_code = #{provinceCode}
+		           </if>
+		           <if test="cityCode !=null and cityCode !=''">
+		               and ps.city_code = #{cityCode}
+		           </if>
+		           <if test="areaCode !=null and areaCode !=''">
+		               and ps.area_code = #{areaCode}
+		           </if>
+		       ) ep ON ep.elPi_ElectricPileCode = c.chOr_PileNumber
+	        inner join tbl_company cpy on cpy.cpy_number= c.chOr_OrgNo
+		       <if test="cpyId !=null and cpyId !=0 and cpyId !=''">
+		           and cpy.cpy_id = #{cpyId}
+		       </if>
+		 AND c.end_charge_time &lt; DATE_FORMAT(CURDATE(),'%Y-%m-%d %H:%i:%s')
+	)bb
+	 </select>
+ 
+ 	<select id="getProvinceScope" resultType="Map">
+ 	SELECT DISTINCT
+	DISTINCT(e.elPi_OwnProvinceCode) provinceCode,
+	(SELECT mp.PROVINCE_NAME FROM tb_m_province mp where mp.PROVINCE_ID=e.elPi_OwnProvinceCode)provinceName
+	FROM
+	tbl_electricpile e
+ 	</select>
+ 	
+ 	<select id="getCityScope"   resultType="Map">
+ 	SELECT DISTINCT
+	DISTINCT(e.elPi_OwnCityCode) cityCode,
+	(SELECT mc.CITY_NAME FROM tb_m_city mc where mc.CITY_ID=e.elPi_OwnCityCode)cityName,
+	e.elPi_OwnProvinceCode provinceCode,
+	(SELECT mp.PROVINCE_NAME FROM tb_m_province mp where mp.PROVINCE_ID=e.elPi_OwnProvinceCode)provinceName
+	FROM
+	tbl_electricpile e
+ 	</select>
+   
+   <select id="getCpyList" parameterType="String" resultType="Map">
+   SELECT
+	cpy_id value,cpy_name label,cpy_type type
+	FROM
+		tbl_company
+	WHERE cpy_city = #{cityCode}
+   </select>
+   
+   <select id="getElectircCount" parameterType="Map" resultType="String">
+   	SELECT count(*) from tbl_electricpile e,tbl_company c 
+   	where e.delete_flag = 0 and e.cpy_id = c.cpy_id
+	<if test="provinceCode != null and provinceCode !=''">
+   	and e.elPi_OwnProvinceCode = #{provinceCode}
+   	</if>
+    <if test="cityCode !=null and cityCode !=''">
+   	and e.elPi_OwnCityCode = #{cityCode}
+   	</if>
+    <if test="cpyId !=null and cpyId !=0 and cpyId !=''">
+		  and e.cpy_id = #{cpyId}
+    </if>
+	   AND e.elPi_Createdate &lt; DATE_FORMAT(CURDATE(),'%Y-%m-%d %H:%i:%s')
+   </select>
+   
+   <select id="getElectircHeadCount" parameterType="Map" resultType="String">
+   SELECT count(*) FROM tbl_electricpilehead eh 
+   INNER JOIN tbl_electricpile e on e.pk_ElectricPile = eh.pk_ElectricPile 
+   INNER JOIN tbl_company cpy ON cpy.cpy_id = e.cpy_id
+   <where>
+	   1=1
+	<if test="provinceCode != null and provinceCode !=''">
+		AND e.elPi_OwnProvinceCode = #{provinceCode}
+   	</if>
+	<if test="cityCode !=null and cityCode !=''">
+		AND e.elPi_OwnCityCode = #{cityCode}
+   	</if>
+	<if test="cpyId !=null and cpyId !=0 and cpyId !=''">
+		AND e.cpy_id = #{cpyId}
+    </if>
+	<if test="headState !=null and headState !='' ">
+		AND eh.ePHe_ElectricpileHeadState = #{headState}
+	</if>
+   </where>
+   </select>
+   
+    <select id="getPowerStationCount" parameterType="Map" resultType="String">
+    SELECT
+		count(*)
+	FROM
+		tbl_powerstation p
+	where 	p.is_del = 0
+	and	p.gmt_create &lt; DATE_FORMAT(CURDATE(),'%Y-%m-%d %H:%i:%s')
+	<if test="cpyId !=null and cpyId !=0 and cpyId !=''">
+	and	#{cpyId} in 
+	(SELECT
+		ep.cpy_id
+	FROM
+		tbl_electricpile ep,
+		tbl_company c
+	WHERE
+	 c.cpy_id = ep.cpy_id and ep.elPi_RelevancePowerStation = p.powerStation_id)
+	</if>
+	<if test="provinceCode != null and provinceCode !=''">
+  	 and p.province_code = #{provinceCode}
+   	</if>
+	<if test="cityCode !=null and cityCode !=''">
+		and p.city_code = #{cityCode}
+	</if>
+   </select>
+   
+   <select id="getChargeCountByEp" parameterType="Map" resultType="String">
+   	SELECT
+	   IFNULL(truncate(SUM(chOr_QuantityElectricity),2),0)
+		FROM
+			tbl_chargingorder c
+			inner JOIN (SELECT ps.powerStation_name,ep.elPi_ElectricPileCode FROM tbl_electricpile ep,tbl_powerstation ps where ep.elPi_RelevancePowerStation = ps.powerStation_id
+		           <if test="provinceCode != null and provinceCode !=''">
+		               and ps.province_code = #{provinceCode}
+		           </if>
+		           <if test="cityCode !=null and cityCode !=''">
+		               and ps.city_code = #{cityCode}
+		           </if>
+		       ) ep ON ep.elPi_ElectricPileCode = c.chOr_PileNumber
+	        inner join tbl_company cpy on cpy.cpy_number= c.chOr_OrgNo
+	           <if test="cpyId !=null and cpyId !=0 and cpyId !=''">
+		           and cpy.cpy_id = #{cpyId}
+		       </if>
+		WHERE chOr_ChargingStatus != 4
+	   <if test="today!= null and today !=''">
+		   AND c.end_charge_time >= DATE_FORMAT(CURDATE(),'%Y-%m-%d %H:%i:%s')
+	   </if>
+	   <if test="today == null or today ==''">
+		   AND c.end_charge_time &lt; DATE_FORMAT(CURDATE(),'%Y-%m-%d %H:%i:%s')
+	   </if>
+   </select>
+   
+   <select id="getUserNomalCount" parameterType="Map" resultType="String">
+   SELECT count(*)
+	FROM
+		tbl_user u,
+		tbl_user_normal n
+	where u.user_id = n.user_id
+	and u.user_status !=3
+	AND u.gmt_create &lt; DATE_FORMAT(CURDATE(),'%Y-%m-%d %H:%i:%s')
+   </select>
+   
+   <select id="getConsumAmount" parameterType="Map" resultType="String">
+    SELECT
+	   IFNULL(truncate(SUM(c.chOr_Moeny-c.chOr_CouponMoney),2),0)
+	FROM
+		tbl_chargingorder c ,
+		tbl_user_normal n ,
+		tbl_user u
+	WHERE
+	c.chOr_UserId = n.user_id and u.user_status !=3 
+	and u.user_id = n.user_id
+	   AND u.gmt_create &lt; DATE_FORMAT(CURDATE(),'%Y-%m-%d %H:%i:%s')
+	<if test="provinceCode != null and provinceCode !=''">
+  	 and u.province_code = #{provinceCode}
+   	</if>
+	<if test="cityCode !=null and cityCode !=''">
+   	and u.city_code = #{cityCode}
+   	</if>
+   </select>
+   
+   <select id="getChargeCountByUser" parameterType="Map" resultType="String">
+   SELECT
+	   IFNULL(truncate(SUM(chOr_QuantityElectricity),2),0)
+	FROM
+		tbl_chargingorder c ,
+		tbl_user_normal n ,
+		tbl_user u
+	WHERE
+	c.chOr_UserId = n.user_id and u.user_status !=3
+	and u.user_id = n.user_id
+	   AND u.gmt_create &lt; DATE_FORMAT(CURDATE(),'%Y-%m-%d %H:%i:%s')
+	<if test="provinceCode != null and provinceCode !=''">
+  	 and u.province_code = #{provinceCode}
+   	</if>
+	<if test="cityCode !=null and cityCode !=''">
+   	and u.city_code = #{cityCode}
+   	</if>
+   </select>
+   
+   <select id="getMapDataForOrder" parameterType="Map" resultType="Map">
+ 	  SELECT
+	  		IFNULL(SUM(chOr_QuantityElectricity),0) chargeCount,
+			<if test="provinceCode == ''">
+			 ep.province_code provinceCode,
+			(SELECT mp.PROVINCE_NAME from tb_m_province mp where mp.PROVINCE_ID=ep.province_code)provinceName
+			</if>
+			<if test="provinceCode != '' and cityCode==''">
+			 ep.city_code cityCode,
+			(SELECT mc.CITY_NAME from tb_m_city mc where mc.CITY_ID=ep.city_code)cityName
+			</if>
+			<if test="provinceCode != '' and cityCode!=''">
+			ep.powerStation_id powerstationId,
+			ep.powerStation_name powerstationName
+			</if>
+		FROM
+			tbl_chargingorder c
+			inner JOIN (SELECT ps.powerStation_name,ep.elPi_ElectricPileCode,ps.province_code,ps.city_code,ps.powerStation_id 
+			FROM tbl_electricpile ep,tbl_powerstation ps where ep.elPi_RelevancePowerStation = ps.powerStation_id
+		            <if test="provinceCode != null and provinceCode !=''">
+		               and ps.province_code = #{provinceCode}
+		           </if>
+		           <if test="cityCode !=null and cityCode !=''">
+		               and ps.city_code = #{cityCode}
+		           </if>
+		       ) ep ON ep.elPi_ElectricPileCode = c.chOr_PileNumber
+	        inner join tbl_company cpy on cpy.cpy_number= c.chOr_OrgNo
+		       <if test="cpyId !='' and cpyId !=0">
+		           and cpy.cpy_id = #{cpyId}
+		       </if>
+		WHERE chOr_ChargingStatus != 4
+		<if test="provinceCode == ''">
+		group by ep.province_code
+		</if>
+		<if test="provinceCode != '' and cityCode==''">
+		group by ep.city_code
+		</if>
+		<if test="provinceCode != '' and cityCode!=''">
+		group by ep.powerStation_id
+		</if>
+   </select>
+   
+   <select id="getMapDataForElectric" parameterType="Map" resultType="Map">
+	SELECT
+		count(*) electricCount,
+	   <if test="provinceCode == ''">
+		   e.elPi_OwnProvinceCode provinceCode,
+		   (SELECT mp.PROVINCE_NAME from tb_m_province mp where mp.PROVINCE_ID=e.elPi_OwnProvinceCode)provinceName
+	   </if>
+	   <if test="provinceCode != '' and cityCode==''">
+		   e.elPi_OwnCityCode cityCode,
+		   (SELECT mc.CITY_NAME from tb_m_city mc where mc.CITY_ID=e.elPi_OwnCityCode)cityName
+	   </if>
+	   <if test="provinceCode != '' and cityCode!=''">
+		   (SELECT p.powerStation_id from tbl_powerstation p where p.powerStation_id=e.elPi_RelevancePowerStation)powerStationId,
+		   (SELECT p.powerStation_name from tbl_powerstation p where p.powerStation_id=e.elPi_RelevancePowerStation)powerStationName
+	   </if>
+	FROM
+		tbl_electricpile e INNER JOIN  tbl_company c ON e.cpy_id = c.cpy_id
+	   <if test="provinceCode != null and provinceCode !=''">
+		   and e.elPi_OwnProvinceCode = #{provinceCode}
+	   </if>
+	   <if test="cityCode !=null and cityCode !=''">
+		   and e.elPi_OwnCityCode = #{cityCode}
+	   </if>
+	   INNER JOIN  tbl_company cpy on cpy.cpy_id= c.cpy_id
+	   <if test="cpyId !='' and cpyId !=0">
+		   and cpy.cpy_id = #{cpyId}
+	   </if>
+	WHERE
+		e.delete_flag = 0
+   <if test="provinceCode == ''">
+	   GROUP BY e.elPi_OwnProvinceCode
+   </if>
+   <if test="provinceCode != '' and cityCode==''">
+	   group by e.elPi_OwnCityCode
+   </if>
+   <if test="provinceCode != '' and cityCode!=''">
+	   group by e.elPi_RelevancePowerStation
+   </if>
+   </select>
+   
+   <select id="getMapDataForUser" parameterType="Map" resultType="Map">
+		SELECT
+			count(*) userCount,
+	   <if test="provinceCode == ''">
+		   u.province_code provinceCode,
+		   (SELECT mp.PROVINCE_NAME from tb_m_province mp where mp.PROVINCE_ID=u.province_code)provinceName
+	   </if>
+	   <if test="provinceCode != '' and cityCode==''">
+		   u.city_code cityCode,
+		   (SELECT mc.CITY_NAME from tb_m_city mc where mc.CITY_ID= u.city_code)cityName
+	   </if>
+		FROM
+			tbl_user_normal un
+		INNER JOIN tbl_user u ON un.user_id = u.user_id AND u.user_status !=3
+	   <if test="provinceCode != ''">
+		 AND  u.province_code = #{provinceCode}
+	   </if>
+	   <if test="cityCode != ''">
+		 AND  u.city_code = #{cityCode}
+	   </if>
+	   <if test="provinceCode == ''">
+		   GROUP BY  u.province_code
+	   </if>
+	   <if test="provinceCode != '' and cityCode==''">
+		   group by  u.city_code
+	   </if>
+   </select>
+   
+   <select id="getMapDataForUserLevel3" parameterType="Map" resultType="Map">
+	SELECT
+		count(*) electricCount,
+		 (SELECT p.powerStation_id from tbl_powerstation p where p.powerStation_id=e.elPi_RelevancePowerStation)powerStationId,
+	     (SELECT p.powerStation_name from tbl_powerstation p where p.powerStation_id=e.elPi_RelevancePowerStation)powerStationName
+	FROM
+		tbl_company_rela cr INNER JOIN tbl_electricpile e on e.pk_ElectricPile = cr.pk_ElectricPile
+	WHERE
+		e.elPi_OwnProvinceCode = #{provinceCode} and e.elPi_OwnCityCode = #{cityCode} AND
+		cr.pk_cpy_operate_id = (SELECT cpy_id from tbl_company where cpy_number = 1000)
+	GROUP BY e.elPi_RelevancePowerStation
+   </select>
+   
+   <select id="getUserInfoForRealTimeById" parameterType="String" resultType="Map">
+		select
+		user_id userId,
+		user_account userAccount,
+		account_id accountId,
+		cpyType
+	from tbl_user_view uv where uv.user_id = #{userId}
+   </select>
+   
+	<select id="getNomalUserInfoById" parameterType="String" resultType="Map">
+	SELECT
+		user_id userId,
+		f.trade_type tradeType,
+		1 cpyType
+	FROM
+		tbl_user_normal u,
+		fin_account f
+	WHERE
+		u.account_id = f.account_id
+		AND  u.user_id = #{userId}
+	</select>
+	<select id="getCpyUserInfoById" parameterType="String" resultType="Map">
+		SELECT
+			user_id userId,
+			f.trade_type tradeType,
+			2 cpyType
+		FROM
+			tbl_user_company u,
+			fin_account f
+		WHERE
+	u.account_id = f.account_id
+	AND  u.user_id = #{userId}
+	</select>
+	<select id="getCardUserInfoById" parameterType="String" resultType="Map">
+		SELECT
+		user_id userId,
+		f.trade_type tradeType,
+		3 cpyType
+		FROM
+		tbl_usercard u,
+		fin_account f
+		WHERE
+		u.account_id = f.account_id
+		AND  u.user_id = #{userId}
+	</select>
+   <select id="getUserCardForRealTime" parameterType="Map" resultType="Map">
+		SELECT
+			uc_ExternalCardNumber cardNumber
+		FROM
+			tbl_usercard
+		<where>
+			<choose>
+				<when test="cpyType ==3">
+					user_Id = #{userId} and new_user_id = 0
+				</when>
+				<otherwise>
+					new_user_id = #{userId}
+				</otherwise>
+			</choose>
+
+		</where>
+   </select>
+
+	<select id="getOnlineStateCount" parameterType="Map" resultType="String">
+		<if test="type==1">
+			SELECT count(*) FROM
+			tbl_electricpile e
+			where  #{headStatus}
+			in (SELECT ePHe_ElectricpileHeadState FROM tbl_electricpilehead eh where e.pk_ElectricPile = eh.pk_ElectricPile )
+			AND e.elPi_RelevancePowerStation = #{powerStationId}
+		</if>
+		<if test="type==2">
+			SELECT count(*) FROM
+			tbl_electricpile e
+			INNER JOIN tbl_electricpilehead eh ON e.pk_ElectricPile = eh.pk_ElectricPile
+			AND e.elPi_RelevancePowerStation = #{powerStationId}
+			AND eh.ePHe_ElectricpileHeadState = #{headStatus}
+		</if>
+	</select>
+   
+	<select id="getPileDisconnectCount" parameterType="Map" resultType="String">
+		SELECT count(*) FROM
+			tbl_electricpile e
+		<if test="type==2">
+		INNER JOIN tbl_electricpilehead eh ON e.pk_ElectricPile = eh.pk_ElectricPile
+		</if>
+		WHERE
+			e.comm_status = 0
+		AND e.elPi_RelevancePowerStation = #{powerStationId};
+	</select>
+
+	<select id="getParkingLockState" parameterType="Map" resultType="String">
+		SELECT count(*) FROM
+			parking_lock
+		where power_station_id = #{powerStationId}
+		AND  status = #{status}
+	</select>
+	
+	<select id="getPowerStationOrderHistoryData" parameterType="Map" resultType="Map">
+		SELECT
+			count(*) orderCount,
+			IFNULL(SUM(chOr_QuantityElectricity),0) chargeCount
+		FROM
+			tbl_chargingorder c
+		INNER JOIN (
+			SELECT
+				ps.powerStation_name,
+				ep.elPi_ElectricPileCode
+			FROM
+				tbl_electricpile ep,
+				tbl_powerstation ps
+			WHERE
+				ep.elPi_RelevancePowerStation = ps.powerStation_id
+		AND ps.powerStation_id=#{powerStationId}
+		) ep ON ep.elPi_ElectricPileCode = c.chOr_PileNumber
+		<if test="time==0">
+			AND   TO_DAYS( NOW( ) ) - TO_DAYS(c.end_charge_time) &lt;=  1
+		</if>
+		<if test="time==1">
+			AND PERIOD_DIFF(
+			date_format(now(), '%Y%m'),
+			date_format(c.end_charge_time, '%Y%m')
+			) = 1
+		</if>
+	</select>
+	
+	<select id="getRealTimeDateForOrder" parameterType="Map" resultType="Map">
+		SELECT * from(
+		SELECT
+		IFNULL(SUM(chOr_QuantityElectricity),0) chargeCount,
+		count(*) orderCount
+		<if test="cityCode !=null and cityCode !=''">
+			,IFNULL(SUM(chOr_Moeny-chOr_CouponMoney),0) chargeMoney
+		</if>
+		FROM
+		tbl_chargingorder c
+		INNER JOIN tbl_electricpile ep ON ep.elPi_ElectricPileCode = c.chOr_PileNumber
+		<if test="provinceCode != null and provinceCode !=''">
+			and ep.elPi_OwnProvinceCode = #{provinceCode}
+		</if>
+		<if test="cityCode !=null and cityCode !=''">
+			and ep.elPi_OwnCityCode = #{cityCode}
+		</if>
+		inner join tbl_company cpy on cpy.cpy_number= c.chOr_OrgNo
+		<if test="cpyId !=null and cpyId !=0 and cpyId !=''">
+			and cpy.cpy_id = #{cpyId}
+		</if>
+		WHERE chOr_ChargingStatus != 4
+		AND c.end_charge_time >= DATE_FORMAT(CURDATE(),'%Y-%m-%d %H:%i:%s')
+		)aa,
+		(SELECT
+		count(*) errorCount
+		FROM
+		tbl_chargingorder d
+		INNER JOIN tbl_electricpile ep ON ep.elPi_ElectricPileCode = d.chOr_PileNumber
+		<if test="provinceCode != null and provinceCode !=''">
+			and ep.elPi_OwnProvinceCode = #{provinceCode}
+		</if>
+		<if test="cityCode !=null and cityCode !=''">
+			and ep.elPi_OwnCityCode = #{cityCode}
+		</if>
+		inner join tbl_company cpy on cpy.cpy_number= d.chOr_OrgNo
+		<if test="cpyId !=null and cpyId !=0 and cpyId !=''">
+			and cpy.cpy_id = #{cpyId}
+		</if>
+		WHERE chOr_ChargingStatus = 4
+		AND d.end_charge_time >= DATE_FORMAT(CURDATE(),'%Y-%m-%d %H:%i:%s')
+		)bb
+	</select>
+	
+	<select id="getErrorCountToday" parameterType="Map" resultType="String">
+		SELECT
+		count(1)
+		FROM
+		tbl_chargingfaultrecord cr,
+		tbl_electricpile e,
+		tbl_company cpy
+		WHERE
+		cr.cFRe_ElectricPileID = e.pk_ElectricPile AND  cpy.cpy_id= e.cpy_id
+		AND cr.cFRe_Createdate >= DATE_FORMAT(CURDATE(),'%Y-%m-%d %H:%i:%s')
+		<if test="provinceCode != null and provinceCode !=''">
+			and e.elPi_OwnProvinceCode = #{provinceCode}
+		</if>
+		<if test="cityCode !=null and cityCode !=''">
+			and e.elPi_OwnCityCode = #{cityCode}
+		</if>
+		<if test="cpyId !=null and cpyId !=0 and cpyId !=''">
+			and cpy.cpy_id = #{cpyId}
+		</if>
+	</select>
+
+	<select id="getEpErrorCountByPsId" parameterType="Map" resultType="String">
+		SELECT count(1) FROM
+			tbl_electricpile e,
+			tbl_powerstation p,
+			tbl_chargingfaultrecord cr
+		where e.elPi_RelevancePowerStation = p.powerStation_id
+		AND cr.cFRe_ElectricPileID = e.pk_ElectricPile
+		AND p.powerStation_id  = #{powerStationId}
+	</select>
+	<select id="getOrderErrorCountByPsId" parameterType="Map" resultType="String">
+		SELECT count(1) FROM
+			tbl_electricpile e,
+			tbl_powerstation p,
+			tbl_chargingorder c
+		WHERE
+			e.elPi_RelevancePowerStation = p.powerStation_id
+		AND c.chOr_PileNumber = e.elPi_ElectricPileCode
+		AND p.powerStation_id = #{powerStationId}
+		AND c.chOr_ChargingStatus = 4
+	</select>
+	
+	<select id="getRealTimeDateForUser" parameterType="Map" resultType="Map">
+		SELECT
+		COUNT(DISTINCT(n.user_id)) chargeUser,
+		IFNULL(truncate(SUM(chOr_QuantityElectricity),2),0) chargeCount
+		FROM
+		tbl_chargingorder c,
+		tbl_user_normal n,
+		tbl_user u
+		WHERE
+		c.chOr_UserId = n.user_id
+		AND u.user_id = n.user_id
+		AND c.end_charge_time &gt;= DATE_FORMAT(CURDATE(),'%Y-%m-%d %H:%i:%s')
+		AND c.end_charge_time &lt;   DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL 1 DAY),'%Y-%m-%d %H:%i:%s')
+		<if test="provinceCode != null and provinceCode !=''">
+			and u.province_code = #{provinceCode}
+		</if>
+		<if test="cityCode !=null and cityCode !=''">
+			and u.city_code = #{cityCode}
+		</if>
+	</select>
+	
+	<select id="getNewUserToday" parameterType="Map" resultType="String">
+		SELECT count(*) FROM
+			tbl_user u,
+			tbl_user_normal n
+		where u.user_id = n.user_id
+		AND u.gmt_create >= DATE_FORMAT(CURDATE(),'%Y-%m-%d %H:%i:%s')
+		<if test="provinceCode != null and provinceCode !=''">
+			and u.province_code = #{provinceCode}
+		</if>
+		<if test="cityCode !=null and cityCode !=''">
+			and u.city_code = #{cityCode}
+		</if>
+	</select>
+	
+	<select id="getUserChargeRank" parameterType="Map" resultType="Map">
+		SELECT
+			IFNULL(truncate(SUM(chOr_QuantityElectricity),2),0) chargeCount,
+			u.user_account userAccount,
+			IFNULL(truncate(SUM(c.chOr_Moeny-c.chOr_CouponMoney),2),0) chargeMoney
+		FROM
+			tbl_chargingorder c,
+			tbl_user_normal n,
+			tbl_user u
+		WHERE
+		c.chOr_UserId = n.user_id
+		AND u.user_id = n.user_id
+		<if test="provinceCode != null and provinceCode !=''">
+			and u.province_code = #{provinceCode}
+		</if>
+		<if test="cityCode !=null and cityCode !=''">
+			and u.city_code = #{cityCode}
+		</if>
+		GROUP BY n.user_id
+		ORDER BY chargeCount DESC
+		LIMIT 5
+	</select>
+	<select id="getChargeCount5Days" parameterType="Map" resultType="Map">
+		SELECT
+		IFNULL(count(*),0) value,
+		DATE_FORMAT(c.end_charge_time,'%m-%d') time
+		FROM
+		tbl_chargingorder c
+		inner JOIN (SELECT ps.powerStation_name,ep.elPi_ElectricPileCode FROM tbl_electricpile ep,tbl_powerstation ps where ep.elPi_RelevancePowerStation = ps.powerStation_id
+		<if test="provinceCode != null and provinceCode !=''">
+			and ps.province_code = #{provinceCode}
+		</if>
+		<if test="cityCode !=null and cityCode !=''">
+			and ps.city_code = #{cityCode}
+		</if>
+		<if test="areaCode !=null and areaCode !=''">
+			and ps.area_code = #{areaCode}
+		</if>
+		) ep ON ep.elPi_ElectricPileCode = c.chOr_PileNumber
+		inner join tbl_company cpy on cpy.cpy_number= c.chOr_OrgNo
+		<if test="cpyId !=null and cpyId !=0 and cpyId !=''">
+			and cpy.cpy_id = #{cpyId}
+		</if>
+		WHERE
+		date(c.end_charge_time) &gt;= date_sub(curdate(), INTERVAL 5 DAY)
+		AND date(c.end_charge_time) &lt;= date_sub(curdate(), INTERVAL 1 DAY)
+		GROUP BY DATE_FORMAT(c.end_charge_time,'%Y-%m-%d')
+	</select>
+	<select id="getDetailStaticData" parameterType="String" resultType="Map">
+		SELECT
+				pk_ElectricPile id,
+			DATE_FORMAT(elPi_Createdate,'%Y-%m-%d') creatDate
+		FROM
+			tbl_electricpile
+		WHERE
+			elPi_ElectricPileCode = #{epCode}
+	</select>
+	<select id="getPowerStationNameByEpCode" parameterType="String" resultType="String">
+	SELECT
+		powerStation_name
+	FROM
+		tbl_electricpile e,
+		tbl_powerstation p
+	WHERE
+		e.elPi_RelevancePowerStation = p.powerStation_id
+	AND e.elPi_ElectricPileCode = #{epCode}
+	</select>
+</mapper>

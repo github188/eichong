@@ -1,0 +1,99 @@
+package com.wanma.ims.controller.config;
+
+import com.wanma.ims.common.domain.CompanyChargeRelaDO;
+import com.wanma.ims.common.domain.ElectricPileDO;
+import com.wanma.ims.common.domain.PowerStationDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.controller.BaseController;
+import com.wanma.ims.controller.result.JsonException;
+import com.wanma.ims.controller.result.JsonResult;
+import com.wanma.ims.controller.vo.CompanyChargeRelaVO;
+import com.wanma.ims.service.CompanyChargeRelaService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by xyc on 2017/7/21.
+ * 充电范围controller
+ */
+@Controller
+@RequestMapping("/config/companyChargeRela")
+public class CompanyChargeRelaController extends BaseController {
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+
+    @Autowired
+    private CompanyChargeRelaService companyChargeRelaService;
+
+    /**
+     * 公司主页充电范围
+     */
+    @RequestMapping(value = "/companyIndexChargeRela", method = RequestMethod.POST)
+    @ResponseBody
+    public void companyIndexChargeRela(Long cpyId) {
+        JsonResult result = new JsonResult();
+        UserDO loginUser = getCurrentLoginUser();
+
+        try {
+            CompanyChargeRelaDO searchModel = new CompanyChargeRelaDO();
+            searchModel.setCpyId(cpyId);
+            List<Integer> resultList = companyChargeRelaService.companyIndexChargeRela(searchModel);
+            result.setDataObject(resultList);
+
+            responseJson(result);
+        } catch (Exception e) {
+            LOGGER.error(this.getClass() + "-companyIndexChargeRela is error|cpyId={}|loginUser={}", cpyId, loginUser, e);
+            responseJson(new JsonException("获取公司主页充电范围失败，请刷新页面后重试！"));
+        }
+    }
+
+    /**
+     * 获取充电点和电桩
+     */
+    @RequestMapping(value = "/getStationAndPile", method = RequestMethod.POST)
+    @ResponseBody
+    public void getStationAndPile(Long cpyId, String provinceCode, String cityCode, String areaCode) {
+        JsonResult result = new JsonResult();
+        UserDO loginUser = getCurrentLoginUser();
+
+        try {
+            Map<PowerStationDO, List<ElectricPileDO>> resultMap = companyChargeRelaService.getStationAndPile(cpyId, provinceCode, cityCode, areaCode, loginUser);
+            result.setDataObject(CompanyChargeRelaVO.getListVO(resultMap));
+
+            responseJson(result);
+        } catch (Exception e) {
+            LOGGER.error(this.getClass() + "-getStationAndPile is error|cpyId={}|provinceCode={}|cityCode={}|areaCode={}|loginUser={}", cpyId, provinceCode, cityCode, areaCode, loginUser, e);
+            responseJson(new JsonException("获取充电点和电桩失败，请刷新页面后重试！"));
+        }
+    }
+
+    /**
+     * 设置充电范围
+     */
+    @RequestMapping(value = "/set", method = RequestMethod.POST)
+    @ResponseBody
+    public void setCompanyChargeRela(Long cpyId, List<CompanyChargeRelaDO> relaList) {
+        JsonResult result = new JsonResult();
+        UserDO loginUser = getCurrentLoginUser();
+
+        try {
+            BaseResultDTO resultDTO = companyChargeRelaService.setCompanyChargeRela(cpyId, relaList, loginUser);
+            if (resultDTO.isFailed()) {
+                result = new JsonResult(false, resultDTO.getResultCode(), resultDTO.getErrorDetail());
+            }
+
+            responseJson(result);
+        } catch (Exception e) {
+            LOGGER.error(this.getClass() + "-setCompanyChargeRela is error|relaList={}|loginUser={}", relaList, loginUser, e);
+            responseJson(new JsonException("添加失败，请刷新页面后重试！"));
+        }
+    }
+}

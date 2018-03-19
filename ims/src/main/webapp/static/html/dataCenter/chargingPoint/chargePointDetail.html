@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/style.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" href="../../../css/dataCenter/chargingPoint/elementUi.css">
+    <link rel="stylesheet" href="../../../css/dataCenter/chargingPoint/chargePointDetail.css">
+    <link rel="stylesheet" href="../../../css/dataCenter/chargingPoint/swiper.css">
+    <title>充电点详情</title>
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="btnLine">
+            </div>
+        </div>
+        <div class="row box">
+            <div class="col-sm-12 col-md-3 col-xs-12 boxLeft" style="padding:0 10px;">
+                <div class="ibox float-e-margins">
+                    <div class="">
+                        <div class="ibox-content">
+                            <div class="searchStationList">
+                                <div class="title row powerStationName"></div>
+                                <ul class="stationHeadUl" id="stationHeadUl">
+                                    <!--<li class="stationHeadLi row">-->
+                                    <!--<span class="headNumCon col-sm-4 col-xs-4">枪口1</span>-->
+                                    <!--<span class="chargingModeCon col-sm-4 col-xs-4">直流120kw</span>-->
+                                    <!--<span class="headStatusCon col-sm-4 col-xs-4"><i class="circle"></i>空闲</span>-->
+                                    <!--</li>-->
+                                </ul>
+                                <div class="stationHeadPage">
+                                    <div id="stationDetailPage" class="pagination ">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-9 col-xs-12 boxRight" style="padding:0 10px;">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-content">
+                        <!--电桩信息车辆信息-->
+                        <div class="search"  style="border-top:4px solid #c9c9c9;">
+                            <div class="row" style="margin:0;">
+                                <span class="offLineSpan">终端基本信息</span>
+                            </div>
+                            <div class="row" style="margin:0;">
+                                <div class="col-sm-6 informationDetailLeft" style="padding:0;">
+                                    <div class="ibox float-e-margins">
+                                        <div class="col-sm-6 electricPilePhoto">
+                                            <div class="ibox float-e-margins">
+                                                <img class="zhuang" src="" alt=""/>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6" style="padding:0 10px;">
+                                            <ul class="ibox float-e-margins electricPileInformationUl" id="electricPileInformationUl">
+                                                <li class="row">
+                                                    <span class="left">桩体编码 : </span>
+                                                    <span class="right epCodeMa"></span>
+                                                </li>
+                                                <li class="row">
+                                                    <span class="left">充电方式 :</span>
+                                                    <span class="right chargeMode"></span>
+                                                </li>
+                                                <li class="row">
+                                                    <span class="left">枪口数量 : </span>
+                                                    <span class="right headNum"></span>
+                                                </li>
+                                                <li class="row">
+                                                    <span class="left">功率 : </span>
+                                                    <span class="right power"></span>
+                                                </li>
+                                                <li class="row">
+                                                    <span class="left">类型 : </span>
+                                                    <span class="right type"></span>
+                                                </li>
+                                                <li class="row">
+                                                    <span class="left">制造商 : </span>
+                                                    <span class="right pileMaker"></span>
+                                                </li>
+                                                <li class="row">
+                                                    <span class="left">上线时间 : </span>
+                                                    <span class="right creatDate"></span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 informationDetailRight" style="padding:0;">
+                                    <div class="ibox float-e-margins">
+                                        <div class="col-sm-6 carPhoto">
+                                            <div class="ibox float-e-margins">
+                                                <img class="car" src="../../../images/car.png" alt=""/>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6" style="padding:0 10px;">
+                                            <ul class="ibox float-e-margins carUl" id="carUl">
+                                                <li class="row">
+                                                    <span class="left">vin码 : </span>
+                                                    <span class="right vin"></span>
+                                                </li>
+                                                <li class="row">
+                                                    <span class="left">车牌号 :</span>
+                                                    <span class="right "></span>
+                                                </li>
+                                                <li class="row">
+                                                    <span class="left">车型 : </span>
+                                                    <span class="right"></span>
+                                                </li>
+                                                <li class="row">
+                                                    <span class="left">品牌 : </span>
+                                                    <span class="right"></span>
+                                                </li>
+                                                <li class="row">
+                                                    <span class="left">电池类型 : </span>
+                                                    <span class="right batteryType"></span>
+                                                </li>
+                                                <li class="row">
+                                                    <span class="left">电池容量 : </span>
+                                                    <span class="right">
+                                                        <i class="batterycapacity"></i>
+                                                        <i>kw</i>
+                                                    </span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="emptyDiv"></div>
+                        <!--充电订单信息-->
+                        <div class="search" style="border-top:4px solid #c9c9c9;">
+                            <div class="row" style="margin:0;">
+                                <span class="offLineSpan">充电订单基本信息</span>
+                            </div>
+                            <div class="row" style="margin:0;">
+                                <div class="col-sm-6 informationDetailLeft">
+                                    <ul class="ibox float-e-margins chargeOrderUl" id="chargeOrderUl">
+                                        <li class="row">
+                                            <span class="left">订单编号 : </span>
+                                            <span class="right chargeCode"></span>
+                                        </li>
+                                        <li class="row">
+                                            <span class="left">开始充电时间 : </span>
+                                            <span class="right beginChargeTime "></span>
+                                        </li>
+                                        <li class="row">
+                                            <span class="left">用户账号 : </span>
+                                            <span class="right userAccount"></span>
+                                        </li>
+                                        <li class="row">
+                                            <span class="left">费率id : </span>
+                                            <span class="right rateInfoId"></span>
+                                        </li>
+                                        <li class="row">
+                                            <span class="left">账户类型 : </span>
+                                            <span class="right tradeType"></span>
+                                        </li>
+                                        <li class="row">
+                                            <span class="left">预冻金额 : </span>
+                                            <span class="right chargeFrozenAmt"></span>
+                                        </li>
+                                        <li class="row">
+                                            <span class="left">卡号 : </span>
+                                            <span class="right cardNumber"></span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-sm-6 informationDetailRight">
+                                    <div class="row cost">电费&服务费(元/kwh)</div>
+                                    <ul id="costUl">
+                                        <li class="row" style="margin:0;">
+                                            <span class="left">尖 : </span>
+                                            <span class="right costCon">
+                                                <i class="lineLeft raIn_TipTimeTariffPrice "></i>
+                                                <i class="line"></i>
+                                                <i class="lineRight raIn_TipTimeTariffMoney"></i>
+                                            </span>
+                                        </li>
+                                        <li class="row" style="margin:0;">
+                                            <span class="left">峰 : </span>
+                                            <span class="right costCon">
+                                                <i class="lineLeft raIn_PeakElectricityPrice "></i>
+                                                <i class="line"></i>
+                                                <i class="lineRight raIn_PeakElectricityMoney"></i>
+                                            </span>
+                                        </li>
+                                        <li class="row" style="margin:0;">
+                                            <span class="left">平 : </span>
+                                            <span class="right costCon">
+                                                <i class="lineLeft raIn_UsualPrice"></i>
+                                                <i class="line"></i>
+                                                <i class="lineRight raIn_UsualMoney"></i>
+                                            </span>
+                                        </li>
+                                        <li class="row" style="margin:0;">
+                                            <span class="left">谷 : </span>
+                                            <span class="right costCon">
+                                                <i class="lineLeft raIn_ValleyTimePrice"></i>
+                                                <i class="line"></i>
+                                                <i class="lineRight raIn_ValleyTimeMoney"></i>
+                                            </span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="emptyDiv"></div>
+                        <!--电桩&车辆充电实时信息-->
+                        <div class="search" style="border-top:4px solid #c9c9c9;">
+                            <div class="row" style="margin:0;">
+                                <span class="offLineSpan">电桩&车辆充电实时信息</span>
+                            </div>
+                            <div class="row" style="margin:0;">
+                                <div class="col-sm-6 informationDetailLeft">
+                                    <div class="row cost ">
+                                        <i class="thickLine"></i>
+                                        <i class="electricPileInfor">电桩</i>
+                                    </div>
+                                    <ul id="electricPileUl">
+                                        <li class="row" style="margin:0;">
+                                            <span class="left">电源单体最高温度 : </span>
+                                            <span class="right powerHighestTemperature "></span>
+                                        </li>
+                                        <li class="row" style="margin:0;">
+                                            <span class="left">本次已充电 : </span>
+                                            <span class="right">
+                                                <i class="chargeTime"></i>
+                                                <i>分钟</i>
+                                            </span>
+                                        </li>
+                                        <li class="row" style="margin:0;">
+                                            <span class="left">剩余充电时间 : </span>
+                                            <span class="right">
+                                                <i class="restTime"></i>
+                                                <i>分钟</i>
+                                            </span>
+                                        </li>
+                                        <li class="row" style="margin:0;">
+                                            <span class="left">有无故障 : </span>
+                                            <span class="right isError"></span>
+                                        </li>
+                                        <li class="row" style="margin:0;">
+                                            <span class="left">故障类型 : </span>
+                                            <span class="right errorType"></span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-sm-6 informationDetailRight">
+                                    <div class="row cost ">
+                                        <i class="thickLine"></i>
+                                        <i class="electricPileInfor">车辆</i>
+                                    </div>
+                                    <ul id="carRealTimeUl">
+                                        <li class="row" style="margin:0;">
+                                            <span class="left">开始充电SOC : </span>
+                                            <span class="right">
+                                                <i class="beginSoc"></i>
+                                                <i></i>
+                                            </span>
+                                        </li>
+                                        <li class="row" style="margin:0;">
+                                            <span class="left">车端总电压 : </span>
+                                            <span class="right">
+                                                <i class="carTotalVoltage"></i>
+                                                <i>V</i>
+                                            </span>
+                                        </li>
+                                        <li class="row" style="margin:0;">
+                                            <span class="left">单体最高电压和组号 : </span>
+                                            <span class="right">
+                                                <i class="soc bpHighestVoltage"></i>
+                                                <i></i>
+                                            </span>
+                                        </li>
+                                        <li class="row" style="margin:0;">
+                                            <span class="left">单体电池最高温度 : </span>
+                                            <span class="right">
+                                                <i class="soc bpHighestTemperature "></i>
+                                                <i>°C</i>
+                                            </span>
+                                        </li>
+                                        <li class="row" style="margin:0;">
+                                            <span class="left">单体电池最低温度 : </span>
+                                            <span class="right">
+                                                <i class="soc bpLowestTemperature"></i>
+                                                <i>°C</i>
+                                            </span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <!--输出枪口-->
+                        <div class="row search" style="padding:0 20px;">
+                            <div class="ibox float-e-margins" style="border:1px solid #c9c9c9;">
+                                <div class="row" style="margin:0;">
+                                    <div class="row output" style="position: relative;margin:0;border:0;">
+                                        <i class="thickLine" style="top:18px;"></i>
+                                        <i class="electricPileInfor">输出枪口</i>
+                                    </div>
+                                    <div class="row" style="margin:0;padding:0 10px 25px 10px;">
+                                    <div class="col-sm-6 " style="">
+                                        <div class="row muzzle">
+                                            <div class="col-sm-12 col-md-6 col-xs-12 ammeter " style="">
+                                                <div class="row muzzle" id="voltageDiv" style="height:256px;">
+
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-6 col-xs-12 ammeter" style="">
+                                                <div class="row muzzle" id="currentDiv" style="height:256px;">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="row muzzle">
+                                            <div class="col-sm-12 col-md-6 col-xs-12 ammeter" style="">
+                                                <div class="row muzzle" id="powerRateDiv" style="height:256px;">
+
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-6 col-xs-12 ammeter" style="">
+                                                <div class="row muzzle" id="allChargeDiv" style="height:256px;">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--输出枪口折线-->
+                        <div class="row search" style="padding:0;">
+                            <div class="ibox float-e-margins" style="border:1px solid #c9c9c9;">
+                                <div class="row" style="margin:0;">
+                                    <div class="row output" style="position: relative;margin:0;border:0;">
+                                        <i class="thickLine" style="top:18px;"></i>
+                                        <i class="electricPileInfor">输出枪口</i>
+                                    </div>
+                                </div>
+                                <div class="row" style="margin:0;padding:0 20px 25px 20px;">
+                                    <div class="ibox float-e-margins" style="border-bottom:4px solid #c9c9c9;">
+                                        <div class="mainTab">
+                                            <span class="active" id="firstTag">输出电流</span>
+                                            <span>输出功率</span>
+                                            <span>输出电压</span>
+                                            <span>输出温度</span>
+                                            <span>三项电流</span>
+                                            <span>三项电压</span>
+                                        </div>
+                                        <div class="mainTabContent">
+                                            <div class="mainTabBlock" id="outputCurrent" style="height:250px;width:100%;">
+
+                                            </div>
+                                            <div class="mainTabBlock" id="outputPower" style="height:250px;width:100%;display: none;">
+
+                                            </div>
+                                            <div class="mainTabBlock" id="outputVoltage" style="height:250px;width:100%;display: none;">
+
+                                            </div>
+                                            <div class="mainTabBlock" id="temperature" style="height:250px;width:100%;display: none;">
+
+                                            </div>
+                                            <div class="mainTabBlock" id="threePhaseCurrent" style="height:250px;width:100%;display: none;">
+
+                                            </div>
+                                            <div class="mainTabBlock" id="threePhaseVoltage" style="height:250px;width:100%;display: none;">
+
+                                            </div>
+                                        </div>
+                                        <!--<div  style="">-->
+
+                                        <!--</div>-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="../../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/contabs.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/userList/user_list.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.2/js/swiper.js"></script>
+<script src="../../../js/lib/Echarts/echarts.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/Echarts/macarons.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/dataCenter/chargingPoint/chargePointDetail.js"></script>
+
+<!-- 先引入 Vue -->
+<!--<script src="https://unpkg.com/vue/dist/vue.js"></script>-->
+<!-- 引入组件库 -->
+<!--<script src="https://unpkg.com/element-ui/lib/index.js"></script>-->
+</html>

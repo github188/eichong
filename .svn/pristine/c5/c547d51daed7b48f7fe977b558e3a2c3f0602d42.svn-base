@@ -1,0 +1,119 @@
+package com.wanma.controller.common;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.ServletInputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.wanma.support.common.RedisService;
+import com.wanma.support.common.ResultResponse;
+import com.wanma.support.common.WanmaConstants;
+import com.wanma.support.utils.AesCBC;
+import com.wanma.support.utils.TokenUtil;
+
+/**
+ * @Description: 充电管理控制层
+ * @author lhy
+ * @createTime：2015-11-19 16:25:05
+ * @updateTime：
+ * @version：V1.0
+ */
+@Controller
+@RequestMapping("/tk")
+public class TokenController {
+	private static final SimpleDateFormat fmt = new SimpleDateFormat(
+			"yyyy-MM-ddhh:mm:ss");
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(TokenController.class);
+	@Autowired
+	private RedisService redisService;
+
+	/**
+	 * @Description: 查询token
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/query_token")
+	@ResponseBody
+	public String query_token(@RequestBody Map<String, String> params) throws Exception {
+		String dataStr = params.get("Data");
+		LOGGER.info("==========================请求Data：" + dataStr+"==================================");
+		JSONObject reqData = JSON.parseObject(AesCBC.getInstance().decrypt(dataStr, "utf-8", "1234567890abcdef",
+				"1234567890abcdef"));
+		if (reqData == null) {
+			ResultResponse resultRespone = new ResultResponse();
+			resultRespone.setStatus(500);
+			resultRespone.setMsg("请求参数不可为空！");
+			return resultRespone.toString();
+		}
+		String org = reqData.get("OperatorID").toString();
+		String secret = reqData.get("OperatorSecret").toString();
+		if (StringUtils.isBlank(org) || StringUtils.isBlank(secret)) {
+			ResultResponse resultRespone = new ResultResponse();
+			resultRespone.setStatus(500);
+			resultRespone.setMsg("组织机构代码和密钥不可为空！");
+			return resultRespone.toString();
+		}
+		String authCode = redisService.strGet(WanmaConstants.PREFIX_ORG + org)
+				.split(":")[0];
+		Map<String, Object> data = new HashMap<String, Object>();
+		if (!authCode.equals(secret)) {
+			ResultResponse resultRespone = new ResultResponse();
+			resultRespone.setStatus(500);
+			resultRespone.setMsg("操作失败！");
+			data.put("operatorID", org);
+			data.put("succStat", 1);
+			data.put("accessToken", "");
+			data.put("tokenAvailableTime", 0);
+			data.put("failReason", 2);
+			resultRespone.setData(data);
+			return resultRespone.toString();
+		}
+		String tkVal = redisService.strGet(WanmaConstants.PREFIX_TOKWEN + org);
+		String t = "";
+		if (tkVal != null) {
+			long termT = System.currentTimeMillis()
+					- Long.valueOf(tkVal.split(",")[0]);
+			if (termT > WanmaConstants.PREFIX_TOKWEN_TERM) {
+				t = TokenUtil.makeToken(org, secret);
+				redisService.strSet(WanmaConstants.PREFIX_TOKWEN + org,
+						System.currentTimeMillis() + "," + t);
+			} else {
+				t = tkVal.split(",")[1];
+			}
+		} else {
+			t = TokenUtil.makeToken(org, secret);
+			redisService.strSet(WanmaConstants.PREFIX_TOKWEN + org,
+					System.currentTimeMillis() + "," + t);
+		}
+		data.put("OperatorID", org);
+		data.put("SuccStat", 0);
+		data.put("AccessToken", t);
+		data.put("TokenAvailableTime", WanmaConstants.PREFIX_TOKWEN_TERM);
+		data.put("FailReason", 0);
+		return new ResultResponse(data).toString();
+	}
+}

@@ -1,0 +1,23 @@
+package com.wanma.ims.service.impl;
+
+import org.springframework.stereotype.Service;
+
+import com.wanma.ims.model.UserBlackWhiteDO;
+import com.wanma.ims.service.UserBlackWhiteService;
+
+@Service
+public class UserBlackWhiteServiceImpl implements UserBlackWhiteService{
+
+	@Override
+	public boolean addUserBlackWhite(UserBlackWhiteDO userBlackWhiteDO) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean getUserBlackWhiteByUserId(Long userId) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+}

@@ -1,0 +1,124 @@
+package com.wanma.ims.service.impl;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.wanma.ims.common.domain.FinAccountDO;
+import com.wanma.ims.common.domain.OrderDO;
+import com.wanma.ims.common.domain.OrderInvoiceDO;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.mapper.FinAccountMapper;
+import com.wanma.ims.mapper.OrderMapper;
+import com.wanma.ims.service.OrderService;
+
+@Service
+public class OrderServiceImpl implements OrderService{
+
+	@Autowired
+	private OrderMapper orderMapper;
+	@Autowired
+	private FinAccountMapper finAccountMapper;
+	@Override
+	public List<OrderInvoiceDO> getFav(List<Long> invoiceIdList) {
+		OrderInvoiceDO o = new OrderInvoiceDO();
+		o.setInvoiceIdList(invoiceIdList);
+		return orderMapper.selectFav(o);
+	}
+
+	@Override
+	public Long countOrderInvoiceDetail(OrderInvoiceDO orderInvoiceDO) {
+		return orderMapper.countOrderInvoiceDetail(orderInvoiceDO);
+	}
+	
+	@Override
+	public List<OrderInvoiceDO> getOrderInvoiceDetail(OrderInvoiceDO orderInvoiceDO) {
+		return orderMapper.selectOrderInvoiceDetail(orderInvoiceDO);
+	}
+
+	@Override
+	public Long countOrderList(OrderDO orderDO) {
+		return orderMapper.countOrderList(orderDO);
+	}
+
+	@Override
+	public List<OrderDO> getOrderList(OrderDO orderDO) {
+		return fill(orderMapper.selectOrderList(orderDO));
+	}
+
+	@Override
+	public Long countThirdOrderList(OrderDO orderDO) {
+		return orderMapper.countThirdOrderList(orderDO);
+	}
+
+	@Override
+	public List<OrderDO> getThirdOrderList(OrderDO orderDO) {
+		return fill(orderMapper.selectThirdOrderList(orderDO));
+	}
+
+    private List<OrderDO> fill(List<OrderDO> list){
+    	Set<String> vinCodeSet = new HashSet<String>();
+    	Set<Long> accountIdSet = new HashSet<Long>();
+    	for (OrderDO orderDO : list) {
+    		vinCodeSet.add(orderDO.getVinCode());
+    		accountIdSet.add(orderDO.getAccountId());
+		}
+    	Map<Long,FinAccountDO> finMap = new HashMap<Long,FinAccountDO>();
+    	//根据资金账户ID查询资金账户
+    	FinAccountDO fin = new FinAccountDO();
+    	fin.setAccountIdList(new ArrayList<>(accountIdSet));
+    	List<FinAccountDO> finList = finAccountMapper.getFinAccountList(fin);
+    	for (FinAccountDO finAccountDO : finList) {
+    		finMap.put(finAccountDO.getAccountId(), finAccountDO);
+		}
+    	
+    	for (OrderDO orderDO : list) {
+			if(null != finMap.get(orderDO.getAccountId())){
+				orderDO.setAccountNo(finMap.get(orderDO.getAccountId()).getAccountNO());
+			}
+		}
+    	return list;
+    	
+    }
+
+	@Override
+	public BaseResultDTO manualAccountOrder(String ids,String modifier) throws Exception{
+		BaseResultDTO result = new BaseResultDTO();
+		String[] orderIds = ids.split(",");
+		for(int i=0;i<orderIds.length;i++){
+			OrderDO order = orderMapper.selectOrderById(new Long(orderIds[i]));
+			if(null == order){
+				result.setSuccess(false);
+				result.setErrorDetail("订单信息为空，请刷新页面重试");
+				return result;
+			}
+			Long accountId = orderMapper.selectOrderRecordByTransNo(order);
+			if(null == accountId || accountId <= 0){
+				result.setSuccess(false);
+				result.setErrorDetail("订单资金账户为空，请确定数据信息");
+				return result;
+			}
+			int num = orderMapper.updateOrderById(new Long(orderIds[i]));
+			if(num > 0){
+				//信用账户恢复金额
+				FinAccountDO finAccount = new FinAccountDO();
+				finAccount.setAllocationAmount(order.getTotalMoney().toString());
+				finAccount.setAccountId(accountId);
+				finAccount.setModifier(modifier);
+				finAccountMapper.modifyFinAccountBalance(finAccount);
+			}else{
+				result.setSuccess(false);
+				result.setErrorDetail("结算失败");
+			}
+		}
+		return result;
+	}
+
+
+}

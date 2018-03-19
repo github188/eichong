@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 产品型号查询xml -->
+<mapper namespace="com.wanma.dubbox.dao.TblBomListMapper">
+	<resultMap type="TblBomList" id="tblBomList">
+		<id property="id" column="pk_BomListId" />
+		<result property="tsId" column="pk_TypeSpanId" />
+		<result property="hdwNm" column="bl_HardwareNumber" />
+		<result property="hdwVs" column="bl_HardwareVersion" />
+		<result property="fwNm" column="bl_FirmwareNumber" />
+		<result property="fwVs" column="bl_FirmwareVersion" />
+		<result property="fUpt" column="bl_ForceUpdate" />
+		<result property="md5" column="bl_FileMd5" />
+		<result property="cdate" column="bl_Createdate" />
+		<result property="udate" column="bl_Updatedate" />
+	</resultMap>
+
+	<select id="getList" parameterType="TblTypespan" resultMap="tblBomList">
+		SELECT ${rtColumns}
+		FROM tbl_bomlist t
+		where pk_TypeSpanId = #{tsId}
+	</select>
+
+	<!-- 新增产品BOM信息 -->
+	<insert id="insert" parameterType="TblBomList">
+		insert into tbl_bomlist
+		(
+		pk_TypeSpanId,
+		bl_HardwareNumber,
+		bl_HardwareVersion,
+		bl_FirmwareNumber,
+		bl_FirmwareVersion,
+		bl_ForceUpdate,
+		bl_FileMd5,
+		bl_Createdate,
+		bl_Updatedate
+		)
+		values
+		(
+		#{tsId},
+		#{hdwNm},
+		#{hdwVs},
+		#{fwNm},
+		#{fwVs},
+		#{fUpt},
+		#{md5},
+		sysdate(),
+		sysdate()
+		)
+	</insert>
+
+	<!-- 修改产品BOM信息 -->
+	<update id="update" parameterType="TblBomList">
+		update tbl_bomlist set
+		pk_TypeSpanId = #{tsId},
+		bl_HardwareNumber = #{hdwNm},
+		bl_HardwareVersion = #{hdwVs},
+		bl_FirmwareNumber = #{fwNm},
+		bl_FirmwareVersion = #{fwVs},
+		bl_ForceUpdate = #{fUpt},
+		bl_FileMd5 = #{md5},
+		bl_Updatedate = sysdate()
+		where 1=1
+		<if test="id !=null">and pk_BomListId=#{id}</if>
+		<if test="pkIds != null">
+			and pk_BomListId in
+			<foreach item="item" index="index" collection="pkIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+	</update>
+
+</mapper>

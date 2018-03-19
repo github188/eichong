@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.app.dao.AppHomepageMapper">
+
+	<resultMap id="tblHomepageResultMap" type="TblHomepage">
+		<id property="pkHomepage" column="pk_Homepage" />
+		<result property="hopaHomepagename" column="hoPa_HomePageName" />
+		<result property="hopaImage" column="hoPa_Image" />
+		<result property="hopaSequence" column="hoPa_Sequence" />
+		<result property="hopaCreatedate" column="hoPa_Createdate" />
+		<result property="hopaUpdatedate" column="hoPa_Updatedate" />
+		<result property="hopaStatus" column="hoPa_Status" />
+	</resultMap>
+	<resultMap id="findResultMap" type="java.util.HashMap"
+		extends="tblHomepageResultMap"></resultMap>
+
+	<insert id="insert" parameterType="TblHomepage">
+		insert into tbl_HomePage (
+		pk_Homepage,
+		hoPa_HomePageName,
+		hoPa_Image,
+		hoPa_Sequence,
+		hoPa_Createdate,
+		hoPa_Updatedate,
+		hoPa_Status
+		)values (
+		#{pkHomepage},
+		#{hopaHomepagename},
+		#{hopaImage},
+		#{hopaSequence},
+		#{hopaCreatedate},
+		#{hopaUpdatedate},
+		#{hopaStatus}
+		)
+	</insert>
+
+	<update id="update" parameterType="TblHomepage">
+		update tbl_HomePage set
+		pk_Homepage=#{pkHomepage},
+		hoPa_HomePageName=#{hopaHomepagename},
+		hoPa_Image=#{hopaImage},
+		hoPa_Sequence=#{hopaSequence},
+		hoPa_Createdate=#{hopaCreatedate},
+		hoPa_Updatedate=#{hopaUpdatedate},
+		hoPa_Status=#{hopaStatus}
+		where
+		pk_Homepage=#{pkHomepage} 
+	</update>
+
+	<delete id="delete" parameterType="map">
+		delete from
+		tbl_HomePage
+		where
+		pk_Homepage=#{pkHomepage} 
+	</delete>
+
+	<select id="get" parameterType="map" resultMap="tblHomepageResultMap">
+		select
+		pk_Homepage,
+		hoPa_HomePageName,
+		hoPa_Image,
+		hoPa_Sequence,
+		hoPa_Createdate,
+		hoPa_Updatedate,
+		hoPa_Status
+		from tbl_HomePage
+		where
+		pk_Homepage=#{pkHomepage} 
+	</select>
+
+	<select id="findOne" parameterType="map" resultMap="findResultMap">
+		select
+		pk_Homepage,
+		hoPa_HomePageName,
+		hoPa_Image,
+		hoPa_Sequence,
+		hoPa_Createdate,
+		hoPa_Updatedate,
+		hoPa_Status
+		from tbl_HomePage
+		where
+		pk_Homepage=#{pkHomepage} 
+	</select>
+	<!-- 获取首页广告 -->
+	<select id="findHomepages" parameterType="map" resultMap="findResultMap">
+		select
+		getFullPath('homeImage',pk_Homepage) as hoPa_Image,
+		hoPa_Sequence
+		from tbl_HomePage
+		where
+		hoPa_Status = #{hopaStatus}
+		order by hoPa_Sequence asc
+	</select>
+
+</mapper> 

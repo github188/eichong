@@ -1,0 +1,34 @@
+package com.wanma.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import com.wanma.model.TblBanner;
+import com.wanma.model.TblNewsInfo;
+
+/**
+ * @Description: 后台管理banner
+ * @author mb
+ * @version：V4.0
+ */
+public interface CmsNewsInfoMapper {
+
+	long getNewsInfoListCount(TblNewsInfo newsInfo);
+
+	List<TblNewsInfo> getNewsInfoList(TblNewsInfo newsInfo);
+
+	void insertNewsInfo(TblNewsInfo newsInfo);
+
+	void updateImageInfo(Map<String, Object> map);
+
+	TblNewsInfo getNewsInfoById(int newsInfoId);
+
+	void updateNewsInfo(TblNewsInfo newsInfo);
+
+	void deleteNewsInfoById(int newsInfoId);
+
+	
+
+
+	
+}

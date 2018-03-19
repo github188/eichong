@@ -1,0 +1,344 @@
+//采用正则表达式获取地址栏参数
+function getUrlParam(name) {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+    var params = decodeURI(window.location.search);
+    var r = params.substr(1).match(reg);
+    if (r != null)return r[2];
+    return null;
+}
+
+//公共分页部分
+function initTable(formId, pageId, url, callback, pager) {
+    if (!pager) {
+        pager = {
+            pageNo: 1
+        };
+    }
+    var data = $("#" + formId).serializeObject();
+    data.pageNo = pager.pageNo;
+    $.ajax({
+        url: basePath + url,
+        type: "post",
+        dataType: 'json',
+        data: data,
+        success: function (datas) {
+            if (typeof callback == "function") {
+                if (datas.success == true) {
+                    callback(datas);
+                    if (datas.pager) {
+                        initPage(datas.pager, formId, pageId, url, callback);
+                    }
+                } else if (datas.success == false) {
+//					location.href = basePath + toLoginUrl;
+                } else {
+                    layer.alert("系统出错", {
+                        offset: '100px'
+                    });
+                }
+            }
+        }
+    });
+}
+
+function initPage(pager, formId, pageId, url, callback) {
+    var options = {
+        containerClass: "pagination",
+        currentPage: pager.pageNo,
+        numberOfPages: 5,
+        totalPages: pager.pageTotal,
+        totalCount: pager.total,
+        pageUrl: function (type, page) {
+            return null;
+        },
+        onPageClicked: function (event, originalEvent, type, page) {
+            initTable(formId, pageId, url, callback, {
+                pageNo: page
+            });
+        }
+
+    };
+    $('#' + pageId).bootstrapPaginator(options);
+}
+$.fn.serializeObject = function () {
+    var o = {};
+    var a = this.serializeArray();
+    $.each(a, function () {
+        if (o[this.name] !== undefined) {
+            if (!o[this.name].push) {
+                o[this.name] = [o[this.name]];
+            }
+            o[this.name].push(this.value || '');
+        } else {
+            o[this.name] = this.value || '';
+        }
+    });
+    return o;
+};
+// 全选和反选样式
+$("body").on('click', ".selAll", function () {
+    $(".selectedBox").prop("checked", $(this).is(':checked'));
+})
+//显示设置公共部分
+$('.checkList').on('mouseover', function () {
+    $(this).show();
+})
+$('.checkList').on('mouseleave', function () {
+    $(this).hide();
+})
+// 字符串转时间
+String.prototype.toDate = function () {
+    var temp = this.toString();
+    temp = temp.replace(/-/g, "/");
+    return new Date(Date.parse(temp));
+}
+// 字符串转时间parse方法
+function parseDate(dateStr) {
+    return dateStr.toDate();
+}
+// 获取时间======================================================
+Date.prototype.format = function (fmt) { // author: meizz
+    var o = {
+        "M+": this.getMonth() + 1, // 月份
+        "d+": this.getDate(), // 日
+        "h+": this.getHours(), // 小时
+        "m+": this.getMinutes(), // 分
+        "s+": this.getSeconds(), // 秒
+        "q+": Math.floor((this.getMonth() + 3) / 3), // 季度
+        "S": this.getMilliseconds()
+        // 毫秒
+    };
+    if (/(y+)/.test(fmt))
+        fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "")
+            .substr(4 - RegExp.$1.length));
+    for (var k in o)
+        if (new RegExp("(" + k + ")").test(fmt))
+            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k])
+                : (("00" + o[k]).substr(("" + o[k]).length)));
+    return fmt;
+}
+
+//配置接口 ids参数 selectMap是每一个页面定义好的map
+function initSelects(selectMap) {
+    var ids='';
+    for(var key in selectMap){
+        ids+=key+',';
+    }
+    $.ajax({
+        type : "post",
+        url : basePath +"/config/content/getConfigContentMap.do?configParameterIds="+ids,
+        dataType : "json",
+        success : function(req) {
+            var dataMap = req.dataObject;
+            for(var key in selectMap){
+                var selectArray=selectMap[key]//dom id
+                var html = "";
+                var options=dataMap[key];
+                for(var key in options){
+                    html += '<li  data-option="' + key
+                    + '">' + options[key] + '</li>';
+
+                }
+                $("#" + selectArray).append(html);
+            }
+        }
+    });
+}
+//加载省的===============================
+/*
+    id默认进来的省provinceCode
+    provinceCodeHtml展示省的请选择提示框展示的内容
+    provinceUl装载省的UI
+    toUnbindEventName此页面要移除的那些下拉框点击事件
+*/
+function toLoadProvince(id, provinceCodeHtml, provinceUl, toUnbindEventName) {
+    $.ajax({
+        type: "post",
+        url: basePath + initProvinceListUrl,
+        async: true,
+        success: function (data) {
+            if (data.success == true) {
+                var data = data.dataObject;
+                //alert(id);
+                setTimeout(function () {
+                    loadProvince(id, data, provinceCodeHtml, provinceUl, toUnbindEventName);
+                    loadProvince('', data, '#cpyProvinceCode', '.cpyProvinceUl', toUnbindEventName);
+                }, 100)
+            }
+        }
+    });
+}
+//
+function loadProvince(id, data, provinceCodeHtml, provinceUl, toUnbindEventName) {
+    if (id == "" || id == 'undefined') {
+        var provinceLi = '<li data-option="">请选择</li>';
+        for (var i = 0; i < data.length; i++) {
+            provinceLi += '<li data-option="' + data[i].provinceId + '">' + data[i].provinceName + '</li>';
+        }
+    } else {
+        var provinceLi = '<li data-option="">请选择</li>';
+        for (var i = 0; i < data.length; i++) {
+            if (data[i].provinceId == id) {
+                $(provinceCodeHtml).html(data[i].provinceName);
+                provinceLi += '<li data-option="' + data[i].provinceId + '" class="data-selected">' + data[i].provinceName + '</li>';
+            } else {
+                provinceLi += '<li data-option="' + data[i].provinceId + '">' + data[i].provinceName + '</li>';
+            }
+        }
+    }
+    $(provinceUl).html(provinceLi);
+    var toUnbindEventNameCallBack = eval(toUnbindEventName);
+    new toUnbindEventNameCallBack();
+
+}
+//加载市的================================
+/*
+    provinceCodeId默认进来省的provinceCode
+    cityCodeId市的code
+    cityCode默认装载市的请选择提示框的dom元素
+    cityUl默认装载市的ul的dom元素
+    toUnbindEventName 移除事件
+*/
+function toLoadCity(provinceCodeId, cityCodeId, cityCode, cityUl, toUnbindEventName) {
+    //alert(provinceCodeId+"::"+cityCodeId)
+    setTimeout(function () {
+        $.ajax({
+            type: "post",
+            url: basePath + initCityListUrl,
+            data: {
+                provinceCode: provinceCodeId
+            },
+            async: true,
+
+            success: function (data) {
+                if (data.success == true) {
+                    var data = data.dataObject;
+                    LoadCity(provinceCodeId, cityCodeId, data, cityCode, cityUl, toUnbindEventName);
+                }
+
+
+            }
+        });
+    }, 100)
+}
+function LoadCity(provinceCodeId, cityCodeId, data, cityCode, cityUl, toUnbindEventName) {
+    for (var key in data) {
+        if (key == provinceCodeId) {
+            var cityUlLi = '<li data-option="">请选择</li>';
+            var obj = data[key];
+            if (cityCodeId == '') {
+                for (var i = 0; i < obj.length; i++) {
+                    cityUlLi += '<li data-value="' + obj[i].provinceId + '" data-option="' + obj[i].cityId + '">' + obj[i].cityName + '</li>';
+                }
+            } else {
+                for (var i = 0; i < obj.length; i++) {
+                    if (cityCodeId == obj[i].cityId) {
+                        $(cityCode).html(obj[i].cityName);
+                        cityUlLi += '<li data-value="' + obj[i].provinceId + '" data-option="' + obj[i].cityId + '" class="data-selected">' + obj[i].cityName + '</li>';
+                    } else {
+                        cityUlLi += '<li data-value="' + obj[i].provinceId + '" data-option="' + obj[i].cityId + '">' + obj[i].cityName + '</li>';
+                    }
+                }
+
+            }
+
+            $(cityUl).html(cityUlLi);
+        }
+    }
+    var toUnbindEventNameCity = eval(toUnbindEventName);
+    new toUnbindEventNameCity();
+}
+//加载区
+function toLoadArea(cityCodeId,areaId,areaCodeHtml, areaUl, toUnbindEventName){
+    $.ajax({
+        type: "post",
+        url: basePath + initAreaListUrl,
+        data: {
+            cityCode: cityCodeId
+        },
+        async: true,
+        success: function (data) {
+            if (data.success == true) {
+                var data = data.dataObject;
+                LoadArea(cityCodeId,areaId, data, areaCodeHtml, areaUl, toUnbindEventName);
+            }
+
+
+        }
+    });
+}
+function LoadArea(cityCodeId,areaId, data, areaCodeHtml, areaUl, toUnbindEventName) {
+    for (var key in data) {
+        if (key == cityCodeId) {
+            var areaLi = '<li data-option="">请选择</li>';
+            var obj = data[key];
+            if (areaId == '') {
+                for (var i = 0; i < obj.length; i++) {
+                    areaLi += '<li data-value="' + obj[i].cityId + '" data-option="' + obj[i].areaId + '">' + obj[i].areaName + '</li>';
+                }
+            } else {
+                for (var i = 0; i < obj.length; i++) {
+                    if (areaId == obj[i].areaId) {
+                        $(areaCodeHtml).html(obj[i].areaName);
+                        areaLi += '<li data-value="' + obj[i].cityId + '" data-option="' + obj[i].areaId + '" class="data-selected">' + obj[i].areaName + '</li>';
+                    } else {
+                        areaLi += '<li data-value="' + obj[i].cityId + '" data-option="' + obj[i].areaId + '">' + obj[i].areaName + '</li>';
+                    }
+                }
+
+            }
+
+            $(areaUl).html(areaLi);
+        }
+    }
+    var toUnbindEventNameCity = eval(toUnbindEventName);
+    new toUnbindEventNameCity();
+}
+
+//省市的加载框完毕==========================
+//角色列表加载
+function toLoadRoleList() {
+    $.ajax({
+        type: "post",
+        url: basePath + initRoleListUrl,
+        async: true,
+        success: function (data) {
+            if (data.success == true) {
+                var dataModule = data.dataObject;
+                var roleIdLi = '<li data-option="">请选择</li>';
+                for (var i = 0; i < dataModule.length; i++) {
+                    roleIdLi += '<li data-option="' + dataModule[i].roleId + '">' + dataModule[i].roleName + '</li>';
+                }
+                $('.roleIdUl').html(roleIdLi);
+                toUnbindEvent();
+            }
+        }
+    });
+}
+//角色选择
+$('.roleIdUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+});
+
+
+//电桩制造厂商列表加载
+function toPileMarkerList() {
+    $.ajax({
+        type: "post",
+        url: basePath + getPileMakerListUrl,
+        async: true,
+        success: function (data) {
+            if (data.success == true) {
+                var dataModule = data.dataObject;
+                var pileMarkerLi = '<li data-option="" class="data-selected">制造厂商</li>';
+                for (var i = 0; i < dataModule.length; i++) {
+                    pileMarkerLi += '<li data-option="' + dataModule[i].id + '">' + dataModule[i].makerName + '</li>';
+                }
+                $('.pileMarkerUl').html(pileMarkerLi);
+                toUnbindEvent();
+            }
+        }
+    });
+}
+
+

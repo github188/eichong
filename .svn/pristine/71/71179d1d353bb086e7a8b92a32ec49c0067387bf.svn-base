@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.web.dao.WebApplyElecPileMapper">
+	<resultMap id="listResultMap" type="TblApplyElecPile">
+		<id property="pkApplyElecPile" column="id" />
+		<result property="apEpServiceQQ" column="service_qq" />
+		<result property="apEpUserName" column="user_name" />
+		<result property="apEpUserPhone" column="user_phone" />
+		<result property="apEpPointAddress" column="ep_addr" />
+		<result property="apEpProcessState" column="status" />
+		<result property="apEpCreatedate" column="create_time" />		
+		<result property="apEpUpdatedate" column="update_time" />
+		<result property="apEpDealReason" column="ep_reason" />		
+		<result property="apEpCarcompanyId" column="carcompany_id" />
+		<result property="apEpCarinfoId" column="carinfo_id" />
+		<result property="apEpPropertyNature" column="property_nature" />
+		<result property="apEpStandardParking" column="standard_parking" />
+		<result property="apEpParkingPlace" column="parking_place" />
+		<result property="apEpOpenShare" column="open_share" />
+		<result property="apEpParkingHard" column="parking_hard" />
+		<result property="apEpParkingOwner" column="parking_owner" />
+		<result property="apEpCapacitance" column="capacitance" />		
+		<result property="apEpDistance" column="distance" />
+		<result property="apEpPowerPosition" column="power_position" />
+		<result property="apEpParkingOwnerText" column="parking_owner_text" />		
+		<result property="apEpPowerPositionText" column="power_position_text" />
+		<result property="apEpDistanceText" column="distance_text" />
+		
+	</resultMap>
+	 <insert id="insertWebApplyElecPile" parameterType="TblApplyElecPile" >
+    insert into tbl_ep_access
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="apEpServiceQQ != null" >
+        service_qq,
+      </if>
+      <if test="apEpUserName != null" >
+        user_name,
+      </if>
+      <if test="apEpUserPhone != null" >
+        user_phone,
+      </if>
+      <if test="apEpPointAddress != null" >
+        ep_addr,
+      </if>
+        update_time,     
+        create_time,    
+      <if test="apEpCarcompanyId != null" >
+        carcompany_id,
+      </if>
+      <if test="apEpCarinfoId != null" >
+        carinfo_id,
+      </if>
+      <if test="apEpPropertyNature != null" >
+        property_nature,
+      </if>
+      <if test="apEpStandardParking != null" >
+        standard_parking,
+      </if>
+      <if test="apEpParkingPlace != null" >
+        parking_place,
+      </if>
+      <if test="apEpOpenShare != null" >
+        open_share,
+      </if>
+      <if test="apEpParkingHard != null" >
+        parking_hard,
+      </if>
+      <if test="apEpParkingOwner != null " >
+        parking_owner,
+      </if>
+      <if test="apEpCapacitance != null" >
+        capacitance,
+      </if>
+      <if test="apEpPowerPosition != null" >
+        power_position,
+      </if>
+      <if test="apEpDistance != null" >
+        distance,
+      </if>
+      <if test="apEpParkingOwnerText != null" >
+        parking_owner_text,
+      </if>
+      <if test="apEpPowerPositionText != null" >
+        power_position_text,
+      </if>
+      <if test="apEpDistanceText != null" >
+        distance_text,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="apEpServiceQQ != null" >
+        #{apEpServiceQQ},
+      </if>
+      <if test="apEpUserName != null" >
+        #{apEpUserName},
+      </if>
+      <if test="apEpUserPhone != null" >
+        #{apEpUserPhone},
+      </if>
+      <if test="apEpPointAddress != null" >
+        #{apEpPointAddress},
+      </if>
+		now(),
+		now(),     
+      <if test="apEpCarcompanyId != null" >
+        #{apEpCarcompanyId},
+      </if>
+      <if test="apEpCarinfoId != null" >
+        #{apEpCarinfoId},
+      </if>
+      <if test="apEpPropertyNature != null" >
+        #{apEpPropertyNature},
+      </if>
+      <if test="apEpStandardParking != null" >
+        #{apEpStandardParking},
+      </if>
+      <if test="apEpParkingPlace != null" >
+        #{apEpParkingPlace},
+      </if>
+      <if test="apEpOpenShare != null" >
+        #{apEpOpenShare},
+      </if>
+      <if test="apEpParkingHard != null" >
+        #{apEpParkingHard},
+      </if>
+      <if test="apEpParkingOwner != null" >
+        #{apEpParkingOwner},
+      </if>
+      <if test="apEpCapacitance != null" >
+        #{apEpCapacitance},
+      </if>
+      <if test="apEpPowerPosition != null" >
+        #{apEpPowerPosition},
+      </if>
+      <if test="apEpDistance != null" >
+        #{apEpDistance},
+      </if>
+      <if test="apEpParkingOwnerText != null" >
+        #{apEpParkingOwnerText},
+      </if>
+      <if test="apEpPowerPositionText != null" >
+        #{apEpPowerPositionText},
+      </if>
+      <if test="apEpDistanceText != null" >
+        #{apEpDistanceText},
+      </if>
+    </trim>
+  </insert>
+	
+	
+	
+</mapper> 

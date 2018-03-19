@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.UserTagMapper">
+  <resultMap id="resultUserTag" type="UserTagDO">
+    <id column="id" property="id" />
+    <result column="user_id" property="userId" />
+    <result column="tag_id" property="tagId" />
+    <result column="is_del" property="isDel" />
+    <result column="creator_id" property="creatorId" />
+    <result column="creator" property="creator" />
+    <result column="modifier" property="modifier" />
+    <result column="gmt_create" property="gmtCreate" />
+    <result column="gmt_modified" property="gmtModified" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, tag_id, is_del, creator_id, creator, modifier, gmt_create, gmt_modified
+  </sql>
+
+    <sql id="condition">
+        <where>
+            <if test="userId != null">
+                AND user_id = #{userId}
+            </if>
+            <if test="tagId != null">
+                AND tag_id = #{tagId}
+            </if>
+            AND is_del = 0
+        </where>
+    </sql>
+
+  <select id="getUserTagList" parameterType="UserTagDO" resultMap="resultUserTag">
+    select
+    <include refid="Base_Column_List" />
+    from tbl_user_tag
+    <include refid="condition"/>
+  </select>
+
+  <select id="selectUserTagById" parameterType="Long" resultMap="resultUserTag">
+    select
+    <include refid="Base_Column_List" />
+    from tbl_user_tag
+    where tag = #{id}
+  </select>
+
+  <delete id="deleteByTagId" parameterType="UserTagDO">
+    update tbl_user_tag
+    set is_del = 1,
+    modifier = #{modifier},
+    gmt_modified = now()
+    where tag_id = #{tagId}
+  </delete>
+
+  <delete id="deleteById" parameterType="UserTagDO">
+      update tbl_user_tag
+      set is_del = 1,
+          modifier = #{modifier},
+          gmt_modified = now()
+      where id = #{id}
+  </delete>
+
+  <insert id="insertUserTag" parameterType="UserTagDO">
+    insert into tbl_user_tag (id, user_id, tag_id,
+      is_del, creator_id, creator,
+      modifier, gmt_create, gmt_modified
+      )
+    values (#{id}, #{userId}, #{tagId},
+      #{isDel}, #{creatorId}, #{creator},
+      #{modifier}, now(), now()
+      )
+  </insert>
+
+  <update id="updateUserTagByIdSelective" parameterType="UserTagDO">
+    update tbl_user_tag
+    <set>
+      <if test="userId != null">
+        user_id = #{userId},
+      </if>
+      <if test="tagId != null">
+        tag_id = #{tagId},
+      </if>
+      <if test="isDel != null">
+        is_del = #{isDel},
+      </if>
+      <if test="modifier != null">
+        modifier = #{modifier},
+      </if>
+      gmt_modified = now(),
+    </set>
+    where id = #{id}
+  </update>
+
+  <update id="updateUserTagById" parameterType="UserTagDO">
+    update tbl_user_tag
+    set user_id = #{userId},
+      tag_id = #{tagId},
+      is_del = #{isDel},
+      modifier = #{modifier},
+      gmt_modified = now()
+    where id = #{id}
+  </update>
+</mapper>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.ElectricPileHeadMapper">
+    <resultMap id="resultElectricPileHead" type="ElectricPileHeadDO">
+        <id column="pk_ElectricpileHead" property="id"/>
+        <result column="pk_ElectricPile" property="electricPileId"/>
+        <result column="ePHe_ElectricpileHeadName" property="name"/>
+        <result column="ePHe_ElectricpileHeadState" property="status"/>
+        <result column="ePHe_ElectricpileHeadId" property="code"/>
+        <result column="eph_num" property="num"/>
+        <result column="delete_flag" property="isDel"/>
+        <result column="have_gun_lid" property="haveGunCover"/>
+        <result column="have_gun_site_signal" property="haveGunSeat"/>
+        <result column="have_radar" property="haveRadar"/>
+        <result column="hava_car_place_lock" property="haveParkingLock"/>
+        <result column="have_bms_comm" property="haveBmsComm"/>
+        <result column="total_charge_dl" property="totalChargeDl"/>
+        <result column="total_charge_time" property="totalChargeTime"/>
+        <result column="total_charge_amt" property="totalChargeAmt"/>
+        <result column="ePHe_qr_codes" property="qrCodes"/>
+        <result column="ePHe_qrdate" property="qrInvalid"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        pk_ElectricpileHead, pk_ElectricPile, ePHe_ElectricpileHeadName, ePHe_ElectricpileHeadState,
+        ePHe_ElectricpileHeadId, eph_num, delete_flag, have_gun_lid, have_gun_site_signal,
+        have_radar, hava_car_place_lock, have_bms_comm, total_charge_dl, total_charge_time,
+        total_charge_amt, ePHe_qr_codes, ePHe_qrdate
+    </sql>
+
+    <select id="selectById" parameterType="Long" resultMap="resultElectricPileHead">
+        select
+        <include refid="Base_Column_List"/>
+        from tbl_electricpilehead
+        where pk_ElectricpileHead = #{id}
+    </select>
+
+    <delete id="deleteByElectricPileId" parameterType="Long">
+        update tbl_electricpilehead
+        set delete_flag = 1
+        WHERE pk_ElectricPile = #{electricPileId}
+    </delete>
+
+    <insert id="insertElectricPileHead" parameterType="ElectricPileHeadDO">
+        INSERT INTO tbl_electricpilehead (pk_ElectricpileHead, pk_ElectricPile,
+        ePHe_ElectricpileHeadName, ePHe_ElectricpileHeadState,
+        ePHe_ElectricpileHeadId, eph_num, delete_flag,
+        have_gun_lid, have_gun_site_signal, have_radar,
+        hava_car_place_lock, have_bms_comm, total_charge_dl,
+        total_charge_time, total_charge_amt, ePHe_qr_codes,
+        ePHe_qrdate)
+        VALUES (#{id}, #{electricPileId},
+        #{name}, #{status},
+        #{code}, #{num}, 0,
+        #{haveGunCover}, #{haveGunSeat}, #{haveRadar},
+        #{haveParkingLock}, #{haveBmsComm},
+        #{totalChargeDl},
+        #{totalChargeTime}, #{totalChargeAmt},
+        #{qrCodes},
+        #{qrInvalid})
+    </insert>
+
+    <update id="updateByIdSelective" parameterType="ElectricPileHeadDO">
+        update tbl_electricpilehead
+        <set>
+            <if test="electricPileId != null">
+                pk_ElectricPile = #{electricPileId},
+            </if>
+            <if test="name != null">
+                ePHe_ElectricpileHeadName = #{name},
+            </if>
+            <if test="status != null">
+                ePHe_ElectricpileHeadState = #{status},
+            </if>
+            <if test="code != null">
+                ePHe_ElectricpileHeadId = #{code},
+            </if>
+            <if test="num != null">
+                eph_num = #{num},
+            </if>
+            <if test="isDel != null">
+                delete_flag = #{isDel},
+            </if>
+            <if test="haveGunCover != null">
+                have_gun_lid = #{haveGunCover},
+            </if>
+            <if test="haveGunSeat != null">
+                have_gun_site_signal = #{haveGunSeat},
+            </if>
+            <if test="haveRadar != null">
+                have_radar = #{haveRadar},
+            </if>
+            <if test="haveParkingLock != null">
+                hava_car_place_lock = #{haveParkingLock},
+            </if>
+            <if test="haveBmsComm != null">
+                have_bms_comm = #{haveBmsComm},
+            </if>
+            <if test="totalChargeDl != null">
+                total_charge_dl = #{totalChargeDl},
+            </if>
+            <if test="totalChargeTime != null">
+                total_charge_time = #{totalChargeTime},
+            </if>
+            <if test="totalChargeAmt != null">
+                total_charge_amt = #{totalChargeAmt},
+            </if>
+            <if test="qrCodes != null">
+                ePHe_qr_codes = #{qrCodes},
+            </if>
+            <if test="qrInvalid != null">
+                ePHe_qrdate = #{qrInvalid},
+            </if>
+        </set>
+        where pk_ElectricpileHead = #{id}
+    </update>
+
+</mapper>

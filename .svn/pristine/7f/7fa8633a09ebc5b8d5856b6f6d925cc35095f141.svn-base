@@ -1,0 +1,416 @@
+/**
+ * Created by Administrator on 2017/8/16.
+ */
+var cpyId = getUrlParam('cpyId');
+//加载公司的基本信息
+setTimeout('getCompanyBasicInfo()', 120);
+function getCompanyBasicInfo() {
+    $.ajax({
+        type: "post",
+        url: basePath + companyHomeUrl,
+        async: true,
+        data: {
+            cpyId: cpyId
+        },
+        success: function ( req ) {
+            var data = req.dataObject;
+            var cpyName = data.cpyName;//公司名称
+            var cpyNumber = data.cpyNumber;//公司标识
+            var cpyCity = data.cpyCity;//地区
+            var cpyStatusText = data.cpyStatusText;//禁用状态
+            var isValidText = data.isValidText;//是否开启盗刷校验
+            var cpyParentName = data.cpyParentName;//上级公司
+            var slaveCpyName = data.slaveCpyName;//管理单位
+            var cpyStatus = data.cpyStatus;//公司状态
+            $('#companyNameInfo').html(cpyName);
+            $('#companyStatusInfo').html(cpyStatusText);
+            $('#cpyCity').html(cpyCity);
+            $('#cpyNumber').html(cpyNumber);
+            $('#cpyParentIdInfo').html(cpyParentName);
+            $('#slaveParentIdInfo').html(slaveCpyName);
+            $('#isValidText').html(isValidText);
+            if(cpyStatus==1){
+                $('#disableCompanyBtn').css('display','inline-block');
+            }
+        }
+    });
+}
+//编辑、更改公司的名称
+$("body").off("click", "#companyEdit").on("click", "#companyEdit", function () {
+    layer.closeAll();
+    layer.open({
+        type: 1,
+        offset: '100px',
+        title: ["提示", "font-size:12px;text-align:center"],
+        shadeClose: false,
+        closeBtn: 2,
+        area: ['310px', '180px'],//宽高
+        content: $('.changeCompanyNewName'),
+        btn: ["确定", "取消"],
+        yes: function (index, layero) {
+            layer.closeAll();
+            toSubmitCompanyNewName();
+        },
+        cancel: function (index, layero) {
+            layer.closeAll();
+        }
+    });
+});
+function toSubmitCompanyNewName() {
+    var cpyNewName = $('#cpyNewNameInput').val();
+    $.ajax({
+        type: "post",
+        url: basePath + modifyCompanyUrl,
+        async: true,
+        data: {
+            cpyName: cpyNewName,
+            cpyId: cpyId
+        },
+        success: function (data) {
+            if (data.success == true) {
+                layer.closeAll();
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:center"],
+                    shadeClose: false,
+                    closeBtn: 2,
+                    area: ['310px', '160px'],//宽高
+                    content: '修改成功',
+                    btn: ["确定", "取消"],
+                    yes: function (index, layero) {
+                        layer.closeAll();
+                        getCompanyBasicInfo()
+                    },
+                    cancel: function (index, layero) {
+                        layer.closeAll();
+                    }
+                });
+
+            } else {
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:center"],
+                    shadeClose: false,
+                    closeBtn: 2,
+                    area: ['310px', '160px'],//宽高
+                    content: data.msg,
+                    time: 3000,
+                    btn: ["确定", "取消"]
+                });
+            }
+        }
+    });
+}
+//解禁
+$("body").off("click", "#disableCompanyBtn").on("click", "#disableCompanyBtn", function () {
+    layer.closeAll();
+    layer.open({
+        type: 1,
+        offset: '100px',
+        title: ["提示", "font-size:12px;text-align:center"],
+        shadeClose: false,
+        closeBtn: 2,
+        area: ['310px', '180px'],//宽高
+        content: $('.abledCompany'),
+        btn: ["确定", "取消"],
+        yes: function (index, layero) {
+            layer.closeAll();
+            toAbledCompany();
+        },
+        cancel: function (index, layero) {
+            layer.closeAll();
+        }
+    });
+});
+function toAbledCompany() {
+    $.ajax({
+        type: "post",
+        url: basePath + disableCompanyUrl,
+        async: true,
+        data: {
+            type: 0,
+            cpyId: cpyId
+        },
+        success: function (data) {
+            if (data.success == true) {
+                getCompanyBasicInfo();
+            } else {
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:center"],
+                    shadeClose: false,
+                    closeBtn: 2,
+                    area: ['310px', '160px'],//宽高
+                    content: data.msg,
+                    time: 3000,
+                    btn: ["确定", "取消"]
+                });
+            }
+        }
+    });
+}
+
+//公司用户板块的内容    ////////////////////////////////////////////////
+setTimeout('getCompanyUserInfo()', 90);
+function getCompanyUserInfo() {
+    $.ajax({
+        type: "post",
+        url: basePath + companyIndexUserUrl,
+        async: true,
+        data: {
+            cpyId: cpyId
+        },
+        success: function ( req ) {
+            console.log( req )
+            //var data = req.dataObject;
+        }
+    });
+}
+//大账户板块内容 （accountId哪来的...）
+getFinAccountBalance4CpyInfo();
+function getFinAccountBalance4CpyInfo() {
+    $.ajax({
+        type: "post",
+        url: basePath + getFinAccountBalance4CpyUrl,
+        async: true,
+        data: {
+            accountId: cpyId
+        },
+        success: function ( req ) {
+            var data = req.dataObject;
+            console.log(data)
+            //var accountBalance = data[0].accountBalance;//余额
+            //var accountStatus = data[0].accountStatus;//状态：1，正常，2.冻结，3.删除
+            //var tradeType = data[0].tradeType;//类型： 1.信用，2.储蓄
+            //$('#accountBalance').html(accountBalance);
+            //$('#accountStatus').html(accountStatus);
+            //$('#tradeType').html(tradeType);
+        }
+    });
+}
+
+//黑白名单板块内容 （...）
+
+//充电范围板块内容
+setTimeout('companyIndexChargeRelaInfo()', 210);
+function companyIndexChargeRelaInfo() {
+    $.ajax({
+        type: "post",
+        url: basePath + companyIndexChargeRelaUrl,
+        async: true,
+        data: {
+            ucCpyId: cpyId
+        },
+        success: function ( req ) {
+            var data = req.dataObject;
+            var site = data[0];//电站数
+            var stake = data[1];//电桩数
+            $('#site').html(site);
+            $('#stake').html(stake);
+        }
+    });
+}
+//充电范围设置
+$('body').on('click', '#getStationAndPile', function () {
+    console.log("000")
+    //window.open ('company_setChargeRela.html?cpyId='+cpyId);
+    window.location.href= 'company_setChargeRela.html?cpyId='+cpyId;
+  //  newTab(".companyHome","公司主页");
+})
+//管辖的公司板块内容
+setTimeout('getCompanyByMasterInfo()', 240);
+function getCompanyByMasterInfo() {
+    $.ajax({
+        type: "post",
+        url: basePath + getCompanyByMasterUrl,
+        async: true,
+        data: {
+            cpyId: cpyId
+        },
+        success: function ( req ) {
+            var data = req.dataObject;
+            //var cpyName = data.cpyName;//公司名称
+            var cpyNameLi = '';
+            for (var i=0;i<data.length;i++){
+                cpyNameLi += '<li>' + data[i].cpyName + '</li>';
+            }
+            $('#cpyNameUl').html(cpyNameLi);
+        }
+    });
+}
+//财务关系板块内容
+//离线充电板块内容
+//充电卡内容.
+setTimeout('getCardForCompanyInfo()', 300);
+function getCardForCompanyInfo() {
+    $.ajax({
+        type: "post",
+        url: basePath + getCardForCompanyUrl,
+        async: true,
+        data: {
+            ucCpyId: cpyId
+        },
+        success: function ( req ) {
+            var data = req.dataObject;
+            var lossCardNum = data.lossCardNum;//已挂失卡
+            var totalCardNum = data.totalCardNum;//卡数量
+            $('#lossCardNum').html(lossCardNum);
+            $('#totalCardNum').html(totalCardNum);
+        }
+    });
+}
+//订单信息板块内容////////////////////////////////////////内容待补充 订单接口？？？？？？？？？？？？？？
+setTimeout('getHomeCpyOrderInfo()', 150);
+function getHomeCpyOrderInfo() {
+    $.ajax({
+        type: "post",
+        url: basePath + getHomeCpyOrderUrl,
+        async: true,
+        data: {
+            cpyId: cpyId
+        },
+        success: function ( req ) {
+            console.log( req )
+        }
+    });
+}
+//等级板块内容///////////////////////////////////////布局
+setTimeout('getLevelByCpyIdInfo()', 180);
+function getLevelByCpyIdInfo() {
+    $.ajax({
+        type: "post",
+        url: basePath + getLevelByCpyIdUrl,
+        async: true,
+        data: {
+            cpyId: cpyId
+        },
+        success: function ( req ) {
+            var data = req.dataObject;
+            var levelNameLi = '';
+            for (var i=0;i<data.length;i++){
+                levelNameLi += '<li>' + data[i].levelName + '</li>';
+            }
+            $('#levelNameId').html(levelNameLi);
+        }
+    });
+}
+//充电费率板块内容
+//管理员账户板块内容////////////////////////////////////////内容暂缺？？？？？？
+setTimeout('getUserAdminByCpyIdInfo()', 270);
+function getUserAdminByCpyIdInfo() {
+    $.ajax({
+        type: "post",
+        url: basePath + getUserAdminByCpyIdUrl,
+        async: true,
+        data: {
+            cpyId: cpyId
+        },
+        success: function ( req ) {
+            var data = req.dataObject;
+            var administerLi = '';
+            for (var i=0;i<data.length;i++){
+                administerLi += '<li><p><t>管理员名称：</t><span>'+data[i].adminName+'</span></p><p><t>管理员密码：******</t></p></li>';
+            }
+            $('#administerUl').html(administerLi);
+        }
+    });
+}
+//盗刷校验内容
+//付费策略
+//大账户配资///////////////////////////////////////////////////
+//点击全部账户等额分配时
+//点击账户单独分配时
+
+
+
+//状态管理
+//去冻结
+/*$('body').on('click', '.cardFrozen', function () {
+    toShowComfirm(this, cardFrozenUrl);
+})*/
+//去解冻
+/*$('body').on('click', '.relieveCardFrozen', function () {
+    toShowComfirm(this, relieveCardFrozenUrl);
+})*/
+//去挂失
+/*$('body').on('click', '.cardLoss', function () {
+    toShowComfirm(this, cardLossUrl);
+})*/
+//去解挂
+/*$('body').on('click', '.relieveCardLoss', function () {
+    toShowComfirm(this, relieveCardLossUrl);
+})*/
+//去注销
+/*$('body').on('click', '.cardCancel', function () {
+    toShowComfirm(this, cardCancelUrl);
+})*/
+/*function toShowComfirm(obj, carStatusUrl) {
+    //var ucId=$(obj).attr('data-ucId');
+    var spanText = $(obj).text();
+    layer.closeAll();
+    layer.open({
+        type: 1,
+        offset: '100px',
+        title: ["卡" + spanText, "font-size:12px;text-align:center"],
+        shadeClose: false,
+        closeBtn: 2,
+        area: ['310px', '160px'],//宽高
+        content: '确定进行卡' + spanText + '吗？',
+        btn: ["确定", "取消"],
+        yes: function (index, layero) {
+            layer.closeAll();
+            toChangeStatus(carStatusUrl, spanText);
+        },
+        cancel: function (index, layero) {
+            layer.closeAll();
+        }
+    });
+}*/
+/*function toChangeStatus(carStatusUrl, spanText) {
+    $.ajax({
+        type: "post",
+        url: basePath + carStatusUrl,
+        data: {
+            ucId: ucId
+        },
+        async: true,
+        success: function (data) {
+            if (data.success == true) {
+                layer.closeAll();
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: [spanText, "font-size:12px;text-align:center"],
+                    shadeClose: false,
+                    closeBtn: 2,
+                    area: ['310px', '160px'],//宽高
+                    content: spanText + '成功',
+                    time: 2000,
+                    btn: ["确定"],
+                    yes: function (index, layero) {
+                        layer.closeAll();
+                    }
+                });
+                getCardBasicInfo();
+
+            } else if (data.success == false) {
+                layer.closeAll();
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:center"],
+                    shadeClose: false,
+                    closeBtn: 2,
+                    area: ['310px', '160px'],//宽高
+                    content: data.msg,
+                    time: 2000,
+                    btn: ["确定"]
+                });
+            }
+        }
+    })
+}*/
+

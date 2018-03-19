@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.dao.CmsHomepageMapper">
+	<resultMap type="Homepage" id="result_homepage">
+		<id property="homepageId" column="pk_Homepage" />
+		<result property="homePageName" column="hoPa_HomePageName" />
+		<result property="homePageImage" column="hoPa_Image" />
+		<result property="homePageSequence" column="hoPa_Sequence" />
+		<result property="Createdate" column="hoPa_Createdate" />
+		<result property="Updatedate" column="hoPa_Updatedate" />
+		<result property="homePageStatus" column="hoPa_Status" />
+		<result property="homePageUrl" column="hoPa_Url" />
+	</resultMap>
+	
+	<!--查询单个首页广告图片-->
+	<select id="findHomePage" parameterType="String" resultMap="result_homepage">
+		select
+			pk_Homepage,
+			hoPa_HomePageName,
+			hoPa_Image,
+			hoPa_Url,
+			hoPa_Sequence
+		from 
+			tbl_HomePage
+		where pk_Homepage=#{homepageId}
+	</select>
+	
+	<!--修改首页广告-->
+	<update id="modifyHomePage" parameterType="Homepage">
+		update tbl_HomePage
+		<set>
+			<if test="homepageId!=null"> pk_Homepage=#{homepageId}, </if>
+			<if test="homePageName!=null"> hoPa_HomePageName=#{homePageName}, </if>
+			<if test="homePageImage!=null"> hoPa_Image=#{homePageImage}, </if>
+			<if test="homePageSequence!=null"> hoPa_Sequence=#{homePageSequence}, </if>
+			<if test="Createdate!=null"> hoPa_Createdate=#{Createdate}, </if>
+			<if test="Updatedate!=null"> hoPa_Updatedate=#{Updatedate}, </if>
+			<if test="homePageStatus!=null"> hoPa_Status=#{homePageStatus}, </if>
+			<if test="homePageUrl!=null"> hoPa_Url=#{homePageUrl} </if>
+		</set>
+		<where>
+			pk_Homepage=#{homepageId}
+		</where>
+	</update>
+
+	<!--首页展示广告列表-->
+	<select id="getHomepageList" resultMap="result_homepage">
+		select
+			pk_Homepage,
+			hoPa_HomePageName,
+			hoPa_Image,
+			hoPa_Url,
+			hoPa_Sequence,
+			hoPa_Status
+		from 
+			tbl_HomePage
+			order by pk_Homepage asc
+	</select>
+	
+	<!--新增轮播图-->
+	<insert id="insertHomepages" parameterType="int">
+		insert into tbl_HomePage values(#{num},#{num},"",#{num},NOW(),NOW(),"0");
+	</insert>
+	
+	<select id="searchHomepageCount" parameterType="Homepage" resultType="long">
+		select
+			count(pk_Homepage)
+		from 
+			tbl_HomePage
+	</select>
+	
+	<select id="searchHomepageList" parameterType="Homepage" resultMap="result_homepage">
+		select
+			pk_Homepage,
+			hoPa_HomePageName,
+			hoPa_Url,
+			getFullPath("homeImage",#{homepageId}) as homePageImage,
+			hoPa_Sequence
+		from 
+			tbl_HomePage
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	
+	<insert id="insertPic" parameterType="Homepage"
+		useGeneratedKeys="true" keyProperty="homepageId">
+		insert into tbl_HomePage (
+			hoPa_HomePageName,
+			hoPa_Image,
+			hoPa_Sequence
+		)values (
+			#{homePageName},
+			#{homePageImage},
+			#{homePageSequence}
+		)
+	</insert>
+</mapper>

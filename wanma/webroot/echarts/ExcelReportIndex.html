@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>ECharts</title>
+</head>
+<head>
+<title>ExcelReport</title>
+<script src="/wanma/static/lib/My97DatePicer/WdatePicker.js"></script>
+</head>
+<body>
+<form method="post" name="frmdown" action="">
+   <input type="button" value="个体商家消费明细excel导出" onclick="exportSubmit(this,'excelReport/getGtsjConsumeExtData.do')"/>
+   <hr style="border:0">
+   <input type="button" value="个体商家消费excel导出" onclick="exportSubmit(this,'excelReport/getGtsjConsumeData.do')"/>
+   <hr style="border:0">    
+   <input type="button" value="个体商家充电收益明细excel导出" onclick="exportSubmit(this,'excelReport/getGtsjChargeIncomeExtData.do')"/>
+   <hr style="border:0">  
+   <input type="button" value="个体商家充电收益excel导出" onclick="exportSubmit(this,'excelReport/getGtsjChargeIncomeData.do')"/>
+   <hr style="border:0">  
+   <input type="button" value="个体商家预约收益明细excel导出" onclick="exportSubmit(this,'excelReport/getGtsjBespokeIncomeExtData.do')"/>
+   <hr style="border:0">
+   <input type="button" value="个体商家预约收益excel导出" onclick="exportSubmit(this,'excelReport/getGtsjBespokeIncomeData.do')"/>
+   <hr style="border:0">    
+   <input type="button" value="纯商家充电收益明细excel导出" onclick="exportSubmit(this,'excelReport/getCsjChargeIncomeExtData.do')"/>
+   <hr style="border:0">  
+   <input type="button" value="纯商家充电收益excel导出" onclick="exportSubmit(this,'excelReport/getCsjChargeIncomeData.do')"/>
+   <hr style="border:0">  
+   <input type="button" value="纯商家预约收益明细excel导出" onclick="exportSubmit(this,'excelReport/getCsjBespokeIncomeExtData.do')"/>
+   <hr style="border:0">
+   <input type="button" value="纯商家预约收益excel导出" onclick="exportSubmit(this,'excelReport/getCsjBespokeIncomeData.do')"/>
+   <hr style="border:0">    
+   <input type="button" value="万马自营充电收益明细excel导出" onclick="exportSubmit(this,'excelReport/getWanmaChargeIncomeExtData.do')"/>
+   <hr style="border:0">  
+   <input type="button" value="万马自营充电收益excel导出" onclick="exportSubmit(this,'excelReport/getWanmaChargeIncomeData.do')"/>
+   <hr style="border:0">  
+   <input type="button" value="万马自营预约收益明细excel导出" onclick="exportSubmit(this,'excelReport/getWanmaBespokeIncomeExtData.do')"/>
+   <hr style="border:0">
+   <input type="button" value="万马自营预约收益excel导出" onclick="exportSubmit(this,'excelReport/getWanmaBespokeIncomeData.do')"/>
+</form>
+</body>
+<script type="text/javascript">
+	function exportSubmit(this_e,url){
+		var form = this_e.parentNode;
+		form.action = url;
+		form.submit();
+	}
+</script>
+</html>

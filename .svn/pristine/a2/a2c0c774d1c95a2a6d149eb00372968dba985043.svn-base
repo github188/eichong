@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no"/>
+    <title>充电</title>
+    <link rel="stylesheet" href="../../css/charge.css">
+    <link rel="stylesheet" href="../../css/common.css">
+    <script>
+        (function(){
+            var html = document.documentElement;
+            var hWidth = html.getBoundingClientRect().width;
+            html.style.fontSize = (hWidth/15) + "px";
+        })()
+          function getUrlParam(name){
+		    var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+		    var params=decodeURI(window.location.search);
+		    var r = params.substr(1).match(reg);
+		    if(r!=null)return  r[2]; return null;
+		}
+    </script>
+</head>
+<body>
+<div class="mainContent">
+    <div class="tip">
+        输入充电桩屏幕上的二维码识别号
+    </div>
+
+    <input type="text" placeholder="6位数字识别码" class="num" id="pileNum" autofocus="autofocus"/>
+
+    <div class="sureBtn" id="sureBtn">
+        确定
+    </div>
+</div>
+</body>
+</html>
+<script src="../../js/common.js"></script>
+<script src="../../js/jquery-2.1.0.js"></script>
+<script src="../../lib/layer_mobile/layer.js"></script>
+<script src="../../js/index.js"></script>

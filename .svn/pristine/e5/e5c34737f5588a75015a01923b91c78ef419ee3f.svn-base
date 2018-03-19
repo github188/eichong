@@ -1,0 +1,16 @@
+package com.wanma.ims.mapper;
+
+import com.wanma.ims.common.domain.UserNormalDO;
+
+public interface UserNormalMapper {
+
+    UserNormalDO selectUserNormalByUserId(Long userId);
+
+    int insertUserNormal(UserNormalDO record);
+
+    int deleteByUserId(Long userId);
+
+    int updateByUserId(UserNormalDO userNormal);
+
+    int updateByUserIdSelective(UserNormalDO userNormal);
+}

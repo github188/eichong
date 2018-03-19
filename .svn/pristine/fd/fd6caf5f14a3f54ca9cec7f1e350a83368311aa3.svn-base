@@ -1,0 +1,117 @@
+@charset "utf-8";
+#container1 {
+	height: 100%;
+	margin-top: 22px;
+	padding: 30px;
+	padding-top: 20px;
+	font-size: 12px;
+	font-family: "微软雅黑";
+}
+#container1 .nav {
+	width: 100%;
+	margin: 0 auto;
+	font-size: 14px;
+	border-bottom:1px solid #E1E1E1 ;
+	
+}
+#container1 .nav span{
+	display: inline-block;
+	vertical-align:middle;
+}
+#container1 .nav .icon{
+	width: 30px;
+	height: 30px;
+	background:  url(../../images/left.png) no-repeat center;
+	cursor: pointer;
+}
+#container1 .orderDetail{
+	width: 100%;
+	padding: 15px;
+	padding-top: 0;
+	margin: 0 auto;
+}
+#container1 .orderDetail .lineBlock{
+	padding: 5px;
+	border-bottom: 1px solid #E5E5E5;
+}
+#container1 .orderDetail .lineBlock .line{
+	display: inline-block;
+	margin-left: 20px;
+	min-width: 360px;
+	height: 30px;
+	line-height: 30px;
+}
+#container1 .orderDetail .lineBlock .line:first-child{
+	margin-left: 0;
+}
+#container1 .orderDetail .lineBlock .line span{
+	display: inline-block;
+	
+}
+#container1 .orderDetail .lineBlock .line .lineLeft{
+	width: 30%;
+}
+#container1 .orderDetail .lineBlock .line .lineLeft{
+	width: 30%;
+}
+.rateValue{
+	text-decoration: underline;
+	color: #FF9900;
+	cursor: pointer;
+}
+/*费率弹框==============*/
+.rateBlock{
+	width: 100%;
+	height: 186px;
+	border: 1px solid #E1E1E1;
+}
+.rateBlock .rateTitle{
+	width: 100%;
+	height: 26px;
+	line-height: 26px;
+	text-align: center;
+	border-bottom: 1px solid #E1E1E1;
+}
+.rateBlock .rateMain{
+	width: 100%;
+}
+.rateBlock .rateMain .rateMainBlock{
+	width: 100%;
+	border-bottom: 1px solid #E1E1E1;
+}
+.rateBlock .rateMain .rateMainBlock div{
+	display: inline-block;
+	
+}
+.rateBlock .rateMain .rateMainBlock .width30{
+	width: 30%;
+	height: 26px;
+	line-height: 26px;
+	text-align: center;
+	border-right: 1px solid #E1E1E1;
+}
+.rateBlock .rateMain .rateMainBlock .width30:last-child{
+	border-right: none;
+}
+.rateBlock .rateBottom{
+	width: 100%;
+	border-bottom: 1px solid #E1E1E1;
+}
+.rateBlock .rateBottom div{
+	display: inline-block;
+}
+.rateBlock .rateBottom .width60{
+	width: 60%;
+	height: 26px;
+	line-height: 26px;
+	text-align: center;
+	border-right: 1px solid #E1E1E1;
+}
+.rateBlock .rateBottom .width30{
+	width: 30%;
+	height: 26px;
+	margin-left: -4px;
+	line-height: 26px;
+	text-align: center;
+	
+}

@@ -1,0 +1,126 @@
+package com.wanma.ims.service.impl;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Maps;
+import com.wanma.ims.common.domain.CompanyChargeRelaDO;
+import com.wanma.ims.common.domain.ElectricPileDO;
+import com.wanma.ims.common.domain.PowerStationDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.mapper.CompanyChargeRelaMapper;
+import com.wanma.ims.mapper.ElectricPileMapper;
+import com.wanma.ims.service.CompanyChargeRelaService;
+import com.wanma.ims.service.PowerStationService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
+
+/**
+ * Created by xyc on 2017/7/25.
+ * 充电范围逻辑处理接口
+ */
+@Service
+public class CompanyChargeRelaServiceImpl implements CompanyChargeRelaService {
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+
+    @Autowired
+    private CompanyChargeRelaMapper companyChargeRelaMapper;
+    @Autowired
+    private PowerStationService powerStationService;
+    @Autowired
+    private ElectricPileMapper electricPileMapper;
+
+    @Override
+    public List<Integer> companyIndexChargeRela(CompanyChargeRelaDO searchModel) {
+        List<Integer> result = new ArrayList<>();
+        List<CompanyChargeRelaDO> relaList = companyChargeRelaMapper.getCompanyChargeRelaList(searchModel);
+        Set<Long> powerStationIdSet = new HashSet<>();
+        Set<Long> electricPileIdSet = new HashSet<>();
+
+        for (CompanyChargeRelaDO rela : relaList) {
+            powerStationIdSet.add(rela.getPowerStationId());
+            electricPileIdSet.add(rela.getElectricPileId());
+        }
+
+        result.add(powerStationIdSet.size());
+        result.add(electricPileIdSet.size());
+
+        return result;
+    }
+
+    @Override
+    public Map<PowerStationDO, List<ElectricPileDO>> getStationAndPile(Long cpyId, String provinceCode, String cityCode, String areaCode, UserDO loginUser) {
+        Map<PowerStationDO, List<ElectricPileDO>> resultMap = new HashMap<>();
+
+        PowerStationDO searchModel = new PowerStationDO();
+        searchModel.setProvinceCode(provinceCode);
+        searchModel.setCityCode(cityCode);
+        searchModel.setAreaCode(areaCode);
+        List<PowerStationDO> powerStationList = powerStationService.getPowerStationList(searchModel);
+        Map<Long, PowerStationDO> powerStationMap = Maps.uniqueIndex(powerStationList, new Function<PowerStationDO, Long>() {
+            @Override
+            public Long apply(PowerStationDO input) {
+                return input.getPowerstationId();
+            }
+        });
+        List<ElectricPileDO> electricPileList = electricPileMapper.selectByCpyIdAndPowerStationIds(cpyId, new ArrayList<>(powerStationMap.keySet()));
+        List<CompanyChargeRelaDO> relaList = companyChargeRelaMapper.getCompanyChargeRelaList(new CompanyChargeRelaDO());
+        Map<Long, CompanyChargeRelaDO> relaMap = Maps.uniqueIndex(relaList, new Function<CompanyChargeRelaDO, Long>() {
+            @Override
+            public Long apply(CompanyChargeRelaDO input) {
+                return input.getElectricPileId();
+            }
+        });
+
+        Map<Long, List<ElectricPileDO>> electricPileMap = new HashMap<>();
+        for (ElectricPileDO electricPile : electricPileList) {
+            List<ElectricPileDO> electricPiles = electricPileMap.get(electricPile.getPowerStationId());
+            if (electricPiles == null) {
+                electricPiles = new ArrayList<>();
+                electricPileMap.put(electricPile.getPowerStationId(), electricPiles);
+            }
+            electricPiles.add(electricPile);
+
+            if (relaMap.get(electricPile.getId()) == null) {
+                electricPile.setIsHaveCompanyChargeRela(false);
+                continue;
+            }
+
+            electricPile.setIsHaveCompanyChargeRela(true);
+            PowerStationDO powerStation = powerStationMap.get(electricPile.getPowerStationId());
+            Integer selectedElectricPileNum = powerStation.getSelectedElectricPileNum() == null ? 1 : powerStation.getSelectedElectricPileNum() + 1;
+            powerStation.setSelectedElectricPileNum(selectedElectricPileNum);
+        }
+
+        for (PowerStationDO powerStation : powerStationList) {
+            resultMap.put(powerStation, electricPileMap.get(powerStation.getPowerstationId()));
+        }
+
+        return resultMap;
+    }
+
+    @Override
+    public BaseResultDTO setCompanyChargeRela(Long cpyId, List<CompanyChargeRelaDO> relaList, UserDO loginUser) throws Exception {
+        BaseResultDTO result = new BaseResultDTO();
+        Set<Long> powerStationIdSet = new HashSet<>();
+        for (CompanyChargeRelaDO rela : relaList) {
+            rela.setCpyId(cpyId);
+            powerStationIdSet.add(rela.getPowerStationId());
+        }
+
+        //删除旧的范围数据
+        companyChargeRelaMapper.deleteByCpyIdAndPowerStationIds(cpyId, new ArrayList<>(powerStationIdSet));
+
+        for (CompanyChargeRelaDO real : relaList) {
+            if (companyChargeRelaMapper.insertCompanyChargeRela(real) < 1) {
+                LOGGER.warn(this.getClass() + "-setCompanyChargeRela is failed, insertCompanyChargeRela is error|companyChargeRela={}|loginUser={}", real, loginUser);
+                throw new Exception("setCompanyChargeRela is failed, insertCompanyChargeRela is error");
+            }
+        }
+
+        return result;
+    }
+}

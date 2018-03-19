@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.web.dao.WebOrderMapper">
+
+	<resultMap id="tblOrderResultMap" type="TblOrder">
+		<id property="pkOrder" column="pk_Order" />
+		<result property="ordeCode" column="orde_Code" />
+		<result property="ordeTotalamount" column="orde_TotalAmount" />
+		<result property="ordeUserid" column="orde_UserId" />
+		<result property="ordeStatus" column="orde_Status" />
+		<result property="ordeOrdertype" column="orde_OrderType" />
+		<result property="ordeRemark" column="orde_Remark" />
+		<result property="ordeReceiveingname" column="orde_ReceiveingName" />
+		<result property="ordeReceiveingaddress" column="orde_ReceiveingAddress" />
+		<result property="ordeReceiveingcontact" column="orde_ReceiveingContact" />
+		<result property="ordeCreatedate" column="orde_Createdate" />
+		<result property="ordeUpdatedate" column="orde_Updatedate" />
+		<result property="ordeDeliveryway" column="orde_DeliveryWay" />
+		<result property="ordeExpress" column="orde_Express" />
+	</resultMap>
+	<resultMap id="pageResultMap" type="java.util.HashMap"
+		extends="tblOrderResultMap"></resultMap>
+	<resultMap id="findResultMap" type="java.util.HashMap"
+		extends="tblOrderResultMap"></resultMap>
+
+	<resultMap id="orderDetailResultMap" type="OrderInfo">
+		<id property="prodBrand" column="prodBrand" />
+		<result property="orderId" column="orderId" />
+		<result property="prodBrandName" column="prodBrandName" />
+
+		<collection property="productList" ofType="OrderInfoList">
+			<id property="productId" column="productId" />
+			<result property="productName" column="productName" />
+			<result property="productImage" column="productImage" />
+			<result property="productNum" column="productNum" />
+			<result property="productPrice" column="productPrice" />
+		</collection>
+	</resultMap>
+
+	<insert id="insert" parameterType="TblOrder" useGeneratedKeys="true"
+		keyProperty="pkOrder">
+		insert into tbl_Order (
+		pk_Order,
+		orde_Code,
+		orde_TotalAmount,
+		orde_UserId,
+		orde_Status,
+		orde_OrderType,
+		orde_Remark,
+		orde_ReceiveingName,
+		orde_ReceiveingAddress,
+		orde_ReceiveingContact,
+		orde_Createdate,
+		orde_Updatedate,
+		orde_DeliveryWay,
+		orde_Express,
+		orde_CommodityTotal,
+		orde_CommodityShops,
+		orde_TypeOrder
+		)values (
+		#{pkOrder},
+		#{ordeCode},
+		#{ordeTotalamount},
+		#{ordeUserid},
+		#{ordeStatus},
+		#{ordeOrdertype},
+		#{ordeRemark},
+		#{ordeReceiveingname},
+		#{ordeReceiveingaddress},
+		#{ordeReceiveingcontact},
+		#{ordeCreatedate},
+		#{ordeUpdatedate},
+		#{ordeDeliveryway},
+		#{ordeExpress},
+		#{ordeCommodityTotal},
+		#{ordeCommodityShops},
+		#{ordeTypeOrder}
+		)
+	</insert>
+
+	<update id="update" parameterType="TblOrder">
+		update tbl_Order 
+		<set>
+		<if test="pkOrder !=null and pkOrder !=''">pk_Order=#{pkOrder},</if>
+		<if test="ordeCode !=null and ordeCode !=''">orde_Code=#{ordeCode},</if>
+		<if test="ordeTotalamount !=null and ordeTotalamount !=''">orde_TotalAmount=#{ordeTotalamount},</if>
+		<if test="ordeUserid !=null and ordeUserid !=''">orde_UserId=#{ordeUserid},</if>
+		<if test="ordeStatus !=null and ordeStatus !=''">orde_Status=#{ordeStatus},</if>
+		<if test="ordeOrdertype !=null and ordeOrdertype !=''">orde_OrderType=#{ordeOrdertype},</if>
+		<if test="ordeRemark !=null and ordeRemark !=''">orde_Remark=#{ordeRemark},</if>
+		<if test="ordeReceiveingname !=null and ordeReceiveingname !=''">orde_ReceiveingName=#{ordeReceiveingname},</if>
+		<if test="ordeReceiveingaddress !=null and ordeReceiveingaddress !=''">orde_ReceiveingAddress=#{ordeReceiveingaddress},</if>
+		<if test="ordeReceiveingcontact !=null and ordeReceiveingcontact !=''">orde_ReceiveingContact=#{ordeReceiveingcontact},</if>
+		<if test="ordeCreatedate !=null and ordeCreatedate !=''">orde_Createdate=#{ordeCreatedate},</if>
+		<if test="ordeDeliveryway !=null and ordeDeliveryway !=''">orde_DeliveryWay=#{ordeDeliveryway},</if>
+		<if test="ordeExpress !=null and ordeExpress !=''">orde_Express=#{ordeExpress},</if>
+		<if test="ordeUpdatedate !=null and ordeUpdatedate !=''">orde_Updatedate=#{ordeUpdatedate}</if>
+		</set>
+		where
+		pk_Order=#{pkOrder} 
+	</update>
+
+	<delete id="delete" parameterType="map">
+		delete from
+		tbl_Order
+		where
+		pk_Order=#{pkOrder} 
+	</delete>
+
+	<select id="get" parameterType="map" resultMap="tblOrderResultMap">
+		select
+		pk_Order,
+		orde_Code,
+		orde_TotalAmount,
+		orde_UserId,
+		orde_Status,
+		orde_OrderType,
+		orde_Remark,
+		orde_ReceiveingName,
+		orde_ReceiveingAddress,
+		orde_ReceiveingContact,
+		orde_Createdate,
+		orde_Updatedate,
+		orde_DeliveryWay,
+		orde_Express
+		from tbl_Order
+		where
+		pk_Order=#{pkOrder}
+	</select>
+
+	<select id="findOne" parameterType="map" resultMap="findResultMap">
+		select
+		pk_Order,
+		orde_Code,
+		orde_TotalAmount,
+		orde_UserId,
+		orde_Status,
+		orde_OrderType,
+		orde_Remark,
+		orde_ReceiveingName,
+		orde_ReceiveingAddress,
+		orde_ReceiveingContact,
+		orde_Createdate,
+		orde_Updatedate,
+		orde_DeliveryWay,
+		orde_Express
+		from tbl_Order
+		where
+		pk_Order=#{pkOrder} 
+	</select>
+
+	<select id="find" parameterType="map" resultMap="findResultMap">
+		select
+		pk_Order,
+		orde_Code,
+		orde_TotalAmount,
+		orde_UserId,
+		orde_Status,
+		orde_OrderType,
+		orde_Remark,
+		orde_ReceiveingName,
+		orde_ReceiveingAddress,
+		orde_ReceiveingContact,
+		orde_Createdate,
+		orde_Updatedate,
+		orde_DeliveryWay,
+		orde_Express
+		from tbl_Order
+		<where>
+			<if test="pkOrder != null">
+				pk_Order=#{pkOrder}
+	     </if>
+			<if test="ordeCode != null">
+				and orde_Code=#{ordeCode}
+	     </if>
+			<if test="ordeTotalamount != null">
+				and orde_TotalAmount=#{ordeTotalamount}
+	     </if>
+			<if test="ordeUserid != null">
+				and orde_UserId=#{ordeUserid}
+	     </if>
+			<if test="ordeStatus != null">
+				and orde_Status=#{ordeStatus}
+	     </if>
+			<if test="ordeOrdertype != null">
+				and orde_OrderType=#{ordeOrdertype}
+	     </if>
+			<if test="ordeRemark != null">
+				and orde_Remark=#{ordeRemark}
+	     </if>
+			<if test="ordeReceiveingname != null">
+				and orde_ReceiveingName=#{ordeReceiveingname}
+	     </if>
+			<if test="ordeReceiveingaddress != null">
+				and orde_ReceiveingAddress=#{ordeReceiveingaddress}
+	     </if>
+			<if test="ordeReceiveingcontact != null">
+				and orde_ReceiveingContact=#{ordeReceiveingcontact}
+	     </if>
+			<if test="ordeCreatedate != null">
+				and orde_Createdate=#{ordeCreatedate}
+	     </if>
+			<if test="ordeUpdatedate != null">
+				and orde_Updatedate=#{ordeUpdatedate}
+	     </if>
+			<if test="ordeDeliveryway != null">
+				and orde_DeliveryWay=#{ordeDeliveryway}
+	     </if>
+			<if test="ordeExpress != null">
+				and orde_Express=#{ordeExpress}
+	     </if>
+		</where>
+	</select>
+
+	<!--完成支付 获取订单详情 -->
+	<select id="selectOrderDetail" parameterType="int"
+		resultMap="orderDetailResultMap">
+		select
+		o.pk_Order orderId,
+		od.orDe_ProductName productName,
+		od.orDe_Price productPrice,
+		od.orDe_Quantity productNum,
+		od.orDe_ProductId productId,
+		p.prod_Brand prodBrand,
+		(CASE WHEN
+		p.prod_Brand is not NULL THEN '万马品牌' END) prodBrandName,
+		getFullPath('proImage',od.orDe_ProductId) as
+		productImage
+		from
+		tbl_Order
+		o left join tbl_OrderDetail od
+		on
+		o.pk_Order = od.orDe_ParentId
+		left join
+		tbl_Product p
+		on
+		od.orDe_ProductId = p.pk_Product
+		where
+		o.pk_Order =
+		#{pkOrder}
+	</select>
+	<!-- 获取此订单中商品总数，总价，订单号，成交时间 -->
+	<select id="selectOrderInfo" parameterType="int" resultType="map">
+		select
+		orde_TotalAmount totalPrice,
+		orde_Updatedate completeDate,
+		orde_Code orderCode,
+		(select sum(orDe_Quantity) from tbl_OrderDetail
+		where orDe_ParentId = #{pkOrder}) totalNum
+		from
+		tbl_Order
+		where
+		pk_Order
+		=
+		#{pkOrder}
+	</select>
+	<!-- 删除订单，更新订单状态 -->
+	<update id="deleteOrder" parameterType="map">
+		update tbl_Order
+		set
+		orde_Status=#{ordeStatus}
+		where
+		pk_Order=#{pkOrder} 
+	</update>
+	<!-- 获取已购买还未设置安装地址的商品 -->
+	<select id="selectNoAddProduct" parameterType="map" resultType="TblOrderdetail">
+		select
+		od.orDe_ProductId ordeProductid,
+		od.orDe_ProductName ordeProductname,
+		od.pk_OrderDetail pkOrderdetail,
+		(select  sum(od.orDe_Quantity) - COALESCE (sum(oa.orAd_Quantity), 0) from tbl_order_address oa where od.pk_OrderDetail = oa.orAd_OrderDetail) ordeQuantity,
+		getFullPath('ListImage',od.orDe_ProductId) prodProductimage
+		from 
+		tbl_Order o left join tbl_orderdetail od
+		on
+		o.pk_Order = od.orDe_ParentId
+		where
+		o.orde_UserId = #{ordeUserid}
+		and
+		(o.orde_Status = 2 or o.orde_Status = 3)
+		group by od.orDe_ProductId
+		order by
+		o.orde_Createdate desc
+	</select>
+
+</mapper> 

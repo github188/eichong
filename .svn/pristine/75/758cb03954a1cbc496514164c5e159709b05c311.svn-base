@@ -1,0 +1,145 @@
+package com.wanma.ims.common.domain;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+import com.wanma.ims.common.domain.base.BasicModel;
+
+
+public class ReportOrderDO extends BasicModel{
+
+	/**
+	 * 报表实体类
+	 */
+	private static final long serialVersionUID = 4138505772896700497L;
+    
+	private Integer cpyNumber;
+	private String cpyName;
+	private Long slaveCpyId;
+	private String slaveCpyName;
+	private Integer tradeType;
+	private String tradeTypeText;
+	private Date startServiceTime;
+	private Date endServiceTime;
+	private Date serviceTime;
+	private BigDecimal totalMoney; //总充值
+	private BigDecimal totalElectricCharge; // 总电量
+	private BigDecimal totalElectricMoney; // 总充电费用
+	private BigDecimal totalServiceMoney; // 总服务费
+	private BigDecimal totalfavMoney; // 总优惠
+	
+	public Integer getCpyNumber() {
+		return cpyNumber;
+	}
+	
+	public void setCpyNumber(Integer cpyNumber) {
+		this.cpyNumber = cpyNumber;
+	}
+	
+	public String getCpyName() {
+		return cpyName;
+	}
+	
+	public void setCpyName(String cpyName) {
+		this.cpyName = cpyName;
+	}
+	
+	public Long getSlaveCpyId() {
+		return slaveCpyId;
+	}
+	
+	public void setSlaveCpyId(Long slaveCpyId) {
+		this.slaveCpyId = slaveCpyId;
+	}
+	
+	public String getSlaveCpyName() {
+		return slaveCpyName;
+	}
+	
+	public void setSlaveCpyName(String slaveCpyName) {
+		this.slaveCpyName = slaveCpyName;
+	}
+	
+	public Integer getTradeType() {
+		return tradeType;
+	}
+	
+	public void setTradeType(Integer tradeType) {
+		this.tradeType = tradeType;
+	}
+	
+	public String getTradeTypeText() {
+		return tradeTypeText;
+	}
+	
+	public void setTradeTypeText(String tradeTypeText) {
+		this.tradeTypeText = tradeTypeText;
+	}
+	
+	public Date getStartServiceTime() {
+		return startServiceTime;
+	}
+	
+	public void setStartServiceTime(Date startServiceTime) {
+		this.startServiceTime = startServiceTime;
+	}
+	
+	public Date getEndServiceTime() {
+		return endServiceTime;
+	}
+	
+	public void setEndServiceTime(Date endServiceTime) {
+		this.endServiceTime = endServiceTime;
+	}
+	
+	public Date getServiceTime() {
+		return serviceTime;
+	}
+	
+	public void setServiceTime(Date serviceTime) {
+		this.serviceTime = serviceTime;
+	}
+	
+	public BigDecimal getTotalMoney() {
+		return totalMoney;
+	}
+	
+	public void setTotalMoney(BigDecimal totalMoney) {
+		this.totalMoney = totalMoney;
+	}
+	
+	public BigDecimal getTotalElectricCharge() {
+		return totalElectricCharge;
+	}
+	
+	public void setTotalElectricCharge(BigDecimal totalElectricCharge) {
+		this.totalElectricCharge = totalElectricCharge;
+	}
+	
+	public BigDecimal getTotalElectricMoney() {
+		return totalElectricMoney;
+	}
+	
+	public void setTotalElectricMoney(BigDecimal totalElectricMoney) {
+		this.totalElectricMoney = totalElectricMoney;
+	}
+	
+	public BigDecimal getTotalServiceMoney() {
+		return totalServiceMoney;
+	}
+	
+	public void setTotalServiceMoney(BigDecimal totalServiceMoney) {
+		this.totalServiceMoney = totalServiceMoney;
+	}
+	
+	public BigDecimal getTotalfavMoney() {
+		return totalfavMoney;
+	}
+	
+	public void setTotalfavMoney(BigDecimal totalfavMoney) {
+		this.totalfavMoney = totalfavMoney;
+	}
+	
+	
+	
+}

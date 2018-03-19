@@ -1,0 +1,8 @@
+package com.wanma.ims.model;
+
+/**
+ * 普通用户实体类 
+ */
+public class UserNormalDO {
+
+}

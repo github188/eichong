@@ -1,0 +1,3 @@
+cd ..
+
+mvn dependency:sources

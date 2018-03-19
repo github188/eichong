@@ -1,0 +1,159 @@
+@r:50rem;
+a,
+input,
+button {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+input,
+button {
+  -webkit-appearance: none;
+  border-radius: 0;
+}
+body {
+  margin:0;
+  -webkit-user-select:auto;
+  background-color: #ebebeb;
+}
+body * {
+  -webkit-user-select:auto;
+  font-family:  "微软雅黑";
+}
+body {
+  -webkit-text-size-adjust: 100%;
+  font-family:  "微软雅黑";
+}
+*{
+  padding: 0;
+  margin: 0;
+}
+.chargeInfo{
+  width: 750/@r;
+  height:380/@r;
+  background-color: #ff7d00;
+  .chargeInfoTitle{
+    width: 750/@r;
+    height: 130/@r;
+    color: #FFFFFF;
+    line-height: 130/@r;
+    text-align: center;
+    font-size: 36/@r;
+  }
+  .smallTip{
+    width: 750/@r;
+    height: 80/@r;
+    line-height: 80/@r;
+    text-align: center;
+    color: #FFFFFF;
+    font-size: 26/@r;
+  }
+  .chargeDetailparam{
+    width: 542/@r;
+    height: 170/@r;
+    //background-color:#40AFFE;
+    display: flex;
+    flex-direction: row;
+    list-style: none;
+    padding: 0 88/@r 0 120/@r;
+    //flex: auto;
+    justify-content: space-around;
+    li{
+      .writeColor{
+        display: block;
+        font-size: 72/@r;
+        color: #FFFFFF;
+        text-align: center;
+      }
+      .tip{
+        display: block;
+        font-size: 26/@r;
+        color: #FFFFFF;
+        text-align: center;
+      }
+    }
+
+  }
+}
+.chargeAccountBlock{
+  width: 750/@r;
+  min-height: 100/@r;
+  .chargeAccountTitle{
+    width: 710/@r;
+    height: 90/@r;
+    line-height: 90/@r;
+    font-size:32/@r;
+    color: #333333;
+    padding-left: 40/@r;
+  }
+  .chargeNum{
+    display: inline-block;
+    width:710/@r;
+    background-color: #FFFFFF;
+    color: #333333;
+    font-size: 32/@r;
+    border:none;
+    outline: none;
+    -webkit-appearance: none;
+    padding: 30/@r 0 30/@r 40/@r;
+  }
+  .tip{
+    width: 710/@r;
+    height: 80/@r;
+    color: #888888;
+    font-size: 28/@r;
+    line-height: 80/@r;
+    padding-left: 40/@r;
+  }
+  .accountTab{
+    width: 750/@r;
+    height: 84/@r;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    list-style: none;
+    li{
+      width: 200/@r;
+      height: 80/@r;
+      border:1px solid #cbcbcb;
+      border-radius: 8/@r;
+      line-height: 80/@r;
+      color: #333333;
+      font-size: 32/@r;
+      text-align: center;
+    }
+    .active{
+      width: 200/@r;
+      height: 80/@r;
+      border:1px solid #ff7d00;
+      background-color: #ede2d7;
+      border-radius: 8/@r;
+      line-height: 80/@r;
+      color: #333333;
+      font-size: 32/@r;
+      text-align: center;
+    }
+  }
+}
+.payBlock{
+  width: 670/@r;
+  min-height: 100/@r;
+  padding: 0 40/@r;
+  margin-top: 180/@r;
+  .tip{
+    font-size: 28/@r;
+    color: #888888;
+  }
+  .payBtn{
+    display: block;
+    width:670/@r;
+    height: 100/@r;
+    background-color: #ff7d00;
+    text-align: center;
+    line-height: 100/@r;
+    color: #ffffff;
+    margin: 0 auto;
+    margin-top: 34/@r;
+    border-radius: 8/@r;
+    font-size: 36/@r;
+    -webkit-user-select:none;
+  }
+}

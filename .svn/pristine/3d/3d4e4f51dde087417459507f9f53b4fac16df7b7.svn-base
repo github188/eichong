@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.app.dao.ParkingLockTradeMapper">
+    <resultMap id="resultParkingLockTrade" type="com.wanma.model.ParkingLockTrade">
+        <id column="id" property="id"/>
+        <result column="trade_no" property="tradeNo"/>
+        <result column="parking_lock_id" property="parkingLockId"/>
+        <result column="power_station_id" property="powerStationId"/>
+        <result column="user_id" property="userId"/>
+        <result column="status" property="status"/>
+        <result column="parking_lock_start_time" property="parkingLockStartTime"/>
+        <result column="parking_lock_end_time" property="parkingLockEndTime"/>
+        <result column="charge_order_code" property="chargeOrderCode"/>
+        <result column="is_del" property="isDel"/>
+        <result column="creator_id" property="creatorId"/>
+        <result column="creator" property="creator"/>
+        <result column="modifier" property="modifier"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="gmt_modified" property="gmtModified"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    id, trade_no, parking_lock_id, power_station_id, user_id, status, parking_lock_start_time,
+    parking_lock_end_time, charge_order_code
+  </sql>
+
+    <select id="selectById" parameterType="Long" resultMap="resultParkingLockTrade">
+        select
+        <include refid="Base_Column_List"/>
+        from parking_lock_trade
+        where id = #{id}
+    </select>
+
+    <select id="selectNoEndTrade" parameterType="Map" resultMap="resultParkingLockTrade">
+        select
+        <include refid="Base_Column_List"/>
+        from parking_lock_trade
+        where status in (0,1)
+        <if test="userId != null">
+            and user_id = #{userId}
+        </if>
+        <if test="parkingLockId != null">
+            and parking_lock_id = #{parkingLockId}
+        </if>
+    </select>
+
+    <delete id="deleteById" parameterType="Long">
+      delete from parking_lock_trade
+      where id = #{id}
+    </delete>
+
+    <insert id="insertParkingLockTrade" parameterType="ParkingLockTrade"  useGeneratedKeys="true" keyProperty="id">
+     insert into parking_lock_trade (id, trade_no, parking_lock_id,
+      power_station_id, user_id, status, parking_lock_start_time,
+      parking_lock_end_time, charge_order_code,
+      is_del, creator_id, creator,
+      modifier, gmt_create, gmt_modified
+      )
+     values (#{id}, #{tradeNo}, #{parkingLockId},
+      #{powerStationId}, #{userId}, #{status}, #{parkingLockStartTime},
+      #{parkingLockEndTime}, #{chargeOrderCode}, 
+      0, #{userId}, 'user','user', now(), now())
+   </insert>
+
+    <update id="updateByIdSelective" parameterType="ParkingLockTrade">
+        update parking_lock_trade
+        <set>
+            <if test="tradeNo != null">
+                trade_no = #{tradeNo},
+            </if>
+            <if test="parkingLockId != null">
+                parking_lock_id = #{parkingLockId},
+            </if>
+            <if test="powerStationId != null">
+                power_station_id = #{powerStationId},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="parkingLockStartTime != null">
+                parking_lock_start_time = #{parkingLockStartTime},
+            </if>
+            <if test="parkingLockEndTime != null">
+                parking_lock_end_time = #{parkingLockEndTime},
+            </if>
+            <if test="chargeOrderCode != null">
+                charge_order_code = #{chargeOrderCode},
+            </if>
+            <if test="isDel != null">
+                is_del = #{isDel},
+            </if>
+            <if test="modifier != null">
+                modifier = #{modifier},
+            </if>
+            gmt_modified = now()
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="updateEndTimeAndStatusById" parameterType="ParkingLockTrade">
+        update parking_lock_trade
+        SET
+          status = 6,
+          parking_lock_end_time = #{parkingLockEndTime},
+          gmt_modified = now()
+        where id = #{id} and status in (0,1)
+    </update>
+
+    <update id="updateTradeNoById" parameterType="Map">
+        update parking_lock_trade
+        SET
+        trade_no = #{tradeNo},
+        gmt_modified = now()
+        where id = #{id}
+    </update>
+
+</mapper>

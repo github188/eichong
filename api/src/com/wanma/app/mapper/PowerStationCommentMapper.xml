@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.app.dao.PowerStationCommentMapper">
+
+	<resultMap id="tblPSCommentResultMap" type="com.wanma.model.PowerStationComment">
+		<id property="pk_PsComment" column="pk_PsComment" />
+		<result property="psc_PsId" column="psc_PsId" />
+		<result property="psc_UserId" column="psc_UserId" />
+		<result property="psc_UserName" column="psc_UserName" />
+		<result property="psc_CommentPic" column="psc_CommentPic" />
+		<result property="psc_Createdate" column="psc_Createdate" />
+		<result property="psc_Updatedate" column="psc_Updatedate" />
+		<result property="psc_Utatus" column="psc_Utatus" />
+		<result property="psc_Content" column="psc_Content" />
+	</resultMap>
+	<resultMap id="pageResultMap"  type="java.util.HashMap" extends="tblPSCommentResultMap"></resultMap>
+	<resultMap id="findResultMap"  type="java.util.HashMap" extends="tblPSCommentResultMap"></resultMap>
+
+	<insert id="insert" parameterType="map">
+	   insert into tbl_powerstationcomment (
+	     psc_PsId,
+	     psc_UserId,
+	     psc_UserName,
+	     psc_Utatus,
+	     psc_Content,
+	     psc_Createdate,
+	     up_commentId
+	   )values (
+	     #{psId},
+	     #{uId},
+	     #{uName},
+	     0,
+	     #{psContent},
+	     #{createdate},
+	     #{pcId}
+	   )
+	</insert>
+
+<!-- 	<update id="update" parameterType="PowerStationComment">
+	   update tbl_powerstationcomment set
+	     psc_UserId=#{psc_UserId},
+	     psc_UserName=#{psc_UserName},
+	     psc_CommentPic=#{psc_CommentPic},
+	     psc_Utatus=#{psc_Utatus},
+	     psc_Content=#{psc_Content},
+	    
+	   where 
+	    psc_PsId=#{psc_PsId} 
+	</update> -->
+
+	<delete id="delete" parameterType="int">
+	   delete from 
+	     tbl_powerstationcomment 
+	   where 
+	    pk_PsComment=#{cId} 
+	</delete>
+	
+	 <select id="countPsCommentsByPowerId" parameterType="Integer" resultMap="findResultMap">
+	    SELECT count(1) powerCommentCount
+	    from  tbl_powerstationcomment 
+	    where 1=1 and psc_PsId=#{psc_PsId}
+	      
+	  </select>
+
+	<!-- <select id="getAllCommentsByPowerId" parameterType="int" resultMap="findResultMap">
+		SELECT * from  tbl_powerstationcomment 
+	    where 1=1 and psc_PsId=#{psc_PsId}
+	</select> -->
+	
+	 <select id="getPsCommentsPageList" parameterType="map" resultType="HashMap">
+		SELECT * from (
+		select		
+		pk_EpcComment,
+		epc_EpId,
+		norm_name as epc_UserName,
+		<!-- getFullPath('proImage',pk_EpcComment) as epc_CommentPic, -->
+		getFullPath('userAvatar',epc_UserId) as userImage,
+		date_format(epc_Createdate,'%Y-%m-%d %H:%i:%s') epc_Createdate,
+		date_format(epc_Createdate,'%Y-%m-%d %H') epc_Createdate1,
+		date_format(eps_Createdate,'%Y-%m-%d %H') eps_Createdate1,
+		epc_Content,eps_CommentStar
+		from tbl_electricpilecomment epc LEFT JOIN tbl_user_normal ui on epc.epc_UserId = ui.user_id
+		LEFT JOIN tbl_electricpilestar eps on epc_EpId = eps_EpId and epc_UserId = eps_UserId
+		where 
+		epc_EpId in (select pk_ElectricPile from tbl_electricpile where elPi_RelevancePowerStation = #{prCoProductId} and elPi_Binding = 1)  
+		and epc_Utatus=0 and epc_type = 1
+		<![CDATA[
+			and abs((UNIX_TIMESTAMP(epc_Createdate)-UNIX_TIMESTAMP(NOW()))-(UNIX_TIMESTAMP(eps_Createdate)-UNIX_TIMESTAMP(NOW()))) < 10
+		]]>
+		) a where 		epc_Createdate1 = eps_Createdate1
+		GROUP BY pk_EpcComment
+		order by epc_Createdate desc
+		limit #{pageNumber},#{pageNum}
+	</select> 
+	
+</mapper> 

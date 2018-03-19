@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+			
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="blank" />
+		<meta name="format-detection" content="telephone=no" />
+		<title>预充-金额</title>
+		<!--<link rel="stylesheet" type="text/css" href="dist/css/bootstrap.min.css"/>-->
+		<link rel="stylesheet" type="text/css" href="dist/css/bootstrap.css"/>
+		<link rel="stylesheet" type="text/css" href="css/base.css"/>
+		<link rel="stylesheet" type="text/css" href="css/setPaymentCode.css" />
+		<link rel="stylesheet" type="text/css" href="css/prepare_recharge.css"/>
+		<link rel="stylesheet" type="text/css" href="css/mui.css"/>
+		
+		<!--[if lt IE 9]>
+			<script src="dist/js/html5shiv.min.js"></script>
+			<script src="dist/js/respond.min.js"></script>
+		<![endif]-->
+	</head>
+	<body>
+	<!--<div class="waitLoad" id="waitLoad" style="display: none;">
+		<img src="img/load.gif"/>
+	</div>-->
+		<div id="mainDiv">	
+			<!--头部====-->
+			<div class="head">
+					<div class="headLeft" onclick="toPileInfo()">
+						<img src="img/nav_btn_back.png" class="return"/>
+					</div>
+			</div>
+			<!--请输入用户金额提示-->
+			<div class="bigTip">
+				<div class="account">
+					请输入预充金额
+				</div>
+				<div class="accountValue">
+					账户余额：<span id="balance">0</span>元
+				</div>
+				<div class="purseTip">
+					<input type="text" id="purseValue" value="" class="purseValue" maxlength="3" placeholder="200"/>元
+				</div>
+			</div>
+			<!--下一步按鈕-->
+			<a class="btn btn-block nextStep"  style="display: block;width: 80%; height: 4rem; line-height: 3rem;" onclick="toCharge()">立即充电</a>
+		<!--自制模态框========================================================================-->
+			<div class="modal" id="myModal2" tabindex="-1" role="dialog"  aria-labelledby="myModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+				      <div class="modal-content">
+				         <!--<div class="modal-header">
+				            <h4 class="modal-title" id="myModalLabel2" data-dismiss="modal">
+				               		
+				            </h4>
+				         </div>-->
+				         <div class="modal-body modal-body-new">
+				         	<span class="tipText">请于十分钟内连接充电枪</span>
+				         </div>
+				         <div class="modal-footer" data-dismiss="modal">
+				         	<button type="button" class="btn btn-default return" 
+				               data-dismiss="modal" style="margin-left: 0;">取消
+				            </button>
+				         </div>
+				      </div><!-- /.modal-content -->
+				</div><!-- /.modal -->
+			</div>
+		</div>
+
+<!--设置支付密码===================================-->
+		<div id="paymentPasswordDiv" style="display:none;">
+			<!--标题提示=======occupied是占位的作用===================================-->
+			<div class="occupied" style="width: 100%; height: 7rem;"></div>
+
+			<div class="header">
+				<div class="col-xs-4 headLeft">
+					关闭
+				</div>
+				<div class="col-xs-8 headRight">
+					设置支付密码
+				</div>
+			</div>
+			<!--两个密码框============================================-->
+			<div class="passBlock">
+				<input type="password" id="paymentPassword" value="" placeholder="设置支付密码" class="passWord" />
+			</div>
+			<div class="passBlock repassBlock">
+				<input type="password" name="" id="rePaymentPassword" value="" placeholder="确认支付密码" class="passWord" />
+			</div>
+			<a class="btn sure" data-target="#myModal" data-backdrop="static" id="sure" onclick="checkPaymentPassword()" style="background: #FF7D00;">确定</a>
+			<div class="footer header">
+				<div class="col-xs-8 tip">
+					忘记支付密码？
+				</div>
+				<div class="col-xs-4 headRight">
+
+				</div>
+			</div>
+			
+			<!--模态框==============================================================================================-->
+			<div class="modal" id="payInfoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h4 class="pay-modal-title" id="myModalLabel" style="display: none;">
+		               		两次输入的密码不一致，请重新输入！
+		            </h4>
+							<h4 class="pay-modal-title2">
+		               		设置完成，立即去支付
+		            </h4>
+						</div>
+						<!--<div class="modal-body">
+		         </div>-->
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary certain" style="background: #FF7D00;" onclick="toMainPage()">
+								确定
+							</button>
+						</div>
+					</div>
+					<!-- /.modal-content -->
+				</div>
+				<!-- /.modal -->
+			</div>
+			
+		</div>
+		
+		
+		<!--模态框=================================================================-->
+		<div class="modal" id="payModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title" id="myModalLabel">
+	               		支付：<span id="payValue">1.00</span>元<br />
+	               		<span class="balance">账户余额：<span id="usinAccountbalance">20.00</span>元</span>
+	            </h4>
+
+					</div>
+					<div class="modal-body">
+						<div class="putCharge">
+							请输入支付密码
+						</div>
+						<input type="password" name="" id="payPassValue" value="" class="pass" />
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary certain" id="finishPayment" onclick="finishPayment()">
+							确定
+						</button>
+						<button type="button" class="btn btn-default return" data-dismiss="modal" style="margin-left: 3rem;">取消
+						</button>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal -->
+		</div>
+		
+		
+	
+	</body>
+	<script type="text/javascript" src="dist/js/jquery-1.11.0.js" ></script>
+	<!--<script src="dist/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>-->
+	<script type="text/javascript" src="dist/js/bootstrap.js" ></script>
+	<script src="js/url.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/userinfo.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/prepare_recharge.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/setPaymentCode.js" type="text/javascript" charset="utf-8"></script>
+</html>

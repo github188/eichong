@@ -1,0 +1,11 @@
+{
+    "data": {
+        "carcompanyCreateDate": 1439181546000,
+        "carcompanyName": "长安汽车",
+        "carcompanyRemark": "",
+        "carcompanyUpdateDate": 1439181546000,
+        "pkCarcompany": 1
+    },
+    "msg": "操作成功!",
+    "status": 100
+}

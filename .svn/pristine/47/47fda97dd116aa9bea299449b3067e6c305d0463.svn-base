@@ -1,0 +1,45 @@
+package com.wanma.ims.service.impl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.wanma.ims.mapper.OrderStatisticMapper;
+import com.wanma.ims.service.OrderStatisticService;
+
+@Service
+public class OrderStatisticServiceImpl implements OrderStatisticService{
+
+	@Autowired
+	private OrderStatisticMapper orderStatisticMapper;
+	
+	@Override
+	public Double countTotalElectricCharge(Long userId) {
+		return orderStatisticMapper.countTotalElectricCharge(userId);
+	}
+
+	@Override
+	public String countTotalOrder(Long userId) {
+		return orderStatisticMapper.countTotalOrder(userId);
+	}
+
+	@Override
+	public String countTotalTodayOrder(Long userId) {
+		return orderStatisticMapper.countTotalTodayOrder(userId);
+	}
+
+	@Override
+	public String countTotalCpyOrder(Integer cpyNumber) {
+		return orderStatisticMapper.countTotalCpyOrder(cpyNumber);
+	}
+
+	@Override
+	public String countTotalTodayCpyOrder(Integer cpyNumber) {
+		return orderStatisticMapper.countTotalTodayCpyOrder(cpyNumber);
+	}
+
+	@Override
+	public String countTotalCpyElectricCharge(Integer cpyNumber) {
+		return orderStatisticMapper.countTotalCpyElectricCharge(cpyNumber);
+	}
+
+}

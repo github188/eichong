@@ -1,0 +1,12 @@
+package com.wanma.ims.model;
+
+import java.io.Serializable;
+
+/**
+ * 黑白名单-用户DO 
+ */
+public class UserBlackWhiteDO implements Serializable{
+
+	private static final long serialVersionUID = -1149616844618657333L;
+  
+}

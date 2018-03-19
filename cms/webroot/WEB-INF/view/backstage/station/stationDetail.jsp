@@ -1,0 +1,109 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ include file="../../base.jsp" %>
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>充电点详细</title>
+		<link rel="stylesheet" type="text/css" href="${ctx}/static/css/station/stationDetail.css"/>
+	</head>
+	<body>
+		<div id="container1">
+			<div class="nav">
+				<span class="icon" id="goBack"></span><span>充电点详细</span>
+			</div>
+			<div class="orderDetail">
+				<div class="lineBlock">
+					<div class="line">
+						<span class="lineLeft">充电点名称</span>
+						<span class="lineRight" id="postName"></span>
+					</div>
+					<div class="line">
+						<span class="lineLeft">充电点状态 </span>
+						<span class="lineRight" id="postStatus"></span>
+					</div>
+				</div>
+				<div class="lineBlock">
+					<div class="line">
+						<span class="lineLeft">省份</span>
+						<span class="lineRight" id="postOwnProvinceCode"></span>
+					</div>
+					<div class="line">
+						<span class="lineLeft">城市</span>
+						<span class="lineRight" id="postOwnCityCode"></span>
+					</div>
+				</div>
+				<div class="lineBlock">
+					<div class="line">
+						<span class="lineLeft">区/县</span>
+						<span class="lineRight" id="postOwnCountyCode"></span>
+					</div>
+					<div class="line">
+						<span class="lineLeft">具体地址</span>
+						<span class="lineRight" id="postAddress"></span>
+					</div>
+				</div>
+				<div class="lineBlock">
+					<div class="line">
+						<span class="lineLeft">经度</span>
+						<span class="lineRight" id="postLongitude"></span>
+					</div>
+					<div class="line">
+						<span class="lineLeft">纬度</span>
+						<span class="lineRight" id="postLatitude"></span>
+					</div>
+				</div>
+				<div class="lineBlock">
+					<div class="line">
+						<span class="lineLeft">联系电话</span>
+						<span class="lineRight" id="postPhone"></span>
+					</div>
+					<div class="line">
+						<span class="lineLeft">开放时间</span>
+						<span class="lineRight" id="poStOnlineTime"></span>
+					</div>
+				</div>
+				<div class="lineBlock">
+					<div class="line">
+						<span class="lineLeft">停车费</span>
+						<span class="lineRight"></span>
+					</div>
+					<div class="line">
+						<span class="lineLeft red">是否支持预约</span>
+						<span class="lineRight red" id="postIsappoint">是</span>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+		<div class="padding30">
+			<div class="pileListTitle">所属电桩列表</div>
+				<div class="pileList">
+					<table class="myTable stationEditTable">
+						<thead>
+							<tr class="active">
+								<th class="smallWidth">序号</th>
+								<th>桩体编码</th>
+								<th>电桩名称</th>
+								<th>电桩状态</th>
+								<th>充电方式</th>
+								<th>功率</th>
+								<th>费率id</th>
+							</tr>
+						</thead>
+						<tbody id="stationDetailTbody">
+							
+							
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		</div>
+		<div id="pileListPage" class="pagination col-md-10 col-sm-10">
+		
+		</div>
+	</body>
+<script src="${ctx}/static/js/station/stationDetail.js" type="text/javascript" charset="utf-8"></script>
+</html>

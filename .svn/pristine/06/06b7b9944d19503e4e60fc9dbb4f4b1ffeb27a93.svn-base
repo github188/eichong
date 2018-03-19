@@ -1,0 +1,126 @@
+@charset "utf-8";
+body,html{
+	background: #EBECED;
+	width: 100%;
+	height: 100%;
+	font-family: "黑体";
+}
+@font-face
+{
+	font-family: myFirstFont;
+	src: url('impact.ttf');
+}
+/*加载中======================================================*/
+.waitLoad{
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	background: #FFFFFF;
+	z-index: 10001;
+	opacity: 0.3;
+	display: block;
+}
+.waitLoad img{
+	
+	width: 55%;
+	height: 30%;
+	opacity: 1;
+	margin-left: 25%;
+	margin-top: 45%;
+}
+.customerTip{
+	width: 100%;
+	min-height: 4rem;
+	background: #FFFFFF;
+	padding: 2rem;
+	text-align: center;
+	overflow: hidden;
+}
+.customerTip .customerBlock{
+	width: 100%;
+	min-height: 4rem;
+	background: #FFFFFF;
+	/*border: 0.1rem solid #C0C0C0;*/
+	/*margin: 0 auto;*/
+	text-align: center;
+	/*padding: 4% 2%;*/
+	font-size: 1.4rem;
+}
+.customerTip .customerBlock .f28{
+	font-size: 1.4rem;
+}
+.customerTip .customerBlock .costPrice{
+	color: #ec6941;
+	font-family: myFirstFont;
+	font-size: 36px;
+	
+}
+.detailInfo{
+	width: 100%;
+	min-height: 5rem;
+	border-top: 0.1rem solid #dcdcdc;
+	border-bottom: 0.1rem solid #dcdcdc;
+	margin: 0 auto;
+	background: #FFFFFF;
+	color: #666666;
+	font-size: 1.6rem;
+}
+.detailInfo .baseHeight{
+	
+	min-height: 3.4rem;
+	line-height: 3.4rem;
+	font-size: 1.6rem;
+	color: #888888;
+	overflow: hidden;
+	margin: 0 2rem;
+	border-bottom: 0.1rem solid #eeeeee;
+}
+
+.detailInfo .baseHeight .commentLeft{
+	width: 30%;
+	min-height: 3.6rem;
+	word-break: break-word;
+	text-align: left;
+	float: left;
+}
+.detailInfo .baseHeight .commentRight{
+	width: 70%;
+	min-height: 3.6rem;
+	word-break: break-word;
+	text-align: right;
+	float: left;
+}
+
+/*按钮组======================================*/
+.lastBtn{
+	width: 100%;
+	min-height: 5rem;
+	=background: #0062CC;
+	text-align: center;
+	overflow: hidden;
+}
+.lastBtn .finishedBtn,.lastBtn .evaluateBtn{
+	width: 90%;
+	height: 4rem;
+	display: block;
+	margin:1.2rem auto;
+	color: #FFFFFF;
+	font-size: 1.8rem;
+	line-height: 2.4rem;
+}
+.lastBtn .finishedBtn{
+	background: #ec6941;
+	margin-top:1.8rem;
+}
+.lastBtn .evaluateBtn{
+	background: #FF7D00;
+}
+/*.chorCode{
+	font-size: 1.4rem;
+}
+.detailInfo .baseHeight .commentRight .startDate,.detailInfo .baseHeight .commentRight .endDate{
+	font-size: 1.4rem;
+}
+.chorQuantityelectricity,.kw,.chorChargemoney,.chorServicemoney{
+	font-size: 1.4rem;
+}*/

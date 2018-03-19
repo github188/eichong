@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+					
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.TblChargOrderMapper">
+	<resultMap type="TblChargingOrder" id="result_Charge">
+		<result property="pkChargingorder" column="pk_ChargingOrder" />
+		<result property="chorCode" column="chOr_Code" />
+		<result property="chorAppointmencode" column="chOr_AppointmenCode" />
+		<result property="chorPilenumber" column="chOr_PileNumber" />
+		<result property="chorUserid" column="chOr_UserId" />
+		<result property="chorType" column="chOr_Type" />
+		<result property="chorMoeny" column="chOr_Moeny" />
+		<result property="chorQuantityelectricity" column="chOr_QuantityElectricity" />
+		<result property="chorTimequantum" column="chOr_TimeQuantum" />
+		<result property="chorMuzzle" column="chOr_Muzzle" />
+		<result property="chorChargingstatus" column="chOr_ChargingStatus" />
+		<result property="chorTranstype" column="chOr_TransType" />
+		<result property="chorCreatedate" column="chOr_Createdate" />
+		<result property="chorUpdatedate" column="chOr_Updatedate" />
+		<result property="chorUsername" column="chOr_UserName" />
+		<result property="chorTransactionnumber" column="chOr_TransactionNumber" />
+		<result property="chorOrdertype" column="chOr_OrderType" />
+		<result property="chorParterUserLogo" column="chor_parter_user_logo" />
+		<result property="chorParterExtradata" column="chor_parter_extradata" />
+		<result property="beginChargetime" column="begin_charge_time" />
+		<result property="endChargetime" column="end_charge_time" />
+		<result property="chorServicemoney" column="chOr_ServiceMoney" />
+		<result property="chorChargemoney" column="chOr_ChargeMoney" />
+		
+	</resultMap>
+
+	<update id="update" parameterType="TblChargingOrder">
+		update tbl_chargingorder set
+		<if test="chorTransactionnumber != null and chorTransactionnumber !=''">
+			chorTransactionnumber=#{chOr_TransactionNumber},
+	    </if>
+	    <if test="chorChargingstatus != null and chorChargingstatus !=''">
+			chOr_ChargingStatus=#{chorChargingstatus},
+	    </if>
+	    <if test="chorTranstype != null and chorTranstype !=''">
+			chOr_TransType=#{chorTranstype},
+	    </if>
+	    chOr_Updatedate = sysdate()
+		where chOr_Code=#{chorCode}
+	</update>
+	
+	<select id="getList" parameterType="TblChargingOrder" resultMap="result_Charge">
+	    select * from tbl_chargingorder t
+	   <where>
+	   	1=1
+	   <if test="beginChargetime !=null and beginChargetime !=''">
+	    	and end_charge_time >= #{beginChargetime}
+	   </if>
+	   <if test="endChargetime !=null and endChargetime !=''">
+	   		<![CDATA[and end_charge_time <= #{endChargetime} ]]>
+	   </if>
+	   <if test="chOrOrgNo !=null and chOrOrgNo !=''">
+	    	and chOr_OrgNo=#{chOrOrgNo} 
+	   </if>
+	   </where>
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	
+	<select id="selectOne" parameterType="TblChargingOrder" resultMap="result_Charge">
+	    select * from tbl_chargingorder
+	    <where>
+	   	1=1
+	   <if test="pkChargingorder !=null and pkChargingorder !=''">
+	    	and pk_ChargingOrder=#{pkChargingorder} 
+	   </if>
+	   <if test="chorCode !=null and chorCode !=''">
+	    	and chOr_Code=#{chorCode}  limit 1
+	   </if>
+	   </where>
+	</select>
+	<select id="getListGroupByPileNumByPsId" parameterType="TblChargingOrder" resultType="hashMap">
+	    select t.chOr_PileNumber EquipmentID,sum(t.chOr_QuantityElectricity) EquipmentElectricity from tbl_chargingorder t
+	   <where>
+	   	1=1
+	   <if test="beginChargetime !=null and beginChargetime !=''">
+	    	and begin_charge_time >= #{beginChargetime} 
+	   </if>
+	   <if test="endChargetime !=null and endChargetime !=''">
+	   		<![CDATA[and begin_charge_time <= #{endChargetime} ]]>
+	   </if>
+		<if test="psId !=null">
+	    	and exists(select 1 from tbl_electricpile e where e.elPi_ElectricPileCode=t.chOr_PileNumber and e.elPi_RelevancePowerStation=#{psId})
+	    </if>
+	   </where>
+	   group by t.chOr_PileNumber
+	</select>
+	
+	<select id="getListGroupByHeadNoByPileNum" parameterType="TblChargingOrder" resultType="hashMap">
+	    select t.chOr_Muzzle ConnectorID,sum(t.chOr_QuantityElectricity) ConnectorElectricity from tbl_chargingorder t
+	   <where>
+	   	1=1
+	   <if test="beginChargetime !=null and beginChargetime !=''">
+	    	and begin_charge_time >= #{beginChargetime} 
+	   </if>
+	   <if test="endChargetime !=null and endChargetime !=''">
+	   		<![CDATA[and begin_charge_time <= #{endChargetime} ]]>
+	   </if>
+		<if test="chorPilenumber !=null">
+	    	and t.chOr_PileNumber = #{chorPilenumber}
+	    </if>
+	   </where>
+	   group by t.chOr_Muzzle
+	</select>
+<select id="getOderByOpenId"  resultMap="result_Charge">
+	    select * from tbl_chargingorder
+	    <where>
+	   1=1 and chor_parter_user_logo=#{openId} order by chOr_Createdate desc limit 1
+	  
+	   </where>
+	</select>
+</mapper>

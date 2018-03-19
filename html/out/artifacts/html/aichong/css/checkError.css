@@ -1,0 +1,106 @@
+@charset "utf-8";
+
+section{
+	width: 100%;
+	min-height: 26%;
+	-background: #00A438;
+	/*margin-top: 4rem;*/
+	
+}
+.appointmentBtn{
+	display: block;
+	width: 80%;
+	height: 4rem;
+	line-height: 1rem;
+	margin: 0 auto;
+	color: #FFFFFF;
+	background: #FF7D00;
+	border: 0.1rem solid #FF7D00;
+	font-size: 1.4rem;
+	margin-top:2rem;
+	line-height: 3rem;
+}
+.appointmentBtn,.appointmentBtn:focus,.appointmentBtn:hover,.appointmentBtn:active{
+  color: #fff;
+  background-color: #FF7D00;
+  border-color: #FF7D00;
+  outline-style: none;
+}
+section .errorList{
+	width: 100%;
+	height: 30%;
+	-background: #F0AD4E;
+	text-align: center;
+	/*padding-top: 5%;*/
+	margin: 0;
+}
+section .errorList li{
+	width: 40%;
+	height: 3.6rem;
+	border-radius: 2rem;
+	line-height: 3.6rem;
+	/*float: left;*/
+	display: inline-block;
+	margin-left: 4%;
+	border: 0.1rem solid #DCDCDC;
+	color: #808080;
+	margin-top: 5%;
+	font-size: 1.6rem;
+}
+section .errorList .addBg{
+	width: 40%;
+	height: 3.6rem;
+	border-radius: 2rem;
+	line-height: 3.6rem;
+	/*float: left;*/
+	display: inline-block;
+	margin-left: 4%;
+	border: 0.1rem solid #FF7D00;
+	color: #FF7D00;
+	margin-top: 5%;
+	background: url(../img/btn_selected.png) no-repeat 90% center;
+	background-size:18% 80%;
+}
+.detailTip{
+	width: 100%;
+	height: 35%;
+	padding: 12%;
+	padding-bottom: 0;
+}
+textarea{
+	width: 100%;
+	height: 100%;
+	resize: none;
+	font-size: 1.6rem;
+}
+/*模态框=============================*/
+.modal-content{
+	width: 80%;
+	height: 50%;
+	margin: 0 auto;
+}
+
+.modal-content .modal-header {
+  min-height: 16.42857143px;
+  padding: 1.5rem;
+  text-align: center;
+  color: #FF7D00;
+  
+}
+.modal-content .modal-header,.modal-content .modal-footer{
+  padding: 1.5rem;
+  text-align: center;
+  border-top: 0 !important;
+  border-bottom: 0 !important;
+}
+.modal-content .modal-header .modal-title{
+	font-size: 2.4rem;
+}
+.modal-content .modal-footer .certain{
+	background: #FF7D00;
+	color: #FFFFFF;
+	border: 0;
+	outline-style:none ;
+	width: 40%;
+	font-size: 1.6rem;
+}

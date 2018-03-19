@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dubbox.dao.TblPublishEpMapper">
+
+	<resultMap id="tblPublishEp" type="TblPublishEp">
+		<id property="id" column="id"></id>
+		<result property="img" column="img" />
+		<result property="adr" column="address" />
+		<result property="lgt" column="longitude" />
+		<result property="ltt" column="latitude" />
+		<result property="prmNt" column="parameter_note" />
+		<result property="nt" column="note" />
+		<result property="sts" column="status" />
+		<result property="udate" column="edittime" />
+		<result property="cdate" column="createtime" />
+	</resultMap>
+
+	<select id="getList" parameterType="TblPublishEp" resultMap="tblPublishEp">
+		SELECT ${rtColumns}
+		from tbl_publish_ep t
+		<where>
+			1=1
+			<if test="adr !=null and adr !=''">
+				and t.address like concat('%',#{adr},'%')
+			</if>
+			<if test="slcBgDate !=null and slcBgDate !=''">
+				<![CDATA[AND TO_DAYS(createtime) >= TO_DAYS(#{slcBgDate})]]>
+			</if>
+			<if test="slcEdDate !=null and slcEdDate !=''">
+				<![CDATA[AND TO_DAYS(createtime) <= TO_DAYS(#{slcEdDate})]]>
+			</if>
+		</where>
+		order by t.status asc,t.createtime desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<select id="getCount" parameterType="TblPublishEp" resultType="int">
+		SELECT count(1)
+		from tbl_publish_ep t
+		<where>
+			1=1
+			<if test="adr !=null and adr !=''">
+				and t.address like concat('%',#{adr},'%')
+			</if>
+			<if test="slcBgDate !=null and slcBgDate !=''">
+				<![CDATA[AND TO_DAYS(createtime) >= TO_DAYS(#{slcBgDate})]]>
+			</if>
+			<if test="slcEdDate !=null and slcEdDate !=''">
+				<![CDATA[AND TO_DAYS(createtime) <= TO_DAYS(#{slcEdDate})]]>
+			</if>
+		</where>
+	</select>
+
+	<select id="selectOne" parameterType="TblPublishEp" resultMap="tblPublishEp">
+		SELECT ${rtColumns}
+		from tbl_publish_ep t
+		where
+		id=#{id}
+	</select>
+
+	<insert id="insert" parameterType="TblEquipmentrepair">
+		insert into
+		tbl_publish_ep
+		(
+		img,
+		address,
+		longitude,
+		latitude,
+		parameter_note,
+		note,
+		status,
+		edittime,
+		createtime
+		)values (
+		#{img},
+		#{adr},
+		#{lgt},
+		#{ltt},
+		#{prmNt},
+		#{nt},
+		#{sts},
+		sysdate(),
+		sysdate()
+		)
+	</insert>
+
+	<update id="update" parameterType="TblPublishEp">
+		update tbl_publish_ep set
+		status=1 where id=#{id}
+	</update>
+
+	<delete id="delete" parameterType="TblPublishEp">
+		delete from tbl_publish_ep where
+		and id in
+		<foreach item="item" index="index" collection="pkIds" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+</mapper> 

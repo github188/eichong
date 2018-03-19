@@ -1,0 +1,57 @@
+/** 
+ * FileName RoleServiceImpl.java
+ * 
+ * Version 1.0
+ *
+ * Create by gx 2016/7/1
+ * 
+ * Copyright 2000-2001 wanma. All Rights Reserved.
+ */
+package com.cn.wanma.service.impl;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.cn.wanma.common.WanmaConstants;
+import com.cn.wanma.dao.CommonMapper;
+import com.cn.wanma.service.StartChargeService;
+
+/**
+ * FileName RoleServiceImpl.java
+ * 
+ * Version 1.0
+ * 
+ * Create by gx
+ * 
+ * 角色业务处理类
+ */
+@Service("startChargeService")
+public class StartChargeServiceImpl implements StartChargeService {
+
+	/*@Override
+	public String startCharge(String org) {
+		// TODO Auto-generated method stub
+		return null;
+	}*/
+
+	@Override
+	public int startCharge(String org) {
+
+		try {
+
+			int rtCode = WanmaConstants.cs.startChange(9006, "100000001",
+					"3301061987457973",1, new Short("1"),
+					100, 2, "", "", 0,
+					"12122122");
+			// 下发充电命令 // LOGGER.info("下发充电命令结束！");
+			return rtCode;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0;
+		}
+	}
+
+}

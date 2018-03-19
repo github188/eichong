@@ -1,0 +1,35 @@
+{
+	 "title" : {
+        "text": "充电故障"
+    },
+    "tooltip" : {
+        "trigger": "axis"
+    },
+    "legend": {
+    x:"left",
+    y:"top",
+    padding:[5,5,0,100],
+    itemGap:5,
+    "data":["急停", "连接线断掉","电表异常","过流停止","过压停止","防雷器故障","接触器故障","充电金额不足","漏电保护器","自动充满","BMS通信异常故障","违规拔枪","电桩断电","ccu故障","显示屏故障","电源模块故障","车主动停止"]
+    },
+    "toolbox": {
+        "show" : true,
+        "feature" : {
+        	"outView":{"show": false,color: '#8b3a3a'},
+        	"innerView":{"show": true,color: '#8b3a3a'},
+            "mark" : {"show": false},
+            "dataView" : {"show": false, "readOnly": false},
+            "magicType" : {"show": false, "type": ["line", "bar"]},
+            "restore" : {"show": false},
+            "saveAsImage" : {"show": false}
+        }
+    },
+    "calculable" : true,
+    "yAxis" : [
+                    {
+                        "type" : "value",
+                        "splitArea" : {"show" : true}
+                    }
+                ]         
+    
+}

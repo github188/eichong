@@ -1,0 +1,491 @@
+//toUnbindEvent();
+function toUnbindEvent() {
+    $('.actActivityruleBlock').unbind();
+    $('.prizeListBlock').unbind();
+    $('.prizeTypeBlock').unbind();
+    selectModel();
+}
+//规则
+var prizeListArr = [];
+var textHtmlArr = [];
+$('.actActivityruleUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+    $('#actBegindate_f1').val('');
+    $('#actEnddate_f1').val('');
+    $('#actCouponEnddate_f1').val('');
+    $('#actTopMoney').val('');
+    $('#singelMoneyR').val('');
+    $('#singelMoneyC').val('');
+    prizeListArr = [];
+    textHtmlArr = [];
+    $('#prizeListUl').html('');
+    toShowPrize();
+    var actActivityruleValue = $('#actActivityrule').attr('data-value');
+    if (actActivityruleValue <= 4) {
+        $('#startDate').css('display', 'block');
+        $('#endDate').css('display', 'block');
+        $('#rechargeSend').css('display', 'none');
+        $('#consumeSend').css('display', 'none');
+        $('#specificUser').css('display', 'none');
+    }
+    if (actActivityruleValue == 5) {
+        $('#startDate').css('display', 'block');
+        $('#endDate').css('display', 'block');
+        $('#rechargeSend').css('display', 'block');
+        $('#consumeSend').css('display', 'none');
+        $('#specificUser').css('display', 'none');
+    }
+    if (actActivityruleValue == 6) {
+        $('#startDate').css('display', 'block');
+        $('#endDate').css('display', 'block');
+        $('#rechargeSend').css('display', 'none');
+        $('#consumeSend').css('display', 'block');
+        $('#specificUser').css('display', 'none');
+    }
+    if (actActivityruleValue == 7) {
+        $('#startDate').css('display', 'none');
+        $('#endDate').css('display', 'none');
+        $('#rechargeSend').css('display', 'none');
+        $('#consumeSend').css('display', 'none');
+        $('#specificUser').css('display', 'block');
+        add_File();
+
+    }
+})
+//奖品种类
+$('.prizeListUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+})
+//现金券类型
+$('.prizeTypeUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+    $('#prizeNameTip').html('');
+})
+//现金券类型加载
+setTimeout('toLoadprizeType()', 300)
+function toLoadprizeType() {
+    $.ajax({
+        type: "post",
+        url: basePath + getCouponVarietyForListUrl,
+        async: true,
+        success: function (data) {
+            if (data.success == true) {
+                var data = data.dataObject;
+                var toLoadCpyParentIdLi = '<li data-option="" class="data-selected">请选择</li>';
+                for (var i = 0; i < data.length; i++) {
+                    toLoadCpyParentIdLi += '<li data-option="' + data[i].pkCouponVariety + '">' + data[i].covaActivityName + '</li>';
+                }
+                $('.prizeTypeUl').html(toLoadCpyParentIdLi);
+                toUnbindEvent();
+            }
+        }
+    });
+}
+//新增活动奖品
+$('#addPrizeList').on('click', function () {
+    $('#prizeNameTip').html('');
+    var aaa = $('#prizeList').attr('data-value');
+    var prize = '';
+    if (aaa == 1) {
+        prize = '现金券';
+    }
+    var prizeNameTest = $('#prizeType').attr('data-value');
+    if (!prizeNameTest) {
+        $('#prizeNameTip').html('请选择奖品种类');
+        return false;
+    }
+    var pkCouponVariety = $('#prizeType').attr('data-value');
+    for (var i = 0; i < prizeListArr.length; i++) {
+        if (pkCouponVariety == prizeListArr[i].pkCouponVariety) {
+            layer.closeAll();
+            layer.open({
+                type: 1,
+                offset: '100px',
+                title: ["提示", "font-size:12px;text-align:center"],
+                shadeClose: false,
+                closeBtn: 2,
+                area: ['310px', '180px'],//宽高
+                content: "同一种现金券品种只能添加一次！",
+                btn: ["确定"]
+            });
+            return false;
+        }
+    }
+    var prizeName = $('#prizeType').html();
+    var prizeNum = $('#prizeNumber').val() / 1;
+    var reg = /^[1-9][\d]*$/;
+    if (!prizeNum) {
+        $('#prizeNameTip').html('请选择奖品数量');
+        $('#prizeNumber').focus();
+        return false;
+    } else if (!reg.test(prizeNum)) {
+        $('#prizeNameTip').html('输入有误，请重新选择奖品数量');
+        $('#prizeNumber').focus();
+        return false;
+    }
+    var liList = '<li><p>' + prize + prizeName + '，' + prizeNum + '张</p><span class="deleteBtn">删除</span></li>';
+    $('#prizeListUl').prepend(liList);
+    var prizeJson = {
+        actsType: aaa,
+        pkCouponVariety: pkCouponVariety,
+        num: prizeNum
+    }
+    var textHtmlJson = {
+        actsType: prize,
+        pkCouponVariety: prizeName,
+        num: prizeNum
+    }
+    prizeListArr.push(prizeJson);
+    textHtmlArr.push(textHtmlJson);
+    toShowPrize();
+})
+//删除活动奖品
+$("body").off("click", ".deleteBtn").on("click", ".deleteBtn", function () {
+    var aaa = $(this).parent();
+    var i = aaa.index();
+    $('#prizeListUl').find(aaa).remove();
+    var lilength = $('#prizeListUl').children().length;
+    prizeListArr.splice((lilength - i), 1);
+    textHtmlArr.splice((lilength - i), 1);
+    toShowPrize();
+})
+//文字显示
+function toShowPrize() {
+    $('#prizeShowTit').html('');
+    if (textHtmlArr.length) {
+        var ruleType = $('#actActivityrule').html();
+        $('#prizeShowTit').html(ruleType);
+    }
+    $('#prizeShowCon').html('');
+    var listtext = '';
+    for (var i = 0; i < textHtmlArr.length; i++) {
+        listtext += textHtmlArr[i].actsType + textHtmlArr[i].pkCouponVariety + '，' + textHtmlArr[i].num + '张；';
+    }
+    $('#prizeShowCon').append(listtext);
+}
+//失焦校验//////
+$('#actActivityname').on('blur', function () {
+    $('#actActivitynameTip').html('');
+    if (!$(this).val()) {
+        $('#actActivitynameTip').html('活动名称不能为空，请输入活动名称');
+        $('#actActivityname').focus();
+        return false;
+    }
+})
+//提交
+$('#saveBtn').click(function () {
+    var actActivityname = $('#actActivityname').val();
+    if (!actActivityname) {
+        $('#actActivitynameTip').html('活动名称不能为空，请输入活动名称');
+        $('#actActivityname').focus();
+        return false;
+    }
+    var actBegindates = $('input[name=actBegindates]').val();
+    var actEnddates = $('input[name=actEnddates]').val();
+    var actCouponEndDates = $('input[name=actCouponEndDates]').val();
+    if (!actCouponEndDates) {
+        $('#actCouponEndDatesTip').html('优惠券结束时间不能为空，请选择优惠券使用结束时间！');
+        $('#actCouponEnddate_f1').focus();
+        return false;
+    }
+    if (actEnddates < actBegindates) {
+        layer.closeAll();
+        layer.open({
+            type: 1,
+            offset: '100px',
+            title: ["提示", "font-size:12px;text-align:center"],
+            shadeClose: false,
+            closeBtn: 2,
+            area: ['310px', '180px'],//宽高
+            content: "活动结束时间不能小于活动开始时间！",
+            btn: ["确定"]
+        });
+        return false;
+    }
+    if (actCouponEndDates < actEnddates) {
+        layer.closeAll();
+        layer.open({
+            type: 1,
+            offset: '100px',
+            title: ["提示", "font-size:12px;text-align:center"],
+            shadeClose: false,
+            closeBtn: 2,
+            area: ['310px', '180px'],//宽高
+            content: "优惠券使用结束时间不能小于活动结束时间！",
+            btn: ["确定"]
+        });
+        return false;
+    }
+    if (prizeListArr.length == 0) {
+        layer.closeAll();
+        layer.open({
+            type: 1,
+            offset: '100px',
+            title: ["提示", "font-size:12px;text-align:center"],
+            shadeClose: false,
+            closeBtn: 2,
+            area: ['310px', '180px'],//宽高
+            content: "活动奖品不能为空，请添加活动奖品内容！",
+            btn: ["确定"]
+        });
+        return false;
+    }
+    var actActivityruleValue = $('#actActivityrule').attr('data-value');
+    if (actActivityruleValue != 7) {
+        if (!actBegindates) {
+            $('#actBegindatesTip').html('活动开始时间不能为空，请选择活动开始时间！');
+            $('#actBegindate_f1').focus();
+            return false;
+        }
+        if (!actEnddates) {
+            $('#actEnddatesTip').html('活动结束时间不能为空，请选择活动结束时间！');
+            $('#actEnddate_f1').focus();
+            return false;
+        }
+    }
+    if (actActivityruleValue == 5) {
+        var reg = /^[1-9][\d]*$/;
+        var actTopMoneyValue = $('#actTopMoney').val();
+        if (!actTopMoneyValue) {
+            $('#actTopMoneyTip').html('单人最高充值金额不能为空！');
+            $('#actTopMoney').focus();
+            return false;
+        } else if (!reg.test(actTopMoneyValue)) {
+            $('#actTopMoneyTip').html('输入有误，请重新输入单人最高充值金额！');
+            $('#actTopMoney').focus();
+            return false;
+        }
+        var singelMoneyRValue = $('#singelMoneyR').val();
+        if (!singelMoneyRValue) {
+            $('#singelMoneyRTip').html('单笔充值金额满送条件不能为空！');
+            $('#singelMoneyR').focus();
+            return false;
+        } else if (!reg.test(singelMoneyRValue)) {
+            $('#singelMoneyRTip').html('输入有误，请重新输入单笔充值满送金额！');
+            $('#singelMoneyR').focus();
+            return false;
+        }
+    }
+    if (actActivityruleValue == 6) {
+        var reg = /^[1-9][\d]*$/;
+        var singelMoneyCValue = $('#singelMoneyC').val();
+        if (!singelMoneyCValue) {
+            $('#singelMoneyCTip').html('单笔消费金额满送条件不能为空！');
+            $('#singelMoneyC').focus();
+            return false;
+        } else if (!reg.test(actTopMoneyValue)) {
+            $('#singelMoneyCTip').html('输入有误，请重新输入单笔消费满送金额！');
+            $('#singelMoneyC').focus();
+            return false;
+        }
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////
+
+// 把数据传递给后台
+//    toAddActivityInfo();
+})
+//数据传给后台
+/*function toAddActivityInfo() {
+    var actActivityname = $('#actActivityname').val();
+    var actActivityrule = $('#actActivityrule').attr('data-value');
+    var actBegindates = $('input[name=actBegindates]').val();
+    var actEnddates = $('input[name=actEnddates]').val();
+    var actCouponEndDates = $('input[name=actCouponEndDates]').val();
+    var actTopMoney = $('#actTopMoney').val();
+    var singelMoney = $('input[name=actTopMoney]').val();
+    var actRemarkValue = $('#actRemark').val();
+    var prizeList = JSON.stringify(prizeListArr);
+    var specificUserBlock = $("#specificUserBlock").is(":hidden");//是否隐藏
+    var obj = {
+        prizeList: prizeList,
+        actActivityname: actActivityname,
+        actActivityrule: actActivityrule,
+        actBegindates: actBegindates,
+        actEnddates: actEnddates,
+        actCouponEndDates: actCouponEndDates,
+        actTopMoney: actTopMoney,
+        singelMoney: singelMoney,
+        actRemark: actRemarkValue
+    };
+    add_File(obj);
+
+}*/
+function toList() {
+    window.location.href = "activity_list.html";
+}
+//返回
+$('#goCancel').on('click', function () {
+    window.location.href = "activity_list.html";
+})
+//保存
+
+function add_File(){
+    var actActivityname = $('#actActivityname').val();
+    var actActivityrule = $('#actActivityrule').attr('data-value');
+    var actBegindates = $('input[name=actBegindates]').val();
+    var actEnddates = $('input[name=actEnddates]').val();
+    var actCouponEndDates = $('input[name=actCouponEndDates]').val();
+    var actTopMoney = $('#actTopMoney').val();
+    var singelMoney = $('input[name=actTopMoney]').val();
+    var actRemarkValue = $('#actRemark').val();
+    var prizeList = JSON.stringify(prizeListArr);
+    var specificUserBlock = $("#specificUserBlock").is(":hidden");//是否隐藏
+    var obj = {
+        prizeList: prizeList,
+        actActivityname: actActivityname,
+        actActivityrule: actActivityrule,
+        actBegindates: actBegindates,
+        actEnddates: actEnddates,
+        actCouponEndDates: actCouponEndDates,
+        actTopMoney: actTopMoney,
+        singelMoney: singelMoney,
+        actRemark: actRemarkValue
+    };
+    alert(JSON.stringify(obj));
+    layui.use('upload', function () {
+        var upload = layui.upload;
+        var uploadInst = upload.render({
+            elem: '#test1' //绑定元素
+            , url: basePath + addUserActivityUrl //上传接口
+            , data: obj==undefined?'':obj
+            , auto: false
+            , bindAction: '#fileSave'
+            , accept: 'file' //普通文件
+            , exts: 'xls|xlsx' //只允许上传excel
+            , choose: function (res) {
+                //将每次选择的文件追加到文件队列
+                var files = res.pushFile();
+
+                //预读本地文件，如果是多文件，则会遍历。(不支持ie8/9)
+                res.preview(function(index, file, result){
+                    //console.log(index); //得到文件索引
+                    console.log(file); //得到文件对象
+
+                    //console.log(result); //得到文件base64编码，比如图片
+                    /*var actActivityname = $('#actActivityname').val();
+                    var actActivityrule = $('#actActivityrule').attr('data-value');
+                    var actBegindates = $('input[name=actBegindates]').val();
+                    var actEnddates = $('input[name=actEnddates]').val();
+                    var actCouponEndDates = $('input[name=actCouponEndDates]').val();
+                    var actTopMoney = $('#actTopMoney').val();
+                    var singelMoney = $('input[name=actTopMoney]').val();
+                    var actRemarkValue = $('#actRemark').val();
+                    var prizeList = JSON.stringify(prizeListArr);
+                    var specificUserBlock = $("#specificUserBlock").is(":hidden");//是否隐藏
+                    obj = {
+                        prizeList: prizeList,
+                        actActivityname: actActivityname,
+                        actActivityrule: actActivityrule,
+                        actBegindates: actBegindates,
+                        actEnddates: actEnddates,
+                        actCouponEndDates: actCouponEndDates,
+                        actTopMoney: actTopMoney,
+                        singelMoney: singelMoney,
+                        actRemark: actRemarkValue
+                    };
+                    alert(JSON.stringify(obj));
+                    res.upload(index,file);*/
+                });
+
+
+
+            }
+            , done: function (res) {
+
+                /*if (res.success == true) {
+                    layer.closeAll();
+                    layer.open({
+                        type: 1,
+                        offset: '100px',
+                        title: ["提示", "font-size:12px;text-align:center"],
+                        shadeClose: false,
+                        closeBtn: 2,
+                        area: ['310px', '160px'],//宽高
+                        content: '保存成功',
+                        time: 2000,
+                        btn: ["确定"]
+                    });
+                } else {
+                    layer.closeAll();
+                    layer.open({
+                        type: 1,
+                        offset: '100px',
+                        title: ["提示", "font-size:12px;text-align:left;"],
+                        shadeClose: false,
+                        closeBtn: 2,
+                        area: ['310px', '160px'],//宽高
+                        content: res.msg,
+                        time: 2000
+                    });
+                }*/
+
+            }
+            , error: function () {
+                //请求异常回调
+            }
+        });
+
+    });
+
+}
+function commonSave() {
+    var actActivityname = $('#actActivityname').val();
+    var actActivityrule = $('#actActivityrule').attr('data-value');
+    var actBegindates = $('input[name=actBegindates]').val();
+    var actEnddates = $('input[name=actEnddates]').val();
+    var actCouponEndDates = $('input[name=actCouponEndDates]').val();
+    var actTopMoney = $('#actTopMoney').val();
+    var singelMoney = $('input[name=actTopMoney]').val();
+    var actRemarkValue = $('#actRemark').val();
+    var prizeList = JSON.stringify(prizeListArr);
+    var specificUserBlock = $("#specificUserBlock").is(":hidden");//是否隐藏
+    var obj = {
+        prizeList: prizeList,
+        actActivityname: actActivityname,
+        actActivityrule: actActivityrule,
+        actBegindates: actBegindates,
+        actEnddates: actEnddates,
+        actCouponEndDates: actCouponEndDates,
+        actTopMoney: actTopMoney,
+        singelMoney: singelMoney,
+        actRemark: actRemarkValue
+
+    };
+    $.ajax({
+        type: "post",
+        url: basePath + addUserActivityUrl,
+        async: true,
+        data: obj,
+        success: function (data) {
+            if (data.success == true) {
+                layer.closeAll();
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:center"],
+                    shadeClose: false,
+                    closeBtn: 2,
+                    area: ['310px', '180px'],//宽高
+                    content: "保存成功",
+                    btn: ["确定"]
+                });
+                setTimeout('toList()', 3000);
+            } else {
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:center"],
+                    shadeClose: false,
+                    closeBtn: 2,
+                    area: ['310px', '160px'],//宽高
+                    content: data.msg,
+                    time: 3000,
+                    btn: ["确定", "取消"]
+                });
+            }
+        }
+    });
+}

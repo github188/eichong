@@ -1,0 +1,145 @@
+//获取标签列表的menuId
+var getMenuMap = window.localStorage.getItem('menuMap');
+var getCurruntMap = JSON.parse(getMenuMap);
+var menuId = getCurruntMap['标签列表'];
+$(function () {
+    ctrlMenu(menuId);
+    //去加载表格的数据
+    setTimeout('tagListSearch()', 100);
+})
+function ctrlMenu(menuId) {
+    $.ajax({
+        type: "post",
+        url: basePath + getSelfButtonTreeUrl,
+        async: true,
+        data: {
+            menuId: menuId
+        },
+        success: function (req) {
+            var data = req.dataObject;
+            //console.log(data);
+            if (data.length == 0) {
+                return;
+            } else {
+                for (var i = 0; i < data.length; i++) {
+                    var contents = data[i].contents;
+                    if (contents.indexOf('新建') > -1) {
+                        $('#addTag').show();
+                    }
+                    if (contents.indexOf('删除') > -1) {
+                        $('#delTag').show();
+                    }
+
+
+                }
+            }
+
+
+        }
+    });
+}
+
+
+function tagListSearch() {
+    initTable("tagListForm", "tagListPage", getTagListUrl, tagListCallback);
+}
+function tagListCallback(req) {
+    var data = req.dataObject;
+    var listTr = "";
+    var typeAry = {'0': '用户标签'};
+    for (var i = 0; i < data.length; i++) {
+        listTr += '<tr><td><input type="checkbox" name="ids" class="selectedBox" value="' + data[i].id + '"/></td>'
+        + '<td class="id"><a class="modifyTag" data-tagId="' + data[i].id + '" >' + data[i].id + '</a>'
+        + '</td><td class="type">' + typeAry[data[i].type]
+        + '</td><td class="name">' + data[i].name
+        + '</td></tr>';
+    }
+    $("#myTbogy").html(listTr);
+}
+
+$("body").off("click", ".modifyTag").on('click', ".modifyTag", function () {
+    window.location.href = "modifyTag.html?tagId=" + $(this).attr('data-tagId');
+});
+
+$('#addTag').on('click', function () {
+    window.location.href = "addTag.html";
+});
+
+//点击删除
+$("body").off("click", "#delTag").on("click", "#delTag", function () {
+    layer.closeAll();
+    layer.open({
+        type: 1,
+        offset: '100px',
+        title: ["提示", "font-size:12px;text-align:center"],
+        shadeClose: false,
+        closeBtn: 2,
+        area: ['310px', '180px'],//宽高
+        content: $('.disabledContent'),
+        btn: ["确定", "取消"],
+        yes: function (index, layero) {
+            layer.closeAll();
+            toSubmitDisAble();
+        },
+        cancel: function (index, layero) {
+            layer.closeAll();
+        }
+    });
+});
+
+function toSubmitDisAble() {
+    var ids = '';
+    $('input[name=ids]').each(function () {
+        var flag = $(this).prop('checked');
+        if (flag == true) {
+            ids += $(this).attr('value') + ',';
+        }
+    });
+    if (!ids) {
+        layer.open({
+            type: 1,
+            offset: '100px',
+            title: ["提示", "font-size:12px;text-align:center"],
+            shadeClose: false,
+            closeBtn: 2,
+            area: ['310px', '160px'],//宽高
+            content: '请指定表单元素',
+            time: 3000,
+            btn: ["确定", "取消"]
+        });
+    } else {
+        $.ajax({
+            type: "post",
+            url: basePath + delTagUrl,
+            async: true,
+            data: {
+                tagIds: ids
+            },
+            success: function (data) {
+                if (data.success == true) {
+                    layer.closeAll();
+                    window.location.reload();
+                } else {
+                    layer.open({
+                        type: 1,
+                        offset: '100px',
+                        title: ["提示", "font-size:12px;text-align:center"],
+                        shadeClose: false,
+                        closeBtn: 2,
+                        area: ['310px', '160px'],//宽高
+                        content: data.msg,
+                        time: 3000,
+                        btn: ["确定", "取消"]
+                    });
+                }
+            }
+        });
+    }
+}
+
+//监听回车键
+$(document).keyup(function (event) {
+    if (event.keyCode == 13) {
+        tagListSearch();
+    }
+});

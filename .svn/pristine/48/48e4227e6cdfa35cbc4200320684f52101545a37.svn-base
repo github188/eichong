@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/style.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/config/rateInfoDetail.css"/>
+    <title>费率详情主页</title>
+</head>
+<body>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 ">
+                <div class="ibox float-e-margins" style="margin: 0">
+                    <div class="">
+                        <div class="ibox-content clearfix">
+                            <div class="userBaseInfo col-sm-12 ">
+                                <div class="col-sm-12 titleTip">费率详情</div>
+                                <div class="col-sm-6" style="padding: 0">
+                                    <ul class="baseInfoLeft commonUl">
+                                        <li>
+                                            <span class="col-sm-6 col-xs-12">费率名称</span>
+                                            <span class="infoValue" id="raIn_Name"></span>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">费率位数</span>
+                                            <span class="infoValue col-sm-3 col-xs-12" id="raIn_type">
+                                                <input type="radio" name="raIn_type" value="3" disabled="disabled"/>新账户
+                                                <input type="radio" name="raIn_type" value="1" disabled="disabled"/>2位
+                                                <input type="radio" name="raIn_type" value="2" disabled="disabled"/>4位
+                                            </span>
+                                        </li>
+                                        <li id="uniformPriceLi">
+                                            <span class="col-sm-6 col-xs-6">统一价/度（选填）</span>
+                                            <span class="infoValue" id="uniformPrice"></span>
+                                        </li>
+                                        <li id="raIn_ServiceChargeLi">
+                                            <span class="col-sm-6 col-xs-12">服务费</span>
+                                            <span class="infoValue" id="raIn_ServiceCharge"></span>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">尖段电价/度</span>
+                                            <span class="infoValue" id="raIn_TipTimeTariffPrice"></span>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">峰段电价/度</span>
+                                            <span class="infoValue" id="raIn_PeakElectricityPrice"></span>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">平段电价/度</span>
+                                            <span class="infoValue" id="raIn_UsualPrice"></span>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">谷段电价/度</span>
+                                            <span class="infoValue" id="raIn_ValleyTimePrice"></span>
+                                        </li>
+
+                                    </ul>
+                                </div>
+                                <div class="col-sm-6" style="padding: 0">
+                                    <ul class="baseInfoRight commonUl">
+                                        <li></li>
+                                        <li></li>
+                                        <li></li>
+                                        <li></li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">尖段服务费/度</span>
+                                            <span class="infoValue" id="raIn_TipTimeTariffMoney"></span>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">峰段服务费/度</span>
+                                            <span class="infoValue" id="raIn_PeakElectricityMoney"></span>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">平段服务费/度</span>
+                                            <span class="infoValue" id="raIn_UsualMoney"></span>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-12">谷段服务费/度</span>
+                                            <span class="infoValue" id="raIn_ValleyTimeMoney"></span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="">
+                                    <table class="table table-bordered rateinfoTable">
+                                        <thead>
+                                            <tr class="active">
+                                                <th>时间段</th>
+                                                <th>开始时间</th>
+                                                <th>结束时间</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="myTbogy">
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--按钮组合-->
+                        <div class="saveBtn cursor" onclick="toModifyRateInfo()" id="editBtn" style="">编辑</div>
+                        <div class="goBack commonBtn cursor" id="goback">返回</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/contabs.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/config/rateInfoDetail.js" type="text/javascript" charset="utf-8"></script>
+</html>

@@ -1,0 +1,58 @@
+package com.wanma.ims.service.impl;
+
+import java.util.List;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.wanma.ims.common.domain.FavCouponVarietyDO;
+import com.wanma.ims.mapper.FavCouponVarietyMapper;
+import com.wanma.ims.service.FavCouponVarietyService;
+@Service("userCouponVarietyService")
+public class FavCouponVarietyServiceImpl implements FavCouponVarietyService{
+	private static Logger log = Logger.getLogger(FavCouponVarietyServiceImpl.class);
+	
+	@Autowired
+	private FavCouponVarietyMapper couponVarietyMapper;
+
+
+	@Override
+	public long getCouponVarietyCount(FavCouponVarietyDO couponVariety) {
+		return couponVarietyMapper.getCouponVarietyCount(couponVariety);
+	}
+
+	@Override
+	public List<FavCouponVarietyDO> getCouponVarietyList(
+			FavCouponVarietyDO couponVariety) {
+		return couponVarietyMapper.getCouponVarietyList(couponVariety);
+	}
+
+	@Override
+	public int judgeCovaActivityName(String covaActivityName) {
+		return couponVarietyMapper.judgeCovaActivityName(covaActivityName);
+	}
+
+	@Override
+	public boolean addCouponVariety(FavCouponVarietyDO couponVariety) {
+		return couponVarietyMapper.addCouponVariety(couponVariety)>0?true:false;
+	}
+
+	@Override
+	public FavCouponVarietyDO getCouponVarietyById(Integer pkCouponVariety) {
+		return couponVarietyMapper.getCouponVarietyById(pkCouponVariety);
+	}
+
+	@Override
+	public void changeCouponVariety(FavCouponVarietyDO couponVariety) {
+		couponVarietyMapper.changeCouponVariety(couponVariety);
+	}
+
+	@Override
+	public List<FavCouponVarietyDO> getCouponVarietyForList() {
+		return couponVarietyMapper.getCouponVarietyForList();
+	}
+
+
+
+}

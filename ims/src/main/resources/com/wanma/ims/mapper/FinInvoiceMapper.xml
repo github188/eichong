@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.FinInvoiceMapper">
+    <resultMap type="InvoiceDO" id="resultInvoice">
+        <result property="pkInvoice" column="pk_Invoice"/>
+        <result property="ivTaxpayerNumber" column="iv_TaxpayerNumber"/>
+        <result property="ivCompanyName" column="iv_CompanyName"/>
+        <result property="ivCompanyAddress" column="iv_CompanyAddress"/>
+        <result property="ivPhoneNumber" column="iv_PhoneNumber"/>
+        <result property="ivBankName" column="iv_BankName"/>
+        <result property="ivBankAccount" column="iv_BankAccount"/>
+        <result property="ivInvoiceAmount" column="iv_InvoiceAmount"/>
+        <result property="ivInvoiceNumber" column="iv_InvoiceNumber"/>
+        <result property="ivInvoiceContent" column="iv_InvoiceContent"/>
+        <result property="ivTrackNumber" column="iv_TrackNumber"/>
+        <result property="ivFreightAmount" column="iv_FreightAmount"/>
+        <result property="ivRecipients" column="iv_Recipients"/>
+        <result property="ivConsigneeAddress" column="iv_ConsigneeAddress"/>
+        <result property="ivRecipientsNumber" column="iv_RecipientsNumber"/>
+        <result property="ivInvoiceType" column="iv_InvoiceType"/>
+        <result property="ivInvoiceStatus" column="iv_InvoiceStatus"/>
+        <result property="ivPayFreight" column="iv_Pay_Freight"/>
+        <result property="ivOwnProvinceCode" column="iv_OwnProvinceCode"/>
+        <result property="ivOwnCityCode" column="iv_OwnCityCode"/>
+        <result property="ivOwnCountyCode" column="iv_OwnCountyCode"/>
+        <result property="ivUserID" column="iv_UserID"/>
+        <result property="ivCreatedate" column="iv_Createdate"/>
+        <result property="ivUpdatedate" column="iv_Updatedate"/>
+        <result property="ivReceipType" column="iv_ReceipType"/>
+        <result property="ivAccountType" column="iv_AccountType"/>
+        <result property="ivInvoiceName" column="iv_InvoiceName"/>
+        <result property="ivRefuseRejection" column="iv_refuseRejection"/>
+        <result property="userAccount" column="user_account"/>
+         <result property="DiscountChangMoney" column="DiscountChangMoney"/>
+        <result property="DiscountServiceMoney" column="DiscountServiceMoney"/>
+         <result property="DiscountReChargeMoney" column="DiscountReChargeMoney"/>
+    </resultMap>
+	<select id="getUserInvoiceList"  parameterType="InvoiceDO" resultMap="resultInvoice">
+	select
+		a.pk_Invoice ,
+        b.user_account ,
+		a.iv_FreightAmount ,
+		date_format(a.iv_CreateDate,'%Y-%m-%d %T') iv_CreateDate,
+		date_format(a.iv_UpdateDate,'%Y-%m-%d %T') iv_UpdateDate,
+		a.iv_Pay_Freight ,
+		a.iv_InvoiceStatus ,
+		a.iv_ReceipType
+		from
+		tbl_invoice a,
+		tbl_user b
+		WHERE
+			b.user_id = a.iv_UserID
+		AND a.iv_AccountType='0'
+	<if test="userAccount != null and userAccount != ''">
+			and b.user_account like concat('%',#{userAccount},'%')
+	</if>
+	<if test="ivInvoiceStatus != null ">
+			and a.iv_InvoiceStatus = #{ivInvoiceStatus}
+	</if>
+	<if test="ivCreatedateBegin != null and ivCreatedateBegin != ''">
+			and a.iv_Createdate >= #{ivCreatedateBegin}
+	</if>
+	<if test="ivCreatedateEnd != null and ivCreatedateEnd != ''">
+		 <![CDATA[	and a.iv_Createdate <=  date_add(#{ivCreatedateEnd}, INTERVAL 1 day)]]>
+	</if>
+	<if test="ivUpdatedateBegin != null and ivUpdatedateBegin != ''">
+			and a.iv_Updatedate >= #{ivUpdatedateBegin}
+	</if>
+	<if test="ivUpdatedateEnd != null and ivUpdatedateEnd != ''">
+		 <![CDATA[	and a.iv_Updatedate <=  date_add(#{ivUpdatedateEnd}, INTERVAL 1 day)]]>
+	</if>
+	 order by iv_CreateDate desc
+	     <if test="pager!=null">limit #{pager.offset},#{pager.pageSize}</if>
+	</select>
+	<select id="getUserInvoiceCount" parameterType="InvoiceDO" resultType="long">
+	select
+		count(*)
+		from
+		tbl_invoice a,
+		tbl_user b
+		WHERE
+			b.user_id = a.iv_UserID
+		AND a.iv_AccountType='0'
+		<if test="userAccount != null and userAccount != ''">
+			and b.user_account like concat('%',#{userAccount},'%')
+	</if>
+	<if test="ivInvoiceStatus != null ">
+			and a.iv_InvoiceStatus = #{ivInvoiceStatus}
+	</if>
+	<if test="ivCreatedateBegin != null and ivCreatedateBegin != ''">
+			and a.iv_Createdate >= #{ivCreatedateBegin}
+	</if>
+	<if test="ivCreatedateEnd != null and ivCreatedateEnd != ''">
+		 <![CDATA[	and a.iv_Createdate <=  date_add(#{ivCreatedateEnd}, INTERVAL 1 day)]]>
+	</if>
+	<if test="ivUpdatedateBegin != null and ivUpdatedateBegin != ''">
+			and a.iv_Updatedate >= #{ivUpdatedateBegin}
+	</if>
+	<if test="ivUpdatedateEnd != null and ivUpdatedateEnd != ''">
+		 <![CDATA[	and a.iv_Updatedate <=  date_add(#{ivUpdatedateEnd}, INTERVAL 1 day)]]>
+	</if>
+	</select>
+	<select id="getFinInvoiceById" parameterType="InvoiceDO" resultMap="resultInvoice">
+		SELECT 
+			i.pk_Invoice,
+			i.iv_Createdate,
+			i.iv_InvoiceStatus,
+			i.iv_InvoiceType,
+			u.user_account,
+			i.iv_CompanyName,
+			i.iv_TaxpayerNumber,
+			i.iv_CompanyAddress,
+			i.iv_PhoneNumber,
+			i.iv_BankName,
+			i.iv_BankAccount,
+			i.iv_Pay_Freight,
+			i.iv_Recipients,
+			i.iv_ConsigneeAddress,
+			i.iv_RecipientsNumber,
+			i.iv_InvoiceNumber,
+			i.iv_ReceipType
+			FROM
+			tbl_invoice i,
+			 tbl_user u
+			WHERE
+				u.user_id = i.iv_UserID
+			and i.pk_Invoice = #{pkInvoice}
+	</select>
+	<update id="confirmInvoice" parameterType="InvoiceDO" >
+	update tbl_invoice set
+	iv_InvoiceStatus =#{ivInvoiceStatus},
+	iv_ReceipType = #{ivReceipType},
+	iv_InvoiceNumber = #{ivInvoiceNumber}
+	where pk_Invoice = #{pkInvoice}
+	</update>
+	<update id="refuseInvoice" parameterType="InvoiceDO" >
+	update tbl_invoice set
+	iv_InvoiceStatus = #{ivInvoiceStatus},
+	iv_refuseRejection = #{ivRefuseRejection}
+	where pk_Invoice = #{pkInvoice}
+	</update>
+	<select id="getCpyChargeInvoiceList" parameterType="InvoiceDO" resultMap="resultInvoice">
+		select i.pk_Invoice,iv_InvoiceName,
+		iv_InvoiceStatus,
+		iv_ReceipType,
+		iv_InvoiceNumber,
+		iv_Updatedate
+		FROM
+			tbl_invoice i,
+			tbl_purchasehistory p
+		WHERE
+			 i.pk_Invoice = p.pk_Invoice
+		and i.iv_UserID = #{ivUserID} and iv_AccountType = 1
+	<if test="ivInvoiceStatus != null  ">
+			and a.iv_InvoiceStatus = #{ivInvoiceStatus}
+	</if>
+	<if test="ivCreatedateBegin != null and ivCreatedateBegin != ''">
+			and a.iv_Createdate >= #{ivCreatedateBegin}
+	</if>
+	<if test="ivCreatedateEnd != null and ivCreatedateEnd != ''">
+		 <![CDATA[	and a.iv_Createdate <=  date_add(#{ivCreatedateEnd}, INTERVAL 1 day)]]>
+	</if>
+	<if test="ivUpdatedateBegin != null and ivUpdatedateBegin != ''">
+			and a.iv_Updatedate >= #{ivUpdatedateBegin}
+	</if>
+	<if test="ivUpdatedateEnd != null and ivUpdatedateEnd != ''">
+		 <![CDATA[	and a.iv_Updatedate <=  date_add(#{ivUpdatedateEnd}, INTERVAL 1 day)]]>
+	</if>
+	GROUP BY i.pk_Invoice
+	<if test="pager!=null">limit #{pager.offset},#{pager.pageSize}</if>
+	</select>
+	
+	<select id="getCpyChargeInvoiceCount" parameterType="InvoiceDO" resultType="long">
+		select count(*) from 
+			tbl_invoice i,
+			tbl_purchasehistory p
+		WHERE
+			 i.pk_Invoice = p.pk_Invoice
+		and i.iv_UserID = #{ivUserID} and iv_AccountType = 1
+	<if test="ivInvoiceStatus != null ">
+			and a.iv_InvoiceStatus = #{ivInvoiceStatus}
+	</if>
+	<if test="ivCreatedateBegin != null and ivCreatedateBegin != ''">
+			and a.iv_Createdate >= #{ivCreatedateBegin}
+	</if>
+	<if test="ivCreatedateEnd != null and ivCreatedateEnd != ''">
+		 <![CDATA[	and a.iv_Createdate <=  date_add(#{ivCreatedateEnd}, INTERVAL 1 day)]]>
+	</if>
+	<if test="ivUpdatedateBegin != null and ivUpdatedateBegin != ''">
+			and a.iv_Updatedate >= #{ivUpdatedateBegin}
+	</if>
+	<if test="ivUpdatedateEnd != null and ivUpdatedateEnd != ''">
+		 <![CDATA[	and a.iv_Updatedate <=  date_add(#{ivUpdatedateEnd}, INTERVAL 1 day)]]>
+	</if>
+	GROUP BY i.pk_Invoice
+	</select>
+	
+	<select id="getCpyRechargeInvoiceList" parameterType="InvoiceDO" resultMap="resultInvoice">
+		SELECT i.pk_Invoice,
+		i.iv_InvoiceName,SUM(p.puHi_Monetary)AS DiscountReChargeMoney,i.iv_InvoiceStatus,
+		i.iv_ReceipType,i.iv_InvoiceNumber,i.iv_Createdate,i.iv_Updatedate
+		FROM
+		tbl_invoice i,
+		tbl_purchasehistory p 
+		WHERE
+			 i.pk_Invoice = p.pk_Invoice
+		and i.iv_UserID = #{ivUserID} and iv_AccountType = 1
+		and p.puHi_Type = 4
+	<if test="ivInvoiceStatus != null ">
+			and a.iv_InvoiceStatus = #{ivInvoiceStatus}
+	</if>
+	<if test="ivCreatedateBegin != null and ivCreatedateBegin != ''">
+			and a.iv_Createdate >= #{ivCreatedateBegin}
+	</if>
+	<if test="ivCreatedateEnd != null and ivCreatedateEnd != ''">
+		 <![CDATA[	and a.iv_Createdate <=  date_add(#{ivCreatedateEnd}, INTERVAL 1 day)]]>
+	</if>
+	<if test="ivUpdatedateBegin != null and ivUpdatedateBegin != ''">
+			and a.iv_Updatedate >= #{ivUpdatedateBegin}
+	</if>
+	<if test="ivUpdatedateEnd != null and ivUpdatedateEnd != ''">
+		 <![CDATA[	and a.iv_Updatedate <=  date_add(#{ivUpdatedateEnd}, INTERVAL 1 day)]]>
+	</if>
+	GROUP BY pk_Invoice
+	     <if test="pager!=null">limit #{pager.offset},#{pager.pageSize}</if>
+	</select>
+	
+	<select id="getCpyRechargeInvoiceCount" parameterType="InvoiceDO" resultType="long">
+		SELECT
+		count(*)
+		FROM
+		tbl_invoice i,
+		tbl_purchasehistory p 
+		WHERE
+			 i.pk_Invoice = p.pk_Invoice
+		and i.iv_UserID = #{ivUserID} and iv_AccountType = 1
+		and p.puHi_Type = 4
+	<if test="ivInvoiceStatus != null">
+			and a.iv_InvoiceStatus = #{ivInvoiceStatus}
+	</if>
+	<if test="ivCreatedateBegin != null and ivCreatedateBegin != ''">
+			and a.iv_Createdate >= #{ivCreatedateBegin}
+	</if>
+	<if test="ivCreatedateEnd != null and ivCreatedateEnd != ''">
+		 <![CDATA[	and a.iv_Createdate <=  date_add(#{ivCreatedateEnd}, INTERVAL 1 day)]]>
+	</if>
+	<if test="ivUpdatedateBegin != null and ivUpdatedateBegin != ''">
+			and a.iv_Updatedate >= #{ivUpdatedateBegin}
+	</if>
+	<if test="ivUpdatedateEnd != null and ivUpdatedateEnd != ''">
+		 <![CDATA[	and a.iv_Updatedate <=  date_add(#{ivUpdatedateEnd}, INTERVAL 1 day)]]>
+	</if>
+	GROUP BY pk_Invoice
+	</select>
+	
+	<insert id="addCpyInvoice" parameterType="InvoiceDO" >
+		insert into tbl_invoice
+		(
+			iv_InvoiceName,
+			iv_ReceipType,
+			iv_InvoiceNumber
+		)values(
+			#{ivInvoiceName},
+			#{ivReceipType},
+			#{ivInvoiceNumber}
+		)
+	</insert>
+	
+	<update id="modifyCpyInvoice" parameterType="InvoiceDO">
+		update  tbl_invoice set
+		 iv_InvoiceName = 	#{ivInvoiceName},
+		 iv_ReceipType = #{ivReceipType},
+		 iv_InvoiceNumber = #{ivInvoiceNumber}
+		 where pk_Invoice = #{pkInvoice}
+	</update>
+	<update id="modifyFinInvoice" parameterType="InvoiceDO">
+		update  tbl_invoice 
+		 <trim prefix="set" suffixOverrides=",">
+		 iv_Updatedate = now(),
+		<if test="ivCompanyName != null and ivCompanyName != ''">
+		iv_CompanyName = #{ivCompanyName},
+		</if>
+		<if test="ivTaxpayerNumber != null and ivTaxpayerNumber != ''">
+		iv_TaxpayerNumber = #{ivTaxpayerNumber},
+		</if>
+		<if test="ivCompanyAddress != null and ivCompanyAddress != ''">
+		iv_CompanyAddress = #{ivCompanyAddress},
+		</if>
+		<if test="ivPhoneNumber != null and ivPhoneNumber != ''">
+		iv_PhoneNumber = #{ivPhoneNumber},
+		</if>
+		<if test="ivBankName != null and ivBankName != ''">
+		iv_BankName = #{ivBankName},
+		</if>
+		<if test="ivBankAccount != null and ivBankAccount != ''">
+		iv_BankAccount = #{ivBankAccount},
+		</if>
+		<if test="ivPayFreight != null and ivPayFreight != ''">
+		iv_Pay_Freight = #{ivPayFreight},
+		</if>
+		<if test="ivConsigneeAddress != null and ivConsigneeAddress != ''">
+		iv_ConsigneeAddress = #{ivConsigneeAddress},
+		</if>
+		<if test="ivRecipients != null and ivRecipients != ''">
+		iv_Recipients = #{ivRecipients},
+		</if>
+		<if test="ivRecipientsNumber != null and ivRecipientsNumber != ''">
+		iv_RecipientsNumber = #{ivRecipientsNumber},
+		</if>
+		</trim>
+		 where pk_Invoice = #{pkInvoice}
+	</update>
+</mapper>

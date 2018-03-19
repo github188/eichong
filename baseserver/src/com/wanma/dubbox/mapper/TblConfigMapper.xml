@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- typespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dubbox.dao.TblConfigMapper">
+
+	<resultMap id="resultMap" type="TblConfig">
+		<id property="id" column="id" />
+		<result property="type" column="type" />
+		<result property="value" column="value" />
+		<result property="label" column="label" />
+		<result property="remark" column="remark" />
+		<result property="sort" column="sort" />
+		<result property="cdate" column="cdate" />
+		<result property="udate" column="udate" />
+		<result property="cuser" column="cuser" />
+		<result property="uuser" column="uuser" />
+	</resultMap>
+
+	<insert id="insert" parameterType="TblConfig">
+		insert into tbl_config (
+		type,
+		value,
+		label,
+		remark,
+		sort,
+		cdate,
+		udate,
+		cuser,
+		uuser
+		)values (
+		#{type},
+		#{value},
+		#{label},
+		#{remark},
+		#{sort},
+		#{cdate},
+		#{udate},
+		#{cuser},
+		#{uuser}
+		)
+	</insert>
+	
+	<update id="update" parameterType="TblConfig">
+		update tbl_config set
+		<if test="type != null">
+			type=#{type},
+		</if>
+		<if test="value != null">
+			value=#{value},
+		</if>
+		<if test="label != null">
+			label=#{label},
+		</if>
+		<if test="remark != null">
+			remark=#{remark},
+		</if>
+		<if test="sort != null">
+			sort=#{sort},
+		</if>
+		udate=sysdate()
+		where
+		id=#{id}
+	</update>
+
+	<delete id="delete" parameterType="TblConfig">
+		update
+		tbl_config
+		set
+		delete_flag=1
+		where 1=1
+		<if test="id != null">
+			and id=#{id}
+		</if>
+		<if test="pkIds != null">
+			and id in
+			<foreach item="item" index="index" collection="pkIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+	</delete>
+
+	<select id="selectOne" parameterType="TblConfig" resultMap="resultMap">
+		select
+		${rtColumns}
+		from tbl_config
+		where
+		id=#{id} and delete_flag=0
+		<if test="type != null and type !=''">
+			and type=#{type}
+		</if>
+	</select>
+
+	<select id="getCount" parameterType="TblConfig" resultType="int">
+		select count(1)
+		from tbl_config c
+		<where>
+			delete_flag=0
+			<if test="id != null">
+				and id=#{id}
+			</if>
+			<if test="type != null and type !=''">
+				and type =#{type}
+			</if>
+			<if test="value != null">
+				and value=#{value}
+			</if>
+			<if test="label != null">
+				and label=#{label}
+			</if>
+			<if test="cdate != null">
+				and cdate=#{cdate}
+			</if>
+			<if test="udate != null">
+				and udate=#{udate}
+			</if>
+			<if test="remark != null and remark !=''">
+				and remark=#{remark}
+			</if>
+			<if test="sort != null and sort !=''">
+				and sort=#{sort}
+			</if>
+		</where>
+	</select>
+
+	<select id="getList" parameterType="TblConfig" resultMap="resultMap">
+		select
+		${rtColumns}
+		from tbl_config c
+		<where>
+			delete_flag=0
+			<if test="id != null">
+				and id=#{id}
+			</if>
+			<if test="type != null and type !=''">
+				and type =#{type}
+			</if>
+			<if test="value != null">
+				and value=#{value}
+			</if>
+			<if test="label != null">
+				and label=#{label}
+			</if>
+			<if test="cdate != null">
+				and cdate=#{cdate}
+			</if>
+			<if test="udate != null">
+				and udate=#{udate}
+			</if>
+			<if test="remark != null and remark !=''">
+				and remark=#{remark}
+			</if>
+			<if test="sort != null and sort !=''">
+				and sort=#{sort}
+			</if>
+		</where>
+		order by type asc,sort asc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+</mapper> 

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.ElectricpilePushMapper">
+	<select id="getElectricpileListByPsId" parameterType="int" resultType="TcbElectric">
+		SELECT
+			t.pk_ElectricPile pkElc,
+			t.elPi_Longitude elcLng,
+			t.elPi_Latitude elcLat,
+			elPi_RelevancePowerStation stationNo,
+			t.elPi_ElectricPileCode equipNo,
+			t.elPi_ElectricPileName equipName,
+			t.elPi_ElectricPileAddress equipAddr,
+			t.elPi_ChargingMode equipType,
+			(SELECT coCo_Content FROM tbl_ConfigContent 
+			WHERE t.elPi_PowerSize = pk_ConfigContent) AS powerRating,
+			t.elPi_OutputCurrent currentRated,
+			t.elPi_OutputVoltage voltageRated,
+			t.elpi_state equipStatus,
+			t.have_connect_line haveConnectLine,
+			t.delete_flag deleteFlag
+		FROM tbl_electricpile t
+		WHERE t.elPi_RelevancePowerStation = #{stationNo} 
+	</select>
+
+</mapper> 

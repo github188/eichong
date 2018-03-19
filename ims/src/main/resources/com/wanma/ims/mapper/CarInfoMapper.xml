@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.CarInfoMapper">
+
+    <resultMap id="resultCarInfo" type="CarInfoDO">
+        <id column="pk_CarInfo" property="id"/>
+        <result column="CarInfo_StyleName" property="styleName"/>
+        <result column="CarInfo_MaxOdometer" property="maxOdometer"/>
+        <result column="CarInfo_BatteryCapacity" property="batteryCapacity"/>
+        <result column="CarInfo_CreateDate" property="gmtCreate"/>
+        <result column="CarInfo_UpdateDate" property="gmtModified"/>
+        <result column="CarInfo_Remark" property="remark"/>
+        <result column="CarInfo_BrandIcon" property="brandIcon"/>
+        <result column="CarInfo_BrandName" property="brandName"/>
+        <result column="CarInfo_CarStatus" property="carStatus"/>
+        <result column="CarInfo_ChargingTime" property="chargingTime"/>
+        <result column="CarInfo_BatteryType" property="batteryType"/>
+        <result column="CarInfo_CompanyId" property="carCompanyId"/>
+        <result column="charging_mode" property="chargingMode"/>
+        <result column="power_interface" property="powerInterface"/>
+        <result column="is_del" property="isDel"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        pk_CarInfo, CarInfo_StyleName, CarInfo_MaxOdometer, CarInfo_BatteryCapacity, CarInfo_CreateDate,
+        CarInfo_UpdateDate, CarInfo_Remark, CarInfo_BrandIcon, CarInfo_BrandName, CarInfo_CarStatus,
+        CarInfo_ChargingTime, CarInfo_BatteryType, CarInfo_CompanyId, charging_mode, power_interface, is_del
+    </sql>
+
+    <sql id="condition">
+        <where>
+            <if test="id != null">
+                and pk_CarInfo = #{id}
+            </if>
+            <if test="styleName != null and styleName != ''">
+                and CarInfo_StyleName = #{styleName}
+            </if>
+            <if test="carCompanyId != null">
+                and CarInfo_CompanyId = #{carCompanyId}
+            </if>
+            <if test="brandName != null and brandName != ''">
+                and CarInfo_BrandName LIKE "%"#{brandName}"%"
+            </if>
+            and is_del = 0
+        </where>
+    </sql>
+
+    <select id="getCarInfoList" parameterType="Map" resultMap="resultCarInfo">
+        select
+        <include refid="Base_Column_List"/>
+        from tbl_carinfo
+        <include refid="condition"/>
+        ORDER BY CarInfo_BrandName DESC
+        <if test="pager!=null">
+            limit #{pager.offset},#{pager.pageSize}
+        </if>
+    </select>
+
+    <select id="countCarInfo" parameterType="Map" resultType="long">
+        SELECT count(1)
+        FROM tbl_carinfo
+        <include refid="condition"/>
+    </select>
+
+    <select id="selectCarInfoById" parameterType="Long" resultMap="resultCarInfo">
+        select
+        <include refid="Base_Column_List"/>
+        from tbl_carinfo
+        where pk_CarInfo = #{id} and is_del = 0
+    </select>
+
+    <select id="selectCarInfoByIds" parameterType="java.util.List" resultMap="resultCarInfo">
+        select
+        <include refid="Base_Column_List"/>
+        from tbl_carinfo
+        where is_del = 0
+        <if test="ids != null and ids.size() > 0">
+            and pk_CarInfo in
+            <foreach collection="ids" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </if>
+    </select>
+
+    <delete id="deleteCarInfoById" parameterType="Long">
+        UPDATE tbl_carinfo
+        SET CarInfo_CarStatus  = 1,
+            is_del             = 1,
+            CarInfo_UpdateDate = now()
+        WHERE pk_CarInfo = #{id}
+    </delete>
+
+    <insert id="insertCarInfo" parameterType="CarInfoDO">
+        INSERT INTO tbl_carinfo (pk_CarInfo, CarInfo_StyleName, CarInfo_MaxOdometer,
+                                 CarInfo_BatteryCapacity, CarInfo_CreateDate,
+                                 CarInfo_UpdateDate, CarInfo_Remark, CarInfo_BrandIcon,
+                                 CarInfo_BrandName, CarInfo_CarStatus, CarInfo_ChargingTime,
+                                 CarInfo_BatteryType, CarInfo_CompanyId, charging_mode,
+                                 power_interface, is_del)
+        VALUES (#{id}, #{styleName}, #{maxOdometer},
+                #{batteryCapacity}, now(),
+                now(), #{remark}, #{brandIcon},
+                #{brandName}, #{carStatus}, #{chargingTime},
+                #{batteryType}, #{carCompanyId}, #{chargingMode},
+                #{powerInterface}, 0)
+    </insert>
+
+    <update id="updateCarInfoByIdSelective" parameterType="CarInfoDO">
+        update tbl_carinfo
+        <set>
+            <if test="styleName != null">
+                CarInfo_StyleName = #{styleName},
+            </if>
+            <if test="maxOdometer != null">
+                CarInfo_MaxOdometer = #{maxOdometer},
+            </if>
+            <if test="batteryCapacity != null">
+                CarInfo_BatteryCapacity = #{batteryCapacity},
+            </if>
+            <if test="remark != null">
+                CarInfo_Remark = #{remark},
+            </if>
+            <if test="brandIcon != null">
+                CarInfo_BrandIcon = #{brandIcon},
+            </if>
+            <if test="brandName != null">
+                CarInfo_BrandName = #{brandName},
+            </if>
+            <if test="carStatus != null">
+                CarInfo_CarStatus = #{carStatus},
+            </if>
+            <if test="chargingTime != null">
+                CarInfo_ChargingTime = #{chargingTime},
+            </if>
+            <if test="batteryType != null">
+                CarInfo_BatteryType = #{batteryType},
+            </if>
+            <if test="carCompanyId != null">
+                CarInfo_CompanyId = #{carCompanyId},
+            </if>
+            <if test="chargingMode != null">
+                charging_mode = #{chargingMode},
+            </if>
+            <if test="powerInterface != null">
+                power_interface = #{powerInterface},
+            </if>
+            <if test="isDel != null">
+                is_del = #{isDel},
+            </if>
+            CarInfo_UpdateDate = now(),
+        </set>
+        where pk_CarInfo = #{id}
+    </update>
+
+    <update id="updateCarInfoById" parameterType="CarInfoDO">
+        UPDATE tbl_carinfo
+        SET CarInfo_StyleName       = #{styleName},
+            CarInfo_MaxOdometer     = #{maxOdometer},
+            CarInfo_BatteryCapacity = #{batteryCapacity},
+            CarInfo_UpdateDate      = now(),
+            CarInfo_Remark          = #{remark},
+            CarInfo_BrandIcon       = #{brandIcon},
+            CarInfo_BrandName       = #{brandName},
+            CarInfo_CarStatus       = #{carStatus},
+            CarInfo_ChargingTime    = #{chargingTime},
+            CarInfo_BatteryType     = #{batteryType},
+            CarInfo_CompanyId       = #{carCompanyId},
+            charging_mode           = #{chargingMode},
+            power_interface         = #{powerInterface},
+            is_del                  = #{isDel}
+        WHERE pk_CarInfo = #{id}
+    </update>
+</mapper>

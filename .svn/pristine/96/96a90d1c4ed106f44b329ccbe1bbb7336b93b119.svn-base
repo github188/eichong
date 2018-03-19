@@ -1,0 +1,64 @@
+package com.wanma.ims.mapper;
+
+import java.util.List;
+
+import com.wanma.ims.model.UserNormalDO;
+
+
+public interface UserNormalMapper {
+	/** 
+	 * 统计-普通用户
+	 * @param
+	 * @param
+	 * */
+	public Integer countUserNormal();
+	
+	/** 
+	 * 分页-普通用户
+	 * @param
+	 * @param
+	 * */
+	public List<UserNormalDO> selectUserNormalPage();
+	
+	/** 
+	 * 批量-普通用户
+	 * @param
+	 * @param
+	 * */
+	public List<UserNormalDO> selectUserNormalList();
+	
+	/** 
+	 * 新增-普通用户
+	 * @param
+	 * @param
+	 * */
+	public Integer insertUserNormal();
+	
+	/** 
+	 * 编辑-普通用户
+	 * @param
+	 * @param
+	 * */
+	public Integer updateUserNormal();
+	
+	/** 
+	 * 删除-普通用户
+	 * @param
+	 * @param
+	 * */
+	public Integer deleteUserNormal();
+	
+	/** 
+	 * 审批（批量审批）-普通用户
+	 * @param
+	 * @param
+	 * */
+	public Integer verifyUserNormal();
+	
+	/** 
+	 * 绑定-普通用户
+	 * @param
+	 * @param
+	 * */
+	public Integer bindUserNormal();
+}

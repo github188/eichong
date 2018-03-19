@@ -1,0 +1,163 @@
+function toUnbindEvent() {
+    $('.chargingMethodBlock').unbind();
+    $('.electricPowerBlock').unbind();
+    $('.ownerShipBlock').unbind();
+    $('.provinceBlock').unbind();
+    $('.cityBlock').unbind();
+    $('.areaBlock').unbind();
+    $('.simNameBlock').unbind();
+    $('.chStatusBlock').unbind();
+    $('.typeBlock').unbind();
+    $('.rateInformationIdBlock').unbind();
+    $('.pileMakerBlock').unbind();
+    $('.productModelBlock').unbind();
+    selectModel();
+}
+toUnbindEvent();
+var selectMap={
+    1:'electricPileType',
+    3:'electricChargeMode',
+    4:'electricPower'
+}
+initSelects(selectMap);
+//功率选择
+$('#electricPower').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+});
+//充电方式选择
+$('#electricChargeMode').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+});
+//电桩类型
+$('#electricPileType').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+});
+//电桩制造厂商选择
+setTimeout('toPileMarkerList()',200);
+$('.pileMarkerUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+});
+
+//运营商设置
+$('.simNameUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .html($(this).text());
+});
+toLoadProvince('', '#province', '.provinceUl', 'toUnbindEvent');
+//点击省加载市
+$('.provinceUl').on("click", "li", function () {
+    var provinceCodeId = $(this).attr('data-option');
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+    var flag = $(this).attr('data-option');
+    if (flag == "") {
+        $('#city').html('请选择');
+        $('.cityUl').html('');
+        $('#city').attr('data-value', '');
+        $('#areaHtml').html('请选择');
+        $('.areaUl').html('');
+        $('#areaHtml').attr('data-value', '');
+    } else {
+        toLoadCity(provinceCodeId, '', '#city', '.cityUl', 'toUnbindEvent');
+    }
+})
+
+//点击市加载区
+$('.cityUl').on("click", "li", function () {
+    var cityCodeId = $(this).attr('data-option');
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+    var flag= $(this).attr('data-option');
+    if (flag == "") {
+        $('#areaHtml').html('请选择');
+        $('.areaUl').html('');
+        $('#areaHtml').attr('data-value', '');
+    } else {
+        toLoadArea(cityCodeId, '', '#areaHtml', '.areaUl', 'toUnbindEvent');
+    }
+})
+
+//点击区获取值
+$('.areaUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+})
+
+
+//点击新增，新增电桩
+function toAddElectricPile(){
+    var obj={
+        num: $('#num').val(),
+        chargingMethod:$('#chargingMethod').attr('data-value'),
+        power:$('#chPower').attr('data-value'),
+        typeId:$('#type').attr('data-value'),
+        interfaceStandard:$('#interfaceStandard').val(),
+        pileMakerId:$('#pileMaker').attr('data-value'),
+        productModelId:$('#productModel').attr('data-value'),
+        maxVoltage:$('#maxVoltage').val(),
+        maxElectricity:$('#maxElectricity').val(),
+        provinceCode:$('#province').attr('data-value'),
+        cityCode:$('#city').attr('data-value'),
+        areaCode:$('#areaHtml').attr('data-value'),
+        address:$('#address').val(),
+        longitude:$('#longitude').val(),
+        latitude:$('#latitude').val(),
+        muzzleNumber:$('#muzzleNumber').val(),
+        simName:$('#simName').html(),
+        simMac:$('#simMac').val(),
+        remark:$('#remark').val()
+    };
+    console.log(obj) //未执行ajax成功的回调函数
+    $.ajax({
+        type: "post",
+        url: basePath + addElectricUrl,
+        async: true,
+        data: obj,
+        success: function (data) {
+            if (data.success == true) {
+                layer.closeAll();
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:center"],
+                    shadeClose: false,
+                    closeBtn: 2,
+                    area: ['310px', '160px'],//宽高
+                    content: data.msg,
+                    //time: 2000,
+                    btn: ["确定"],
+                    yes: function (index, layero) {
+                        layer.closeAll();
+                        window.location.href = "electricPile_list.html";
+                    }
+                });
+
+            } else {
+                layer.closeAll();
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:center"],
+                    shadeClose: false,
+                    closeBtn: 2,
+                    area: ['310px', '160px'],//宽高
+                    content: data.msg,
+                    //time: 2000,
+                    btn: ["确定"]
+                });
+            }
+
+        }
+
+    });
+
+}
+
+//返回电桩列表页面
+$('body').on('click','#toPileList',function(){
+    window.location.href='electricPile_list.html';
+})

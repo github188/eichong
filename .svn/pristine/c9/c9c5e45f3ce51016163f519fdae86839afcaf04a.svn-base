@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+			
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="blank" />
+		<meta name="format-detection" content="telephone=no" />
+		<title>预约中-详情</title>
+		<!--<link rel="stylesheet" type="text/css" href="dist/css/bootstrap.min.css"/>-->
+		<link rel="stylesheet" type="text/css" href="dist/css/bootstrap.css"/>
+		<link rel="stylesheet" type="text/css" href="css/common.css"/>
+		<link rel="stylesheet" type="text/css" href="css/base.css"/>
+		<link rel="stylesheet" type="text/css" href="css/order_detail.css"/>
+		<link rel="stylesheet" type="text/css" href="css/mui.min.css" />
+		<!--[if lt IE 9]>
+			<script src="dist/js/html5shiv.min.js"></script>
+			<script src="dist/js/respond.min.js"></script>
+		<![endif]-->
+	</head>
+	<body>
+	<header class="navbar-fixed-top">
+		<div class="col-xs-2 headLeft" onclick="toHistoryPage()">
+			<img src="img/nav_btn_back.png"/>
+		</div>
+		<div class="col-xs-7 headCenter">
+			预约详情
+		</div>
+		<div class="col-xs-3 headRight" data-toggle="modal" 
+   data-target="#myModal" data-backdrop="static">
+			取消预约
+		</div>
+	</header>
+	<!--占位部分===================================================================-->
+	<div class="occupied"></div>
+	<!--剩余时间展示================================================================-->	
+	<div class="all">
+	<!--<div class="all" style="width: 100%;height:100%;overflow-y: scroll;">-->
+	<section class="residualTime">
+		<div class="chargePoint" id="chargePoint">
+			
+		</div>
+		<div class="chargeTime">
+			<div class="chargeDate" id="chargeDate">
+				2016.05.02
+			</div>
+			<div class="countDown">
+				还剩<span id="hour"></span>小时
+				<span id="min">2</span>分钟
+			</div>
+		</div>
+		<div class="reOrder" id="rePkBespoke" onclick="toRePkBespoke()">
+			续约
+		</div>
+	</section>
+	<!--预约详情提示================================================================-->
+	<section class="orderInfo">
+		<!--冻结金额============================-->
+		<div class="perTip">
+			<div class="commentLeft">
+				金额：
+			</div>
+			<div class="commentRight">
+				<span id="bespFrozenamt"></span>元（暂时冻结）
+			</div>
+		</div>
+		<!--下单时间============================-->
+		<div class="perTip">
+			<div class="commentLeft">
+				下单时间：
+			</div>
+			<div class="commentRight">
+				<span id="bespBespoketime">
+					<!--2015-11-25/08:00-->
+				</span>
+			</div>
+		</div>
+		
+		<!--预约内容============================-->
+		<div class="perTip">
+			<div class="commentLeft">
+				预约内容：
+			</div>
+			<div class="commentRight">
+				<span id="epName">
+					<!--杭州市天际大厦充电站-->
+				</span><br />
+				<span>
+					<span id="ep_num"></span>号桩-<span id="chargingMode">快充</span>&nbsp;
+					<span id="powerInterface">国标</span>&nbsp;
+					<span id="ePHeElectricpileHeadName">
+						<!--A枪口-->
+					</span>	
+					
+				</span><br /> 车位号
+				<span id="park_num">
+					<!--C-408-->
+				</span>
+			</div>
+		</div>
+		<!--预约地址============================-->
+		<div class="perTip">
+			<div class="commentLeft">
+				预约地址：
+			</div>
+			<div class="commentRight">
+				<span id="epAddress">
+					<!--杭州市西湖区天目山路181号-->
+				</span>
+			</div>
+		</div>
+	</section>
+	
+	<!--功能按钮组===================================================================-->
+	<section class="groupBtn">
+		<ul class="btnList">
+			<!--<li style="margin-left: 0;" class="hideFallLock" id="lightOn" onclick="toLightOn()">开灯寻桩</li>-->
+			<li style="margin-left: 0;" class="lightOff" id="lightOn" onclick="toLightOn()">开灯寻桩</li>
+			<li class="fallLock_on" id="fallLock" onclick="toFallLock()">降地锁</li>
+			<li style="margin-left: 5%;" class="navCharging">导航</li>
+			<t class="timeDown" style="display: none;"><span id="seconds">10</span></t>
+		</ul>
+		<!--<ul class="btnList1">
+			<li style="margin-left: 0;" class="navCharging">导航</li>
+		</ul>-->
+	</section>
+	</div>
+	<div class="chorCodeBlock">
+		<div class="baseText">
+			订单编号:
+		</div>
+		<div class="chorCode" id="bespResePaymentCode">
+			
+		</div>
+	</div>
+	<!--模态框===========================================================================-->
+	<div class="modal" id="myModal" tabindex="-1" role="dialog"  aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+		      <div class="modal-content">
+		         <div class="modal-header">
+		            <h4 class="modal-title" id="myModalLabel">
+		               		是否取消订单？
+		            </h4>
+		         </div>
+		         <!--<div class="modal-body">
+		         </div>-->
+		         <div class="modal-footer">
+		            <button type="button" class="btn btn-default return" 
+		               data-dismiss="modal" style="margin-left: 0;">返回
+		            </button>
+		            <button type="button" class="btn btn-primary certain" id="certain" 
+   data-target="#myModal2" data-backdrop="static" data-dismiss="modal" onclick="toCancelOrder()">
+		              	 确定
+		            </button>
+		         </div>
+		      </div><!-- /.modal-content -->
+		</div><!-- /.modal -->
+	</div>
+	<!--自制模态框========================================================================-->
+	<div class="modal" id="myModal2" tabindex="0" role="dialog"  aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+		      <div class="modal-content">
+		         <div class="modal-header">
+		            <h4 class="modal-title" id="myModalLabel2">
+		               		订单已取消
+		            </h4>
+		         </div>
+		         <div class="modal-body">
+		         	<p>本次消费:<span id="currentConsume"></span>元</p>
+		         	<p>账户余额:<span id="userBalance"></span>元</p>
+		         </div>
+		         <div class="modal-footer">
+		            <button type="button" class="btn btn-primary certain2" id="certain2" 
+   		 data-backdrop="static">
+		              	 确定
+		            </button>
+		         </div>
+		      </div><!-- /.modal-content -->
+		</div><!-- /.modal -->
+	</div>
+	
+	</body>
+	<script type="text/javascript" src="dist/js/jquery-1.11.0.js" ></script>
+	<script type="text/javascript">
+
+		$(function() {
+		    FastClick.attach(document.body);
+		});
+
+	</script>
+	<!--<script src="dist/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>-->
+	<script src="js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript" src="dist/js/bootstrap.js" ></script>
+	<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript" src="js/mui.min.js" ></script>
+	<script src="js/url.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/userinfo.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/order_detail.js" type="text/javascript" charset="utf-8"></script>
+</html>

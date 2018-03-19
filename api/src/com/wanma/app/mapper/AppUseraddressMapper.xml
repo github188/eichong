@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.app.dao.AppUseraddressMapper">
+
+	<resultMap id="tblUseraddressResultMap" type="TblUseraddress">
+		<id property="pkUseraddress" column="pk_UserAddress" />
+		<result property="pradUserid" column="prad_UserId" />
+		<result property="pradUsername" column="prad_UserName" />
+		<result property="pradPhonenumber" column="prad_PhoneNumber" />
+		<result property="pradPostalCode" column="prad_PostalCode" />
+		<result property="pradAddress" column="prad_Address" />
+		<result property="pradStreet" column="prad_Street" />
+		<result property="pradIsDefault" column="prad_IsDefault" />
+		<result property="pradCreatedate" column="prad_Createdate" />
+		<result property="pradUpdatedate" column="prad_Updatedate" />
+	</resultMap>
+	<resultMap id="pageResultMap" type="java.util.HashMap"
+		extends="tblUseraddressResultMap"></resultMap>
+	<resultMap id="findResultMap" type="java.util.HashMap"
+		extends="tblUseraddressResultMap"></resultMap>
+
+	<insert id="insertAddress" parameterType="TblUseraddress">
+		insert into tbl_UserAddress (
+		pk_UserAddress,
+		prad_UserId,
+		prad_UserName,
+		prad_PhoneNumber,
+		prad_PostalCode,
+		prad_Address,
+		prad_Street,
+		prad_IsDefault,
+		prad_Createdate,
+		prad_Updatedate
+		)values (
+		#{pkUseraddress},
+		#{pradUserid},
+		#{pradUsername},
+		#{pradPhonenumber},
+		#{pradPostalCode},
+		#{pradAddress},
+		#{pradStreet},
+		#{pradIsDefault},
+		#{pradCreatedate},
+		#{pradUpdatedate}
+		)
+	</insert>
+
+	<update id="updateAddress" parameterType="TblUseraddress">
+		update tbl_UserAddress set
+		pk_UserAddress=#{pkUseraddress},
+		prad_UserId=#{pradUserid},
+		prad_UserName=#{pradUsername},
+		prad_PhoneNumber=#{pradPhonenumber},
+		prad_PostalCode=#{pradPostalCode},
+		prad_Address=#{pradAddress},
+		prad_Street=#{pradStreet},
+		prad_IsDefault=#{pradIsDefault},
+		prad_Createdate=#{pradCreatedate},
+		prad_Updatedate=#{pradUpdatedate}
+		where
+		pk_ProductAddress=#{pkProductaddress} 
+	</update>
+
+	<delete id="deleteAddress" parameterType="map">
+		delete from
+		tbl_UserAddress
+		where
+		pk_UserAddress=#{pkUseraddress} 
+	</delete>
+
+	<select id="getAddress" parameterType="map" resultMap="tblUseraddressResultMap">
+		select
+		pk_UserAddress,
+		prad_UserId,
+		prad_UserName,
+		prad_PhoneNumber,
+		prad_PostalCode,
+		prad_Address,
+		prad_Street,
+		prad_IsDefault,
+		prad_Createdate,
+		prad_Updatedate
+		from tbl_UserAddress
+		where
+		pk_UserAddress=#{pkUseraddress} 
+	</select>
+	<!-- 获取用户默认地址 -->
+	<select id="findDefault" parameterType="map" resultMap="findResultMap">
+		select
+		pk_UserAddress,
+		prad_UserId,
+		(CASE WHEN prad_UserName IS NULL THEN '' ELSE prad_UserName END) prad_UserName,
+		(CASE WHEN prad_PhoneNumber IS NULL THEN '' ELSE prad_PhoneNumber END) prad_PhoneNumber,
+		(CASE WHEN prad_PostalCode IS NULL THEN '' ELSE prad_PostalCode END) prad_PostalCode,
+		(CASE WHEN prad_Address IS NULL THEN '' ELSE prad_Address END) prad_Address,
+		(CASE WHEN prad_Street IS NULL THEN '' ELSE prad_Street END) prad_Street,
+		prad_IsDefault,
+		prad_Createdate,
+		prad_Updatedate
+		from tbl_UserAddress
+		where
+		prad_UserId=#{pkUserInfo} 
+		and 
+		prad_IsDefault = 1
+	</select>
+ <select id="find" parameterType="map" resultMap="tblUseraddressResultMap">
+		select
+		pk_UserAddress,
+		prad_UserId,
+		prad_UserName,
+		prad_PhoneNumber,
+		prad_PostalCode,
+		prad_Address,
+		prad_Street,
+		prad_IsDefault,
+		prad_Createdate,
+		prad_Updatedate
+		from tbl_UserAddress
+		<where>
+			<if test="pkUseraddress != null">
+				pk_UserAddress=#{pkUseraddress}
+	     </if>
+			<if test="pradUserid != null">
+				and prad_UserId=#{pradUserid}
+	     </if>
+			<if test="pradUsername != null">
+				and prad_UserName=#{pradUsername}
+	     </if>
+			<if test="pradPhonenumber != null">
+				and prad_PhoneNumber=#{pradPhonenumber}
+	     </if>
+			<if test="pradPostalCode != null">
+				and prad_PostalCode=#{pradPostalCode}
+	     </if>
+			<if test="pradAddress != null">
+				and prad_Address=#{pradAddress}
+	     </if>
+			<if test="pradStreet != null">
+				and prad_Street=#{pradStreet}
+	     </if>
+			<if test="pradIsDefault != null">
+				and prad_IsDefault=#{pradIsDefault}
+	     </if>
+			<if test="pradCreatedate != null">
+				and prad_Createdate=#{pradCreatedate}
+	     </if>
+			<if test="pradUpdatedate != null">
+				and prad_Updatedate=#{pradUpdatedate}
+	     </if>
+		</where>
+	</select>
+	<select id="findAddresses" parameterType="map" resultMap="findResultMap">
+		select
+		pk_UserAddress,
+		prad_UserId,
+		prad_UserName,
+		prad_PhoneNumber,
+		prad_PostalCode,
+		prad_Address,
+		prad_Street,
+		prad_IsDefault,
+		prad_Createdate,
+		prad_Updatedate
+		from tbl_UserAddress
+		<where>
+			<if test="pkUseraddress != null">
+				pk_UserAddress=#{pkUseraddress}
+	     </if>
+			<if test="pradUserid != null">
+				and prad_UserId=#{pradUserid}
+	     </if>
+			<if test="pradUsername != null">
+				and prad_UserName=#{pradUsername}
+	     </if>
+			<if test="pradPhonenumber != null">
+				and prad_PhoneNumber=#{pradPhonenumber}
+	     </if>
+			<if test="pradPostalCode != null">
+				and prad_PostalCode=#{pradPostalCode}
+	     </if>
+			<if test="pradAddress != null">
+				and prad_Address=#{pradAddress}
+	     </if>
+			<if test="pradStreet != null">
+				and prad_Street=#{pradStreet}
+	     </if>
+			<if test="pradIsDefault != null">
+				and prad_IsDefault=#{pradIsDefault}
+	     </if>
+			<if test="pradCreatedate != null">
+				and prad_Createdate=#{pradCreatedate}
+	     </if>
+			<if test="pradUpdatedate != null">
+				and prad_Updatedate=#{pradUpdatedate}
+	     </if>
+		</where>
+	</select>
+	<!-- 根据id更新数据 -->
+	<update id="updateDefault" parameterType="map">
+		update tbl_UserAddress set
+		prad_IsDefault=#{pradIsDefault},
+		prad_Updatedate=#{pradUpdatedate}
+		where
+		pk_UserAddress=#{pkUseraddress} 
+	</update>
+	<!-- 跟新用户默认地址为非默认 -->
+	<update id="updateIsNotDefault" parameterType="map">
+		update
+		tbl_UserAddress set
+		prad_IsDefault=0,
+		prad_Updatedate=#{pradUpdatedate}
+		where
+		prad_UserId = #{pradUserid} and
+		prad_IsDefault = 1
+	</update>
+
+</mapper> 

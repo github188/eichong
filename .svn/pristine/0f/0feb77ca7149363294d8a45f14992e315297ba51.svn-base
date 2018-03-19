@@ -1,0 +1,67 @@
+package com.wanma.controller.cczc;
+
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.wanma.model.TblPowerstation;
+import com.wanma.service.TblElectricpileService;
+import com.wanma.service.TblPowerstationService;
+import com.wanma.support.common.FailedResponse;
+import com.wanma.support.common.ResultResponse;
+
+/**
+ * @Description: 电桩管理控制层
+ * @author lhy
+ * @createTime：2015-11-19 16:25:05
+ * @updateTime：
+ * @version：V1.0
+ */
+@SuppressWarnings({ "rawtypes", "unchecked" })
+@Controller
+@RequestMapping("/cczc")
+public class CczcChargePointController {
+	@Autowired
+	private TblPowerstationService pService;
+	@Autowired
+	private TblElectricpileService eService;
+	/**
+	 * @Description: 根据城市编号查询充电点信息
+	 * @return
+	 */
+	@RequestMapping("/syncStubGroupInfo")
+	@ResponseBody
+	public String syncStubGroupInfo(HttpServletRequest request) {
+		String cityCode = request.getParameter("cityCode");
+		TblPowerstation model = new TblPowerstation();
+		model.setPostOwnCityCode(cityCode);
+		if (StringUtils.isBlank(cityCode))
+			return new FailedResponse(1001, "params error").toString();
+		return new ResultResponse(pService.getPointsInfoByCityCode(model)).toString();
+	}
+
+	/**
+	 * @Description: 查询充电点详情
+	 * @return
+	 */
+	@RequestMapping("/syncStubInfo")
+	@ResponseBody
+	
+	public String syncStubInfo(HttpServletRequest request) {
+		String stubGroupId = request.getParameter("stubGroupId");
+		TblPowerstation model = new TblPowerstation();
+		model.setPkPowerstation(Integer.parseInt(stubGroupId));
+		if (StringUtils.isBlank(stubGroupId))
+			return new FailedResponse(1001, "params error").toString();
+		Map<String, Object> data = pService.selectDetail(model);
+		data.put("StubInfo", eService.selectDetailList(data));
+		return new ResultResponse(data).toString();
+	}
+
+}

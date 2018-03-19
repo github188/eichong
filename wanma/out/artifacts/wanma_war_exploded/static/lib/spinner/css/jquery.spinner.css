@@ -1,0 +1,52 @@
+
+
+.spinner button, .spinner .value {
+    text-align: center;
+    display: block;
+    float: left;
+    height: 100%;
+    line-height: 25px;
+    margin: 0;
+
+}
+.spinner button {
+    width: 50px;
+    height: 52px;
+    text-align: center;
+    line-height: 50px;
+    border: 1px solid #ccc;
+    text-indent: 0;
+    cursor: pointer;
+    background: white;
+
+}
+.spinner .decrease {
+	background-position: 0 -50px;
+	cursor: pointer;
+}
+.spinner .decrease[disabled] {
+    background-position: 0 -75px;
+    cursor: default;
+    background: whitesmoke;
+}
+
+.spinner .increase {
+    background-position: 0 0;
+    cursor: pointer;
+}
+.spinner .increase[disabled] {
+    background-position: 0 -75px;
+    cursor: default;
+    background: whitesmoke;
+}
+.spinner .value {
+    width: 60px;
+    border-left: none;
+    border-right: none;
+    cursor: default;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    height: 50px;
+}
+
+

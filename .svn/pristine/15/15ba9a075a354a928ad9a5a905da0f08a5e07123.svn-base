@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.TblUserCollectMapper">
+	<resultMap id="CollectResultMap" type="java.util.HashMap">
+		<id property="pkUsercollect" column="pk_UserCollect" />
+		<result property="uscoUserid" column="usCo_Userid" />
+	</resultMap>
+
+	<!-- 获取我的收藏列表 -->
+	<select id="getUserCollectList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	select * from (
+		select 
+			user.pk_UserCollect as "pkUsercollect",
+			user.usCo_Userid as "usCo_Userid",
+			user.usCo_Objectid as "usCo_Objectid",
+			user.usCo_Type as "usCo_Type",
+			user.usCo_AddTime as "usCo_AddTime",
+			pile.elPi_ElectricPileName as "name",
+			pile.elPi_ElectricPileAddress as "addr",
+			pile.elPi_Longitude as "lng",
+			pile.elPi_Latitude as "lat",
+			(select count(*) from tbl_electricpilehead head where pile.elPi_ChargingMode=5 and head.pk_ElectricPile=pile.pk_ElectricPile ) as "zlHeadNum",
+			(select count(*) from tbl_electricpilehead head where pile.elPi_ChargingMode=5 and head.pk_ElectricPile=pile.pk_ElectricPile and head.ePHe_ElectricpileHeadState=0) as "zlFreeHeadNum",
+			(select count(*) from tbl_electricpilehead head where pile.elPi_ChargingMode=14 and head.pk_ElectricPile=pile.pk_ElectricPile ) as "jlHeadNum",
+			(select count(*) from tbl_electricpilehead head where pile.elPi_ChargingMode=14 and head.pk_ElectricPile=pile.pk_ElectricPile and head.ePHe_ElectricpileHeadState=0) as "jlFreeHeadNum",
+			<choose>
+				<when test="lng != null and lat != null">
+			       round(6378.138*2*asin(sqrt(pow(sin((#{lat}*pi()/180-pile.elPi_Latitude*pi()/180)/2),2)+cos(#{lat}*pi()/180)*cos(pile.elPi_Latitude*pi()/180)* 
+		                                pow(sin((#{lng}*pi()/180-pile.elPi_Longitude*pi()/180)/2),2)))*1000)
+							        as "distance",
+				</when>
+				<otherwise>
+					null as "distance",
+				</otherwise>
+			</choose>
+			pile.elPi_IsAppoint as "poSt_IsAppoint"
+		from
+			tbl_usercollect user,tbl_ElectricPile pile
+		<where>
+			user.usCo_Objectid=pile.pk_ElectricPile and user.usCo_Type=1 and user.usCo_Userid=#{userId}
+		</where>
+		union all
+		select 
+			user.pk_UserCollect,
+			user.usCo_Userid,
+			user.usCo_Objectid,
+			user.usCo_Type,
+			user.usCo_AddTime,
+			st.powerStation_name poSt_Name,
+			st.address poSt_Address,
+			st.longitude poSt_Longitude,
+			st.latitude poSt_Latitude,
+			(SELECT count(*) FROM tbl_ElectricPile a, tbl_electricpilehead b WHERE a.pk_ElectricPile=b.pk_ElectricPile AND a.elPi_RelevancePowerStation=powerStation_id AND a.elPi_ChargingMode=5),
+			(SELECT count(*) FROM tbl_ElectricPile a, tbl_electricpilehead b WHERE a.pk_ElectricPile=b.pk_ElectricPile AND a.elPi_RelevancePowerStation=powerStation_id AND a.elPi_ChargingMode=5 AND b.ePHe_ElectricpileHeadState=0),
+			(SELECT count(*) FROM tbl_ElectricPile a, tbl_electricpilehead b WHERE a.pk_ElectricPile=b.pk_ElectricPile AND a.elPi_RelevancePowerStation=powerStation_id AND a.elPi_ChargingMode=14),
+			(SELECT count(*) FROM tbl_ElectricPile a, tbl_electricpilehead b WHERE a.pk_ElectricPile=b.pk_ElectricPile AND a.elPi_RelevancePowerStation=powerStation_id AND a.elPi_ChargingMode=14 AND b.ePHe_ElectricpileHeadState=0),
+			<choose>
+				<when test="lng != null and lat != null">
+			       round(6378.138*2*asin(sqrt(pow(sin((#{lat}*pi()/180-st.latitude*pi()/180)/2),2)+cos(#{lat}*pi()/180)*cos(st.latitude*pi()/180)* 
+		                                pow(sin((#{lng}*pi()/180-st.longitude*pi()/180)/2),2)))*1000),
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+			<!-- st.poSt_IsAppoint as "poSt_IsAppoint" -->
+		from
+			tbl_UserCollect user,tbl_PowerStation st
+		<where>
+			user.usCo_Objectid=st.powerStation_id and user.usCo_Type=2 and user.usCo_Userid=#{userId}
+		</where>
+	) as list
+		order by usCo_AddTime desc
+	</select>
+
+
+</mapper> 

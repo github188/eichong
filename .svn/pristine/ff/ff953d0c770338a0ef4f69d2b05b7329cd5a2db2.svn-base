@@ -1,0 +1,32 @@
+package com.wanma.ims.util;
+import java.util.Collection;
+
+public final class ObjectUtil {
+
+	public static boolean isEmpty(Object obj) {
+		return !(isNotEmpty(obj));
+	}
+
+	public static boolean isNotEmpty(Object obj) {
+		
+		if (obj instanceof Number) {
+			Number num = (Number) obj;
+			return num != null;
+		}
+		if (obj instanceof String) {
+			String arg = (String) obj;
+			return arg != null && arg.trim().length() > 0;
+		}
+
+		if (obj instanceof Collection<?>) {
+			Collection<?> list = (Collection<?>) obj;
+			return list != null && !list.isEmpty();
+		}
+		if (obj instanceof Object[]) {
+			Object[] arg = (Object[]) obj;
+			return arg != null && arg.length > 0;
+		}
+		return obj != null;
+	}
+	
+}

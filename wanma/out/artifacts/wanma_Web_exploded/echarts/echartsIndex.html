@@ -1,0 +1,701 @@
+<script type="text/javascript">
+	/****************************************加载各项总数量*******************************************/
+	//$("#dataCountDiv").load("/wanma/echarts/count_data.html");
+	$.ajax({
+        type: 'POST',
+        url: "/wanma/echarts/count_data.html" ,
+        success: function(data){
+        	navTab.getCurrentPanel().find("#dataCountDiv").html(data);
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+        	
+        }
+    });
+	/**********************************设置div高度**************************************/
+	var boxHeight = $("div.layoutBox:first").height();
+	$(".chartDiv").css("height", (boxHeight - 50) / 2);
+	$(".chartDiv_other").hide();
+	$("#innerView").hide();
+	$(".chartDivMap").css("height", boxHeight * 3 / 4);
+	$("div.layoutBox:first").css("overflow-y", "scroll");
+</script>
+<style>
+.chart_button {
+	width: 150px;
+	height: 24px;
+	border: 1px #999 solid;
+	color: #999;
+	cursor: pointer;
+}
+
+.chart_button1 {
+	width: 150px;
+	height: 24px;
+	border: 1px #ff8800 solid;
+	color: #FFF;
+	cursor: pointer;
+	background: #ff8800;
+}
+
+.chart_button:hover {
+	border: 1px #ff8800 solid;
+	color: #FFF;
+	background: #ff8800;
+}
+
+.chart_span {
+	width: 24.71%;
+	height: 100px;
+	color: #FFF;
+	text-align: center;
+	font-weight: bold;
+	line-height: 100px;
+	display: inline-block;
+	font-family: Arial, Helvetica, "宋体";
+	margin: auto;
+}
+
+.chart_span_width {
+	width: 33%;
+}
+</style>
+<body style="overflow-y: scroll;">
+	<div id='dataCountDiv' style="text-align: center">
+		<span class="chart_span" style="background: #006699;"><strong
+			style="line-height: 100px;">充电点:</strong> <strong
+			style="line-height: 100px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;电桩数量:</strong></span>
+		<span class="chart_span" style="background: #ff8800;"><strong
+			style="line-height: 100px;">爱充点:</strong> <strong
+			style="line-height: 100px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;电桩数量:</strong></span>
+		<span class="chart_span" style="background: #00cc33;"><strong
+			style="line-height: 100px;">注册人数:</strong></span> <span id='cz_countSpan' class="chart_span"
+			style="background: #cd5c5c;"><strong
+			style="line-height: 100px;">充值人数:</strong></span>
+	</div>
+	<div id="type_checkboxDiv">
+		<strong><input name="type_checkbox" type="checkbox"
+			onclick="reDrowMap()" value="0">其他 &nbsp;&nbsp;&nbsp;</strong><strong><input
+			name="type_checkbox" type="checkbox" onclick="reDrowMap()" value="1">爱充网
+			&nbsp;&nbsp;&nbsp;</strong><input name="type_checkbox" type="checkbox"
+			onclick="reDrowMap()" value="2"><strong>国网
+			&nbsp;&nbsp;&nbsp;</strong><input name="type_checkbox" type="checkbox"
+			onclick="reDrowMap()" value="3"><strong>特斯拉
+			&nbsp;&nbsp;&nbsp;</strong>
+	</div>
+	<div id="pileMapChartDiv" class="chartDivMap"
+		style="float: left; width: 100%; border-bottom: 1px solid #ccc;"></div>
+	<hr>
+	<div style="float: left; width: 99%; padding: 5px;">
+		开始时间： <input class="date textInput readonly valid" id="begin_date"
+			type="text" value="" onClick="WdatePicker()"
+			onchange="setReloadFlag()" /> 结束时间： <input
+			class="date textInput readonly valid" id="end_date" type="text"
+			value="" onClick="WdatePicker()" onchange="setReloadFlag()" /> <input
+			id='peopleButton' class="chart_button1" type="button" value="用户"
+			onclick="drowecharts()" /> <input id='pileButton'
+			class="chart_button" type="button" value="电桩"
+			onclick="drowePileCharts()" />
+	</div>
+	<br>
+	<div id="innerView"
+		style="float: left; width: 99%; border: 1px solid #ccc; padding: 5px;"></div>
+	<div id="outView">
+		<div id="peopleMonthZcDiv" class="chartDiv"
+			style="float: left; width: 49%; border: 1px solid #ccc; padding: 5px;"></div>
+		<div id="peopleZcFromDiv" class="chartDiv"
+			style="float: right; width: 48%; border: 1px solid #ccc; padding: 5px;"></div>
+		<div id="peopleChargeDiv" class="chartDiv"
+			style="float: left; width: 49%; border: 1px solid #ccc; padding: 5px;"></div>
+		<div id="peopleConsumptionDiv" class="chartDiv"
+			style="float: right; width: 48%; border: 1px solid #ccc; padding: 5px;"></div>
+
+
+
+		<div id="pileChargeDiv1" class="chartDiv_other"
+			style="float: left; width: 49%; border: 1px solid #ccc; padding: 5px;"></div>
+		<div id="pileChargeDiv2" class="chartDiv_other"
+			style="float: right; width: 48%; border: 1px solid #ccc; padding: 5px;"></div>
+		<div id="pileChargeDiv3" class="chartDiv_other"
+			style="float: left; width: 49%; border: 1px solid #ccc; padding: 5px;"></div>
+		<div id="pileChargeDiv4" class="chartDiv_other"
+			style="float: right; width: 48%; border: 1px solid #ccc; padding: 5px;"></div>
+
+		<div id="myChartPileBespokeDiv" class="chartDiv_other"
+			style="float: left; width: 49%; border: 1px solid #ccc; padding: 5px;"></div>
+		<div id="pileChargeDiv" class="chartDiv_other"
+			style="float: right; width: 48%; border: 1px solid #ccc; padding: 5px;"></div>
+		<div id="pileBesPokeDiv" class="chartDiv_other"
+			style="float: left; width: 49%; border: 1px solid #ccc; padding: 5px;"></div>
+		<div id="myChartPileChargeDiv" class="chartDiv_other"
+			style="float: right; width: 48%; border: 1px solid #ccc; padding: 5px;"></div>
+	</div>
+</body>
+<script type="text/javascript">
+	var myChartInnerDiv;
+
+	var reloadPeopleFlag = true;
+	var reloadPileFlag = true;
+
+	function setReloadFlag() {
+		reloadPeopleFlag = true;
+		reloadPileFlag = true;
+	}
+
+	var pileMapChartDiv;
+
+	var myChartDatePeopleCountDiv;
+	var myChartFromPeopleCountDiv;
+	var myConsumptionChartDateDiv;
+	var myChargeChartDateDiv;
+	var begin_date_val;
+	var end_date_val;
+
+	var pileChargeDiv1;
+	var pileChargeDiv2;
+	var pileChargeDiv3;
+	var pileChargeDiv4;
+	var myChartPileBespokeDiv;
+	var pileChargeDiv;
+	var pileBesPokeDiv;
+	var myChartPileChargeDiv;
+	
+	require.config({
+		paths : {
+			echarts : '/wanma/res/echarts/js'
+		}
+	});
+
+	/*****************************加载图表*****************************/
+	droweMapcharts();
+	
+	$.ajax({
+        type: 'POST',
+        dataType : "json",
+		cache : false,
+        url: "/wanma/admin/chart/chekcUser.do" ,
+        success: function(json){
+        	var userLevel=json.userLevel
+        	if(userLevel == '1' || userLevel == '2'){
+        		$("#peopleButton").click();
+        	}else{
+        		$("#peopleButton").hide();
+        		$("#pileButton").click();
+        		$("#type_checkboxDiv").hide();
+        		$("#cz_countSpan").hide();
+        		$("#cz_countSpan1").hide();
+        		$(".chart_span").addClass("chart_span_width");
+        	}
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+        	
+        }
+    });
+
+	var mapData;
+	function droweMapcharts() {
+		require([ 'echarts', 'echarts/theme/macarons', 'echarts/chart/bar',
+				'echarts/chart/line', 'echarts/chart/pie', 'echarts/chart/map'
+
+		], function(ec, theme) {
+			pileMapChartDiv = ec.init(document
+					.getElementById('pileMapChartDiv'), theme);
+			initMapChart();
+		});
+	}
+
+	function initMapChart() {
+		if (pileMapChartDiv) {
+			pileMapChartDiv.clear();
+		}
+		var ajaxUrl = "/wanma/admin/chart/getPileMapData.do"
+		var startDate = $("#begin_date").val();
+		var endDate = $("#end_date").val();
+		$.ajax({
+			type : 'POST',
+			url : ajaxUrl,
+			data : {
+				onlyData : 1,
+				startDate : startDate,
+				endDate : endDate
+			},
+			dataType : "json",
+			cache : false,
+			success : function(json) {
+				if (json.data1 != null) {
+					pileMapChartDiv.setOption(json.data1);
+					if(json.isShowTypeCheckBox == "Y"){
+						mapData = json;
+					}
+				}
+			}
+		});
+	}
+	
+	/********************************************地图数据筛选**********************************************/
+	function reDrowMap() {
+		var chk_value =[];
+		$('input[name="type_checkbox"]:checked').each(function(){
+			chk_value.push($(this).val());
+		});
+		if(chk_value.length == 0){
+			pileMapChartDiv.setOption(mapData.data1);
+			return;
+		}
+		var newData = jQuery.extend(true, {}, mapData);
+		var newChartData = newData.data1;
+		var seriesData = newChartData.series[0].data
+		var provinceTypeData = newData.data2
+		for(var i=0;i<seriesData.length;i++){
+			var province_count = 0;
+			for(var j=0;j<chk_value.length;j++){
+				var singCount = provinceTypeData[seriesData[i].name][chk_value[j]];
+				if(singCount){
+					province_count += singCount;
+				}
+			}
+			seriesData[i].value=province_count;
+		}
+		if (pileMapChartDiv) {
+			pileMapChartDiv.clear();
+		}
+		pileMapChartDiv.setOption(newChartData);
+	}
+	
+	function drowecharts() {
+		if (myChartInnerDiv) {
+			myChartInnerDiv.clear();
+		}
+		$("#innerView").hide();
+		$("#outView").show();
+		if (reloadPeopleFlag) {
+			begin_date_val = $("#begin_date").val();
+			end_date_val = $("#end_date").val();
+
+			if (end_date_val != "" && begin_date_val > end_date_val) {
+				alert("开始时间不可大于结束时间！")
+				return;
+			}
+			$('#pileButton').removeClass('chart_button1');
+			$('#pileButton').addClass('chart_button');
+			$('#peopleButton').addClass('chart_button1');
+			$(".chartDiv_other").hide();
+			$(".chartDiv").show();
+			require([ 'echarts', 'echarts/theme/macarons', 'echarts/chart/bar',
+					'echarts/chart/line', 'echarts/chart/pie',
+					'echarts/chart/gauge', 'echarts/chart/tree',
+					'echarts/chart/map'
+
+			], function(ec, theme) {
+				myChartDatePeopleCountDiv = ec.init(document
+						.getElementById('peopleMonthZcDiv'), theme);
+				myChartFromPeopleCountDiv = ec.init(document
+						.getElementById('peopleZcFromDiv'), theme);
+				myConsumptionChartDateDiv = ec.init(document
+						.getElementById('peopleChargeDiv'), theme);
+				myChargeChartDateDiv = ec.init(document
+						.getElementById('peopleConsumptionDiv'), theme);
+				initPeopleZcChart();
+				initPeopleFromChart();
+				initChargeChart();
+				initConsumptionChart();
+				reloadPeopleFlag = false;
+			});
+		} else {
+			$('#pileButton').removeClass('chart_button1');
+			$('#pileButton').addClass('chart_button');
+			$('#peopleButton').addClass('chart_button1');
+			$(".chartDiv_other").hide();
+			$(".chartDiv").show();
+		}
+	}
+
+	function initPeopleZcChart() {
+		if (myChartDatePeopleCountDiv) {
+			myChartDatePeopleCountDiv.clear();
+		}
+		var ajaxUrl = "/wanma/admin/chart/getPeopleZcDate.do?onlyData=1"
+		if (begin_date_val != null && begin_date_val != "") {
+			ajaxUrl += '&begin_date=' + begin_date_val
+		}
+		if (end_date_val != null && end_date_val != "") {
+			ajaxUrl += '&end_date=' + end_date_val
+		}
+		$.ajax({
+			type : 'POST',
+			url : ajaxUrl,
+			dataType : "json",
+			cache : false,
+			success : function(json) {
+				if (json.data1 != null) {
+					myChartDatePeopleCountDiv.setOption(json.data1);
+				} else {
+					myChartDatePeopleCountDiv.showLoading({
+						text : '月度注册情况(暂无数据)',
+						effect : 'nullData',
+						textStyle : {
+							fontSize : 30
+						}
+					});
+				}
+			}
+		});
+	}
+
+	function initPeopleFromChart() {
+		if (myChartDatePeopleCountDiv) {
+			myChartDatePeopleCountDiv.clear();
+		}
+		var ajaxUrl = "/wanma/admin/chart/getPeopleFromDate.do?onlyData=1"
+		if (begin_date_val != null && begin_date_val != "") {
+			ajaxUrl += '&begin_date=' + begin_date_val
+		}
+		if (end_date_val != null && end_date_val != "") {
+			ajaxUrl += '&end_date=' + end_date_val
+		}
+		$.ajax({
+			type : 'POST',
+			url : ajaxUrl,
+			dataType : "json",
+			cache : false,
+			success : function(json) {
+				if (json.data1 != null) {
+					myChartFromPeopleCountDiv.setOption(json.data1);
+				} else {
+					myChartFromPeopleCountDiv.showLoading({
+						text : '注册来源情况(暂无数据)',
+						effect : 'nullData',
+						textStyle : {
+							fontSize : 30
+						}
+					});
+				}
+			}
+		});
+	}
+
+	function initChargeChart() {
+		if (myChargeChartDateDiv) {
+			myChargeChartDateDiv.clear();
+		}
+		var ajaxUrl = "/wanma/admin/chart/getPeopleChargeDate.do?type=chargeBar"
+		if (begin_date_val != null && begin_date_val != "") {
+			ajaxUrl += '&begin_date=' + begin_date_val
+		}
+		if (end_date_val != null && end_date_val != "") {
+			ajaxUrl += '&end_date=' + end_date_val
+		}
+		$.ajax({
+			type : 'POST',
+			url : ajaxUrl,
+			dataType : "json",
+			cache : false,
+			success : function(json) {
+				if (json != null && json.isEmpty != "Y") {
+					myChargeChartDateDiv.setOption(json);
+				} else {
+					myChargeChartDateDiv.showLoading({
+						text : '用户充值情况(暂无数据)',
+						effect : 'nullData',
+						textStyle : {
+							fontSize : 30
+						}
+					});
+				}
+			}
+		});
+	}
+
+	function initConsumptionChart() {
+		if (myConsumptionChartDateDiv) {
+			myConsumptionChartDateDiv.clear();
+		}
+		var ajaxUrl = "/wanma/admin/chart/getPeopleConsumptionDate.do?type=consumptionBar"
+		if (begin_date_val != null && begin_date_val != "") {
+			ajaxUrl += '&begin_date=' + begin_date_val
+		}
+		if (end_date_val != null && end_date_val != "") {
+			ajaxUrl += '&end_date=' + end_date_val
+		}
+		$.ajax({
+			type : 'POST',
+			url : ajaxUrl,
+			dataType : "json",
+			cache : false,
+			success : function(json) {
+				if (json != null && json.isEmpty != "Y") {
+					myConsumptionChartDateDiv.setOption(json);
+				} else {
+					myConsumptionChartDateDiv.showLoading({
+						text : '用户消费情况(暂无数据)',
+						effect : 'nullData',
+						textStyle : {
+							fontSize : 30
+						}
+					});
+				}
+			}
+		});
+	}
+
+	function drowePileCharts() {
+		if (myChartInnerDiv) {
+			myChartInnerDiv.clear();
+		}
+		$("#innerView").hide();
+		$("#outView").show();
+		if (reloadPileFlag) {
+			begin_date_val = $("#begin_date").val();
+			end_date_val = $("#end_date").val();
+			if (end_date_val != "" && begin_date_val > end_date_val) {
+				alert("开始时间不可大于结束时间！")
+				return;
+			}
+			$('#peopleButton').removeClass('chart_button1');
+			$('#peopleButton').addClass('chart_button');
+			$('#pileButton').addClass('chart_button1');
+			$(".chartDiv_other").css("height", (boxHeight - 50) / 2);
+			$(".chartDiv").hide();
+			$(".chartDiv_other").show();
+			require([ 'echarts', 'echarts/theme/macarons', 'echarts/chart/bar',
+					'echarts/chart/line', 'echarts/chart/pie'
+
+			], function(ec, theme) {
+				pileChargeDiv1 = ec.init(document
+						.getElementById('pileChargeDiv1'), theme);
+				pileChargeDiv2 = ec.init(document
+						.getElementById('pileChargeDiv2'), theme);
+				pileChargeDiv3 = ec.init(document
+						.getElementById('pileChargeDiv3'), theme);
+				pileChargeDiv4 = ec.init(document
+						.getElementById('pileChargeDiv4'), theme);
+
+				myChartPileBespokeDiv = ec.init(document
+						.getElementById('myChartPileBespokeDiv'), theme);
+				pileChargeDiv = ec.init(document
+						.getElementById('pileChargeDiv'), theme);
+				pileBesPokeDiv = ec.init(document
+						.getElementById('pileBesPokeDiv'), theme);
+				myChartPileChargeDiv = ec.init(document
+						.getElementById('myChartPileChargeDiv'), theme);
+
+				initPileChart();
+				initBespokeChart();
+				initPileChargeChart();
+				initMyChartPileChargeChart();
+				reloadPileFlag = false;
+			});
+		} else {
+			$('#peopleButton').removeClass('chart_button1');
+			$('#peopleButton').addClass('chart_button');
+			$('#pileButton').addClass('chart_button1');
+			$(".chartDiv_other").css("height", (boxHeight - 50) / 2);
+			$(".chartDiv").hide();
+			$(".chartDiv_other").show();
+		}
+	}
+
+	function initPileChart() {
+		var ajaxUrl = "/wanma/admin/chart/getPileInfoData.do"
+		var startDate = $("#begin_date").val();
+		var endDate = $("#end_date").val();
+		$.ajax({
+			type : 'POST',
+			url : ajaxUrl,
+			data : {
+				onlyData : 1,
+				startDate : startDate,
+				endDate : endDate
+			},
+			dataType : "json",
+			cache : false,
+			success : function(json) {
+				if (json.data1 != null) {
+					pileChargeDiv1.setOption(json.data1);
+				} else {
+					pileChargeDiv1.showLoading({
+						text : '桩体数量(暂无数据)',
+						effect : 'nullData',
+						textStyle : {
+							fontSize : 30
+						}
+					});
+				}
+				if (json.data2 != null) {
+					pileChargeDiv2.setOption(json.data2);
+				} else {
+					pileChargeDiv2.showLoading({
+						text : '电桩消费(暂无数据)',
+						effect : 'nullData',
+						textStyle : {
+							fontSize : 30
+						}
+					});
+				}
+				if (json.data3 != null) {
+					pileChargeDiv3.setOption(json.data3);
+				} else {
+					pileChargeDiv3.showLoading({
+						text : '电桩区域分布(暂无数据)',
+						effect : 'nullData',
+						textStyle : {
+							fontSize : 30
+						}
+					});
+				}
+				if (json.data4 != null) {
+					pileChargeDiv4.setOption(json.data4);
+				} else {
+					pileChargeDiv4.showLoading({
+						text : '桩体故障(暂无数据)',
+						effect : 'nullData',
+						textStyle : {
+							fontSize : 30
+						}
+					});
+				}
+			}
+		});
+	}
+
+	function initBespokeChart() {
+		if (myChartPileBespokeDiv) {
+			myChartPileBespokeDiv.clear();
+		}
+		var ajaxUrl = "/wanma/admin/chart/getPileBespokeDate.do?type=pileBespokeBar"
+		if (begin_date_val != null && begin_date_val != "") {
+			ajaxUrl += '&beginDate=' + begin_date_val
+		}
+		if (end_date_val != null && end_date_val != "") {
+			ajaxUrl += '&endDate=' + end_date_val
+		}
+
+		$.ajax({
+			type : 'POST',
+			url : ajaxUrl,
+			dataType : "json",
+			cache : false,
+			success : function(json) {
+				if (json != null && json.isEmpty != "Y") {
+					myChartPileBespokeDiv.setOption(json);
+				} else {
+					myChartPileBespokeDiv.showLoading({
+						text : '电桩预约统计(暂无数据)',
+						effect : 'nullData',
+						textStyle : {
+							fontSize : 30
+						}
+					});
+				}
+			}
+		});
+	}
+
+	function initPileChargeChart() {
+		if (pileChargeDiv) {
+			pileChargeDiv.clear();
+			pileBesPokeDiv.clear();
+		}
+		var ajaxUrl = "/wanma/admin/chart/getPileChargeData.do"
+		var startDate = $("#chartPileChargeStartDate").val();
+		var endDate = $("#chartPileChargeEndDate").val();
+		$.ajax({
+			type : 'POST',
+			url : ajaxUrl,
+			data : {
+				onlyData : 1,
+				startDate : startDate,
+				endDate : endDate
+			},
+			dataType : "json",
+			cache : false,
+			success : function(json) {
+				if (json.data1 != null) {
+					pileChargeDiv.setOption(json.data1);
+				} else {
+					pileChargeDiv.showLoading({
+						text : '电桩预约中统计(暂无数据)',
+						effect : 'nullData',
+						textStyle : {
+							fontSize : 30
+						}
+					});
+				}
+				if (json.data2 != null) {
+					pileBesPokeDiv.setOption(json.data2);
+				} else {
+					pileBesPokeDiv.showLoading({
+						text : '电桩充电中统计(暂无数据)',
+						effect : 'nullData',
+						textStyle : {
+							fontSize : 30
+						}
+					});
+				}
+			}
+		});
+	}
+
+	function initMyChartPileChargeChart() {
+		if (myChartPileChargeDiv) {
+			myChartPileChargeDiv.clear();
+		}
+		var ajaxUrl = "/wanma/admin/chart/getPileChargedData.do?type=pileChargeBar"
+		if (begin_date_val != null && begin_date_val != "") {
+			ajaxUrl += '&beginDate=' + begin_date_val
+		}
+		if (end_date_val != null && end_date_val != "") {
+			ajaxUrl += '&endDate=' + end_date_val
+		}
+
+		$.ajax({
+			type : 'POST',
+			url : ajaxUrl,
+			dataType : "json",
+			cache : false,
+			success : function(json) {
+				if (json != null && json.isEmpty != "Y") {
+					myChartPileChargeDiv.setOption(json);
+				} else {
+					myChartPileChargeDiv.showLoading({
+						text : '电桩充电统计(暂无数据)',
+						effect : 'nullData', 
+						textStyle : {
+							fontSize : 30
+						}
+					});
+				}
+			}
+		});
+	}
+
+	function viewMyInnerInfo(option_data) {
+		var innerData = jQuery.extend(true, {}, option_data);
+		if (innerData.innerMonthGroup != null) {
+			innerData.xAxis[0].data = innerData.innerMonthGroup;
+		}
+		if(innerData.tempDataList != null){
+			innerData.series = innerData.tempDataList;
+		}
+		innerData.toolbox.feature.outView.show = true;
+		innerData.toolbox.feature.innerView.show = false;
+		require([ 'echarts', 'echarts/theme/macarons', 'echarts/chart/bar',
+				'echarts/chart/line', 'echarts/chart/pie',
+				'echarts/chart/gauge', 'echarts/chart/tree',
+				'echarts/chart/map'
+
+		], function(ec, theme) {
+			$("#outView").hide();
+			$("#innerView").css("height", boxHeight);
+			$("#innerView").show();
+			myChartInnerDiv = ec.init(document.getElementById('innerView'),
+					theme);
+			myChartInnerDiv.setOption(innerData);
+		});
+	}
+
+	function returnOutView() {
+		$("#outView").show();
+		myChartInnerDiv.clear();
+		$("#innerView").hide();
+	}
+</script>

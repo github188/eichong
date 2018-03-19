@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.app.dao.AdvertMapper">
+
+	<select id="getAdvertList" parameterType="Map" resultType="HashMap">
+		SELECT pk_ad_id adId,ad_name adName,ad_is_goto adGoto,ad_location adLocation,ad_type adType,
+		ad_url adUrl,ad_time adTime,
+		date_format(begin_ad_time,'%Y-%m-%d %H:%i:%s') beginTime,
+		date_format(end_ad_time,'%Y-%m-%d %H:%i:%s') endTime,
+		getFullPath('advPic',pk_ad_id) as advertPic
+		FROM
+		tbl_advertisement
+		where
+		ad_status=0
+		<if test="type != null">
+	      and ad_type=#{type}
+	     </if>
+		 <if test="type==2 and location != null">
+	      and ad_location=#{location}
+	     </if>
+		and end_ad_time &gt; now()
+		and begin_ad_time &lt; now()
+	</select>
+
+	<select id="getDynamicList" parameterType="Map" resultType="HashMap">
+		SELECT pk_ad_id adId,ad_name adName,
+		ad_desc adDesc,ad_url adUrl,
+		date_format(ad_createdate,'%Y-%m-%d %H:%i:%s') adDate,
+		getFullPath('advListPic', pk_ad_id) as dynamicPic
+		FROM
+		tbl_advertisement
+		where
+		ad_status=0
+		and LENGTH(trim(ad_URL))>0 
+		and end_ad_time &gt; now()
+		and begin_ad_time &lt; now()
+		order by ad_createdate desc
+		limit
+		#{pagerNumber},#{pagerNum}
+	</select>
+
+
+</mapper>      

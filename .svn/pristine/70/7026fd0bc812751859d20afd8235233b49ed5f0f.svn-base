@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<!-- 改版之后的申请列表 -->
+<mapper namespace="com.wanma.dao.TblCardapplicationformMapper">
+	<resultMap type="TblCardapplicationform" id="tblCardapplicationform">
+		<id property="pkCardapplicationform" column="pk_Cardapplicationform" />
+		<result property="cafUserId" column="caf_User_Id" />
+		<result property="cafPhone" column="caf_phone" />
+		<result property="cafRealName" column="caf_real_name" />
+		<result property="cafEmail" column="caf_email" />
+		<result property="cafAddress" column="caf_address" />
+		<result property="cafIdcard" column="caf_idcard" />
+		<result property="cafSex" column="caf_sex" />
+		<result property="cafBirthday" column="caf_birthday" />
+		<result property="cafCarCompanyId" column="caf_car_company_id" />
+		<result property="cafCarTypeId" column="caf_car_type_id" />
+		<result property="cafVehicleNumber" column="caf_vehicle_number" />
+		<result property="cafPlateNum" column="caf_plate_num" />
+		<result property="cafUsercard" column="caf_usercard" />
+		<result property="cafStatus" column="caf_Status" />
+		<result property="reportLossDate" column="reportLoss_date" />
+		<result property="reportLossStatus" column="reportLoss_status" />
+	</resultMap>
+	
+	<select id="findCardapplicationformId" parameterType="TblCardapplicationform"
+		resultType="string">
+		SELECT t.pk_CardApplicationForm
+		FROM tbl_cardapplicationform t
+		where t.caf_user_id=#{cafUserId} and t.caf_usercard = ''
+	</select>
+	
+	
+	
+	<select id="findCardapplicationformList" parameterType="TblCardapplicationform"
+		resultMap="tblCardapplicationform">
+		SELECT u.user_account userAccount,
+		(select a.carCompany_Name from tbl_carcompany a where a.pk_carCompany = caf_car_company_id) cafCarCompanyName,
+		(select a.CarInfo_StyleName from tbl_carinfo a where a.pk_CarInfo = caf_car_type_id) cafCarTypeName,
+		t.pk_CardApplicationForm pkCardapplicationform,
+		t.caf_phone,
+		t.caf_real_name,
+		t.caf_address,
+		t.caf_usercard,
+		t.createdate,
+		a.uc_Updatedate reportLoss_date, 
+		a.uc_Status reportLoss_status, 
+		t.caf_Status 
+		FROM tbl_cardapplicationform t 
+		LEFT JOIN tbl_user u ON t.caf_user_id=u.user_id 
+		LEFT JOIN tbl_usercard a ON a.uc_ExternalCardNumber = t.caf_usercard
+		WHERE 1=1
+		<if test="cafUsercard !=null and cafUsercard !=''">and t.caf_usercard like concat('%',#{cafUsercard},'%')</if>
+		<if test="cafStatus ==0">and t.caf_Status =0 </if>
+		<if test="cafStatus ==1">and (t.caf_Status =1 and a.uc_Status =0)</if>
+		<if test="cafStatus ==2">and t.caf_Status =2 </if>
+		<if test="cafStatus ==3">and a.uc_Status =1 </if>	
+		<if test="cafRealName !=null and cafRealName !=''">and t.caf_real_name like concat('%',#{cafRealName},'%')</if>
+		<if test="startTime !=null and startTime !=''">
+			<![CDATA[and date_format(t.createdate,'%Y-%m-%d') >= #{startTime}]]>
+		</if>
+		<if test="endTime !=null and endTime !=''">
+			<![CDATA[ and date_format(t.createdate,'%Y-%m-%d') <= #{endTime} ]]>
+		</if>
+		order by createdate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	
+	<select id="findCardapplicationformListCount" parameterType="TblCardapplicationform" resultType="long">
+		SELECT count(1) FROM tbl_cardapplicationform t 
+		LEFT JOIN tbl_user u ON t.caf_user_id=u.user_id 
+		LEFT JOIN tbl_usercard a ON a.uc_ExternalCardNumber = t.caf_usercard
+		WHERE 1=1
+		<if test="cafUsercard !=null and cafUsercard !=''">and t.caf_usercard like concat('%',#{cafUsercard},'%')</if>
+		<if test="cafStatus ==0">and t.caf_Status =0 </if>
+		<if test="cafStatus ==1">and (t.caf_Status =1 and a.uc_Status =0)</if>
+		<if test="cafStatus ==2">and t.caf_Status =2 </if>
+		<if test="cafStatus ==3">and a.uc_Status =1 </if>
+		<if test="cafRealName !=null and cafRealName !=''">and t.caf_real_name like concat('%',#{cafRealName},'%')</if>
+		<if test="startTime !=null and startTime !=''">
+			<![CDATA[and date_format(t.createdate,'%Y-%m-%d') >= #{startTime}]]>
+		</if>
+		<if test="endTime !=null and endTime !=''">
+			<![CDATA[ and date_format(t.createdate,'%Y-%m-%d') <= #{endTime} ]]>
+		</if>
+	</select>
+	
+	<update id="bindCardApply" parameterType="TblCardapplicationform">
+		update tbl_cardapplicationform set caf_Usercard=#{cafUsercard},caf_Status=1 where pk_Cardapplicationform=#{pkCardapplicationform}
+	</update>
+	<update id="updateCardReject">
+		UPDATE tbl_cardapplicationform
+			SET caf_Status = '2'
+		where 
+			pk_Cardapplicationform=#{pkCardAppFromId}
+	</update>
+	<update id="updateApplyCard">
+		UPDATE tbl_user_normal
+		SET apply_card = '0'
+		WHERE
+			user_id = (
+				SELECT
+					caf_user_id
+				FROM
+					tbl_cardapplicationform
+				WHERE
+					pk_Cardapplicationform =#{pkCardAppFromId}
+			)
+	</update>
+</mapper>
+<!-- 老版本申请列表
+<mapper namespace="com.wanma.dao.TblCardapplicationformMapper">
+	<resultMap type="TblCardapplicationform" id="tblCardapplicationform">
+		<id property="pkCardapplicationform" column="pk_Cardapplicationform" />
+		<result property="cafUserId" column="user_id" />
+		<result property="cafPhone" column="user_account" />
+		<result property="cafRealName" column="norm_real_name" />
+		<result property="cafEmail" column="norm_email" />
+		<result property="cafAddress" column="norm_address" />
+		<result property="cafIdcard" column="norm_id_card" />
+		<result property="cafSex" column="norm_sex" />
+		<result property="cafBirthday" column="norm_birthday" />
+		<result property="cafCarCompanyId" column="norm_car_company_id" />
+		<result property="cafCarTypeId" column="norm_car_type_id" />
+		<result property="cafVehicleNumber" column="norm_vehicle_number" />
+		<result property="cafPlateNum" column="norm_plate_num" />
+		<result property="cafUsercard" column="caf_usercard" />
+		<result property="cafStatus" column="apply_card" />
+	</resultMap>
+	<select id="findCardapplicationformList" parameterType="TblCardapplicationform"
+		resultMap="tblCardapplicationform">
+		SELECT u.user_account,
+		(select a.carCompany_Name from tbl_carcompany a where a.pk_carCompany = norm_car_company_id) cafCarCompanyName,
+		(select a.CarInfo_StyleName from tbl_carinfo a where a.pk_CarInfo = norm_car_type_id) cafCarTypeName,
+		t.* FROM tbl_user_normal t,tbl_user u
+		where t.user_id=u.user_id and t.apply_card = 1
+		<if test="userAccount !=null and userAccount !=''">and u.user_account like concat('%',#{userAccount},'%')</if>
+		<if test="cafUsercard !=null and cafUsercard !=''">and exists(select 1 from tbl_usercard a where a.uc_UserId=t.user_id and a.uc_InternalCardNumber like concat('%',#{cafUsercard},'%'))</if>
+		<if test="cafRealName !=null and cafRealName !=''">and t.norm_real_name like concat('%',#{cafRealName},'%')</if>
+		<if test="cafUserId !=null and cafUserId !=''">and t.user_id=#{cafUserId}</if>
+		<if test="cafStatus !=null">and t.apply_card=#{cafStatus}</if>
+		order by t.apply_card desc,createdate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	
+	<select id="findCardapplicationformListCount" parameterType="TblCardapplicationform" resultType="long">
+		SELECT count(1) FROM tbl_user_normal t,tbl_user u
+		where t.user_id=u.user_id and t.apply_card = 1
+		<if test="userAccount !=null and userAccount !=''">and u.user_account like concat('%',#{userAccount},'%')</if>
+		<if test="cafUsercard !=null and cafUsercard !=''">and exists(select 1 from tbl_usercard a where a.uc_UserId=t.user_id and a.uc_InternalCardNumber like concat('%',#{cafUsercard},'%'))</if>
+		<if test="cafRealName !=null and cafRealName !=''">and t.norm_real_name like concat('%',#{cafRealName},'%')</if>
+		<if test="cafUserId !=null and cafUserId !=''">and t.user_id=#{cafUserId}</if>
+		<if test="cafStatus !=null">and t.apply_card=#{cafStatus}</if>
+	</select>
+	
+	<update id="bindCard" parameterType="TblCardapplicationform">
+		update tbl_user_normal set apply_card=2 where user_id=#{cafUserId}
+	</update>
+</mapper> 
+-->

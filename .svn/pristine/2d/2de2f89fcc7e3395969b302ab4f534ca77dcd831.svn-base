@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/style.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/config/addRateInfo.css"/>
+    <title>费率新增</title>
+</head>
+<body>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 ">
+                <div class="ibox float-e-margins" style="margin: 0">
+                    <div class="">
+                        <div class="ibox-content clearfix">
+                            <div class="userBaseInfo col-sm-12 ">
+                                <div class="col-sm-12 titleTip">费率新增</div>
+                                <div class="col-sm-6" style="padding: 0">
+                                    <ul class="baseInfoLeft commonUl">
+                                        <li>
+                                            <span class="col-sm-6 col-xs-12">费率名称<span
+                                                    class="errorStyle">*</span></span>
+                                            <input type="" name="" id="raIn_Name" value="" autofocus="autofocus"
+                                                   class="col-sm-6 col-xs-12" placeholder="请输入费率名称"/>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-4 col-xs-6">费率位数</span>
+                                            <span class="col-sm-3 col-xs-12">
+                                                <input type="radio" name="raIn_type" checked="checked" value="3"/>新账户
+                                                <input type="radio" name="raIn_type" value="1"/>2位
+                                                <input type="radio" name="raIn_type" value="2"/>4位
+                                            </span>
+                                        </li>
+                                        <li id="uniformPriceLi">
+                                            <span class="col-sm-6 col-xs-6">统一价/度（选填）</span>
+                                            <input type="" name="" id="uniformPrice" value=""
+                                                   class="col-sm-6 col-xs-12" placeholder="请输入统一价/度（选填）"/>
+                                        </li>
+                                        <li id="raIn_ServiceChargeLi" style="display: none;">
+                                            <span class="col-sm-6 col-xs-6">服务费<span
+                                                    class="errorStyle">*</span></span>
+                                            <input type="" name="" id="raIn_ServiceCharge" value=""
+                                                   class="col-sm-6 col-xs-12" placeholder="请输入服务费"/>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">尖段电价/度<span
+                                                    class="errorStyle">*</span></span>
+                                            <input type="" name="" id="raIn_TipTimeTariffPrice" value=""
+                                                   autofocus="autofocus"
+                                                   class="col-sm-6 col-xs-12" placeholder="请输入尖段电价/度"/>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">峰段电价/度<span
+                                                    class="errorStyle">*</span></span>
+                                            <input type="" name="" id="raIn_PeakElectricityPrice" value=""
+                                                   class="col-sm-6 col-xs-12" placeholder="请输入峰段电价/度"/>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">平段电价/度<span
+                                                    class="errorStyle">*</span></span>
+                                            <input type="" name="" id="raIn_UsualPrice" value=""
+                                                   class="col-sm-6 col-xs-12" placeholder="请输入平段电价/度"/>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">谷段电价/度<span
+                                                    class="errorStyle">*</span></span>
+                                            <input type="" name="" id="raIn_ValleyTimePrice" value=""
+                                                   class="col-sm-6 col-xs-12" placeholder="请输入谷段电价/度"/>
+                                        </li>
+
+                                    </ul>
+                                </div>
+                                <div class="col-sm-6" id="rightDiv" style="padding: 0">
+                                    <ul class="baseInfoRight commonUl">
+                                        <li></li>
+                                        <li></li>
+                                        <li></li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">尖段服务费/度<span
+                                                    class="errorStyle">*</span></span>
+                                            <input type="" name="" id="raIn_TipTimeTariffMoney" value=""
+                                                   class="col-sm-6 col-xs-12" placeholder="请输入尖段服务费/度"/>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">峰段服务费/度<span
+                                                    class="errorStyle">*</span></span>
+                                            <input type="" name="" id="raIn_PeakElectricityMoney" value=""
+                                                   class="col-sm-6 col-xs-12" placeholder="请输入峰段服务费/度"/>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">平段服务费/度<span
+                                                    class="errorStyle">*</span></span>
+                                            <input type="" name="" id="raIn_UsualMoney" value=""
+                                                   class="col-sm-6 col-xs-12" placeholder="请输入平段服务费/度"/>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-12">谷段服务费/度<span
+                                                    class="errorStyle">*</span></span>
+                                            <input type="" name="" id="raIn_ValleyTimeMoney" value=""
+                                                   class="col-sm-6 col-xs-12" placeholder="请输入谷段服务费/度"/>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-sm-12 timeList">
+                                    <div class="timeListTitle">
+                                        <span id="" class="boom">时间段设置</span>
+                                        <span id="timeListAddBtn">新增</span><span id="timeListDeleteBtn">删除</span>
+                                    </div>
+                                </div>
+                                <div class="">
+                                    <table class="table table-bordered rateinfoTable" id="rateInfoAddTable">
+                                        <thead>
+                                        <tr class="active">
+                                            <th class="smallWidth"><input type="checkbox" name="" class="selAll1"
+                                                                          value="" disabled="disabled"/></th>
+                                            <th>时间段</th>
+                                            <th>开始时间</th>
+                                            <th>结束时间</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="rateinfoTbody">
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="rateInfoAddTipText"
+                                     style="display: none; margin-top: 6px; color: #FF0000;">
+                                </div>
+                            </div>
+
+                            <!--按钮组合-->
+                            <div class="saveBtn cursor" onclick="saveRateInfo()">保存</div>
+                            <div class="goBack commonBtn cursor" id="goback">返回</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/contabs.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/config/addRateInfo.js" type="text/javascript" charset="utf-8"></script>
+</html>

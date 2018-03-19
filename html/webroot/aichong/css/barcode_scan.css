@@ -1,0 +1,84 @@
+@charset "utf-8";
+*{
+	margin: 0;
+	padding: 0;
+}
+#bcid{
+	width: 100%;
+	min-height: 130px;
+	position: absolute;
+	top: 9%;
+	/*bottom: 44px;*/
+	bottom: 8%;
+	/*left: -480px;*/
+	text-align: center;
+	=background: #007AFF;
+	margin: 0 auto;
+}
+body,html{
+	width: 100%;
+	height: 100%;
+	font-size: 62.5%;
+	background: #5b5f60;
+	font-family: "微软雅黑";
+	position: relative;
+}
+.head{
+	width: 100%;
+	height: 5rem;
+	background: #FF7D00;
+	z-index: 10000;
+	position: fixed;
+}
+.headLeft{
+	height: 100%;
+	width: 20%;
+	text-align: center;
+	line-height: 5rem;
+	position: relative;
+}
+.headLeft img{
+	width: 50%;
+	height: 55%;
+	position: absolute;
+	top: 20%;
+	left: 15%;
+}
+.scanTip{
+	width:80%;
+	min-height: 2rem;
+	position: absolute;
+	bottom: 14%;
+	left: 10%;
+	font-size: 1.8rem;
+}
+.fbt{
+	width: 40%;
+	height: 4rem;
+	background: #FF7D00 url(../img/btn_lamp_on.png) no-repeat left center;
+	background-size:30% 90%;
+	color: #FFFFFF;
+	position: absolute;
+	bottom: 0%;
+	left: 25%;
+	border-radius: 1rem;
+	text-align: center;
+	line-height: 4rem;
+	font-size: 2rem;
+	padding-left: 10%;
+}
+.fbtActive{
+	width: 40%;
+	height: 4rem;
+	background: #FFFFFF url(../img/btn_lamp_off.png) no-repeat left center;
+	background-size:30% 90%;
+	color: #FF7D00;
+	position: absolute;
+	bottom: 0%;
+	left: 25%;
+	border-radius: 1rem;
+	text-align: center;
+	line-height: 4rem;
+	font-size: 2rem;
+	padding-left: 10%;
+}

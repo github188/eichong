@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.dao.CmsPowerRateMapper">
+	
+	<select id="getPowerrateListCount"  resultType="Integer">
+		select count(*) num from  tb_m_province
+	</select>
+	<select id="getPowerrateList" parameterType="map" resultType="hashmap">
+	     select  
+		     PROVINCE_ID,
+		     PROVINCE_NAME,
+		     CREATE_DATE,
+		     CREATE_USER,
+		     LAST_UPDATE_DATE,
+		     LAST_UPDATE_USER,
+		     Tip_Electricity,
+		     Peak_Electricity,
+		     Flat_Electricity,
+		     Valley_Electricity
+	     from  
+	    	 tb_m_province 
+	     	<where>
+				<if test="provinceId!=null and provinceId !=''">
+				and	PROVINCE_ID=#{provinceId}
+				</if>
+				<if test="cityId!=null and cityId !=''">
+				and	CITY_ID=#{cityId}
+				</if>			
+			</where>
+			order by last_update_date desc
+  </select> 
+	<update id="updatePowerrate" parameterType="map">
+	    update tb_m_province set
+			PROVINCE_ID = #{provinceId},
+			<if test="PROVINCE_NAME != null and PROVINCE_NAME != ''">
+				PROVINCE_NAME = #{PROVINCE_NAME},
+			</if>
+			<if test="CREATE_DATE != null and CREATE_DATE != ''">
+				CREATE_DATE = #{CREATE_DATE},
+			</if>
+			Tip_Electricity = #{Tip_Electricity},
+			Peak_Electricity = #{Peak_Electricity},
+			Flat_Electricity = #{Flat_Electricity},
+			Valley_Electricity = #{Valley_Electricity}		 
+		where PROVINCE_ID = #{provinceId}
+	</update>
+	
+	
+</mapper>

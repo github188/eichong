@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dubbox.dao.TblElectricpileMapper">
+
+	<resultMap id="tblElectricpileResultMap" type="TblElectricpile">
+		<id property="eId" column="pk_ElectricPile" />
+		<result property="eName" column="elPi_ElectricPileName" />
+		<result property="eCode" column="elPi_ElectricPileCode" />
+		<result property="addr" column="elPi_ElectricPileAddress" />
+		<result property="eLit" column="elPi_Longitude" />
+		<result property="eLat" column="elPi_Latitude" />
+		<result property="eHnum" column="elPi_PowerNumber" />
+		<result property="eAcode" column="elPi_AreaCode" />
+		<result property="eState" column="elPi_State" />
+		<result property="rejectTxt" column="elPi_RejectionReason" />
+		<result property="eType" column="elPi_Type" />
+		<result property="ePuser" column="elPi_PowerUser" />
+		<result property="eCmode" column="elPi_ChargingMode" />
+		<result property="ePsize" column="elPi_PowerSize" />
+		<result property="ePinf" column="elPi_PowerInterface" />
+		<result property="eMaker" column="elPi_Maker" />
+		<result property="image" column="elPi_Image" />
+		<result property="detImage" column="elPi_DetailImage" />
+		<result property="outV" column="elPi_OutputVoltage" />
+		<result property="inV" column="elPi_InputVoltage" />
+		<result property="outC" column="elPi_OutputCurrent" />
+		<result property="inC" column="elPi_InputCurrent" />
+		<result property="euType" column="elPi_UserType" />
+		<result property="eUid" column="elPi_UserId" />
+		<result property="createdate" column="elPi_Createdate" />
+		<result property="updatedate" column="elPi_Updatedate" />
+		<result property="remark" column="elPi_Remark" />
+		<result property="cId" column="elPi_Carid" />
+		<result property="eBind" column="elPi_Binding" />
+		<result property="isAppoint" column="elPi_IsAppoint" />
+		<result property="payStyle" column="elPi_PayStyle" />
+		<result property="maxE" column="elPi_MaxElectricity" />
+		<result property="sId" column="elPi_RelevancePowerStation" />
+		<result property="CModeName" column="elPi_ChargingModeName" />
+		<result property="powerUName" column="elPi_PowerUserName" />
+		<result property="resRate" column="raIn_ReservationRate"/>
+		<result property="chargeS" column="raIn_ServiceCharge"/>
+		<result property="eTell" column="elPi_Tell" />
+		<result property="uName" column="elPi_UserName" />
+		<result property="useLevel" column="elPi_useLevel" />
+		<result property="owner" column="elPi_elPiOwner" />
+		<result property="olTime" column="elPi_OnlineTime" />
+		<result property="eProCode" column="elPi_OwnProvinceCode" />
+		<result property="eCityCode" column="elPi_OwnCityCode" />
+		<result property="eCountyCode" column="elPi_OwnCountyCode" />
+		<result property="ePindex" column="ep_num"/>
+		<result property="distance" column="distance"/>
+		<result property="ecSt" column="comm_status"/>
+		<result property="gateId" column="elPi_GateId"/>
+		<result property="deleteFlag" column="delete_flag"/>
+		<result property="rateDate" column="raIn_QuantumDate"/>
+		<result property="jPrice" column="raIn_TipTimeTariff"/>
+		<result property="fPrice" column="raIn_PeakElectricityPrice"/>
+		<result property="pPrice" column="raIn_UsualPrice"/>
+		<result property="gPrice" column="raIn_ValleyTimePrice"/>
+		<result property="haveLine" column="have_connect_line"/>
+	</resultMap>
+	
+	<select id="get" parameterType="map" resultMap="tblElectricpileResultMap">
+		select
+		pk_ElectricPile,
+		elPi_ElectricPileName,
+		elPi_ElectricPileCode,
+		elPi_ElectricPileAddress,
+		elPi_Longitude,
+		elPi_Latitude,
+		elPi_PowerNumber,
+		elPi_State,
+		elPi_RejectionReason,
+		elPi_Type,
+		elPi_PowerUser,
+		elPi_ChargingMode,
+		elPi_PowerSize,
+		elPi_PowerInterface,
+		elPi_Maker,
+		elPi_OutputVoltage,
+		elPi_InputVoltage,
+		elPi_OutputCurrent,
+		elPi_InputCurrent,
+		elPi_UserType,
+		elPi_UserId,
+		elPi_Createdate,
+		elPi_Updatedate,
+		elPi_Remark,
+		elPi_Carid,
+		elPi_Binding,
+		elPi_IsAppoint,
+		elPi_PayStyle,
+		elPi_OnlineTime,
+		elPi_MaxElectricity,
+		 (select USER_LEVEL from p_m_user where USER_ID=elPi_UserId) useLevel ,
+		 elPi_UserName,
+		 elPi_Tell,
+	     elPi_OwnProvinceCode,
+	     elPi_OwnCityCode,
+	     elPi_OwnCountyCode,
+	     elPi_GateId
+		from tbl_ElectricPile
+		where
+		pk_ElectricPile=#{eId} 
+	</select>
+	
+</mapper> 

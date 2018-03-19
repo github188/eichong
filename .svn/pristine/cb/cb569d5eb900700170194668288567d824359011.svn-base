@@ -1,0 +1,80 @@
+package com.wanma.model;
+
+import java.io.Serializable;
+
+import com.bluemobi.product.model.common.BasicListAndMutiFile;
+
+public class TblUsermessage  extends BasicListAndMutiFile implements Serializable{
+			private java.lang.Integer id;
+			private java.lang.Integer userId;
+			private java.lang.Integer fromUserid;
+			private java.lang.String fromUsername;
+			private java.lang.String title;
+			private java.lang.String content;
+			private java.lang.Integer status;
+			private java.util.Date editTime;
+			private java.util.Date createTime;
+			public java.lang.Integer getId() {
+				return id;
+			}
+			public void setId(java.lang.Integer id) {
+				this.id = id;
+			}
+			public java.lang.Integer getToUserid() {
+				return userId;
+			}
+			public void setToUserid(java.lang.Integer toUserid) {
+				this.userId = toUserid;
+			}
+			public java.lang.Integer getFromUserid() {
+				return fromUserid;
+			}
+			public void setFromUserid(java.lang.Integer fromUserid) {
+				this.fromUserid = fromUserid;
+			}
+			public java.lang.String getFromUsername() {
+				return fromUsername;
+			}
+			public void setFromUsername(java.lang.String fromUsername) {
+				this.fromUsername = fromUsername;
+			}
+			public java.lang.String getTitle() {
+				return title;
+			}
+			public void setTitle(java.lang.String title) {
+				this.title = title;
+			}
+			public java.lang.String getContent() {
+				return content;
+			}
+			public void setContent(java.lang.String content) {
+				this.content = content;
+			}
+			public java.lang.Integer getStatus() {
+				return status;
+			}
+			public void setStatus(java.lang.Integer status) {
+				this.status = status;
+			}
+			public java.util.Date getEditTime() {
+				return editTime;
+			}
+			public void setEditTime(java.util.Date editTime) {
+				this.editTime = editTime;
+			}
+			public java.util.Date getCreateTime() {
+				return createTime;
+			}
+			public void setCreateTime(java.util.Date createTime) {
+				this.createTime = createTime;
+			}
+			@Override
+			public String toString() {
+				return "TblUsermessage [id=" + id + ", toUserid=" + userId
+						+ ", fromUserid=" + fromUserid + ", fromUsername="
+						+ fromUsername + ", title=" + title + ", content="
+						+ content + ", status=" + status + ", editTime="
+						+ editTime + ", createTime=" + createTime + "]";
+			}
+			
+}

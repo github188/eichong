@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.dao.CmsTimeChargeMapper">
+	<resultMap type="TblTimeCharge" id="result_timeCharge">
+		<id property="pkElectricpile" column="pk_ElectricPile" />
+		<id property="elpiElectricpilename" column="elPi_ElectricPileName" />
+		<id property="postName" column="poSt_Name" />
+		<id property="elpiElectricpilecode" column="elPi_ElectricPileCode" />
+		<id property="elPiMakerName" column="elPi_Maker_Name" />
+		<id property="elPiOwnProvince" column="elPi_OwnProvince" />
+		<id property="elPiOwnCity" column="elPi_elPiOwnCity" />
+		<id property="elPiOwnCounty" column="elPi_elPiOwnCounty" />
+		<id property="pkTimingChargeId" column="PK_TIMING_CHARGE_ID" />
+		<id property="issuedStatus" column="ISSUED_STATUS" />
+		<id property="remark" column="REMARK" />
+		<id property="status" column="TIMING_CHARGE_STATUS" />
+		<id property="chargeTime" column="TIMING_CHARGE" />
+		<id property="elpiElectricpilecode" column="ELPI_ELECTRICPILECODE" />
+	
+	</resultMap>
+	<select id="getElectricpileList" parameterType="TblTimeCharge" resultMap="result_timeCharge">
+			SELECT
+			e.pk_ElectricPile,
+			e.elPi_ElectricPileName,
+			e.elPi_ElectricPileCode,
+			p.poSt_Name,
+			(select maker_Name from tbl_pilemaker where e.elPi_Maker = pk_Carmaker) as elPi_Maker_Name,
+			(SELECT TIMING_CHARGE FROM tbl_ep_timing_charge tc WHERE tc.ELPI_ELECTRICPILECODE = e.elPi_ElectricPileCode) AS TIMING_CHARGE
+            FROM
+			tbl_electricpile e
+			LEFT JOIN tb_m_province a on   a.PROVINCE_ID=e.elPi_OwnProvinceCode 
+			LEFT JOIN tb_m_city c on   c.CITY_ID=e.elPi_OwnCityCode
+			LEFT JOIN tb_m_area d on    d.area_id=e.elPi_OwnCountyCode
+			LEFT JOIN tbl_powerstation p on   p.pk_PowerStation = e.elPi_RelevancePowerStation
+			where 1=1
+			<if test="elpiElectricpilecode !=null and elpiElectricpilecode!=''">
+				and e.elPi_ElectricPileCode LIKE CONCAT('%',#{elpiElectricpilecode},'%' )
+			</if>
+			<if test="postName !=null and postName!=''">
+				and p.poSt_Name LIKE CONCAT('%',#{postName},'%' )
+			</if>
+			<if  test="elPiOwnProvinceCode!=null and elPiOwnProvinceCode!='' ">
+			 	and	 a.PROVINCE_ID=#{elPiOwnProvinceCode}
+		 	</if >
+		 	<if test="elPiOwnCityCode!=null and elPiOwnCityCode!='' ">
+		 		and c.CITY_ID=#{elPiOwnCityCode}
+		 	</if>
+		 	<if test="elPiOwnCountyCode!=null and elPiOwnCountyCode!='' ">
+		 		and d.area_id=#{elPiOwnCountyCode}
+		 	</if>
+			order by e.elPi_Updatedate
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	
+	</select>
+	<select id="getElectricpileCount" parameterType="TblTimeCharge" resultType="long">
+		SELECT count(*) FROM
+			tbl_electricpile e
+			LEFT JOIN tb_m_province a on   a.PROVINCE_ID=e.elPi_OwnProvinceCode 
+			LEFT JOIN tb_m_city c on   c.CITY_ID=e.elPi_OwnCityCode
+			LEFT JOIN tb_m_area d on    d.area_id=e.elPi_OwnCountyCode
+			LEFT JOIN tbl_powerstation p on   p.pk_PowerStation = e.elPi_RelevancePowerStation
+			where 1=1
+			<if test="elpiElectricpilecode !=null and elpiElectricpilecode!=''">
+				and e.elPi_ElectricPileCode LIKE CONCAT('%',#{elpiElectricpilecode},'%' )
+			</if>
+			<if test="postName !=null and postName!=''">
+				and p.poSt_Name LIKE CONCAT('%',#{postName},'%' )
+			</if>
+			<if  test="elPiOwnProvinceCode!=null and elPiOwnProvinceCode!='' ">
+			 	and	 a.PROVINCE_ID=#{elPiOwnProvinceCode}
+		 	</if >
+		 	<if test="elPiOwnCityCode!=null and elPiOwnCityCode!='' ">
+		 		and c.CITY_ID=#{elPiOwnCityCode}
+		 	</if>
+		 	<if test="elPiOwnCountyCode!=null and elPiOwnCountyCode!='' ">
+		 		and d.area_id=#{elPiOwnCountyCode}
+		 	</if>
+		
+	</select>
+		<insert id="insertTimeCharge" parameterType="TblTimeCharge">
+			insert into tbl_ep_timing_charge
+			(
+			 ELPI_ELECTRICPILECODE,
+			 TIMING_CHARGE,
+			 TIMING_CHARGE_STATUS,
+			 ISSUED_STATUS,
+			 CREATE_DATE,
+			 UPDATE_DATE
+			)values(
+			 #{elpiElectricpilecode},
+			 #{chargeTime},
+			 #{status},
+			 #{issuedStatus},
+			 now(),
+			 now()
+			)
+		
+		</insert>
+	<select id="findCodeFormTimeCharge" parameterType="String" resultType="int">
+		select count(*) from tbl_ep_timing_charge
+		where ELPI_ELECTRICPILECODE = #{elpiElectricpilecode}
+	</select>
+	<update id="updateTimeCharge" parameterType="TblTimeCharge">
+		update tbl_ep_timing_charge
+		set
+		TIMING_CHARGE= #{chargeTime},
+		TIMING_CHARGE_STATUS=  #{status},
+		UPDATE_DATE=now()
+		where ELPI_ELECTRICPILECODE =  #{elpiElectricpilecode}
+	</update>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+</mapper>

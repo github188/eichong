@@ -1,0 +1,26 @@
+/*layer.open({
+ type:2,
+ time:5
+ })*/
+getWxChargeStop();
+// 获取信息========================
+function getWxChargeStop() {
+    // var req = datas.data;
+    var tC = localStorage.getItem('tC');
+
+    $('#timeChargeF').html(tC);
+    var power = localStorage.getItem('powerF');
+    $('#powerF').html(parseFloat(power).toFixed(2) + 'kW');
+    var feeTotal = localStorage.getItem('feeTotalF');
+    $('#feeTotalF').html(parseFloat(feeTotal).toFixed(2) + '元');
+    var feeBack = localStorage.getItem('feeBack');
+    $('#feeBack').html(parseFloat(feeBack).toFixed(2) + '元');
+
+}
+$('#haveDone').on('click', function () {
+    toPage("charge.html");
+})
+
+function toPage(url) {
+    return window.location.href = url;
+}

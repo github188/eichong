@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/fav/couponDetail_list.css"/>
+    <title>现金券明细</title>
+</head>
+<body>
+<div class="container animated fadeInRight">
+    <div class="row">
+        <div class="formBlock clearfix">
+            <form id="couponDetailForm">
+                <div class="col-xs-12 col-sm-11 col-md-11 col-lg-11">
+                    <div class="userListSelect row">
+                        <div class="col-sm-3 col-xs-12">
+                            <div class="col-sm-3 queryParam">
+                                优惠码
+                            </div>
+                            <div class="col-sm-9 userAccount">
+                                <input type="text" name="cpCouponcode" value="" class="userAccountInput"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-sm-offset-1 col-xs-12">
+                            <div class="col-sm-4 queryParam">
+                                活动类型
+                            </div>
+                            <div class="col-sm-8  col-xs-12 model-select-box">
+                                <div class="model-select-text activeTypeBlock" data-value="2" id="activeType">渠道活动</div>
+                                <span class="downRow activeTypeBlock"></span>
+                                <input type="text" name="cpActivitytype" value="" hidden="hidden"/>
+                                <ul class="model-select-option activeTypeUl">
+                                    <li data-option="" class="seleced">全部</li>
+                                    <li data-option="1">用户活动</li>
+                                    <li data-option="2">渠道活动</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-sm-4 col-sm-offset-1 col-xs-12">
+                            <div class="col-sm-2 queryParam">
+                                活动
+                            </div>
+                            <div class="col-sm-9  col-xs-12 model-select-box">
+                                <div class="model-select-text activeBlock" data-value="" id="active">全部</div>
+                                <span class="downRow activeBlock"></span>
+                                <input type="text" name="pkActivity" value="" hidden="hidden"/>
+                                <ul class="model-select-option activeUl">
+
+                                </ul>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="col-sm-12" style="background: #FFFFFF;height: 20px;"></div>
+                    <div class="userListSelect row">
+
+                        <div class="col-sm-3 col-xs-12">
+                            <div class="col-sm-3 queryParam">
+                                用户号
+                            </div>
+                            <div class="col-sm-9 userAccount">
+                                <input type="text" name="userPhone" value="" class="userAccountInput"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-sm-offset-1 col-xs-12">
+                            <div class="col-sm-4 queryParam">
+                                电桩限制
+                            </div>
+                            <div class="col-sm-8 col-xs-12 model-select-box">
+                                <div class="model-select-text cpLimitationBlock" data-value="" id="cpLimitationHtml">全部</div>
+                                <span class="downRow cpLimitationBlock"></span>
+                                <input type="text" name="cpLimitation" value="" hidden="hidden"/>
+                                <ul class="model-select-option cpLimitationUl">
+                                    <li data-option="" class="seleced">全部</li>
+                                    <li data-option="1">仅限交流充电桩</li>
+                                    <li data-option="2">仅限直流充电桩</li>
+                                    <li data-option="3">不限充电桩</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-sm-4 col-sm-offset-1 col-xs-12">
+                            <div class="col-sm-2 queryParam">
+                                状态
+                            </div>
+                            <div class="col-sm-9  col-xs-12 model-select-box">
+                                <div class="model-select-text cpstatesBlock" data-value="3" id="cpstatesHtml">已兑换已使用</div>
+                                <span class="downRow cpstatesBlock"></span>
+                                <input type="text" name="cpstates" value="" hidden="hidden"/>
+                                <ul class="model-select-option cpstatesUl">
+                                    <li data-option="" class="seleced">全部</li>
+                                    <li data-option="1">未兑换未过期</li>
+                                    <li data-option="2">未兑换已过期</li>
+                                    <li data-option="3">已兑换已使用</li>
+                                    <li data-option="4">已兑换未使用未过期</li>
+                                    <li data-option="5">已兑换未使用已过期</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12" style="background: #FFFFFF;height: 20px;"></div>
+                    <div class="userListSelect row">
+                        <div class="col-sm-4 col-xs-12">
+                            <div class="col-sm-4 queryParam">
+                                现金券品种
+                            </div>
+                            <div class="col-sm-8 col-xs-12 model-select-box">
+                                <div class="model-select-text couponvarietyBlock" data-value="" id="couponvarietyHtml">全部</div>
+                                <span class="downRow couponvarietyBlock"></span>
+                                <input type="text" name="pkCouponvariety" value="" hidden="hidden"/>
+                                <ul class="model-select-option couponvarietyUl">
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-1 col-md-1 col-lg-1" style="position: relative;">
+                    <div class="queryBtn" onclick="couponDetailListSearch()">
+                        查询
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!--按钮部分开始==========================================================-->
+        <div class="btnBlock">
+            <div class="col-sm-10 col-xs-12 col-md-10" style="">
+                <div class="col-sm-2 col-xs-2 btnStyle showBtn" id="showSet" style="display: none;">
+                    显示
+                </div>
+                <ul class="checkList animated fadeInDown col-sm-5 col-xs-5" style="display: none;">
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name="" data-state="0" value="" disabled="disabled"
+                                   checked="checked" data-flag="couponDetail_couponvariety"/>
+                        </div>
+                        <label>现金券品种</label>
+                    </li>
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name="" data-state="0" value="" disabled="disabled"
+                                   checked="checked" data-flag="couponDetail_cpstates"/>
+                        </div>
+                        <label>状态</label>
+
+                    </li>
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name="" data-state="0" value="" disabled="disabled"
+                                   checked="checked" data-flag="couponDetail_actActivityname"/>
+                        </div>
+                        <label>活动名称</label>
+
+                    </li>
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name="" data-state="0" value="" disabled="disabled"
+                                   checked="checked" data-flag="couponDetail_userPhone"/>
+                        </div>
+                        <label>用户</label>
+                    </li>
+
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name="" data-state="0" value=""
+                                   data-flag="couponDetail_cpLimitation"/>
+                        </div>
+                        <label>电桩限制</label>
+                    </li>
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name="" data-state="0" value=""
+                                   data-flag="couponDetail_cpCouponcode"/>
+                        </div>
+                        <label>优惠码</label>
+                    </li>
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name="" data-state="0" value=""
+                                   data-flag="couponDetail_getcouponvariety"/>
+                        </div>
+                        <label>获取时间</label>
+                        <!--获取时间和生效时间一致，故自定义data-falg-->
+                    </li>
+
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name="" data-state="0" value=""
+                                   data-flag="couponDetail_cpUpdatedate"/>
+                        </div>
+                        <label>使用时间</label>
+                    </li>
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name="" data-state="0" value=""
+                                   data-flag="couponDetail_cpBegindate"/>
+                        </div>
+                        <label>生效时间</label>
+                    </li>
+
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name="" data-state="0" value=""
+                                   data-flag="couponDetail_cpEnddate"/>
+                        </div>
+                        <label>到期时间</label>
+                    </li>
+
+                </ul>
+                <div class="col-sm-2 col-xs-2 col-sm-offset-1 col-xs-offset-1 btnStyle" id="dataExport" style="display: none;">
+                    导出
+                </div>
+                <div class="col-sm-2 col-xs-2 col-sm-offset-1 col-xs-offset-1 btnStyle" id="deleteBtn" style="display: none;">
+                    删除
+                </div>
+            </div>
+            <div class="col-sm-2 col-md-2"></div>
+        </div>
+        <!--表格部分开始==========================================================-->
+        <div class="showSet">
+            <table class=" table table-bordered text-center" style="border: 1px solid #DCDCDC; overflow-x: scroll;" >
+                <thead>
+                <tr>
+                    <th style="min-width: 60px;" class="">选择</th>
+                    <th style="min-width: 100px;" class="couponDetail_couponvariety">现金券品种</th>
+                    <th style="min-width: 90px;" class="couponDetail_cpstates">状态</th>
+                    <th style="min-width: 170px;" class="couponDetail_actActivityname">活动名称</th>
+                    <th style="min-width: 60px;" class="couponDetail_userPhone">用户</th>
+                    <th style="min-width: 80px;" class="couponDetail_cpLimitation">电桩限制</th>
+                    <th style="min-width: 60px;" class="couponDetail_cpCouponcode">优惠码</th>
+                    <th style="min-width: 120px;" class="couponDetail_getcouponvariety">获取时间</th>
+                    <th style="min-width: 120px;" class="couponDetail_cpUpdatedate">使用时间</th>
+                    <th style="min-width: 120px;" class="couponDetail_cpBegindate">生效时间</th>
+                    <th style="min-width: 120px;" class="couponDetail_cpEnddate">到期时间</th>
+                </tr>
+                </thead>
+                <tbody id="myTbogy">
+
+                </tbody>
+            </table>
+
+            <div id="couponDetailPage" class="pagination">
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layDate-v5.0.4/laydate/laydate.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="../../js/contabs.min.js"></script>
+<script src="../../js/fav/couponDetail_list.js" type="text/javascript" charset="utf-8"></script>
+</html>

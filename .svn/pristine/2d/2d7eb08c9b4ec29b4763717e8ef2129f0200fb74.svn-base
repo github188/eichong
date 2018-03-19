@@ -1,0 +1,226 @@
+package com.wanma.controller;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.bluemobi.product.common.MessageManager;
+import com.bluemobi.product.model.common.DwzAjaxResult;
+import com.bluemobi.product.model.common.DwzPagerMySQL;
+import com.bluemobi.product.utils.JsonObject;
+import com.wanma.app.controller.ElectricPileListController;
+import com.wanma.dao.CmsCommitLogMapper;
+import com.wanma.model.TblBomList;
+import com.wanma.model.TblTypespan;
+import com.wanma.service.CmsCommitLogService;
+import com.wanma.service.CmsTblTypespanService;
+import com.wanma.service.impl.CmsCommitLogServiceImpl;
+
+/**
+ * FrontEndDispatcherCtrl 地图跳转
+ * 
+ * @author Haner
+ */
+@Controller
+@RequestMapping("/admin/product")
+public class CmsTypeSpanController {
+
+	/** 日志文件生成器 */
+	private static Logger log = Logger
+			.getLogger(ElectricPileListController.class);
+	@Autowired
+	private CmsTblTypespanService tblTypespanService;
+
+	@Autowired
+	private CmsCommitLogMapper commitLogDao;
+	@Autowired
+	private CmsCommitLogService commitLogService;
+
+	/**
+	 * 产品型号列表
+	 *
+	 * @param path
+	 * @return
+	 */
+	@RequestMapping("typeSpanList")
+	public String electric(@ModelAttribute("pager") DwzPagerMySQL pager,
+			@ModelAttribute TblTypespan tblTypespan, Model model) {
+		// 总数
+		long total = tblTypespanService.getTblTypespanListCount(tblTypespan);
+		if (total <= pager.getOffset()) {
+			pager.setPageNum(1L);
+		}
+		// 设置查询参数
+		tblTypespan.setPager(pager);
+		List<Map<String, Object>> tblTypespanList = (List<Map<String, Object>>) tblTypespanService
+				.getTblTypespanList(tblTypespan);
+		pager.setTotal(total);
+
+		model.addAttribute("tblTypespanList", tblTypespanList);
+		model.addAttribute("pager", pager);
+		model.addAttribute("tblTypespan", tblTypespan);
+		return "backstage/typeSpan/typeSpan-list";
+	}
+
+	/**
+	 * 产品型号新增UI
+	 *
+	 * @param path
+	 * @return
+	 */
+	@RequestMapping("addTypeSpanUi")
+	public String addTypeSpanUi(Model model) {
+		return "backstage/typeSpan/typeSpan-add";
+	}
+
+	/***
+	 * 添加产品型号
+	 * 
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "/addTypeSpan")
+	@ResponseBody
+	public String addTypeSpan(TblTypespan tblTypespan, HttpSession session,
+			HttpServletRequest request) {
+		// 处理结果信息
+		DwzAjaxResult dwzResult = null;
+		try {
+
+			if(tblTypespanService.selectTsTypeSpan(tblTypespan.getTsTypeSpan())>0){
+				dwzResult = new DwzAjaxResult("300", "该产品型号已存在", "addTypeSpan",
+						"", "");
+			}else{
+				tblTypespanService.addTypeSpan(tblTypespan);
+				dwzResult = new DwzAjaxResult("200", "新增成功", "typeSpanList",
+						"closeCurrent", "");
+			}
+		} catch (Exception e) {
+			// 出错日志
+			log.error(e.getLocalizedMessage());
+			// 设置错误信息
+			dwzResult = new DwzAjaxResult("300", "新增失败", "addTypeSpan", "", "");
+		}
+		// 返回处理结果信息
+		return new JsonObject(dwzResult).toString();
+	}
+
+	/**
+	 * 产品型号修改UI
+	 *
+	 * @param path
+	 * @return
+	 */
+	@RequestMapping("changeTypeSpanUi")
+	public String changeTypeSpanUi(TblTypespan tblTypespan, Model model) {
+		TblTypespan tblTypespanInfo = tblTypespanService.findOne(tblTypespan);
+		List<TblBomList> bomList = tblTypespanService
+				.getBomList(tblTypespanInfo);
+		if (bomList.size() == 0)
+			bomList.add(new TblBomList());
+		model.addAttribute("typeSpan", tblTypespanInfo);
+		model.addAttribute("bomList", bomList);
+		return "backstage/typeSpan/typeSpan-edit";
+	}
+
+	/***
+	 * 修改产品型号
+	 * 
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "/changeTypeSpan")
+	@ResponseBody
+	public String changeTypeSpan(TblTypespan tblTypespan, HttpSession session,
+			HttpServletRequest request) {
+		// 处理结果信息
+		DwzAjaxResult dwzResult = null;
+		try {
+			tblTypespanService.changeTypeSpan(tblTypespan);
+			dwzResult = new DwzAjaxResult("200", "修改成功", "typeSpanList",
+					"closeCurrent", "");
+		} catch (Exception e) {
+			// 出错日志
+			log.error(e.getLocalizedMessage());
+			// 设置错误信息
+			dwzResult = new DwzAjaxResult("300", "修改失败", "addTypeSpan", "", "");
+		}
+		// 返回处理结果信息
+		return new JsonObject(dwzResult).toString();
+	}
+
+	/**
+	 * 产品型号查看
+	 *
+	 * @param path
+	 * @return
+	 */
+	@RequestMapping("viewTypeSpanUi")
+	public String viewTypeSpanUi(TblTypespan tblTypespan, Model model) {
+		TblTypespan tblTypespanInfo = tblTypespanService.findOne(tblTypespan);
+		List<TblBomList> bomList = tblTypespanService
+				.getBomList(tblTypespanInfo);
+		if (bomList.size() == 0)
+			bomList.add(new TblBomList());
+		model.addAttribute("typeSpan", tblTypespanInfo);
+		model.addAttribute("bomList", bomList);
+		return "backstage/typeSpan/typeSpan-view";
+	}
+
+	/***
+	 * 电桩版本升级
+	 * 
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "/updateEpVision")
+	@ResponseBody
+	public String updateEpVision(@RequestParam("ids") String ids,
+			HttpServletRequest request) {
+		// 处理结果信息
+		DwzAjaxResult dwzResult = new DwzAjaxResult("200", "已下发升级命令",
+				"typeSpanList", "", "");
+		try {
+			String[] idArray = ids.split(",");
+			MessageManager m = new MessageManager();
+			String apiBaseUrl = m.getSystemProperties("apiRoot");
+			for (String id : idArray) {
+				String result = tblTypespanService.updateEpVision(id,
+						apiBaseUrl);
+				if ("100".equals(result)) {
+					commitLogService.insert("电桩程序升级成功，产品型号表id：" + id);
+				} else {
+					commitLogService.insert("电桩电桩升级失败，产品型号表id：" + id);
+					TblTypespan tblTypespan = new TblTypespan();
+					tblTypespan.setPkTypeSpanId(Integer.valueOf(id));
+					TblTypespan tblTypespanInfo = tblTypespanService
+							.findOne(tblTypespan);
+					return new JsonObject(new DwzAjaxResult("300",
+							tblTypespanInfo.getTsModelName()
+									+ "升级命令下发失败:接口返回错误代码：" + result,
+							"typeSpanList", "", "")).toString();
+				}
+			}
+		} catch (Exception e) {
+			// 出错日志
+			log.error("操作失败", e);
+			// 设置错误信息
+			dwzResult = new DwzAjaxResult("300", "升级命令下发失败，系统出错："
+					+ e.getMessage(), "typeSpanList", "", "");
+		}
+		// 返回处理结果信息
+		return new JsonObject(dwzResult).toString();
+	}
+}

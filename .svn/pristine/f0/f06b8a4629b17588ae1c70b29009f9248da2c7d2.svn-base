@@ -1,0 +1,478 @@
+function getRootPath() {
+    var pathName = window.location.pathname.substring(1);
+    var webName = '/' + pathName.substring(0, pathName.indexOf('/'));
+    webName = webName == '/static' ? '' : webName;
+    return window.location.protocol + '//' + window.location.host + webName;
+}
+var basePath = getRootPath();
+var toLoginUrl = '/tologin.do';
+var toLogoutUrl = '/logout.do';
+var loginUrl = '/login.do';
+var unbindAdminUrl ='/manage/unbindAdmin.do';//用户解锁
+//公共接口
+/*var initProvinceListUrl = "/manage/init/initProvinceList.do";
+ var initCityListUrl = "/manage/init/initCityList.do";
+ var initAreaListUrl = "/manage/init/initAreaList.do";*/
+var initProvinceListUrl = "/static/json/cityJson/initProvinceList.json";
+var initCityListUrl = "/static/json/cityJson/city.json";
+var initAreaListUrl = "/static/json/cityJson/area.json";
+
+var getLevelList = "/manage/init/getLevelListByCpyId.do";
+var getCompanyListUrl = "/manage/init/getCompanyListByUserLevel.do";
+var initCompanyListUrl = "/manage/init/initCompanyList.do"; //电桩资产绑定
+
+//用户
+var userListUrl = "/manage/user/getUserList.do";
+var exportUserUrl = "/manage/user/exportUser.do";
+var freezeUserUrl = "/manage/user/freezeUser.do";
+var userIndexUrl = "/manage/user/userIndex.do";
+var modifyUserLevelUrl = "/manage/user/modifyUserLevel.do";
+var modifyUserUrl = "/manage/user/modifyUser.do";
+var modifyUserHeadImgUrl = '/manage/user/modifyUserHeadImg.do';
+var addUserCompanyUrl = "/manage/user/addUserCompany.do";
+var unfreezeUserUrl = "/manage/user/unfreezeUser.do";
+var resetLoginPasswordUrl = "/manage/user/resetLoginPassword.do";//重置登陆密码
+var resetPayPasswordUrl = "/manage/usercard/resetCardPassword.do";//修改卡支付密码
+var user_resetPayPasswordUrl = "/manage/user/resetPayPassword.do";//修改用户支付密码
+var checkUserAccountIsUniqueUrl = "/manage/user/checkUserAccount.do";//验证用户帐号是否唯一
+var getUserAccountUrl = '/manage/order/record/getUserAccount.do';
+var getCardApplicationFormListUrl = '/manage/user/getCardApplicationFormList.do';//电卡申请列表
+var rejectionApplyUrl = '/manage/user/rejectionApply.do';
+var accountRefundUrl = '/manage/fin/accountRefund.do';
+var modifyLoginPasswordUrl = '/manage/user/modifyLoginPassword.do';//修改登陆密码
+var addUserCompanyBatchUrl = '/manage/user/addUserCompanyBatch.do';//批量新建用户
+
+
+//获取卡的信息
+var getUserCardInfoUrl = "/manage/usercard/getUserCardInfo.do";
+var cardLossUrl = "/manage/usercard/cardLoss.do";
+var relieveCardLossUrl = "/manage/usercard/relieveCardLoss.do";
+var cardFrozenUrl = "/manage/usercard/cardFrozen.do";
+var relieveCardFrozenUrl = "/manage/usercard/relieveCardFrozen.do";
+var cardCancelUrl = "/manage/usercard/cardCancel.do";
+var userBindCardUrl = "/manage/usercard//userBindCard.do";
+var getFinAccountUserUrl = "/manage/fin/getFinAccount4User.do"; //资金账户
+var getFinAccountRelation4UserUrl = "/manage/fin/getFinAccountRelation4User.do"; //资金账目关系
+var getCouponInfoByUserIdUrl = '/manage/fav/getCouponInfoByUserId.do';
+var getCardAccountUrl = '/manage/order/record/getCardAccount.do';
+var bindCompanyForCardUrl = '/manage/usercard/bindCompanyForCard.do';
+
+
+//卡管理
+var getUsercardListUrl = '/manage/usercard/getUsercardList.do';
+var exportCardUrl = '/manage/usercard/exportCard.do';
+var cardLossForListUrl = '/manage/usercard/cardLossForList.do';
+var cardBindUserUrl = '/manage/usercard/cardBindUser.do';//卡绑用户
+var getCardBasicInfoUrl = '/manage/usercard/getCardBasicInfo.do';//卡主页基本信息
+var resetCardPasswordUrl = '/manage/usercard/resetCardPassword.do';//重置卡支付密码
+var resetCardPasswordForListUrl = '/manage/usercard/resetCardPasswordForList.do';//批量重置卡支付密码
+var getCardIndexUserUrl = '/manage/user/cardIndexUser.do';//卡主页用户信息
+var getFinAccount4CardUrl = '/manage/fin/getFinAccount4Card.do';//卡资金账户
+var getFinAccountRelation4CardUrl = "/manage/fin/getFinAccountRelation4Card.do"; //资金账目关系
+
+//管理员
+var initRoleListUrl = '/manage/init/initRoleList.do';
+var adminListUrl = '/manage/admin/getUserAdminListPage.do';
+var adminHomeUrl = '/manage/admin/adminHome.do';
+var modifyAdminRoleUrl = '/manage/admin/modifyAdminRole.do';
+var adminPileListUrl = '/manage/config/getCountAdminEPListPage.do';
+var addCountAdminEPUrl = '/manage/config/addCountAdminEP.do';
+var addUserAdminUrl = '/manage/admin/addUserAdmin.do';
+var removeCountAdminEPUrl = '/manage/config/removeCountAdminEP.do';
+var addCountAdminEPByPsIdUrl = '/manage/config/addCountAdminEPByPsId.do';//增加充电点
+
+var getSimCardListUrl = '/manage/config/getSimCardList.do';//SIM卡管理列表
+var modifySimCardUrl = '/manage/config/modifySimCard.do';//SIM卡管理列表 更新
+
+//系统管理-菜单
+var menuListUrl = '/manage/admin/menu/getMenuListPage.do';//菜单列表
+var removeMenuUrl = '/manage/admin/menu/removeMenu.do';//移除菜单
+var addMenuUrl = '/manage/admin/menu/addMenu.do';//菜单新增
+var getMenuByIdUrl = '/manage/admin/menu/getMenuById.do';//根据ID查询
+var modifyMenuUrl = '/manage/admin/menu/modifyMenu.do';//菜单编辑
+var getMeunTreeUrl = '/manage/init/getMenuTree.do';
+var getSelfMeunTreeUrl = '/manage/init/getSelfMeunTree.do';
+var getSelfButtonTreeUrl = '/manage/init/getSelfButtonTree.do';
+
+
+//系统管理-角色
+var roleListUrl = '/manage/admin/role/getRoleListPage.do'; //角色列表
+var addRoleUrl = '/manage/admin/role/addRole.do';  //新增角色
+var modifyRoleUrl = '/manage/admin/role/modifyRole.do';//角色编辑
+var getRoleByIdUrl = '/manage/admin/role/getRoleById.do';//根据ID查询
+var removeRoleUrl = '/manage/admin/role/removeRole.do'; //删除角色   |不能批量
+
+
+//var disableUserAdminUrl='/sys/admin/disableUserAdmin.do';//禁用
+
+//配置接口 灰色代表调后台接口动态生成的配置
+var electricPileTypeUrl = '/manage/config/content/getMap.do?configParameterId=1';//电桩类型
+var electricChargingMethodUrl = '/manage/config/content/getMap.do?configParameterId=3';//电桩充电方式
+var electricPilePowerUrl = '/manage/config/content/getMap.do?configParameterId=4';//电桩功率
+var getPileMakerListUrl = '/manage/config/pileMaker/getPileMakerList.do';//获取所有电桩制造商
+var addPileMakerUrl = '/manage/config/pileMaker/add.do';//新增单个电桩制造商
+var getPileMakerUrl = '/manage/config/pileMaker/get.do';//获取单个电桩制造商
+var delPileMakerUrl = '/manage/config/pileMaker/del.do';//删除单个电桩制造商
+var modifyPileMakerUrl = '/manage/config/pileMaker/modify.do';//修改单个电桩制造商
+var getCarInfoListUrl = '/manage/config/carInfo/getCarInfoList.do';//获取电动车车型列表
+var addCarInfoUrl = '/manage/config/carInfo/add.do';//新增单个电动车车型
+var getCarInfoUrl = '/manage/config/carInfo/get.do';//获取单个电动车车型
+var delCarInfoUrl = '/manage/config/carInfo/del.do';//删除单个电动车车型
+var modifyCarInfoUrl = '/manage/config/carInfo/modify.do';//修改单个电动车车型
+var getAllCarCompanyUrl = '/manage/config/carCompany/getAllCarCompany.do';//获取所有电动车品牌
+var getCarCompanyListUrl = '/manage/config/carCompany/getCarCompanyList.do';//获取电动车品牌列表
+var addCarCompanyUrl = '/manage/config/carCompany/add.do';//新增单个电动车品牌
+var getCarCompanyUrl = '/manage/config/carCompany/get.do';//获取单个电动车品牌
+var delCarCompanyUrl = '/manage/config/carCompany/del.do';//删除单个电动车品牌
+var modifyCarCompanyUrl = '/manage/config/carCompany/modify.do';//修改单个电动车品牌
+var getLevelListUrl = '/manage/config/level/getLevelList.do';//获取等级列表
+var checkLevelNameUrl = '/manage/config/level/checkLevelName.do';//验证等级名称是否唯一
+var checkLevelSeqUrl = '/manage/config/level/checkLevelCode.do';//验证等级序列是否唯一
+var addLevelUrl = '/manage/config/level/addLevel.do';//新增单个等级
+var getLevelUrl = '/manage/config/level/get.do';//获取单个等级
+var delLevelUrl = '/manage/config/level/removeLevel.do';//删除单个等级
+var modifyLevelUrl = '/manage/config/level/modify.do';//修改单个等级
+var getLevelByCpyNumUrl = '/manage/config/level/getLevelByCpyNum.do';//根据公司标识获取等级
+var setLevelDefaultUrl = '/manage/config/level/setLevelDefault.do';//设为默认等级
+var getRateInfoListUrl = '/manage/config/rateinfo/getRateInfo.do';//获取费率列表
+var addRateInfoUrl = '/manage/config/rateinfo/addRateInfo.do';//新增单个费率
+var getRateInfoUrl = '/manage/config/rateinfo/getRateInfoById.do';//获取单个费率
+var delRateInfoUrl = '/manage/config/rateinfo/removeRateInfo.do';//删除单个费率
+var modifyRateInfoUrl = '/manage/config/rateinfo/modifyRateInfo.do';//修改单个费率
+
+//标签列表
+var getTagListUrl = '/manage/user/tag/getTagList.do';//标签列表
+var addTagUrl = '/manage/user/tag/add.do';//新增单个标签
+var getTagUrl = '/manage/user/tag/get.do';//获取单个标签
+var delTagUrl = '/manage/user/tag/del.do';//删除单个标签
+var modifyTagUrl = '/manage/user/tag/modify.do';//修改单个标签
+var getUserTagListUrl = '/manage/user/tag/getUserTagList.do';//用户主页 标签列表
+var getAllTagUrl = '/manage/user/tag/getAllTag.do'; //用户主页 所有标签
+var addUserTagUrl = '/manage/user/tag/addUserTag.do';//用户主页 添加标签
+var delUserTagUrl = '/manage/user/tag/delUserTag.do';//用户主页 删除当前标签
+
+//电桩列表
+var electricListUrl = '/manage/electric/getElectricPileList.do';
+var getElectricDetailUrl = '/manage/electric/get.do';
+var modifyElectricUrl = '/manage/electric/modify.do';
+var addElectricUrl = '/manage/electric/add.do';
+var exportElectricUrl = '/manage/electric/export.do';
+var importElectricUrl = '/manage/electric/import.do';
+var delElectricUrl = '/manage/electric/del.do';
+var unBindUrl = '/manage/electric/unbind.do';
+var checkCodeUrl = '/manage/electric/checkCode.do';
+var modifyOwnerShipUrl = '/manage/electric/modifyElectricPileCompany.do';
+var auditElectricPileUrl = '/manage/electric/auditElectricPile.do';
+
+
+//电桩参数设置
+var electricParamListUrl = '/manage/config/electric/param/getElectricParamListPage.do';
+var setElectricParamUrl = '/manage/config/electric/param/setElectricParam.do';
+
+//电桩升级列表
+var electricUpdateListUrl = '/manage/config/typeSpan/updateEpVisionList.do';
+var getBomListByTypeSpanIdUrl = '/manage/config/typeSpan/getBomListByTypeSpanId.do';
+var updateEpVisionUrl = '/manage/config/typeSpan/updateEpVision.do';
+//ccu故障信息列表
+var getChargingFaultRecordListUrl='/manage/chargingFaultRecord/getChargingFaultRecordList.do';
+//excel导入
+//var companyTaskUrl = '/sysConfig/companyTask.do';
+var companyChargeRelaImportUrl = '/manage/config/companyChargeRela/import.do';
+
+//充电点
+var getPowerStationListPageUrl = '/manage/electric/getPowerStationListPage.do';
+var addPowerStationUrl = '/manage/electric/addPowerStation.do';
+var modifyPowerStationUrl = '/manage/electric/modifyPowerStation.do';
+var removePowerStationUrl = '/manage/electric/removePowerStation.do';
+var getPowerStationByIdUrl = '/manage/electric/getPowerStationById.do';
+var exportPowerStationUrl = '/manage/electric/exportPowerStation.do';
+var getAllElectricPileListUrl = '/manage/electric/getAllElectricPileList.do';
+
+
+//系统配置-xyc
+
+//获取公司列表信息
+var getCompanyListPageUrl = '/manage/company/getCompanyListPage.do';//获取公司列表
+var addCompanyUrl = '/manage/company/addCompany.do';//新增公司
+var modifyCompanyUrl = '/manage/company/modifyCompany.do';//编辑公司信息
+var disableCompanyUrl = '/manage/company/disableCompany.do';//解禁、禁用公司
+var checkCompanyUniqueUrl = '/manage/company/checkCompanyUnique.do';//公司名称唯一性校验
+var exportCompanyUrl = '/manage/company/exportCompany.do';//公司数据导出
+var getCpyPayRuleUrl = '/manage/company/getCpyPayRule.do';//公司付费策略
+var getParentCompanyListUrl = '/manage/company/getParentCompanyList.do';//上级公司
+var initInvestCompanyListUrl = '/manage/init/initInvestCompanyList.do';//管理单位
+//公司主页
+var companyHomeUrl = '/manage/company/companyHome.do';//公司主页信息
+var companyIndexUserUrl = '/manage/user/companyIndexUser.do';//公司用户信息
+var getCardForCompanyUrl = '/manage/usercard/getCardForCompany.do';//充电卡信息
+var getHomeCpyOrderUrl = '/manage/order/home/getHomeCpyOrder.do';//订单信息
+var getLevelByCpyIdUrl = '/manage/config/level/getLevelByCpyId.do';//等级信息
+var companyIndexChargeRelaUrl = '/manage/config/companyChargeRela/companyIndexChargeRela.do';//充电范围信息
+var getCompanyByMasterUrl = '/manage/company/getCompanyByMaster.do';//管辖公司信息
+var getUserAdminByCpyIdUrl = '/manage/admin/getUserAdminByCpyId.do';//管理员账户信息
+var getFinAccountBalance4CpyUrl = '/manage/fin/getFinAccountBalance4Cpy.do'//大账户
+var modifyFinAccountWarnUrl = '/manage/fin/modifyFinAccountWarn.do'//大账户预警金额
+var equalAllocationUrl = '/manage/fin/equalAllocation.do';//大账户为小账户等额配资
+var separateAllocationUrl = '/manage/fin/separateAllocation.do';//大账户为小账户单独配资
+var getUserBlackWhite4CpyUrl = '/manage/config/getUserBlackWhite4Cpy.do';//黑白名单
+var getRateUniqueRelaGroupUrl = '/manage/config/getRateUniqueRelaGroup.do';//充电费率 错误接口删除？？
+var getFinAccountConfigRela4CpyUrl = '/manage/fin/getFinAccountConfigRela4Cpy.do';//付费策略
+var getFinAccountRelation4CpyUrl = '/manage/fin/getFinAccountRelation4Cpy.do';//账务关系
+var getRateUniqueRelaListUrl = '/manage/config/getRateUniqueRelaList.do';//充电费率信息
+//充电范围
+var getStationAndPileUrl = '/manage/config/companyChargeRela/getStationAndPile.do';//获取充电点和电桩
+var companyChargeRelaUrl = '/manage/config/companyChargeRela/set.do';//设置充电范围
+//充电费率
+var modifyRateUniqueRelaRateinfoIdUrl = '/manage/config/modifyRateUniqueRelaRateinfoId.do';//修改充电费率
+var getRateStationAndPileUrl = '/manage/config/getStationAndPile.do';//获取充电桩和充电点
+var addRateUniqueRelaUrl = '/manage/config/addRateUniqueRela.do';//设置充电点和充电桩
+//集中器
+var getConcentratorListUrl = '/manage/electric/getConcentratorList.do';//查询集中器信息
+var addConcentratorUrl = '/manage/electric/addConcentrator.do';//新增集中器信息
+var modifyConcentratorUrl = '/manage/electric/modifyConcentrator.do';//编辑集中器信息
+var getConcentratorInfoByIdUrl = '/manage/electric/getConcentratorInfoById.do';//编辑集中器信息
+var removeConcentratorUrl = '/manage/electric/removeConcentrator.do';//删除集中器信息
+
+//账务关系管理
+var getFinAccountRelationUrl = '/manage/fin/getFinAccountRelation.do';
+var getFinBillAccountComboBoxUrl = '/manage/fin/getFinBillAccountComboBox.do';
+var removeFinAccountRelationUrl = '/manage/fin/removeFinAccountRelation.do';
+var getFinBillAccountUrl = '/manage/fin/getFinBillAccount.do';
+var addFinAccountRelationUrl = '/manage/fin/addFinAccountRelation.do';
+var confirmEqualAllocationUrl = '/manage/fin/confirmEqualAllocation.do';
+
+//资金账号管理
+var getFinAccountUrl = '/manage/fin/getFinAccount.do';
+var exportFinAccountUrl = '/manage/fin/exportFinAccount.do';
+
+//流水管理
+var getPurchaseHistoryUrl = '/manage/order/record/getPurchaseHistory.do';
+var exportPurchaseHistoryUrl = '/manage/order/record/exportPurchaseHistory.do';
+
+//订单
+var getThirdOrderListPageUrl = '/manage/order/getThirdOrderListPage.do';//第三方订单
+var getOrderListPageUrl = '/manage/order/getOrderListPage.do';//非第三方订单
+var exportOrderUrl = '/manage/order/exportOrder.do'; //订单-非第三方导出
+var exportThirdOrderUrl = '/manage/order/exportThirdOrder.do'; //订单-非第三方导出
+var getHomeUserOrderUrl = '/manage/order/home/getHomeUserOrder.do';// 用户主页|卡主页-订单
+var manualAccountOrderUrl = '/manage/order/manualAccountOrder.do';// 手工结算
+
+//黑白名单
+var getUserBlackWhiteUrl = '/manage/config/getUserBlackWhite.do';//黑白名单列表
+var addUserBlackWhiteUrl = '/manage/config/addUserBlackWhite.do';//新建黑白名单
+var removeUserBlackWhiteUrl = '/manage/config/removeUserBlackWhite.do';//删除黑白名单
+
+//VIN码
+var getCarVinRelaUrl = '/manage/config/getCarVinRela.do';//查询vin码
+var importCarVinRelaUrl = '/manage/config/importCarVinRela.do';//导入
+var addCarVinRelaUrl = '/manage/config/addCarVinRela.do';//新建
+var removeCarVinRelaUrl = '/manage/config/removeCarVinRela.do';//删除
+var getVinInfoByUserUrl='/manage/config/getVinInfoByUser.do';//userId
+var bindVinCodeForUserUrl='/manage/config/bindVinCodeForUser.do';//userId  vinIds
+var unBindUserVinRelaByIdUrl='/manage/config/unBindUserVinRelaById.do';//pkId
+
+//优惠券
+var getCouponVarietyListUrl = '/manage/fav/getCouponVarietyList.do';
+var addCouponVarietyUrl = '/manage/fav/addCouponVariety.do';//新增优惠券品种
+var getCouponListUrl = '/manage/fav/getCouponList.do'; //获取优惠券明细列表
+var getCouponVarietyInfoUrl = '/manage/fav/getCouponVarietyInfo.do';//根据现金券品种主键获取参数
+var changeCouponVarietyUrl = '/manage/fav/changeCouponVariety.do';//修改现金券品种
+var getActivityForListUrl = '/manage/fav/getActivityForList.do';//获取活动下拉栏 cpActivitytype 1-用户活动，2-渠道活动
+var getCouponVarietyForListUrl = '/manage/fav/getCouponVarietyForList.do';//获取现金券品种下拉栏
+var removeCouponUrl = '/manage/fav/removeCoupon.do';//删除优惠券
+var exportCouponUrl = '/manage/fav/exportCoupon.do';//导出优惠券明细
+var getCityScopeUrl = '/manage/fav/getCityScope.do';//筛选框 城市通用 范围
+var getPowerStationListUrl = '/manage/electric/getPowerStationList.do';//获取电站，无分页
+var getActivityCityScopeUrl = '/manage/app/activity/getCityScope.do';//优惠券明细列表 获取城市
+var getCpyForListUrl = '/manage/app/activity/getCpyForList.do';//优惠券明细列表 优惠券发行方
+
+//用户活动
+var getUserActivityListUrl = '/manage/app/activity/getUserActivityList.do';//获取用户活动列表
+var stopActivityUrl = '/manage/app/activity/stopActivity.do';//终止活动
+var addUserActivityUrl = '/manage/app/activity/addUserActivity.do';//新增用户活动
+var initInvestAndEichongCompanyListUrl = '/manage/init/initInvestAndEichongCompanyList.do';//新增活动 发行方加载
+//渠道活动
+var getActivityListUrl = '/manage/app/activity/getActivityList.do';//获取渠道活动列表
+var addActivityUrl = '/manage/app/activity/addActivity.do';//新增渠道活动
+
+//积分管理
+var doIntegralStatisticsUrl = '/manage/integral/doIntegralStatistics.do';
+var getIntegralListUrl = '/manage/integral/getIntegralList.do';
+var getIntegralDetailsListUrl = '/manage/integral/getIntegralDetailsList.do';
+var getIntegralActivityListUrl = '/manage/integral/getIntegralActivityList.do';
+var addIntegralActivityUrl = '/manage/integral/addIntegralActivity.do';//新增活动
+var modifyIntegralRulesUrl = '/manage/integral/modifyIntegralRules.do';//节假日关闭
+var modifyIntegralActivityUrl = '/manage/integral/modifyIntegralActivity.do';//更新编辑活动
+var integralGetStationAndPileUrl = '/manage/integral/getStationAndPile.do';//充值消费
+var getIntegralActivityAndRulesListUrl = '/manage/integral/getIntegralActivityAndRulesList.do';//积分兑换初始列表
+
+//App发布
+var getMessageInfoListUrl = '/manage/app/messageInfo/getMessageInfoList.do';//app首页故障新建列表
+var addMessageInfoUrl = '/manage/app/messageInfo/addMessageInfo.do';//app首页故障新建
+var closeMessageInfoUrl = '/manage/app/messageInfo/closeMessageInfo.do';//app首页关闭
+var deleteMessageInfoUrl = '/manage/app/messageInfo/deleteMessageInfo.do';//app首页删除
+var getPowerstationUrl = '/manage/app/messageInfo/getPowerstation.do';//app首页动态关联充电点
+var getMessageInfoByIdUrl = '/manage/app/messageInfo/getMessageInfoById.do';//app首页编辑信息获取
+var updateMessageInfoUrl = '/manage/app/messageInfo/updateMessageInfo.do';//app首页编辑提交
+var getAppLoginRecordListUrl = '/manage/app/loginRecord/getAppLoginRecordList.do';//app登陆记录查询
+
+var getNewsInfoListUrl = '/manage/app/newsInfo/getNewsInfoList.do';//app资讯列表
+var addNewsInfoUrl = '/manage/app/newsInfo/addNewsInfo.do';//app资讯列表新增
+var editNewsInfoUrl = '/manage/app/newsInfo/editNewsInfo.do';//app资讯列表编辑保存???
+var deleteNewsInfoUrl = '/manage/app/newsInfo/deleteNewsInfo.do';//app资讯列表删除
+var downNewsInfoUrl = '/manage/app/newsInfo/downNewsInfo.do';//app资讯列表下架
+var getNewsInfoByIdUrl = '/manage/app/newsInfo/getNewsInfoById.do';//app主键获取消息
+
+var getAppButtonListUrl = '/manage/app/appButton/getAppButtonList.do';//app功能按钮列表
+var addAppButtonUrl = '/manage/app/appButton/addAppButton.do';//新建
+var getAppButtonByIdUrl = '/manage/app/appButton/getAppButtonById.do';//主键获取信息
+var editAppButtonUrl = '/manage/app/appButton/editAppButton.do';//编辑
+var downAppButtonUrl = '/manage/app/appButton/downAppButton.do';//下架
+var deleteAppButtonUrl = '/manage/app/appButton/deleteAppButton.do';//删除
+var editButtonOrderUrl = '/manage/app/appButton/editButtonOrder.do';//修改顺序
+
+var getBannerListUrl = '/manage/app/banner/getBannerList.do';//banner列表
+var addBannerUrl = '/manage/app/banner/addBanner.do';//新建
+var getBannerByIdUrl = '/manage/app/banner/getBannerById.do';//主键获取信息
+var editBannerUrl = '/manage/app/banner/editBanner.do';//编辑
+var downBannerUrl = '/manage/app/banner/downBanner.do';//下架
+var deleteBannerUrl = '/manage/app/banner/deleteBanner.do';//删除
+var editBannerOrderUrl = '/manage/app/banner/editBannerOrder.do';//修改轮播顺序
+
+var getAdvertisementListUrl = '/manage/app/advertisement/getAdvertisementList.do';//闪屏、插屏列表 adType 1闪屏2插屏
+var addAdvertisementUrl = '/manage/app/advertisement/addAdvertisement.do';//新增
+var getAdvertisementByIdUrl = '/manage/app/advertisement/getAdvertisementById.do';//根据主键获取信息
+var updateAdvertisementUrl = '/manage/app/advertisement/updateAdvertisement.do';//修改闪屏、插屏
+var downAdvertisementUrl = '/manage/app/advertisement/downAdvertisement.do';//下架
+
+//产品型号
+var getTypeSpanForListUrl = '/manage/config/typeSpan/getTypeSpanForList.do';//产品型号列表
+var getTypeSpanListUrl = '/manage/config/typeSpan/getTypeSpanList.do';//产品型号列表
+var checkTsTypeSpanUrl = '/manage/config/typeSpan/checkTsTypeSpan.do';//产品型号唯一性
+var addTypeSpanUrl = '/manage/config/typeSpan/addTypeSpan.do';//产品型号新增
+var getTypeSpanByIdUrl = '/manage/config/typeSpan/getTypeSpanById.do';//主键获取基本信息
+var updateTypeSpanUrl = '/manage/config/typeSpan/updateTypeSpan.do';//编辑
+var insertBomListUrl = '/manage/config/typeSpan/insertBomList.do';//新增BomList
+
+//开票管理
+var getFinAppInvoiceListUrl = '/manage/fin/invoice/app/getFinAppInvoiceList.do';//个人开票列表
+var getFinInvoiceByIdUrl = '/manage/fin/invoice/app/getFinInvoiceById.do';//详情
+var modifyFinInvoiceUrl = '/manage/fin/invoice/app/modifyFinInvoice.do';//编辑
+var confirmInvoiceUrl = '/manage/fin/invoice/app/confirmInvoice.do';//确认开票
+var refuseInvoiceUrl = '/manage/fin/invoice/app/refuseInvoice.do';//拒绝开票
+var getOrderInvoiceDetailUrl = '/manage/fin/invoice/getOrderInvoiceDetail.do';//订单详情
+
+var getFinCpyInvoiceListUrl = '/manage/fin/invoice/cpy/getFinCpyInvoiceList.do';//大客户开票列表
+var addCpyInvoiceUrl = '/manage/fin/invoice/cpy/addCpyInvoice.do';//新增
+var modifyCpyInvoiceUrl = '/manage/fin/invoice/cpy/modifyCpyInvoice.do';//编辑
+
+//财务报表统计
+var getReportCpyOrderUrl = '/manage/fin/report/cpy/getReportCpyOrder.do';//渠道公司充电统计
+var orderexportReportOrderUrl = '/manage/fin/report/order/exportReportOrder.do';//导出
+var statisticsPowerStationChargeOrderUrl = '/manage/fin/report/statisticsPowerStationChargeOrder.do';//充电点充电统计
+var exportStatisticsPowerStationChargeOrderUrl = '/manage/fin/report/exportStatisticsPowerStationChargeOrder.do';//导出
+var statisticsCompanyAndPowerStationChargeOrderUrl = '/manage/fin/report/statisticsCompanyAndPowerStationChargeOrder.do';//渠道分站点充电统计
+var exportStatisticsCompanyAndPowerStationChargeOrderUrl = '/manage/fin/report/exportStatisticsCompanyAndPowerStationChargeOrder.do';//导出
+
+//统计分析---充电消费统计--渠道充电统计
+var countReportCpyUrl = '/manage/statistic/countReportCpy.do';
+var getReportCpyDataUrl = '/manage/statistic/getReportCpyData.do';
+var getReportCpyDetailUrl = '/manage/statistic/getReportCpyDetail.do';
+
+//统计分析---充电消费统计--城市充电统计
+var countReportCityUrl = '/manage/statistic/countReportCity.do';
+var getReportCityDataUrl = '/manage/statistic/getReportCityData.do';
+var getReportCityDetailUrl = '/manage/statistic/getReportCityDetail.do';
+
+//统计分析---充电消费统计--充电费用占比
+var countReportChargeMoneyUrl = '/manage/statistic/countReportChargeMoney.do';
+var getReportChargeMoneyDataUrl = '/manage/statistic/getReportChargeMoneyData.do';
+var getReportChargeMoneyDetailUrl = '/manage/statistic/getReportChargeMoneyDetail.do';
+
+//统计分析---充电消费统计--充电数据对比
+var getReportChargeDataUrl = '/manage/statistic/getReportChargeData.do';
+var getReportChargeDetailUrl = '/manage/statistic/getReportChargeDetail.do';
+var getPowerStationChargeDataUrl = '/manage/statistic/getPowerStationChargeData.do';
+var getPowerStationChargeDataDetailUrl = '/manage/statistic/getPowerStationChargeDataDetail.do';
+
+//统计分析---用户统计--用户数统计
+var userDataCountUrl = '/manage/statistic/userDataCount.do';//用户数顶部
+var userDataLineUrl = '/manage/statistic/userDataLine.do';//图表
+var userDataListUrl = '/manage/statistic/userDataList.do';//表格
+
+//统计分析---用户统计--App充值统计
+var appRechargeDataCountUrl = '/manage/statistic/appRechargeDataCount.do';//用户数顶部
+var appRechargeDataLineUrl = '/manage/statistic/appRechargeDataLine.do';//图表
+var appRechargeDataListUrl = '/manage/statistic/appRechargeDataList.do';//表格
+
+//公司密钥
+var getPartnerListUrl = '/manage/company/partner/getPartnerList.do';//查询
+var addPartnerUrl = '/manage/company/partner/addPartner.do';//新增
+var removePartnerUrl = '/manage/company/partner/removePartner.do';//删除
+
+///实时监控
+var monitorCountReportCityUrl = '/manage/monitor/countReportCity.do';//获取当日实时数据(城市充电统计)
+var getElectricPileMapUrl = '/manage/monitor/getElectricPileMap.do';//获取左侧充电桩数地图
+var getPowerStationMapUrl = '/manage/monitor/getPowerStationMap.do';//获取充电点地图
+var getPowerStationPageUrl = '/manage/monitor/getPowerStationPage.do';//获取充电点地图分页
+var getPowerStationPileHeadDetailUrl = '/manage/monitor/getPowerStationPileHeadDetail.do';//获取单个充电点电桩枪头详情
+var getPowerStationPileHeadNumUrl = '/manage/monitor/getPowerStationPileHeadNum.do';//获取单个充电点电桩枪数量
+var getNowErrorPileUrl = '/manage/monitor/getNowErrorPile.do';//获取当天故障电桩
+
+var getRunTimeDataUrl = '/manage/monitor/getRunTimeData.do';//实时信息 -运行数据
+var getHeadHistoryListUrl = '/manage/monitor/getHeadHistoryList.do';//实时信息 -历史数据
+var getChargingDataUrl = '/manage/monitor/getChargingData.do';//充电数据采样
+var getCityListByNameUrl = '/manage/init/getCityListByName.do';//获取城市
+
+//版本升级
+var getVersionListUrl = '/manage/version/getVersionList.do';
+var getMaxVersionNumUrl = '/manage/version/getMaxVersionNum.do';
+var addVersionUrl = '/manage/version/add.do';
+var delVersionUrl = '/manage/version/del.do';
+
+//意见反馈
+var getFeedBackListUrl = '/manage/feedback/getFeedBackList.do';//列表
+var getFeedBackByIdUrl = '/manage/feedback/getFeedBackById.do';
+var editFeedBackUrl = '/manage/feedback/editFeedBack.do';
+
+//财务关系管理
+var getCompanyListByCpyNameUrl = '/manage/fin/getCompanyListByCpyName.do';//根据公司名称获取公司列表
+var finGetStationAndPileUrl = '/manage/fin/getStationAndPile.do';//获取省、市、电站、桩
+var getFinAccountSplitConfigListUrl = '/manage/fin/getFinAccountSplitConfigList.do';//获取分账列表
+var addFinAccountSplitConfigUrl = '/manage/fin/addFinAccountSplitConfig.do';//增加分账配置
+var modifyFinAccountSplitConfigUrl = '/manage/fin/modifyFinAccountSplitConfig.do';//修改分账配置
+var getFinAccountSplitDetailsListUrl = '/manage/fin/getFinAccountSplitDetailsList.do';//分账明细
+var doChargingOrderForBatchUrl = '/manage/doChargingOrderForBatch.do';//订单查询
+
+//地锁管理
+var getParkingLockListUrl='/manage/parkingLock/getParkingLockList.do';
+var getParkingLockUrl='/manage/parkingLock/get.do';
+var importLockUrl='/manage/parkingLock/import.do';
+var exportLockUrl='/manage/parkingLock/export.do';
+var batchBindPowerStationIdUrl='/manage/parkingLock/batchBindPowerStation.do';
+var addParkingLockUrl='/manage/parkingLock/add.do';
+var modifyParkingLockUrl='/manage/parkingLock/modify.do';
+var operatingParkingLockUrl='/manage/parkingLock/operating.do';
+//var getParkingLockListUrl='/static/json/test/getParkingLockList.json';
+//var getParkingLockUrl='/static/json/test/1.json';
+
+
+//数据中心
+var getSelectScopeUrl = '/manage/dataCenter/getSelectScope.do'; //下拉框接口
+var getHistoryDataUrl = '/manage/dataCenter/getHistoryData.do';//历史数据
+var getMapDataUrl = '/manage/dataCenter/getMapData.do';//地图接口
+
+var getPowerStationPileHeadDetailUrl = '/manage/dataCenter/getPowerStationPileHeadDetail.do';//充电点首页左边 列表
+var getPowerStationPileHeadOnlineStateUrl = '/manage/dataCenter/getPowerStationPileHeadOnlineState.do';//电桩/枪口在线状态
+var getParkingLockStateUrl = '/manage/dataCenter/getParkingLockState.do';//地锁状态
+var getPowerStationPicListUrl = '/manage/dataCenter/getPowerStationPicList.do';//充电点历史信息图片
+var getPowerStationHistoryDataUrl = '/manage/dataCenter/getPowerStationHistoryData.do';//充电点照片下的历史数据
+
+var getHeadRealTimeInfoUrl = '/manage/dataCenter/getHeadRealTimeInfo.do';//充电详情
+var getChargePowerCurveUrl = '/manage/dataCenter/getChargePowerCurve.do';//实时充电电量曲线 用户维度开始充电记录列
+var getChargeCount5DaysUrl = '/manage/dataCenter/getChargeCount5Days.do';//近5日充电量
+var getEpStartChargeRecordUrl = '/manage/dataCenter/getEpStartChargeRecord.do ';//电桩维度开始充电记录列表
+var getUserStartChargeRecordUrl = '/manage/dataCenter/getUserStartChargeRecord.do';//用户维度开始充电记录列表
+var getUserChargeRankUrl = '/manage/dataCenter/getUserChargeRank.do';//排行榜
+var getChargeRealTimeDateUrl = '/manage/dataCenter/getChargeRealTimeDate.do';//实时数据
+var getDetailStaticDataUrl = '/manage/dataCenter/getDetailStaticData.do';//电桩基本信息

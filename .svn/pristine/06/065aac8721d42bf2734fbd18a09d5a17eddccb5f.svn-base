@@ -1,0 +1,32 @@
+/**     
+ * @Title:  TblElectricpileheadMapper.java   
+ * @Package com.wanma.dao   
+ * @Description:    TODO  
+ * @author: Android_Robot     
+ * @date:   2016年4月28日 下午2:27:33   
+ * @version V1.0     
+ */
+package com.wanma.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import com.wanma.model.TblElectricpilehead;
+
+/**
+ * @author bc
+ *
+ */
+public interface TblElectricpileHeadMapper {
+	public TblElectricpilehead getBespokeHeadDetailByPile(
+			TblElectricpilehead head);
+
+	public TblElectricpilehead getBespokeHeadDetailByStation(
+			TblElectricpilehead head);
+
+	public List<TblElectricpilehead> getList(TblElectricpilehead hModel);
+
+	public List<TblElectricpilehead> getListByPsId(TblElectricpilehead hModel);
+
+	public List<Map<String, Object>> getHeadStsByPsId(TblElectricpilehead hModel);
+}

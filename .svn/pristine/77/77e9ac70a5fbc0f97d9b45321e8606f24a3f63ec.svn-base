@@ -1,0 +1,114 @@
+package com.wanma.ims.service.impl;
+
+import com.wanma.ims.common.domain.*;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.mapper.JPushRecordMapper;
+import com.wanma.ims.mapper.PurchaseHistoryMapper;
+import com.wanma.ims.mapper.UserMapper;
+import com.wanma.ims.service.AppJpushService;
+import com.wanma.ims.service.JPushRecordService;
+import com.wanma.ims.util.DateUtil;
+import com.wanma.ims.util.JPushUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+@Service("jPushRecordService")
+public class JPushRecordServiceImpl implements JPushRecordService {
+
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+
+	@Autowired
+	private JPushRecordMapper jPushRecordMapper;
+
+	@Autowired
+	private AppJpushService appJpushService;
+
+	@Autowired
+	private UserMapper userMapper;
+
+	@Autowired
+	private PurchaseHistoryMapper purchaseHistoryMapper;
+
+	/**
+	 * <p>Description: 通过订单推送记录</p>
+	 * @param
+	 * @param checkExistence 是否需要存在性验证
+	 * @author bingo
+	 * @date 2017-12-15
+	 */
+	public void doJPushRecordForBatch(OrderDO orderDO, boolean checkExistence) throws Exception {
+		JpushRecordDO qryJpushRecordDO = new JpushRecordDO();
+		qryJpushRecordDO.setChargingOrderId(orderDO.getOrderId().toString());
+		qryJpushRecordDO.setChargingOrderStatus(orderDO.getOrderStatus());
+		Long num = jPushRecordMapper.getJPushRecordCount(qryJpushRecordDO);
+		if (num != null && num.intValue() > 0) {
+			log.error(this.getClass() + ".doJPushRecordForBatch() info:订单编号" + orderDO.getOrderCode() + "已经推送过消息！");
+			return;
+		}
+
+		UserDO qryUser = new UserDO();
+		qryUser.setUserId(orderDO.getUserId());
+		List<UserDO> userList = userMapper.selectUserList(qryUser);
+		if(userList == null || userList.size() == 0){
+			log.error(this.getClass() + ".doJPushRecordForBatch() info:订单编号" + orderDO.getOrderCode() + "没有用户数据！");
+			return;
+		}
+
+		PurchaseHistoryDO qryPurchaseHistoryDO = new PurchaseHistoryDO();
+		qryPurchaseHistoryDO.setPuHiTransactionNumber(orderDO.getTransactionNumber());
+		qryPurchaseHistoryDO.setPuHiUserId(orderDO.getUserId());
+		List<PurchaseHistoryDO> list = purchaseHistoryMapper.getPurchaseHistoryForBatch(qryPurchaseHistoryDO);
+		if(list == null || list.size() == 0){
+			log.error(this.getClass() + ".doJPushRecordForBatch() info:订单编号" + orderDO.getOrderCode() + "没有消费记录数据！");
+			return;
+		}
+
+		PurchaseHistoryDO purchaseHistoryDO = list.get(0);
+		UserDO userDO = userList.get(0);
+		StringBuffer contents = new StringBuffer();
+		String title;
+		if(userDO.getUserName() != null && !userDO.getUserName().equals("")){
+			contents.append("【").append(userDO.getUserName()).append("】");
+		}
+		if(orderDO.getOrderStatus().intValue() == 1){
+			title = "您有一笔订单开始充电";
+			contents.append("您好，您的订单开始充电了。充电冻结金额【").append(purchaseHistoryDO.getPuHiMonetary()).append("】元。");
+		}else{
+			title = "您有一笔充电订单已结算";
+			contents.append("您好，您的订单已经完成结算。本次充电【").
+					append(DateUtil.subtract(DateUtil.parse(orderDO.getEndChargeTime()), DateUtil.parse(orderDO.getStartChargeTime()), Calendar.MINUTE)).
+					append("】分钟，电量【").append(orderDO.getTotalElectricCharge()).append("】度，费用【").
+					append(orderDO.getChOrMoeny()).append("】元，优惠【").append(orderDO.getTotalfavMoney()).append("】元，实际扣费【").
+					append(new BigDecimal(orderDO.getChOrMoeny()).subtract(new BigDecimal(orderDO.getTotalfavMoney())).setScale(2, BigDecimal.ROUND_HALF_DOWN).toString()).append("】元。");
+		}
+
+		BaseResultDTO result = 	new BaseResultDTO();
+		JpushDO jpush = appJpushService.getByuserInfo(orderDO.getUserId().intValue());
+		if(jpush == null){
+			log.error(this.getClass() + ".doJPushRecordForBatch() info:订单编号" + orderDO.getOrderCode() + "不是APP用户数据！");
+			return;
+		}
+		JPushUtil.jpushNotice(title, contents.toString(), jpush.getJpushRegistrationid(), "12");
+		result = JPushUtil.jpushCustom(title, contents.toString(), jpush.getJpushRegistrationid(), orderDO.getOrderId().toString(), orderDO.getUserId().toString(), "12");
+		if(result.isFailed()){
+			log.error(this.getClass() + ".doJPushRecordForBatch() info:订单编号" + orderDO.getOrderCode() + "已经推送过消息出错！" + result.getResultCode());
+		}else{
+			JpushRecordDO jpushRecordDO = new JpushRecordDO();
+			jpushRecordDO.setChargingOrderId(orderDO.getOrderId().toString());
+			jpushRecordDO.setChargingOrderStatus(orderDO.getOrderStatus());
+			jpushRecordDO.setCreator(orderDO.getCreator());
+			jpushRecordDO.setModifier(orderDO.getCreator());
+			jpushRecordDO.setGmtCreate(new Date());
+			jpushRecordDO.setGmtModified(new Date());
+			jPushRecordMapper.addJPushRecord(jpushRecordDO);
+		}
+	}
+}

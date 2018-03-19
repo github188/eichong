@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.TcbElectricMapper">
+
+	<!-- ____________________________查询开始___________________________ -->
+	<select id="getElectricList" parameterType="map" resultType="TcbElectric">
+		SELECT
+		'310000002' operatorId,
+		elPi_RelevancePowerStation stationNo,
+		t.elPi_ElectricPileCode equipNo,
+		t.elPi_ElectricPileName
+		equipName,
+		t.elPi_ElectricPileAddress equipAddr,
+		CASE
+		t.elPi_ChargingMode
+		WHEN 14 THEN
+		'01'
+		ELSE
+		'02'
+		END equipType,
+		DATE_FORMAT(t.elPi_Createdate,'%Y-%m-%d') madeDate,
+		DATE_FORMAT(t.elPi_Updatedate,'%Y-%m-%d') runDate,
+		t.elPi_PowerSize
+		powerRating,
+		t.elPi_OutputCurrent currentRated,
+		t.elPi_OutputVoltage
+		voltageRated,
+		t.elPi_OutputVoltage autoMaxVolt,
+		CASE t.elpi_state
+		WHEN 0
+		THEN '01'
+		WHEN 15 THEN '03'
+		ELSE '08' END equipStatus,
+		t.have_connect_line haveConnectLine,
+		t.delete_flag deleteFlag,
+		(select
+		count(1) from tbl_electricpilehead h where
+		h.pk_ElectricPile=t.pk_ElectricPile) gunNum,
+		(select
+		GROUP_CONCAT(CONCAT(h.ePHe_ElectricpileHeadId,':',h.ePHe_ElectricpileHeadName))
+		from tbl_electricpilehead h where h.pk_ElectricPile=t.pk_ElectricPile
+		group by h.pk_ElectricPile) headInfo
+		FROM
+		tbl_electricpile t
+		<where>
+			t.elpi_state=15
+			<if test="cityCode != null">
+				and elPi_OwnCityCode = #{cityCode}
+			</if>
+			<if test="runDate != null">
+				and elPi_Updatedate &gt; #{runDate}
+			</if>
+		</where>
+	</select>
+
+	<select id="getStationList" parameterType="map" resultType="TcbStation">
+		SELECT
+		'310000002' operatorId,
+		t.powerStation_id stationNo,
+		t.powerStation_name stationName,
+		t.address stationAddr,
+		t.city_code cityCode,
+		t.area_code countyCode,
+		CASE t.status
+		WHEN 10 THEN
+		'01'
+		WHEN 15 THEN
+		'02'
+		ELSE
+		'03'
+		END stationStatus,
+		t.longitude rtLon,
+		t.latitude rtLat,
+		DATE_FORMAT(t.gmt_create,'%Y-%m-%d') madeDate,
+		DATE_FORMAT(t.gmt_modified,'%Y-%m-%d') runDate
+		FROM
+		tbl_powerstation t
+		<where>
+			t.status=15
+			<if test="cityCode != null">
+				and city_code = #{cityCode}
+			</if>
+			<if test="runDate != null">
+				and powerStation_id in (select elPi_RelevancePowerStation
+				from
+				tbl_electricpile a
+				where elPi_State in (0, 1) and elPi_Binding=1 and elPi_Updatedate &gt;
+				#{runDate}
+				)
+			</if>
+		</where>
+	</select>
+
+</mapper> 

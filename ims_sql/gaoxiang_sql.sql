@@ -1,0 +1,11 @@
+ALTER TABLE tbl_partner add COLUMN tokenUrl varchar(50)  COMMENT '第三方获取token地址';
+ALTER TABLE tbl_partner add COLUMN tokenSecret varchar(50)  COMMENT '第三方获取token密匙';
+ALTER TABLE tbl_partner add COLUMN Secret varchar(50)  COMMENT '接口传递密匙：消息密匙|消息密匙初始向量|签名密匙';
+ALTER TABLE tbl_partner add COLUMN pushStartUrl varchar(50)  COMMENT '推送启动充电结果url';
+ALTER TABLE tbl_partner add COLUMN pushStopUrl varchar(50)  COMMENT '推送停止充电结果url';
+ALTER TABLE tbl_partner add COLUMN pushOrderUrl varchar(50)  COMMENT '推送充电订单url';
+ALTER TABLE tbl_partner add COLUMN pushEquipStatusUrl varchar(50)  COMMENT '推送充电设备状态url';
+ALTER TABLE tbl_partner add COLUMN pushOrderCheckUrl varchar(50)  COMMENT '推送订单对账结果url';
+ALTER TABLE tbl_partner add COLUMN pushChargeStatusUrl varchar(50)  COMMENT '推送充电状态url';
+ALTER TABLE tbl_partner add cpy_id bigint (11) comment '关联tbl_company 主键';
+UPDATE tbl_partner a,tbl_company b SET a.cpy_id = b.pk_CompanyId WHERE CONCAT(a.partnerKey) = b.cpy_CompanyNumber AND b.cpy_CompanyNumber <> 0;

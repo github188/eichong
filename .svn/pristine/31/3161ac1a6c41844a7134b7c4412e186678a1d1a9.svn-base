@@ -1,0 +1,43 @@
+{
+    "title" : {
+        "text": "电桩预约统计"
+    },
+    "tooltip" : {
+        "trigger": "axis"
+    },
+    "legend": {
+    	"y": 20,
+        "data":["订单数量","充电时间"]
+    },
+    "toolbox": {
+        "show" : true,
+        "feature" : {
+        	"outView":{"show": false,color: '#8b3a3a'},
+        	"innerView":{"show": true,color: '#8b3a3a'},
+            "mark" : {"show": false},
+            "dataView" : {"show": false, "readOnly": false},
+            "magicType" : {"show": false, "type": ["line", "bar"]},
+            "restore" : {"show": false},
+            "saveAsImage" : {"show": false}
+        }
+    },
+    "calculable" : true,
+    "xAxis" : [],
+    "yAxis" : [
+			    {
+			            "type" : 'value',
+			            "name" : '订单数量',
+			            "axisLabel" : {
+			                "formatter": '{value} 个'
+			            }
+			        },
+			       {
+			            "type" : 'value',
+			            "name" : '总充电时间',
+			            "axisLabel" : {
+			                "formatter": '{value} (分钟)'
+			            }
+			        }
+        ],
+    "series" : []
+}

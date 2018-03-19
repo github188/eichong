@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.AppJpushMapper">
+	<resultMap type="JpushDO" id="resultJpush">
+		<id property="pkJpush" column="pk_JPush" />
+		<result property="jpushUserinfo" column="jpush_UserInfo" />
+		<result property="jpushRegistrationid" column="jpush_registrationID" />
+		<result property="jpushDevicetype" column="jpush_deviceType" />
+		<result property="jpushCreatedate" column="jpush_Createdate" />
+		<result property="jpushUpdatedate" column="jpush_Updatedate" />
+	</resultMap>
+ 
+ <!-- 根据用户id获取用户推送信息 -->
+	<select id="getByuserInfo" parameterType="Long" resultMap="resultJpush">
+	   select 
+	    pk_JPush,
+	    jpush_UserInfo,
+	    jpush_registrationID,
+	    jpush_deviceType,
+	    jpush_Createdate,
+	    jpush_Updatedate
+	   from tbl_JPush
+	   where 
+	    jpush_UserInfo=#{jpushUserInfo} 
+	</select>
+ 
+ 
+ 
+   
+</mapper>

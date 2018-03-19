@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.dubbox.dao.TblUserCardMapper">
+	<resultMap type="TblUserCard" id="tblUserCard">
+		<result property="id" column="pk_UserCard" />
+		<result property="inum" column="uc_InternalCardNumber" />
+		<result property="extNum" column="uc_ExternalCardNumber" />
+		<result property="blc" column="uc_Balance" />
+		<result property="comNum" column="uc_CompanyNumber" />
+		<result property="uid" column="uc_UserId" />
+		<result property="sts" column="uc_Status" />
+		<result property="md" column="uc_pay_mode" />
+		<result property="cdate" column="uc_Createdate" />
+		<result property="udate" column="uc_Updatedate" />
+	</resultMap>
+
+	<insert id="insert" parameterType="TblUserCard"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into tbl_usercard (
+		uc_InternalCardNumber,
+		uc_ExternalCardNumber,
+		uc_Balance,
+		uc_CompanyNumber,
+		uc_UserId,
+		uc_Status,
+		uc_pay_mode
+		)values (
+		#{inum},
+		#{extNum},
+		#{blc},
+		#{comNum},
+		#{uid},
+		#{sts},
+		#{md}
+		)
+	</insert>
+
+	<update id="update" parameterType="TblUserCard">
+		update tbl_usercard set
+		<if test="sts != null"> uc_Status=#{sts},</if>
+		<if test="inum != null"> uc_InternalCardNumber=#{inum},</if>
+		<if test="extNum != null"> uc_ExternalCardNumber=#{extNum},</if>
+		<if test="blc != null"> uc_Balance=#{blc},</if>
+		<if test="comNum != null"> uc_CompanyNumber=#{comNum},</if>
+		<if test="uid != null"> uc_UserId=#{uid},</if>
+		uc_Updatedate=sysdate()
+		where 1=1
+		<if test="id !=null">and pk_UserCard=#{id}</if>
+		<if test="pkIds != null">
+			and pk_UserCard in
+			<foreach item="item" index="index" collection="pkIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+	</update>
+
+	<select id="selectOne" parameterType="TblUserCard" resultMap="tblUserCard">
+		SELECT ${rtColumns} FROM tbl_usercard where pk_UserCard=#{id}
+	</select>
+
+	<select id="getCount" parameterType="TblUserCard" resultType="int">
+		SELECT count(1) FROM tbl_usercard t
+		where 1=1
+		<if test="extNum !=null and extNum !=''">and t.uc_ExternalCardNumber like concat('%',#{extNum},'%')
+		</if>
+		<if test="comNum !=null and comNum !=''">and c.cpy_CompanyName like concat('%',#{comNum},'%')</if>
+		<if test="sts !=null">and t.uc_Status=#{sts}</if>
+		<if test="md !=null and md !=''">and t.uc_pay_mode = #{md}</if>
+		<if test="isBd !=null and isBd !='' and isBd == 1">and t.uc_UserId!=0</if>
+		<if test="isBd !=null and isBd !='' and isBd == 0">and t.uc_UserId=0</if>
+		<if test="comNums != null">
+			and uc_CompanyNumber in
+			<foreach item="item" index="index" collection="comNums" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="extNums != null">
+			and uc_ExternalCardNumber in
+			<foreach item="item" index="index" collection="extNums" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="userIds != null">
+			and uc_UserId in
+			<foreach item="item" index="index" collection="userIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+	</select>
+
+	<select id="getList" parameterType="TblUserCard" resultMap="tblUserCard">
+		SELECT ${rtColumns} FROM tbl_usercard t
+		where 1=1
+		<if test="extNum !=null and extNum !=''">and t.uc_ExternalCardNumber like concat('%',#{extNum},'%')
+		</if>
+		<if test="comNum !=null and comNum !=''">and c.cpy_CompanyName like concat('%',#{comNum},'%')</if>
+		<if test="sts !=null">and t.uc_Status=#{sts}</if>
+		<if test="md !=null and md !=''">and t.uc_pay_mode = #{md}</if>
+		<if test="isBd !=null and isBd !='' and isBd == 1">and t.uc_UserId!=0</if>
+		<if test="isBd !=null and isBd !='' and isBd == 0">and t.uc_UserId=0</if>
+		<if test="comNums != null">
+			and uc_CompanyNumber in
+			<foreach item="item" index="index" collection="comNums" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="extNums != null">
+			and uc_ExternalCardNumber in
+			<foreach item="item" index="index" collection="extNums" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="userIds != null">
+			and uc_UserId in
+			<foreach item="item" index="index" collection="userIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		order by uc_UserId asc,uc_Updatedate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<!-- 获取可绑定卡用户数量 -->
+	<select id="getApplyCardUserListCount" parameterType="TblUserCard"
+		resultType="int">
+		SELECT count(1)
+		FROM
+		tbl_user_normal_view a
+		WHERE
+		a.user_leval = '6'
+		and
+		a.user_status = '1'
+		<if test="bsRlname !=null and bsRlname !=''">and a.norm_real_name like concat('%',#{bsRlname},'%')
+		</if>
+		<if test="bsAcc !=null and bsAcc !=''">and a.user_account like concat('%',#{bsAcc},'%')
+		</if>
+		<if test="md == 12"> and length(a.user_account) = 12</if>
+		<if test="md != 12">
+			<if test="md == 10">
+				AND EXISTS (SELECT 1 FROM tbl_cardapplicationform b WHERE
+				b.caf_user_id = a.user_id and b.caf_usercard = '')
+			</if>
+			and length(a.user_account) != 12
+			AND NOT EXISTS (
+			SELECT 1 FROM
+			tbl_usercard b WHERE
+			b.uc_pay_mode = #{md}
+			AND b.uc_Status = '0'
+			AND
+			b.uc_UserId = a.user_id)
+		</if>
+	</select>
+
+	<!-- 获取可绑定卡用户列表 -->
+	<select id="getApplyCardUserList" parameterType="TblUserCard"
+		resultType="TblUserNormal">
+		SELECT
+		a.user_id id,
+		a.user_account bsAcc,
+		a.norm_real_name rlname,
+		a.norm_email eml,
+		a.updatedate udate
+		FROM
+		tbl_user_normal_view a
+		WHERE
+		a.user_leval = '6'
+		and
+		a.user_status = '1'
+		<if test="bsRlname !=null and bsRlname !=''">and a.norm_real_name like concat('%',#{bsRlname},'%')
+		</if>
+		<if test="bsAcc !=null and bsAcc !=''">and a.user_account like concat('%',#{bsAcc},'%')
+		</if>
+		<if test="md == 12"> and length(a.user_account) = 12</if>
+		<if test="md != 12">
+			<if test="md == 10">
+				AND EXISTS (SELECT 1 FROM tbl_cardapplicationform b WHERE
+				b.caf_user_id = a.user_id and b.caf_usercard = '')
+			</if>
+			and length(a.user_account) != 12
+			AND NOT EXISTS (
+			SELECT 1 FROM
+			tbl_usercard b WHERE
+			b.uc_pay_mode = #{md}
+			AND b.uc_Status = '0'
+			AND
+			b.uc_UserId = a.user_id)
+		</if>
+		order by a.updatedate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<!-- 获取可绑定卡用户数量（快速发卡） -->
+	<select id="getQuicklyApplyCardUserListCount" parameterType="TblUserCard"
+		resultType="int">
+		SELECT count(1)
+		FROM
+		tbl_user_normal_view a
+		WHERE
+		a.user_leval = '6'
+		and
+		a.user_status = '1'
+		and length(a.user_account) != 12
+		AND NOT
+		EXISTS (
+		SELECT 1 FROM tbl_usercard b WHERE
+		b.uc_pay_mode = '10'
+		AND b.uc_Status
+		= '0'
+		AND b.uc_UserId = a.user_id)
+		<if test="bsAcc !=null and bsAcc !=''">and a.user_account like concat('%',#{bsAcc},'%')
+		</if>
+	</select>
+
+	<!-- 获取可绑定卡用户列表（快速发卡） -->
+	<select id="getQuicklyApplyCardUserList" parameterType="TblUserCard"
+		resultType="TblUserNormal">
+		SELECT
+		a.user_id id,
+		a.user_account bsAcc,
+		a.norm_real_name rlname,
+		a.norm_email eml,
+		a.updatedate udate
+		FROM
+		tbl_user_normal_view a
+		WHERE
+
+		a.user_leval = '6'
+		and
+		a.user_status = '1'
+		and length(a.user_account) != 12
+		AND NOT
+		EXISTS (
+		SELECT 1 FROM tbl_usercard b WHERE
+		b.uc_pay_mode = '10'
+		AND b.uc_Status
+		= '0'
+		AND b.uc_UserId = a.user_id)
+		<if test="bsAcc !=null and bsAcc !=''">and a.user_account like concat('%',#{bsAcc},'%')
+		</if>
+		order by a.updatedate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+</mapper>

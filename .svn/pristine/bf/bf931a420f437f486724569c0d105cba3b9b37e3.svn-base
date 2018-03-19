@@ -1,0 +1,58 @@
+package com.wanma.ims.common.domain;
+
+
+import com.wanma.ims.common.domain.base.BasicModel;
+
+public class JpushDO extends BasicModel {
+
+	/**
+	 * tbl_JPush表
+	 */
+	private static final long serialVersionUID = 8174701393183505342L;
+	private java.lang.Integer pkJpush; //
+	private java.lang.Integer jpushUserinfo; // 用户id
+	private java.lang.String jpushRegistrationid; // 唯一设备标示
+	private java.lang.String jpushDevicetype; // 设备类型 1安卓 2ios
+	private java.util.Date jpushCreatedate; // 创建时间
+	private java.util.Date jpushUpdatedate; // 修改时间
+	public java.lang.Integer getPkJpush() {
+		return pkJpush;
+	}
+	public void setPkJpush(java.lang.Integer pkJpush) {
+		this.pkJpush = pkJpush;
+	}
+	public java.lang.Integer getJpushUserinfo() {
+		return jpushUserinfo;
+	}
+	public void setJpushUserinfo(java.lang.Integer jpushUserinfo) {
+		this.jpushUserinfo = jpushUserinfo;
+	}
+	public java.lang.String getJpushRegistrationid() {
+		return jpushRegistrationid;
+	}
+	public void setJpushRegistrationid(java.lang.String jpushRegistrationid) {
+		this.jpushRegistrationid = jpushRegistrationid;
+	}
+	public java.lang.String getJpushDevicetype() {
+		return jpushDevicetype;
+	}
+	public void setJpushDevicetype(java.lang.String jpushDevicetype) {
+		this.jpushDevicetype = jpushDevicetype;
+	}
+	public java.util.Date getJpushCreatedate() {
+		return jpushCreatedate;
+	}
+	public void setJpushCreatedate(java.util.Date jpushCreatedate) {
+		this.jpushCreatedate = jpushCreatedate;
+	}
+	public java.util.Date getJpushUpdatedate() {
+		return jpushUpdatedate;
+	}
+	public void setJpushUpdatedate(java.util.Date jpushUpdatedate) {
+		this.jpushUpdatedate = jpushUpdatedate;
+	}
+	
+	
+
+	
+}

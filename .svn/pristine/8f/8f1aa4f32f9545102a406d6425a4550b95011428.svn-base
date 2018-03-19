@@ -1,0 +1,207 @@
+@charset "utf-8";
+body,html{
+    font-family: '微软雅黑';
+    background-color: #F3F3F4;;
+}
+.userBaseInfo{
+    background-color: #ffffff;
+    border-top: 4px solid #E5E5E5;
+    margin-top: 20px;
+    padding:14px 14px  60px 14px;
+    position: relative;
+
+}
+.clearfix{
+    　　zoom:1;
+}
+.errorStyle{
+    color: #FF0000;
+    height: 32px;
+    line-height: 32px;
+}
+.clearfix:after{
+    content:"";
+    display:block;
+    clear:both;
+}
+.ibox-content {
+    background-color: #F3F3F4 !important;
+    color: inherit;
+    /* padding: 15px 20px 20px; */
+    border-color: #e7eaec;
+    -webkit-border-image: none;
+    -o-border-image: none;
+    border-image: none;
+}
+.goBack{
+    width: 80px;
+    height: 30px;
+    line-height: 30px;
+    color: #ffffff;
+    border-radius: 4px;
+    text-align: center;
+    background-color: #bfbfbf;
+    position: absolute;
+    right: 30px;
+    bottom: 18px;
+}
+.cursor{
+    cursor: pointer;
+}
+.saveBtn{
+    display: inline-block;
+    width: 80px;
+    height: 30px;
+    line-height: 30px;
+    color: #ffffff;
+    background-color: #ff7d00;
+    text-align: center;
+    border-radius:4px;
+    font-size: 13px;
+    position: absolute;
+    right: 130px;
+    bottom: 18px;
+}
+.titleTip{
+    font-size: 15px;
+    font-weight: 900;
+    line-height: 38px;
+    padding-left: 14px;
+}
+.baseInfoLeft{
+    border: 1px solid #E7EAEC;
+    border-right: 0;
+    list-style: none;
+    padding: 0;
+}
+.baseInfoRight{
+    border: 1px solid #E7EAEC;
+    list-style: none;
+    padding: 0;
+}
+.baseInfoLeft li,.baseInfoRight li{
+    height: 38px;
+    line-height: 38px;
+    /*padding: 0 20px;*/
+    border-bottom: 1px solid #E7EAEC;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.baseInfoLeft li:last-child,.baseInfoRight li:last-child{
+    border-bottom: 0;
+}
+.baseInfoLeft li:last-child{
+    border-right: 1px solid #E7EAEC;
+}
+.commonUl li input{
+    text-align: right;
+    border: none;
+    outline: none;
+}
+.commonUl li input:focus{
+    border: 1px solid #ff7d00;
+}
+/*下拉框样式===========*/
+
+ul {
+    list-style: none;
+}
+.model-select-box {
+    float: left;
+    text-indent: 5px;
+    position: relative;
+}
+.downRow {
+    width: 17%;
+    height: 100%;
+    background: url(../../../img/downR.png) no-repeat center;
+    position: absolute;
+    right: 0;
+    top: 0;
+    border-left: 1px solid #DCDCDC;
+    cursor: pointer;
+    z-index: 0;
+}
+
+.model-select-text {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color: #666666;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+    border-left: 1px solid #dcdcdc;
+}
+
+.model-select-option {
+    display: none;
+    position: absolute;
+    background: #fff;
+    width: 100%;
+    left: -1px;
+    border: 1px solid #aaa;
+    z-index: 5000;
+    max-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0;
+}
+
+.model-select-option li {
+    height: 32px;
+    line-height: 32px;
+    color: #666666;
+    cursor: pointer;
+    padding-left: 15px !important;
+}
+
+.model-select-option li.seleced {
+    background: #C0C0C0;
+    color: #fff;
+}
+.model-select-option li:hover{
+    background: #ff7d00;
+    color: #fff;
+}
+
+/*表格设置*/
+.timeList .timeListTitle{
+    height: 40px;
+    line-height: 40px;
+    /*background: #0000FF;*/
+}
+.timeList .timeListTitle span{
+    display: inline-block;
+    margin-left: 18px;
+    text-decoration: underline;
+    cursor: pointer;
+}
+.timeList .timeListTitle .boom{
+    margin-left: 0;
+    text-decoration: none;
+    cursor: pointer;
+}
+.rateinfoTable thead tr th{
+    text-align: center;
+}
+.rateinfoTable tbody tr td{
+    text-align: center;
+}
+.rateinfoTable tbody tr td select{
+    width: 32px;
+    height: 24px;
+    display: inline-block;
+    /*margin: 0;*/
+    line-height: 24px;
+    border: 1px solid #E1E1E1;
+    border-radius: 4px;
+
+    appearance:none;
+    -moz-appearance:none;
+    -webkit-appearance:none;
+    background: url(../../images/triangle_right_114px_1189854_easyicon.net-down-8.png) no-repeat 90% 8px !important;
+}

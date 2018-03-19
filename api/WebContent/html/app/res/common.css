@@ -1,0 +1,195 @@
+body {
+	background: rgb(238, 238, 238); margin: 0px; padding: 0px; color: rgb(51, 51, 51); font-family: "ËÎÌו",Verdana, Geneva, sans-serif; font-size: 84%;
+}
+ul {
+	margin: 0px; padding: 0px; list-style-type: none;
+}
+li {
+	margin: 0px; padding: 0px; list-style-type: none;
+}
+form {
+	margin: 0px; padding: 0px; list-style-type: none;
+}
+h1 {
+	margin: 0px; padding: 0px; list-style-type: none;
+}
+h2 {
+	margin: 0px; padding: 0px; list-style-type: none;
+}
+h3 {
+	margin: 0px; padding: 0px; list-style-type: none;
+}
+h4 {
+	margin: 0px; padding: 0px; list-style-type: none;
+}
+h5 {
+	margin: 0px; padding: 0px; list-style-type: none;
+}
+h6 {
+	margin: 0px; padding: 0px; list-style-type: none;
+}
+p {
+	margin: 0px; padding: 0px; list-style-type: none;
+}
+i {
+	font-style: normal;
+}
+cite {
+	font-style: normal;
+}
+a {
+	color: rgb(52, 83, 139); text-decoration: underline;
+}
+a:hover {
+	color: rgb(255, 51, 0); text-decoration: underline;
+}
+.l {
+	float: left;
+}
+.r {
+	float: right;
+}
+.cl {
+	clear: both;
+}
+img {
+	border: 0px currentColor; border-image: none; max-width: 100%;
+}
+.tc {
+	text-align: center;
+}
+.tr {
+	text-align: right;
+}
+.vm {
+	vertical-align: middle;
+}
+.vtb {
+	vertical-align: text-bottom;
+}
+.vt {
+	vertical-align: top;
+}
+.ml2 {
+	margin-left: 2px;
+}
+.ml5 {
+	margin-left: 5px;
+}
+.ml10 {
+	margin-left: 10px;
+}
+.ml20 {
+	margin-left: 20px;
+}
+.mr2 {
+	margin-right: 2px;
+}
+.mr5 {
+	margin-right: 5px;
+}
+.mr20 {
+	margin-right: 20px;
+}
+.mt2 {
+	margin-top: 2px;
+}
+.mt5 {
+	margin-top: 5px;
+}
+.mt10 {
+	margin-top: 10px;
+}
+.mt20 {
+	margin-top: 20px;
+}
+.mb2 {
+	margin-bottom: 2px;
+}
+.mb5 {
+	margin-bottom: 5px;
+}
+.mb10 {
+	margin-bottom: 10px;
+}
+.mb20 {
+	margin-bottom: 20px;
+}
+.f9 {
+	font-size: 0.9em;
+}
+.f10 {
+	font-size: 1em;
+}
+.f11 {
+	font-size: 1.1em;
+}
+f12 {
+	font-size: 1.2em;
+}
+f13 {
+	font-size: 1.3em;
+}
+f14 {
+	font-size: 1.4em;
+}
+f15 {
+	font-size: 1.5em;
+}
+f16 {
+	font-size: 1.6em;
+}
+.fix {
+	-ms-zoom: 1;
+}
+.fix::after {
+	height: 0px; overflow: hidden; clear: both; display: block; visibility: hidden; content: "clear";
+}
+.fix::before {
+	height: 0px; overflow: hidden; clear: both; display: block; visibility: hidden; content: "clear";
+}
+.rel {
+	position: relative;
+}
+.abs {
+	position: absolute;
+}
+.divcss5_out_box {
+	margin: 0px auto; width: 70%; border-right-color: white; border-left-color: white; border-right-width: 1px; border-left-width: 1px; border-right-style: solid; border-left-style: solid; min-width: 700px;
+}
+.divcss5_in_box {
+	background: white; padding: 1em 2.5em 0px; border-right-color: rgb(204, 204, 204); border-left-color: rgb(204, 204, 204); border-right-width: 1px; border-left-width: 1px; border-right-style: solid; border-left-style: solid; min-height: 550px; _height: 550px;
+}
+.divcss5_header {
+	padding: 10px 20px 5px; overflow: hidden; border-bottom-color: rgb(204, 204, 204); border-bottom-width: 1px; border-bottom-style: solid; -ms-zoom: 1;
+}
+.divcss5_author_time {
+	color: rgb(120, 120, 120); font-family: "Courier New", Courier, monospace; margin-top: 34px; float: right;
+}
+.divcss5_title {
+	margin: 20px 0px; text-align: center; font-size: 1.6em;
+}
+.divcss5_main_con {
+	padding: 0px 20px 20px;
+}
+.divcss5_footer {
+	text-align: center; padding-bottom: 25px;
+}
+.divcss5_test_list {
+	padding: 1em; line-height: 1.4; overflow: hidden; font-size: 1.1em; border-bottom-color: rgb(204, 204, 204); border-bottom-width: 1px; border-bottom-style: dashed; -ms-zoom: 1;
+}
+.divcss5_code {
+	background: rgb(238, 238, 238); margin: 5px 0px; padding: 10px; border: 1px dashed rgb(204, 204, 204); border-image: none; clear: both; display: block; -ms-zoom: 1;
+}
+.divcss5_code xmp {
+	margin: 0px; color: rgb(0, 0, 255); font-size: 12px; white-space: pre-wrap; -ms-word-wrap: break-word;
+}
+.divcss5_btn {
+	background: url("../image/down_btn.png") no-repeat; padding-left: 25px; display: inline-block;
+}
+.divcss5_btn span {
+	background: url("../image/down_btn.png") no-repeat right top; padding: 0px 45px 0px 20px; height: 45px; line-height: 45px; display: inline-block; cursor: pointer;
+}
+.divcss5_btn:hover {
+	color: rgb(52, 83, 139); text-decoration: none;
+}

@@ -1,0 +1,116 @@
+.bshare-custom {
+	left:82.5%;
+	top:10px;
+	display:block;
+	position:absolute;
+	padding:4px;
+	border:1px #ccc solid
+}
+
+.bshare-custom a {
+  padding-left: 19px;
+  height: 16px;
+  _height: 18px;
+  text-decoration: none;
+  display: none;
+  zoom: 1;
+  vertical-align: middle;
+  cursor: pointer;
+  color: #333;
+  margin-right: 3px;
+  -moz-opacity: 1;
+  -khtml-opacity: 1;
+  opacity: 1;
+}
+.bshare-custom .bshare-qzone {
+  background: url("../images/top_logos_sprite.png") no-repeat 0 -234px;
+  display: inline-block;
+}
+.bshare-custom .bshare-sinaminiblog {
+  background: url("../images/top_logos_sprite.png") no-repeat 0 -270px;
+  display: inline-block;
+}
+.bshare-custom .bshare-renren {
+  background: url("../images/top_logos_sprite.png") no-repeat 0 -252px;
+  display: inline-block;
+}
+.bshare-custom .bshare-weixin {
+  background: url("../images/weixin.png") no-repeat;
+  display: inline-block;
+}
+
+.bshare-custom1 {
+	left:910px;
+	top:30px;
+	display:block;
+	position:absolute;
+	padding:4px;
+	border:1px #ccc solid
+}
+
+.bshare-custom1 a {
+  padding-left: 19px;
+  height: 16px;
+  _height: 18px;
+  text-decoration: none;
+  display: none;
+  zoom: 1;
+  vertical-align: middle;
+  cursor: pointer;
+  color: #333;
+  margin-right: 3px;
+  -moz-opacity: 1;
+  -khtml-opacity: 1;
+  opacity: 1;
+}
+.bshare-custom1 .bshare-qzone {
+  background: url("../images/top_logos_sprite.png") no-repeat 0 -234px;
+  display: inline-block;
+}
+.bshare-custom1 .bshare-sinaminiblog {
+  background: url("../images/top_logos_sprite.png") no-repeat 0 -270px;
+  display: inline-block;
+}
+.bshare-custom1 .bshare-renren {
+  background: url("../images/top_logos_sprite.png") no-repeat 0 -252px;
+  display: inline-block;
+}
+.bshare-custom1 .bshare-weixin {
+  background: url("../images/weixin.png") no-repeat;
+  display: inline-block;
+}
+
+.bsBox {
+  display: block;
+  z-index: 100000001;
+  font-size: 12px;
+  background: url(../images/background-opaque-dark.gif) !important;
+  padding: 6px !important;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+}
+.bsClose {
+  top: 8px;
+  right: 20px;
+  _overflow: hidden;
+  cursor: pointer;
+  position: absolute;
+  z-index: 10000000;
+  color: #666;
+  font-weight: bold;
+  font-family: Helvetica,Arial;
+  font-size: 14px;
+  line-height: 20px;
+}
+.bsTop {
+  color: #666;
+  background: #f2f2f2;
+  height: 24px;
+  line-height: 24px;
+  border-bottom: 1px solid #e8e8e8;
+}
+.bsFrameDiv, #bsMorePanel {
+  border: none;
+  background: #fff;
+}

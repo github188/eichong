@@ -1,0 +1,39 @@
+package com.wanma.ims.result;
+
+import com.alibaba.fastjson.JSON;
+import com.wanma.ims.common.GlobalSystem;
+import com.wanma.ims.model.base.Pager;
+
+public class BatchResult extends BaseResult {
+
+	private static final long serialVersionUID = 453403148418396288L;
+	protected Object dataObject;
+	protected Pager pager;
+	
+	public BatchResult(){
+		this.status = GlobalSystem.getConfig("success");
+		this.msg = "操作成功";
+	}
+
+	public Object getDataObject() {
+		return dataObject;
+	}
+
+	public void setDataObject(Object dataObject) {
+		this.dataObject = dataObject;
+	}
+
+	public Pager getPager() {
+		return pager;
+	}
+
+	public void setPager(Pager pager) {
+		this.pager = pager;
+	}
+	
+    @Override
+	public String toString() {
+		return JSON.toJSONString(this);
+	}
+	
+}

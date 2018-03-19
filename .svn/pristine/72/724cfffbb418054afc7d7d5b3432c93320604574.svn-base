@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+		<meta name="HandheldFriendly" content="true"/>
+		<meta name="MobileOptimized" content="320"/>
+		<title>扫一扫页面</title>
+		<script src="dist/js/jquery-1.11.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/url.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/userinfo.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/barcode_scan.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="css/common.css"/>
+		<link rel="stylesheet" type="text/css" href="css/barcode_scan.css"/>
+</head>
+<body style="background-color:#5b5f60;">
+	<!--头部========================================================-->
+	<div class="head">
+		<div class="headLeft">
+			<img src="img/nav_btn_back.png" class="return" onclick="returnPre();"/>
+		</div>
+	</div>
+	<div id="bcid">
+		<br/><br/><br/>
+	</div>
+	
+	<div class="scanTip">
+		
+	</div>
+	<div class="fbt" onclick="setFlash();" id='flash'>打开手电筒</div>
+</body>
+</html>

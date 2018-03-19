@@ -1,0 +1,168 @@
+package com.wanma.ims.service.impl;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.wanma.ims.common.domain.IntegralActivityDO;
+import com.wanma.ims.common.domain.IntegralRulesDO;
+import com.wanma.ims.common.domain.IntegralRulesExtensionsDO;
+import com.wanma.ims.common.domain.bo.IntegralActivityAndRulesBO;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.mapper.IntegralActivityMapper;
+import com.wanma.ims.mapper.IntegralRulesExtensionsMapper;
+import com.wanma.ims.mapper.IntegralRulesMapper;
+import com.wanma.ims.service.IntegralActivityService;
+
+@Service("integralActivityService")
+public class IntegralActivityServiceImpl implements IntegralActivityService {
+
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	@Autowired
+    private IntegralActivityMapper integralActivityMapper;
+	
+	@Autowired
+    private IntegralRulesMapper integralRulesMapper;
+	
+	@Autowired
+    private IntegralRulesExtensionsMapper integralRulesExtensionsMapper;
+	
+	@Override
+	public Long getIntegralActivityCount(IntegralActivityDO integralActivity) {
+		return integralActivityMapper.getIntegralActivityCount(integralActivity);
+	}
+	
+	@Override
+	public List<IntegralActivityAndRulesBO> getIntegralActivityList(IntegralActivityDO integralActivity) {
+		return integralActivityMapper.getIntegralActivityList(integralActivity);
+	}
+	
+	@Override
+	public BaseResultDTO modifyIntegralActivity(IntegralActivityDO integralActivity) throws Exception{
+		BaseResultDTO baseResultDTO = new BaseResultDTO();
+		
+		if (integralActivity.getModifier() == null) {
+			integralActivity.setModifier("");
+		}
+		if (integralActivity.getGmtModified() == null) {
+			integralActivity.setGmtModified(new Date());
+		}
+		
+		int result =  integralActivityMapper.modifyIntegralActivity(integralActivity);
+		if (result != 1) {
+			log.error(this.getClass() + ".modifyIntegralActivity() error : 修改积分活动扩展属性失败!");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("修改积分活动扩展属性失败!");
+		}
+		return baseResultDTO;
+	}
+
+	@Override
+	public BaseResultDTO addIntegralActivity(IntegralActivityAndRulesBO integralActivityAndRulesBO) throws Exception {
+		BaseResultDTO baseResultDTO = new BaseResultDTO();
+		IntegralActivityDO integralActivity = new IntegralActivityDO();
+		Long pkId = integralActivityAndRulesBO.getPkId();
+		int result = 0;
+		
+		//积分活动
+		integralActivity.setActivityName(integralActivityAndRulesBO.getActivityName());
+		integralActivity.setDirection(integralActivityAndRulesBO.getDirection());
+		integralActivity.setMaxIntegrals(integralActivityAndRulesBO.getMaxIntegrals());
+		integralActivity.setLaunchIntegrals(integralActivityAndRulesBO.getLaunchIntegrals());
+		integralActivity.setResiduesIntegrals(integralActivityAndRulesBO.getResiduesIntegrals());
+		integralActivity.setCreator(integralActivityAndRulesBO.getCreator());
+		integralActivity.setModifier(integralActivityAndRulesBO.getModifier());
+		integralActivity.setGmtCreate(integralActivityAndRulesBO.getGmtCreate());
+		integralActivity.setGmtModified(integralActivityAndRulesBO.getGmtModified());
+		
+		if (pkId == null) {
+			result = integralActivityMapper.addIntegralActivity(integralActivity);
+			pkId = ((Integer)result).longValue();
+		}else{
+			integralActivity.setPkId(pkId);
+			result = integralActivityMapper.modifyIntegralActivity(integralActivity);	
+		}
+		
+		if (result != 1) {
+			log.error(this.getClass() + ".addIntegralActivity() error : 增加积分活动失败!");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("增加积分活动失败！");
+			return baseResultDTO;
+		}
+		
+		//积分规则
+		IntegralRulesDO integralRulesDO = new IntegralRulesDO();
+		integralRulesDO.setIntegralActivityId(pkId);
+		integralRulesDO.setHighestPriority(integralActivityAndRulesBO.getHighestPriority());
+		integralRulesDO.setActivityStatus(integralActivityAndRulesBO.getActivityStatus());
+		integralRulesDO.setFixedIntegralValue(integralActivityAndRulesBO.getFixedIntegralValue());
+		integralRulesDO.setRatioIntegralValue(integralActivityAndRulesBO.getRatioIntegralValue());
+		integralRulesDO.setStartDate(integralActivityAndRulesBO.getStartDate());
+		integralRulesDO.setEndDate(integralActivityAndRulesBO.getEndDate());
+		integralRulesDO.setEffectiveTimes(integralActivityAndRulesBO.getEffectiveTimes());
+		integralRulesDO.setIsWhole(integralActivityAndRulesBO.getIsWhole());
+		integralRulesDO.setProvinceId(integralActivityAndRulesBO.getProvinceId());
+		integralRulesDO.setCityId(integralActivityAndRulesBO.getCityId());
+		integralRulesDO.setPowerStationId(integralActivityAndRulesBO.getPowerStationId());
+		integralRulesDO.setMinValue(integralActivityAndRulesBO.getMinValue());
+		integralRulesDO.setIsChoice(integralActivityAndRulesBO.getIsChoice());
+		integralRulesDO.setChoiceMoney(integralActivityAndRulesBO.getChoiceMoney());
+		integralRulesDO.setIsShareChoice(integralActivityAndRulesBO.getIsShareChoice());
+		integralRulesDO.setShareIntegralValue(integralActivityAndRulesBO.getShareIntegralValue());
+		integralRulesDO.setShareChoice(integralActivityAndRulesBO.getShareChoice());
+		integralRulesDO.setContents(integralActivityAndRulesBO.getContents());
+		integralRulesDO.setCreator(integralActivityAndRulesBO.getCreator());
+		integralRulesDO.setModifier(integralActivityAndRulesBO.getModifier());
+		integralRulesDO.setGmtCreate(integralActivityAndRulesBO.getGmtCreate());
+		integralRulesDO.setGmtModified(integralActivityAndRulesBO.getGmtModified());
+		result = integralRulesMapper.addIntegralRules(integralRulesDO);
+		if (result != 1) {
+			log.error(this.getClass() + ".addIntegralActivity() error : 增加积分活动-积分规则失败!");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("增加积分活动-积分规则失败！");
+			return baseResultDTO;
+		}
+		
+		//积分规则扩展属性
+		pkId = integralRulesDO.getPkId();
+		List<IntegralRulesExtensionsDO> extList;
+		if (pkId.intValue() == 2) {
+			//充电消费
+			String[] electricPileId = integralActivityAndRulesBO.getElectricPileIds().split(",");
+			extList = new ArrayList<IntegralRulesExtensionsDO>();
+			IntegralRulesExtensionsDO extDO;
+			for (String str : electricPileId) {
+				extDO = new IntegralRulesExtensionsDO();
+				extDO.setIntegralRulesId(pkId);
+				extDO.setElectricPileId(Long.getLong(str));
+				extList.add(extDO);
+			}
+			integralRulesExtensionsMapper.batchAddIntegralRulesExtensions(extList);
+		}else if (pkId.intValue() == 9) {
+			//积分兑换
+			extList = integralActivityAndRulesBO.getExtList();
+			
+			integralRulesExtensionsMapper.batchAddIntegralRulesExtensions(extList);
+		}
+		
+		return baseResultDTO;
+	}
+
+	@Override
+	public BaseResultDTO deleteIntegralActivity(IntegralActivityDO integralActivity) throws Exception {
+		BaseResultDTO baseResultDTO = new BaseResultDTO();
+		
+		int result =  integralActivityMapper.deleteIntegralActivity(integralActivity);
+		if (result != 1) {
+			log.error(this.getClass() + ".deleteIntegralActivity() error : 删除积分活动扩展属性失败!");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("删除积分活动扩展属性失败！");
+		}
+		return baseResultDTO;
+	}
+}

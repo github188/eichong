@@ -1,0 +1,70 @@
+/**     
+ * @Title:  TpiUserController.java   
+ * @Package com.wanma.controller.tpi   
+ * @Description:    TODO  
+ * @author: Android_Robot     
+ * @date:   2016年4月28日 下午4:15:49   
+ * @version V1.0     
+ */  
+package com.wanma.controller.tpi;
+
+import java.math.BigDecimal;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.tomcat.jni.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.wanma.model.TblUser;
+import com.wanma.service.TblUserService;
+import com.wanma.support.common.FailedResponse;
+import com.wanma.support.common.SuccessResponse;
+import com.wanma.support.common.WanmaConstants;
+
+/**
+ * @author bc
+ *
+ */
+@Controller
+@RequestMapping("/tpi/user")
+public class TpiUserController {
+	@Autowired
+	private TblUserService userService;
+	
+	/**
+	 * @Description：初始化用户
+	 * @return
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@RequestMapping("/initUser")
+	@ResponseBody
+	public String initUser(HttpServletRequest request) {
+		String userPhone = request.getParameter("userPhone");
+		if(StringUtils.isBlank(userPhone)){
+			return new FailedResponse(1001, "userPhone error").toString();
+		}
+		TblUser user=userService.getNormUserByAccount(userPhone);
+		if(user==null){
+			user=new TblUser();
+			user.setUserAccount(userPhone);
+			user.setNormDeviceId(WanmaConstants.DEFAULT_DEVICE_ID);
+			user.setUserPassword(WanmaConstants.DEFAULT_DEVICE_ID);
+			user.setUserLevel(6);
+			user.setUserStatus(1);
+			user.setNormStatus(1);
+			user.setNormRegisteType(2);
+			user.setNormAccountBalance(new BigDecimal(0));
+			try {
+				userService.insertUser(user);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return new FailedResponse(1001,"用户初始化失败").toString();
+			}
+		}
+		return new SuccessResponse("用户初始化成功").toString();
+	}	
+}

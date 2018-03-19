@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.TblUserMapper">
+
+	<resultMap id="tblUserMap" type="TblUser">
+		<id property="userId" column="user_id" />
+		<result property="userAccount" column="user_account" />
+		<result property="userPassword" column="user_password" />
+		<result property="userLevel" column="user_leval" />
+		<result property="userStatus" column="user_status" />
+		<result property="normName" column="norm_name" />
+		<result property="normRealName" column="norm_real_name" />
+		<result property="normStatus" column="norm_status" />
+		<result property="normRegisteType" column="norm_registe_type" />
+		<result property="normAccountBalance" column="norm_account_balance" />
+		<result property="normPayPassword" column="norm_pay_password" />
+		<result property="normDeviceId" column="norm_device_id" />
+		<result property="normEmail" column="norm_email" />
+		<result property="normAddress" column="norm_address" />
+		<result property="normIdCard" column="norm_id_card" />
+		<result property="normSex" column="norm_sex" />
+		<result property="normBirthday" column="norm_birthday" />
+		<result property="normIntegrate" column="norm_integrate" />
+		<result property="normCarCompanyId" column="norm_car_company_id" />
+		<result property="normCarTypeId" column="norm_car_type_id" />
+		<result property="normVehicleNumber" column="norm_vehicle_number" />
+		<result property="normDrivingLicence" column="norm_driving_licence" />
+	</resultMap>
+	
+	<select id="get" parameterType="TblUser" resultMap="tblUserMap">
+	SELECT
+		u.user_id,
+		u.user_account,
+		u.user_password,
+		u.user_leval,
+		u.user_status,
+		n.norm_name,
+		n.norm_real_name,
+		n.norm_registe_type,
+		(
+			SELECT
+				j.account_balance
+			FROM
+				fin_account j
+			WHERE
+				j.account_id = n.account_id
+		) AS norm_account_balance,
+		(
+			SELECT
+				h.account_pwd
+			FROM
+				fin_account h
+			WHERE
+				n.account_id = h.account_id
+		) AS norm_pay_password,
+		n.norm_device_id,
+		n.norm_email,
+		n.norm_address,
+	  u.user_idcard	AS norm_id_card,
+		n.norm_sex,
+		n.norm_birthday,
+		n.norm_integrate,
+		n.norm_car_company_id,
+		n.norm_car_type_id,
+		n.norm_vehicle_number,
+		n.norm_driving_licence,
+		getFullPath ('userAvatar', u.user_id) userImage
+		from tbl_user u left join tbl_user_normal n
+		on u.user_id=n.user_id
+		where user_status!=3 and u.user_id=#{userId} 
+	</select>
+	<select id="getByAccount" parameterType="string" resultMap="tblUserMap">
+	SELECT
+		u.user_id,
+		u.user_account,
+		u.user_password,
+		u.user_leval,
+		u.user_status,
+		n.norm_name,
+		n.norm_real_name,
+		n.norm_registe_type,
+		(
+			SELECT
+				j.account_balance
+			FROM
+				fin_account j
+			WHERE
+				j.account_id = n.account_id
+		) AS norm_account_balance,
+		(
+			SELECT
+				h.account_pwd
+			FROM
+				fin_account h
+			WHERE
+				n.account_id = h.account_id
+		) AS norm_pay_password,
+		n.norm_device_id,
+		n.norm_email,
+		n.norm_address,
+		u.user_idcard AS norm_id_card,
+		n.norm_sex,
+		n.norm_birthday,
+		n.norm_integrate,
+		n.norm_car_company_id,
+		n.norm_car_type_id,
+		n.norm_vehicle_number,
+		n.norm_driving_licence,
+		getFullPath ('userAvatar', u.user_id) userImage
+		from tbl_user u left join tbl_user_normal n
+		on u.user_id=n.user_id
+		where user_status!=3 and u.user_leval=6 and u.user_account=#{userAccount} 
+	</select>
+	
+	<select id="getGreenLangUserByAccount" parameterType="string" resultMap="tblUserMap">
+		select u.user_id,u.user_account,u.user_password from tbl_user u
+		where user_status!=3 and u.user_account=#{userAccount}
+	</select>
+
+	<insert id="insert" parameterType="TblUser" useGeneratedKeys="true" keyProperty="userId">
+		insert into tbl_user (
+			user_account,user_password,user_leval,user_status
+		)values (
+			#{userAccount},#{userPassword},#{userLevel},#{userStatus}
+		)
+	</insert>
+	<insert id="insertNormalUser" parameterType="TblUser">
+		insert into tbl_user_normal (
+			user_id,norm_name,norm_status,norm_registe_type,norm_account_balance
+		)values (
+			#{userId},#{normName},#{normStatus},#{normRegisteType},#{normAccountBalance}
+		)
+	</insert>
+
+	<update id="update" parameterType="TblUser">
+		update tbl_user set
+		<if test="userAccount != null">
+			user_account=#{userAccount},
+	    </if>
+	    <if test="userPassword != null">
+			user_password=#{userPassword}
+	    </if>
+		where user_account=#{userAccount}
+	</update>
+	<update id="updateNormalUser" parameterType="TblUser">
+		update tbl_user_normal set
+		<if test="normName != null">norm_name=#{normName},</if>
+	    <if test="normRealName!= null">norm_real_name=#{normRealName},</if>
+	    <if test="normStatus!= null"> norm_status=#{normStatus},</if>
+	    <if test="normRegisteType!= null"> norm_registe_type =#{normRegisteType},</if>
+	    <if test="normAccountBalance!= null"> norm_account_balance=#{normAccountBalance},</if>
+	    <if test="normPayPassword!= null"> norm_pay_password=#{normPayPassword},</if>
+	    <if test="normDeviceId!= null"> norm_device_id=#{normDeviceId},</if>
+	    <if test="normEmail!= null"> norm_email=#{normEmail},</if>
+	    <if test="normAddress!= null"> norm_address=#{normAddress},</if>
+	    <if test="normIdCard!= null"> norm_id_card=#{normIdCard},</if>
+	    <if test="normSex!= null"> norm_sex=#{normSex},</if>
+	    <if test="normBirthday!= null"> norm_birthday=#{normBirthday},</if>
+	    <if test="normIntegrate!= null"> norm_integrate=#{normIntegrate},</if>
+	    <if test="normCarCompanyId!= null"> norm_car_company_id=#{normCarCompanyId},</if>
+	    <if test="normCarTypeId!= null"> norm_car_type_id=#{normCarTypeId},</if>
+	    <if test="normVehicleNumber!= null"> norm_vehicle_number=#{normVehicleNumber},</if>
+	    <if test="normDrivingLicence!= null"> norm_driving_licence=#{normDrivingLicence},</if>
+	    user_id=#{userId}
+		where user_id=#{userId}
+	</update>
+	<update id="updateUserChargeGift" parameterType="TblUser">
+		update tbl_user_normal set
+		where user_id=#{userId}
+	</update>	
+</mapper> 

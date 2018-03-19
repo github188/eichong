@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.TblDynamicMapper">
+
+	<resultMap id="tblDynamicMap" type="TblDynamic">
+		<id property="pkRelease" column="pk_release" />
+		<result property="releTitle" column="rele_title" />
+		<result property="releContent" column="rele_content" />
+		<result property="releCreatedate" column="rele_createdate" />
+		<result property="releUpdatedate" column="rele_updatedate" />
+		<result property="releUsepk" column="rele_usepk" />
+		<result property="releType" column="rele_type" />
+		<result property="releImg" column="rele_img" />
+		<result property="releOrder" column="rele_order" />
+		<result property="validFlag" column="valid_flag" />
+	</resultMap>
+	
+		<!--  根据类型获取WebList-->
+	<select id="list" parameterType="map" resultMap="tblDynamicMap">
+	    select 
+	    pk_release,
+	    rele_title,
+	    rele_content,
+	    rele_createdate,
+	    rele_updatedate,
+	    rele_usepk,
+	    rele_type,
+	    rele_img,
+	    rele_order,
+	    valid_flag	    
+	   from tbl_web_release
+	   <where>
+	   	1=1
+	   <if test="releType!=null and releType!=''">
+	    and rele_type=#{releType} 
+	   </if>
+	   </where> 
+	    order by rele_img desc,rele_order asc,rele_createdate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	<select id="count" parameterType="map" resultType="long">
+		select count(*)
+		from tbl_web_release
+		<where>
+	   	1=1
+	   <if test="releType!=null and releType!=''">
+	    and rele_type=#{releType} 
+	   </if>
+	   </where> 
+	</select>
+	<!--  根据ID获取WebList-->
+	<select id="get" parameterType="int" resultMap="tblDynamicMap">
+	   select 
+	    pk_release,
+	    rele_title,
+	    rele_content,
+	    rele_createdate,
+	    rele_updatedate,
+	    rele_usepk,
+	    rele_type,
+	    rele_img,
+	    rele_order,
+	    getFullPath('dynamic',pk_release) imageUrl,
+	    valid_flag	    
+	   from tbl_web_release
+	   where 
+	    pk_release=#{pkRelease} 
+	</select>
+	<!-- 新增 -->
+	<insert id="add" parameterType="map" useGeneratedKeys="true" keyProperty="pkRelease">
+	  insert into tbl_web_release (
+		rele_title,
+	    rele_content,
+	    rele_createdate,
+	    rele_updatedate,
+	    rele_usepk,
+	    rele_type,
+	    rele_img,
+	    rele_order,
+	    valid_flag	  
+		)values (
+		#{releTitle},
+		#{releContent},
+		#{releCreatedate},
+		#{releUpdatedate},
+		#{releUsepk},
+		#{releType},
+		#{releImg},
+		#{releOrder},
+		#{validFlag}
+		)
+	</insert>
+	<!-- 新增 -->
+	<update id="update" parameterType="map">
+	  update tbl_web_release 
+		set rele_title=#{releTitle},
+	    rele_content=#{releContent},
+	    rele_createdate=#{releCreatedate},
+	    rele_updatedate=#{releUpdatedate},
+	    rele_type=#{releType},
+	    rele_img=#{releImg},
+	    rele_order=#{releOrder},
+	    valid_flag=	#{validFlag}  
+	    where pk_release=#{pkRelease}
+	</update>
+	<!-- 删除-->
+	<delete id="deleteByIds" parameterType="String">
+		delete  from
+		tbl_web_release
+		where
+		pk_release in (${_parameter}) 
+	</delete>
+	<!--  根据ID获取WebList-->
+	<select id="getUploadImgUrl" resultType="String">
+	   select 
+	    getFullPath(#{0},#{1}) imageUrl  
+	   from tb_multi_media
+	   where 
+	    reference_id=#{1} 
+	</select>
+</mapper> 

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.web.dao.WebTblRecruitMapper">
+	<resultMap id="listResultMap" type="TblRecruit">
+		<id property="pkRecruit" column="pk_recruit" />
+		<result property="recJob" column="rec_job" />
+		<result property="recPlace" column="rec_place" />
+		<result property="recNumber" column="rec_number" />
+		<result property="recCreatedate" column="rec_createdate" />
+		<result property="recUpdatedate" column="rec_updatedate" />
+		<result property="recUsepk"      column="rec_usepk" />
+		<result property="recJobdescribe" column="rec_jobdescribe" />
+		<result property="recJobrequire" column="rec_jobrequire" />
+	</resultMap>
+	
+	<select id="findSome"  resultMap="listResultMap">
+	   select 
+	    pk_recruit,
+	    rec_job,
+	    rec_place,
+	    rec_number,
+	    rec_createdate,
+	    rec_updatedate,
+	    rec_usepk,
+	    rec_jobdescribe,
+	    rec_jobrequire	    
+	   from tbl_web_recruit order by rec_createdate desc limit 0,5;
+	</select>
+
+	<select id="findByPk" parameterType="int" resultMap="listResultMap">
+	   select 
+	    pk_recruit,
+	    rec_job,
+	    rec_place,
+	    rec_number,
+	    rec_createdate,
+	    rec_updatedate,
+	    rec_usepk,
+	    rec_jobdescribe,
+	    rec_jobrequire	    
+	   from tbl_web_recruit
+	   where 
+	    pk_recruit=#{pkRecruit} 
+	</select>
+		<!-- 根据类型获取他的全部消息及分页 -->
+		<select id="getAll"      parameterType="map"   resultMap="listResultMap" >
+		select 
+	    pk_recruit,
+	    rec_job,
+	    rec_place,
+	    rec_number,
+	    rec_createdate,
+	    rec_updatedate,
+	    rec_usepk,
+	    rec_jobdescribe,
+	    rec_jobrequire
+		 from tbl_web_recruit
+		 order by  rec_createdate desc
+		 limit #{pageNumber},#{pageNum}
+	</select>
+	
+	<select id="countRecruit" parameterType="map" resultType="long">
+		select count(*)
+		from tbl_web_recruit
+	</select>
+	
+</mapper> 

@@ -1,0 +1,55 @@
+package com.wanma.ims.service.impl;
+
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.wanma.ims.common.domain.AdvertisementDO;
+import com.wanma.ims.mapper.AdvertisementMapper;
+import com.wanma.ims.service.AdvertisementService;
+
+@Service("advertisementService")
+public class AdvertisementServiceImpl implements AdvertisementService{
+	@Autowired
+	private AdvertisementMapper advertisementMapper;
+	
+
+	@Override
+	public int getLimitCount(AdvertisementDO advertisementDO) {
+		return advertisementMapper.getLimitCount(advertisementDO);
+	}
+
+	@Override
+	public boolean insertAdvertisement(AdvertisementDO advertisementDO) {
+		return advertisementMapper.insertAdvertisement(advertisementDO);
+	}
+
+	@Override
+	public AdvertisementDO getAdvertisementById(AdvertisementDO advertisementDO) {
+		return advertisementMapper.getAdvertisementById(advertisementDO);
+	}
+
+	@Override
+	public boolean updateAdvertisement(AdvertisementDO advertisementDO) {
+		return advertisementMapper.updateAdvertisement(advertisementDO);
+	}
+
+	@Override
+	public long selectAdvertisementCount(AdvertisementDO advertisementDO) {
+		return advertisementMapper.selectAdvertisementCount(advertisementDO);
+	}
+
+	@Override
+	public List<AdvertisementDO> selectAdvertisementList(
+			AdvertisementDO advertisementDO) {
+		return advertisementMapper.selectAdvertisementList(advertisementDO);
+	}
+
+
+	
+
+	
+
+}

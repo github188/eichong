@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/finManage/finManage_search.css"/>
+    <title>账单搜索</title>
+</head>
+<body>
+<div class="col-sm-12">
+    <div class="ibox float-e-margins" style="margin: 0">
+        <div class="userBaseInfo col-sm-12 clearfix">
+            <form id="divideListForm">
+                <div class="form-group col-xs-10">
+                    <div class="userAccount queryParam col-sm-5">
+                        <input type="text" name="orderCode" class="userAccountInput cityName" placeholder="请输入订单编号">
+                    </div>
+                    <div class="col-xs-10 form-group" id="submitBtn" onclick="divideListSearch()">
+                        查询
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/finManage/finManage_search.js" type="text/javascript" charset="utf-8"></script>

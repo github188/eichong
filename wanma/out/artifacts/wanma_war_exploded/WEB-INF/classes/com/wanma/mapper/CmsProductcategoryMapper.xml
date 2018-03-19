@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsProductcategoryMapper">
+
+	<resultMap id="tblProductcategoryResultMap" type="TblProductcategory">
+		<id property="pkProductcategory" column="pk_ProductCategory" />
+		<result property="prcaName" column="prCa_Name" />
+		<result property="prcaParentid" column="prCa_ParentId" />
+		<result property="prcaCreatedate" column="prCa_Createdate" />
+		<result property="prcaUpdatedate" column="prCa_Updatedate" />
+		<result property="prcaImage" column="prCa_image" />
+	</resultMap>
+	<resultMap id="pageResultMap" type="java.util.HashMap"
+		extends="tblProductcategoryResultMap"></resultMap>
+	<resultMap id="findResultMap" type="java.util.HashMap"
+		extends="tblProductcategoryResultMap"></resultMap>
+
+	<!-- 新增商品分类 -->
+	<insert id="insertCategory" parameterType="TblProductcategory">
+		insert into tbl_ProductCategory (
+		prCa_Name,
+		prCa_ParentId,
+		prCa_Createdate,
+		prCa_Updatedate,
+		prCa_image
+		)values (
+		#{prcaName},
+		#{prcaParentid},
+		#{prcaCreatedate},
+		#{prcaUpdatedate},
+		#{prcaImage}
+		)
+	</insert>
+	<!-- 更新商品分类 -->
+	<update id="updateCategory" parameterType="TblProductcategory">
+		update tbl_ProductCategory set
+		prCa_Name=#{prcaName},
+		prCa_Updatedate=#{prcaUpdatedate},
+		prCa_image=#{prcaImage}
+		where
+		pk_ProductCategory=#{pkProductcategory} 
+	</update>
+	<!-- 删除商品分类 -->
+	<delete id="deleteById" parameterType="map">
+		delete from
+		tbl_ProductCategory
+		where
+		pk_ProductCategory=#{pkProductcategory} 
+	</delete>
+	<!-- 获取商品分类 -->
+	<select id="findCategory" parameterType="map"
+		resultMap="tblProductcategoryResultMap">
+		select
+		pk_ProductCategory,
+		prCa_Name,
+		prCa_ParentId,
+		prCa_Createdate,
+		prCa_Updatedate,
+		prCa_image
+		from tbl_ProductCategory
+		where
+		pk_ProductCategory=#{pkProductcategory} 
+	</select>
+	<!-- 获取商品分类列表 -->
+	<select id="findCategoryList" parameterType="map" resultMap="findResultMap">
+		select
+		pk_ProductCategory,
+		prCa_Name,
+		prCa_ParentId,
+		prCa_Createdate,
+		prCa_Updatedate,
+		prCa_image
+		from tbl_ProductCategory
+		<where>
+			<if test="pkProductcategory != null">
+				pk_ProductCategory=#{pkProductcategory}
+	     </if>
+			<if test="prcaName != null">
+				and prCa_Name=#{prcaName}
+	     </if>
+			<if test="prcaParentid != null">
+				and prCa_ParentId=#{prcaParentid}
+	     </if>
+			<if test="prcaCreatedate != null">
+				and prCa_Createdate=#{prcaCreatedate}
+	     </if>
+			<if test="prcaUpdatedate != null">
+				and prCa_Updatedate=#{prcaUpdatedate}
+	     </if>
+			<if test="prcaImage != null">
+				and prCa_image=#{prcaImage}
+	     </if>
+		</where>
+		order by prCa_Createdate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	<!-- 获取商品分类总数 -->
+	<select id="findCount" parameterType="map" resultType="long">
+		select count(pk_ProductCategory)
+		from
+		tbl_ProductCategory
+		<where>
+			<if test="pkProductcategory != null">
+				pk_ProductCategory=#{pkProductcategory}
+	     </if>
+			<if test="prcaName != null">
+				and prCa_Name=#{prcaName}
+	     </if>
+			<if test="prcaParentid != null">
+				and prCa_ParentId=#{prcaParentid}
+	     </if>
+			<if test="prcaCreatedate != null">
+				and prCa_Createdate=#{prcaCreatedate}
+	     </if>
+			<if test="prcaUpdatedate != null">
+				and prCa_Updatedate=#{prcaUpdatedate}
+	     </if>
+			<if test="prcaImage != null">
+				and prCa_image=#{prcaImage}
+	     </if>
+		</where>
+	</select>
+	
+</mapper> 

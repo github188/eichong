@@ -1,0 +1,73 @@
+/**     
+ * @Title:  UUIDUtil.java   
+ * @Package com.wanma.ims.web.support.utils   
+ * @Description:    TODO  
+ * @author: Android_Robot     
+ * @date:   2015年11月3日 下午1:22:42   
+ * @version V1.0     
+ */  
+package com.wanma.ims.util;
+
+import java.util.Random;
+import java.util.UUID;
+
+/**
+ * 主键 生成工具
+ */
+public class PKUtil {
+	/** 
+	 * menu_id,菜单ID
+	 * 以62进制（字母加数字）生成19位UUID，最短的UUID 
+	 * @return 
+	 */  
+	public static String getPkMenuId() {  
+	    UUID uuid = UUID.randomUUID();  
+	    StringBuilder sb = new StringBuilder();  
+	    sb.append(digits(uuid.getMostSignificantBits() >> 32, 8));  
+	    sb.append(digits(uuid.getMostSignificantBits() >> 16, 4));  
+	    sb.append(digits(uuid.getMostSignificantBits(), 4));  
+	    sb.append(digits(uuid.getLeastSignificantBits() >> 48, 4));  
+	    sb.append(digits(uuid.getLeastSignificantBits(), 12));  
+	    return sb.toString();  
+	}  
+	private static String digits(long val, int digits) {  
+	    long hi = 1L << (digits * 4);  
+	    return NumbersUtil.toString(hi | (val & (hi - 1)), NumbersUtil.MAX_RADIX)  
+	            .substring(1);  
+	}  
+	
+	/** 
+	 * role_id,角色ID
+	 * @param length指定位数
+	 * @return 
+	 */
+	 
+	public static String getPkRoleId(){
+		return getRandomKey(10);
+	}
+	public static String getRandomKey(int length){
+		Random randGen = null;
+		char[] numbersAndLetters = null;
+		if (length < 1) {
+			return null;
+		}
+
+		randGen = new Random();
+		numbersAndLetters = ("0123456789abcdefghijklmnopqrstuvwxyz"
+				+ "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ").toCharArray();
+
+		char[] randBuffer = new char[length];
+		for (int i = 0; i < randBuffer.length; i++) {
+			randBuffer[i] = numbersAndLetters[randGen.nextInt(71)];
+		}
+		return new String(randBuffer);
+	}
+	
+	/** 
+	 * account_id,资金账户ID
+	 * @return string
+	 */
+	public static String getAccountId(){
+		return null;
+	}
+}

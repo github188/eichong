@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+					
+<!-- 产品型号查询xml -->
+<mapper namespace="com.wanma.dao.CmsTypespanMapper">
+	<resultMap type="TblTypespan" id="tblTypespan">
+		<id property="pkTypeSpanId" column="pk_TypeSpanId" />
+		<result property="tsTypeSpan" column="ts_TypeSpan" />
+		<result property="tsModelName" column="ts_ModelName" />
+		<result property="tsFactTag" column="ts_FactTag" />
+		<result property="tsFileName" column="ts_FileName" />
+		<result property="tsProductNumber" column="ts_ProductNumber" />
+		<result property="tsRemarks" column="ts_Remarks" />
+		<result property="tsCreatedate" column="ts_Createdate" />
+		<result property="tsUpdatedate" column="ts_Updatedate" />
+	</resultMap>
+	
+	<select id="getTblTypespanList" parameterType="TblTypespan"
+		resultType="hashMap">
+		SELECT * 
+		FROM tbl_typespan t
+		where 1=1
+		<if test="tsTypeSpan !=null and tsTypeSpan !=''">and t.ts_TypeSpan like  concat('%',#{tsTypeSpan},'%')</if>
+		<if test="tsModelName !=null and tsModelName !=''">and t.ts_ModelName like concat('%',#{tsModelName},'%')</if>
+		order by ts_Updatedate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	
+	<select id="getTypeSpanId" parameterType="String"
+		resultType="int">
+		SELECT t.pk_TypeSpanId
+		FROM tbl_typespan t
+		where ts_TypeSpan = #{value}
+	</select>
+	
+	<select id="getTblTypespanListCount" parameterType="TblTypespan" resultType="long">
+		SELECT count(1)
+		FROM tbl_typespan t
+		where 1=1
+		<if test="tsTypeSpan !=null and tsTypeSpan !=''">and t.ts_TypeSpan like  concat('%',#{tsTypeSpan},'%')</if>
+		<if test="tsModelName !=null and tsModelName !=''">and t.ts_ModelName like concat('%',#{tsModelName},'%')</if>
+	</select>
+	
+	<!-- 新增产品信息 -->
+	<insert id="tblTypespanInsert" parameterType="TblTypespan" useGeneratedKeys="true" keyProperty="pkTypeSpanId">
+		insert into tbl_typespan
+		(
+			ts_TypeSpan,
+			ts_ModelName,
+			ts_FactTag,
+			ts_FileName,
+			ts_ProductNumber,
+			ts_Remarks,
+			ts_Createdate,
+			ts_Updatedate
+		)
+		values
+		(
+			#{tsTypeSpan},
+			#{tsModelName},
+			#{tsFactTag},
+			#{tsFileName},
+			#{tsProductNumber},
+			#{tsRemarks},
+			sysdate(),
+			sysdate()
+		)
+	</insert>
+	
+	<!-- 修改产品信息 -->
+	<update id="tblTypespanUpdate" parameterType="TblTypespan">
+		update tbl_typespan
+		set
+			ts_TypeSpan = #{tsTypeSpan},
+			ts_ModelName = #{tsModelName},
+			ts_FactTag = #{tsFactTag},
+			ts_FileName = #{tsFileName},
+			ts_ProductNumber = #{tsProductNumber},
+			ts_Remarks = #{tsRemarks},
+			ts_Updatedate = sysdate()
+		where pk_TypeSpanId = #{pkTypeSpanId}
+	</update>
+	
+	<select id="findOne" parameterType="TblTypespan"
+		resultMap="tblTypespan">
+		SELECT * 
+		FROM tbl_typespan t
+		where pk_TypeSpanId = #{pkTypeSpanId}
+	</select>
+	<select id="selectTsTypeSpan" parameterType="String"
+		resultType="int">
+		SELECT count(*) 
+		FROM tbl_typespan t
+		where ts_TypeSpan = #{tsTypeSpan}
+	</select>
+	
+</mapper>

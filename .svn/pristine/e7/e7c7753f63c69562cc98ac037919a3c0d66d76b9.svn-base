@@ -1,0 +1,94 @@
+/**
+ * FileName:AppFeedbackMapper.java
+ * Author: Administrator
+ * Create: 2014年6月26日
+ * Last Modified: 2014年6月26日
+ * Version: V1.0 
+ */
+package com.wanma.app.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import com.wanma.model.TblPowerstation;
+
+
+/**
+ * 反馈表操作用DAO接口Mapper
+ * 
+ * @version V1.0
+ * @author Administrator
+ * @date 2014年6月26日
+ */
+public interface TblPowerstationMapper {
+	/**
+	 * 获取电站数据
+	 * @param feedback
+	 */
+	public TblPowerstation findOne(TblPowerstation tblPowerstation);
+
+	/**
+	 * 获取电站数据
+	 * @param feedback
+	 */
+	public List<?> getPowerstation(TblPowerstation tblPowerstation);
+	/**
+	 * 新的快速检索获取电站列表
+	 * @param params
+	 * @return
+	 */
+	public List<Map<String, String>> getSearchPowerStationList(Map<String, String> params);
+	/**
+	 * 新接口获取电站列表数据
+	 * @param tblPowerstation
+	 * @return
+	 */
+	public List<?> getPowerstationN(TblPowerstation tblPowerstation);
+	/**
+	 * 获取地图模式电站数据
+	 * @param feedback
+	 */
+	public List<?> getPowerstationForMap(TblPowerstation tblPowerstation);
+	
+	/**
+	 * 通过主键获取电桩信息
+	 * @param feedback
+	 */
+	public Map<String, Object> getPowerstationById(TblPowerstation tblPowerstation);
+	
+	/**
+	 * 分享页查询电站信息
+	 * @param feedback
+	 */
+	public TblPowerstation getSharPowerstation(TblPowerstation tblPowerstation);
+	
+	/**
+	 * <!--分享页查询电站电桩数量-->
+	 * @param feedback
+	 */
+	public long searchCount(TblPowerstation tblPowerstation);
+	
+	public List<Map<String, Object>> getAllPsList();
+	
+	/**
+	 * 获取地图电站锚点简介
+	 * @param params
+	 * 		eid 电站id，lat 纬度，lng 经度
+	 * @return
+	 */
+	public Map<String, String> getAnchorSummaryPs(Map<String, Object> params);
+
+
+	/**
+	 * 获取市级充电点聚合
+	 * @param string 
+	 * @return
+	 */
+	public List<Map<String, String>> getCtyPoints(String proCode);
+
+	/**
+	 * 获取省级充电点聚合
+	 * @return
+	 */
+	public List<Map<String, String>> getProPoints();
+}

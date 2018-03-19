@@ -1,0 +1,154 @@
+package com.wanma.ims.controller.sys;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.wanma.ims.common.domain.UserAdminDO;
+import com.wanma.ims.common.domain.UserRoleDO;
+import com.wanma.ims.common.domain.base.Pager;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.constants.ResultCodeConstants;
+import com.wanma.ims.controller.BaseController;
+import com.wanma.ims.controller.result.JsonException;
+import com.wanma.ims.controller.result.JsonResult;
+import com.wanma.ims.controller.vo.UserAdminVO;
+import com.wanma.ims.service.UserAdminService;
+import com.wanma.ims.service.UserService;
+
+/**
+ * 权限管理-管理员管理
+ */
+@RequestMapping("/manage/admin")
+@Controller
+public class AdminController extends BaseController{
+
+	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+
+    @Autowired
+    private UserAdminService userAdminService;
+	@Autowired
+	private UserService userService;
+ 
+    /**
+     * 管理员-列表
+     */
+    @RequestMapping(value = "/getUserAdminListPage", method = RequestMethod.POST)
+	@ResponseBody
+    public void getUserAdminListPage(Pager pager,UserAdminDO userAdminDO) {
+    	JsonResult result = new JsonResult();
+		try {
+			userAdminDO.setCpyIdList(getCurrentLoginUser().getCpyIdList());
+			Long total = userAdminService.countUserAdminList(userAdminDO);
+			if (total <= pager.getOffset()) {
+				pager.setPageNo(1L);
+			}
+			pager.setTotal(total);
+			userAdminDO.setPager(pager);
+			List<UserAdminDO> list = userAdminService.getUserAdminList(userAdminDO);
+			List<UserAdminVO> VOList = new ArrayList<UserAdminVO>();
+			for (UserAdminDO userAdmin : list) {
+				VOList.add(new UserAdminVO(userAdmin));
+			}
+			result.setPager(pager);
+			result.setDataObject(VOList);
+		} catch (Exception e) {
+			LOGGER.error(this.getClass() + ".getUserAdminListPage() error|userAdminDO={}",userAdminDO.toString(), e);
+			responseJson(new JsonException("管理员列表查询失败"));
+			return;
+		}
+		responseJson(result);
+    }
+    
+    /**
+     * 管理员-新增
+     */
+    @RequestMapping(value = "/addUserAdmin", method = RequestMethod.POST)
+	@ResponseBody
+    public void addUserAdmin(UserAdminDO userAdminDO) {
+    	JsonResult result = new JsonResult();
+		try {
+			userAdminDO.setCreator(getCurrentUserName());
+			userAdminDO.setCreatorId(getCurrentUserId());
+			BaseResultDTO dto = userAdminService.addUserAdmin(userAdminDO,getCurrentLoginUser());
+			if(!dto.isSuccess()){
+				responseJson(new JsonResult(false, ResultCodeConstants.FAILED,  dto.getErrorDetail()));
+				return;
+			}
+		} catch (Exception e) {
+			LOGGER.error(this.getClass() + ".addUserAdmin error|userAdminDO={}", userAdminDO.toString(), e);
+			responseJson(new JsonException("管理员新增失败"));
+			return;
+		}
+		responseJson(result);
+    }
+
+    /**
+     * 管理员-主页 
+     */
+    @RequestMapping(value = "/adminHome")
+    @ResponseBody
+    public void adminHome(Long adminId){
+    	JsonResult result = new JsonResult();
+		try {
+			UserAdminDO userAdminDO = userAdminService.viewUserAdmin(adminId);
+			result.setDataObject(new UserAdminVO(userAdminDO));
+		} catch (Exception e) {
+			LOGGER.error(this.getClass() + ".toAdminHome() error : ", e);
+			responseJson(new JsonException());
+			return;
+		}
+		responseJson(result);
+    }
+    
+    /**
+     * 公司主页-管理员 
+     */
+    @RequestMapping(value = "/getUserAdminByCpyId")
+    @ResponseBody
+    public void getUserAdminByCpyId(Long cpyId){
+    	JsonResult result = new JsonResult();
+		try {
+			List<UserAdminDO> list = userAdminService.getUserAccountByCpyId(cpyId);
+			result.setDataObject(list);
+		} catch (Exception e) {
+			LOGGER.error(this.getClass() + ".getUserAdminByCpyId"+ "() error : ", e);
+			responseJson(new JsonException());
+			return;
+		}
+		responseJson(result);
+    }
+    
+    /**
+     * 管理员主页-角色修改 
+     */
+    @RequestMapping(value = "/modifyAdminRole")
+    @ResponseBody
+    public void modifyAdminRole(Long adminId,String roleId){
+    	JsonResult result = new JsonResult();
+    	try {
+    		UserRoleDO roleDO = new UserRoleDO();
+    		roleDO.setUserId(adminId);
+    		roleDO.setRoleId(roleId);
+    		roleDO.setModifier(getCurrentUserName());
+			if(!userAdminService.modifyUserRole(roleDO)){
+				responseJson(new JsonResult(false, ResultCodeConstants.FAILED, ResultCodeConstants.ERROR_MSG_MODIFY_USER_ROLE));
+				return;
+			}
+		} catch (Exception e) {
+			LOGGER.error(this.getClass() + ".modifyAdminRole() error : ", e);
+			responseJson(new JsonException());
+			return;
+		}
+    	responseJson(result);
+    } 
+    
+   
+}

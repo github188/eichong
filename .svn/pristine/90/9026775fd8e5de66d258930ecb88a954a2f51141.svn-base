@@ -1,0 +1,314 @@
+<script type="text/javascript">
+	/**********************************设置div高度**************************************/
+	var boxHeight = $("div.layoutBox:first").height();
+	$(".chartDivMap").css("height", boxHeight * 3 / 4);
+	$("div.layoutBox:first").css("overflow-y", "scroll");
+</script>
+<body>
+<div style="background: #333;height:900px;">
+	<div style="width: 100%; background: #333" layoutH="0";>
+			<input type="hidden" id="intervalIds" value="getHeadInfoCountIntervalId0,getHeadInfoCountIntervalId1" />
+			<input type="hidden" id="reloadF" value="getHeadInfoCountF" data-param="" paramIndex="1"/>
+		<!--地图区域=================-->
+		<div id="pileMapChartDiv1" class="mapArea chartDivMap" style="background: #333;width:80%;margin-top: 5%;" ></div>
+		<!--定位的全国列表区域======================================================================================-->
+		<div id="dataCountDiv" class="allArea">
+			<!--全国信息提示标签-->
+			<div class="allAreaTitle">全国</div>
+			<!--总数统计信息-->
+			<div class="allCount">
+				<div class="allChargeTimes">
+					<div class="lable">总充电次数</div>
+					<div class="lableValue">
+						<span id="all_charge_count_txt" class="wordSize">1.23</span>次
+					</div>
+
+				</div>
+				<div class="allChargeTimes">
+					<div class="lable">总充电度数</div>
+					<div class="lableValue">
+						<span id="all_charge_c_txt" class="wordSize">1.23</span>度
+					</div>
+				</div>
+				<div class="allChargeTimes">
+					<div class="lable">总充电时长</div>
+					<div class="lableValue">
+						<span id="all_charge_time_txt" class="wordSize">1.23</span>小时
+					</div>
+				</div>
+			</div>
+			<!--资产统计信息-->
+			<div class="property">
+				<div class="propertyTitle">资产</div>
+				<div class="propertyList">
+					<div class="propertyTag">充电点个数</div>
+					<div id="cdd_txt" class="propertyTagValue">569</div>
+				</div>
+				<div class="propertyList">
+					<div class="propertyTag">电桩总数</div>
+					<div id="cdd_dzcount_txt" class="propertyTagValue">4,566</div>
+				</div>
+				<div class="propertyList">
+					<div class="propertyTag">枪口数</div>
+					<div id="pile_head_txt" class="propertyTagValue">34,566</div>
+				</div>
+				<div class="propertyList">
+					<div class="propertyTag">交流桩</div>
+					<div id="ac_txt" class="propertyTagValue">5,690</div>
+				</div>
+				<div class="propertyList">
+					<div class="propertyTag">直流桩</div>
+					<div id="dc_txt" class="propertyTagValue">569</div>
+				</div>
+			</div>
+			<!--枪口状态数量统计-->
+			<div class="pileStateTotal">
+				<!-- <div class="pileStateList">
+					<div class="pileStateListTag">预约中枪口数</div>
+					<div id="bespoke_head_txt" class="pileStateListValue">34,569</div>
+				</div> -->
+				<div class="pileStateList">
+					<div class="pileStateListTag">充电中枪口数</div>
+					<div id="charging_head_txt" class="pileStateListValue">3,569</div>
+				</div>
+				<div class="pileStateList">
+					<div class="pileStateListTag">空闲枪口数</div>
+					<div id="free_head_txt" class="pileStateListValue">3,569</div>
+				</div>
+				<div class="pileStateList">
+					<div class="pileStateListTag">故障枪口数</div>
+					<div id="error_head_txt" class="pileStateListValue">3,569</div>
+				</div>
+				<div class="pileStateList">
+					<div class="pileStateListTag">通讯中断电桩数</div>
+					<div id="off_pile_txt" class="pileStateListValue">3,569</div>
+				</div>
+			</div>
+		</div>
+		<!--定位的城市列表区域==========================================================================================-->
+
+		<div id="dataCountDiv1" class="cityArea" style="display: none;">
+			<!--全国信息提示标签-->
+
+			<div class="allAreaTitle">
+				<span id="back" class="back"> </span> <span id="provinceLink"
+					class="cityName linkPoint mapLink"></span> <span id="clickLink"
+					class="numMap mapLink"> 数据地图 </span>
+			</div>
+			<!--总数统计信息-->
+			<div class="allCount">
+				<div class="allChargeTimes">
+					<div class="lable">总充电次数</div>
+					<div class="lableValue">
+						<span id="all_charge_count_txt1" class="wordSize"></span>次
+					</div>
+
+				</div>
+				<div class="allChargeTimes">
+					<div class="lable">总充电度数</div>
+					<div class="lableValue">
+						<span id="all_charge_c_txt1" class="wordSize"></span>度
+					</div>
+				</div>
+				<div class="allChargeTimes">
+					<div class="lable">总充电时长</div>
+					<div class="lableValue">
+						<span id="all_charge_time_txt1" class="wordSize"></span>小时
+					</div>
+				</div>
+			</div>
+			<!--资产统计信息-->
+			<div class="property">
+				<div class="propertyTitle">资产</div>
+				<div class="propertyList">
+					<div class="propertyTag">充电点个数</div>
+					<div id="cdd_txt1" class="propertyTagValue"></div>
+				</div>
+				<div class="propertyList">
+					<div class="propertyTag">电桩总数</div>
+					<div id="cdd_dzcount_txt1" class="propertyTagValue"></div>
+				</div>
+				<div class="propertyList">
+					<div class="propertyTag">枪口数</div>
+					<div id="pile_head_txt1" class="propertyTagValue"></div>
+				</div>
+				<div class="propertyList">
+					<div class="propertyTag">交流桩</div>
+					<div id="ac_txt1" class="propertyTagValue"></div>
+				</div>
+				<div class="propertyList">
+					<div class="propertyTag">直流桩</div>
+					<div id="dc_txt1" class="propertyTagValue wordSize"></div>
+				</div>
+			</div>
+			<!--枪口状态数量统计-->
+			<div class="pileStateTotal">
+				<!-- <div class="pileStateList">
+					<div class="pileStateListTag">预约中枪口数</div>
+					<div id="bespoke_head_txt1" class="pileStateListValue"></div>
+				</div> -->
+				<div class="pileStateList">
+					<div class="pileStateListTag">充电中枪口数</div>
+					<div id="charging_head_txt1" class="pileStateListValue"></div>
+				</div>
+				<div class="pileStateList">
+					<div class="pileStateListTag">空闲枪口数</div>
+					<div id="free_head_txt1" class="pileStateListValue"></div>
+				</div>
+				<div class="pileStateList">
+					<div class="pileStateListTag">故障枪口数</div>
+					<div id="error_head_txt1" class="pileStateListValue"></div>
+				</div>
+				<div class="pileStateList">
+					<div class="pileStateListTag">通讯中断电桩数</div>
+					<div id="off_pile_txt1" class="pileStateListValue"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+</body>
+<link href="/wanma/static/css/mapDetail.css" rel="stylesheet"
+	type="text/css" />
+<script src="/wanma/static/js/statistics/countStatistics.js"></script>
+<script type="text/javascript" src="/wanma/static/js/statistics/dataModel/jwd.js"></script>
+<script type="text/javascript">
+	navTab.getCurrentPanel().find("#dataCountDiv1").hide();
+	loadAllStatisticsData();
+	var pileMapChartDiv1;
+	require.config({
+		paths : {
+			echarts : '/wanma/res/echarts/js'
+		}
+	});
+
+	/*****************************加载图表*****************************/
+	droweMapcharts();
+	//drowePileCharts();
+	var pileChargeDiv2;
+	function droweMapcharts() {
+		require([ 'echarts', 'echarts/theme/macarons', 'echarts/chart/bar',
+				'echarts/chart/line', 'echarts/chart/pie', 'echarts/chart/map'
+
+		], function(ec, theme) {
+			pileMapChartDiv1 = ec.init(document
+					.getElementById('pileMapChartDiv1'), theme);
+			initMapChart();
+		});
+	}
+
+	function initMapChart() {
+		if (pileMapChartDiv1) {
+			pileMapChartDiv1.clear();
+		}
+		var ajaxUrl = "/wanma/admin/chartStatistics/getPileMapData.do";
+		$.ajax({
+			type : 'POST',
+			url : ajaxUrl,
+			data : {
+				onlyData : 1
+			},
+			
+			dataType : "json",
+			cache : false,
+			success : function(json) {
+				if (json.data1 != null) {
+					/* var timeFn = null;
+					pileMapChartDiv1.on(ecConfig.EVENT.CLICK, function (param){
+						//取消最近一次setTimeout需要执行的方法
+						clearTimeout(timeFn);
+						timeFn = setTimeout(function(){
+							$("#dataCountDiv").hide();
+						},300);
+					})
+					pileMapChartDiv1.on(ecConfig.EVENT.DBLCLICK, function (param){
+						//取消最近一次setTimeout需要执行的方法
+						clearTimeout(timeFn);
+					    navTab.openTab("", basepath+"/admin/electricPileMonitor/search.do", { title:"实时监控", fresh:false});
+					})
+					 */
+					var ecConfig = require('echarts/config');
+					pileMapChartDiv1.on(ecConfig.EVENT.CLICK, function(param) {
+						navTab.getCurrentPanel().find("#dataCountDiv").hide();
+						navTab.getCurrentPanel().find("#dataCountDiv1").show();
+						$("#provinceLink").html(param.name + '详情');
+						$(".mapLink").attr(
+								'onclick',
+								'jumpToMapMonitor("' + param.name + '",'
+										+ param.value + ')')
+						var province_id = param.data.id
+						var dataTemp = json.data1;
+						var provinceData = dataTemp.series[0].data;
+						for(var i=0;i<provinceData.length;i++){
+							var dataValue=provinceData[i];
+							if(dataValue.name == param.name){
+								dataValue.selected=true;
+							}else{
+								dataValue.selected=false;
+							}
+						}
+						pileMapChartDiv1.clear();
+						pileMapChartDiv1.setOption(dataTemp);
+						if(param.data.name=="南海诸岛"){
+							param.data.id="123456";
+						}
+						loadProvinceStatisticsData(param.data.id);
+						$("#reLoadF").attr('data-param',param.data.id);
+					})
+					pileMapChartDiv1.setOption(json.data1);
+				}
+			}
+		});
+	}
+
+	function drowePileCharts() {
+		require([ 'echarts', 'echarts/theme/macarons', 'echarts/chart/bar',
+				'echarts/chart/line', 'echarts/chart/pie'
+
+		], function(ec, theme) {
+			
+			pileChargeDiv2 = ec.init(document.getElementById('pileChargeDiv2'),
+					theme);
+			var ajaxUrl = "/wanma/admin/chartStatistics/getHeadChargeData.do"
+			$.ajax({
+				type : 'POST',
+				url : ajaxUrl,
+				data : {
+					onlyData : 1,
+				},
+				dataType : "json",
+				cache : false,
+				success : function(json) {
+					
+					if (json.data != null) {
+						
+						pileChargeDiv2.setOption(json.data);
+					} else {
+						pileChargeDiv2.showLoading({
+							text : '电桩消费(暂无数据)',
+							effect : 'nullData',
+							textStyle : {
+								fontSize : 30
+							}
+						});
+					}
+				}
+			});
+		});
+	}
+
+	function jumpToMapMonitor(province, count) {
+		if (count > 0) {
+			clearInterval(getHeadInfoCountIntervalId0);
+			clearInterval(getHeadInfoCountIntervalId1);
+			navTab.openTab("monitorTab", basepath
+					+ "/admin/electricPileMonitorV2/search.do?cityCode="
+					+ province_city_data[province]+"&jwdStr="+jwdJson[province], {
+				title : "实时监控",
+				fresh : false
+			});
+		} else {
+			alertMsg.error("该地区暂无电桩信息！");
+		}
+	}
+</script>

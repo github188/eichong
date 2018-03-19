@@ -1,0 +1,80 @@
+package com.sgcc.model;
+
+/**
+ * Created by zangyaoyi on 2017/6/1.
+ */
+public class SGCCElectric {
+    private Integer StationID;//所属充电站ID
+    private String EquipmentID;// 设备编码
+    private String ManufacturerID;// 设备生产商组织机构代码
+    private String EquipmentModel;// 设备型号
+    private String EquipmentType;// elPi_ChargingMode
+    private String Power;//充电设备总功率(小数点后一位)
+
+    private String OpenForBusinessDate;//投入运营日期（yyyy-MM-dd）
+    private String EquipmentStatus;//设备状态
+
+    public Integer getStationID() {
+        return StationID;
+    }
+
+    public void setStationID(Integer stationID) {
+        StationID = stationID;
+    }
+
+    public String getEquipmentID() {
+        return EquipmentID;
+    }
+
+    public void setEquipmentID(String equipmentID) {
+        EquipmentID = equipmentID;
+    }
+
+    public String getManufacturerID() {
+        return ManufacturerID;
+    }
+
+    public void setManufacturerID(String manufacturerID) {
+        ManufacturerID = manufacturerID;
+    }
+
+    public String getEquipmentModel() {
+        return EquipmentModel;
+    }
+
+    public void setEquipmentModel(String equipmentModel) {
+        EquipmentModel = equipmentModel;
+    }
+
+    public String getEquipmentType() {
+        return EquipmentType;
+    }
+
+    public void setEquipmentType(String equipmentType) {
+        EquipmentType = equipmentType;
+    }
+
+    public String getPower() {
+        return Power;
+    }
+
+    public void setPower(String power) {
+        Power = power;
+    }
+
+    public String getOpenForBusinessDate() {
+        return OpenForBusinessDate;
+    }
+
+    public void setOpenForBusinessDate(String openForBusinessDate) {
+        OpenForBusinessDate = openForBusinessDate;
+    }
+
+    public String getEquipmentStatus() {
+        return EquipmentStatus;
+    }
+
+    public void setEquipmentStatus(String equipmentStatus) {
+        EquipmentStatus = equipmentStatus;
+    }
+}

@@ -1,0 +1,279 @@
+package com.wanma.ims.service.impl;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Maps;
+import com.wanma.ims.common.domain.*;
+import com.wanma.ims.common.domain.bo.IntegralAreaBO;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.constants.ResultCodeConstants;
+import com.wanma.ims.constants.WanmaConstants;
+import com.wanma.ims.mapper.*;
+import com.wanma.ims.service.FinAccountSplitConfigService;
+import com.wanma.ims.service.FinAccountSplitDetailsService;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.util.*;
+
+@Service("finAccountSplitDetailsService")
+public class FinAccountSplitDetailsServiceImpl implements FinAccountSplitDetailsService {
+
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	@Autowired
+	private FinAccountSplitDetailsMapper finAccountSplitDetailsMapper;
+
+	@Autowired
+	private FinAccountSplitConfigMapper finAccountSplitConfigMapper;
+
+	@Autowired
+	private ElectricPileMapper electricPileMapper;
+
+	@Autowired
+	private CompanyMapper companyMapper;
+
+	@Autowired
+	private FavCouponMapper favCouponMapper;
+
+	public Long getFinAccountSplitDetailsCount(FinAccountSplitDetailsDO finAccountSplitDetails){
+		return finAccountSplitDetailsMapper.getFinAccountSplitDetailsCount(finAccountSplitDetails);
+	}
+
+	public List<FinAccountSplitDetailsDO> getFinAccountSplitDetailsList(FinAccountSplitDetailsDO finAccountSplitDetails){
+		List<FinAccountSplitDetailsDO> detailsList = finAccountSplitDetailsMapper.getFinAccountSplitDetailsList(finAccountSplitDetails);
+		List<FinAccountSplitDetailsDO> result = new ArrayList<FinAccountSplitDetailsDO>();
+		if(detailsList != null){
+			Map<Integer, String> orderStatusMap = new HashMap<>();
+			orderStatusMap.put(0, "未明");
+			orderStatusMap.put(1, "待支付");
+			orderStatusMap.put(2, "结算已到账");
+			orderStatusMap.put(3, "结算未到账");
+			orderStatusMap.put(4, "异常订单");
+			orderStatusMap.put(5, "临时结算");
+
+			FinAccountSplitDetailsDO details, compareDetails;
+			StringBuffer buffer;
+			DecimalFormat decimalFormat = new DecimalFormat("0.0000");
+			for (int i = 0; i < detailsList.size(); i++){
+				details = detailsList.get(i);
+
+				details.setOrderStatusName(orderStatusMap.get(details.getChargingOrderStatus()));
+				buffer = new StringBuffer();
+				buffer.append("[");
+				in : for (int j = i; j < detailsList.size(); j++){
+					compareDetails = detailsList.get(j);
+					if(details.getChargingOrderCode().equals(compareDetails.getChargingOrderCode())){
+						buffer.append("{").append("\"cpyName\":\"").append(compareDetails.getCpyName()).append("\",");
+						buffer.append("\"serviceChargeSplitAmt\":\"").
+								append(compareDetails.getServiceChargeSplitAmt() == null ? "" : decimalFormat.format(compareDetails.getServiceChargeSplitAmt())).append("\",");
+						buffer.append("\"electricityChargeSplitAmt\":\"").
+								append(compareDetails.getElectricityChargeSplitAmt() == null ? "" : decimalFormat.format(compareDetails.getElectricityChargeSplitAmt())).append("\",");
+						buffer.append("\"electricPowerSplitAmt\":\"").
+								append(compareDetails.getElectricPowerSplitAmt() == null ? "" : decimalFormat.format(compareDetails.getElectricPowerSplitAmt())).append("\",");
+						buffer.append("\"couponSplitAmt\":\"").
+								append(compareDetails.getCouponSplitAmt() == null ? "" : decimalFormat.format(compareDetails.getCouponSplitAmt())).append("\"},");
+					}else{
+						i = j - 1;
+						break in;
+					}
+
+					if(j == (detailsList.size() - 1)){
+						i = j;
+					}
+				}
+				details.setInternalData(buffer.substring(0, buffer.length() - 1).toString() + "]");
+				result.add(details);
+			}
+		}
+
+		return result;
+	}
+
+	/**
+	 * 新增分账明细
+	 * @param finAccountSplitDetails
+	 * @param loginUser
+	 * @return
+	 * @throws Exception
+	 */
+	public BaseResultDTO addFinAccountSplitDetails(FinAccountSplitDetailsDO finAccountSplitDetails, UserDO loginUser) throws Exception{
+		BaseResultDTO baseResultDTO = new BaseResultDTO();
+
+		return baseResultDTO;
+	}
+
+
+	/**
+	 * 通过订单处理分账明细
+	 * @param orderDO
+	 * @param checkExistence 是否需要存在性验证
+	 * @return
+	 * @throws Exception
+	 */
+	public void doFinAccountSplitDetailsForBatch(OrderDO orderDO, boolean checkExistence) throws Exception{
+		if(checkExistence){
+			FinAccountSplitDetailsDO qryDetailsDO = new FinAccountSplitDetailsDO();
+			qryDetailsDO.setChargingOrderId(orderDO.getOrderId().toString());
+			Long num = finAccountSplitDetailsMapper.getDetailsCount(qryDetailsDO);
+			if(num != null && num.intValue() > 0){
+				log.error(this.getClass() + ".doFinAccountSplitDetailsForBatch() info:订单编号" + orderDO.getOrderCode() + "已经分账！");
+				return;
+			}
+		}else{
+			FinAccountSplitDetailsDO detailsDO = new FinAccountSplitDetailsDO();
+			detailsDO.setChargingOrderId(orderDO.getOrderId().toString());
+			finAccountSplitDetailsMapper.deleteFinAccountSplitDetails(detailsDO);
+			log.error(this.getClass() + ".doFinAccountSplitDetailsForBatch() info:订单编号" + orderDO.getOrderCode() + "删除已分账记录！");
+		}
+
+		FinAccountSplitDetailsDO finAccountSplitDetails;//分账明细
+		Long cpyId;//公司id
+		BigDecimal servicesRatio;//服务费占比
+		BigDecimal electricityRatio;//电费占比
+		BigDecimal price;//单价
+		BigDecimal tempMoney = BigDecimal.ZERO;//临时金额
+		BigDecimal serviceChargeSplitAmt;//服务费分账金额
+		BigDecimal electricityChargeSplitAmt;//电费分账金额
+		BigDecimal electricPowerSplitAmt;//电量分账金额
+		JSONObject jsonObject, object;
+
+		BigDecimal serviceMoney = new BigDecimal(Double.parseDouble(orderDO.getTotalServiceMoney()));//订单中的服务费金额
+		BigDecimal electricMoney = new BigDecimal(Double.parseDouble(orderDO.getTotalElectricMoney()));//订单中的电费金额
+		BigDecimal totalElectricCharge = new BigDecimal(Double.parseDouble(orderDO.getTotalElectricCharge()));//订单中的总电量
+		BigDecimal money = new BigDecimal(orderDO.getChOrMoeny());//订单中的总金额
+		BigDecimal couponMoney = new BigDecimal(orderDO.getTotalfavMoney());//订单中的优惠券金额
+		try {
+			//分账
+			ElectricPileDO electricPile = electricPileMapper.getElectricPileAndCpyIdInfo(orderDO.getElectricPileCode());
+			if (electricPile == null) {
+				log.error(this.getClass() + ".doFinAccountSplitDetailsForBatch() info:电桩编号" + orderDO.getElectricPileCode() + "对应公司的数据为空！");
+				return;
+			}
+			Long electricPileId = electricPile.getId();
+			orderDO.setElectricPileId(electricPileId);
+
+			FinAccountSplitConfigDO qryConfigDO = new FinAccountSplitConfigDO();
+			qryConfigDO.setElectricPileId(electricPileId);
+			List<FinAccountSplitConfigDO> configList = finAccountSplitConfigMapper.getFinAccountSplitConfigList(qryConfigDO);
+			FinAccountSplitConfigDO config = new FinAccountSplitConfigDO();
+			if (configList == null || configList.size() < 1) {
+				log.error(this.getClass() + ".doFinAccountSplitDetailsForBatch() info:电桩id" + electricPileId + "没有分账配置，取默认分账配置！");
+
+				finAccountSplitDetails = new FinAccountSplitDetailsDO();
+				finAccountSplitDetails.setCpyId(electricPile.getCompanyId());
+				finAccountSplitDetails.setAccountId(electricPile.getAccountId());
+				finAccountSplitDetails.setSplitMode(WanmaConstants.SPLIT_MODE_ELECTRIC);
+				finAccountSplitDetails.setChargingOrderId(orderDO.getOrderId().toString());
+				finAccountSplitDetails.setCreator(orderDO.getCreator());
+				finAccountSplitDetails.setModifier(orderDO.getCreator());
+				finAccountSplitDetails.setGmtCreate(new Date());
+				finAccountSplitDetails.setGmtModified(new Date());
+				finAccountSplitDetails.setElectricPowerSplitAmt(money.doubleValue());
+				finAccountSplitDetailsMapper.addFinAccountSplitDetails(finAccountSplitDetails);
+			} else {
+				config = configList.get(0);
+
+				if (config.getSplitMode() == null) {
+					log.info(this.getClass() + ".doFinAccountSplitDetailsForBatch() info : " + orderDO.getElectricPileId() + "对应分账配置中分账方式为空！");
+					return;
+				}
+
+				String splitRules = config.getSplitRules();
+				splitRules = splitRules.substring(8, (splitRules.length() - 1));
+				JSONArray jsonArray = JSONArray.fromObject(splitRules);
+
+				if (config.getSplitMode().intValue() == WanmaConstants.SPLIT_MODE_SERVICE) {
+					for (int i = 0; i < jsonArray.size(); i++) {
+						jsonObject = jsonArray.getJSONObject(i);
+						cpyId = Long.parseLong(jsonObject.get("cpyId").toString());
+						servicesRatio = new BigDecimal(jsonObject.get("servicesRatio").toString());
+						electricityRatio = new BigDecimal(jsonObject.get("electricityRatio").toString());
+
+						finAccountSplitDetails = new FinAccountSplitDetailsDO();
+						finAccountSplitDetails.setCpyId(cpyId);
+						if(config.getCpyId().equals(cpyId)){
+							//资产公司
+							finAccountSplitDetails.setAccountId(electricPile.getAccountId());
+						}else{
+							//分成公司
+							CompanyDO companyDO = companyMapper.selectCpyListById(cpyId);
+							finAccountSplitDetails.setAccountId(companyDO == null ? 0L : (companyDO.getSavingAccountId() == null ? 0L : companyDO.getSavingAccountId()));
+						}
+						finAccountSplitDetails.setSplitMode(WanmaConstants.SPLIT_MODE_SERVICE);
+						serviceChargeSplitAmt = serviceMoney.multiply(servicesRatio).divide(BigDecimal.valueOf(100)).setScale(4, BigDecimal.ROUND_HALF_DOWN);
+						finAccountSplitDetails.setServiceChargeSplitAmt(serviceChargeSplitAmt.doubleValue());
+						electricityChargeSplitAmt = electricMoney.multiply(electricityRatio).divide(BigDecimal.valueOf(100)).setScale(4, BigDecimal.ROUND_HALF_DOWN);
+						finAccountSplitDetails.setElectricityChargeSplitAmt(electricityChargeSplitAmt.doubleValue());
+						finAccountSplitDetails.setChargingOrderId(orderDO.getOrderId().toString());
+						finAccountSplitDetails.setCreator(orderDO.getCreator());
+						finAccountSplitDetails.setModifier(orderDO.getCreator());
+						finAccountSplitDetails.setGmtCreate(new Date());
+						finAccountSplitDetails.setGmtModified(new Date());
+						finAccountSplitDetailsMapper.addFinAccountSplitDetails(finAccountSplitDetails);
+					}
+				} else if (config.getSplitMode().intValue() == WanmaConstants.SPLIT_MODE_ELECTRIC) {
+					for (int i = 0; i < jsonArray.size(); i++) {
+						jsonObject = jsonArray.getJSONObject(i);
+						cpyId = Long.parseLong(jsonObject.get("cpyId").toString());
+						price = new BigDecimal(jsonObject.get("price").toString());
+
+						finAccountSplitDetails = new FinAccountSplitDetailsDO();
+						finAccountSplitDetails.setCpyId(cpyId);
+						if(config.getCpyId().equals(cpyId)){
+							finAccountSplitDetails.setAccountId(electricPile.getAccountId());
+						}else{
+							CompanyDO companyDO = companyMapper.selectCpyListById(cpyId);
+							finAccountSplitDetails.setAccountId(companyDO == null ? 0L : (companyDO.getSavingAccountId() == null ? 0L : companyDO.getSavingAccountId()));
+						}
+						finAccountSplitDetails.setSplitMode(WanmaConstants.SPLIT_MODE_ELECTRIC);
+						finAccountSplitDetails.setChargingOrderId(orderDO.getOrderId().toString());
+						finAccountSplitDetails.setCreator(orderDO.getCreator());
+						finAccountSplitDetails.setModifier(orderDO.getCreator());
+						finAccountSplitDetails.setGmtCreate(new Date());
+						finAccountSplitDetails.setGmtModified(new Date());
+						if (config.getCpyId().intValue() == cpyId.intValue()) {
+							//如果是资产公司，需要计算所有的分成公司的分成金额
+							for (int j = i + 1; j < jsonArray.size(); j++) {
+								object = jsonArray.getJSONObject(j);
+								tempMoney = tempMoney.add(totalElectricCharge.multiply(new BigDecimal(object.get("price").toString())).setScale(4, BigDecimal.ROUND_HALF_DOWN));
+							}
+							electricPowerSplitAmt = money.subtract(tempMoney);
+						} else {
+							electricPowerSplitAmt = totalElectricCharge.multiply(price).setScale(4, BigDecimal.ROUND_HALF_DOWN);
+						}
+						finAccountSplitDetails.setElectricPowerSplitAmt(electricPowerSplitAmt.doubleValue());
+						finAccountSplitDetailsMapper.addFinAccountSplitDetails(finAccountSplitDetails);
+					}
+				}
+			}
+
+			if (couponMoney.compareTo(BigDecimal.ZERO) > 0) {
+				FavCouponDO couponDO = new FavCouponDO();
+				couponDO.setPkCoupon(orderDO.getPkCoupon());
+				couponDO = favCouponMapper.getDataForAccountSplitDetailsBatch(couponDO);
+				if (couponDO == null && couponDO.getPkCoupon() == null){
+					log.error(this.getClass() + ".doFinAccountSplitDetailsForBatch() info:订单编号" + orderDO.getOrderCode() + "优惠券对应的发行方资金账户不存在！");
+				} else {
+					finAccountSplitDetails = new FinAccountSplitDetailsDO();
+					finAccountSplitDetails.setCpyId(couponDO.getCpyId());
+					finAccountSplitDetails.setAccountId(couponDO.getAccountId());
+					finAccountSplitDetails.setSplitMode(WanmaConstants.SPLIT_MODE_COUPON);
+					finAccountSplitDetails.setCouponSplitAmt(-couponMoney.doubleValue());
+					finAccountSplitDetails.setChargingOrderId(orderDO.getOrderId().toString());
+					finAccountSplitDetails.setCreator(orderDO.getCreator());
+					finAccountSplitDetails.setModifier(orderDO.getCreator());
+					finAccountSplitDetails.setGmtCreate(new Date());
+					finAccountSplitDetails.setGmtModified(new Date());
+					finAccountSplitDetailsMapper.addFinAccountSplitDetails(finAccountSplitDetails);
+				}
+			}
+		}catch(Exception e){
+			log.error(this.getClass() + ".doFinAccountSplitDetailsForBatch() info:订单编号" + orderDO.getOrderCode() + "分账异常，请检查分账配置！" + e.toString());
+		}
+	}
+}

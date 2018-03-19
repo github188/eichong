@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/style.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/companyList/company_home.css"/>
+    <title>公司主页</title>
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="btnLine">
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="ibox float-e-margins">
+                    <div class="">
+                        <div class="ibox-content">
+                            <!--公司信息-->
+                            <div id="companyInfoId" style="display: none;">
+                                <div class="companyInfo">
+                                    <div class="headTable">
+                                        <div class="table-responsive">
+                                            <table class=" table table-bordered text-center" style="border: 1px solid #DCDCDC;margin-bottom: 0;">
+                                                <tbody class="companyInfoTab">
+                                                    <tr>
+                                                        <td style="padding:15px 0;line-height:24px;" class="col-sm-4 col-xs-12">
+                                                            <span>公司名称</span>
+                                                            <span id="companyNameInfo" class="companyInfoFont"></span>
+                                                            <span class="baseInfoBtn" id="companyEdit">修改</span>
+                                                        </td>
+                                                        <td style="padding:15px 0;line-height:24px;" class="col-sm-4 col-xs-12">
+                                                            <span>状态</span>
+                                                            <span><t id="companyStatusInfo" class="companyInfoFont"></t></span>
+                                                            <span class="baseInfoBtn" id="disableCompanyBtn" style="display: none">解禁</span>
+                                                        </td>
+                                                        <td style="padding:15px 0;" class="col-sm-4 col-xs-12">
+                                                            <span>城市</span>
+                                                            <span class="cpyCity companyInfoFont" id="cpyCity"></span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="padding:15px 0;" class="col-sm-4 col-xs-12">
+                                                            <span>公司标识</span>
+                                                            <span class="cpyNumber companyInfoFont" id="cpyNumber"></span>
+                                                        </td>
+                                                        <td style="padding:15px 0;" class="col-sm-4 col-xs-12">
+                                                            <span>上级</span>
+                                                            <span class="cpyParentIdInfo companyInfoFont" id="cpyParentIdInfo"></span>
+                                                        </td>
+                                                        <td style="padding:15px 0;" class="col-sm-4 col-xs-12">
+                                                            <span>主管单位</span>
+                                                            <span class="slaveParentIdInfo companyInfoFont" id="slaveParentIdInfo"></span>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="emptyDiv"></div>
+                            </div>
+                            <!--用户-->
+                            <div id="companyUserId" style="display: none;">
+                                <div class="companyBaseInfoList">
+                                    <div class="baseInfoShow">
+                                        <div class="baseInfoTitle">
+                                            用户
+                                        </div>
+                                        <ul class="baseBtnInfoUl" id="userListBtn">
+                                            <!--<li class="baseInfoBtn">查看</li>-->
+                                        </ul>
+                                    </div>
+                                    <ul class="baseInfoUl" id="indexUserUl">
+
+                                    </ul>
+                                </div>
+                                <div class="emptyDiv"></div>
+                            </div>
+                            <!--大账户-->
+                            <div id="bigAccountId" style="display: none;">
+                                <div class="companyBaseInfoList">
+                                    <div class="baseInfoShow">
+                                        <div class="baseInfoTitle">
+                                            大账户
+                                        </div>
+                                        <ul class="baseBtnInfoUl" id="finAccountSkanBtn">
+                                            <!--<li class="baseInfoBtn cardFrozen">查看</li>-->
+                                            <li class="baseInfoBtn relieveCardFrozen marginLeft" id="relieveCardFrozen">预警金额</li>
+                                        </ul>
+                                    </div>
+                                    <ul class="baseInfoUl">
+                                        <li>
+                                            <span>余额</span>
+                                            <span><t id="accountBalance"></t>元</span>
+                                        </li>
+                                        <li>
+                                            <span>状态</span>
+                                            <span id="accountStatus"></span>
+                                        </li>
+                                        <li>
+                                            <span>类型</span>
+                                            <span id="tradeType"></span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="emptyDiv"></div>
+                            </div>
+                            <!--黑白名单-->
+                            <div id="blackAndWhiteListId" style="display: none;">
+                                <div class="companyBaseInfoList">
+                                    <div class="baseInfoShow">
+                                        <div class="baseInfoTitle">
+                                            黑白名单
+                                        </div>
+                                        <ul class="baseBtnInfoUl" id="heibai">
+                                            <!--<li class="baseInfoBtn" id="setBlackWhite">设置</li>-->
+                                        </ul>
+                                    </div>
+                                    <ul class="baseInfoUl" id="blackWhiteUserUl">
+
+                                    </ul>
+                                </div>
+                                <div class="emptyDiv"></div>
+                            </div>
+                            <!--充电范围-->
+                            <div id="companyChargeRelaId" style="display: none;">
+                                <div class="companyBaseInfoList">
+                                    <div class="baseInfoShow">
+                                        <div class="baseInfoTitle">
+                                            充电范围
+                                        </div>
+                                        <ul class="baseBtnInfoUl">
+                                            <li class="baseInfoBtn" id="getStationAndPile">设置</li>
+                                        </ul>
+                                    </div>
+                                    <ul class="baseInfoUl">
+                                        <li>
+                                            <span>充电点</span>
+                                            <span><t id="site"></t>个</span>
+                                        </li>
+                                        <li>
+                                            <span>充电桩</span>
+                                            <span><t id="stake"></t>个</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="emptyDiv"></div>
+                            </div>
+                            <!--管辖的公司-->
+                            <div id="companyByMasterId" style="display: none;">
+                                <div class="companyBaseInfoList">
+                                    <div class="baseInfoShow">
+                                        <div class="baseInfoTitle">
+                                            管辖的公司
+                                        </div>
+                                        <ul class="baseBtnInfoUl" id="cpyMaster">
+                                            <!--<li class="baseInfoBtn">查看</li>-->
+                                            <!--<li class="baseInfoBtn marginLeft">新建</li>-->
+                                        </ul>
+                                    </div>
+                                    <ul class="baseInfoUl" id="cpyNameUl">
+
+                                    </ul>
+                                </div>
+                                <div class="emptyDiv"></div>
+                            </div>
+                            <!--账务关系-->
+                            <div id="companyFinanceId" style="display: none;">
+                                <div class="companyBaseInfoList">
+                                    <div class="baseInfoShow">
+                                        <div class="baseInfoTitle">
+                                            账务关系
+                                        </div>
+                                        <ul class="baseBtnInfoUl" id="finRelaSkanBtn">
+                                            <li class="baseInfoBtn">查看</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="emptyDiv"></div>
+                            </div>
+                            <!--充电卡-->
+                            <div id="getCardForCompanyId" style="display: none;">
+                                <div class="companyBaseInfoList">
+                                    <div class="baseInfoShow">
+                                        <div class="baseInfoTitle">
+                                            充电卡
+                                        </div>
+                                        <ul class="baseBtnInfoUl" id="toCardBtn">
+                                            <!--<li class="baseInfoBtn">查看</li>-->
+                                        </ul>
+                                    </div>
+                                    <ul class="baseInfoUl">
+                                        <li>
+                                            <span>充电卡</span>
+                                            <span><t id="totalCardNum"></t>张</span>
+                                        </li>
+                                        <li>
+                                            <span>已挂失卡</span>
+                                            <span><t id="lossCardNum"></t>张</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="emptyDiv"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="ibox float-e-margins">
+                    <div class="">
+                        <div class="ibox-content">
+                            <!--订单信息-->
+                            <div id="getHomeCpyOrderId" style="display: none;">
+                                <div class="companyBaseInfoList">
+                                    <div class="baseInfoShow">
+                                        <div class="baseInfoTitle">
+                                            订单信息
+                                        </div>
+                                        <ul class="baseBtnInfoUl" id="orderSkanBtn">
+                                            <!--<li class="baseInfoBtn">查看</li>-->
+                                        </ul>
+                                    </div>
+                                    <ul class="baseInfoUl">
+                                        <li>
+                                            <span>累计订单</span>
+                                            <span><t id="cumulativeOrder"></t>笔</span>
+                                        </li>
+                                        <li>
+                                            <span>累计电量</span>
+                                            <span><t id="cumulativePower"></t>度</span>
+                                        </li>
+                                        <li>
+                                            <span>累计消费</span>
+                                            <span><t id="cumulative"></t>元</span>
+                                        </li>
+                                        <li>
+                                            <span>今日订单</span>
+                                            <span><t id="todayOrder"></t>笔</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="emptyDiv"></div>
+                            </div>
+                            <!--等级-->
+                            <div id="getLevelByCpyId" style="display: none;">
+                                <div class="companyBaseInfoList">
+                                    <div class="baseInfoShow">
+                                        <div class="baseInfoTitle">
+                                            等级
+                                        </div>
+                                        <ul class="baseBtnInfoUl" id="setLevel">
+                                            <!--<li class="baseInfoBtn">设置</li>-->
+                                        </ul>
+                                    </div>
+                                    <ul class="baseInfoUl" id="levelNameId">
+
+                                    </ul>
+                                </div>
+                                <div class="emptyDiv"></div>
+                            </div>
+                            <!--充电费率-->
+                            <div id="chargeRatesId" style="display:none;">
+                                <div class="companyBaseInfoList">
+                                    <div class="baseInfoShow">
+                                        <div class="baseInfoTitle">
+                                            充电费率
+                                        </div>
+                                        <ul class="baseBtnInfoUl">
+                                            <li class="baseInfoBtn" id="setChargeRate">设置</li>
+                                        </ul>
+                                    </div>
+                                    <div class="chargeName">
+                                        <span>等级</span>
+                                        <span>费率ID</span>
+                                    </div>
+                                    <ul class="baseInfoUl" id="leaveUl">
+
+                                    </ul>
+                                </div>
+                                <div class="emptyDiv"></div>
+                            </div>
+                            <!--管理员账户-->
+                            <div id="getUserAdminByCpyId" style="display: none;">
+                                <div class="companyBaseInfoList">
+                                    <div class="baseInfoShow">
+                                        <div class="baseInfoTitle">
+                                            管理员账户
+                                        </div>
+                                        <ul class="baseBtnInfoUl" id="toNewAdminBtn">
+                                            <!--<li class="baseInfoBtn">新建</li>-->
+                                        </ul>
+                                    </div>
+                                    <ul class="baseInfoUl" id="administerUl">
+
+                                    </ul>
+                                </div>
+                                <div class="emptyDiv"></div>
+                            </div>
+                            <!--盗刷校验-->
+                            <div id="isValidTextId" style="display: none;">
+                                <div class="companyBaseInfoList">
+                                    <div class="baseInfoShow">
+                                        <div class="baseInfoTitle">
+                                            盗刷校验
+                                        </div>
+                                        <ul class="baseBtnInfoUl" id="toVinId">
+                                            <!--<li class="baseInfoBtn">设置</li>-->
+                                        </ul>
+                                    </div>
+                                    <ul class="baseInfoUl">
+                                        <li>
+                                            <p>是否开启盗刷校验</p>
+                                            <p id="isValidText"></p>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="emptyDiv"></div>
+                            </div>
+                            <!--付费策略-->
+                            <div id="payForStrategy" style="display:none;">
+                                <div class="companyBaseInfoList">
+                                    <div class="baseInfoShow">
+                                        <div class="baseInfoTitle">
+                                            付费策略
+                                        </div>
+                                        <ul class="baseBtnInfoUl">
+                                            <li class="baseAccount" id="toAssign" style="display: none;">每个账户单独配资</li>
+                                        </ul>
+                                    </div>
+                                    <ul class="baseInfoUl" id="paymentRuleNameUl">
+
+                                    </ul>
+                                </div>
+                                <div class="emptyDiv"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="changeCompanyNewName" style="display: none;">
+    <input type="text" value="" id="cpyNewNameInput" placeholder="请输入公司名称"  />
+</div>
+<div class="abledCompany" style="display: none;">
+    解禁后，公司渠道，公司管理员都会恢复正常!
+</div>
+<div class="warningLayer" style="display: none;">
+    <div>大账户预警金额</div>
+    <input type="text" id="warningInput" value="" placeholder="请输入预警金额" />
+    <div class="errorStyle" id="warningTip"></div>
+</div>
+<!--<div class="allocationAmount" style="display: none;">
+    <div class="accountTip">大账户当前余额（或者信用额度）：<t id="totalAccount">XXXX</t>元,共<t id="sAccountNum">XXXX</t>个小账户</div>
+    <input type="text" id="allocationAmount" value="" placeholder=" 每个账户的分配资金（或信用额度）" />
+    <div class="errorStyle" id="allocationAmountTip"></div>
+</div>-->
+<div class="toAssign" style="display: none;">
+    <div>小账户资金账号</div>
+    <input type="text" id="sAccountFunds" value=""  />
+    <div class="errorStyle" id="sAccountFundsTip"></div>
+    <div>配资金额(或信用额度)</div>
+    <input type="text" id="sAccountQuota" value="" />
+    <div class="errorStyle" id="sAccountQuotaTip"></div>
+</div>
+</body>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<!--<script src="../js/apiAddress.js" type="text/javascript" charset="utf-8"></script>-->
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="../../js/contabs.min.js"></script>
+<script src="../../js/companyList/company_home.js" type="text/javascript" charset="utf-8"></script>
+</html>

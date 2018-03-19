@@ -1,0 +1,85 @@
+.mem_right{width: 65%;margin: 0 0 0 8%;overflow:hidden;}
+.mem_head{width:150px;height: 150px;border-radius: 50%;background: #ccc;margin: 0 auto;}
+.mem_head img{width: 100%;border-radius: 50%;}
+.memLeft{width: 30%;text-align: center;}
+.memLeft p{line-height: 30px;}
+.mem_name{margin-top: 10px;}
+.yellow{color: #f08307;}
+.fz{font-size: 14px;}
+.update{width: 65%;margin: 10px auto;height: 35px;line-height: 35px!important;background: #fff;border: 1px solid #f08307;border-radius: 5px;}
+.update a{text-align: center;color: #f08307;display: block;}
+.memRight{margin-left:10%;width: 60%;}
+.memRight p{height: 35px;line-height: 35px;overflow: hidden;}
+.dash{border-bottom: 1px dashed #bcbcbc;padding-bottom: 20px;}
+.p_l{float: left;text-align: right;width: 20%;}
+.p_r{float: left;margin-left: 5%;}
+
+/*我的预约*/
+.h_tit{font-size: 18px;border-bottom: 2px solid #aca39e;height: 35px;line-height: 35px;}
+.notic_order p{margin-top: 10px;}
+.fz{font-size: 18px;}
+.times{color: #f08307;font-size:40px;}
+.new_order{margin-top:30px;}
+.more_link{float: right;font-size: 14px;}
+.new_det{margin-top: 10px;overflow: hidden;}
+.new_det p{line-height: 30px;}
+.num{font-size: 18px;}
+.new_time{float: right;color: #848484;font-size: 14px;}
+.order_btn{width: 40%;margin: 25px auto;}
+.order_btn a{display: inline-block;height:40px;line-height:40px;border-radius: 5px;text-align: center;width: 45%;}
+.order_btn a.continue{background: #f0830f;color: #fff;}
+.order_btn a.calcel{background: #fff;color: #f08307;border: 1px solid #f08307;margin-left: 8%;}
+/*查看更多详情*/
+.more_list li{border-bottom: 1px dashed #aeaeae;padding: 10px 0;}
+/*我的订单*/
+.bill_box ul li{margin-top:15px;border-bottom: 1px dashed #a9a9a9;padding: 10px 0 15px;position: relative;}
+.bill_info,.bill_detail{overflow: hidden;}
+.bill_info span{color: #5c5c5c;}
+.bill_check{background: url(../images/img/member/no_check.png) no-repeat;width: 19px;height: 18px;display: block;cursor: pointer;}
+.bill_check.checked{background: url(../images/img/member/checked.png) no-repeat;width: 22px;height: 18px;}
+.bill_num{margin-left: 10px;}
+.date{margin-left:50px;}
+.bill_state{font-size: 20px;}
+.no_payment{color: #f08307!important;}
+.to_do{color: #fabf13!important;}
+.bill_detail{margin-top:15px;}
+.bill_img{width: 130px;height: 131px;}
+.bill_name{height: 30px;line-height: 15px;overflow: hidden;font-size:20px;color: #333;}
+.bill_tap{margin-left: 15px;}
+.cate{color: #5c5c5c;padding-left: 10px;line-height: 30px;}
+.now_price{color: #f08307!important;}
+.del_price{color: #c5c5c5!important;margin-left: 5px;}
+.billBtn{position: absolute;right:0;bottom:20px;height: 40px;line-height: 40px;color: #fff;border-radius: 5px;text-align: center;width: 110px;}
+.pay_btn{background: #f08307;}
+.finish_btn{background: #fabf13;}
+/*我的积分*/
+.int_cont{background: url("../images/img/member/mem_background.png") no-repeat;width: 900px;height: 200px;}
+.int_head{margin:27px 0 0 13%;}
+.mem_info{margin: 60px 0 30px 30px;}
+.leftTit{width:90px;text-align: right;display: inline-block;}
+.mem_info p{line-height: 35px;}
+.rightName{font-size: 20px;}
+.int_box,.problem_box{margin-top: 10px;}
+.box_tit{font-size: 20px;line-height: 30px;}
+.problem_box p{line-height: 25px;}
+/*我的收藏*/
+.collect_box ul li{border-bottom: 1px dashed #bcbcbc;padding: 10px 0 15px;}
+.c_tit{overflow: hidden;height:35px;line-height: 35px;}
+.del{padding-left:5px;}
+/*我的足迹*/
+.foot_box{margin: 0 auto;width: 40%;}
+.foot_box ul li{position: relative;}
+.foot_box ul li.right_foot{background: url("../images/img/member/right_foot.png") no-repeat center;height: 108px;display: block;}
+.foot_box ul li.left_foot{background: url("../images/img/member/left_foot.png") no-repeat center;height: 106px;display: block;}
+.step_info{position: absolute;top: 10px}
+.left{left:22px;}
+.right{right:22px;}
+/*我的评价*/
+.evaluate_box ul li{padding: 10px 0 15px;border-bottom: 1px dashed #bcbcbc;margin-top: 10px;}
+.eva_box{margin-top:5px;overflow: hidden;}
+.user_pic img{width:100px;}
+.user_info{margin-left:15px;width: 780px;}
+.user_name{height: 30px;line-height: 30px;}
+.u_time{color: #989696;padding-left: 20px;}
+.eva_cont{margin-top: 5px;}
+.eva_cont p{line-height: 25px;}

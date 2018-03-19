@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/style.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/electric/powerStation/add_powerStation.css"/>
+    <title>充电点新增</title>
+</head>
+<body>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 ">
+                <div class="ibox float-e-margins" style="margin: 0">
+                    <div class="">
+                        <div class="ibox-content clearfix">
+                            <div class="userBaseInfo col-sm-12 ">
+                                <div class="col-sm-12 titleTip">充电点新增</div>
+                                <div class="col-sm-6" style="padding: 0">
+                                    <ul class="baseInfoLeft commonUl">
+                                        <li>
+                                            <span class="col-sm-6 col-xs-12">充电点名称</span>
+                                            <input type="" name="" id="powerstationName" value="" autofocus="autofocus"
+                                                   class="col-sm-6 col-xs-12" placeholder="请输入充电点名称"/>
+                                        </li>
+
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">省份</span>
+                                            <div class="col-sm-6 col-xs-6 model-select-box" style="padding: 0;">
+                                                <div class="model-select-text cpyProvinceBlock" data-value="" id="province">
+                                                    请选择
+                                                </div>
+                                                <span class="downRow cpyProvinceBlock"></span>
+                                                <ul class="model-select-option provinceUl" id="">
+                                                    <li data-option="0" class="seleced">请选择</li>
+
+                                                </ul>
+                                            </div>
+                                        </li>
+
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">区／县</span>
+                                            <div class="col-sm-6 col-xs-6 model-select-box" style="padding: 0;">
+                                                <div class="model-select-text cpyAreaBlock" data-value="" id="areaHtml">
+                                                    请选择
+                                                </div>
+                                                <span class="downRow cpyAreaBlock"></span>
+                                                <ul class="model-select-option areaUl" id="">
+                                                    <li data-option="0" class="seleced">请选择</li>
+
+                                                </ul>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">纬度</span>
+                                            <input type="" name="" id="latitude" value=""
+                                                   class="col-sm-6 col-xs-12" placeholder="请输入纬度"/>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">联系电话</span>
+                                            <input type="" name="" id="phone" value=""
+                                                   class="col-sm-6 col-xs-12" placeholder="请输入联系电话"/>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">停车费</span>
+                                            <input type="" name="" id="parkingFee" value=""
+                                                   class="col-sm-6 col-xs-12" placeholder="请输入停车费"/>
+                                        </li>
+
+                                    </ul>
+                                </div>
+                                <div class="col-sm-6" style="padding: 0">
+                                    <ul class="baseInfoRight commonUl">
+
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">默认费率</span>
+                                            <input type="" name="" id="rateInfoId" value=""
+                                                   class="col-sm-6 col-xs-12" placeholder="请输入默认费率"/>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">城市</span>
+                                            <div class="col-sm-6 col-xs-6 model-select-box" style="padding: 0;">
+                                                <div class="model-select-text cypCityBlock" data-value="" id="city">
+                                                    请选择
+                                                </div>
+                                                <span class="downRow cypCityBlock"></span>
+                                                <ul class="model-select-option cityUl" id="">
+                                                    <li data-option="0" class="seleced">请选择</li>
+
+                                                </ul>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">具体地址</span>
+                                            <input type="" name="" id="address" value=""
+                                                   class="col-sm-6 col-xs-12" placeholder="请输入具体地址"/>
+                                        </li>
+
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">经度</span>
+                                            <input type="" name="" id="longitude" value=""
+                                                   class="col-sm-6 col-xs-12" placeholder="请输入经度"/>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">开放时间</span>
+                                            <input type="" name="" id="onlineTime" value=""
+                                                   class="col-sm-6 col-xs-12" placeholder="请输入开放时间"/>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <!--按钮组合-->
+                                <div class="saveBtn cursor" id="addPowerStation">保存</div>
+                                <div class="goBack cursor" id="toPowerStationList">返回</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+<script src="../../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="../../../js/contabs.min.js"></script>
+<script src="../../../js/electric/powerStation/add_powerStation.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/checkBox.js" type="text/javascript" charset="utf-8"></script>
+</html>

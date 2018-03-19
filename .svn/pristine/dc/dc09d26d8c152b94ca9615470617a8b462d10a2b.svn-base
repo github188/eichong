@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+						http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+						http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.1.xsd
+						http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd
+						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd"
+	default-lazy-init="false">
+	<!-- 要暴露的服务接口 -->
+		
+	<bean id="configService" class="com.wanma.dubbox.service.impl.TblConfigServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblConfigService"
+		ref="configService"/>
+	
+	<bean id="tblElectricPileService" class="com.wanma.dubbox.service.impl.TblElectricPileServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblElectricPileService"
+		ref="tblElectricPileService"/>
+	<bean id="powerStationService" class="com.wanma.dubbox.service.impl.TblPowerStationServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblPowerStationService"
+		ref="powerStationService"/>	
+		
+	<bean id="bespokeService" class="com.wanma.dubbox.service.impl.TblBespokeServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblBespokeService"
+		ref="bespokeService"/>
+		
+	<bean id="chargingOrderService" class="com.wanma.dubbox.service.impl.TblChargingOrderServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblChargingOrderService"
+		ref="chargingOrderService"/>
+		
+	<bean id="configContentService" class="com.wanma.dubbox.service.impl.TblConfigContentServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblConfigContentService"
+		ref="configContentService"/>
+		
+	<bean id="pileHeadService" class="com.wanma.dubbox.service.impl.TblElectricPileHeadServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblElectricPileHeadService"
+		ref="pileHeadService"/>
+		
+	<bean id="rateinFormationService" class="com.wanma.dubbox.service.impl.TblRateinFormationServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblRateinFormationService"
+		ref="rateinFormationService"/>
+		
+	<bean id="userNormalService" class="com.wanma.dubbox.service.impl.TblUserNormalServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblUserNormalService"
+		ref="userNormalService"/>
+		
+	<bean id="userService" class="com.wanma.dubbox.service.impl.TblUserServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblUserService"
+		ref="userService"/>
+		
+	<bean id="userTransactionService" class="com.wanma.dubbox.transaction.service.impl.UserTransactionServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.transaction.service.UserTransactionService"
+		ref="userTransactionService"/>
+		
+	<bean id="purchasehistoryService" class="com.wanma.dubbox.service.impl.TblPurchasehistoryServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblPurchasehistoryService"
+		ref="purchasehistoryService"/>
+		
+	<bean id="publishEpService" class="com.wanma.dubbox.service.impl.TblPublishEpServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblPublishEpService"
+		ref="publishEpService"/>
+		
+	<bean id="tblProvinceService" class="com.wanma.dubbox.service.impl.TblProvinceServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblProvinceService"
+		ref="tblProvinceService"/>
+		
+	<bean id="productcommentService" class="com.wanma.dubbox.service.impl.TblProductcommentServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblProductcommentService"
+		ref="productcommentService"/>
+		
+	<bean id="powerstationcommentService" class="com.wanma.dubbox.service.impl.TblPowerstationcommentServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblPowerstationcommentService"
+		ref="powerstationcommentService"/>
+		
+	<bean id="pilemakerService" class="com.wanma.dubbox.service.impl.TblPilemakerServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblPilemakerService"
+		ref="pilemakerService"/>
+		
+	<bean id="gateserviceService" class="com.wanma.dubbox.service.impl.TblGateserviceServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblGateserviceService"
+		ref="gateserviceService"/>
+		
+	<bean id="feedbackService" class="com.wanma.dubbox.service.impl.TblFeedbackServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblFeedbackService"
+		ref="feedbackService"/>
+		
+	<bean id="equipmentrepairService" class="com.wanma.dubbox.service.impl.TblEquipmentrepairServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblEquipmentrepairService"
+		ref="equipmentrepairService"/>
+		
+	<bean id="electricpilecommentService" class="com.wanma.dubbox.service.impl.TblElectricpilecommentServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblElectricpilecommentService"
+		ref="electricpilecommentService"/>
+		
+	<bean id="configparameterService" class="com.wanma.dubbox.service.impl.TblConfigparameterServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblConfigparameterService"
+		ref="configparameterService"/>
+		
+	<bean id="concentratorService" class="com.wanma.dubbox.service.impl.TblConcentratorServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblConcentratorService"
+		ref="concentratorService"/>
+		
+	<bean id="companyService" class="com.wanma.dubbox.service.impl.TblCompanyServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblCompanyService"
+		ref="companyService"/>
+		
+	<bean id="cityService" class="com.wanma.dubbox.service.impl.TblCityServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblCityService"
+		ref="cityService"/>
+		
+	<bean id="carinfoService" class="com.wanma.dubbox.service.impl.TblCarinfoServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblCarinfoService"
+		ref="carinfoService"/>
+		
+	<bean id="tblRoleService" class="com.wanma.dubbox.service.impl.TblRoleServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblRoleService"
+		ref="tblRoleService"/>
+		
+	<bean id="tblInvoiceService" class="com.wanma.dubbox.service.impl.TblInvoiceServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblInvoiceService"
+		ref="tblInvoiceService"/>
+		
+	<bean id="tblMenuService" class="com.wanma.dubbox.service.impl.TblMenuServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblMenuService"
+		ref="tblMenuService"/>
+		
+	<bean id="tblUserBusinessService" class="com.wanma.dubbox.service.impl.TblUserBusinessServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblUserBusinessService"
+		ref="tblUserBusinessService"/>
+		
+	<bean id="tblUserAdminService" class="com.wanma.dubbox.service.impl.TblUserAdminServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblUserAdminService"
+		ref="tblUserAdminService"/>
+		
+	<bean id="tblHomepageService" class="com.wanma.dubbox.service.impl.TblHomepageServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblHomepageService"
+		ref="tblHomepageService"/>
+		
+	<bean id="tblUsermessageService" class="com.wanma.dubbox.service.impl.TblUsermessageServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblUsermessageService"
+		ref="tblUsermessageService"/>
+		
+	<bean id="tblCommitLogService" class="com.wanma.dubbox.service.impl.TblCommitLogServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblCommitLogService"
+		ref="tblCommitLogService"/>
+		
+	<bean id="tblUserCardService" class="com.wanma.dubbox.service.impl.TblUserCardServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblUserCardService"
+		ref="tblUserCardService"/>
+		
+	<bean id="tblApplyEpService" class="com.wanma.dubbox.service.impl.TblApplyEpServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblApplyEpService"
+		ref="tblApplyEpService"/>
+		
+	<bean id="tblTypespanService" class="com.wanma.dubbox.service.impl.TblTypespanServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblTypespanService"
+		ref="tblTypespanService"/>
+		
+	<bean id="tblBomListService" class="com.wanma.dubbox.service.impl.TblBomListServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblBomListService"
+		ref="tblBomListService"/>
+		
+	<bean id="tblMultiMediaService" class="com.wanma.dubbox.service.impl.TblMultiMediaServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblMultiMediaService"
+		ref="tblMultiMediaService"/>
+		
+	<bean id="pileTransactionService" class="com.wanma.dubbox.transaction.service.impl.PileTransactionServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.transaction.service.PileTransactionService"
+		ref="pileTransactionService"/>
+		
+	<bean id="tblPureBusinessService" class="com.wanma.dubbox.service.impl.TblPureBusinessServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblPureBusinessService"
+		ref="tblPureBusinessService"/>
+		
+	<bean id="powerStationTransactionService" class="com.wanma.dubbox.transaction.service.impl.PowerStationTransactionServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.transaction.service.PowerStationTransactionService"
+		ref="powerStationTransactionService"/>
+		
+	<bean id="concentratorTransactionService" class="com.wanma.dubbox.transaction.service.impl.ConcentratorTransactionServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.transaction.service.ConcentratorTransactionService"
+		ref="concentratorTransactionService"/>
+		
+	<bean id="tblCarCompanyService" class="com.wanma.dubbox.service.impl.TblCarCompanyServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblCarCompanyService"
+		ref="tblCarCompanyService"/>
+		
+	<bean id="tblRateinFormationHistoryService" class="com.wanma.dubbox.service.impl.TblRateinFormationHistoryServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblRateinFormationHistoryService"
+		ref="tblRateinFormationHistoryService"/>
+		
+	<bean id="tblAreaService" class="com.wanma.dubbox.service.impl.TblAreaServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblAreaService"
+		ref="tblAreaService"/>
+		
+	<bean id="rateTransactionService" class="com.wanma.dubbox.transaction.service.impl.RateTransactionServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.transaction.service.RateTransactionService"
+		ref="rateTransactionService"/>
+		
+	<bean id="invoiceTransactionService" class="com.wanma.dubbox.transaction.service.impl.InvoiceTransactionServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.transaction.service.InvoiceTransactionService"
+		ref="invoiceTransactionService"/>
+		
+	<bean id="roleTransactionService" class="com.wanma.dubbox.transaction.service.impl.RoleTransactionServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.transaction.service.RoleTransactionService"
+		ref="roleTransactionService"/>
+		
+	<bean id="userRoleService" class="com.wanma.dubbox.service.impl.TblUserRoleServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblUserRoleService"
+		ref="userRoleService"/>
+		
+	<bean id="menuRoleService" class="com.wanma.dubbox.service.impl.TblMenuRoleServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblMenuRoleService"
+		ref="menuRoleService"/>
+		
+	<bean id="webReleaseService" class="com.wanma.dubbox.service.impl.TblWebReleaseServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblWebReleaseService"
+		ref="webReleaseService"/>
+		
+	<bean id="ucTransactionService" class="com.wanma.dubbox.transaction.service.impl.UserCardTransactionServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.transaction.service.UserCardTransactionService"
+		ref="ucTransactionService"/>
+		
+	<bean id="cafService" class="com.wanma.dubbox.service.impl.TblCardapplicationformServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblCardapplicationformService"
+		ref="cafService"/>
+		
+	<bean id="tsTransactionService" class="com.wanma.dubbox.transaction.service.impl.TypespanTransactionServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.transaction.service.TypespanTransactionService"
+		ref="tsTransactionService"/>
+		
+	<bean id="couponService" class="com.wanma.dubbox.service.impl.TblCouponServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblCouponService"
+		ref="couponService"/>
+		
+	<bean id="couponVarietyService" class="com.wanma.dubbox.service.impl.TblCouponVarietyServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblCouponVarietyService"
+		ref="couponVarietyService"/>
+		
+	<bean id="activityService" class="com.wanma.dubbox.service.impl.TblActivityServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblActivityService"
+		ref="activityService"/>
+		
+	<bean id="advService" class="com.wanma.dubbox.service.impl.TblAdvertisementServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.service.TblAdvertisementService"
+		ref="advService"/>
+		
+	<bean id="advTransactionService" class="com.wanma.dubbox.transaction.service.impl.AdvTransactionServiceImpl"/>
+	<dubbo:service interface="com.wanma.dubbox.transaction.service.AdvTransactionService"
+		ref="advTransactionService"/>
+		
+</beans>

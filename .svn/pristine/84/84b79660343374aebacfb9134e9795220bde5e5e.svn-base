@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.dao.CmsNewsInfoMapper">
+	<resultMap type="TblNewsInfo" id="result_newsInfo">
+		<result property="newsInfoId" column="pk_nei_id" />
+		<result property="newsInfoName" column="nei_name" />
+		<result property="newsInfoUrl" column="nei_url" />
+		<result property="newsInfoStatus" column="nei_status" />
+		<result property="newsInfoCreatedate" column="nei_createdate" />
+		<result property="newsInfoUpdatedate" column="nei_updatedate" />
+	</resultMap>
+	
+	<!-- 查询有效资讯列表 -->
+	<select id="getNewsInfoList"  parameterType="TblNewsInfo" resultMap="result_newsInfo">
+		SELECT 
+			pk_nei_id,
+			nei_name,
+			nei_url,
+			1 as newsInfoStatus,
+		 	nei_createdate,
+			nei_updatedate,
+			getFullPath ('newInfoPic', pk_nei_id) AS newsInfoPicUrl
+ 		FROM tbl_news_info 
+		<where>
+			date_add(nei_createdate, interval 7 day)>now()
+			and nei_status != 3
+			<if test="newsInfoName !=null and newsInfoName !=''">
+				and nei_name like CONCAT('%','${newsInfoName}','%' )
+			</if>
+			<if test="startTime !=null and startTime !=''">
+				and nei_updatedate>=#{startTime}
+			</if>
+			<if test="endTime !=null and endTime !=''">
+				<![CDATA[and nei_updatedate<=  date_add(#{endTime}, interval 1 day)]]>
+			</if>
+		</where>
+		union all
+		SELECT 
+			pk_nei_id,
+			nei_name,
+			nei_url,
+			2 as newsInfoStatus,
+		 	nei_createdate,
+			nei_updatedate,
+			getFullPath ('newInfoPic', pk_nei_id) AS newsInfoPicUrl
+ 		FROM tbl_news_info 
+		<where>
+			<![CDATA[date_add(nei_createdate, interval 7 day)<now()]]>
+			and nei_status != 3
+			<if test="newsInfoName !=null and newsInfoName !=''">
+				and nei_name like CONCAT('%','${newsInfoName}','%' )
+			</if>
+			<if test="startTime !=null and startTime !=''">
+				and nei_updatedate>=#{startTime}
+			</if>
+			<if test="endTime !=null and endTime !=''">
+				<![CDATA[and nei_updatedate<=  date_add(#{endTime}, interval 1 day)]]>
+			</if>
+		</where>
+ 		ORDER BY nei_createdate DESC
+ 		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	
+	<select id="getNewsInfoListCount"  parameterType="TblNewsInfo" resultType="long">
+		SELECT 
+			count(*)
+ 		FROM tbl_news_info 
+		<where>
+			 nei_status != 3
+			<if test="newsInfoName !=null and newsInfoName !=''">
+				and nei_name like CONCAT('%','${newsInfoName}','%' )
+			</if>
+			<if test="startTime !=null and startTime !=''">
+				and nei_updatedate>=#{startTime}
+			</if>
+			<if test="endTime !=null and endTime !=''">
+				<![CDATA[and nei_updatedate<=  date_add(#{endTime}, interval 1 day)]]>
+			</if>
+		</where>
+	</select>
+	<insert id="insertNewsInfo" parameterType="TblNewsInfo" 
+	useGeneratedKeys="true" keyProperty="newsInfoId">
+		insert into tbl_news_info(
+		nei_name,
+		nei_url,
+		nei_status
+		)values(
+		#{newsInfoName},
+		#{newsInfoUrl},
+		1
+		)
+	
+	</insert>
+	<update id="updateImageInfo" parameterType="map" >
+		update tb_multi_media
+		set
+		reference_id=#{referenceId}
+		where
+		reference_id = #{fileId}
+	</update>
+	<update id="updateNewsInfo" parameterType="TblNewsInfo"  >
+		update tbl_news_info
+		set
+		nei_url=#{newsInfoUrl},
+		nei_name=#{newsInfoName},
+		nei_updatedate = now()
+		where
+		pk_nei_id = #{newsInfoId}
+	</update>
+	<delete id="deleteNewsInfoById" parameterType="TblNewsInfo"  >
+		delete from tbl_news_info
+		where
+		pk_nei_id = #{newsInfoId}
+	</delete>
+	<select id="getNewsInfoById" parameterType="int"  resultMap="result_newsInfo">
+		SELECT 
+			pk_nei_id,
+			nei_name,
+			nei_url,
+			getFullPath ('newInfoPic', pk_nei_id) AS newsInfoPicUrl
+ 		FROM tbl_news_info 
+ 		where pk_nei_id = #{newsInfoId}
+	</select>
+</mapper>

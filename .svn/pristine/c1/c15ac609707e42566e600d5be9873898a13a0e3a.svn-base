@@ -1,0 +1,471 @@
+package com.wanma.ims.service.impl;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.google.common.base.Function;
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.wanma.ims.common.domain.AreaDO;
+import com.wanma.ims.common.domain.CityDO;
+import com.wanma.ims.common.domain.CompanyDO;
+import com.wanma.ims.common.domain.ElectricPileDO;
+import com.wanma.ims.common.domain.ElectricPileHeadDO;
+import com.wanma.ims.common.domain.PileMakerDO;
+import com.wanma.ims.common.domain.ProvinceDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.common.dto.BatchResultDTO;
+import com.wanma.ims.constants.DownFileConstants;
+import com.wanma.ims.constants.ResultCodeConstants;
+import com.wanma.ims.constants.WanmaConstants;
+import com.wanma.ims.mapper.ElectricPileHeadMapper;
+import com.wanma.ims.mapper.ElectricPileMapper;
+import com.wanma.ims.service.CommonRedisService;
+import com.wanma.ims.service.CompanyService;
+import com.wanma.ims.service.ConfigContentService;
+import com.wanma.ims.service.ElectricPileService;
+import com.wanma.ims.service.InitialService;
+import com.wanma.ims.service.PileMakerService;
+import com.wanma.ims.util.ExcelExporterUtil;
+import com.wanma.ims.util.ExcelImportUtil;
+import com.wanma.ims.util.ObjectUtil;
+import com.wanma.ims.util.PKUtil;
+import com.wanma.ims.util.SplitterUtil;
+
+/**
+ * Created by xyc on 2017/6/28.
+ * 电桩逻辑处理类
+ */
+@Service
+public class ElectricPileServiceImpl implements ElectricPileService {
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+
+    @Autowired
+    private ElectricPileMapper electricPileMapper;
+    @Autowired
+    private ElectricPileHeadMapper electricPileHeadMapper;
+    @Autowired
+    private CompanyService companyService;
+    @Autowired
+    private InitialService initialService;
+    @Autowired
+    private ConfigContentService configContentService;
+    @Autowired
+    private CommonRedisService commonRedisService;
+    @Autowired
+    private PileMakerService pileMakerService;
+
+    @Override
+    public List<ElectricPileDO> getElectricPileList(ElectricPileDO searchModel, UserDO loginUser) {
+        replaceSearchModel(searchModel, loginUser);
+
+        List<ElectricPileDO> electricPileList = electricPileMapper.selectElectricPileList(searchModel);
+
+        Set<Long> pileMakerIdSet = new HashSet<>();
+        Set<Long> productModelIdSet = new HashSet<>();
+        Set<Long> companyIdSet = new HashSet<>();
+        Set<String> provinceCodeSet = new HashSet<>();
+        Set<String> cityCodeSet = new HashSet<>();
+        Set<String> areaCodeSet = new HashSet<>();
+
+        for (ElectricPileDO electricPile : electricPileList) {
+            fillElectricPile(electricPile);
+
+            pileMakerIdSet.add(electricPile.getPileMakerId());
+            productModelIdSet.add(electricPile.getProductModelId());
+            companyIdSet.add(electricPile.getCompanyId());
+            provinceCodeSet.add(electricPile.getProvinceCode());
+            cityCodeSet.add(electricPile.getCityCode());
+            areaCodeSet.add(electricPile.getAreaCode());
+        }
+
+
+        Map<String, String> powerMap = configContentService.getConfigContentMap(WanmaConstants.ELECTRIC_PILE_POWER, 1);
+        Map<String, String> chargingMethodMap = configContentService.getConfigContentMap(WanmaConstants.ELECTRIC_CHARGING_METHOD, 1);
+        Map<String, String> typeMap = configContentService.getConfigContentMap(WanmaConstants.ELECTRIC_PILE_TYPE, 1);
+        Map<Long, PileMakerDO> pileMakerMap = new HashMap<>();
+        Map<Long, String> productModeMap = new HashMap<>();//TODO:型号转换
+        Map<Long, CompanyDO> companyMap = new HashMap<>();
+        Map<String, ProvinceDO> provinceMap = initialService.getProvinceMapByIds(new ArrayList<>(provinceCodeSet));
+        Map<String, CityDO> cityMap = initialService.getCityMapByIds(new ArrayList<>(cityCodeSet));
+        Map<String, AreaDO> areaMap = initialService.getAreaMapByIds(new ArrayList<>(areaCodeSet));
+
+        List<CompanyDO> companyList = companyService.getCompanyListByIds(new ArrayList<>(companyIdSet));
+        if (CollectionUtils.isNotEmpty(companyList)) {
+            companyMap = Maps.uniqueIndex(companyList, new Function<CompanyDO, Long>() {
+                @Override
+                public Long apply(CompanyDO input) {
+                    return input.getCpyId();
+                }
+            });
+        }
+
+        List<PileMakerDO> pileMakerList = pileMakerService.getPileMakerListByIds(new ArrayList<>(pileMakerIdSet));
+        if (CollectionUtils.isNotEmpty(pileMakerList)) {
+            pileMakerMap = Maps.uniqueIndex(pileMakerList, new Function<PileMakerDO, Long>() {
+                @Override
+                public Long apply(PileMakerDO input) {
+                    return input.getId();
+                }
+            });
+        }
+
+        for (ElectricPileDO electricPile : electricPileList) {
+            electricPile.setChPower(powerMap.get(electricPile.getPower() + ""));
+            electricPile.setChChargingMethod(chargingMethodMap.get(electricPile.getChargingMethod() + ""));
+            electricPile.setType(typeMap.get(electricPile.getTypeId() + ""));
+
+            PileMakerDO pileMaker = pileMakerMap.get(electricPile.getPileMakerId());
+            if (pileMaker != null) {
+                electricPile.setPileMaker(pileMaker.getMakerName());
+            }
+
+            electricPile.setProductModel(productModeMap.get(electricPile.getProductModelId()));
+            CompanyDO company = companyMap.get(electricPile.getCompanyId());
+            if (company != null) {
+                electricPile.setCompany(company.getCpyName());
+            }
+
+            ProvinceDO province = provinceMap.get(electricPile.getProvinceCode());
+            if (province != null) {
+                electricPile.setProvince(province.getProvinceName());
+            }
+
+            CityDO city = cityMap.get(electricPile.getCityCode());
+            if (city != null) {
+                electricPile.setCity(city.getCityName());
+            }
+
+            AreaDO area = areaMap.get(electricPile.getAreaCode());
+            if (area != null) {
+                electricPile.setArea(area.getAreaName());
+            }
+        }
+
+        return electricPileList;
+    }
+
+    private void fillElectricPile(ElectricPileDO electricPile) {
+        Integer status = electricPile.getStatus();
+        if (Objects.equals(status, WanmaConstants.ELECTRIC_PILE_STATUS_DISCRETE)) {
+            electricPile.setChStatus("离散");
+        } else if (Objects.equals(status, WanmaConstants.ELECTRIC_PILE_STATUS_ONLINE)) {
+            electricPile.setChStatus("上线");
+        }
+    }
+
+    @Override
+    public long countElectricPile(ElectricPileDO searchModel, UserDO loginUser) {
+        replaceSearchModel(searchModel, loginUser);
+        return electricPileMapper.countElectricPile(searchModel);
+    }
+
+    private void replaceSearchModel(ElectricPileDO searchModel, UserDO loginUser) {
+        List<Long> searchIds = commonRedisService.getElectricPileIdsByLoginId(loginUser);
+        if (CollectionUtils.isNotEmpty(searchIds)) {
+            searchModel.setIds(searchIds);
+        }
+
+        searchModel.setOwnerShip(ObjectUtil.emptyStrNvl(searchModel.getOwnerShip()));
+        searchModel.setCode(ObjectUtil.emptyStrNvl(searchModel.getCode()));
+
+        searchModel.setProvinceCode(ObjectUtil.emptyStrNvl(searchModel.getProvinceCode()));
+        searchModel.setCityCode(ObjectUtil.emptyStrNvl(searchModel.getCityCode()));
+        searchModel.setAreaCode(ObjectUtil.emptyStrNvl(searchModel.getAreaCode()));
+    }
+
+    @Override
+    public List<ElectricPileDO> selectByElectricPileIds(List<Long> electricPileIds) {
+        return electricPileMapper.selectByElectricPileIds(electricPileIds);
+    }
+
+    @Override
+    public boolean checkElectricPileCodeIsUnique(String code) {
+        ElectricPileDO searchModel = new ElectricPileDO();
+        searchModel.setCode(code);
+
+        return electricPileMapper.countElectricPile(searchModel) < 1;
+    }
+
+    @Override
+    public BaseResultDTO addElectricPile(ElectricPileDO electricPile, UserDO loginUser) throws Exception {
+        if (electricPile == null) {
+            LOGGER.warn(this.getClass() + "-addElectricPile is failed, electricPile is null|loginUser={}", loginUser);
+            return new BaseResultDTO(false, ResultCodeConstants.FAILED, "新增电桩不能为空，请刷新页面后重试！");
+        }
+
+        electricPile.setStatus(WanmaConstants.ELECTRIC_PILE_STATUS_DISCRETE);
+        electricPile.setCode(PKUtil.generateElectricPileCode());
+        electricPile.setCreator(loginUser.getUserAccount());
+        electricPile.setModifier(loginUser.getUserAccount());
+
+
+        if (electricPileMapper.insertElectricPile(electricPile) < 1) {
+            LOGGER.warn(this.getClass() + "-addElectricPile is failed, insertElectricPile is error|electricPile={}|loginUser={}", electricPile, loginUser);
+            return new BaseResultDTO(false, ResultCodeConstants.FAILED, "新增电桩失败，请刷新页面后重试！");
+        }
+
+        commonRedisService.initAdminSysEpRela(loginUser.getUserId());
+        return createElectricPileHead(electricPile, loginUser);
+    }
+
+    private BaseResultDTO createElectricPileHead(ElectricPileDO electricPile, UserDO loginUser) {
+        List<ElectricPileHeadDO> headList = electricPile.getHeadList();
+        if (ObjectUtil.isEmpty(electricPile.getMuzzleNumber()) && CollectionUtils.isEmpty(headList)) {
+            return new BaseResultDTO();
+        }
+
+        Long electricPileId = electricPile.getId();
+        BaseResultDTO result = new BaseResultDTO();
+        for (int i = 0; i < electricPile.getMuzzleNumber(); i++) {
+            result = addElectricPileHead(new ElectricPileHeadDO(), electricPileId, i + 1, loginUser);
+            if (result.isFailed()) {
+                return result;
+            }
+        }
+        return result;
+    }
+
+    private BaseResultDTO addElectricPileHead(ElectricPileHeadDO head, long electricPileId, int index, UserDO loginUser) {
+        ElectricPileHeadDO.fillHead(head, electricPileId, index);
+        int result = electricPileHeadMapper.insertElectricPileHead(head);
+        if (result != 1) {//如果添加失败则删除添加过的电桩和枪头
+            electricPileMapper.deleteByElectricId(electricPileId);
+            electricPileHeadMapper.deleteByElectricPileId(electricPileId);
+            LOGGER.warn(this.getClass() + "-createElectricPileHead is failed, insertElectricPileHead is error|electricPileId={}|loginUser={}", electricPileId, loginUser);
+            return new BaseResultDTO(false, ResultCodeConstants.FAILED, "新增电桩失败，添加枪头失败，请刷新页面后重试！");
+        }
+
+        return new BaseResultDTO();
+    }
+
+    @Override
+    public BaseResultDTO deleteElectricPile(String electricPileIds, UserDO loginUser) {
+        List<Long> electricPileIdList = SplitterUtil.splitToLongList(electricPileIds, ",", null);
+        if (CollectionUtils.isEmpty(electricPileIdList)) {
+            LOGGER.warn(this.getClass() + "-deleteElectricPile electricPileIds is null|electricPileIds={}|loginUser={}", electricPileIds, loginUser);
+            return new BaseResultDTO(false, ResultCodeConstants.FAILED, "请选择要删除的电桩！");
+        }
+
+        for (Long deleteByElectricId : electricPileIdList) {
+            electricPileMapper.deleteByElectricId(deleteByElectricId);
+        }
+
+        return new BaseResultDTO();
+    }
+
+    @Override
+    public BaseResultDTO modifyElectricPile(ElectricPileDO electricPile, UserDO loginUser) {
+        ElectricPileDO oldElectricPile = electricPileMapper.selectByElectricPileId(electricPile.getId());
+
+        if (oldElectricPile == null) {
+            LOGGER.warn(this.getClass() + "-modifyElectricPile is failed, oldElectricPile is null|electricPileId={}|modifyElectricPile={}|loginUser={}", electricPile.getId(), electricPile, loginUser);
+            return new BaseResultDTO(false, ResultCodeConstants.FAILED, "找不到要修改的电桩，请刷新页面后重试！");
+        }
+
+        if (updateElectricPileSelective(electricPile, loginUser)) {
+            LOGGER.warn(this.getClass() + "-modifyElectricPile is failed, updateElectricPileSelective is error|electricPileId={}|modifyElectricPile={}|loginUser={}", electricPile.getId(), electricPile, loginUser);
+            return new BaseResultDTO(false, ResultCodeConstants.FAILED, "修改电桩失败，请刷新页面后重试！");
+        }
+
+        commonRedisService.initAdminSysEpRela(loginUser.getUserId());
+        return new BaseResultDTO();
+    }
+
+    private boolean updateElectricPileSelective(ElectricPileDO electricPile, UserDO loginUser) {
+        electricPile.setModifier(loginUser.getUserAccount());
+        return electricPileMapper.updateByElectricIdSelective(electricPile) < 1;
+    }
+
+    @Override
+    public ElectricPileDO getElectricPileById(Long electricPileId, UserDO loginUser) {
+        ElectricPileDO searchModel = new ElectricPileDO();
+        searchModel.setId(electricPileId);
+        List<ElectricPileDO> electricPileList = getElectricPileList(searchModel, loginUser);
+        if (CollectionUtils.isNotEmpty(electricPileList)) {
+            return electricPileList.get(0);
+        }
+
+        return null;
+    }
+
+    @Override
+    public BaseResultDTO importElectricPile(MultipartFile multipartFile, UserDO loginUser) throws Exception {
+        if (multipartFile == null || multipartFile.isEmpty()) {
+            LOGGER.warn(this.getClass() + "-importElectricPile is failed, multipartFile is null|loginUser={}", loginUser);
+            return new BaseResultDTO(false, ResultCodeConstants.FAILED, "请导入正确的电桩excel文件！");
+        }
+
+        try {
+            BatchResultDTO<List<String>> result = ExcelImportUtil.importListFromExcel(multipartFile);
+            if (result.isFailed()) {
+                return result;
+            }
+
+            return processingData(result.getModule(), loginUser);
+        } catch (Exception e) {
+            LOGGER.error(this.getClass() + "-importElectricPile is error|fileName={}|loginUser={}", multipartFile.getOriginalFilename(), loginUser, e);
+            throw e;
+        }
+    }
+
+    private BaseResultDTO processingData(List<List<String>> data, UserDO loginUser) throws Exception {
+        BaseResultDTO result = new BaseResultDTO();
+        Map<String, String> powerMap = configContentService.getConfigContentMap(WanmaConstants.ELECTRIC_PILE_POWER, 2);
+        Map<String, String> chargingMethodMap = configContentService.getConfigContentMap(WanmaConstants.ELECTRIC_CHARGING_METHOD, 2);
+        Map<String, String> typeMap = configContentService.getConfigContentMap(WanmaConstants.ELECTRIC_PILE_TYPE, 2);
+        Map<String, ProvinceDO> provinceMap = Maps.uniqueIndex(initialService.getProvinceListByIds(null), new Function<ProvinceDO, String>() {
+            @Override
+            public String apply(ProvinceDO input) {
+                return input.getProvinceId();
+            }
+        });
+        Map<String, CityDO> cityMap = Maps.uniqueIndex(initialService.getCityListByIds(null), new Function<CityDO, String>() {
+            @Override
+            public String apply(CityDO input) {
+                return input.getCityId();
+            }
+        });
+        Map<String, AreaDO> areaMap = Maps.uniqueIndex(initialService.getAreaListByIds(null), new Function<AreaDO, String>() {
+            @Override
+            public String apply(AreaDO input) {
+                return input.getAreaId();
+            }
+        });
+
+        for (List<String> line : data) {
+            ElectricPileDO electricPile = new ElectricPileDO();
+            electricPile.setNum(Integer.valueOf(line.get(0)));
+            electricPile.setLongitude(new BigDecimal(line.get(4)));
+            electricPile.setLatitude(new BigDecimal(line.get(5)));
+            electricPile.setAddress(line.get(6));
+            electricPile.setInterfaceStandard(line.get(10));
+            electricPile.setMaxVoltage(new BigDecimal(line.get(11)));
+            electricPile.setMaxElectricity(new BigDecimal(line.get(12)));
+            electricPile.setMuzzleNumber(Integer.valueOf(line.get(13)));
+            electricPile.setSimName(line.get(16));
+            electricPile.setSimMac(line.get(17));
+
+            ProvinceDO province = provinceMap.get(line.get(1));
+            if (province != null) {
+                electricPile.setProvinceCode(province.getProvinceId());
+            }
+
+            CityDO city = cityMap.get(line.get(2));
+            if (city != null) {
+                electricPile.setCityCode(city.getCityId());
+            }
+
+            AreaDO area = areaMap.get(line.get(3));
+            if (area != null) {
+                electricPile.setAreaCode(area.getAreaId());
+            }
+
+            electricPile.setChargingMethod(Integer.valueOf(chargingMethodMap.get(line.get(7))));
+            electricPile.setPower(Integer.valueOf(powerMap.get(line.get(8))));
+            electricPile.setTypeId(Integer.valueOf(typeMap.get(line.get(9))));
+
+            //TODO:以下数据需要转成id
+            electricPile.setProductModel(line.get(14));
+            electricPile.setPileMaker(line.get(15));
+
+            //存入数据库
+            result = addElectricPile(electricPile, loginUser);
+            if (result.isFailed()) {
+                return result;
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public BaseResultDTO exportElectricPile(HttpServletResponse response, ElectricPileDO searchModel, UserDO loginUser) {
+        List<ElectricPileDO> electricPileList = getElectricPileList(searchModel, loginUser);
+        if (CollectionUtils.isEmpty(electricPileList)) {
+            LOGGER.warn(this.getClass() + "-exportElectricPile is failed, exportElectricPileList is empty|searchModel={}|loginUser={}", searchModel, loginUser);
+            return new BaseResultDTO(false, ResultCodeConstants.FAILED, "您导出的数据不存在，请修改正确的查询条件后再导出！");
+        }
+
+        List<String> attrList = Lists.newArrayList("code", "num", "chChargingMethod", "chPower", "muzzleNumber", "chStatus", "address", "ownerShip", "productModel", "pileMaker", "rateInformationId", "name");
+        List<String> header = Lists.newArrayList("桩体编码", "编号", "充电方式", "功率", "枪头数量", "电桩状态", "地址", "资产归属", "创建时间", "产品型号", "电桩类型", "电桩制造商", "默认费率", "电桩名称");
+        ExcelExporterUtil.exportExcel(response, attrList, header, electricPileList, ElectricPileDO.class, DownFileConstants.FILE_ELECTRIC_PILE_EXPORT, DownFileConstants.FILE_ELECTRIC_PILE_EXPORT_SHEET);
+
+        return new BaseResultDTO();
+    }
+
+    @Override
+    public BaseResultDTO bandElectricPile(List<ElectricPileDO> electricPileList, Integer bindType, Long relatedId, UserDO loginUser) {
+        for (ElectricPileDO electricPile : electricPileList) {
+            ElectricPileDO modifyElectricPile = new ElectricPileDO();
+            modifyElectricPile.setId(electricPile.getId());
+
+            if (WanmaConstants.POWER_STATION_BIND_ELECTRIC_PILE.equals(bindType)) {
+                modifyElectricPile.setStatus(WanmaConstants.ELECTRIC_PILE_STATUS_ONLINE);
+                modifyElectricPile.setRateInformationId(electricPile.getRateInformationId());
+                modifyElectricPile.setPowerStationId(relatedId);
+            } else if (WanmaConstants.CONCENTRATOR_BIND_ELECTRIC_PILE.equals(bindType)) {
+                modifyElectricPile.setConcentratorId(relatedId);
+            }
+
+            electricPileMapper.updateByElectricIdSelective(modifyElectricPile);
+        }
+        return new BaseResultDTO();
+    }
+
+    @Override
+    public BaseResultDTO unbindElectricPile(String electricPileIds, Integer bindType, UserDO loginUser) {
+        if (Strings.isNullOrEmpty(electricPileIds)) {
+            return new BaseResultDTO(false, ResultCodeConstants.FAILED, "请选择要解绑的电桩！");
+        }
+
+        List<Long> electricPileIdList = SplitterUtil.splitToLongList(electricPileIds, ",", null);
+        for (Long electricPileId : electricPileIdList) {
+            ElectricPileDO modifyElectricPile = new ElectricPileDO();
+            modifyElectricPile.setId(electricPileId);
+            if (WanmaConstants.POWER_STATION_BIND_ELECTRIC_PILE.equals(bindType)) {
+                modifyElectricPile.setPowerStationId(null);
+                modifyElectricPile.setStatus(WanmaConstants.ELECTRIC_PILE_STATUS_DISCRETE);
+                electricPileMapper.updatePowerStationId(modifyElectricPile);
+            } else if (WanmaConstants.CONCENTRATOR_BIND_ELECTRIC_PILE.equals(bindType)) {
+                modifyElectricPile.setStatus(WanmaConstants.ELECTRIC_PILE_STATUS_DISCRETE);
+                modifyElectricPile.setConcentratorId(null);
+                electricPileMapper.updateConcentratorId(modifyElectricPile);
+            }
+        }
+        return new BaseResultDTO();
+    }
+
+    @Override
+    public BaseResultDTO modifyOwnerShip(String electricPileIds, String ownerShip, UserDO loginUser) {
+        if (Strings.isNullOrEmpty(electricPileIds)) {
+            return new BaseResultDTO(false, ResultCodeConstants.FAILED, "请选择要解绑的电桩！");
+        }
+
+        List<Long> electricPileIdList = SplitterUtil.splitToLongList(electricPileIds, ",", null);
+        for (Long electricPileId : electricPileIdList) {
+            ElectricPileDO modifyElectricPile = new ElectricPileDO();
+            modifyElectricPile.setId(electricPileId);
+            modifyElectricPile.setOwnerShip(ownerShip);
+
+            electricPileMapper.updateByElectricIdSelective(modifyElectricPile);
+        }
+        return new BaseResultDTO();
+    }
+}

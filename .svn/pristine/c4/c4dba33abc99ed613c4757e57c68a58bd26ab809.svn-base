@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>更新电桩</title>
+<script src="../../static/js/common.js" type="text/javascript"></script>
+<script type="text/javascript">
+	function update(){
+		Ajax.ajax({
+	         type: 'POST',
+	         url: getRootPath()+'/itf/electric/update.do',
+	         data:{
+	        	 pkElectricpile:13407,
+	        	 elpiElectricpilename:"上海市长宁区福泉路540号正大门1",
+	        	 elpiElectricpilecode:"13407",
+	        	 elpiElectricpileaddress:"11sss11",
+	        	 elpiLongitude:123.3,
+	        	 elpiLatitude:21,
+	        	 elpiPowernumber:44,
+	        	 elpiState:155,
+	        	 elpiRejectionreason:"asdasjdhasdklahsdjashdkjashdjaksdhakjsdhajskdhasjkd",
+	        	 elpiType:31,
+	        	 elpiPoweruser:11111,
+	        	 elpiChargingmode:122222,
+	        	 elpiPowersize:12223,
+	        	 elpiPowerinterface:113331,
+	        	 elpiMaker:12221,
+	        	 elpiOutputvoltage:111,
+	        	 elpiInputvoltage:999,
+	        	 elpiOutputcurrent:999,
+	        	 elpiInputcurrent:999,
+	        	 elpiUsertype:888,
+	        	 elpiUserid:8888,
+	        	 elpiCarid:8888,
+	        	 elpiBinding:1111,
+	        	 elpiIsappoint:222,
+	        	 elpiPaystyle:333,
+	        	 elpiMaxelectricity:9999.99,
+	        	 elpiOnlinetime:"2015-11-20 14:54:22",
+	        	 elpiOfflinetime:"2015-11-20 14:54:22"
+	         },
+	         dataType: "json",
+	         success: function(datas){
+	        	 $("#result").innerHTML=JSON.stringify(datas);
+	         }	         
+	    });
+	}
+</script>
+
+</head>
+<body>
+<input type="button" value="点击更新电桩" onclick="update()">
+<span id="result"></span>
+</body>
+</html>

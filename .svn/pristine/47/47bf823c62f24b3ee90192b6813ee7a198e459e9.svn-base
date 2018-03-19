@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.app.dao.GovBusiUserMapper">
+
+	<resultMap id="GovBusiUserInfoMap" type="GovBusiUser">
+		<id property="userId" column="user_id" />
+		<result property="userName" column="user_cpy_name" />
+		<result property="userPhone" column="user_cpy_phone" />
+		<result property="userImage" column="user_Image" />
+		<result property="companyName" column="cpy_name" />
+		<result property="paymentRule" column="payment_rule" />
+		<result property="tradeType" column="trade_type" />
+		<result property="accountBalance" column="account_balance" />
+		<result property="chargingRecordNum" column="chargingRecord_num" />
+		<result property="chargingNum" column="chargeing_num" />
+		<result property="puHiMonetary" column="puHi_Monetary" />
+		<result property="chReFrozenAmt" column="chRe_FrozenAmt" />		
+	</resultMap>
+	
+	<select id="getUserBaseInfo" parameterType="string" resultMap="GovBusiUserInfoMap">
+		SELECT
+			a.user_id,
+			uc.user_cpy_name,
+			uc.user_cpy_phone,
+			getFullPath ('userAvatar', a.user_id) user_Image,
+			c.cpy_name
+		FROM tbl_user_company uc
+		LEFT JOIN tbl_user a ON uc.user_id = a.user_id
+		LEFT JOIN tbl_company c ON uc.cpy_id = c.cpy_id 
+		WHERE a.user_id = #{userId}
+		AND a.user_status != 3
+		AND a.user_leval = 3
+	</select>
+	<select id="getUserAccount" parameterType="string" resultMap="GovBusiUserInfoMap">
+		SELECT
+			la.payment_rule,
+			f.trade_type,
+			FORMAT(f.account_balance, 4) account_balance
+		FROM
+			tbl_user_company uc
+		LEFT JOIN tbl_user a ON uc.user_id = a.user_id
+		LEFT JOIN fin_account f ON f.account_id = uc.account_id
+		LEFT JOIN fin_account_config_rela la ON la.cpy_id = uc.cpy_id
+		WHERE a.user_id = #{userId}
+		AND a.user_status != 3
+		AND a.user_leval = 3
+	</select>
+	<select id="getChargingRecord" parameterType="string" resultMap="GovBusiUserInfoMap">
+		SELECT SUM(chRe_FrozenAmt) chRe_FrozenAmt FROM tbl_chargingrecord d 
+		LEFT JOIN tbl_chargingorder r ON d.chRe_Code = r.chOr_Code
+		LEFT JOIN  tbl_user a ON a.user_id = r.chOr_UserId
+		WHERE a.user_id = #{userId}
+		AND a.user_status != 3
+		AND a.user_leval = 3
+		AND r.chOr_ChargingStatus = 4
+	</select>
+	<select id="getAccountPc" parameterType="string" resultMap="GovBusiUserInfoMap">
+		SELECT
+			(SELECT count(pk_ChargingOrder) FROM tbl_chargingorder r WHERE r.chOr_UserId = a.user_id 
+				AND r.chOr_ChargingStatus in(2,3)) chargingRecord_num,
+			(SELECT count(pk_ChargingOrder) FROM tbl_chargingorder r WHERE r.chOr_UserId = a.user_id 
+				AND r.chOr_ChargingStatus != 2 AND r.chOr_ChargingStatus != 3) chargeing_num,
+			((SELECT SUM(p.puHi_Monetary) FROM tbl_purchasehistory p WHERE p.puHi_UserId = a.user_id AND p.puHi_Type = 1)
+			 - (SELECT SUM(p.puHi_Monetary) FROM tbl_purchasehistory p WHERE p.puHi_UserId = a.user_id AND p.puHi_Type = 11)) puHi_Monetary
+		FROM
+			tbl_user a
+		WHERE a.user_id = #{userId}
+		AND a.user_status != 3
+		AND a.user_leval = 3
+	</select>
+	
+	<select id="getPhoneCount" parameterType="string" resultType="int">
+		SELECT count(1) FROM tbl_user_company WHERE user_cpy_phone = #{usinPhone}
+	</select>
+	<select id="getUserById" parameterType="string" resultType="int">
+		SELECT count(1) FROM tbl_user_company WHERE user_id = #{userId}
+	</select>
+	<update id="bindPhoneNumber">
+		UPDATE tbl_user_company SET
+			user_cpy_phone=#{userPhone},
+			modifier=(SELECT user_account FROM tbl_user WHERE user_id= #{userId} ),
+			gmt_modified=NOW()
+		WHERE user_id=#{userId}
+	</update>
+</mapper> 

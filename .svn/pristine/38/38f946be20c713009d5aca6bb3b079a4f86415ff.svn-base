@@ -1,0 +1,13 @@
+package com.wanma.ims.mapper;
+
+import java.util.List;
+
+import com.wanma.ims.common.domain.ReportOrderDO;
+
+
+public interface ReportOrderMapper {
+	
+	public Long countReportCpyOrder(ReportOrderDO orderReportDO);
+	
+	public List<ReportOrderDO> selectReportCpyOrder(ReportOrderDO orderReportDO);
+}

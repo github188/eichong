@@ -1,0 +1,68 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ include file="../../base.jsp"%>
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>服务费上限</title>
+		<link rel="stylesheet" type="text/css" href="${ctx}/static/css/config/serviceLimitList.css"/>
+	</head>
+	<body>
+		<div id="container1">
+			<div class="box">
+				<div class="formList">
+					<form id="serviceLimitListForm">
+					<select id="serviceLimitListProvince" name="provinceId" >
+						<option disabled selected>请选择省份</option>
+					</select>
+					<span class="check" onclick="serviceLimitListSearch()">查询</span>
+					</form>
+				</div>
+			</div>
+			<div class="box2 col-md-10 col-sm-8">
+				<div class="padding30">
+						<table class="myTable">
+							<thead>
+								<tr class="active">
+									<th class="smallWidth"><input type="checkbox" name="" class="selAll" value=""/></th>
+									<th class="smallWidth">序号</th>
+									<th>城市名称</th>
+									<th>省份名称</th>
+									<th>费率</th>
+									<th>操作</th>
+								</tr>
+							</thead>
+							<tbody id="serviceLimitListTbody">
+							</tbody>
+						</table>
+						<div id="" class="" style="height: 40px; width: auto;">
+							&nbsp;&nbsp;&nbsp;&nbsp;
+						</div>
+				</div>
+			</div>
+			<div id="serviceLimitListPage" class="pagination col-md-10 col-sm-10">
+			</div>
+
+		</div>
+		<!--服务费上线编辑-->
+		<div id="serviceLimitEdit" class="serviceLimitStyle" style="display: none;">
+			<form id="serviceLimitEditForm" method="post"
+				action="/admin/feelimit/feelimitModify.do" callback="refreshCurrent()">
+			<input id="cityId" type="hidden" name="cityId"  value=""  />
+			<div class="line">
+				<span>城市名称</span>
+				<span id="cityName"  class="cityName marginLeft30"></span>
+			</div>
+			<div class="line">
+				<span>服务费</span>
+				<input type="" name="serviceLimit"  value="" class="marginLeft30" id="serviceLimit"/>
+			</div>
+			<div class="serviceLimitTextTip" style="display: none; color: #FF0000;margin-top: 6px;">
+				
+			</div>
+			</form>
+		</div>
+	</body>
+<script src="${ctx}/static/js/config/serviceLimitList.js" type="text/javascript" charset="utf-8"></script>
+</html>

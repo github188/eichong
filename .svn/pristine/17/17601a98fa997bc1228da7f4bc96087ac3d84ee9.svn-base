@@ -1,0 +1,243 @@
+package com.wanma.ims.common.domain;
+
+import java.util.List;
+
+import com.wanma.ims.common.domain.base.BasicModel;
+
+/**
+ * 公司CompanyDO
+ */
+public class CompanyDO extends BasicModel {
+
+	private static final long serialVersionUID = 682614664375661560L;
+	// 主键
+	private Long cpyId;
+	// 公司标识
+	private Integer cpyNumber;
+	// 公司名称
+	private String cpyName;
+	// 省
+	private String cpyProvince;
+	private String cpyProvinceName;
+	// 市
+	private String cpyCity;
+	private String cpyCityName;
+	// 地址
+	private String cpyAddress;
+
+	// 手机
+	private String cpyPhone;
+	// 邮件
+	private String cpyEmail;
+	// 状态 0.正常 1.禁用
+	private Integer cpyStatus;
+	// 离线充电次数
+	// 结算方式 0.预付款 1.后付费
+	private Integer tradeType;
+	// 类型 1.投资公司 2.渠道公司 3.桩主公司 4.业主公司
+	private Integer cpyType;
+	// 上级
+	private Long cpyParentId;
+	// 上级名称
+	private String cpyParentName;
+	// 类型 0.组织上的上下级关系 1.帐户上的上下级关系
+	private Integer cpyParentType;
+	// 是否开启盗刷校验 0.否 1.是
+	private Integer isValid;
+	// 管理单位
+	private Long slaveCpyId;
+	// 管理单位名称
+	private String slaveCpyName;
+	// 资金账户
+	private Long accountId;
+	// 权限
+	private List<Long> cpyIdList;
+	// 临时字段
+	private String accountNo;
+	private Integer indexNum;
+
+	public Long getCpyId() {
+		return cpyId;
+	}
+
+	public void setCpyId(Long cpyId) {
+		this.cpyId = cpyId;
+	}
+
+	public Integer getCpyNumber() {
+		return cpyNumber;
+	}
+
+	public void setCpyNumber(Integer cpyNumber) {
+		this.cpyNumber = cpyNumber;
+	}
+
+	public String getCpyName() {
+		return cpyName;
+	}
+
+	public void setCpyName(String cpyName) {
+		this.cpyName = cpyName;
+	}
+
+	public String getCpyProvince() {
+		return cpyProvince;
+	}
+
+	public void setCpyProvince(String cpyProvince) {
+		this.cpyProvince = cpyProvince;
+	}
+
+	public String getCpyCity() {
+		return cpyCity;
+	}
+
+	public void setCpyCity(String cpyCity) {
+		this.cpyCity = cpyCity;
+	}
+
+	public String getCpyAddress() {
+		return cpyAddress;
+	}
+
+	public void setCpyAddress(String cpyAddress) {
+		this.cpyAddress = cpyAddress;
+	}
+
+	public String getCpyPhone() {
+		return cpyPhone;
+	}
+
+	public void setCpyPhone(String cpyPhone) {
+		this.cpyPhone = cpyPhone;
+	}
+
+	public String getCpyEmail() {
+		return cpyEmail;
+	}
+
+	public void setCpyEmail(String cpyEmail) {
+		this.cpyEmail = cpyEmail;
+	}
+
+	public Integer getCpyType() {
+		return cpyType;
+	}
+
+	public void setCpyType(Integer cpyType) {
+		this.cpyType = cpyType;
+	}
+
+	public Long getCpyParentId() {
+		return cpyParentId;
+	}
+
+	public void setCpyParentId(Long cpyParentId) {
+		this.cpyParentId = cpyParentId;
+	}
+
+	public Integer getCpyParentType() {
+		return cpyParentType;
+	}
+
+	public void setCpyParentType(Integer cpyParentType) {
+		this.cpyParentType = cpyParentType;
+	}
+
+	public Integer getIsValid() {
+		return isValid;
+	}
+
+	public void setIsValid(Integer isValid) {
+		this.isValid = isValid;
+	}
+
+	public Long getSlaveCpyId() {
+		return slaveCpyId;
+	}
+
+	public void setSlaveCpyId(Long slaveCpyId) {
+		this.slaveCpyId = slaveCpyId;
+	}
+
+	public Long getAccountId() {
+		return accountId;
+	}
+
+	public void setAccountId(Long accountId) {
+		this.accountId = accountId;
+	}
+
+	public Integer getTradeType() {
+		return tradeType;
+	}
+
+	public void setTradeType(Integer tradeType) {
+		this.tradeType = tradeType;
+	}
+
+	public String getCpyParentName() {
+		return cpyParentName;
+	}
+
+	public void setCpyParentName(String cpyParentName) {
+		this.cpyParentName = cpyParentName;
+	}
+
+	public String getSlaveCpyName() {
+		return slaveCpyName;
+	}
+
+	public void setSlaveCpyName(String slaveCpyName) {
+		this.slaveCpyName = slaveCpyName;
+	}
+
+	public Integer getCpyStatus() {
+		return cpyStatus;
+	}
+
+	public void setCpyStatus(Integer cpyStatus) {
+		this.cpyStatus = cpyStatus;
+	}
+
+	public String getAccountNo() {
+		return accountNo;
+	}
+
+	public void setAccountNo(String accountNo) {
+		this.accountNo = accountNo;
+	}
+
+	public Integer getIndexNum() {
+		return indexNum;
+	}
+
+	public void setIndexNum(Integer indexNum) {
+		this.indexNum = indexNum;
+	}
+
+	public String getCpyProvinceName() {
+		return cpyProvinceName;
+	}
+
+	public void setCpyProvinceName(String cpyProvinceName) {
+		this.cpyProvinceName = cpyProvinceName;
+	}
+
+	public String getCpyCityName() {
+		return cpyCityName;
+	}
+
+	public void setCpyCityName(String cpyCityName) {
+		this.cpyCityName = cpyCityName;
+	}
+
+	public List<Long> getCpyIdList() {
+		return cpyIdList;
+	}
+
+	public void setCpyIdList(List<Long> cpyIdList) {
+		this.cpyIdList = cpyIdList;
+	}
+
+}

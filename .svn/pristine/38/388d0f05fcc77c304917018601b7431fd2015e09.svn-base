@@ -1,0 +1,8 @@
+package com.wanma.ims.controller.electric;
+
+/**
+ * 桩体管理-集中器管理 
+ */
+public class ConcentratorController {
+
+}

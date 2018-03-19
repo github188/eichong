@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/monitor/realTimeInfo.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/monitor/headMonitorTab3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/monitor/historyInfo.css"/>
+    <title>实时信息父页面</title>
+</head>
+<body>
+<div class="container animated fadeInRight">
+    <div class="row">
+
+        <div class="formBlock clearfix showSet">
+            <span class="goBack cursor">&lt;返回</span>
+            <div class="mainTab" id="stationTab">
+                <span class="active" id="realTimeInfo" data-flag="realTimeTable.html">实时信息</span>
+                <span id="historyInfo" data-flag="historyInfo.html">历史消息</span>
+            </div>
+            <div class="mainTabContent"></div>
+        </div>
+    </div>
+</div>
+<!--查看全部数据的弹框表格-->
+<div class="queryAllChargeData" style="display: none;width: 100%;height: auto;">
+    <div class="table-responsive">
+        <table class="table table-bordered text-center" style="border: 1px solid #DCDCDC;">
+            <thead id="popChargeDataThead">
+
+            </thead>
+            <tbody id="popChargeDataTbody">
+            </tbody>
+        </table>
+
+    </div>
+</div>
+</body>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layDate-v5.0.4/laydate/laydate.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/contabs.min.js" type="text/javascript"></script>
+<script src="../../js/lib/Echarts/echarts.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/monitor/realTimeInfo.js" type="text/javascript" charset="utf-8"></script>
+</html>

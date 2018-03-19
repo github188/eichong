@@ -1,0 +1,72 @@
+package com.wanma.ims.task;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Maps;
+import com.wanma.ims.common.domain.IntegralActivityDO;
+import com.wanma.ims.common.domain.OrderDO;
+import com.wanma.ims.common.domain.bo.IntegralActivityAndRulesBO;
+import com.wanma.ims.common.domain.bo.IntegralBO;
+import com.wanma.ims.mapper.IntegralActivityMapper;
+import com.wanma.ims.mapper.OrderMapper;
+import com.wanma.ims.service.IntegralDetailsService;
+import com.wanma.ims.util.DateUtil;
+
+@Component
+public class IntegralDetailsTask {
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	@Autowired
+	private IntegralDetailsService integralDetailsService;
+	
+	@Autowired
+	private IntegralActivityMapper integralActivityMapper;
+	
+	@Autowired
+	private OrderMapper orderMapper;
+
+//	@Scheduled(cron = "0 */10 * * * ?")
+	public void doIntegralsBatch(){
+		List<IntegralActivityAndRulesBO> activityList = integralActivityMapper.getIntegralActivityForBatch(new IntegralActivityDO());
+		if (activityList == null || activityList.size() == 0) {
+			log.info(this.getClass() + ".doIntegralsBatch() info : " + new Date() + "没有消费赠送积分活动！");
+		}else {
+			Map<Long, IntegralActivityAndRulesBO> activityMap = Maps.uniqueIndex(activityList, new Function<IntegralActivityAndRulesBO, Long>() {
+	            @Override
+	            public Long apply(IntegralActivityAndRulesBO input) {
+	                return input.getElectricPileId();
+	            }
+	        });
+			
+			Long electricPileId;
+			IntegralBO integralBO;
+			List<OrderDO> orderDOList = orderMapper.getOrdersForIntegral(new OrderDO());
+			for (OrderDO orderDO : orderDOList) {
+				electricPileId = orderDO.getElectricPileId();
+				if (activityMap.containsKey(electricPileId)) {
+					IntegralActivityAndRulesBO activity = activityMap.get(electricPileId);
+					
+					integralBO = new IntegralBO();
+					integralBO.setIntegralActivityId(2L);
+					integralBO.setMoneyInvolved(orderDO.getChOrMoeny());
+					integralBO.setDirection(0);
+					integralBO.setUserId(orderDO.getUserId());
+					integralBO.setElectricPileId(electricPileId);
+					integralBO.setCompleteDate(DateUtil.parse(orderDO.getEndChargeTime()));
+					try {
+						integralDetailsService.addIntegralDetails(integralBO, activity);
+					} catch (Exception e) {
+						log.error(this.getClass() + ".doIntegralsBatch() error : " + orderDO.getOrderCode() + "消费赠送积分出错！" + e);
+					}	
+				}
+			}
+		}
+	}
+}

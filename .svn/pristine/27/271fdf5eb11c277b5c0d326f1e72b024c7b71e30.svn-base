@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.CarCompanyMapper">
+
+    <resultMap id="resultCarCompany" type="CarCompanyDO">
+        <id column="pk_carCompany" property="id"/>
+        <result column="carCompany_Name" property="name"/>
+        <result column="carCompany_CreateDate" property="gmtCreate"/>
+        <result column="carCompany_UpdateDate" property="gmtModified"/>
+        <result column="carCompany_Remark" property="remark"/>
+        <result column="is_del" property="isDel"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        pk_carCompany, carCompany_Name, carCompany_CreateDate, carCompany_UpdateDate, carCompany_Remark, is_del
+    </sql>
+
+    <sql id="condition">
+        <where>
+            <if test="id != null">
+                and pk_carCompany = #{id}
+            </if>
+            <if test="name != null and name != ''">
+                and carCompany_Name = #{name}
+            </if>
+            and is_del = 0
+        </where>
+    </sql>
+
+    <select id="getCarCompanyList" parameterType="Map" resultMap="resultCarCompany">
+        select
+        <include refid="Base_Column_List"/>
+        from tbl_carcompany
+        <include refid="condition"/>
+        ORDER BY carCompany_UpdateDate DESC
+        <if test="pager!=null">
+            limit #{pager.offset},#{pager.pageSize}
+        </if>
+    </select>
+
+    <select id="countCarCompany" parameterType="Map" resultType="long">
+        SELECT count(1)
+        FROM tbl_carcompany
+        <include refid="condition"/>
+    </select>
+
+    <select id="selectCarCompanyById" parameterType="Long" resultMap="resultCarCompany">
+        select
+        <include refid="Base_Column_List"/>
+        from tbl_carcompany
+        where pk_carCompany = #{id}
+    </select>
+
+    <select id="selectCarCompanyByIds" parameterType="java.util.List" resultMap="resultCarCompany">
+        select
+        <include refid="Base_Column_List"/>
+        from tbl_carcompany
+        where is_del = 0
+        <if test="ids != null and ids.size() > 0">
+            and pk_carCompany in
+            <foreach collection="ids" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </if>
+    </select>
+
+    <delete id="deleteCarCompanyById" parameterType="Long">
+        UPDATE tbl_carcompany
+        SET carCompany_UpdateDate = now(),
+            is_del                = 1
+        WHERE pk_carCompany = #{id}
+    </delete>
+
+    <insert id="insertCarCompany" parameterType="CarCompanyDO">
+        INSERT INTO tbl_carcompany (pk_carCompany, carCompany_Name, carCompany_CreateDate,
+                                    carCompany_UpdateDate, carCompany_Remark, is_del
+        )
+        VALUES (#{id}, #{name}, now(),
+                now(), #{remark}, #{isDel}
+        )
+    </insert>
+
+    <update id="updateCarCompanyByIdSelective" parameterType="CarCompanyDO">
+        update tbl_carcompany
+        <set>
+            <if test="name != null">
+                carCompany_Name = #{name},
+            </if>
+            <if test="remark != null">
+                carCompany_Remark = #{remark},
+            </if>
+            <if test="isDel != null">
+                is_del = #{isDel},
+            </if>
+            carCompany_UpdateDate = now(),
+        </set>
+        where pk_carCompany = #{id}
+    </update>
+
+    <update id="updateCarCompanyById" parameterType="CarCompanyDO">
+        UPDATE tbl_carcompany
+        SET carCompany_Name       = #{name},
+            carCompany_UpdateDate = now(),
+            carCompany_Remark     = #{remark},
+            is_del                = #{isDel}
+        WHERE pk_carCompany = #{id}
+    </update>
+</mapper>

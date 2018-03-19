@@ -1,0 +1,29 @@
+package com.wanma.ims.mapper;
+
+import java.util.List;
+
+import com.wanma.ims.common.domain.ElectricParamDO;
+
+
+/**
+ * 电桩参数设置Mapper
+ *
+ * @version V1.0
+ * @author zcy
+ * @date 2017年9月1日
+ */
+public interface ElectricParamMapper {
+	
+	public ElectricParamDO selectElectricParam(ElectricParamDO electricParamDO);
+	
+	public int insertElectricParam(ElectricParamDO electricParamDO);
+	
+	public int updateElectricParam(ElectricParamDO electricParamDO);
+	
+	public List<ElectricParamDO> selectOfflineList(List<String> list);
+	
+	public List<ElectricParamDO> selectSocList(List<String> list);
+	
+	public List<ElectricParamDO> selectTimeChargeList(List<String> list);
+	
+}

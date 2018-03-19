@@ -1,0 +1,102 @@
+package com.wanma.ims.service.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.wanma.ims.common.domain.RateUniqueRelaDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.constants.ResultCodeConstants;
+import com.wanma.ims.mapper.RateUniqueRelaMapper;
+import com.wanma.ims.service.RateUniqueRelaService;
+
+@Service
+public class RateUniqueRelaServiceImpl implements RateUniqueRelaService {
+
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	@Autowired
+	private RateUniqueRelaMapper rateUniqueRelaMapper;
+	
+	@Override
+	public Long getRateUniqueRelaCount(RateUniqueRelaDO rateUniqueRela) {
+		return rateUniqueRelaMapper.getRateUniqueRelaCount(rateUniqueRela);
+	}
+	
+	@Override
+	public List<RateUniqueRelaDO> getRateUniqueRelaList(RateUniqueRelaDO rateUniqueRela) {
+		return rateUniqueRelaMapper.getRateUniqueRelaList(rateUniqueRela);
+	}
+	
+	@Override
+	public BaseResultDTO addRateUniqueRela(RateUniqueRelaDO rateUniqueRela, UserDO loginUser) throws Exception{
+		BaseResultDTO baseResultDTO = new BaseResultDTO();
+		if (rateUniqueRela == null) {
+			log.error(this.getClass() + ".addRateUniqueRela() error : 唯一费率信息不能为空！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("唯一费率信息不能为空！");
+			return baseResultDTO;
+		}
+		
+		if (rateUniqueRela.getCpyId() == null) {
+			log.error(this.getClass() + ".addRateUniqueRela() error : 渠道信息不能为空！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("渠道信息不能为空！");
+			return baseResultDTO;
+		}
+		
+		if (rateUniqueRela.getLevelId() == null) {
+			log.error(this.getClass() + ".addRateUniqueRela() error : 级别信息不能为空！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("级别信息不能为空！");
+			return baseResultDTO;
+		}
+		
+		if (rateUniqueRela.getRateinfoId() == null) {
+			log.error(this.getClass() + ".addRateUniqueRela() error : 费率信息不能为空！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("费率信息不能为空！");
+			return baseResultDTO;
+		}
+		
+		if (rateUniqueRela.getElectricpileIds() == null || "".equals(rateUniqueRela.getElectricpileIds())) {
+			log.error(this.getClass() + ".addRateUniqueRela() error : 桩信息不能为空！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("桩信息不能为空！");
+			return baseResultDTO;
+		}
+		
+		//删除这个公司、等级和费率 下的所有桩数据
+		RateUniqueRelaDO oldRateUniqueRelaDO = new RateUniqueRelaDO();
+		oldRateUniqueRelaDO.setCpyId(rateUniqueRela.getCpyId());
+		oldRateUniqueRelaDO.setLevelId(rateUniqueRela.getLevelId());
+		oldRateUniqueRelaDO.setRateinfoId(rateUniqueRela.getRateinfoId());
+		rateUniqueRelaMapper.removeRateUniqueRela(oldRateUniqueRelaDO);
+		
+		String[] electricPileIdArray = rateUniqueRela.getElectricpileIds().split(",");
+		List<Long> electricpileList = new ArrayList<Long>();
+		for (String str : electricPileIdArray) {
+			electricpileList.add(Long.parseLong(str));
+		}
+		rateUniqueRela.setElectricpileList(electricpileList);
+		
+		int result = rateUniqueRelaMapper.addRateUniqueRela(rateUniqueRela);
+		if (result < 1) {
+			log.error(this.getClass() + ".addRateUniqueRela() error : " + ResultCodeConstants.ERROR_MSG_ERROR_ADD);
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail(ResultCodeConstants.ERROR_MSG_ERROR_ADD);
+			return baseResultDTO;
+		}
+		return baseResultDTO;
+	}
+
+	@Override
+	public List<RateUniqueRelaDO> getRateUniqueRelaGroup(
+			RateUniqueRelaDO rateUniqueRela) {
+		return rateUniqueRelaMapper.getRateUniqueRelaGroup(rateUniqueRela);
+	}
+}

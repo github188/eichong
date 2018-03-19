@@ -1,0 +1,157 @@
+package com.wanma.ims.service.impl;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.wanma.ims.common.convert.Convert2CountAdminEpDO;
+import com.wanma.ims.common.domain.CompanyDO;
+import com.wanma.ims.common.domain.CountAdminEpRelaDO;
+import com.wanma.ims.common.domain.ElectricPileDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.dto.BatchResultDTO;
+import com.wanma.ims.constants.WanmaConstants;
+import com.wanma.ims.mapper.CountAdminEpRelaMapper;
+import com.wanma.ims.mapper.ElectricPileMapper;
+import com.wanma.ims.redis.RedisUtil;
+import com.wanma.ims.service.CommonRedisService;
+import com.wanma.ims.service.CompanyService;
+import com.wanma.ims.service.MenuService;
+import com.wanma.ims.service.RoleService;
+
+/**
+ * 公共缓存对象
+ * 目前：管理员与充电桩的数据权限 
+ */
+@Service
+public class CommonRedisServiceImpl implements CommonRedisService{
+
+	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+	
+	@Autowired
+	private CountAdminEpRelaMapper countAdminEpRelaMapper;
+	@Autowired
+	private ElectricPileMapper electricPileMapper;
+	@Autowired
+	private CompanyService companyService;
+	@Autowired
+	private MenuService menuService;
+	@Autowired
+	private RoleService roleService;
+	@Autowired
+	private RedisUtil redisService;
+	
+	@Override
+	public void initAdminWorkEpRela(Long userId) {
+		try {
+			// 业务管理员拥有所有电桩权限
+			CountAdminEpRelaDO countAdminEPRelaDO = new CountAdminEpRelaDO();
+			countAdminEPRelaDO.setAdminId(userId);
+			List<CountAdminEpRelaDO> countAdminEpList = countAdminEpRelaMapper.selectCountAdminEPList(countAdminEPRelaDO);
+			redisService.listSet(ElectricPileDO.class, userId, countAdminEpList.toString());
+		} catch (Exception e) {
+			LOGGER.error("CommonRedisServiceImpl called initAdminWorkEpRela failed", e);
+		}
+	}
+
+	@Override
+	public void initAdminSysEpRela(Long userId) {
+		try {
+			// 系统管理员拥有所有电桩权限
+			List<ElectricPileDO> epList = electricPileMapper.selectElectricPileList(null);
+			redisService.listSet(ElectricPileDO.class, userId, epList);
+		} catch (Exception e) {
+			LOGGER.error("CommonRedisServiceImpl called initAdminSysEpRela failed", e);
+		}
+	}
+
+	@Override
+	public List<Long> getPowerStationIdsByLoginId(UserDO loginUser) {
+		List<Long> ids = new ArrayList<Long>();
+		try {
+			Set<Long> powerStationIds = new HashSet<Long>();
+			List<CountAdminEpRelaDO> list = getAdminEpRelaByLoginId(loginUser);
+			for (CountAdminEpRelaDO countAdminEpRelaDO : list) {
+				powerStationIds.add(countAdminEpRelaDO.getPowerStationId());
+			}
+			ids.addAll(powerStationIds);
+		} catch (Exception e) {
+			LOGGER.error("CommonRedisServiceImpl called getPowerStationIdsByLoginId failed", e);
+		}
+		return ids;
+	}
+
+	@Override
+	public List<Long> getElectricPileIdsByLoginId(UserDO loginUser) {
+		List<Long> ids = new ArrayList<Long>();
+		try {
+			Set<Long> electricPiles = new HashSet<Long>();
+			List<CountAdminEpRelaDO> list = getAdminEpRelaByLoginId(loginUser);
+			for (CountAdminEpRelaDO countAdminEpRelaDO : list) {
+				electricPiles.add(countAdminEpRelaDO.getElectricPileId());
+			}
+			ids.addAll(electricPiles);
+		} catch (Exception e) {
+			LOGGER.error("CommonRedisServiceImpl called getElectricPileIdsByLoginId failed", e);
+		}
+		return ids;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<CountAdminEpRelaDO> getAdminEpRelaByLoginId(UserDO loginUser) {
+		List<CountAdminEpRelaDO> resultList = new ArrayList<CountAdminEpRelaDO>();
+		try {
+			if(loginUser.getUserLevel() == WanmaConstants.USER_LEVEL_SUPER || loginUser.getUserLevel() == WanmaConstants.USER_LEVEL_ADMIN){
+				List<ElectricPileDO> epList = (List<ElectricPileDO>) redisService.listGetByIndex(ElectricPileDO.class, loginUser.getUserId());
+				resultList = Convert2CountAdminEpDO.convertEpList2AdminEpList(epList, loginUser.getUserId(),loginUser);
+			}
+			if(loginUser.getUserLevel() == WanmaConstants.USER_LEVEL_WORK){
+				resultList.addAll((List<CountAdminEpRelaDO>) redisService.listGetAll(CountAdminEpRelaDO.class, loginUser.getUserId()));
+			}
+		} catch (Exception e) {
+			LOGGER.error("CommonRedisServiceImpl called getAdminEpRelaByLoginId failed", e);
+		}
+		return resultList;
+	}
+
+	@Override
+	public void initCurrentLogin(UserDO loginUser) {
+		try {
+			if(loginUser.getUserLevel() == WanmaConstants.USER_LEVEL_WORK){
+				BatchResultDTO<CompanyDO> dto = companyService.getCpyListByUserLevel(loginUser,"","");
+	        	List<Long> cpyIdList = new ArrayList<Long>();
+	        	List<Integer> cpyNumberList = new ArrayList<Integer>();
+	        	if(dto.isSuccess()){
+	        		List<CompanyDO> cpyList = dto.getModule();
+	        		for (CompanyDO companyDO : cpyList) {
+	        			cpyIdList.add(companyDO.getCpyId());
+	        			cpyNumberList.add(companyDO.getCpyNumber());
+	    			}
+	        		loginUser.setCpyIdList(cpyIdList);
+	        		loginUser.setCpyNumberList(cpyNumberList);
+	        	}
+	    	}
+			redisService.set("ims:login:"+loginUser.getUserId(), loginUser);
+		} catch (Exception e) {
+			LOGGER.error("CommonRedisServiceImpl called initLoginPermission failed", e);
+		}
+	}
+
+	@Override
+	public UserDO getCurrentLogin(Long userId) {
+		return (UserDO) redisService.get("ims:login:"+userId, UserDO.class);
+	}
+
+	@Override
+	public void removeCurrentLogin(Long userId) {
+		redisService.remove("ims:login:"+userId, UserDO.class);
+	}
+	
+}

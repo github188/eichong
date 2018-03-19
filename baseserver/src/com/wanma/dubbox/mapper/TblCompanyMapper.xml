@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dubbox.dao.TblCompanyMapper">
+
+	<resultMap id="tblCompanyResultMap" type="TblCompany">
+		<id property="id" column="pk_CompanyId" />
+		<result property="name" column="cpy_CompanyName" />
+		<result property="adr" column="cpy_CompanyAddress" />
+		<result property="mail" column="cpy_CompanyEmail" />
+		<result property="postCd" column="cpy_PostCode" />
+		<result property="scope" column="cpy_ScopeBusiness" />
+		<result property="atrName" column="cpy_AuthorizedName" />
+		<result property="atrPhone" column="cpy_AuthorizedPhone" />
+		<result property="atrCid" column="cpy_AuthorizedCard" />
+		<result property="buslic" column="cpy_BusinessLicence" />
+		<result property="orgCd" column="cpy_OrganizationCode" />
+		<result property="djz" column="cpy_TorontoHospital" />
+		<result property="sqz" column="cpy_Authorization" />
+		<result property="maiAdr" column="cpy_MailingAddress" />
+		<result property="cdate" column="cpy_Createdate" />
+		<result property="udate" column="cpy_Updatedate" />
+		<result property="picTp" column="cpy_PicType" />
+		<result property="comNum" column="cpy_CompanyNumber" />
+	</resultMap>
+
+	<insert id="insert" parameterType="TblCompany" useGeneratedKeys="true"
+		keyProperty="id">
+		insert into tbl_company (
+		<if test="name != null">
+			cpy_CompanyName,
+		</if>
+		<if test="adr != null">
+			cpy_CompanyAddress,
+		</if>
+		<if test="mail != null">
+			cpy_CompanyEmail,
+		</if>
+		<if test="postCd != null">
+			cpy_PostCode,
+		</if>
+		<if test="scope != null">
+			cpy_ScopeBusiness,
+		</if>
+		<if test="atrName != null">
+			cpy_AuthorizedName,
+		</if>
+		<if test="atrPhone != null">
+			cpy_AuthorizedPhone,
+		</if>
+		<if test="atrCid != null">
+			cpy_AuthorizedCard,
+		</if>
+		<if test="buslic != null">
+			cpy_BusinessLicence,
+		</if>
+		<if test="orgCd != null">
+			cpy_OrganizationCode,
+		</if>
+		<if test="djz != null">
+			cpy_TorontoHospital,
+		</if>
+		<if test="sqz != null">
+			cpy_Authorization,
+		</if>
+		<if test="maiAdr != null">
+			cpy_MailingAddress,
+		</if>
+		<if test="picTp != null">
+			cpy_PicType,
+		</if>
+		<if test="comNum != null">
+			cpy_CompanyNumber,
+		</if>
+		cpy_Createdate,
+		cpy_Updatedate
+		)values (
+		<if test="name != null">
+			#{name},
+		</if>
+		<if test="adr != null">
+			#{adr},
+		</if>
+		<if test="mail != null">
+			#{mail},
+		</if>
+		<if test="postCd != null">
+			#{postCd},
+		</if>
+		<if test="scope != null">
+			#{scope},
+		</if>
+		<if test="atrName != null">
+			#{atrName},
+		</if>
+		<if test="atrPhone != null">
+			#{atrPhone},
+		</if>
+		<if test="atrCid != null">
+			#{atrCid},
+		</if>
+		<if test="buslic != null">
+			#{buslic},
+		</if>
+		<if test="orgCd != null">
+			#{orgCd},
+		</if>
+		<if test="djz != null">
+			#{djz},
+		</if>
+		<if test="sqz != null">
+			#{sqz},
+		</if>
+		<if test="maiAdr != null">
+			#{maiAdr},
+		</if>
+		<if test="picTp != null">
+			#{picTp},
+		</if>
+		<if test="comNum != null">
+			#{comNum},
+		</if>
+		sysdate(),
+		sysdate()
+		)
+	</insert>
+
+	<update id="update" parameterType="TblCompany">
+		update tbl_company
+		<set>
+			<if test="name != null">
+				cpy_CompanyName=#{name},
+			</if>
+			<if test="adr != null">
+				cpy_CompanyAddress=#{adr},
+			</if>
+			<if test="mail != null">
+				cpy_CompanyEmail=#{mail},
+			</if>
+			<if test="postCd != null">
+				cpy_PostCode=#{postCd},
+			</if>
+			<if test="scope != null">
+				cpy_ScopeBusiness=#{scope},
+			</if>
+			<if test="atrName != null">
+				cpy_AuthorizedName=#{atrName},
+			</if>
+			<if test="atrPhone != null">
+				cpy_AuthorizedPhone=#{atrPhone},
+			</if>
+			<if test="atrCid != null">
+				cpy_AuthorizedCard=#{atrCid},
+			</if>
+			<if test="buslic != null">
+				cpy_BusinessLicence=#{buslic},
+			</if>
+			<if test="orgCd != null">
+				cpy_OrganizationCode=#{orgCd},
+			</if>
+			<if test="djz != null">
+				cpy_TorontoHospital=#{djz},
+			</if>
+			<if test="sqz != null">
+				cpy_Authorization=#{sqz},
+			</if>
+			<if test="maiAdr != null">
+				cpy_MailingAddress=#{maiAdr},
+			</if>
+			<if test="picTp != null">
+				cpy_PicType=#{picTp}
+			</if>
+			<if test="comNum != null">
+				cpy_CompanyNumber=#{comNum}
+			</if>
+			cpy_Updatedate=sysdate()
+		</set>
+		where pk_CompanyId=#{id}
+	</update>
+
+	<delete id="delete" parameterType="TblCompany">
+		delete from tbl_company
+		where 1=1
+		<if test="id != null">
+			and pk_CompanyId = #{id}
+		</if>
+		<if test="pkIds != null">
+			and pk_CompanyId in
+			<foreach item="item" index="index" collection="pkIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+	</delete>
+
+	<select id="selectOne" parameterType="TblCompany" resultMap="tblCompanyResultMap">
+		select
+		${rtColumns}
+		from tbl_company
+		<where>
+			pk_CompanyId = #{id}
+		</where>
+	</select>
+
+
+	<select id="getCount" parameterType="TblCompany" resultType="int">
+		select count(1) from tbl_company
+		where 1=1
+		<if test="name != null and name != ''">
+			and cpy_CompanyName like concat('%',#{name},'%')
+		</if>
+		<if test="comNum != null and comNum != ''">
+			and cpy_CompanyNumber=#{comNum}
+		</if>
+		<if test="comNum == 'greater'">
+			and cpy_CompanyNumber > 0
+		</if>
+		<if test="pkIds != null">
+			and pk_CompanyId in
+			<foreach item="item" index="index" collection="pkIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+	</select>
+
+	<select id="getList" parameterType="TblCompany" resultMap="tblCompanyResultMap">
+		select ${rtColumns} from tbl_company
+		where 1=1
+		<if test="name != null and name != ''">
+			and cpy_CompanyName like concat('%',#{name},'%')
+		</if>
+		<if test="comNum != null and comNum != ''">
+			and cpy_CompanyNumber=#{comNum}
+		</if>
+		<if test="comNum == 'greater'">
+			and cpy_CompanyNumber > 0
+		</if>
+		<if test="pkIds != null">
+			and pk_CompanyId in
+			<foreach item="item" index="index" collection="pkIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+</mapper> 

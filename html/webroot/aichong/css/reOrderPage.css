@@ -1,0 +1,94 @@
+@charset "utf-8";
+.importTip{
+	width: 100%;
+	height: 7rem;
+	/*background: #F0AD4E;*/
+	line-height: 7rem;
+	text-align: center;
+	font-size: 2rem;
+	color: #FF7D00;
+}
+.orderBtn{
+	width: 80%;
+	height: 4rem;
+	color: #FFFFFF;
+	margin-left: 10%;
+	background: #CCCCCC;
+	font-size: 1.6rem;
+	outline-style: none;
+}
+.orderBtn:focus,.orderBtn:hover,.orderBtn:active{
+	width: 80%;
+	height: 4rem;
+	color: #FFFFFF;
+	margin-left: 10%;
+	/*background: #FF7D00;*/
+	font-size: 1.6rem;
+	outline-style: none;
+}
+/*模态框样式=====*/
+.modal-content{
+	width: 80%;
+	height: 50%;
+	margin: 0 auto;
+}
+
+.modal-content .modal-header {
+  min-height: 16.42857143px;
+  padding: 1.5rem;
+  text-align: center;
+  color: #FF7D00;
+  border-bottom: 0.1rem solid #C0C0C0;
+}
+.modal-content .modal-header,.modal-content .modal-footer{
+  padding: 1.5rem;
+  text-align: center;
+  border-top: 0 !important;
+  /*border-bottom: 0 !important;*/
+}
+.modal-content .modal-header .modal-title{
+	font-size: 2rem;
+	
+}
+.modal-content .modal-footer .certain{
+	background: #dcdcdc;
+	color: #FFFFFF;
+	border: 0;
+	outline-style:none ;
+	width: 30%;
+	font-size: 1.6rem;
+}
+.modal-content .modal-footer .certain2{
+	background: #FF7D00;
+	color: #FFFFFF;
+	border: 0;
+	outline-style:none ;
+	width: 30%;
+	font-size: 1.6rem;
+}
+.modal-content .modal-footer .return{
+	background: #808080;
+	color: #FFFFFF;
+	border: 0;
+	outline-style:none ;
+	width: 30%;
+	font-size: 1.6rem;
+}
+.modal-content .modal-body{
+	text-align: center;
+}
+.modal-content .modal-body-new{
+	padding-bottom: 0;
+}
+.modal-content .modal-body .putCharge{
+	width: 100%;
+	min-height: 0.8rem;
+	margin-bottom: 5%;
+}
+.modal-content .modal-body .pass{
+	border: 0.1rem solid #FF7D00;
+}
+.modal-content .modal-body .tipText{
+	color: #FF7D00;
+	font-size: 1.6rem;
+}

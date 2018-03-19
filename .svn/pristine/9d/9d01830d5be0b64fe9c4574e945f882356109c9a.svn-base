@@ -1,0 +1,7 @@
+#\u6D4B\u8BD5\u73AF\u5883
+base_url=http://211.103.180.36:8083/evcs/v0.0.1/
+operator_id=321895837
+operator_secret=zpfB5cEqVqXFEYtL
+data_secret=EeA7JzJzrf4bbOA1
+sig_secret=gZFpcUfiWQ9FhwT0
+data_secret_iv=GzNHw7klZcGGAT76

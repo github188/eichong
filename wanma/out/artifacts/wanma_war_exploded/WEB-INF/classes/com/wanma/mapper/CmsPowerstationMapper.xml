@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsPowerstationMapper">
+
+	<resultMap id="tblPowerstationResultMap" type="TblPowerstation">
+		<id property="pkPowerstation" column="pk_PowerStation" />
+		<result property="postName" column="poSt_Name" />
+		<!-- <result property="postPic" column="poSt_Pic" />
+		<result property="postDetailpic" column="poSt_DetailPic" /> -->
+		<result property="postAddress" column="poSt_Address" />
+		<result property="postLongitude" column="poSt_Longitude" />
+		<result property="postLatitude" column="poSt_Latitude" />
+		<result property="postPhone" column="poSt_Phone" />
+		<result property="postEleids" column="poSt_Eleids" />
+		<result property="postStatus" column="poSt_Status" />
+		<!-- <result property="postAreacode" column="poSt_AreaCode" /> -->
+		<result property="postCreatedate" column="poSt_Createdate" />
+		<result property="postUpdatedate" column="poSt_Updatedate" />
+		<result property="postRemark" column="poSt_Remark" />
+		<result property="postPoweruser" column="poSt_PowerUser" />
+		<result property="postIsappoint" column="poSt_IsAppoint" />
+		<result property="rejectionReason" column="poSt_RejectionReason" />
+		<result property="poStOnlineTime" column="poSt_OnlineTime" />
+		<result property="poStUserName" column="poSt_UserName" />
+		<result property="postOwnProvinceCode" column="poSt_OwnProvinceCode" />
+		<result property="postOwnCityCode" column="poSt_OwnCityCode" />
+		<result property="postOwnCountyCode" column="poSt_OwnCountyCode" />
+	</resultMap>
+	<resultMap id="findResultMap" type="java.util.HashMap"
+		extends="tblPowerstationResultMap"></resultMap>
+	<resultMap id="findMap" type="java.util.HashMap"></resultMap>
+	<insert id="insert" parameterType="TblPowerstation" useGeneratedKeys="true" keyProperty="pkPowerstation">
+		insert into tbl_PowerStation (
+		poSt_Name,
+		<!-- poSt_Pic,
+		poSt_DetailPic, -->
+		poSt_Address,
+		poSt_Longitude,
+		poSt_Latitude,
+		poSt_Phone,
+		poSt_Eleids,
+		poSt_Status,
+	    <!--poSt_AreaCode,  -->
+		poSt_Createdate,
+		poSt_Updatedate,
+		poSt_Remark,
+		poSt_PowerUser,
+		poSt_IsAppoint,
+		poSt_OnlineTime,
+		poSt_UserName,
+		poSt_createUserId,
+		poSt_OwnProvinceCode,
+		poSt_OwnCityCode,
+		poSt_OwnCountyCode
+		)values (
+		#{postName},
+	     <!-- #{postPic},
+		#{postDetailpic}, -->
+		#{postAddress},
+		#{postLongitude},
+		#{postLatitude},
+		#{postPhone},
+		#{postEleids},
+		#{postStatus},
+		<!-- #{postAreacode}, -->
+		#{postCreatedate},
+		#{postUpdatedate},
+		#{postRemark},
+		#{postPoweruser},
+		#{postIsappoint},
+		#{poStOnlineTime},
+		#{poStUserName},
+		#{poStCreateUserId},
+		#{postOwnProvinceCode},
+		#{postOwnCityCode},
+		#{postOwnCountyCode}
+		)
+	</insert>
+
+	<update id="update" parameterType="TblPowerstation">
+		update tbl_PowerStation set
+		poSt_Name=#{postName},
+	     <!-- poSt_Pic=#{postPic}, -->
+		poSt_DetailPic=#{postDetailpic},
+		poSt_Address=#{postAddress},
+		poSt_Longitude=#{postLongitude},
+		poSt_Latitude=#{postLatitude},
+		poSt_Phone=#{postPhone},
+		poSt_Eleids=#{postEleids},
+		poSt_Status=#{postStatus},
+		<!-- poSt_AreaCode=#{postAreacode}, -->
+		poSt_Createdate=#{postCreatedate},
+		poSt_Updatedate=#{postUpdatedate},
+		poSt_Remark=#{postRemark},
+		poSt_PowerUser=#{postPoweruser},
+		poSt_IsAppoint=#{postIsappoint},
+		poSt_OwnProvinceCode=#{postOwnProvinceCode},
+		poSt_OwnCityCode=#{postOwnCityCode},
+		poSt_OwnCountyCode=#{postOwnCountyCode}
+		where
+		pk_PowerStation=#{pkPowerstation} 
+	</update>
+
+	<update id="updateByPowerId" parameterType="TblPowerstation">
+		update tbl_PowerStation set
+		pk_PowerStation=#{pkPowerstation},
+		poSt_Name=#{postName},
+		poSt_Address=#{postAddress},
+		poSt_Longitude=#{postLongitude},
+		poSt_Latitude=#{postLatitude},
+		poSt_Phone=#{postPhone},
+		poSt_Eleids=#{postEleids},
+		poSt_Updatedate=#{postUpdatedate},
+		poSt_Status=#{postStatus},
+		poSt_OnlineTime=#{poStOnlineTime},
+		poSt_IsAppoint=#{postIsappoint},
+		poSt_OwnProvinceCode=#{postOwnProvinceCode},
+		poSt_OwnCityCode=#{postOwnCityCode},
+		poSt_OwnCountyCode=#{postOwnCountyCode}
+		where
+		pk_PowerStation=#{pkPowerstation} 
+	</update>
+	<delete id="delete" parameterType="map">
+		delete from
+		tbl_PowerStation
+		where
+		pk_PowerStation=#{pkPowerstation} 
+	</delete>
+
+	<select id="get" parameterType="map" resultMap="tblPowerstationResultMap">
+		select
+		pk_PowerStation,
+		poSt_Name,
+		<!-- 
+		poSt_Pic,
+		poSt_DetailPic, -->
+		poSt_Address,
+		poSt_Longitude,
+		poSt_Latitude,
+		poSt_Phone,
+		poSt_Eleids,
+		poSt_Status,
+		<!-- poSt_AreaCode, -->
+		poSt_Createdate,
+		poSt_Updatedate,
+		poSt_Remark,
+		poSt_PowerUser,
+		poSt_IsAppoint,
+		poSt_OnlineTime,
+		poSt_OwnProvinceCode,
+		poSt_OwnCityCode,
+		poSt_OwnCountyCode
+		from tbl_PowerStation
+		where
+		pk_PowerStation=#{pkPowerstation} 
+	</select>
+
+	<select id="findOne" parameterType="map" resultMap="findResultMap">
+		select
+		pk_PowerStation,
+		poSt_Name,
+		<!-- 
+		poSt_Pic,
+		poSt_DetailPic, -->
+		poSt_Address,
+		poSt_Longitude,
+		poSt_Latitude,
+		poSt_Phone,
+		poSt_Eleids,
+		poSt_Status,
+		<!-- poSt_AreaCode, -->
+		poSt_Createdate,
+		poSt_Updatedate,
+		poSt_Remark,
+		poSt_PowerUser,
+		poSt_IsAppoint
+		from tbl_PowerStation
+		where
+		pk_PowerStation=#{pkPowerstation} 
+	</select>
+	<!-- 获取电桩列表 -->
+	<select id="findPowers"  parameterType="map" resultMap="tblPowerstationResultMap">
+		select
+		pk_PowerStation,
+		poSt_Name,
+		<!-- 
+		poSt_Pic,
+		poSt_DetailPic, -->
+		poSt_Address,
+		poSt_Longitude,
+		poSt_Latitude,
+		poSt_Phone,
+		poSt_Eleids,
+		poSt_Status,
+		<!-- poSt_AreaCode, -->
+		poSt_Createdate,
+		poSt_Updatedate,
+		poSt_Remark,
+		poSt_PowerUser,
+		poSt_IsAppoint,poSt_RejectionReason,
+		(select count(pk_ElectricPile) from
+		tbl_ElectricPile where
+		elPi_RelevancePowerStation = pk_PowerStation) electricPileCount
+		from tbl_PowerStation
+		<where>1=1
+		<!-- <if test="postAreacode!=null">
+				and poSt_AreaCode = #{postAreacode}
+	   		</if> -->
+			<if test="postOwnProvinceCode !=null and postOwnProvinceCode !='' ">
+				and poSt_OwnProvinceCode = #{postOwnProvinceCode}
+	   		</if>
+	   		<if test="postOwnCityCode !=null and postOwnCityCode !=''">
+				and poSt_OwnCityCode = #{postOwnCityCode}
+	   		</if>
+	   		<if test="postOwnCountyCode !=null and postOwnCountyCode !=''">
+				and poSt_OwnCountyCode = #{postOwnCountyCode}
+	   		</if>
+			<if test="postStatus!=null ">
+				and poSt_Status = #{postStatus}
+	   		</if>
+			<if test="postLongitude!=null and postLongitude !=''">
+				and poSt_Longitude = #{postLongitude}
+	   		</if>
+			<if test="postLatitude!=null and postLatitude !=''">
+				and poSt_Latitude = #{postLatitude}
+	   		</if>
+			<if test="postName!=null and postName !=''">
+			  and  poSt_Name like concat('%',#{postName},'%')
+	   		</if>
+		    <!-- 用户权限控制 -->
+	        <choose>
+				<when test="userLevel==3">
+			        and exists (select 1 from tbl_user_business_view b where b.user_id=poSt_createUserId and exists (select 1 from tbl_user_business_view b1 where  b.busi_company_id = b1.busi_company_id and b1.user_id = #{poStCreateUserId}))
+			    </when>
+			    <when test="userLevel==5">	
+			        and poSt_createUserId=#{poStCreateUserId}
+			    </when>
+	        </choose>
+		</where>
+		order by poSt_Updatedate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	<!-- 获取充电点总数 -->
+	<select id="selectPowerCount" parameterType="TblPowerstation"
+		resultType="long">
+		select
+		count(pk_PowerStation)
+		from
+		tbl_PowerStation
+		<where>1=1
+		<!-- <if test="postAreacode!=null">
+				and poSt_AreaCode = #{postAreacode}
+	   		</if> -->
+	   		<if test="postOwnProvinceCode !=null and postOwnProvinceCode !='' ">
+				and poSt_OwnProvinceCode = #{postOwnProvinceCode}
+	   		</if>
+	   		<if test="postOwnCityCode !=null and postOwnCityCode !=''">
+				and poSt_OwnCityCode = #{postOwnCityCode}
+	   		</if>
+	   		<if test="postOwnCountyCode !=null and postOwnCountyCode !=''">
+				and poSt_OwnCountyCode = #{postOwnCountyCode}
+	   		</if>
+			<if test="postStatus!=null">
+				and poSt_Status = #{postStatus}
+	   		</if>
+			<if test="postLongitude!=null">
+				and poSt_Longitude = #{postLongitude}
+	   		</if>
+			<if test="postLatitude!=null">
+				and poSt_Latitude = #{postLatitude}
+	   		</if>
+			<if test="postName!=null">
+			  and  poSt_Name like concat('%',#{postName},'%')
+	   		</if>
+		    <!-- 用户权限控制 -->
+	        <choose>
+				<when test="userLevel==3">
+			        and exists (select 1 from tbl_user_business_view b where b.user_id=poSt_createUserId and exists (select 1 from tbl_user_business_view b1 where  b.busi_company_id = b1.busi_company_id and b1.user_id = #{poStCreateUserId}))
+			    </when>
+			    <when test="userLevel==5">	
+			        and poSt_createUserId=#{poStCreateUserId}
+			    </when>
+	        </choose>
+		</where>
+	</select>
+	<update id="updateStateById" parameterType="TblPowerstation">
+		update tbl_PowerStation set
+		poSt_Status=#{postStatus}
+		<if test="rejectionReason !=null">
+			,poSt_RejectionReason=#{rejectionReason}
+		</if>
+		where
+		pk_PowerStation=#{pkPowerstation} 
+	</update>
+	 <update id="changeElectricPileExamineReason" parameterType="TblPowerstation">
+		update tbl_PowerStation set
+		poSt_Status=#{postStatus},
+		poSt_RejectionReason=#{rejectionReason}
+		where
+		pk_PowerStation=#{pkPowerstation} 
+	</update>
+		<select id="getPowerstationForMap" parameterType="map" resultMap="findMap">
+	   select ps.pk_PowerStation,
+			ps.poSt_Name,
+			ps.poSt_Address,
+			getFullPath('powerListImage',ps.pk_PowerStation) as poStPic,
+			ps.poSt_PowerUser,
+			ps.poSt_Status,
+			ps.poSt_IsAppoint,
+			(select count(*) from tbl_ElectricPile where elPi_RelevancePowerStation = ps.pk_PowerStation) electricPileSum,
+			ps.poSt_Name electricName,
+			ps.poSt_Longitude,
+			ps.poSt_Latitude from tbl_powerstation ps where poSt_Status!=3 and poSt_Status!=5 and poSt_Status!=0 
+	   	 <if test="postAddress != null">
+	       and ps.post_Address like CONCAT('%','${postAddress}','%' ) 
+	     </if>
+	   	 <if test="postStatus != null">
+	       and ps.poSt_Status=#{postStatus}
+	     </if>
+	      <if test="postIsappoint != null">
+	        and ps.poSt_IsAppoint=#{postIsappoint}
+	     </if>
+	     <if test="screenRadius != null">
+   			<!-- 
+			 * mysql 通过两点经纬度，算两点之间距离(单位米)
+			 * 第一点经纬度：@lng1 @lat1
+	                             第二点经纬度：@lng2 @lat2
+	                范例：round(6378.138*2*asin(sqrt(pow(sin( (@lat1*pi()/180-@lat2*pi()/180)/2),2)+cos(@lat1*pi()/180)*cos(@lat2*pi()/180)* pow(sin( (@lng1*pi()/180-@lng2*pi()/180)/2),2)))*1000) 
+	                 电桩查找 列表模式，距离排序  默认5km以内-->
+	        and round(6378.138*2*asin(sqrt(pow(sin( (#{postLatitude}*pi()/180-ps.poSt_Latitude*pi()/180)/2),2)+cos(#{postLatitude}*pi()/180)*cos(ps.poSt_Latitude*pi()/180)* 
+              pow(sin( (#{postLongitude}*pi()/180-ps.poSt_Longitude*pi()/180)/2),2)))*1000) 
+	     </if>
+	   		and pk_PowerStation in (select elPi_RelevancePowerStation from tbl_electricpile  where elPi_Binding=1  
+			<if test="chargingMode != null">
+				 and elPi_ChargingMode = #{chargingMode} 
+			</if>
+			<if test="elpiPowerinterface != null">
+				 and elPi_PowerInterface = #{elpiPowerinterface} 
+			</if>
+			<if test="postPoweruser != null">
+	        and (elPi_PowerUser=#{postPoweruser} or elPi_PowerUser=13) 
+	     </if>
+			) 
+	      
+	      
+	  </select>
+	  
+	  <select id="getPowerstationById" parameterType="map" resultMap="findResultMap">
+		select
+		pk_PowerStation,
+		poSt_Name,
+		getFullPath('powerListImage',pk_PowerStation) as poStPic,
+		<!-- poSt_DetailPic, -->
+		poSt_Address,
+		poSt_Longitude,
+		poSt_Latitude,
+		poSt_Phone,
+		poSt_Eleids,
+		poSt_Status,
+	    <!-- poSt_AreaCode, -->
+		poSt_Createdate,
+		poSt_Updatedate,
+		poSt_Remark,
+		poSt_PowerUser,
+		poSt_IsAppoint,
+		(select count(pk_UserCollect) from tbl_UserCollect
+		 	where usCo_Userid = #{pkUserinfo} and usCo_Type = '2'
+		 	and usCo_Objectid=#{pkPowerstation} ) isCollect,
+		(select count(pk_ElectricPile) from tbl_ElectricPile
+			where elPi_RelevancePowerStation = #{pkPowerstation}) pileSum,
+		(select avg(pss_CommentStar)  from  tbl_powerstationstar 
+	    where  pss_PsId=#{pkPowerstation}) as powerCommentStar	
+		from
+		tbl_PowerStation pst
+		where
+		pk_PowerStation=#{pkPowerstation}
+	</select>
+		  
+	  <select id="selectRateId" parameterType="TblRateinformation"
+		resultType="int">
+	  	select count(*) from  
+	  	tbl_rateinformation 
+	  	where pk_RateInformation = #{pkRateinformation}
+	    and	raIn_area_id = #{raInAreaId}
+	  	and raIn_city_id = #{raInCityId}
+	  	and raIn_province_id = #{raInProvinceId}
+  		<if test="userLevel == 3 ">
+			 AND userId IN (
+					SELECT b.user_id FROM
+					tbl_user_business b
+				WHERE
+					b.busi_company_id = (
+						SELECT c.busi_company_id FROM
+							tbl_user_business c
+						WHERE c.user_id = #{userId}
+					)
+				)
+		</if>
+		<if test="userLevel != 3 ">
+		and userId = #{userId}
+		</if>
+	  	
+	  </select>
+</mapper> 

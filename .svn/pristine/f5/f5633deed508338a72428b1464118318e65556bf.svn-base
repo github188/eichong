@@ -1,0 +1,130 @@
+@charset "utf-8";
+body{
+    height:auto!important;
+    color: #333;
+    font-size: 12px;
+    font-family: "微软雅黑";
+    background-color: #f3f3f4;
+}
+table{
+    width: 70%!important;
+}
+table th {
+    text-align: center;
+    font-size: 12px;
+}
+.userBaseInfo{
+    background-color: #ffffff;
+    border-top: 4px solid #E5E5E5;
+    margin-top: 20px;
+    padding: 14px;
+    background-color: #ffffff;
+}
+.clear{
+    clear: both;
+}
+.queryParam {
+    line-height: 40px;
+    font-size: 14px;
+    text-align: left;
+    color: #333;
+}
+.formBlock {
+    width: 100%;
+    min-height: 138px;
+    height: auto;
+    /*overflow: hidden;*/
+    background: #FFFFFF;
+    border-top: 3px solid #E5E5E5;
+    padding: 26px 18px 20px 20px;
+}
+.userAccount{
+    /*border: 1px solid #DCDCDC;*/
+    height: 32px;
+}
+.userAccount .userAccountInput{
+    display: inline;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #DCDCDC;
+    outline: none;
+    color: #000;
+}
+.userAccount .userAccountInput:focus{
+    display: inline;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #ff7d00;
+    color: #666666;
+}
+.saveBtn{
+    display: inline-block;
+    width: 80px;
+    height: 30px;
+    line-height: 30px;
+    color: #ffffff;
+    background-color: #ff7d00;
+    text-align: center;
+    border-radius:4px;
+    font-size: 13px;
+    margin: 3% 0 0 35%;
+    cursor: pointer;
+}
+.btnStyle{
+    width: 8%;
+    float: left;
+    background: #ff7d00;
+    color: #ffffff;
+    border-radius: 4px;
+    text-align: center;
+    height: 28px;
+    line-height: 28px;
+}
+#table a:hover{
+    font-size: 12px;
+    color: #FF9900 !important;
+    text-decoration: underline;
+}
+#table a:active{
+    font-size: 12px;
+    color: #ff6600 !important;
+    text-decoration: none;
+}
+.radio-inline{
+    line-height: 40px;
+}
+.radio-inline input{
+    margin-top:13px!important;
+}
+.already-Exit-Activity{
+    margin:2% 0px 2% 20%;
+}
+.new-Fesitival-Activity{
+    width: 100%;
+    height: 250px;
+}
+.new-Fesitival-Activity .queryParam{
+    margin-left: 16%;
+}
+.add-activity-botton{
+    margin-left: 20%;
+}
+.addActivity{
+    height: 50px;
+    clear: both;
+}
+.activity-title{
+    font-size: 12px;
+    margin-left: 4%;
+}
+ch{
+    color: #949494;
+}
+.log{
+    margin-left: 15px;
+}
+@media (min-width: 768px){
+    .col-sm-2 {
+        width: 12%;
+    }
+}

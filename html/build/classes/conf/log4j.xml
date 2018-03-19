@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="false">
+
+	<!-- 说明：请按照划分好的区域配置，否则log4j会出现警告信息：log4j:configuration" must match "(renderer*,appender*,(category|logger)*,root?,categoryFactory?)". -->
+	
+	<!-- ========================== appender  begin ======================== -->
+	
+	<!-- 控制台日志 -->
+	<appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+		<param name="Target" value="System.out" />
+		<param name="Threshold" value="ALL" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<!-- {1}参数 是只输出类名 需要输出包名时将这个参数去掉即可 -->
+			<param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss} %p][%c{1}]%m%n" />
+		</layout>
+		<!--过滤器设置输出的级别-->       
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">       
+            <param name="levelMin" value="debug" />       
+            <param name="levelMax" value="warn" />       
+            <param name="AcceptOnMatch" value="true" />       
+        </filter>    
+	</appender>
+	
+	<appender name="EpGateLogAppender" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="${catalina.base}/logs/ThirdServer/ThirdServerLog.log" />
+		<param name="Threshold" value="ALL" />
+		 <param name="MaxFileSize" value="50MB"></param>  
+		<param name="MaxBackupIndex" value="20"></param> 	
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss} %p][%c{1}]%m%n" />
+		</layout>
+	</appender>
+	<!-- 文件输出(异步) -->
+	<appender name="AsyncGameLogAppender" class="org.apache.log4j.AsyncAppender">
+		<param name="BufferSize" value="2048" />
+		<appender-ref ref="EpGateLogAppender" />
+	</appender>
+	
+	<!-- ========================== appender  end ======================== -->
+		
+	
+	<!-- ========================== root  begin ======================== -->
+	
+	<!-- 根日志输出器 root logger -->
+	<root>
+		<level value="debug" />
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="AsyncGameLogAppender" />
+	</root>
+	
+	<!-- ========================== root  end ======================== -->
+	
+</log4j:configuration>

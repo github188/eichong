@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsElctrcplscrnconfgurtnMapper">
+
+	<resultMap id="tblElctrcplscrnconfgurtnResultMap" type="TblElctrcplscrnconfgurtn">
+		<id property="pkElctrcplscrnconfgurtn" column="pk_ElctrcPlScrnConfgurtn" />
+		<result property="epscName" column="ePSC_Name" />
+		<result property="epscType" column="ePSC_Type" />
+		<result property="epscCreatedate" column="ePSC_Createdate" />
+		<result property="epscUpdatedate" column="ePSC_Updatedate" />
+	</resultMap>
+	<resultMap id="pageResultMap" type="java.util.HashMap"
+		extends="tblElctrcplscrnconfgurtnResultMap"></resultMap>
+	<resultMap id="findResultMap" type="java.util.HashMap"
+		extends="tblElctrcplscrnconfgurtnResultMap"></resultMap>
+	<!-- 新增桩体配置参数 -->
+	<insert id="insertInfo" parameterType="TblElctrcplscrnconfgurtn">
+		insert into
+		tbl_ElctrcPlScrnConfgurtn (
+		ePSC_Name,
+		ePSC_Type,
+		ePSC_Createdate,
+		ePSC_Updatedate
+		)values (
+		#{epscName},
+		#{epscType},
+		#{epscCreatedate},
+		#{epscUpdatedate}
+		)
+	</insert>
+	<!-- 根据id更新桩体配置参数 -->
+	<update id="updateById" parameterType="TblElctrcplscrnconfgurtn">
+		update
+		tbl_ElctrcPlScrnConfgurtn set
+		ePSC_Name=#{epscName},
+		ePSC_Updatedate=#{epscUpdatedate}
+		where
+		pk_ElctrcPlScrnConfgurtn=#{pkElctrcplscrnconfgurtn} 
+	</update>
+	<!-- 根据id删除桩体配置参数 -->
+	<delete id="deleteById" parameterType="map">
+		delete from
+		tbl_ElctrcPlScrnConfgurtn
+		where
+		pk_ElctrcPlScrnConfgurtn=#{pkElctrcplscrnconfgurtn} 
+	</delete>
+
+	<select id="get" parameterType="map"
+		resultMap="tblElctrcplscrnconfgurtnResultMap">
+		select
+		pk_ElctrcPlScrnConfgurtn,
+		ePSC_Name,
+		ePSC_Type,
+		ePSC_Createdate,
+		ePSC_Updatedate
+		from tbl_ElctrcPlScrnConfgurtn
+		where
+		pk_ElctrcPlScrnConfgurtn=#{pkElctrcplscrnconfgurtn} 
+	</select>
+	<!-- 根据id获取桩体配置参数信息 -->
+	<select id="findById" parameterType="TblElctrcplscrnconfgurtn" resultMap="tblElctrcplscrnconfgurtnResultMap">
+		select
+		pk_ElctrcPlScrnConfgurtn,
+		ePSC_Name,
+		ePSC_Type,
+		ePSC_Createdate,
+		ePSC_Updatedate
+		from tbl_ElctrcPlScrnConfgurtn
+		where
+		pk_ElctrcPlScrnConfgurtn=#{pkElctrcplscrnconfgurtn} 
+	</select>
+	<!-- 根据配置类型获取桩体配置参数信息 -->
+	<select id="findByEpscType" parameterType="map"
+		resultMap="tblElctrcplscrnconfgurtnResultMap">
+		select
+		pk_ElctrcPlScrnConfgurtn,
+		ePSC_Name,
+		ePSC_Type,
+		ePSC_Createdate,
+		ePSC_Updatedate
+		from tbl_ElctrcPlScrnConfgurtn
+		where
+		ePSC_Type=#{epscType}
+		order by ePSC_Createdate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	<!-- 根据配置类型获取桩体配置参数总数 -->
+	<select id="findCount" parameterType="TblElctrcplscrnconfgurtn" resultType="long">
+		select
+		count(pk_ElctrcPlScrnConfgurtn)
+		from
+		tbl_ElctrcPlScrnConfgurtn
+		where
+		ePSC_Type = #{epscType}
+	</select>
+
+</mapper> 

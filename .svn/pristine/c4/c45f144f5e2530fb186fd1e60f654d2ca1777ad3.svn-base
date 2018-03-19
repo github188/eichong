@@ -1,0 +1,198 @@
+package com.wanma.ims.common.domain;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import com.wanma.ims.common.domain.base.BasicModel;
+
+public class OrderInvoiceDO extends BasicModel {
+
+	/**
+	 * 发票详情
+	 */
+	private static final long serialVersionUID = 6730024126667593401L;
+	private Long orderId; // 订单主键
+	private String orderCode; // 订单编码
+	private String electricPileCode; // 桩体编号
+	private int electricPileHeadNo; // 枪口编号
+	private String powerstationName; // 充电点名称
+	private BigDecimal totalElectricCharge; // 总电量
+	private BigDecimal totalElectricMoney; // 总充电费用
+	private BigDecimal totalServiceMoney; // 总服务费
+	private BigDecimal totalfavMoney; // 总优惠
+	private String startChargeTime; // 充电开始时间
+	private String endChargeTime; // 充电结束时间
+	private int orderStatus; // 订单状态
+	private Date gmtCreate; // 创建时间
+	private Date gmtModified; // 修改时间
+
+	private int invoiceStatus; // 发票状态
+	private Long invoiceId; // 发票ID
+	private List<Long> invoiceIdList = new ArrayList<Long>();
+	private BigDecimal favMoney; // 优惠后电费
+	private BigDecimal favServiceMoney; // 优惠后服务费
+	private List<String> transNumbers = new ArrayList<String>();
+
+	public Long getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(Long orderId) {
+		this.orderId = orderId;
+	}
+
+	public String getOrderCode() {
+		return orderCode;
+	}
+
+	public void setOrderCode(String orderCode) {
+		this.orderCode = orderCode;
+	}
+
+	public String getElectricPileCode() {
+		return electricPileCode;
+	}
+
+	public void setElectricPileCode(String electricPileCode) {
+		this.electricPileCode = electricPileCode;
+	}
+
+	public int getElectricPileHeadNo() {
+		return electricPileHeadNo;
+	}
+
+	public void setElectricPileHeadNo(int electricPileHeadNo) {
+		this.electricPileHeadNo = electricPileHeadNo;
+	}
+
+	public String getPowerstationName() {
+		return powerstationName;
+	}
+
+	public void setPowerstationName(String powerstationName) {
+		this.powerstationName = powerstationName;
+	}
+
+	public BigDecimal getTotalElectricCharge() {
+		return totalElectricCharge;
+	}
+
+	public void setTotalElectricCharge(BigDecimal totalElectricCharge) {
+		this.totalElectricCharge = totalElectricCharge;
+	}
+
+	public BigDecimal getTotalElectricMoney() {
+		return totalElectricMoney;
+	}
+
+	public void setTotalElectricMoney(BigDecimal totalElectricMoney) {
+		this.totalElectricMoney = totalElectricMoney;
+	}
+
+	public BigDecimal getTotalServiceMoney() {
+		return totalServiceMoney;
+	}
+
+	public void setTotalServiceMoney(BigDecimal totalServiceMoney) {
+		this.totalServiceMoney = totalServiceMoney;
+	}
+
+	public BigDecimal getTotalfavMoney() {
+		return totalfavMoney;
+	}
+
+	public void setTotalfavMoney(BigDecimal totalfavMoney) {
+		this.totalfavMoney = totalfavMoney;
+	}
+
+	public String getStartChargeTime() {
+		return startChargeTime;
+	}
+
+	public void setStartChargeTime(String startChargeTime) {
+		this.startChargeTime = startChargeTime;
+	}
+
+	public String getEndChargeTime() {
+		return endChargeTime;
+	}
+
+	public void setEndChargeTime(String endChargeTime) {
+		this.endChargeTime = endChargeTime;
+	}
+
+	public int getOrderStatus() {
+		return orderStatus;
+	}
+
+	public void setOrderStatus(int orderStatus) {
+		this.orderStatus = orderStatus;
+	}
+
+	public Date getGmtCreate() {
+		return gmtCreate;
+	}
+
+	public void setGmtCreate(Date gmtCreate) {
+		this.gmtCreate = gmtCreate;
+	}
+
+	public Date getGmtModified() {
+		return gmtModified;
+	}
+
+	public void setGmtModified(Date gmtModified) {
+		this.gmtModified = gmtModified;
+	}
+
+	public int getInvoiceStatus() {
+		return invoiceStatus;
+	}
+
+	public void setInvoiceStatus(int invoiceStatus) {
+		this.invoiceStatus = invoiceStatus;
+	}
+
+	public List<String> getTransNumbers() {
+		return transNumbers;
+	}
+
+	public void setTransNumbers(List<String> transNumbers) {
+		this.transNumbers = transNumbers;
+	}
+
+	public BigDecimal getFavMoney() {
+		return favMoney;
+	}
+
+	public void setFavMoney(BigDecimal favMoney) {
+		this.favMoney = favMoney;
+	}
+
+	public BigDecimal getFavServiceMoney() {
+		return favServiceMoney;
+	}
+
+	public void setFavServiceMoney(BigDecimal favServiceMoney) {
+		this.favServiceMoney = favServiceMoney;
+	}
+
+	public Long getInvoiceId() {
+		return invoiceId;
+	}
+
+	public void setInvoiceId(Long invoiceId) {
+		this.invoiceId = invoiceId;
+	}
+
+	public List<Long> getInvoiceIdList() {
+		return invoiceIdList;
+	}
+
+	public void setInvoiceIdList(List<Long> invoiceIdList) {
+		this.invoiceIdList = invoiceIdList;
+	}
+
+}

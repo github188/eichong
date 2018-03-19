@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.web.dao.WebOrderAddressMapper">
+
+	<resultMap id="orderAddressResultMap" type="OrderAddress">
+		<id property="pkOrderaddress" column="pk_OrderAddress" />
+		<result property="oradOrderdetail" column="orAd_OrderDetail" />
+		<result property="oradProductid" column="orAd_ProductId" />
+		<result property="oradProductname" column="orAd_ProductName" />
+		<result property="oradInstalladdress" column="orAd_InstallAddress" />
+		<result property="oradQuantity" column="orAd_Quantity" />
+		<result property="oradStatus" column="orAd_Status" />
+		<result property="oradCreatedate" column="orAd_Createdate" />
+		<result property="oradUpdatedate" column="orAd_Updatedate" />
+	</resultMap>
+	<resultMap id="findResultMap"  type="java.util.HashMap" extends="orderAddressResultMap"></resultMap>
+	<!-- 新增已购商品安装地址信息 -->
+	<insert id="insertOrderAddress" parameterType="OrderAddress">
+	   insert into tbl_order_address (
+	     pk_OrderAddress,
+	     orAd_OrderDetail,
+	     orAd_ProductId,
+	     orAd_ProductName,
+	     orAd_InstallAddress,
+	     orAd_Quantity,
+	     orAd_Status,
+	     orAd_Createdate,
+	     orAd_Updatedate
+	   )values (
+	     #{pkOrderaddress},
+	     #{oradOrderdetail},
+	     #{oradProductid},
+	     #{oradProductname},
+	     #{oradInstalladdress},
+	     #{oradQuantity},
+	     #{oradStatus},
+	     #{oradCreatedate},
+	     #{oradUpdatedate}
+	   )
+	</insert>
+	<!-- 更新已购商品安装地址信息-->
+	<update id="updateOrderAddress" parameterType="OrderAddress">
+	   update tbl_order_address set
+	     <if test="oradQuantity != null">orAd_Quantity=#{oradQuantity},</if>
+	     <if test="oradStatus != null">orAd_Status=#{oradStatus},</if>
+	     orAd_Updatedate=#{oradUpdatedate}
+	   where 
+	    pk_OrderAddress=#{pkOrderaddress} 
+	</update>
+	<!-- 删除已购商品安装地址信息 -->
+	<delete id="deleteOrderAddress" parameterType="map">
+	   delete from 
+	     tbl_order_address 
+	   where 
+	    pk_OrderAddress=#{pkOrderaddress} 
+	</delete>
+	<!-- 根据安装地址主键删除已购商品安装地址信息 -->
+	<delete id="deleteByInstallAddress" parameterType="map">
+		delete from 
+	     tbl_order_address 
+	   where 
+	    orAd_InstallAddress=#{pkInstalladdress}
+	    and
+	    orAd_Status = 0
+	</delete>
+	
+	<!-- 根据地址主键和商品主键获取信息 -->
+	<select id="getOrderAddress" parameterType="map" resultMap="orderAddressResultMap">
+	   select 
+	    pk_OrderAddress,
+	    orAd_OrderDetail,
+	    orAd_ProductId,
+	    orAd_ProductName,
+	    orAd_InstallAddress,
+	    orAd_Quantity,
+	    orAd_Status,
+	    orAd_Createdate,
+	    orAd_Updatedate
+	   from tbl_order_address
+	   where 
+	    orAd_InstallAddress = #{oradInstalladdress}
+	    and
+	    orAd_ProductId = #{oradProductid}
+	    and
+	    orAd_Status = 0
+	</select>
+
+	<select id="findOne" parameterType="map" resultMap="findResultMap">
+	   select 
+	    pk_OrderAddress,
+	    orAd_OrderDetail,
+	    orAd_ProductId,
+	    orAd_ProductName,
+	    orAd_InstallAddress,
+	    orAd_Quantity,
+	    orAd_Status,
+	    orAd_Createdate,
+	    orAd_Updatedate
+	   from tbl_order_address
+	   where 
+	    pk_OrderAddress=#{pkOrderaddress} 
+	</select>
+
+	<select id="find" parameterType="map" resultMap="findResultMap">
+	   select 
+	     pk_OrderAddress,
+	     orAd_OrderDetail,
+	     orAd_ProductId,
+	     orAd_ProductName,
+	     orAd_InstallAddress,
+	     orAd_Quantity,
+	     orAd_Status,
+	     orAd_Createdate,
+	     orAd_Updatedate
+	   from tbl_order_address
+	   <where>
+	     <if test="pkOrderaddress != null">
+	        pk_OrderAddress=#{pkOrderaddress}
+	     </if>
+	     <if test="oradOrderdetail != null">
+	        and orAd_OrderDetail=#{oradOrderdetail}
+	     </if>
+	     <if test="oradProductid != null">
+	        and orAd_ProductId=#{oradProductid}
+	     </if>
+	     <if test="oradProductname != null">
+	        and orAd_ProductName=#{oradProductname}
+	     </if>
+	     <if test="oradInstalladdress != null">
+	        and orAd_InstallAddress=#{oradInstalladdress}
+	     </if>
+	     <if test="oradQuantity != null">
+	        and orAd_Quantity=#{oradQuantity}
+	     </if>
+	     <if test="oradStatus != null">
+	        and orAd_Status=#{oradStatus}
+	     </if>
+	     <if test="oradCreatedate != null">
+	        and orAd_Createdate=#{oradCreatedate}
+	     </if>
+	     <if test="oradUpdatedate != null">
+	        and orAd_Updatedate=#{oradUpdatedate}
+	     </if>
+	   </where>
+	</select>
+	<!-- 根据主键获取未提交的预约安装商品的总数和总价格 -->
+	<select id="findTotalInstallInfo" parameterType="map" resultMap="findResultMap">
+		select 
+		sum(oa.orAd_Quantity) totalQuantity,
+		sum(od.orDe_Price*oa.orAd_Quantity) totalPrice
+		from
+		tbl_order_address oa left join tbl_orderdetail od
+		on
+		oa.orAd_OrderDetail = od.pk_OrderDetail
+		where
+		oa.pk_OrderAddress in (${_parameter}) 
+	</select>
+	<!-- 根据主键获取未提交的预约安装商品的总数和总价格 -->
+	<select id="findInstallInfo" parameterType="map" resultMap="findResultMap">
+		select
+		oa.orAd_Quantity quantity,
+		od.orDe_Price*oa.orAd_Quantity price,
+		od.orDe_Price unitPrice
+		from
+		tbl_order_address oa left join tbl_orderdetail od
+		on
+		oa.orAd_OrderDetail = od.pk_OrderDetail
+		where
+		oa.pk_OrderAddress = #{addressid}
+	</select>
+	
+</mapper> 

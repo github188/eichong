@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.dao.StatisticChargeMapper">
+	<!-- 充电统计 根据省市区进行统计（累计）-->
+	<select id="selectChargeDataCount" parameterType="java.util.Map" resultType="java.util.Map">
+	   SELECT * FROM
+			(
+				SELECT
+					b.elPi_OwnProvinceCode provinceCode,
+					b.elPi_OwnCityCode cityCode,
+					count(1) v1,
+					sum(a.chOr_QuantityElectricity) v3,
+					sum(a.chOr_Moeny) AS v4,
+					TRUNCATE (sum((UNIX_TIMESTAMP(end_charge_time) - UNIX_TIMESTAMP(begin_charge_time)) / 3600),2) v2
+				FROM
+					tbl_chargingorder a,tbl_electricpile b,tbl_user_business_view d
+				WHERE a.chOr_PileNumber = b.elPi_ElectricPileCode
+				AND b.elPi_UserId = d.user_id
+				AND a.chOr_ChargingStatus IN (2, 3, 5)
+				GROUP BY b.elPi_OwnProvinceCode,b.elPi_OwnCityCode WITH ROLLUP
+			) cc
+		<where>
+		   <!-- 全部 -->
+		   <if test="(provinceCode == null or provinceCode=='')  and (cityCode == null or cityCode == '')">
+		      and provinceCode is null and cityCode is null
+		   </if>
+		   <!-- 省-->
+		   <if test="provinceCode != null and provinceCode != '' and (cityCode == null or cityCode == '')">
+		      and provinceCode = #{provinceCode} and cityCode is null
+		   </if>
+		   <!-- 市 -->
+		   <if test="provinceCode != null and provinceCode != '' and cityCode != null and cityCode != ''">
+		      and provinceCode = #{provinceCode} and cityCode = #{cityCode}
+		   </if>
+		</where>
+		ORDER BY cc.provinceCode,cc.cityCode
+	</select>
+		<!-- 充电统计 根据省市区进行统计（今日）-->
+	<select id="selectChargeTodayDataCount" parameterType="java.util.Map" resultType="java.util.Map">
+	   SELECT * FROM
+			(
+				SELECT
+					b.elPi_OwnProvinceCode provinceCode,
+					b.elPi_OwnCityCode cityCode,
+					count(1) chargeCount,
+					sum(a.chOr_QuantityElectricity) chargeC,
+					sum(a.chOr_Moeny) AS chargeMoney,
+					TRUNCATE (sum((UNIX_TIMESTAMP(end_charge_time) - UNIX_TIMESTAMP(begin_charge_time)) / 3600),2) chargeTime
+				FROM
+					tbl_chargingorder a,tbl_electricpile b,tbl_user_business_view d
+				WHERE a.chOr_PileNumber = b.elPi_ElectricPileCode
+				AND b.elPi_UserId = d.user_id
+				AND a.chOr_ChargingStatus IN (2, 3, 5)
+				AND left(a.chOr_Createdate,10) = left(sysdate(),10)
+				GROUP BY b.elPi_OwnProvinceCode,b.elPi_OwnCityCode WITH ROLLUP
+			) cc
+		<where>
+		   <!-- 全部 -->
+		   <if test="(provinceCode == null or provinceCode=='')  and (cityCode == null or cityCode == '')">
+		      and provinceCode is null and cityCode is null
+		   </if>
+		   <!-- 省-->
+		   <if test="provinceCode != null and provinceCode != '' and (cityCode == null or cityCode == '')">
+		      and provinceCode = #{provinceCode} and cityCode is null
+		   </if>
+		   <!-- 市 -->
+		   <if test="provinceCode != null and provinceCode != '' and cityCode != null and cityCode != ''">
+		      and provinceCode = #{provinceCode} and cityCode = #{cityCode}
+		   </if>
+		</where>
+		ORDER BY cc.provinceCode,cc.cityCode
+	</select>
+	<!-- 充电统计 交直流根据省市区统计-->
+	<select id="selectChargeDataPie" parameterType="java.util.Map" resultType="java.util.Map">
+	  SELECT * FROM (SELECT
+		  b.elPi_OwnProvinceCode provinceCode,
+		  b.elPi_OwnCityCode cityCode,
+		  DATE_FORMAT(b.elPi_Createdate,'%Y-%m-%d') as time, 
+		  sum(if(b.elPi_ChargingMode=5,a.chOr_QuantityElectricity,0)) AS v1,
+		  sum(if(b.elPi_ChargingMode=14,a.chOr_QuantityElectricity,0)) AS v2
+		FROM
+			tbl_chargingorder a,
+			tbl_electricpile b,
+		    tbl_user_business_view d 
+		WHERE
+			a.chOr_PileNumber = b.elPi_ElectricPileCode
+		AND b.elPi_UserId = d.user_id
+		AND a.chOr_ChargingStatus in (2,3, 5)
+		GROUP BY b.elPi_OwnProvinceCode,b.elPi_OwnCityCode with ROLLUP) cc
+		<where>
+		   <!-- 全部 -->
+		   <if test="(provinceCode == null or provinceCode=='')  and (cityCode == null or cityCode == '')">
+		      and provinceCode is null and cityCode is null
+		   </if>
+		   <!-- 省-->
+		   <if test="provinceCode != null and provinceCode != '' and (cityCode == null or cityCode == '')">
+		      and provinceCode = #{provinceCode} and cityCode is null
+		   </if>
+		   <!-- 市 -->
+		   <if test="provinceCode != null and provinceCode != '' and cityCode != null and cityCode != ''">
+		      and provinceCode = #{provinceCode} and cityCode = #{cityCode}
+		   </if>
+		</where>
+		ORDER BY
+			cc.provinceCode,
+			cc.cityCode
+   </select>
+    <!-- 充电统计 count -->
+	<select id="countChargeDataDetail" parameterType="java.util.Map" resultType="int">
+	   SELECT  count(1) from
+	     (SELECT
+			  count(1) 
+			FROM
+				tbl_chargingorder a,tbl_electricpile b,tbl_user_business_view d 
+			WHERE
+				a.chOr_PileNumber = b.elPi_ElectricPileCode
+			AND b.elPi_UserId = d.user_id
+			AND a.chOr_ChargingStatus in (2,3,5)
+			AND DATE_FORMAT(b.elPi_Createdate,'%Y-%m-%d') &lt; CURRENT_DATE
+			<!-- 省 -->
+			<if test="provinceCode != null and provinceCode != ''">
+			    and b.elPi_OwnProvinceCode = #{provinceCode}
+			</if>
+			<!-- 市 -->
+			<if test="cityCode != null and cityCode != ''">
+			    and b.elPi_OwnCityCode = #{cityCode}
+			</if>
+			GROUP BY DATE_FORMAT(b.elPi_Createdate,'%Y-%m-%d')) zz
+		</select>
+	 <!-- 充电统计 根据日期统计所有省份 -->
+	<select id="selectChargeDataDetail" parameterType="java.util.Map" resultType="java.util.Map">
+	   SELECT
+		  DATE_FORMAT(b.elPi_Createdate,'%Y-%m-%d') as time, 
+		  count(1) v1,
+		  sum(a.chOr_QuantityElectricity) v3,
+		  sum(a.chOr_Moeny) as v4,
+		  TRUNCATE (sum((UNIX_TIMESTAMP(end_charge_time) - UNIX_TIMESTAMP(begin_charge_time)) / 3600),2) v2
+		FROM
+			tbl_chargingorder a,tbl_electricpile b,tbl_user_business_view d 
+		WHERE
+			a.chOr_PileNumber = b.elPi_ElectricPileCode
+		AND b.elPi_UserId = d.user_id
+		AND a.chOr_ChargingStatus in (2,3,5)
+		AND DATE_FORMAT(b.elPi_Createdate,'%Y-%m-%d') &lt; CURRENT_DATE
+		<!-- 省 -->
+		<if test="provinceCode != null and provinceCode != ''">
+		    and b.elPi_OwnProvinceCode = #{provinceCode}
+		</if>
+		<!-- 市 -->
+		<if test="cityCode != null and cityCode != ''">
+		    and b.elPi_OwnCityCode = #{cityCode}
+		</if>
+		GROUP BY DATE_FORMAT(b.elPi_Createdate,'%Y-%m-%d')
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+</mapper> 

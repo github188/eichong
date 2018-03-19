@@ -1,0 +1,154 @@
+<!DOCTYPE HTML>
+
+<HTML lang="zh-cn"><HEAD><META content="IE=11.0000" http-equiv="X-UA-Compatible">
+
+<META charset="utf-8"> 
+
+<META http-equiv="X-UA-Compatible" content="IE=edge"> 
+
+<META name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> 
+
+<LINK href="/res/img/jueee.png" rel="icon" type="image/ico"> 
+<LINK href="./res/bootstrap.min.css" rel="stylesheet"> 
+<LINK href="./res/css.css" rel="stylesheet"> 
+<LINK href="/res/css/style.css" rel="stylesheet"> 
+
+<SCRIPT src="./res/bootstrap.min.js" defer="defer"></SCRIPT>
+
+<SCRIPT src="./res/jquery-1.9.0.min.js"></SCRIPT>
+
+<LINK href="./res/common.css" rel="stylesheet" type="text/css"> 
+
+<STYLE type="text/css">
+.divcss5_list_title {
+ 	background:  url(img/sp.png);
+	border: 0px solid #cccccc;
+	padding: 1em;
+}
+
+.divcss5_list_content {
+	padding: 0;
+}
+
+#tinybox {
+	position: absolute;
+	display: none;
+	padding: 0px;
+	opacity:0.1;
+	filter:alpha(opacity=10);
+	border: 0px solid #e3e3e3;
+	z-index: 2000;
+}
+
+#tinymask {
+	position: absolute;
+	display: none;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	background: #000000;
+	z-index: 1500;
+}
+
+#tinycontent {
+	background:  url(images/fp2x.png);
+	font-size: 1.1em;
+}
+
+#n {
+	margin: 10px auto;
+	width: 920px;
+	border: 1px solid #CCC;
+	font-size: 12px;
+	line-height: 30px;
+}
+
+#n a {
+	padding: 0 4px;
+	color: #333
+}
+</STYLE>
+
+ 
+
+<SCRIPT src="./res/tinybox.js" type="text/javascript"></SCRIPT>
+
+ 
+
+<META name="keywords" content=""> 
+
+<META name="description" content=""> <TITLE>下载APP</TITLE> 
+
+<META name="GENERATOR" content="MSHTML 11.00.9600.17728"></HEAD> 
+
+<BODY style="background: rgb(255, 255, 255);">
+
+<DIV class="container">
+
+<DIV id="app"></DIV>
+
+<DIV class="app">
+
+<DIV class="well app-main"><IMG class="img-responsive" src="./res/download.png"></DIV>
+
+<DIV class="row">
+
+	<DIV class="col-xs-6">
+		<!-- <A href="./android/eichong.apk"target="_blank"> -->
+		<IMG class="img-responsive" id="click_android" style="margin: 0px auto; cursor: pointer;" src="./res/android@2x.png">
+		<!-- </A> -->
+	</DIV>
+	
+	<DIV class="col-xs-6">
+	<IMG class="img-responsive" id="click_test2" style="margin: 0px auto; cursor: pointer;"src="./res/iphone@2x.png">
+	</DIV>
+</DIV>
+<!--   <br><br>
+        <div class="row" align="center">
+        	<div align="center"><a href="http://www.jueee.cn/explain.jsp">ios下载遇到问题？请点击此处。</a></div>
+        </div>  -->
+
+		 <IMG style="margin: 0px; padding: 0px; border: 0px currentColor; border-image: none; height: 100%; display: none; bwidth: 100%;" 
+
+onclick="imgDisplay()" src="./res/sp.png">
+
+		 </DIV></DIV><INPUT id="path" hidden="true">	 
+	<br>
+<SCRIPT type="text/javascript">
+		var content1 = "<img id='spimg' src='./res/az.png' class='img-responsive' style='width:100%;height:100%' onclick='imgDisplay()'/>";//弹出图片
+		
+		var content2 = "<img id='spimg' src='./res/sp.png' class='img-responsive' style='width:100%;height:100%' onclick='imgDisplay()'/>";//弹出图片
+		T$("click_android").onclick = function(){
+			if(isWeiXin()){
+				TINY.box.show(content2, 0, 0, 0,1);
+			}else{
+				toAppStore("./android/eichong.apk");
+			}
+		}
+		T$('click_test2').onclick = function() {
+			if(isWeiXin()){
+				TINY.box.show(content2, 0, 0, 0,1);
+			}else{
+				toAppStore("https://itunes.apple.com/us/app/ai-chong-wang/id973776423?l=zh&ls=1&mt=8");
+			}
+		}
+		
+		function imgDisplay(){
+			$("#tinymask").css('display','none'); 
+			$("#tinybox").css('display','none'); 
+		}
+		function toAppStore(surl) {
+			location.href = surl;
+		}
+		function isWeiXin() {
+			var ua = window.navigator.userAgent.toLowerCase();
+			if (ua.match(/MicroMessenger/i) == 'micromessenger') {
+				return true;
+			} else {
+				return false;
+			}
+		}
+	</SCRIPT>
+
+ </BODY></HTML>

@@ -1,0 +1,334 @@
+@charset "utf-8";
+body{
+	background: #EBECED;
+}
+
+
+.freeCount{
+	padding-left: 0.6rem;
+}
+.headRight{
+	position: relative;
+}
+.headRight span{
+	display: inline-block;
+	width: 2.4rem;
+	height: 50%;
+	-background: #0062CC;
+	position: absolute;
+}
+.headRight .share{
+	top: 20%;
+	left: 0;
+}
+.headRight .share img{
+	display: block;
+	margin: 0;
+	width: 100%;
+	height: 100%;
+}
+.headRight .noCollect{
+	top: 20%;
+	left: 36%;
+	background: url(../img/nav_btn_collect.png) no-repeat left top;
+	background-size:100% 100%;
+}
+.headRight .isCollect{
+	top: 20%;
+	left: 36%;
+	background: url(../img/nav_btn_collect_p.png) no-repeat left top;
+	background-size:100% 100%;
+}
+.threeFloor{
+	
+	width: 100%;
+	height: 90%;
+	overflow: auto;
+	margin-top:5rem;
+}
+/*第二块==========================================*/
+section {
+	width: 100%;
+	min-height: 5rem;
+	background: #FFFFFF;
+	padding: 1rem;
+	clear: both;
+	overflow: hidden;
+}
+/*第二块左边===========*/
+section .detailLeft{
+	min-height: 15rem;
+	-background: #F0AD4E;
+	border: 0.1rem solid #CCCCCC;
+	text-align: center;
+}
+section .detailLeft p{
+	margin: 0;
+	padding: 0;
+	font-size: 1rem;
+}
+section .detailLeft img{
+	width: 100%;
+	height:9rem;
+	/*height: 60%;*/
+	display:block;
+}
+/*第二块右边========*/
+section .detailRight{
+	min-height: 8rem;
+	-background: #F0FF0F;
+	padding-left: 0.6rem;
+}
+section .detailRight .stationDot{
+	width: 100%;
+	min-height: 2.4rem;
+	-background: #FF0000;
+	font-size: 1.6rem;
+	color: #666666;
+	overflow: hidden;
+}
+section .detailRight .stationDot .powerStationName{
+	width: 75%;
+	padding-right: 3%;
+}
+section .detailRight .stationDot .distanceDot{
+	width: 25%;
+	text-align: center;
+}
+
+section .detailRight .buttonTip{
+	width: 100%;
+	min-height: 3rem;
+	-background: #FF5053;
+	margin-top: 4%;
+}
+section .detailRight .buttonTip .num-btn{
+	border-radius: 3rem;
+	background: #FFFFFF;
+	width: 60%;
+	min-height: 3rem;
+	padding: 0;
+	color: #666666;
+}
+.mui-btn .mui-badge{
+    font-size: 1.2rem;
+    margin: -0.1rem -0.2rem -0.1rem 0.2rem;
+    background-color: rgba(0, 0, 0, .15);
+}
+section .detailRight .buttonTip .num-btn .mui-badge{
+	color: #FFFFFF;
+	background: #666666;
+}
+section .detailRight .buttonTip .num-btn .mui-badge1{
+	background: #00A438;
+	color: #FFFFFF;
+}
+section .detailRight .powerAddress{
+	width: 100%;
+	min-height: 4rem;
+	-background: #0062CC;
+	margin-top: 4%;
+	overflow: hidden;
+}
+section .detailRight .powerAddress .powerStationAddress{
+	padding-right: 3%;
+	min-height: 4rem;
+	font-size: 1.4rem;
+	color: #666666;
+}
+section .detailRight .powerAddress .navImg{
+	border-left: 0.1rem solid #CCCCCC;
+	padding-left: 3%;
+	text-align: center;
+}
+section .detailRight .powerAddress .navImg img{
+	width: 100%;
+	height: 100%;
+}
+section .rateIntr{
+	font-size: 1.4rem;
+	color: #666666;
+}
+section .rateIntr img{
+	width: 3rem;
+	height: 3rem;
+}
+/*第三块==============================*/
+.openTime{
+	width: 100%;
+	min-height: 6rem;
+	background: #FFFFFF;
+	border-top:0.1rem solid #DCDCDC ;
+	border-bottom:0.1rem solid #DCDCDC ;
+	padding: 0 1rem;
+}
+.openTime .openTip{
+	margin-top: 0.5rem;
+	
+}
+.openTime .openTip p{
+	
+	margin: 0;
+	padding: 0;
+	color: #666666;
+}
+.openTime .checkError{
+	width: 3rem;
+	height: 3rem;
+	border:0.1rem solid #C0C0C0;
+	border-radius: 3rem;
+	text-align: center;
+	color: #666666;
+	line-height: 3rem;
+	margin-top: 0.8rem;
+	font-size: 1.4rem;
+}
+/*第四块=========================================*/
+.pile{
+	width: 100%;
+	min-height: 1rem;
+	background: #FFFFFF;
+	padding: 1rem 1rem;
+}
+.pile .pileGroup{
+	width: 100%;
+	min-height: 4rem;
+	background: #FFF;
+	margin-bottom: 2%;
+}
+.pile .pileGroup li{
+	width: 30%;
+	height: 3.6rem;
+	border: 0.1rem solid #C0C0C0;
+	border-radius: 3rem;
+	text-align: center;
+	line-height: 3.6rem;
+	color: #808080;
+	font-size: 1.4rem;
+	margin-left: 2%;
+	margin-bottom: 2%;
+	display: inline-block;
+}
+/*点击之后的样式======================*/
+.pile .pileGroup .active{
+	color: #FFFFFF;
+	background: #FF7D00;
+	border: 0.1rem solid #FF7D00;
+}
+/*第四块=========================================================================================*/
+.pileTable{
+	width: 100%;
+	min-height: 0.4rem;
+	
+}
+.pileTable img{
+	width: 100%;
+	margin-top: 1rem;
+}
+
+/*表格模块===============================================================================*/
+.tableHead{
+	width: 100%;
+	min-height: 4rem;
+	background: #FFFFFF;
+}
+.tableHead .parameter{
+	height: 100%;
+	text-align: center;
+	line-height: 4rem;
+	font-size: 1.6rem;
+	color: #959595;
+}
+.tableHead .ownerCompany{
+	color: #EA0E0E;
+}
+.tableHead .elpiPowerinterface,.tableHead .elpiPowersize{
+	color: #FF7D00;
+}
+/*三种标准背景切换==
+ * 默认是特斯拉======================================================*/
+.tableHead .ownerCompanyImg{
+	background: url(../img/bg_map_tesla.png) no-repeat 10% center;
+	background-size:20% 60% ;
+}
+.tableHead .ownerCompanyColor{
+	color: #EB3030;
+}
+/*国标背景============*/
+.tableHead .ownerCompanyState{
+	background: url(../img/bg_map_state.png) no-repeat 10% center;
+	background-size:20% 60% ;
+}
+
+.tableHead .ownerCompanyAiChong{
+	background: url(../img/bg_map_eichong.png) no-repeat 10% center;
+	background-size:20% 60% ;
+}
+/*动态列表部分===============================*/
+.dynamicList{
+	width: 100%;
+	min-height: 3rem;
+	/*overflow: auto;*/
+	/*background: #0062CC;*/
+}
+.dynamicList .dynamicRow:nth-child(odd){
+	width: 100%;
+	height: 4rem;
+	background:#EBECED;
+	font-size: 1.6rem;
+}
+.dynamicList .dynamicRow:nth-child(even){
+	width: 100%;
+	height: 4rem;
+	background:#FFFFFF;
+	font-size: 1.6rem;
+}
+.dynamicList .dynamicRow .gunpoint{
+	height: 100%;
+	line-height: 4rem;
+	text-align: center;
+	font-size: 1.4rem;
+	color: #808080;
+}
+/*空闲时文字颜色样式===================================================*/
+.dynamicList .dynamicRow .pileHeadState1{
+	height: 100%;
+	line-height: 4rem;
+	text-align: center;
+	font-size: 1.4rem;
+	color: #189A3F;
+}
+.dynamicList .dynamicRow .pileHeadStateGray{
+	height: 100%;
+	line-height: 4rem;
+	text-align: center;
+	font-size: 1.4rem;
+	color: #8A8A8A;
+}
+.dynamicList .dynamicRow .isAppoint a{
+	text-decoration: none;
+	color: #FF7D00;
+}
+.dynamicList .dynamicRow .noAppoint a{
+	text-decoration: none;
+	color: #808080;
+}
+.dynamicList .dynamicRow .isAppoint{
+	color: #FF7D00;
+	background: url(../img/bg_map_appointment1.png) no-repeat 10% center;
+	background-size:26% 50% ;
+}
+.dynamicList .dynamicRow .noAppoint{
+	color: #808080;
+	background: url(../img/bg_map_appointment2.png) no-repeat 10% center;
+	background-size:26% 50% ;
+}
+/*最后一块底部===================================================================*/
+.mui-bar-tab .mui-tab-item .mui-icon ~ .mui-tab-label
+{
+    font-size: 14px;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+

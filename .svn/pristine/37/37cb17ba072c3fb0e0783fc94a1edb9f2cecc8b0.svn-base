@@ -1,0 +1,74 @@
+package com.wanma.ims.service.impl;
+
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.wanma.ims.common.domain.InvoiceDO;
+import com.wanma.ims.mapper.FinInvoiceMapper;
+import com.wanma.ims.service.FinInvoiceService;
+
+
+@Service("InvoiceService")
+public class FinInvoiceServiceImpl implements FinInvoiceService{
+	private static final Logger LOGGER = LoggerFactory.getLogger(UserCardServiceImpl.class);
+	@Autowired
+	private FinInvoiceMapper finInvoiceMapper;
+	@Override
+	public long getUserInvoiceCount(InvoiceDO invoice) {
+		return finInvoiceMapper.getUserInvoiceCount(invoice);
+	}
+	@Override
+	public List<InvoiceDO> getUserInvoiceList(InvoiceDO invoice) {
+		return finInvoiceMapper.getUserInvoiceList(invoice);
+	}
+	@Override
+	public InvoiceDO getFinInvoiceById(InvoiceDO invoice) {
+		return finInvoiceMapper.getFinInvoiceById(invoice);
+	}
+	@Override
+	public boolean confirmInvoice(InvoiceDO invoice) {
+		return finInvoiceMapper.confirmInvoice(invoice)>0?true:false;
+	}
+	@Override
+	public boolean refuseInvoice(InvoiceDO invoice) {
+		return finInvoiceMapper.refuseInvoice(invoice)>0?true:false;
+	}
+	@Override
+	public long getCpyInvoiceCount(InvoiceDO invoice) {
+		if(invoice.getInvoiceMode()==1){//充值开票
+			return finInvoiceMapper.getCpyRechargeInvoiceCount(invoice);
+		}else{
+			return finInvoiceMapper.getCpyChargeInvoiceCount(invoice);
+		}
+		
+		
+	}
+	@Override
+	public List<InvoiceDO> getCpyInvoiceList(InvoiceDO invoice) {
+		if(invoice.getInvoiceMode()==1){//充值开票
+			return finInvoiceMapper.getCpyRechargeInvoiceList(invoice);
+		}else{
+			return finInvoiceMapper.getCpyChargeInvoiceList(invoice);
+		}
+	
+	}
+	@Override
+	public boolean addCpyInvoice(InvoiceDO invoice, String ids) throws Exception  {
+		return finInvoiceMapper.addCpyInvoice(invoice) >0?true:false;
+	}
+	@Override
+	public boolean modifyCpyInvoice(InvoiceDO invoice, String ids) {
+		return finInvoiceMapper.modifyCpyInvoice(invoice)>0?true:false;
+	}
+	@Override
+	public boolean modifyFinInvoice(InvoiceDO invoice) {
+		return finInvoiceMapper.modifyFinInvoice(invoice)>0?true:false;
+	}
+	
+	
+	
+}

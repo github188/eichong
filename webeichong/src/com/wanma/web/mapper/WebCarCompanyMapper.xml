@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.web.dao.WebCarCompanyMapper">
+	
+	<!-- 新增电动车厂商类型 -->
+	<insert id="insertCarCompany" parameterType="map">
+		insert into tbl_carcompany (
+		carCompany_Name,
+		carCompany_Remark
+		)values (
+		#{carCompany_Name},
+		#{carCompany_Remark}
+		)
+	</insert>
+	<!-- 更新电动车厂商类型 -->
+	<update id="updateCarCompany" parameterType="map">
+		update tbl_carcompany 
+		<set>  
+        <if test="carCompany_Name != null and carCompany_Name != '' ">  
+            carCompany_Name = #{carCompany_Name},  
+        </if> 
+         <if test="carCompany_CreateDate != null and carCompany_CreateDate != '' ">  
+            carCompany_CreateDate = #{carCompany_CreateDate},  
+        </if>
+         <if test="carCompany_UpdateDate != null and carCompany_UpdateDate != '' ">  
+            carCompany_UpdateDate = #{carCompany_UpdateDate},  
+        </if>
+         <if test="carCompany_Remark != null and carCompany_Remark != '' ">  
+            carCompany_Remark = #{carCompany_Remark},  
+        </if>
+        </set>
+		where
+		pk_carCompany=#{pk_carCompany} 
+	</update>
+	<!-- 删除电动车品牌类型 -->
+	<delete id="deleteCarCompanyById" parameterType="map" >
+		delete  		
+		from
+	    tbl_carcompany
+		where
+		pk_carCompany=#{pk_carCompany} 
+	</delete>
+	<!-- 获取电动车品牌类型 -->
+	<select id="findCarCompanyById" parameterType="map" resultType="hashmap">
+		select
+		pk_carCompany,		
+		carCompany_Name,
+		carCompany_CreateDate,
+		carCompany_UpdateDate,
+		carCompany_Remark
+		from tbl_carcompany
+		<where>
+		 <if test="pk_carCompany != null and pk_carCompany!=''">
+				pk_carCompany=#{pk_carCompany}
+	     </if>
+	     <if test="carCompany_Name != null and carCompany_Name !=''">
+				carCompany_Name=#{carCompany_Name}
+	     </if>
+		</where>
+	</select>
+
+	<!-- 获取车型号列表 -->
+	<select id="findCarCompanyList" parameterType="map" resultType="hashmap">
+		select
+		pk_carCompany,		
+		carCompany_Name,
+		carCompany_CreateDate,
+		carCompany_UpdateDate,
+		carCompany_Remark
+		from tbl_carcompany
+		<where>
+		 <if test="pk_carCompany != null and pk_carCompany!=''">
+				pk_carCompany=#{pk_carCompany}
+	     </if>
+		 <if test="carCompany_Name != null and carCompany_Name !=''">
+				and carCompany_Name=#{carCompany_Name}
+	     </if>			
+		</where>
+		order by carCompany_CreateDate desc
+		<if test="pager!=null">limit #{offset},#{numPerPage}</if>
+	</select>
+	<!--  -->
+	<select id="getByProperty" parameterType="map" resultType="hashmap">
+	   SELECT
+			pk_carCompany,		
+			carCompany_Name,
+			carCompany_CreateDate,
+			carCompany_UpdateDate,
+			carCompany_Remark
+		from tbl_carcompany 
+		<where>
+		    1=1  
+		    <if test="pk_carCompany!=null and pk_carCompany !=''">
+		        and pk_carCompany !=#{pk_carCompany} 
+		    </if>
+		    and (1=0
+		 	<if test="carCompany_Name!=null and carCompany_Name !=''">
+					or	carCompany_Name=#{carCompany_Name}
+			</if>
+			)
+		</where>
+	</select>
+	<!-- 获取车型号数量 -->
+	<select id="findCarCompanyCount" parameterType="map" resultType="long">
+		select count(pk_carCompany)
+		from
+		tbl_carcompany
+		<where>
+		 <if test="pk_carCompany != null and pk_carCompany!=''">
+				pk_carCompany=#{pk_carCompany}
+	     </if>
+		 <if test="carCompany_Name != null and carCompany_Name !=''">
+				and CarInfo_StyleName=#{carinfoStylename}
+	     </if>			
+		</where>
+	</select>
+</mapper> 

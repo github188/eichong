@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.TblElectricpileHeadMapper">
+	<resultMap id="result_head" type="TblElectricpilehead">
+		<id property="pkElectricpilehead" column="pk_Electricpilehead" />
+		<result property="pkElectricpile" column="pk_Electricpile" />
+		<result property="epheElectricpileheadname" column="ephe_Electricpileheadname" />
+		<result property="epheElectricpileHeadId" column="ePHe_ElectricpileHeadId" />
+		<result property="epheElectricpileheadstate" column="ephe_Electricpileheadstate" />
+		<result property="ephNum" column="eph_Num" />
+		<result property="pkPowerStation" column="pk_PowerStation" />
+		<result property="raInReservationRate" column="raIn_ReservationRate" />
+		<result property="raInServiceCharge" column="raIn_ServiceCharge" />
+		<result property="raInQuantumDate" column="raIn_QuantumDate" />
+		<result property="psId" column="elPi_RelevancePowerStation" />
+	</resultMap>
+
+	<select id="getBespokeHeadDetailByPile" parameterType="TblElectricpilehead"
+		resultMap="result_head">
+		SELECT
+		h.pk_Electricpilehead,
+		h.pk_ElectricPile pk_Electricpile,
+		h.ePHe_ElectricpileHeadName ephe_Electricpileheadname,		
+		r.raIn_ReservationRate
+		FROM
+		tbl_electricpilehead h,
+		tbl_electricpile e,
+		tbl_rateinformation r
+		WHERE
+		h.pk_ElectricPile = #{pkElectricpile} 
+		AND h.pk_ElectricPile = e.pk_ElectricPile
+		AND e.elPi_RateInformationId=r.pk_RateInformation
+		AND h.ePHe_ElectricpileHeadState = 0
+	</select>
+
+	<select id="getList" parameterType="TblElectricpilehead"
+		resultMap="result_head">
+		SELECT * FROM
+		tbl_electricpilehead h
+		WHERE 1=1
+		<if test="pkElectricpile !=null">
+	    	and h.pk_ElectricPile = #{pkElectricpile}
+	    </if>
+		<if test="psId !=null">
+	    	and exists(select 1 from tbl_electricpile e where e.pk_ElectricPile=h.pk_ElectricPile and e.elPi_RelevancePowerStation=#{psId})
+	    </if>
+	</select>
+
+	<select id="getListByPsId" parameterType="TblElectricpilehead"
+		resultMap="result_head">
+		SELECT h.*, e.elPi_RelevancePowerStation FROM
+		tbl_electricpilehead h,tbl_electricpile e
+		WHERE 1=1
+		<if test="pkElectricpile !=null">
+	    	and h.pk_ElectricPile = #{pkElectricpile}
+	    </if>
+		<if test="psId !=null">
+	    	and e.elPi_RelevancePowerStation=#{psId}
+	    </if>
+		<if test="psIds !=null">
+	    	and e.elPi_RelevancePowerStation in
+			  	<foreach item="item" index="index" collection="psIds" open="("
+					separator="," close=")">
+					#{item}
+				</foreach>
+	    </if>
+	</select>
+	
+
+	<select id="getHeadStsByPsId" parameterType="TblElectricpilehead"
+		resultType="hashMap">
+		SELECT
+		t.ep_gun_no ConnectorID,
+		(select h.ePHe_ElectricpileHeadState from tbl_electricpilehead h where h.ePHe_ElectricpileHeadId=t.ep_gun_no and h.pk_ElectricPile = e.pk_ElectricPile) STATUS,
+		0 CurrentA,
+		0 CurrentB,
+		0 CurrentC,
+		0 VoltageA,
+		0 VoltageB,
+		0 VoltageC,
+		t.cac_soc SOC
+	FROM
+		tbl_chargeinfo_ac t,tbl_electricpile e
+	WHERE
+	  t.ep_code = e.elPi_ElectricPileCode
+	  and
+	  e.elPi_RelevancePowerStation = #{psId}
+	UNION ALL
+		SELECT
+			t.ep_gun_no ConnectorID,
+			(select h.ePHe_ElectricpileHeadState from tbl_electricpilehead h where h.ePHe_ElectricpileHeadId=t.ep_gun_no and h.pk_ElectricPile = e.pk_ElectricPile) STATUS,
+			t.cdc_a_current CurrentA,
+			t.cdc_b_current CurrentB,
+			t.cdc_c_current CurrentC,
+			t.cdc_a_voltage VoltageA,
+			t.cdc_b_voltage VoltageB,
+			t.cdc_c_voltage VoltageC,
+			t.soc SOC
+		FROM
+		tbl_chargeinfo_dc t,tbl_electricpile e
+	WHERE
+	  t.ep_code = e.elPi_ElectricPileCode
+	  and
+	  e.elPi_RelevancePowerStation = #{psId}
+	</select>
+
+    <select id="getHeadByQrCode" parameterType="TblElectricpilehead"
+            resultMap="result_head">
+        SELECT * FROM
+        tbl_electricpilehead h
+        WHERE 1=1
+            and h.ePHe_qr_codes = #{qrCode}
+    </select>
+</mapper> 

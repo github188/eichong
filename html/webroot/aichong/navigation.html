@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <title>按起终点经纬度规划路线</title>
+    <link rel="stylesheet" href="http://cache.amap.com/lbs/static/main1119.css"/>
+    <style type="text/css">
+   		 @charset "utf-8";
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		body,html{
+			width: 100%;
+			height: 100%;
+			font-size: 62.5%;
+			background: #FFFFFF;
+			font-family: "微软雅黑";
+			
+		}
+        #panel {
+            position: fixed;
+            background-color: white;
+            max-height: 30%;
+            overflow-y: auto;
+            /*top: 10px;*/
+            top:0;
+            /*right: 10px;*/
+            right: 0;
+            /*width: 280px;*/
+           width: 100%;
+        }
+    </style>
+    <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=5482098780018a97976fbb4f52252595&plugin=AMap.Driving"></script>
+    <script type="text/javascript" src="http://cache.amap.com/lbs/static/addToolbar.js"></script>
+    <script src="js/userinfo.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+<div id="container"></div>
+<div id="panel"></div>
+<script type="text/javascript">
+	//目的地的经纬度
+	var tolon=getSValue("lon");
+	var tolat=getSValue("lat");
+    //基本地图加载
+    var map = new AMap.Map("container", {
+        resizeEnable: true,
+        center: [116.397428, 39.90923],//地图中心点
+        zoom: 13 //地图显示的缩放级别
+    });
+    //构造路线导航类
+    var driving = new AMap.Driving({
+        map: map,
+        panel: "panel"
+    }); 
+//  获取手机初始位置的经纬度=====================================================
+    var lng=120.12823;
+	var lat=30.271116;
+  if (navigator.geolocation) {  
+    navigator.geolocation.getCurrentPosition(function(pos) {  
+        // 成功回调函数，接受一个地理位置的对象作为参数。  
+        // https://developer.mozilla.org/cn/docs/Web/API/Position 参数说明  
+        lng=pos.coords.longitude;
+        lat=pos.coords.latitude;
+    }, function(err) {  
+        // 错误的回调  
+        // https://developer.mozilla.org/cn/docs/Web/API/PositionError 错误参数  
+    }, {  
+        enableHighAccuracy: true, // 是否获取高精度结果  
+        timeout: 5000, //超时,毫秒  
+        maximumAge: 0 //可以接受多少毫秒的缓存位置  
+        // 详细说明 https://developer.mozilla.org/cn/docs/Web/API/PositionOptions  
+    });  
+  }
+//拿到目标地址的经纬度=====================================================================
+  // 根据起终点经纬度规划驾车导航路线
+//  driving.search(new AMap.LngLat(116.379028, 39.865042), new AMap.LngLat(116.427281, 39.903719));
+    driving.search(new AMap.LngLat(lng, lat), new AMap.LngLat(tolon, tolat));
+</script>
+</body>
+</html>

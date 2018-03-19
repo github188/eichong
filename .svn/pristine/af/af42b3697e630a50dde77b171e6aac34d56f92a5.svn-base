@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsCarinfoMapper">
+
+	<resultMap id="tblCarinfoResultMap" type="TblCarinfo">
+		<id property="pkCarinfo" column="pk_CarInfo" />
+		<result property="carinfoStylename" column="CarInfo_StyleName" />
+		<result property="carinfoMaxodometer" column="CarInfo_MaxOdometer" />
+		<result property="carinfoBatterycapacity" column="CarInfo_BatteryCapacity" />
+		<result property="carinfoCreatedate" column="CarInfo_CreateDate" />
+		<result property="carinfoUpdatedate" column="CarInfo_UpdateDate" />
+		<result property="carinfoRemark" column="CarInfo_Remark" />
+		<result property="carinfoBrandicon" column="CarInfo_BrandIcon" />
+		<result property="carinfoCompanyId" column="CarInfo_CompanyId" />
+		<result property="carInfocarstatus" column="CarInfo_CarStatus" />
+		<result property="carinfoChargingTime" column="CarInfo_ChargingTime" />
+		<result property="carinfoBatteryType" column="CarInfo_BatteryType" />
+		<result property="carinfoChargingMode" column="charging_mode" />
+		<result property="carinfoPowerInterface" column="power_interface" />
+	</resultMap>
+	<resultMap id="pageResultMap" type="java.util.HashMap"
+		extends="tblCarinfoResultMap"></resultMap>
+	<resultMap id="findResultMap" type="java.util.HashMap"
+		extends="tblCarinfoResultMap"></resultMap>
+
+	<!-- 新增电动车品牌类型 -->
+	<insert id="insertCarinfo" parameterType="TblCarinfo">
+		insert into tbl_CarInfo
+		(
+		CarInfo_StyleName,
+		CarInfo_MaxOdometer,
+		CarInfo_BatteryCapacity,
+		CarInfo_CreateDate,
+		CarInfo_UpdateDate,
+		CarInfo_Remark,
+		CarInfo_BrandIcon,
+		CarInfo_CompanyId,
+		CarInfo_CarStatus,
+		CarInfo_ChargingTime,
+		CarInfo_BatteryType,
+		charging_mode,
+		power_interface
+		)values (
+		#{carinfoStylename},
+		#{carinfoMaxodometer},
+		#{carinfoBatterycapacity},
+		#{carinfoCreatedate},
+		#{carinfoUpdatedate},
+		#{carinfoRemark},
+		#{carinfoBrandicon},
+		#{carinfoCompanyId},
+		#{carInfocarstatus},
+		#{carinfoChargingTime},
+		#{carinfoBatteryType},
+		#{carinfoChargingMode},
+		#{carinfoPowerInterface}
+		)
+	</insert>
+	<!-- 更新电动车品牌类型 -->
+	<update id="updateCarinfo" parameterType="TblCarinfo">
+		update tbl_CarInfo set
+		CarInfo_StyleName=#{carinfoStylename},
+		CarInfo_MaxOdometer=#{carinfoMaxodometer},
+		CarInfo_BatteryCapacity=#{carinfoBatterycapacity},
+		CarInfo_UpdateDate=#{carinfoUpdatedate},
+		CarInfo_Remark=#{carinfoRemark},
+		CarInfo_BrandIcon=#{carinfoBrandicon},
+		CarInfo_CompanyId=#{carinfoCompanyId},
+		CarInfo_ChargingTime=#{carinfoChargingTime},
+		CarInfo_BatteryType=#{carinfoBatteryType},
+		charging_mode=#{carinfoChargingMode},
+		power_interface=#{carinfoPowerInterface}
+		where
+		pk_CarInfo=#{pkCarinfo}
+	</update>
+	<!-- 删除电动车品牌类型 -->
+	<delete id="deleteById" parameterType="map">
+		update
+		tbl_CarInfo
+		set
+		CarInfo_CarStatus=#{carInfocarstatus}
+		where
+		pk_CarInfo=#{pkCarinfo}
+	</delete>
+	<!-- 获取电动车品牌类型 -->
+	<select id="findById" parameterType="map" resultMap="tblCarinfoResultMap">
+		select
+		pk_CarInfo,
+		CarInfo_StyleName,
+		CarInfo_MaxOdometer,
+		CarInfo_BatteryCapacity,
+		CarInfo_CreateDate,
+		CarInfo_UpdateDate,
+		CarInfo_Remark,
+		CarInfo_BrandIcon,
+		CarInfo_CompanyId,
+		CarInfo_ChargingTime,
+		CarInfo_BatteryType,
+		charging_mode,
+		power_interface
+		from tbl_CarInfo
+		where
+		pk_CarInfo=#{pkCarinfo}
+		and
+		CarInfo_CarStatus=#{carInfocarstatus}
+	</select>
+
+	<!-- 获取车型号列表 -->
+	<select id="findCarList" parameterType="map" resultMap="tblCarinfoResultMap">
+		select
+		c.pk_CarInfo,
+		c.CarInfo_StyleName,
+		c.CarInfo_MaxOdometer,
+		c.CarInfo_BatteryCapacity,
+		c.CarInfo_BatteryCapacity,
+		c.CarInfo_CreateDate,
+		c.CarInfo_UpdateDate,
+		c.CarInfo_Remark,
+		c.CarInfo_BrandIcon,
+		c.CarInfo_CompanyId,
+		c.CarInfo_BatteryType,
+		c.charging_mode,
+		c.power_interface,
+		t.carCompany_Name as extValue1
+		from tbl_CarInfo c, tbl_carCompany t
+		<where>
+			t.pk_carCompany = c.CarInfo_CompanyId
+			and c.CarInfo_CarStatus='0'
+			<if test="pkCarinfo != null">
+				and pk_CarInfo=#{pkCarinfo}
+			</if>
+			<if test="extValue1 != null and extValue1 !=''">
+				and t.carCompany_Name like  concat('%',#{extValue1},'%')
+			</if>
+			<if test="carinfoStylename != null">
+				and CarInfo_StyleName=#{carinfoStylename}
+			</if>
+			<if test="carinfoMaxodometer != null">
+				and CarInfo_MaxOdometer=#{carinfoMaxodometer}
+			</if>
+			<if test="carinfoBatterycapacity != null">
+				and CarInfo_BatteryCapacity=#{carinfoBatterycapacity}
+			</if>
+			<if test="carinfoCreatedate != null">
+				and CarInfo_CreateDate=#{carinfoCreatedate}
+			</if>
+			<if test="carinfoUpdatedate != null">
+				and CarInfo_UpdateDate=#{carinfoUpdatedate}
+			</if>
+			<if test="carinfoRemark != null">
+				and CarInfo_Remark=#{carinfoRemark}
+			</if>
+			<if test="carinfoBrandicon != null">
+				and CarInfo_BrandIcon=#{carinfoBrandicon}
+			</if>
+			<if test="carinfoCompanyId != null and carinfoCompanyId != ''">
+				and CarInfo_CompanyId=#{carinfoCompanyId}
+			</if>
+			<if test="carInfocarstatus != null">
+				and CarInfo_CarStatus=0
+			</if>
+		</where>
+		order by CarInfo_CreateDate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	<!-- 获取车型号数量 -->
+	<select id="findCount" parameterType="map" resultType="long">
+		select count(pk_CarInfo)
+		from
+		tbl_CarInfo
+		<where>
+			CarInfo_CarStatus='0'
+			<if test="pkCarinfo != null">
+				pk_CarInfo=#{pkCarinfo}
+			</if>
+			<if test="carinfoStylename != null">
+				and CarInfo_StyleName=#{carinfoStylename}
+			</if>
+			<if test="carinfoMaxodometer != null">
+				and CarInfo_MaxOdometer=#{carinfoMaxodometer}
+			</if>
+			<if test="carinfoBatterycapacity != null">
+				and CarInfo_BatteryCapacity=#{carinfoBatterycapacity}
+			</if>
+			<if test="carinfoCreatedate != null">
+				and CarInfo_CreateDate=#{carinfoCreatedate}
+			</if>
+			<if test="carinfoUpdatedate != null">
+				and CarInfo_UpdateDate=#{carinfoUpdatedate}
+			</if>
+			<if test="carinfoRemark != null">
+				and CarInfo_Remark=#{carinfoRemark}
+			</if>
+			<if test="carinfoBrandicon != null">
+				and CarInfo_BrandIcon=#{carinfoBrandicon}
+			</if>
+			<if test="carinfoCompanyId != null and carinfoCompanyId != ''">
+				and CarInfo_CompanyId=#{carinfoCompanyId}
+			</if>
+			<if test="carInfocarstatus != null">
+				and CarInfo_CarStatus=#{carInfocarstatus}
+			</if>
+		</where>
+
+	</select>
+	<!-- 获取充电时间 -->
+	<select id="selectChargingTime" parameterType="map"
+		resultMap="tblCarinfoResultMap">
+		select CarInfo_ChargingTime
+		from
+		tbl_CarInfo
+		where
+		CarInfo_ChargingTime !=''
+		group by CarInfo_ChargingTime
+		order by
+		CarInfo_CreateDate desc
+	</select>
+	<!-- 获取最大续航里程 -->
+	<select id="selectMaxOdometer" parameterType="map"
+		resultMap="tblCarinfoResultMap">
+		select CarInfo_MaxOdometer
+		from
+		tbl_CarInfo
+		where
+		CarInfo_MaxOdometer !=''
+		group by CarInfo_MaxOdometer
+		order by
+		CarInfo_CreateDate desc
+	</select>
+	<!-- 根据汽车厂商得到汽车车型列表 -->
+	<select id="searchCarinfoList" parameterType="int"
+		resultMap="tblCarinfoResultMap">
+		select
+		pk_CarInfo,
+		CarInfo_StyleName
+		from tbl_CarInfo
+		<where>
+			1=1 and CarInfo_CarStatus=0
+			and
+			CarInfo_CompanyId=(${_parameter})
+		</where>
+	</select>
+
+	<select id="getByProperty" parameterType="map" resultType="hashmap">
+		SELECT
+		pk_CarInfo
+		from tbl_CarInfo
+		<where>
+			CarInfo_CarStatus = '0'
+			<if test="pk_CarInfo!=null and pk_CarInfo !=''">
+				and pk_CarInfo !=#{pk_CarInfo}
+			</if>
+			and (1=0
+			<if test="CarInfo_StyleName !=null and CarInfo_StyleName !=''">
+				or CarInfo_StyleName=#{CarInfo_StyleName}
+			</if>
+			)
+		</where>
+	</select>
+
+	<select id="getBindedUserCount" parameterType="map" resultType="int">
+		select count(1) from tbl_user_normal a where a.norm_car_type_id in
+		<foreach collection="idArr" index="index" item="fileId" open="("
+			separator="," close=")">
+			#{fileId}
+		</foreach>
+	</select>
+</mapper> 

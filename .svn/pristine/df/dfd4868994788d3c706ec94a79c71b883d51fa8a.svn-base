@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.IntegralActivityMapper">
+	<resultMap type="IntegralActivityDO" id="integralActivity">
+		<result property="pkId" column="pk_id" />
+		<result property="activityName" column="activity_name" />
+		<result property="direction" column="direction" />
+		<result property="maxIntegrals" column="max_integrals" />
+		<result property="launchIntegrals" column="launch_integrals" />
+		<result property="residuesIntegrals" column="residues_integrals" />
+		<result property="creator" column="creator" />
+		<result property="modifier" column="modifier" />
+		<result property="gmtCreate" column="gmt_create" />
+		<result property="gmtModified" column="gmt_modified" />
+	</resultMap>
+
+	<resultMap type="IntegralActivityAndRulesBO" id="integralActivityAndRules" extends="integralActivity">
+		<result property="integralRulesId" column="integral_rules_id" />
+		<result property="highestPriority" column="highest_priority" />
+		<result property="activityStatus" column="activity_status" />
+		<result property="fixedIntegralValue" column="fixed_integral_value" />
+		<result property="ratioIntegralValue" column="ratio_integral_value" />
+		<result property="startDate" column="start_date" />
+		<result property="endDate" column="end_date" />
+		<result property="effectiveTimes" column="effective_times" />
+		<result property="isWhole" column="is_whole" />
+		<result property="provinceId" column="province_id" />
+		<result property="cityId" column="city_id" />
+		<result property="powerStationId" column="powerStation_id" />
+		<result property="minValue" column="min_value" />
+		<result property="isChoice" column="is_choice" />
+		<result property="choiceMoney" column="choice_money" />
+		<result property="isShareChoice" column="is_share_choice" />
+		<result property="shareIntegralValue" column="share_integral_value" />
+		<result property="shareChoice" column="share_choice" />
+		<result property="contents" column="contents" />
+		<result property="electricPileId" column="electricPile_id" />
+		<result property="couponVarietyId" column="coupon_variety_id" />
+		<result property="integralValue" column="integral_value" />
+		<result property="userAccount" column="user_account" />
+	</resultMap>
+
+
+	<select id="getIntegralActivityCount" parameterType="IntegralActivityDO" resultType="long">
+		SELECT
+		COUNT(1)
+		FROM
+		tbl_integral_activity a
+		INNER JOIN tbl_integral_rules r ON a.pk_id = r.integral_activity_id
+		INNER JOIN tbl_user u ON r.creator = u.user_id
+		where 1=1
+		<if test="pkId != null">
+			and a.pk_id = #{pkId}
+		</if>
+		<if test="activityName != null and activityName !='' ">
+			and a.activity_name like concat('%',#{activityName},'%')
+		</if>
+		<if test="direction != null">
+			and a.direction = #{direction}
+		</if>
+		<if test="maxIntegrals != null">
+			and a.max_integrals = #{maxIntegrals}
+		</if>
+		<if test="launchIntegrals != null">
+			and a.launch_integrals = #{launchIntegrals}
+		</if>
+		<if test="residuesIntegrals != null">
+			and a.residues_integrals = #{residuesIntegrals}
+		</if>
+		<if test="activityStatus != null">
+			and r.activity_status = #{activityStatus}
+		</if>
+		<if test="startDate != null">
+			and r.start_date >= #{startDate}
+		</if>
+		<if test="endDate != null">
+			and #{endDate} >= r.end_date
+		</if>
+		<if test="isWhole != null">
+			and r.is_whole = #{isWhole}
+		</if>
+		<if test="provinceId != null and provinceId !='' ">
+			and r.province_id = #{provinceId}
+		</if>
+		<if test="cityId != null and cityId !='' ">
+			and r.city_id = #{cityId}
+		</if>
+	</select>
+
+	<select id="getIntegralActivityList" parameterType="IntegralActivityDO" resultMap="integralActivityAndRules">
+		SELECT
+		a.pk_id,
+		a.activity_name,
+		a.direction,
+		a.max_integrals,
+		a.launch_integrals,
+		a.residues_integrals,
+		r.activity_status,
+		r.pk_id integral_rules_id,
+		r.highest_priority,
+		r.fixed_integral_value,
+		r.ratio_integral_value,
+		r.start_date,
+		r.end_date,
+		r.effective_times,
+		r.is_whole,
+		r.province_id,
+		r.city_id,
+		r.powerStation_id,
+		r.min_value,
+		r.is_choice,
+		r.choice_money,
+		r.is_share_choice,
+		r.share_integral_value,
+		r.share_choice,
+		r.contents,
+		r.creator,
+		r.modifier,
+		r.gmt_create,
+		r.gmt_modified,
+		u.user_account
+		FROM
+		tbl_integral_activity a
+		INNER JOIN tbl_integral_rules r ON a.pk_id = r.integral_activity_id
+		INNER JOIN tbl_user u ON r.creator = u.user_id
+		where 1=1
+		<if test="pkId != null">
+			and a.pk_id = #{pkId}
+		</if>
+		<if test="activityName != null and activityName !='' ">
+			and a.activity_name like concat('%',#{activityName},'%')
+		</if>
+		<if test="direction != null">
+			and a.direction = #{direction}
+		</if>
+		<if test="maxIntegrals != null">
+			and a.max_integrals = #{maxIntegrals}
+		</if>
+		<if test="launchIntegrals != null">
+			and a.launch_integrals = #{launchIntegrals}
+		</if>
+		<if test="residuesIntegrals != null">
+			and a.residues_integrals = #{residuesIntegrals}
+		</if>
+		<if test="activityStatus != null">
+			and r.activity_status = #{activityStatus}
+		</if>
+		<if test="startDate != null">
+			and r.start_date >= #{startDate}
+		</if>
+		<if test="endDate != null">
+			and #{endDate} >= r.end_date
+		</if>
+		<if test="isWhole != null">
+			and r.is_whole = #{isWhole}
+		</if>
+		<if test="provinceId != null and provinceId !='' ">
+			and r.province_id = #{provinceId}
+		</if>
+		<if test="cityId != null and cityId !='' ">
+			and r.city_id = #{cityId}
+		</if>
+		order by r.pk_id desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.pageSize}</if>
+	</select>
+
+	<!-- 添加积分活动表 -->
+	<insert id="addIntegralActivity" useGeneratedKeys="true" parameterType="IntegralActivityDO" keyProperty="pkId">
+		INSERT INTO tbl_integral_activity
+		(pk_id,activity_name,direction,max_integrals,launch_integrals,residues_integrals,creator,modifier,gmt_create,gmt_modified)
+		VALUES
+		(null,#{activityName},#{direction},#{maxIntegrals},#{launchIntegrals},
+		#{residuesIntegrals},#{creator},#{modifier},#{gmtCreate},#{gmtModified})
+	</insert>
+
+	<!-- 修改积分活动表 -->
+	<update id="modifyIntegralActivity" parameterType="IntegralActivityAndRulesBO" >
+		UPDATE tbl_integral_activity
+		SET
+		<if test="activityName != null and activityName !='' ">
+			activity_name = #{activityName},
+		</if>
+		<if test="direction != null">
+			direction = #{direction},
+		</if>
+		<if test="maxIntegrals != null">
+			max_integrals = #{maxIntegrals},
+		</if>
+		<if test="launchIntegrals != null">
+			launch_integrals = #{launchIntegrals},
+		</if>
+		<if test="residuesIntegrals != null">
+			residues_integrals = #{residuesIntegrals},
+		</if>
+		modifier = #{modifier},
+		gmt_modified = #{gmtModified}
+		WHERE pk_id = #{pkId}
+	</update>
+
+	<!-- 删除积分活动表 -->
+	<delete id="deleteIntegralActivity" parameterType="Long">
+		DELETE FROM tbl_integral_activity WHERE pk_id = #{pkId}
+	</delete>
+
+	<select id="getIntegralActivityAndRulesList" parameterType="IntegralActivityDO" resultMap="integralActivityAndRules">
+		SELECT
+		a.pk_id,
+		a.activity_name,
+		a.direction,
+		a.max_integrals,
+		a.launch_integrals,
+		a.residues_integrals,
+		r.pk_id integral_rules_id,
+		r.highest_priority,
+		r.activity_status,
+		r.fixed_integral_value,
+		r.ratio_integral_value,
+		r.start_date,
+		r.end_date,
+		r.effective_times,
+		r.is_whole,
+		r.province_id,
+		r.city_id,
+		r.powerStation_id,
+		r.min_value,
+		r.is_choice,
+		r.choice_money,
+		r.is_share_choice,
+		r.share_integral_value,
+		r.share_choice,
+		<if test="pkId == 2 or pkId == 6">
+			e.electricPile_id,
+			e.coupon_variety_id,
+			e.integral_value,
+		</if>
+		r.contents
+		FROM
+		tbl_integral_activity a
+		INNER JOIN tbl_integral_rules r ON a.pk_id = r.integral_activity_id
+		<if test="pkId == 2 or pkId == 6">
+			LEFT JOIN tbl_integral_rules_extensions e ON e.integral_rules_id = r.pk_id
+		</if>
+		WHERE a.pk_id = #{pkId}
+		<if test="integralRulesId != null">
+			AND r.pk_id = #{integralRulesId}
+		</if>
+		<if test="integralDate != null">
+			AND date(#{integralDate}) >= r.start_date and r.end_date >= date(#{integralDate})
+		</if>
+		<if test="activityStatus != null">
+			AND r.activity_status = #{activityStatus}
+		</if>
+		<if test="electricPileId != null and pkId == 2">
+			AND e.electricPile_id = #{electricPileId}
+		</if>
+		<if test="isWhole != null">
+			AND r.is_whole = #{isWhole}
+		</if>
+		<if test="couponVarietyId != null and pkId == 6">
+			AND e.coupon_variety_id = #{couponVarietyId}
+		</if>
+		<if test="integralValue != null and pkId == 6">
+			AND e.integral_value = #{integralValue}
+		</if>
+		order by r.highest_priority DESC, r.powerStation_id, r.city_id, r.province_id
+	</select>
+
+	<select id="getIntegralActivityForBatch" parameterType="IntegralActivityDO" resultMap="integralActivityAndRules">
+		SELECT
+			a.pk_id,
+			a.activity_name,
+			a.direction,
+			a.max_integrals,
+			a.launch_integrals,
+			a.residues_integrals,
+			r.pk_id integral_rules_id,
+			r.highest_priority,
+			r.activity_status,
+			r.fixed_integral_value,
+			r.ratio_integral_value,
+			r.start_date,
+			r.end_date,
+			r.effective_times,
+			r.is_whole,
+			r.province_id,
+			r.city_id,
+			r.powerStation_id,
+			r.min_value,
+			r.is_choice,
+			r.choice_money,
+			r.is_share_choice,
+			r.share_integral_value,
+			r.share_choice,
+			r.contents,
+			e.electricPile_id,
+			e.coupon_variety_id,
+			e.integral_value
+		FROM
+			tbl_integral_activity a
+		INNER JOIN tbl_integral_rules r ON a.pk_id = r.integral_activity_id
+		LEFT JOIN tbl_integral_rules_extensions e ON e.integral_rules_id = r.pk_id
+		WHERE a.pk_id = 2 and date(NOW()) >= date(r.start_date) and date(r.end_date) >= date(NOW())
+		order by r.highest_priority DESC, r.powerStation_id, r.city_id, r.province_id
+	</select>
+</mapper>

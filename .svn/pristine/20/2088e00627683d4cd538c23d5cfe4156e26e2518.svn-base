@@ -1,0 +1,25 @@
+{
+    "title" : {
+        "text": "",
+        "x":"left"
+    },
+    "tooltip" : {
+        "trigger": "item"
+    },
+    "legend": {
+        "orient": "vertical",
+        "x":"center",
+        "data":["电桩数量"]
+    },
+    "dataRange": {
+        "x": "left",
+        "y": "bottom",
+        "splitList": [
+            {"start": 10000, color: '#000079'},
+            {"start": 1000, "end": 10000, color: '#004B97'},
+            {"start": 100, "end": 1000, color: '#0072E3'},
+            {"start": 1, "end": 100, color: '#46A3FF'},
+            {"end": 1 , color: '#97CBFF'}
+        ]
+    }
+}                   

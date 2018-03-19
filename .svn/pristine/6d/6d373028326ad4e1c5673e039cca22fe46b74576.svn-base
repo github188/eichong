@@ -1,0 +1,71 @@
+var concentratorId = getUrlParam('concentratorId');
+console.log(concentratorId)
+//加载集中器的基本信息
+getConcentratorInfo();
+function getConcentratorInfo() {
+    $.ajax({
+        type: "post",
+        url: basePath + getConcentratorInfoByIdUrl,
+        async: true,
+        data: {
+            concentratorId: concentratorId
+        },
+        success: function ( req ) {
+            console.log( req )
+            var data = req.dataObject;
+            var concentratorName = data.concentratorName;//集中器名称
+            var simMac = data.simMac;//SIM卡号
+            var simCode = data.simCode;//SIM卡编号(电话号码)
+            var simType = data.simType;//SIM来源(1：联通,2：电信,3：移动)
+            var state = data.state;//集中器状态(0：离线,1：上线 2：无效)
+            var creator = data.creator;//资产所属
+            $('#concentratorName').html(concentratorName);
+            $('#simMac').html(simMac);
+            $('#simCode').html(simCode);
+            $('#simType').html(simType);
+            $('#state').html(state);
+            $('#creator').html(creator);
+
+        }
+    });
+}
+//点击编辑
+$('#editBtn').on('click', function () {
+    window.location.href = 'concentrator_edit.html?concentratorId='+concentratorId;
+})
+//点击返回
+$('#toPileList').on('click', function () {
+    window.location.href = 'concentrator_list.html';
+})
+//加载绑定电桩列表
+getBindElectricPileInfo()
+function getBindElectricPileInfo() {
+    $.ajax({
+        type: "post",
+        url: basePath + getAllElectricPileListUrl,
+        async: true,
+        data: {
+            concentratorId: concentratorId
+        },
+        success: function ( req ) {
+            console.log( req )
+            var data = req.dataObject;
+            var listTr = "";
+            for (var i = 0; i < data.length; i++) {
+                var xuhaoNum = i+1 ;
+                //<td><input type="checkbox" name="ids" class="selectedBox selAll" value="' + data[i].concentratorId + '"/></td>
+                listTr += '<tr>'
+                    + '<td class="concentratorList_concentratorId">' + xuhaoNum
+                    + '</td><td class="concentratorList_code">' + data[i].code
+                    + '</td><td class="concentratorList_num">' + data[i].num
+                    + '</td><td class="concentratorList_chStatus">' + data[i].chStatus
+                    + '</td><td class="concentratorList_chChargingMethod">' + data[i].chChargingMethod
+                    + '</td><td class="concentratorList_chPower">' + data[i].chPower
+                    + '</td><td class="concentratorList_type">' + data[i].type
+                    + '</td></tr>';
+            }
+            $("#myTbogy").html(listTr);
+
+        }
+    });
+}

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.app.dao.AppParaconfigMapper">
+
+	<resultMap id="tblParaconfigResultMap" type="TblParaconfig">
+		<id property="pkParaconfig" column="pk_paraConfig" />
+		<result property="paraName" column="para_Name" />
+		<result property="paraType" column="para_Type" />
+		<result property="paraCreatedate" column="para_Createdate" />
+		<result property="paraUpdatedate" column="para_Updatedate" />
+	</resultMap>
+	<resultMap id="pageResultMap"  type="java.util.HashMap" extends="tblParaconfigResultMap"></resultMap>
+	<resultMap id="findResultMap"  type="java.util.HashMap" extends="tblParaconfigResultMap"></resultMap>
+
+	<insert id="insert" parameterType="TblParaconfig">
+	   insert into tbl_ParaConfig (
+	     para_Name,
+	     para_Type,
+	     para_Createdate,
+	     para_Updatedate
+	   )values (
+	     #{paraName},
+	     #{paraType},
+	     #{paraCreatedate},
+	     #{paraUpdatedate}
+	   )
+	</insert>
+
+	<update id="update" parameterType="TblParaconfig">
+	   update tbl_ParaConfig set
+	     para_Name=#{paraName},
+	     para_Type=#{paraType},
+	     para_Createdate=#{paraCreatedate},
+	     para_Updatedate=#{paraUpdatedate}
+	   where 
+	    pk_paraConfig=#{pkParaconfig} 
+	</update>
+
+	<delete id="delete" parameterType="map">
+	   delete from 
+	     tbl_ParaConfig 
+	   where 
+	    pk_paraConfig=#{pkParaconfig} 
+	</delete>
+
+	<select id="get" parameterType="map" resultMap="tblParaconfigResultMap">
+	   select 
+	    pk_paraConfig,
+	    para_Name,
+	    para_Type,
+	    para_Createdate,
+	    para_Updatedate
+	   from tbl_ParaConfig
+	   where 
+	    pk_paraConfig=#{pkParaconfig} 
+	</select>
+
+	<select id="findOne" parameterType="map" resultMap="findResultMap">
+	   select 
+	    pk_paraConfig,
+	    para_Name,
+	    para_Type,
+	    para_Createdate,
+	    para_Updatedate
+	   from tbl_ParaConfig
+	   where 
+	    pk_paraConfig=#{pkParaconfig} 
+	</select>
+
+	<select id="find" parameterType="map" resultMap="findResultMap">
+	   select 
+	     pk_paraConfig,
+	     para_Name,
+	     para_Type,
+	     para_Createdate,
+	     para_Updatedate
+	   from tbl_ParaConfig
+	   <where>
+	     <if test="pkParaconfig != null">
+	        pk_paraConfig=#{pkParaconfig}
+	     </if>
+	     <if test="paraName != null">
+	        and para_Name=#{paraName}
+	     </if>
+	     <if test="paraType != null">
+	        and para_Type=#{paraType}
+	     </if>
+	     <if test="paraCreatedate != null">
+	        and para_Createdate=#{paraCreatedate}
+	     </if>
+	     <if test="paraUpdatedate != null">
+	        and para_Updatedate=#{paraUpdatedate}
+	     </if>
+	   </where>
+	</select>
+	
+</mapper> 

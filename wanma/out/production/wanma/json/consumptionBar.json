@@ -1,0 +1,42 @@
+{
+    "title" : {
+        "text": ""
+    },
+    "tooltip" : {
+        "trigger": "axis"
+    },
+    "legend": {
+        "data":["充电消费次数","预约消费次数","购物消费次数","充值次数","其他次数","充电消费金额","预约消费金额","购物消费金额","充值金额","其他金额"]
+    },
+    "toolbox": {
+        "show" : true,
+        "feature" : {
+        	"outView":{"show": false,color: '#8b3a3a'},
+        	"innerView":{"show": true,color: '#8b3a3a'},
+            "mark" : {"show": false},
+            "dataView" : {"show": false, readOnly: false},
+            "magicType": {"show": false, type: ["line", "bar"]},
+            "restore" : {"show": false},
+            "saveAsImage" : {"show": false}
+        }
+    },
+    "calculable" : true,
+    "xAxis" : [],
+    "yAxis" : [
+			    {
+			            "type" : 'value',
+			            "name" : '用户消费次数',
+			            "axisLabel" : {
+			                "formatter": '{value} 次'
+			            }
+			        },
+			       {
+			            "type" : 'value',
+			            "name" : '用户消费总金额',
+			            "axisLabel" : {
+			                "formatter": '{value} (元)'
+			            }
+			        }
+        ],
+    "series" : []
+}

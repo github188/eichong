@@ -1,0 +1,216 @@
+getAllCarCompany();
+//新建校验
+$('body').off('blur', '#styleName').on('blur', '#styleName', function () {
+    checkStyleName($('#styleName').val())
+});
+
+$('body').off('blur', '#brandName').on('blur', '#brandName', function () {
+    checkBrandName($('#brandName').val())
+});
+
+$('body').off('blur', '#maxOdometer').on('blur', '#maxOdometer', function () {
+    checkMaxOdometer($('#maxOdometer').val())
+});
+
+$('body').off('blur', '#batteryCapacity').on('blur', '#batteryCapacity', function () {
+    checkBatteryCapacity($('#batteryCapacity').val())
+});
+
+$('body').off('blur', '#chargingTime').on('blur', '#chargingTime', function () {
+    checkChargingTime($('#chargingTime').val())
+});
+
+function checkStyleName(styleName) {
+    if (!styleName) {
+        $('#styleNameTip').html('电动车类型名不能为空');
+        return false;
+    }
+
+    if (styleName.length > 50) {
+        $('#styleNameTip').html('电动车类型名最多50个汉字');
+        return false;
+    }
+
+    $('#styleNameTip').html('');
+    return true;
+}
+
+function checkBrandName(brandName) {
+    if (!brandName) {
+        return true;
+    }
+
+    if (brandName.length > 50) {
+        $('#brandNameTip').html('电动车品牌名最多50个汉字');
+        return false;
+    }
+
+    $('#brandNameTip').html('');
+    return true;
+}
+
+function checkMaxOdometer(maxOdometer) {
+    if (!maxOdometer) {
+        $('#maxOdometerTip').html('电动车最大续航里程不能为空');
+        return false;
+    }
+
+    if (checkIsNum(maxOdometer)) {
+        $('#maxOdometerTip').html('电动车最大续航里程只能是整数');
+        return false;
+    }
+
+    if (maxOdometer.length > 5) {
+        $('#maxOdometerTip').html('电动车最大续航里程最多5位数');
+        return false;
+    }
+
+    $('#maxOdometerTip').html('');
+    return true;
+}
+
+function checkBatteryCapacity(batteryCapacity) {
+    if (!batteryCapacity) {
+        return true;
+    }
+
+    if (checkIsNum(batteryCapacity)) {
+        $('#batteryCapacityTip').html('电动车电池容量只能是整数');
+        return false;
+    }
+
+    if (batteryCapacity.length > 5) {
+        $('#batteryCapacityTip').html('电动车电池容量最多5位数');
+        return false;
+    }
+
+    $('#batteryCapacityTip').html('');
+    return true;
+}
+
+function checkChargingTime(chargingTime) {
+    if (!chargingTime) {
+        $('#chargingTimeTip').html('电动车充电时间不能为空');
+        return false;
+    }
+
+    if (checkIsNum(chargingTime)) {
+        $('#chargingTimeTip').html('电动车充电时间只能是整数');
+        return false;
+    }
+
+    if (chargingTime.length > 2) {
+        $('#chargingTimeTip').html('电动车充电时间最多2位数');
+        return false;
+    }
+
+    $('#chargingTimeTip').html('');
+    return true;
+}
+
+function checkCarCompanyId(carCompanyId) {
+    if (!carCompanyId) {
+        $('#carCompanyIdTip').html('电动车汽车厂家不能为空');
+        return false;
+    }
+    $('#carCompanyIdTip').html('');
+    return true;
+}
+
+function checkIsNum(str) {
+    var re = /^[1-9]*[1-9][0-9]*$/;
+    return !re.test(str);
+}
+
+//将数据提交到后台处理
+function saveCarInfo() {
+    var styleName = $('#styleName').val();
+    var brandName = $('#brandName').val();
+    var maxOdometer = $('#maxOdometer').val();
+    var batteryCapacity = $('#batteryCapacity').val();
+    var chargingTime = $('#chargingTime').val();
+    var carCompanyId = $('#carCompanyId').attr('data-value');
+    var chargingMode = $('#chargingMode').attr('data-value');
+    var powerInterface = $('#powerInterface').attr('data-value');
+    if (!checkStyleName(styleName) || !checkBrandName(brandName) || !checkMaxOdometer(maxOdometer) || !checkBatteryCapacity(batteryCapacity) || !checkChargingTime(chargingTime) || !checkCarCompanyId(carCompanyId)) {
+        return;
+    }
+
+    var obj = {
+        styleName: styleName,
+        brandName: brandName,
+        maxOdometer: maxOdometer,
+        batteryCapacity: batteryCapacity,
+        chargingTime: chargingTime,
+        carCompanyId: carCompanyId,
+        chargingMode: chargingMode,
+        powerInterface: powerInterface
+    };
+
+    $.ajax({
+        type: "post",
+        url: basePath + addCarInfoUrl,
+        async: true,
+        data: obj,
+        success: function (data) {
+            if (data.success == true) {
+                window.location.href = 'carInfo.html';
+            } else {
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+                    shadeClose: false,
+                    closeBtn: 1,
+                    area: ['310px', '160px'],//宽高
+                    content: data.msg,
+                    time: 3000,
+                    btn: ["确定"]
+                });
+            }
+        }
+    });
+}
+
+//加载所有电动车品牌
+function getAllCarCompany() {
+    $.ajax({
+        type: "post",
+        url: basePath + getAllCarCompanyUrl,
+        async: true,
+        success: function (data) {
+            if (data.success == true) {
+                var data = data.dataObject;
+                var carCompanyList = '<li data-option="">请选择</li>';
+                for (var i = 0; i < data.length; i++) {
+                    carCompanyList += '<li data-option="' + data[i].id + '">' + data[i].name + '</li>';
+                }
+                $('.carCompanyUl').html(carCompanyList);
+                selectModel();
+            }
+        }
+    });
+}
+
+//汽车厂家
+$('.carCompanyUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+});
+
+//充电模式
+$('.chargingModeUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+});
+
+//接口标准
+$('.powerInterfaceUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+});
+
+//返回列表页
+$('#goback').on('click', function () {
+    window.location.href = 'carInfo.html';
+});

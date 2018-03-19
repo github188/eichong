@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/style.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/electric/concentrator/add_concentrator.css"/>
+    <title>集中器编辑</title>
+</head>
+<body>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="container-fluid">
+        <div class="row btnBlock">
+            <!--按钮组合-->
+            <div class="saveBtn cursor" id="saveBtn">保存</div>
+            <div class="goBack cursor" id="toPowerStationDetail">返回</div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 ">
+                <div class="ibox float-e-margins" style="margin: 0">
+                    <div class="">
+                        <div class="ibox-content clearfix">
+                            <div class="userBaseInfo col-sm-12 ">
+                                <!--<div class="col-sm-12 titleTip">电桩编辑</div>-->
+                                <div class="col-sm-6" style="padding: 0">
+                                    <ul class="baseInfoLeft commonUl">
+                                        <li>
+                                            <span class="col-sm-4 col-xs-12">集中器名称</span>
+                                            <input type="text" name="concentratorName" id="concentratorName" value="" autofocus="autofocus"
+                                                   class="col-sm-8 col-xs-12 addInputText" placeholder="请输入集中器名称"/>
+                                        </li>
+
+                                        <li>
+                                            <span class="col-sm-4 col-xs-12">SIM卡编码</span>
+                                            <input type="text" name="simCode" id="simCode" value="" autofocus="autofocus"
+                                                   class="col-sm-8 col-xs-12 addInputText" placeholder="请输入SIM卡编码"/>
+                                        </li>
+
+                                    </ul>
+                                </div>
+                                <div class="col-sm-6" style="padding: 0">
+                                    <ul class="baseInfoRight commonUl">
+                                        <li>
+                                            <span class="col-sm-4 col-xs-12">SIM卡卡号</span>
+                                            <input type="text" name="simMac" id="simMac" value="" autofocus="autofocus"
+                                                   class="col-sm-8 col-xs-12 addInputText" placeholder="请输入SIM卡卡号"/>
+                                        </li>
+                                        <li>
+                                            <!--<span class="col-sm-6 col-xs-6">SIM卡运营商</span>
+                                            <div class="col-sm-6 col-xs-6 model-select-box" style="padding: 0;">
+                                                <div class="model-select-text electricPowerBlock" data-value="" id="">
+                                                    请选择
+                                                </div>
+                                                <span class="downRow electricPowerBlock"></span>
+                                                <ul class="model-select-option" id="">
+                                                    <li data-option="0" class="seleced">请选择</li>
+                                                    <li data-option="0" class="seleced">移动</li>
+
+                                                </ul>
+                                            </div>-->
+                                            <span class="col-sm-4 col-xs-12">SIM卡运营商</span>
+                                            <div class="model-select-box col-sm-8 col-xs-12 addInputText">
+                                                <div class="model-select-text areaCodeBlock" data-value="" id="areaCodeHtml">选择sim卡运营商</div>
+                                                <span class="downRow areaCodeBlock"></span>
+                                                <input type="text" name="simType" id="" value="" hidden="hidden"/>
+                                                <ul class="model-select-option areaCodeUl">
+                                                    <li data-option="" class="seleced">选择sim卡运营商</li>
+                                                    <li data-option="3" >移动</li>
+                                                    <li data-option="1" >联通</li>
+                                                    <li data-option="2" >电信</li>
+                                                </ul>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="../../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="../../../js/contabs.min.js"></script>
+<script src="../../../js/electric/concentrator/add_concentrator.js" type="text/javascript" charset="utf-8"></script>
+</html>

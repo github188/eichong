@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.web.dao.WebFootprintMapper">
+
+	<resultMap id="tblFootprintResultMap" type="TblFootprint">
+		<id property="pkFootprint" column="pk_Footprint" />
+		<result property="foprContent" column="foPr_Content" />
+		<result property="foprCreatedate" column="foPr_Createdate" />
+		<result property="foprUpdatedate" column="foPr_Updatedate" />
+		<result property="foprUserId" column="foPr_UserId" />
+	</resultMap>
+	<resultMap id="pageResultMap"  type="java.util.HashMap" extends="tblFootprintResultMap"></resultMap>
+	<resultMap id="findResultMap"  type="java.util.HashMap" extends="tblFootprintResultMap"></resultMap>
+
+	<insert id="insert" parameterType="TblFootprint">
+	   insert into tbl_Footprint (
+	     pk_Footprint,
+	     foPr_Content,
+	     foPr_Createdate,
+	     foPr_Updatedate
+	   )values (
+	     #{pkFootprint},
+	     #{foprContent},
+	     #{foprCreatedate},
+	     #{foprUpdatedate}
+	   )
+	</insert>
+
+	<update id="update" parameterType="TblFootprint">
+	   update tbl_Footprint set
+	     pk_Footprint=#{pkFootprint},
+	     foPr_Content=#{foprContent},
+	     foPr_Createdate=#{foprCreatedate},
+	     foPr_Updatedate=#{foprUpdatedate}
+	   where 
+	    pk_Footprint=#{pkFootprint} 
+	</update>
+
+	<delete id="delete" parameterType="map">
+	   delete from 
+	     tbl_Footprint 
+	   where 
+	    pk_Footprint=#{pkFootprint} 
+	</delete>
+
+	<select id="get" parameterType="map" resultMap="tblFootprintResultMap">
+	   select 
+	    pk_Footprint,
+	    foPr_Content,
+	    foPr_Createdate,
+	    foPr_Updatedate
+	   from tbl_Footprint
+	   where 
+	    pk_Footprint=#{pkFootprint} 
+	</select>
+
+	<select id="findOne" parameterType="map" resultMap="findResultMap">
+	   select 
+	    pk_Footprint,
+	    foPr_Content,
+	    foPr_Createdate,
+	    foPr_Updatedate
+	   from tbl_Footprint
+	   where 
+	    pk_Footprint=#{pkFootprint} 
+	</select>
+
+	<select id="find" parameterType="map" resultMap="tblFootprintResultMap">
+	   select 
+	     pk_Footprint,
+	     foPr_Content,
+	     foPr_Createdate,
+	     foPr_Updatedate
+	   from tbl_Footprint
+	   <where>
+	     <if test="pkFootprint != null">
+	        pk_Footprint=#{pkFootprint}
+	     </if>
+	     <if test="foprContent != null">
+	        and foPr_Content=#{foprContent}
+	     </if>
+	     <if test="foprCreatedate != null">
+	        and foPr_Createdate=#{foprCreatedate}
+	     </if>
+	     <if test="foprUpdatedate != null">
+	        and foPr_Updatedate=#{foprUpdatedate}
+	     </if>
+	      <if test="foprUserId != null">
+	        and foPr_UserId=#{foprUserId}
+	     </if>
+	   </where>
+	</select>
+	
+	<select id="page" parameterType="map" resultMap="pageResultMap">
+	   select 
+	     pk_Footprint,
+	     foPr_Content,
+	     foPr_Createdate,
+	     foPr_Updatedate
+	   from tbl_Footprint
+	   <where>
+	     <if test="pkFootprint != null">
+	        pk_Footprint=#{pkFootprint}
+	     </if>
+	     <if test="foprContent != null">
+	        and foPr_Content=#{foprContent}
+	     </if>
+	     <if test="foprCreatedate != null">
+	        and foPr_Createdate=#{foprCreatedate}
+	     </if>
+	     <if test="foprUpdatedate != null">
+	        and foPr_Updatedate=#{foprUpdatedate}
+	     </if>
+	   </where>
+	</select>
+</mapper> 

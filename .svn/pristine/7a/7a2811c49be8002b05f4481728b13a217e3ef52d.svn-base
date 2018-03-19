@@ -1,0 +1,203 @@
+package com.wanma.ims.service.impl;
+
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.util.*;
+
+
+import com.wanma.ims.common.domain.*;
+import com.wanma.ims.mapper.ActivityMapper;
+import com.wanma.ims.mapper.ElectricPileMapper;
+import com.wanma.ims.util.DateUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.wanma.ims.mapper.FavCouponMapper;
+import com.wanma.ims.mapper.InitialMapper;
+import com.wanma.ims.service.FavCouponService;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service("userCouponService")
+public class FavCouponServiceImpl implements FavCouponService{
+	private static final Logger LOGGER = LoggerFactory.getLogger(UserCardServiceImpl.class);
+	@Autowired
+	private FavCouponMapper userCouponMapper;
+	@Autowired
+	private InitialMapper initialMapper;
+
+	@Autowired
+	private ElectricPileMapper electricPileMapper;
+
+	@Autowired
+	private ActivityMapper activityMapper;
+
+	@Override
+	public int getUserAvailableCoupon(FavCouponDO coupon) {
+		return userCouponMapper.getUserAvailableCoupon(coupon);
+	}
+	
+	public String getUserDiscountAmount(FavCouponDO coupon) {
+		return userCouponMapper.getUserDiscountAmount(coupon);
+	}
+
+	@Override
+	@Transactional
+	public void removeCouponByCouponVarietyId(Integer pkCouponVariety) {
+		userCouponMapper.removeCouponByCouponVarietyId(pkCouponVariety);
+	}
+
+	@Override
+	public long getCouponCount(FavCouponDO coupon) {
+		return userCouponMapper.getCouponCount(coupon);
+	}
+
+	@Override
+	public List<FavCouponDO> getCouponList(FavCouponDO coupon) {
+		List<FavCouponDO> couponList = userCouponMapper.getCouponList(coupon);
+		List<CityDO>  cityList  =  initialMapper.selectCityList(null, null);
+		for(int j=0;j<couponList.size();j++){
+			if(couponList.get(j).getCovaScope()==0){
+				couponList.get(j).setCouponCityScope("全国通用");
+			}else if (couponList.get(j).getCovaScope()==2) {
+				couponList.get(j).setCouponCityScope("站点通用");;
+			}else{
+				for(int i=0;i<cityList.size();i++){
+					if(cityList.get(i).getCityId().equals(couponList.get(j).getCityCode())){
+						couponList.get(j).setCouponCityScope(cityList.get(i).getCityName()+"通用");
+					}	
+				}
+			}
+		}
+		return couponList;
+	}
+
+	@Override
+	public int getCouponStatus(String id) {
+		return userCouponMapper.getCouponStatus(id);
+	}
+
+	@Override
+	@Transactional
+	public void deleteCoupon(String id) {
+		userCouponMapper.deleteCoupon(id);
+	}
+	@Override
+	public List<FavCouponDO> getExportCouponList(FavCouponDO searchModel) throws ParseException   {
+	        List<FavCouponDO> couponList = userCouponMapper.getExportCouponList(searchModel);
+	        List<CityDO>  cityList  =  initialMapper.selectCityList(null, null);
+			for(int j=0;j<couponList.size();j++){
+				if(couponList.get(j).getCovaScope()==0){
+					couponList.get(j).setCouponCityScope("全国通用");
+				}else if (couponList.get(j).getCovaScope()==2) {
+					couponList.get(j).setCouponCityScope("站点通用");;
+				}else{
+					for(int i=0;i<cityList.size();i++){
+						if(cityList.get(i).getCityId().equals(couponList.get(j).getCityCode())){
+							couponList.get(j).setCouponCityScope(cityList.get(i).getCityName()+"通用");
+						}	
+					}
+				}
+			}
+			
+//	        Map<Integer, String> couponLimitationMap = new HashMap<>();
+//	        couponLimitationMap.put(1, "仅限交流电桩");
+//	        couponLimitationMap.put(2, "仅限直流电桩");
+//	        couponLimitationMap.put(3, "不限充电桩");
+	        
+	        Map<Integer, String> couponStatesMap = new HashMap<>();
+	        couponStatesMap.put(1, "未兑换未过期");
+	        couponStatesMap.put(2, "未兑换已过期");
+	        couponStatesMap.put(3, "已兑换已使用");
+	        couponStatesMap.put(4, "已兑换未使用未过期");
+	        couponStatesMap.put(5, "已兑换未使用已过期");
+
+	        for (FavCouponDO coupon : couponList) {
+//	        	coupon.setChCpLimitation(couponLimitationMap.get((int)coupon.getCpLimitation()));
+	        	coupon.setChCpstates(couponStatesMap.get(coupon.getCpstates()));
+	        }
+
+	        return couponList;
+	    }
+
+	@Override
+	public long getUserCouponCount(FavCouponDO coupon) {
+		return userCouponMapper.getUserCouponCount(coupon);
+	}
+
+	@Override
+	public List<FavCouponDO> getUserCouponList(FavCouponDO coupon) {
+		return userCouponMapper.getUserCouponList(coupon);
+	}
+
+	@Override
+	@Transactional
+	public void changeEndDate(ActivityDO activity) {
+		 userCouponMapper.changeEndDate(activity);
+	}
+
+	/**
+	 * 通过订单处理消费送优惠券
+	 * @param orderDO
+	 * @return
+	 * @throws Exception
+	 */
+	@Transactional
+	public void doCouponForBatch(OrderDO orderDO){
+		try {
+			//桩
+			ElectricPileDO electricPileDO = electricPileMapper.getDataForBatch(orderDO.getElectricPileCode());
+			if (electricPileDO == null) {
+				LOGGER.error(this.getClass() + ".doCouponForBatch() info:电桩编号" + orderDO.getElectricPileCode() + "没有电桩数据！");
+			} else {
+				ActivityDO qryActivity = new ActivityDO();
+				qryActivity.setPkPowerstation(electricPileDO.getPowerStationId().intValue());
+				qryActivity.setCityCode(electricPileDO.getPsCityCode());
+				List<ActivityDO> activityList = activityMapper.getDataForCouponBatch(qryActivity);
+				if (activityList == null) {
+					LOGGER.error(this.getClass() + ".doCouponForBatch() info:电桩编号" + orderDO.getElectricPileCode() + "没有消费送优惠券活动！");
+				} else {
+					Date endChargeTime = DateUtil.parse(orderDO.getEndChargeTime());
+					List<FavCouponDO> couponDOList = new ArrayList<FavCouponDO>();
+					FavCouponDO couponDO;
+					Map<Integer, Integer> activityIdMap = new HashMap<Integer, Integer>();
+					BigDecimal money = new BigDecimal(orderDO.getChOrMoeny());//订单中的总金额
+					BigDecimal couponMoney = new BigDecimal(orderDO.getTotalfavMoney());//订单中的优惠券金额
+					for (ActivityDO activity : activityList) {
+						if (activity.getActBegindate().getTime() <= endChargeTime.getTime()
+								&& endChargeTime.getTime() <= activity.getActEnddate().getTime()) {
+							if (money.subtract(couponMoney).compareTo(new BigDecimal(activity.getSingelMoney())) >= 0) {
+								if (activityIdMap.containsKey(activity.getPkActivity())) {
+									continue;
+								}
+								for(int i = 0; i < activity.getNum().intValue(); i++){
+									couponDO = new FavCouponDO();
+									couponDO.setPkActivity(activity.getPkActivity());
+									couponDO.setPkCouponvariety(activity.getPkCouponVariety());
+									couponDO.setCpStatus(Short.parseShort("0"));
+									couponDO.setCpLimitation(Short.parseShort("0"));
+									couponDO.setCpCouponvalue(activity.getCouponValue());
+									couponDO.setCpCouponcondition(activity.getCpCouponcondition());
+									couponDO.setCpUserid(orderDO.getUserId().intValue());
+									couponDO.setCpBegindate(DateUtil.format(activity.getActBegindate()));
+									couponDO.setCpEnddate(DateUtil.format(activity.getActEnddate()));
+									couponDO.setChargingOrderId(orderDO.getOrderId().toString());
+									couponDOList.add(couponDO);
+								}
+								activityIdMap.put(activity.getPkActivity(), activity.getPkActivity());
+							}
+						}
+					}
+
+					if (couponDOList.size() > 0) {
+						userCouponMapper.batchAddCoupon(couponDOList);
+					}
+				}
+			}
+		}catch(Exception e){
+			LOGGER.error(this.getClass() + ".doCouponForBatch() info:订单编号" + orderDO.getOrderCode() + "消费赠送优惠券失败！" + e.toString(), e);
+		}
+	}
+
+}

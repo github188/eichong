@@ -1,0 +1,137 @@
+package com.wanma.ims.service;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
+
+import com.wanma.ims.common.domain.CompanyDO;
+import com.wanma.ims.common.domain.FinAccountDO;
+import com.wanma.ims.common.domain.UserCardDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.domain.base.BasicModel;
+import com.wanma.ims.common.domain.bo.AccountBalanceBO;
+import com.wanma.ims.common.dto.BaseResultDTO;
+
+
+/**
+ * 资金账户
+ * @author bingo
+ * @date 2017-06-16
+ */
+public interface FinAccountService {
+	/**
+	* <p>Description: 获取资金账户数量</p>
+	* @param
+	* @author bingo
+	* @date 2017-6-16
+	 */
+	public Long getFinAccountCount(FinAccountDO FinAccount);
+	
+	/**
+	* <p>Description: 获取资金账户数据</p>
+	* @param
+	* @author bingo
+	* @date 2017-6-16
+	 */
+	public List<FinAccountDO> getFinAccountList(FinAccountDO FinAccount);
+	
+	/**
+	* <p>Description: 新增资金账户</p>
+	* @param
+	* @author bingo
+	* @date 2017-6-16
+	 */
+	public Long addFinAccount(BasicModel object) throws Exception;
+	
+	/**
+	* <p>Description: 修改资金账户</p>
+	* @param
+	* @author bingo
+	* @date 2017-6-16
+	 */
+	public int modifyFinAccount(FinAccountDO FinAccount, UserDO user) throws Exception;
+	
+	/**
+	* <p>Description: 删除资金账户</p>
+	* @param
+	* @author bingo
+	* @date 2017-6-16
+	 */
+	public int removeFinAccount(FinAccountDO FinAccount) throws Exception;
+	
+	/**
+	* <p>Description: 获取用户首页中资金账户数据</p>
+	* @param
+	* @author bingo
+	* @date 2017-6-16
+	 */
+	public List<FinAccountDO> getFinAccount4User(AccountBalanceBO accountBalance);
+	
+	/**
+	* <p>Description: 获取用户首页中的总资产</p>
+	* @param
+	* @author bingo
+	* @date 2017-6-20
+	 */
+	public Long getFinAccountBalance4User(AccountBalanceBO accountBalance) throws Exception;
+	
+	/**
+	* <p>Description: 获取卡首页中资金账户数据</p>
+	* @param
+	* @author bingo
+	* @date 2017-6-21
+	 */
+	public List<FinAccountDO> getFinAccount4Card(UserCardDO userCard) throws Exception;
+	
+	/**
+	* <p>Description: 修改资金账户密码</p>
+	* @param
+	* @author bingo
+	* @date 2017-6-22
+	 */
+	public int modifyFinAccountPwd(Long accountId, UserDO user) throws Exception;
+	
+	/**
+	* <p>Description: 获取公司首页中的余额和状态</p>
+	* @param
+	* @author bingo
+	* @date 2017-7-10
+	 */
+	public FinAccountDO getFinAccountBalance4Cpy(String accountId) throws Exception;
+	
+	/**
+	* <p>Description: 导出资金账户信息</p>
+	* @param
+	* @author bingo
+	* @date 2017-7-24
+	 */
+	public BaseResultDTO exportFinAccount(HttpServletResponse response,
+			FinAccountDO finAccount, UserDO loginUser) throws Exception;
+	/**
+     * 大账户为小账户等额配资 
+     * @param
+     * @author mb
+	 * @param loginUser 
+	 * @return 
+     * @date 2017-8-14
+     */
+	public BaseResultDTO equalAllocation(CompanyDO company, FinAccountDO finAccount, UserDO loginUser);
+	/**
+     * 大账户为小账户等额配资 
+     * @param
+     * @author mb
+	 * @param loginUser 
+	 * @return 
+     * @date 2017-8-16
+     */
+	public BaseResultDTO separateAllocation(CompanyDO company,
+			FinAccountDO finAccount, UserDO loginUser);
+	
+	/**
+	* <p>Description: 修改大账户预警金额</p>
+	* @param
+	* @author bingo
+	* @date 2017-8-25
+	*/
+	public BaseResultDTO modifyFinAccountWarn(FinAccountDO finAccount, UserDO user) throws Exception;
+}

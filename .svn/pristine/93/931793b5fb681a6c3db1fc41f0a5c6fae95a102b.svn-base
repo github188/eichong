@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../js/lib/ztree/css/zTreeStyle/zTreeStyle.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/admin/menu_list.css"/>
+    <title>菜单管理</title>
+</head>
+<body>
+<div class="container animated fadeInRight">
+    <div class="row">
+        <div class="formBlock clearfix">
+            <form id="menuListForm">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" >
+                    <div class="userListSelect row" style="padding:0 15px;">
+                        <div class="col-sm-3 col-xs-12">
+                            <div class="col-sm-11 userAccount">
+                                <input type="text" name="contents" id="Content" value="" placeholder="菜单名称" class="userAccountInput"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-xs-12">
+                            <div class="col-sm-11 col-xs-12 model-select-box">
+                                <div class="model-select-text menuTypeBlock" data-value="" id="menuTypeHtml">菜单类别</div>
+                                <span class="downRow menuTypeBlock clickRotateSpan"></span>
+                                <input type="text" hidden="hidden" name="menuType"/>
+                                <ul class="model-select-option menuTypeUl">
+                                    <li data-option="" class="seleced">请选择</li>
+                                    <li data-option="1">菜单权限</li>
+                                    <li data-option="2">按钮权限</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-xs-12">
+                            <div class=" col-sm-11 userAccount">
+                                <input type="text" id="parentMenuInput" value="" class="userAccountInput" placeholder="上级菜单" readonly="readonly"/>
+                                <input type="text" name="parentMenuId" id="" value="" class="userAccountInput" hidden="hidden" style="display: none;"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="position: relative;">
+                    <div class="queryBtn" onclick="menuListSearch()">
+                        查询
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!--按钮部分开始==========================================================-->
+        <div class="btnBlock">
+            <div class="row">
+                <div class="col-sm-2" style="">
+                    <div class="col-sm-10 col-xs-2 btnStyle" id="addMenuBtn" style="display: none;">
+                        新建
+                    </div>
+                </div>
+                <div class="col-sm-2" style="">
+                    <div class="col-sm-10 col-xs-2 btnStyle" id="deleteBtn" style="margin-left: 5px;display: none;">
+                        删除
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--表格部分开始==========================================================-->
+        <div class="showSet table-responsive">
+            <table class=" table table-bordered text-center" style="border: 1px solid #DCDCDC;">
+                <thead>
+                <tr>
+                    <th class=""><input type="checkbox" name="" class="selAll" value=""/></th>
+                    <th>菜单ID</th>
+                    <th>菜单名称</th>
+                    <th>菜单链接</th>
+                    <th>上级菜单</th>
+                    <th>菜单类别</th>
+                    <th>菜单排序</th>
+                </tr>
+                </thead>
+                <tbody id="myTbody">
+
+                </tbody>
+            </table>
+
+            <div id="menuListPage" class="pagination">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="deleteContent" style="display: none;">
+    确实删除吗？
+</div>
+<div class="menuBlock" style="display: none;">
+    <ul id="treeDemo" class="ztree"></ul>
+</div>
+</body>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="../../js/contabs.min.js"></script>
+<script src="../../js/lib/ztree/js/jquery.ztree.core.js"></script>
+<script src="../../js/admin/menu_list.js" type="text/javascript" charset="utf-8"></script>
+</html>

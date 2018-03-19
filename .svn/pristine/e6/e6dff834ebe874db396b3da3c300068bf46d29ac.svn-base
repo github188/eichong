@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+<meta content="width=device-width; initial-scale=1; maximum-scale=1" name="viewport">
+<title>一款功能强大的jquery评分插件jquery.raty</title>
+
+<link type="text/css" rel="stylesheet" href="css/application.css">
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/jquery.raty.min.js"></script>
+</head>
+<body>
+<div style="width:500px; margin:100px auto;">
+  <div class="demo">
+    <div id="function-demo" class="target-demo"></div>
+    <div id="function-hint" class="hint"></div>
+  </div>
+  <div class="demo">
+    <div id="function-demo1" class="target-demo"></div>
+    <div id="function-hint1" class="hint" style="width:20px;"></div>分
+  </div>
+</div>
+<script type="text/javascript">
+    $(function() {
+      $.fn.raty.defaults.path = 'img';
+      $('#function-demo').raty({
+	  	number: 3,//多少个星星设置		
+		targetType: 'hint',//类型选择，number是数字值，hint，是设置的数组值
+        path      : 'img',
+		hints     : ['差','一般','好'],
+        cancelOff : 'cancel-off-big.png',
+        cancelOn  : 'cancel-on-big.png',
+        size      : 24,
+        starHalf  : 'star-half-big.png',
+        starOff   : 'star-off-big.png',
+        starOn    : 'star-on-big.png',
+        target    : '#function-hint',
+        cancel    : false,
+        targetKeep: true,
+		targetText: '请选择评分',
+
+        click: function(score, evt) {
+          alert('ID: ' + $(this).attr('id') + "\nscore: " + score + "\nevent: " + evt.type);
+        }
+      });    
+	  
+	  $('#function-demo1').raty({
+	  	number: 5,//多少个星星设置
+		score: 0,//初始值是设置
+		targetType: 'number',//类型选择，number是数字值，hint，是设置的数组值
+        path      : 'img',
+        cancelOff : 'cancel-off-big.png',
+        cancelOn  : 'cancel-on-big.png',
+        size      : 24,
+        starHalf  : 'star-half-big.png',
+        starOff   : 'star-off-big.png',
+        starOn    : 'star-on-big.png',
+        target    : '#function-hint1',
+        cancel    : false,
+        targetKeep: true,
+        precision : false,//是否包含小数
+        click: function(score, evt) {
+          alert('ID: ' + $(this).attr('id') + "\nscore: " + score + "\nevent: " + evt.type);
+        }
+      });    
+    });
+
+  
+  </script>

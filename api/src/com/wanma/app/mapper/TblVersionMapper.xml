@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.app.dao.TblVersionMapper">
+
+	<resultMap id="tblVersionResultMap" type="TblVersion">
+		<id property="pkVersion" column="pk_Version" />
+		<result property="versNumber" column="vers_Number" />
+		<result property="versType" column="vers_Type" />
+		<result property="versUrl" column="vers_Url" />
+		<result property="vers_auto_update" column="vers_auto_update"/>
+		<result property="versCreatedate" column="vers_Createdate" />
+		<result property="versUpdatedate" column="vers_Updatedate" />
+	</resultMap>
+	<resultMap id="pageResultMap"  type="java.util.HashMap" extends="tblVersionResultMap"></resultMap>
+	<resultMap id="findResultMap"  type="java.util.HashMap" extends="tblVersionResultMap"></resultMap>
+
+	<insert id="insert" parameterType="TblVersion">
+	   insert into tbl_Version (
+	     vers_Number,
+	     vers_Type,
+	     vers_Url,
+	     vers_Createdate,
+	     vers_Updatedate
+	   )values (
+	     #{versNumber},
+	     #{versType},
+	     #{versUrl},
+	     #{versCreatedate},
+	     #{versUpdatedate}
+	   )
+	</insert>
+
+	<update id="update" parameterType="TblVersion">
+	   update tbl_Version set
+	     vers_Number=#{versNumber},
+	     vers_Type=#{versType},
+	     vers_Url=#{versUrl},
+	     vers_Createdate=#{versCreatedate},
+	     vers_Updatedate=#{versUpdatedate}
+	   where 
+	    pk_Version=#{pkVersion} 
+	</update>
+
+	<delete id="delete" parameterType="map">
+	   delete from 
+	     tbl_Version 
+	   where 
+	    pk_Version=#{pkVersion} 
+	</delete>
+
+	<select id="get" parameterType="map" resultMap="tblVersionResultMap">
+	   select 
+	    pk_Version,
+	    vers_Number,
+	    vers_Type,
+	    vers_Url,
+	    vers_auto_update,
+	    vers_Createdate,
+	    vers_Updatedate
+	   from tbl_Version
+	   where 
+	    vers_Type=#{versType} 
+	    and pk_Version = (SELECT max(pk_Version) pk from tbl_version where vers_Type = #{versType})
+	</select>
+
+	<select id="findOne" parameterType="map" resultMap="findResultMap">
+	   select 
+	    pk_Version,
+	    vers_Number,
+	    vers_Type,
+	    vers_Url,
+	    vers_auto_update,
+	    vers_Createdate,
+	    vers_Updatedate
+	   from tbl_Version
+	   where 
+	    pk_Version=#{pkVersion} 
+	</select>
+
+	<select id="find" parameterType="map" resultMap="findResultMap">
+	   select 
+	     pk_Version,
+	     vers_Number,
+	     vers_Type,
+	     getFullPath('apk',pk_Version) as vers_Url,
+	     vers_Createdate,
+	     vers_Updatedate
+	   from tbl_Version
+	   <where>
+	     <if test="pkVersion != null">
+	        pk_Version=#{pkVersion}
+	     </if>
+	     <if test="versNumber != null">
+	        and vers_Number=#{versNumber}
+	     </if>
+	     <if test="versType != null">
+	        and vers_Type=#{versType}
+	     </if>
+	     <if test="versUrl != null">
+	        and vers_Url=#{versUrl}
+	     </if>
+	     <if test="versCreatedate != null">
+	        and vers_Createdate=#{versCreatedate}
+	     </if>
+	     <if test="versUpdatedate != null">
+	        and vers_Updatedate=#{versUpdatedate}
+	     </if>
+	   </where>
+	     order by vers_Createdate desc
+	</select>
+	
+</mapper> 

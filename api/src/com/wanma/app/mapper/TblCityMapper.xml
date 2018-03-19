@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.app.dao.AppCityMapper">
+
+	<resultMap id="tblCityResultMap" type="TblCity">
+		<id property="pkCity" column="pk_City" />
+		<result property="cityName" column="city_Name" />
+		<result property="cityCode" column="city_Code" />
+		<result property="cityProvcode" column="city_ProvCode" />
+		<result property="cityState" column="city_State" />
+		<result property="cityCreatedate" column="city_Createdate" />
+		<result property="cityUpdatedate" column="city_Updatedate" />
+		<result property="cityLongitude" column="city_Longitude" />
+		<result property="cityLatitude" column="city_Latitude" />
+	</resultMap>
+	<resultMap id="pageResultMap"  type="java.util.HashMap" extends="tblCityResultMap"></resultMap>
+	<resultMap id="findResultMap"  type="java.util.HashMap" extends="tblCityResultMap"></resultMap>
+
+	<insert id="insert" parameterType="TblCity">
+	   insert into tbl_City (
+	     pk_City,
+	     city_Name,
+	     city_Code,
+	     city_ProvCode,
+	     city_State,
+	     city_Createdate,
+	     city_Updatedate,
+	     city_Longitude,
+	     city_Latitude
+	   )values (
+	     #{pkCity},
+	     #{cityName},
+	     #{cityCode},
+	     #{cityProvcode},
+	     #{cityState},
+	     #{cityCreatedate},
+	     #{cityUpdatedate},
+	     #{cityLongitude},
+	     #{cityLatitude}
+	   )
+	</insert>
+
+	<update id="update" parameterType="TblCity">
+	   update tbl_City set
+	     pk_City=#{pkCity},
+	     city_Name=#{cityName},
+	     city_Code=#{cityCode},
+	     city_ProvCode=#{cityProvcode},
+	     city_State=#{cityState},
+	     city_Createdate=#{cityCreatedate},
+	     city_Updatedate=#{cityUpdatedate},
+	     city_Longitude=#{cityLongitude},
+	     city_Latitude=#{cityLatitude}
+	   where 
+	    pk_City=#{pkCity} 
+	</update>
+
+	<delete id="delete" parameterType="map">
+	   delete from 
+	     tbl_City 
+	   where 
+	    pk_City=#{pkCity} 
+	</delete>
+
+	<select id="get" parameterType="map" resultMap="tblCityResultMap">
+	   select 
+	    pk_City,
+	    city_Name,
+	    city_Code,
+	    city_ProvCode,
+	    city_State,
+	    city_Createdate,
+	    city_Updatedate,
+	    city_Longitude,
+	    city_Latitude
+	   from tbl_City
+	   where 
+	    pk_City=#{pkCity} 
+	</select>
+
+	<select id="findOne" parameterType="map" resultMap="findResultMap">
+	   select 
+	    pk_City,
+	    city_Name,
+	    city_Code,
+	    city_ProvCode,
+	    city_State,
+	    city_Createdate,
+	    city_Updatedate,
+	    city_Longitude,
+	    city_Latitude
+	   from tbl_City
+	   where 
+	    pk_City=#{pkCity} 
+	</select>
+
+	<select id="find" parameterType="map" resultMap="tblCityResultMap">
+	   select 
+	     pk_City,
+	     city_Name,
+	     city_Code,
+	     city_ProvCode,
+	     city_State,
+	     city_Createdate,
+	     city_Updatedate
+	   from tbl_City
+	   <where>
+	     <if test="pkCity != null">
+	        pk_City=#{pkCity}
+	     </if>
+	     <if test="cityName != null">
+	        and city_Name=#{cityName}
+	     </if>
+	     <if test="cityCode != null">
+	        and city_Code=#{cityCode}
+	     </if>
+	     <if test="cityProvcode != null">
+	        and city_ProvCode=#{cityProvcode}
+	     </if>
+	     <if test="cityState != null">
+	        and city_State=#{cityState}
+	     </if>
+	     <if test="cityCreatedate != null">
+	        and city_Createdate=#{cityCreatedate}
+	     </if>
+	     <if test="cityUpdatedate != null">
+	        and city_Updatedate=#{cityUpdatedate}
+	     </if>
+	     <if test="cityLongitude != null">
+	        and city_Longitude=#{cityLongitude}
+	     </if>
+	     <if test="cityLatitude != null">
+	        and city_Latitude=#{cityLatitude}
+	     </if>
+	   </where>
+	   order by CONVERT( city_Name USING gbk ) COLLATE gbk_chinese_ci ASC
+	</select>
+	
+	<select id="page" parameterType="map" resultMap="pageResultMap">
+	   select 
+	     pk_City,
+	     city_Name,
+	     city_Code,
+	     city_ProvCode,
+	     city_State,
+	     city_Createdate,
+	     city_Updatedate,
+	     city_Longitude,
+	     city_Latitude
+	   from tbl_City
+	   <where>
+	     <if test="pkCity != null">
+	        pk_City=#{pkCity}
+	     </if>
+	     <if test="cityName != null">
+	        and city_Name=#{cityName}
+	     </if>
+	     <if test="cityCode != null">
+	        and city_Code=#{cityCode}
+	     </if>
+	     <if test="cityProvcode != null">
+	        and city_ProvCode=#{cityProvcode}
+	     </if>
+	     <if test="cityState != null">
+	        and city_State=#{cityState}
+	     </if>
+	     <if test="cityCreatedate != null">
+	        and city_Createdate=#{cityCreatedate}
+	     </if>
+	     <if test="cityUpdatedate != null">
+	        and city_Updatedate=#{cityUpdatedate}
+	     </if>
+	     <if test="cityLongitude != null">
+	        and city_Longitude=#{cityLongitude}
+	     </if>
+	     <if test="cityLatitude != null">
+	        and city_Latitude=#{cityLatitude}
+	     </if>
+	   </where>
+	</select>
+	
+	<select id="getCityAndProvince" resultType="hashMap">
+	   select a.PROVINCE_ID pId,a.PROVINCE_NAME pName,b.CITY_ID cId,b.CITY_NAME cName from tb_m_province a,tb_m_city b where a.PROVINCE_ID=b.PROVINCE_ID
+	</select>
+	<update id="updateLatLng" parameterType="map" >
+	update tb_m_city set city_Latitude=#{lat},city_Longitude=#{lng} where city_id=#{id}
+	 
+	</update>
+	<select id="getCityOrProvinceInfo" resultType="hashMap">
+	select city_id as id,city_name as name from tb_m_city where city_latitude is null
+	</select>
+</mapper> 

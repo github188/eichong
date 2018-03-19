@@ -1,0 +1,59 @@
+package com.wanma.ims.model.base;
+
+import java.io.Serializable;
+
+
+public class CityDO implements Serializable{
+
+	/**
+	 * 市实体类
+	 */
+	private static final long serialVersionUID = -6305063005878776129L;
+    private String provinceId;
+    private String cityId;
+    private String cityName;
+    private String hotFlag;
+    private double serviceLimit;
+	
+	public String getProvinceId() {
+		return provinceId;
+	}
+	
+	public void setProvinceId(String provinceId) {
+		this.provinceId = provinceId;
+	}
+	
+	public String getCityId() {
+		return cityId;
+	}
+	
+	public void setCityId(String cityId) {
+		this.cityId = cityId;
+	}
+	
+	public String getCityName() {
+		return cityName;
+	}
+	
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
+	}
+	
+	public String getHotFlag() {
+		return hotFlag;
+	}
+	
+	public void setHotFlag(String hotFlag) {
+		this.hotFlag = hotFlag;
+	}
+	
+	public double getServiceLimit() {
+		return serviceLimit;
+	}
+	
+	public void setServiceLimit(double serviceLimit) {
+		this.serviceLimit = serviceLimit;
+	}
+    
+    
+}

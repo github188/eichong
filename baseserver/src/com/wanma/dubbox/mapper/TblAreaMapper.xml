@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.dubbox.dao.TblAreaMapper">
+	<resultMap type="TblArea" id="result_data">
+		<result property="id" column="area_id" />
+		<result property="proCd" column="province_id" />
+		<result property="cityCd" column="city_id" />
+		<result property="name" column="area_name" />
+		<result property="htFlg" column="hot_flag" />
+		<result property="delFlg" column="delete_flag" />
+		<result property="cdate" column="create_date" />
+		<result property="creUs" column="create_user" />
+		<result property="udate" column="last_update_date" />
+		<result property="udtUs" column="last_update_user" />
+	</resultMap>
+
+	<select id="getList" resultMap="result_data">
+		SELECT
+		${rtColumns}
+		FROM
+		tb_m_area c
+		where 1=1
+		<if test="cityCd != null">
+			and city_id = #{cityCd}
+		</if>
+	</select>
+
+</mapper>

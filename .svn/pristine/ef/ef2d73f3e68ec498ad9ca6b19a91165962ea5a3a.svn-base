@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dubbox.dao.TblCarCompanyMapper">
+
+	<resultMap type="TblCarCompany" id="ccmpyMap">
+		<id property="id" column="pk_carCompany" />
+		<result property="name" column="carCompany_Name" />
+		<result property="cdate" column="carCompany_CreateDate" />
+		<result property="udate" column="carCompany_UpdateDate" />
+		<result property="remark" column="carCompany_Remark" />
+	</resultMap>
+
+	<!-- 新增电动车厂商类型 -->
+	<insert id="insert" parameterType="TblCarCompany">
+		insert into tbl_carcompany (
+		carCompany_Name,
+		carCompany_Remark
+		)values (
+		#{name},
+		#{remark}
+		)
+	</insert>
+	
+	<!-- 更新电动车厂商类型 -->
+	<update id="update" parameterType="TblCarCompany">
+		update tbl_carcompany
+		<set>
+			<if test="name != null and name != '' ">
+				carCompany_Name = #{name},
+			</if>
+			<if test="remark != null and remark != '' ">
+				carCompany_Remark = #{remark},
+			</if>
+			carCompany_UpdateDate = sysdate()
+		</set>
+		where
+		pk_carCompany=#{id}
+	</update>
+	<!-- 删除电动车品牌类型 -->
+	<delete id="delete" parameterType="TblCarCompany">
+		delete
+		from
+		tbl_carcompany
+		where
+		pk_carCompany=#{id}
+	</delete>
+	<!-- 获取电动车品牌类型 -->
+	<select id="selectOne" parameterType="TblCarCompany" resultMap="ccmpyMap">
+		select ${rtColumns}
+		from
+		tbl_carcompany
+		<where> 1=1
+			<if test="id != null and id !=''">
+				and pk_carCompany=#{id}
+			</if>
+			<if test="name != null and name !=''">
+				and carCompany_Name=#{name}
+			</if>
+		</where>
+	</select>
+
+	<!-- 获取车型号列表 -->
+	<select id="getList" parameterType="TblCarCompany" resultMap="ccmpyMap">
+		select ${rtColumns}
+		from tbl_carcompany
+		<where>
+			1=1
+			<if test="id != null and id !=''">
+				and pk_carCompany=#{id}
+			</if>
+			<if test="name != null and name !=''">
+				and carCompany_Name like
+				concat('%',#{name},'%')
+			</if>
+		</where>
+		order by carCompany_CreateDate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<!-- 获取车型号数量 -->
+	<select id="getCount" parameterType="TblCarCompany" resultType="int">
+		select count(pk_carCompany)
+		from
+		tbl_carcompany
+		<where>
+			1=1
+			<if test="id != null and id !=''">
+				and pk_carCompany=#{id}
+			</if>
+			<if test="name != null and name !=''">
+				and carCompany_Name like
+				concat('%',#{name},'%')
+			</if>
+		</where>
+	</select>
+</mapper> 

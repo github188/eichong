@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.web.dao.WebCityMapper">
+
+    <resultMap id="myCity" type="TblCity">
+        <id property="pkCity" column="pk_City"/>
+        <result property="cityName" column="city_Name"/>
+        <result property="cityCode" column="city_Code"/>
+        <result property="cityProvcode" column="city_ProvCode"/>
+        <result property="cityState" column="city_State"/>
+        <result property="cityCreatedate" column="city_Createdate"/>
+        <result property="cityUpdatedate" column="city_Updatedate"/>
+        <result property="cityLongitude" column="city_Longitude"/>
+        <result property="cityLatitude" column="city_Latitude"/>
+    </resultMap>
+
+    <select id="getAll" parameterType="map" resultMap="myCity">
+        select
+            pk_City,
+            city_Name,
+            city_Code
+        from tbl_City
+        <where>
+            <if test="cityName != null">
+                city_Name LIKE concat(#{cityName},'%')
+            </if>
+            <if test="cityCode != null">
+                and city_Code=#{cityCode}
+            </if>
+            <if test="cityProvcode != null">
+                and city_ProvCode=#{cityProvcode}
+            </if>
+            <if test="cityState != null">
+                and city_State=#{cityState}
+            </if>
+            <if test="cityCreatedate != null">
+                and city_Createdate=#{cityCreatedate}
+            </if>
+            <if test="cityUpdatedate != null">
+                and city_Updatedate=#{cityUpdatedate}
+            </if>
+            <if test="cityLongitude != null">
+                and city_Longitude=#{cityLongitude}
+            </if>
+            <if test="cityLatitude != null">
+                and city_Latitude=#{cityLatitude}
+            </if>
+            <if test="pageSize != null">
+                and pk_City >= (SELECT t.pk_City from tbl_City t ORDER BY t.pk_City LIMIT ${begin},1) LIMIT ${pageSize}
+            </if>
+        </where>
+    </select>
+
+
+    <select id="getCount" parameterType="map" resultType="long">
+        select
+          count(pk_City)
+        from tbl_City
+        <where>
+            <if test="cityName != null">
+                city_Name=#{cityName}
+            </if>
+            <if test="cityCode != null">
+                and city_Code=#{cityCode}
+            </if>
+            <if test="cityProvcode != null">
+                and city_ProvCode=#{cityProvcode}
+            </if>
+            <if test="cityState != null">
+                and city_State=#{cityState}
+            </if>
+            <if test="cityCreatedate != null">
+                and city_Createdate=#{cityCreatedate}
+            </if>
+            <if test="cityUpdatedate != null">
+                and city_Updatedate=#{cityUpdatedate}
+            </if>
+            <if test="cityLongitude != null">
+                and city_Longitude=#{cityLongitude}
+            </if>
+            <if test="cityLatitude != null">
+                and city_Latitude=#{cityLatitude}
+            </if>
+
+        </where>
+    </select>
+
+</mapper> 

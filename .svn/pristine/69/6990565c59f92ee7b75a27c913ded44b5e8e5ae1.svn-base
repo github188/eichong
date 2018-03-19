@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/APPissue/AppNews_list.css"/>
+    <title>插屏发布</title>
+</head>
+<body>
+<div class="container animated fadeInRight">
+    <div class="row">
+        <div class="formBlock clearfix">
+            <form id="AppInterpolatioonListForm">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" >
+                    <div class="AppInterpolatioonListSelect row AppInterpolatioonListContent" style="padding:0 15px;">
+                        <div class="col-sm-3 col-xs-12">
+                            <input type="text" name="adType" id="adType" value="2" hidden="hidden"/>
+                            <div class="col-sm-11 col-xs-12 model-select-box">
+                                <div class="model-select-text advStsBlock" data-value="" id="advSts">状态</div>
+                                <span class="downRow advStsBlock clickRotateSpan"></span>
+                                <input type="text" name="advSts" id="" value="" hidden="hidden"/>
+                                <ul class="model-select-option advStsUl">
+                                    <li data-option="" class="seleced">全部</li>
+                                    <li data-option="0">未开始</li>
+                                    <li data-option="1">进行中</li>
+                                    <li data-option="2">已结束</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="position: relative;">
+                        <div class="queryBtn" onclick="appInterpolatioonListSearch()">
+                            查询
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!--按钮部分开始==========-->
+        <div class="btnBlock">
+            <div class="row">
+                <div class="col-sm-2" >
+                    <div class="col-sm-10 col-xs-2  btnStyle" id="addList" style="display: none;">
+                        新建
+                    </div>
+                </div>
+                <div class="col-sm-2" >
+                    <div class="col-sm-10 col-xs-2 btnStyle" id="closeList" style="display: none;margin-left:5px;">
+                        下架
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--表格部分开始========-->
+        <div class="showSet table-responsive">
+            <table class=" table table-bordered text-center" style="border: 1px solid #DCDCDC;">
+                <thead>
+                <tr>
+                    <th style="min-width: 62px;">选择</th>
+                    <th style="min-width: 80px;">名称</th>
+                    <th style="min-width: 80px;">插屏位置</th>
+                    <th style="min-width: 80px;">状态</th>
+                    <th style="min-width: 120px;">开始时间</th>
+                    <th style="min-width: 120px;">结束时间</th>
+                    <th style="min-width: 160px;">地址</th>
+                    <th style="min-width: 120px;">创建时间</th>
+                    <th style="min-width: 80px;">操作人</th>
+                    <th style="min-width: 80px;">操作</th>
+                </tr>
+                </thead>
+                <tbody id="myCompanyTb">
+
+                </tbody>
+            </table>
+
+            <div id="appInterpolatioonListPage" class="pagination">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="pictureShow" style="display: none;">
+    <img src="" alt="" class="pic" />
+</div>
+</body>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layDate-v5.0.4/laydate/laydate.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/contabs.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/APPissue/AppInterpolation_list.js" type="text/javascript" charset="utf-8"></script>
+</html>

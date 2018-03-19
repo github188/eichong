@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/style.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/integral/integralActivityList/integralActivity_exchange.css"/>
+    <title>积分兑换</title>
+</head>
+<body>
+<div class="col-sm-12">
+    <div class="ibox float-e-margins" style="margin: 0">
+        <div class="userBaseInfo col-sm-12 clearfix">
+            <div class="form-group col-xs-12">
+                <div class="col-sm-2 queryParam">
+                    状态：
+                </div>
+                <label class="radio-inline log" state="1">
+                    <input type="radio" name="state" value="0" checked="checked"> 开启
+                </label>
+                <label class="radio-inline" state="2">
+                    <input type="radio" name="state" value="1"> 关闭
+                </label>
+            </div>
+            <div class="form-group col-xs-12">
+                <div class="col-sm-2 queryParam">
+                    活动名称：
+                </div>
+                <div class="col-sm-3 userAccount">
+                    <input type="text" name="exchange" class="userAccountInput" value="积分兑换" disabled>
+                </div>
+            </div>
+            <div class="form-group col-xs-12">
+                <div class="col-sm-2 queryParam">
+                    积分方法：
+                </div>
+                <div class="col-sm-3">
+                    <ch>消耗</ch>
+                </div>
+            </div>
+            <div class="form-group col-xs-12">
+                <div class="col-sm-2 queryParam">
+                    时间选择：
+                </div>
+                <div class="col-sm-3 userAccount">
+                    <input type="text" name="" value="" class="userAccountInput" id="datePicker"/>
+                    <input type="text" name="startGmtCreate" value="" class="userAccountInput" hidden="hidden" style="display: none;"/>
+                    <input type="text" name="endGmtCreate" value="" class="userAccountInput" hidden="hidden" style="display: none;"/>
+                </div>
+            </div>
+            <div class="form-group col-xs-12">
+                <div class="col-sm-2 queryParam">
+                    兑换设置：
+                </div>
+            </div>
+            <div class="form-group col-xs-10">
+                <div class="col-xs-12 cut-line"></div>
+                <div class="col-sm-5 queryParam">
+                    <ch>先选择优惠券，然后编辑需要兑换的积分。</ch>
+                </div>
+            </div>
+            <div class="form-group col-xs-12">
+                <div class="col-sm-2 queryParam">
+                    选择优惠券：
+                </div>
+                <div class="col-sm-1 col-xs-2 btnStyle" style="margin-top: 7px;" onclick="ExchangeChoice();">
+                    选择
+                </div>
+            </div>
+            <div class="form-group col-xs-12">
+                <div class="col-sm-3 queryParam">
+                    设置比例：
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--表格部分开始==========================================================-->
+<form id="integralActivityExchangeForm">
+    <input type="text" name="pkId" value="6" hidden="hidden">
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins" style="margin: 0">
+            <div class="userBaseInfo col-sm-12 clearfix">
+                <div class="showSet table-responsive">
+                    <table class=" table table-bordered text-center" style="border: 1px solid #DCDCDC;">
+                        <thead>
+                        <tr>
+                            <th class="integralActivity_exchange">名称</th>
+                            <th class="userList_userAddress">状态</th>
+                            <th class="userList_userName">兑换积分</th>
+                            <th class="userList_userCar">设置兑换积分-操作</th>
+                        </tr>
+                        </thead>
+                        <tbody id="myTbogy">
+
+                        </tbody>
+                    </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<!---------选择优惠券--------->
+<div class="ChooseCoupons" id="ChooseCoupons" style="display: none;">
+    <form id="ChooseCouponsForm">
+        <input type="text" name="covaLimitation" value="" hidden="hidden">
+        <input type="text" name="covaStutas" value="0" hidden="hidden">
+        <div class="showSet table-responsive">
+            <table class=" table table-bordered text-center" style="border: 1px solid #DCDCDC;">
+                <thead>
+                <tr>
+                    <th class=""><input type="checkbox" name="" class="selAll" value=""></th>
+                    <th class="">名称</th>
+                    <th class="">电桩限制</th>
+                    <th class="">面值</th>
+                    <th class="">使用条件</th>
+                    <th class="">状态</th>
+                </tr>
+                </thead>
+                <tbody id="ChooseCouponsTbody">
+
+                </tbody>
+            </table>
+        </div>
+    </form>
+    <div id="ChooseCouponsPage" class="pagination myPagination"></div>
+</div>
+
+<!------------提示框------------>
+<div class="caution_case" id="caution_case" style="display: none;">
+    <span>兑换1张需要积分：</span>
+    <input type="text" class="NeedExchange" value=""/>
+    <span>请输入正整数，不包含小数。</span>
+</div>
+<script src="../../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/layDate-v5.0.4/laydate/laydate.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/apiAddress.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/integral/integralActivityList/integralActivity_exchange.js" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>

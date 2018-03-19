@@ -1,0 +1,250 @@
+package com.wanma.controller;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.base.common.BaseFail;
+import com.base.common.BaseResult;
+import com.base.common.BaseSuccess;
+import com.base.common.SessionMgr;
+import com.base.common.WanmaConstants;
+import com.base.util.JudgeNullUtils;
+import com.pub.model.Pager;
+import com.pub.model.TblUser;
+import com.pub.service.TblUserService;
+import com.wanma.model.TblCompany;
+import com.wanma.service.CmsPureBusinessService;
+import com.wanma.service.CompanyManagerService;
+
+/**
+ * 公司管理
+ * 
+ * @author bruce cheng(http://blog.csdn.net/brucehome)
+ * @createTime 2015-6-24 下午06:59:30
+ * @updator：
+ * @updateTime：
+ * @version：V1.0 其他可选例子：
+ */
+@Controller
+@RequestMapping("/admin/companyManager/")
+public class VCmsCompanyManagerController {
+
+	/** 日志文件生成器 */
+	private static Logger log = Logger
+			.getLogger(VCmsCompanyManagerController.class);
+	@Autowired
+	private CompanyManagerService companyManagerService;
+
+	@Autowired
+	private CmsPureBusinessService pureBusinessService;
+	@Autowired
+	private TblUserService userService;
+
+	/**
+	 * 获取公司列表模式数据
+	 * 
+	 * @param request
+	 * @return
+	 * @throws AppRequestErrorException
+	 */
+	@RequestMapping(value = "/getCompanyList")
+	public String getCompanyList(@ModelAttribute("pager") Pager pager,
+			@ModelAttribute TblCompany tblCompany, Model model,
+			HttpServletRequest request) {
+		TblUser loginUser = SessionMgr.getWebUser(request);
+		// 当前登录用户为商家用户,只能看所属公司用户
+		if (loginUser.getUserLevel().equals(WanmaConstants.USER_LEVEL_BUSINESS)) {
+			tblCompany.setPkCompanyid(loginUser.getBusiCompanyId());
+		}
+		long total = companyManagerService.getCompanyCount(tblCompany);
+		if (total <= pager.getOffset()) {
+			pager.setPageNum(1L);
+		}
+		tblCompany.setPager(pager);
+		List<TblCompany> companyList = companyManagerService
+				.getCompanyList(tblCompany);
+		pager.setTotal(total);
+		model.addAttribute("pager", pager);
+		model.addAttribute("tblCompany", tblCompany);
+		model.addAttribute("companyList", companyList);
+		// 跳转至管理员主页面
+		return "backstage/company/company-list";
+	}
+
+	/**
+	 * GATE新增界面
+	 * 
+	 * @param request
+	 * @return
+	 * @throws AppRequestErrorException
+	 */
+	@RequestMapping(value = "/addCompanyUi")
+	public String addGateUi(Model model) {
+		// 跳转至管理员主页面
+		return "backstage/company/company-add";
+	}
+
+	/**
+	 * 公司新增界面
+	 * 
+	 * @param request
+	 * @return
+	 * @throws AppRequestErrorException
+	 */
+	@RequestMapping(value = "/addCompany")
+	@ResponseBody
+	public String addCompany(
+			@ModelAttribute TblCompany tblCompany,
+			Model model,
+			@RequestParam(value = "IdUnitCardImage", required = false) MultipartFile[] IdUnitCardImage,
+			@RequestParam(value = "LicenseImage", required = false) MultipartFile[] LicenseImage,
+			@RequestParam(value = "AffairsImage", required = false) MultipartFile[] AffairsImage,
+			@RequestParam(value = "AccreditImage", required = false) MultipartFile[] AccreditImage) {
+
+		// 处理结果信息
+		BaseResult baseResult = new BaseSuccess();
+		try {
+			int num = companyManagerService.countByCompanyName(tblCompany
+					.getCpyCompanyname());
+			if (num > 0) {
+				return new BaseFail("新增失败，企业名称重复").toString();
+			}
+			if (tblCompany.getCpyPostcode() == null) {
+				tblCompany.setCpyPostcode(0);
+			}
+			companyManagerService.addCompany(tblCompany, IdUnitCardImage,
+					LicenseImage, AffairsImage, AccreditImage);
+		} catch (Exception e) {
+			log.error(this.getClass() + ".addCompany() error:"
+					+ e.getLocalizedMessage());
+			baseResult = new BaseFail(5001);
+		}
+
+		// 返回处理结果信息
+		return baseResult.toString();
+	}
+
+	/**
+	 * 公司修改界面
+	 * 
+	 * @param request
+	 * @return
+	 * @throws AppRequestErrorException
+	 */
+	@RequestMapping(value = "/changeCompanyUI")
+	public String changeCompanyUI(Model model,
+			@RequestParam(value = "companyId") String pkCompanyid) {
+
+		TblCompany tblCompany = companyManagerService
+				.getCompanyById(JudgeNullUtils.nvlInteger(pkCompanyid));
+
+		model.addAttribute("tblCompany", tblCompany);
+		// 跳转至管理员主页面
+		return "backstage/company/company-edit";
+	}
+
+	/**
+	 * 公司修改
+	 * 
+	 * @param request
+	 * @return
+	 * @throws AppRequestErrorException
+	 */
+	@RequestMapping(value = "/changeCompany")
+	@ResponseBody
+	public String changeCompany(
+			@ModelAttribute TblCompany tblCompany,
+			Model model,
+			@RequestParam(value = "IdUnitCardImage", required = false) MultipartFile[] IdUnitCardImage,
+			@RequestParam(value = "LicenseImage", required = false) MultipartFile[] LicenseImage,
+			@RequestParam(value = "AffairsImage", required = false) MultipartFile[] AffairsImage,
+			@RequestParam(value = "AccreditImage", required = false) MultipartFile[] AccreditImage) {
+
+		// 处理结果信息
+		BaseResult baseResult = new BaseSuccess();
+		try {
+			if (tblCompany.getCpyPostcode() == null) {
+				tblCompany.setCpyPostcode(0);
+			}
+			companyManagerService.modifyCompany(tblCompany, IdUnitCardImage,
+					LicenseImage, AffairsImage, AccreditImage);
+		} catch (Exception e) {
+			log.error(this.getClass() + ".changeCompany() error:"
+					+ e.getLocalizedMessage());
+			baseResult = new BaseFail(5001);
+		}
+
+		// 返回处理结果信息
+		return baseResult.toString();
+	}
+
+	/**
+	 * 公司查看界面
+	 * 
+	 * @param request
+	 * @return
+	 * @throws AppRequestErrorException
+	 */
+	@RequestMapping(value = "/showCompanyUI")
+	public String showCompanyUI(Model model,
+			@RequestParam(value = "companyId") String companyId) {
+
+		TblCompany tblCompany = companyManagerService
+				.getCompanyById(JudgeNullUtils.nvlInteger(companyId));
+
+		model.addAttribute("tblCompany", tblCompany);
+		// 跳转至管理员主页面
+		return "backstage/company/company-show";
+	}
+
+	/**
+	 * 公司删除
+	 * 
+	 * @param request
+	 * @return
+	 * @throws AppRequestErrorException
+	 */
+	@RequestMapping(value = "/removeCompany")
+	@ResponseBody
+	public String removeCompany(Model model,
+			@RequestParam(value = "ids") String ids) {
+
+		// 处理结果信息
+		BaseResult baseResult = new BaseSuccess();
+		try {
+			// 判断是否有纯商家绑定此公司
+			// int count = pureBusinessService.findByCompanyId(companyId);
+			String[] idArray = ids.split(",");
+			for (String id : idArray) {
+				TblUser user = new TblUser();
+				user.setUserLevel(3);
+				user.setBusiCompanyId(new Integer(id));
+				List<TblUser> userList = userService.getUserList(user);
+				if (userList.size() > 0) {
+					return new BaseFail("此公司下已有用户，请先删除用户").toString();
+				}
+			}
+			for (String id : idArray) {
+				companyManagerService.deleteCompany(id);
+			}
+		} catch (Exception e) {
+			log.error(this.getClass() + ".removeCompany() error:"
+					+ e.getLocalizedMessage());
+			baseResult = new BaseFail(5001);
+		}
+
+		// 返回处理结果信息
+		return baseResult.toString();
+	}
+}

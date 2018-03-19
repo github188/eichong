@@ -1,0 +1,124 @@
+package com.wanma.ims.service.impl;
+
+import com.google.common.base.Strings;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.domain.VersionDO;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.constants.ResultCodeConstants;
+import com.wanma.ims.constants.WanmaConstants;
+import com.wanma.ims.core.GlobalSystem;
+import com.wanma.ims.mapper.VersionMapper;
+import com.wanma.ims.service.VersionService;
+import com.wanma.ims.util.SplitterUtil;
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+/**
+ * Created by xyc on 2017/11/1.
+ * APP版本逻辑处理接口
+ */
+@Service
+public class VersionServiceImpl implements VersionService {
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+
+    @Autowired
+    private VersionMapper versionMapper;
+
+    @Override
+    public List<VersionDO> getVersionList(VersionDO searchModel) {
+        return versionMapper.selectVersionList(searchModel);
+    }
+
+    @Override
+    public long countVersion(VersionDO searchModel) {
+        return versionMapper.countVersion(searchModel);
+    }
+
+    @Override
+    public long getMaxVersionNum() {
+        return versionMapper.selectMaxVersionNum();
+    }
+
+    @Override
+    public BaseResultDTO addVersion(VersionDO version, UserDO loginUser) {
+        BaseResultDTO result = checkVersion(version, loginUser);
+
+        if (result.isFailed()) {
+            return result;
+        }
+
+        if (versionMapper.insertVersion(version) < 1) {
+            LOGGER.warn(this.getClass() + "-addVersion is error, insert version to db is error|addVersion={}|loginUser={}", version, loginUser);
+            return new BaseResultDTO(false, ResultCodeConstants.FAILED, "添加APP版本失败，请刷新页面后重试！");
+        }
+        return result;
+    }
+
+    private BaseResultDTO checkVersion(VersionDO version, UserDO loginUser) {
+        if (null == version) {
+            LOGGER.warn(this.getClass() + "-addVersion is error, addVersion is null|loginUser={}", loginUser);
+            return new BaseResultDTO(false, ResultCodeConstants.FAILED, "添加APP版本失败，传输对象不能为空，请刷新页面后重试！");
+        }
+
+        if (Strings.isNullOrEmpty(version.getVersRemark())) {
+            LOGGER.warn(this.getClass() + "-addVersion is error, versRemark is null|addVersion={}|loginUser={}", version, loginUser);
+            return new BaseResultDTO(false, ResultCodeConstants.FAILED, "添加APP版本失败，版本描述不能为空，请刷新页面后重试！");
+        }
+
+        if (0 != version.getIsAutoUpdate() && 1 != version.getIsAutoUpdate()) {
+            LOGGER.warn(this.getClass() + "-addVersion is error, isAutoUpdate is error|addVersion={}|loginUser={}", version, loginUser);
+            return new BaseResultDTO(false, ResultCodeConstants.FAILED, "添加APP版本失败，是否强制升级不能为空，请刷新页面后重试！");
+        }
+
+        if (1 == version.getVersType()) {
+            version.setVersUrl(GlobalSystem.getConfig("eichongAppVersionUrl"));
+        } else if (3 == version.getVersType()) {
+            version.setVersUrl(GlobalSystem.getConfig("zhengqiAppVersionUrl"));
+        } else {
+            LOGGER.warn(this.getClass() + "-addVersion is error, versType is error|addVersion={}|loginUser={}", version, loginUser);
+            return new BaseResultDTO(false, ResultCodeConstants.FAILED, "添加APP版本失败，APP版本类型不正确，请刷新页面后重试！");
+        }
+
+        long maxVersionNum = getMaxVersionNum();
+        if (Long.valueOf(version.getVersNumber()) < maxVersionNum) {
+            LOGGER.warn(this.getClass() + "-addVersion is error, versionNum is error|addVersion={}|maxVersionNum={}|loginUser={}", version, maxVersionNum, loginUser);
+            return new BaseResultDTO(false, ResultCodeConstants.FAILED, "添加APP版本失败，序号不是当前版本中最大序号，请刷新页面后重试！");
+        }
+
+        return new BaseResultDTO();
+    }
+
+    @Override
+    public BaseResultDTO delVersion(String versionIds, UserDO loginUser) {
+        if (Strings.isNullOrEmpty(versionIds)) {
+            LOGGER.warn(this.getClass() + "-delVersion is error, delVersionIds is null|loginUser={}", loginUser);
+            return new BaseResultDTO(false, ResultCodeConstants.FAILED, "删除APP版本失败，APP版本id不能为空！");
+        }
+
+        List<Long> versionIdList = SplitterUtil.splitToLongList(versionIds, ",", null);
+        if (CollectionUtils.isEmpty(versionIdList)) {
+            LOGGER.warn(this.getClass() + "-delVersion is error, delVersionIds is null|loginUser={}", loginUser);
+            return new BaseResultDTO(false, ResultCodeConstants.FAILED, "删除APP版本失败，APP版本id不能为空！");
+
+        }
+
+        for (Long versionId : versionIdList) {
+            VersionDO oldVersion = versionMapper.selectVersionById(versionId);
+            if (oldVersion == null) {
+                LOGGER.warn(this.getClass() + "-delVersion is error, oldVersion is null|delVersionId={}|loginUser={}", versionId, loginUser);
+                return new BaseResultDTO(false, ResultCodeConstants.FAILED, "删除APP版本失败，被删除的APP版本不存在！");
+            }
+
+            if (versionMapper.deleteVersionById(versionId) < 1) {
+                LOGGER.warn(this.getClass() + "-delVersion is error, del version to db is error|delVersionId={}|loginUser={}", versionId, loginUser);
+                return new BaseResultDTO(false, ResultCodeConstants.FAILED, "删除APP版本失败，请刷新页面后重试！");
+            }
+        }
+        return new BaseResultDTO();
+    }
+}

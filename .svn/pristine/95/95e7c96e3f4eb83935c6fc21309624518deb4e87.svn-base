@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>爱充方案案例 - 电动公交站充电,分时租赁站充电网络布局,城区充电网络规划,案例及合作模式</title>
+<meta name="description" content="爱充充电网络布局及城区充电网络全覆盖规划布局图片简介及方案案例，合作模式详细说明">
+<meta name="keywords" content="充电网络布局,合作模式,方案案例">
+<link href="static/css/style.css" rel="stylesheet" type="text/css" /><!--全局-->
+<link href="static/css/loginBox.css" rel="stylesheet" type="text/css"/>
+<link href="static/css/infobox.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript">
+	var basepath="";
+	var this_tag = "packageCase";	
+</script>
+<!-- common js aere -->
+<script src="static/js/jquery-1.10.2.min.js" type="text/javascript"></script>
+</head>
+
+<body>
+
+<!--导航-->
+<!--导航-->
+<div id="afterHead" class="clear"></div><div style="clear:both;"></div>
+<!--通栏大图-->
+<div style="clear:both;"></div> 
+<!--内容-->
+<div class="case" >
+<img src="static/images/case/case_01.jpg" alt="方案1 电动公交站充电网络布局" /><br />
+<img src="static/images/case/case_02.jpg" alt="案例项目名称：『杭州九堡电动大巴充电站』实景案例" /><br />
+<img src="static/images/case/case_03.jpg" alt="充电桩工程模式方案及优势" /><br />
+<img src="static/images/case/case_04.jpg" alt="充电设备项目简介，充电机设备展示" /><br />
+<img src="static/images/case/case_05.jpg" alt="方案1合作模式概要图述" /><br />
+<img src="static/images/case/case_06.jpg" alt=" 方案2 ： 分时租赁站充电网络布局" /><br />
+<img src="static/images/case/case_07.jpg" alt=" 案例项目名称：『曹操专车”吉利集团总部租赁站点』实景案例" /><br />
+<img src="static/images/case/case_08.jpg" alt="方案2 充电桩技术配置及项目规划、项目优势图示概要" /><br />
+<img src="static/images/case/case_09.jpg" alt="曹操专车方案二项目简介及合作模式概述" /><br />
+<img src="static/images/case/case_10.jpg" alt="方案3 ： 城区充电网络全覆盖规划布局 " /><br />
+<img style="margin-top:20px;" src="static/images/case/case_11.jpg" alt="案例项目名称：『新大洋 SHARE' N GO 临安站项目』实景案例" /><br />
+<img src="static/images/case/case_12.jpg" alt="新大洋方案3充电桩技术配置与项目规划方案参考及其优势概要图示" /><br />
+<img src="static/images/case/case_13.jpg" alt="新大洋·知豆合作简介及其合作模式图示概述" /><br />
+</div>
+<div style="clear:both;"></div>
+<!--footer-->
+<div style="text-align:center; line-height:60px; color:#888; font-size:14px;width:100%;height:60px;background:#eee;bottom:0;margin:0 auto; " class="clear">浙江爱充网络科技有限公司 Copyright ©2017爱充网版权所有.浙ICP备15005865号-1</div>
+<div style="text-align:center; line-height:10px; color:#888; font-size:14px;width:100%;height:20px; ">
+<a href="/" target="_blank" style="color:#3C3C3C">首 页</a> | <a href="/case.html" target="_blank" style="color:#3C3C3C">方案案例</a> | <a href="/activity.html" target="_blank" style="color:#3C3C3C">活动中心</a> | <a href="/company.html" target="_blank" style="color:#3C3C3C">行业动态</a> | <a href="/app/app.html" target="_blank" style="color:#3C3C3C">App下载</a>
+</div>
+
+
+
+<!-- common js aere -->
+<script src="static/lib/json3/json3.min.js" type="text/javascript"></script>
+<script src="static/lib/template/template.js" type="text/javascript"></script>
+<script src="static/lib/md5/jquery.md5.js" type="text/javascript"></script>
+<script src="static/js/validate.js" type="text/javascript"></script>
+<script src="static/js/DateUtil.js" type="text/javascript"></script>
+<script src="static/js/common/common.js" type="text/javascript"></script>
+<script src="static/js/user-service.js" type="text/javascript"></script>
+<script src="static/js/global.js" type="text/javascript"></script>
+<script src="static/js/config.js" type="text/javascript"></script>
+<script src="static/js/template-other.js" type="text/javascript"></script>
+<script src="static/js/index/regist.js" type="text/javascript"></script>
+<script src="static/js/index/reset.js" type="text/javascript"></script>
+<script src="static/js/initHtml.js" type="text/javascript"></script>
+
+</body>
+</html>

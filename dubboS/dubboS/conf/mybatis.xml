@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<properties resource="jdbc.properties"/>
+	
+	<settings>
+		<setting name="useGeneratedKeys" value="true"/>
+		<setting name="mapUnderscoreToCamelCase" value="true"/>
+		<setting name="logImpl" value="LOG4J"/>
+		<setting name="mapUnderscoreToCamelCase" value="false"/>
+	</settings>
+	
+	<typeAliases>
+		 <!-- 需要在实体类添加@Alias("别名") -->
+		<package name="com.wanma.dubbox.model"/>
+	</typeAliases>
+	
+	<plugins>
+		
+		<plugin interceptor="com.wanma.common.BaseMybatisInterceptor">
+			<property name="" value=""/>
+		</plugin>
+		 
+	</plugins>
+	
+	<mappers>
+		<package name="com.wanma.dubbox.dao"/>
+		<package name="com.wanma.dubbox.mapper"/>
+	</mappers>
+</configuration>

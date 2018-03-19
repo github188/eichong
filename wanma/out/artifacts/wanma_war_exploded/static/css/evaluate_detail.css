@@ -1,0 +1,10 @@
+.eva_detail{margin: 20px auto 0;width: 1120px;border: 1px solid #cccccc;padding: 0 20px;}
+.eva_all{height: 35px;line-height: 35px;border-bottom: 2px solid #aca39e;}
+.acount{font-size: 16px;color: #414141;margin-bottom: 10px;}
+.user_det{overflow: hidden;height: 35px;line-height: 35px;}
+.left_info{font-size: 16px;color: #221815;}
+.left_info span{color: #989696;font-size: 16px;margin-left: 15px;}
+.user_pic{ float: left;}
+.user_pic img{width: 90px;}
+.right_info span{display: inline-block;vertical-align: middle;}
+.eva_ul li{border-bottom: 1px dashed #a9a9a9;padding: 20px 0; overflow: hidden;}

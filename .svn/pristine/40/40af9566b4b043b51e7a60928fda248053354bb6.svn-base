@@ -1,0 +1,72 @@
+package com.sgcc.utils;
+
+
+import com.alibaba.fastjson.JSON;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
+
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Map;
+
+
+/**
+ * Created by gaoyang on 17/1/10.
+ */
+public class HttpUtils {
+	public static String doPost(String connectURL, Map<String, String> params){
+		return doPost(connectURL,new HashMap<String, String>(),params);
+	}
+	public static String doPost(String connectURL,Map<String, String> headers, Map<String, String> params){
+		HttpPost httpPost = new HttpPost(connectURL);
+		System.out.println("请求URL:"+connectURL);
+    	for(String headerName:headers.keySet()){
+//    		System.out.println(headerName+"="+headers.get(headerName));
+    		httpPost.setHeader(headerName, headers.get(headerName));
+    	}
+    	System.out.println("请求头部:"+JSON.toJSONString(headers));
+    	System.out.println("请求body:"+JSON.toJSONString(params));
+    	httpPost.setEntity(new StringEntity(JSON.toJSONString(params), Charset.forName("UTF-8")));
+//    	List<BasicNameValuePair> nvps = new ArrayList <BasicNameValuePair>();
+//    	for(String paramName:params.keySet()){
+////    		System.out.println(paramName+"="+params.get(paramName));
+//    		nvps.add(new BasicNameValuePair(paramName, params.get(paramName)));
+//    	}
+//    	try {
+//			httpPost.setEntity(new UrlEncodedFormEntity(nvps));
+//		} catch (UnsupportedEncodingException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+    	CloseableHttpClient httpclient = HttpClients.createDefault();
+    	CloseableHttpResponse response2=null;
+    	try{
+    		response2 = httpclient.execute(httpPost);
+    	    HttpEntity entity2 = response2.getEntity();
+//    	    EntityUtils.toString(arg0, arg1)
+    	    return EntityUtils.toString(entity2,"UTF-8");
+    	}catch(Exception e){
+    		e.printStackTrace();
+    	}finally{
+    		if(response2!=null){
+    			try {
+					response2.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+    		}
+    		
+    	}
+    	return null;
+    }
+
+
+
+}

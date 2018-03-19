@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 产品型号查询xml -->
+<mapper namespace="com.wanma.dubbox.dao.TblTypespanMapper">
+	<resultMap type="TblTypespan" id="tblTypespanMap">
+		<id property="id" column="pk_TypeSpanId" />
+		<result property="ts" column="ts_TypeSpan" />
+		<result property="modNm" column="ts_ModelName" />
+		<result property="ftg" column="ts_FactTag" />
+		<result property="fnm" column="ts_FileName" />
+		<result property="pnm" column="ts_ProductNumber" />
+		<result property="rmk" column="ts_Remarks" />
+		<result property="cdate" column="ts_Createdate" />
+		<result property="udate" column="ts_Updatedate" />
+	</resultMap>
+
+	<select id="getCount" parameterType="TblTypespan" resultType="int">
+		SELECT count(1)
+		FROM tbl_typespan t
+		where 1=1
+		<if test="ts !=null and ts !=''">and t.ts_TypeSpan like concat('%',#{ts},'%')</if>
+		<if test="modNm !=null and modNm !=''">and t.ts_ModelName like concat('%',#{modNm},'%')
+		</if>
+	</select>
+
+
+	<select id="getList" parameterType="TblTypespan" resultMap="tblTypespanMap">
+		SELECT *
+		FROM tbl_typespan t
+		where 1=1
+		<if test="ts !=null and ts !=''">and t.ts_TypeSpan like concat('%',#{ts},'%')</if>
+		<if test="modNm !=null and modNm !=''">and t.ts_ModelName like concat('%',#{modNm},'%')
+		</if>
+		order by ts_Updatedate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<select id="selectOne" parameterType="TblTypespan" resultMap="tblTypespanMap">
+		SELECT ${rtColumns}
+		FROM tbl_typespan t
+		where pk_TypeSpanId = #{id}
+	</select>
+
+	<!-- 新增产品信息 -->
+	<insert id="insert" parameterType="TblTypespan"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into tbl_typespan
+		(
+		ts_TypeSpan,
+		ts_ModelName,
+		ts_FactTag,
+		ts_FileName,
+		ts_ProductNumber,
+		ts_Remarks,
+		ts_Createdate,
+		ts_Updatedate
+		)
+		values
+		(
+		#{ts},
+		#{modNm},
+		#{ftg},
+		#{fnm},
+		#{pnm},
+		#{rmk},
+		sysdate(),
+		sysdate()
+		)
+	</insert>
+
+	<!-- 修改产品信息 -->
+	<update id="update" parameterType="TblTypespan">
+		update tbl_typespan
+		set
+		<if test="ts !=null">
+			ts_TypeSpan = #{ts},
+		</if>
+		<if test="modNm !=null">
+			ts_ModelName = #{modNm},
+		</if>
+		<if test="ftg !=null">
+			ts_FactTag = #{ftg},
+		</if>
+		<if test="fnm !=null">
+			ts_FileName = #{fnm},
+		</if>
+		<if test="pnm !=null">
+			ts_ProductNumber = #{pnm},
+		</if>
+		<if test="rmk !=null">
+			ts_Remarks = #{rmk},
+		</if>
+		ts_Updatedate = sysdate()
+		where 1=1
+		<if test="id !=null">and pk_TypeSpanId=#{id}</if>
+		<if test="pkIds != null">
+			and pk_TypeSpanId in
+			<foreach item="item" index="index" collection="pkIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+	</update>
+
+</mapper>

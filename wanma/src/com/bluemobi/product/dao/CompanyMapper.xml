@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bluemobi.product.dao.CompanyMapper">
+	<resultMap type="CompanyModel" id="result_company">
+		<result property="companyId" column="company_id" />
+		<result property="companyType" column="company_type" />
+		<result property="companyName" column="company_name" />
+		<result property="provinceId" column="province_id" />
+		<result property="cityId" column="city_id" />
+		<result property="areaId" column="area_id" />
+		<result property="developCompany" column="develop_company" />
+		<result property="serviceCompany" column="service_company" />
+		<result property="servicePhone" column="service_phone" />
+		<result property="serviceTime" column="service_time" />
+		<result property="serviceRule" column="service_rule" />
+		<result property="serviceComment" column="service_comment" />
+		<result property="phoneNumber" column="phone_number" />
+		<result property="notes" column="notes" />
+		<result property="detail" column="detail" />
+		<result property="deleteFlag" column="deletelag" />
+		<result property="createDate" column="create_date" />
+		<result property="createUser" column="create_user" />
+		<result property="lastUpdateDate" column="last_update_date" />
+		<result property="lastUpdateUser" column="last_update_user" />
+		<result property="provinceName" column="province_name" />
+		<result property="cityName" column="city_name" />
+		<result property="areaName" column="area_name" />
+		<result property="titleMultiUrl" column="title_multi_url" />
+		<result property="responsible_company" column="responsibleCompany" />
+		<result property="responsibleDepart" column="responsible_depart" />
+		<result property="responsibleDepartName" column="responsible_depart_name" />
+	</resultMap>
+
+	<insert id="addCompany" parameterType="CompanyModel"
+		keyProperty="company_id">
+		insert into p_m_company
+		(
+		company_id,
+		company_type,
+		company_name,
+		province_id,
+		city_id,
+		area_id,
+		responsible_company,
+		responsible_depart,
+		develop_company,
+		service_company,
+		service_phone,
+		service_time,
+		service_rule,
+		service_comment,
+		phone_number,
+		notes,
+		detail,
+		create_user,
+		last_update_user
+		)
+		values
+		(
+		#{companyId},
+		#{companyType},
+		#{companyName},
+		#{provinceId},
+		#{cityId},
+		#{areaId},
+		#{responsibleCompany},
+		#{responsibleDepart},
+		#{developCompany},
+		#{serviceCompany},
+		#{servicePhone},
+		#{serviceTime},
+		#{serviceRule},
+		#{serviceComment},
+		#{phoneNumber},
+		#{notes},
+		#{detail},
+		#{createUser},
+		#{lastUpdateUser}
+		)
+	</insert>
+
+	<update id="modifyCompany" parameterType="CompanyModel">
+		update p_m_company
+		<set>
+			<if test="companyId!=null"> company_id=#{companyId}, </if>
+			<if test="companyType!=null"> company_type=#{companyType}, </if>
+			<if test="companyName!=null"> company_name=#{companyName}, </if>
+			<if test="provinceId!=null"> province_id=#{provinceId}, </if>
+			<if test="cityId!=null"> city_id=#{cityId}, </if>
+			<if test="areaId!=null"> area_id=#{areaId}, </if>
+			<if test="developCompany!=null"> develop_company=#{developCompany}, </if>
+			<if test="serviceCompany!=null"> service_company=#{serviceCompany}, </if>
+			<if test="servicePhone!=null"> service_phone=#{servicePhone}, </if>
+			<if test="serviceTime!=null"> service_time=#{serviceTime}, </if>
+			<if test="serviceRule!=null"> service_rule=#{serviceRule}, </if>
+			<if test="serviceComment!=null"> service_comment=#{serviceComment}, </if>
+			<if test="phoneNumber!=null"> phone_number=#{phoneNumber}, </if>
+			<if test="notes!=null"> notes=#{notes}, </if>
+			<if test="detail!=null"> detail=#{detail}, </if>
+			responsible_company = #{responsibleCompany},
+			responsible_depart=#{responsibleDepart},
+			last_update_date=sysdate(),
+			<if test="lastUpdateUser!=null"> last_update_user=#{lastUpdateUser}, </if>
+		</set>
+		<where>
+			company_id=#{companyId}
+		</where>
+	</update>
+
+	<select id="getCompanyCountById" parameterType="String"
+		resultType="int">
+		select count(company_id) as data_count from p_m_company
+		where
+		company_id=#{companyId}
+	</select>
+
+	<select id="getCompanyCountByName" parameterType="CompanyModel"
+		resultType="int">
+		select count(company_id) as data_count from p_m_company
+		where
+		company_name=#{companyName}
+		and company_id != #{companyId}
+	</select>
+
+
+	<select id="findCompany" parameterType="String" resultMap="result_company">
+		select
+		main.company_id,
+		main.company_type,
+		main.company_name,
+		main.province_id,
+		main.city_id,
+		main.area_id,
+		main.responsible_company,
+		main.responsible_depart,
+		(select resdepart.department_name from p_m_department resdepart where  main.responsible_depart = resdepart.department_id) as responsible_depart_name,
+		main.develop_company,
+		main.service_company,
+		main.service_phone,
+		main.service_time,
+		main.service_rule,
+		main.service_comment,
+		main.phone_number,
+		main.notes,
+		main.detail,
+		main.create_date,
+		main.create_user,
+		main.last_update_date,
+		main.last_update_user,
+		getPathForServer('company', main.company_id) as title_multi_url,
+		tmp.province_name,
+		tmc.city_name,
+		tma.area_name
+		FROM p_m_company main 
+		left join
+		tb_m_province tmp on tmp.province_id = main.province_id
+		left join
+		tb_m_city tmc on tmc.city_id = main.city_id
+		left join
+		tb_m_area tma on tma.area_id = main.area_id
+		where
+		main.company_id=#{companyId}
+	</select>
+
+	<select id="getCompanyList" resultMap="result_company" >
+		select
+		p_m_company.company_id,
+		p_m_company.company_id,
+		p_m_company.company_type,
+		p_m_company.company_name,
+		p_m_company.province_id,
+		p_m_company.city_id,
+		p_m_company.area_id,
+		main.responsible_company,
+		main.responsible_depart,
+		(select resdepart.department_name from p_m_department resdepart where  main.responsible_depart = resdepart.department_id) as responsible_depart_name,
+		p_m_company.develop_company,
+		p_m_company.service_company,
+		p_m_company.service_phone,
+		p_m_company.service_time,
+		p_m_company.service_rule,
+		p_m_company.service_comment,
+		p_m_company.phone_number,
+		p_m_company.notes,
+		p_m_company.detail,
+		p_m_company.create_date,
+		p_m_company.create_user,
+		p_m_company.last_update_date,
+		p_m_company.last_update_user
+		from
+		p_m_company,p_m_department
+		where
+		p_m_company.company_id =
+		p_m_department.company_id
+		and p_m_company.company_id =
+		p_m_department.department_id
+	</select>
+
+	<select id="searchCompanyList" resultMap="result_company"  parameterType="CompanyModel">
+		select
+		main.company_id,
+		main.company_type,
+		main.company_name,
+		main.province_id,
+		main.city_id,
+		main.area_id,
+		main.responsible_company,
+		main.responsible_depart,
+		(select resdepart.department_name from p_m_department resdepart where  main.responsible_depart = resdepart.department_id) as responsible_depart_name,
+		main.develop_company,
+		main.service_company,
+		main.service_phone,
+		main.service_time,
+		main.service_rule,
+		main.service_comment,
+		main.phone_number,
+		main.notes,
+		main.detail,
+		main.create_date,
+		main.create_user,
+		main.last_update_date,
+		main.last_update_user,
+		tmp.province_name,
+		tmc.city_name,
+		tma.area_name
+		FROM p_m_company main 
+		left join
+		tb_m_province tmp on tmp.province_id = main.province_id
+		left join
+		tb_m_city tmc on tmc.city_id = main.city_id
+		left join
+		tb_m_area tma on tma.area_id = main.area_id
+		<where>
+		    main.delete_flag = '0'
+			<if test="companyId!=null and companyId!=''"> and main.company_id=#{companyId}</if>
+			<if test="companyType!=null and companyType!=''"> and main.company_type=#{companyType}</if>
+			<if test="companyName!=null and companyName!=''"> and main.company_name like #{companyName}</if>
+			<if test="provinceId!=null and provinceId!=''"> and main.province_id=#{provinceId}</if>
+			<if test="cityId!=null and cityId!=''"> and main.city_id=#{cityId}</if>
+			<if test="areaId!=null and areaId!=''"> and main.area_id=#{areaId}</if>
+			<if test="developCompany!=null and developCompany!=''"> and main.develop_company  like #{developCompany}</if>
+			<if test="serviceCompany!=null and serviceCompany!=''"> and main.service_company=#{serviceCompany}</if>
+			<if test="servicePhone!=null and servicePhone!=''"> and main.service_phone=#{servicePhone}</if>
+			<if test="serviceTime!=null and serviceTime!=''"> and main.service_time=#{serviceTime}</if>
+			<if test="serviceRule!=null and serviceRule!=''"> and main.service_rule=#{serviceRule}</if>
+			<if test="serviceComment!=null and serviceComment!=''"> and main.service_comment=#{serviceComment}</if>
+			<if test="phoneNumber!=null and phoneNumber!=''"> and main.phone_number=#{phoneNumber}</if>
+			<if test="notes!=null and notes!=''"> and main.notes=#{notes}</if>
+			<if test="detail!=null and detail!=''"> and main.detail=#{detail}</if>
+		</where>
+	</select>
+	
+	<select id="searchCompanyCount" resultType="long"  parameterType="CompanyModel">
+		select
+		count(main.company_id) data_count
+		FROM p_m_company main 
+		<where>
+		    main.delete_flag = '0'
+			<if test="companyId!=null and companyId!=''"> and main.company_id=#{companyId}</if>
+			<if test="companyType!=null and companyType!=''"> and main.company_type=#{companyType}</if>
+			<if test="companyName!=null and companyName!=''"> and main.company_name like #{companyName}</if>
+			<if test="provinceId!=null and provinceId!=''"> and main.province_id=#{provinceId}</if>
+			<if test="cityId!=null and cityId!=''"> and main.city_id=#{cityId}</if>
+			<if test="areaId!=null and areaId!=''"> and main.area_id=#{areaId}</if>
+			<if test="developCompany!=null and developCompany!=''"> and main.develop_company  like #{developCompany}</if>
+			<if test="serviceCompany!=null and serviceCompany!=''"> and main.service_company=#{serviceCompany}</if>
+			<if test="servicePhone!=null and servicePhone!=''"> and main.service_phone=#{servicePhone}</if>
+			<if test="serviceTime!=null and serviceTime!=''"> and main.service_time=#{serviceTime}</if>
+			<if test="serviceRule!=null and serviceRule!=''"> and main.service_rule=#{serviceRule}</if>
+			<if test="serviceComment!=null and serviceComment!=''"> and main.service_comment=#{serviceComment}</if>
+			<if test="phoneNumber!=null and phoneNumber!=''"> and main.phone_number=#{phoneNumber}</if>
+			<if test="notes!=null and notes!=''"> and main.notes=#{notes}</if>
+			<if test="detail!=null and detail!=''"> and main.detail=#{detail}</if>
+		</where>
+	</select>
+	
+	<update id="removeCompany" parameterType="String">
+		update p_m_company set
+		delete_flag = '1'
+		where
+		company_id=#{companyId}
+	</update>
+	
+	<select id="getCommunityEstate" parameterType="String"
+		resultMap="result_company">
+		select
+		main.company_id,
+		main.company_type,
+		main.company_name,
+		main.province_id,
+		main.city_id,
+		main.area_id,
+		main.responsible_company,
+		main.responsible_depart,
+		(select resdepart.department_name from p_m_department resdepart where  main.responsible_depart = resdepart.department_id) as responsible_depart_name,
+		main.develop_company,
+		main.service_company,
+		main.service_phone,
+		main.service_time,
+		main.service_rule,
+		main.service_comment,
+		main.phone_number,
+		main.notes,
+		main.detail,
+		main.create_date,
+		main.create_user,
+		main.last_update_date,
+		main.last_update_user,
+		getFullPath('company', main.company_id) as title_multi_url
+		from
+		p_m_company main,p_m_department,tb_community
+		where
+		main.company_id =
+		p_m_department.company_id
+		and
+		p_m_department.company_id = tb_community.company_id
+		and
+		p_m_department.department_id = tb_community.department_id
+		and
+		tb_community.community_id=#{communityId}
+	</select>
+</mapper>

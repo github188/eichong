@@ -1,0 +1,361 @@
+function toUnbindEvent() {
+    $('.sexBlock').unbind();
+    $('.cpyProvinceBlock').unbind();
+    $('.cpyCityBlock').unbind();
+    $('.companyBlock').unbind();
+    $('.accountBlock').unbind();
+    selectModel();
+}
+
+toLoadProvince('', '#cpyProvinceCode', '.cpyProvinceUl', 'toUnbindEvent');
+
+//点击省加载市
+$('.cpyProvinceUl').on("click", "li", function () {
+    $('#cypCityCode').html('请选择');
+    $('.cypCityUl').html('');
+    $('#cypCityCode').attr('data-value', '');
+    $('#cpyCompanyName').html('请选择');
+    $('#cpyCompanyName').attr('data-value', '');
+    $('.cpyCompanyUl').html('');
+    var provinceCodeId = $(this).attr('data-option');
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+    var flag = $(this).attr('data-option');
+    if (flag == "") {
+        $('#cypCityCode').html('请选择');
+        $('.cypCityUl').html('');
+        $('#cypCityCode').attr('data-value', '');
+        $('#cpyCompanyName').html('请选择');
+        $('#cpyCompanyName').attr('data-value', '');
+        $('.cpyCompanyUl').html('');
+    } else {
+        toLoadCity(provinceCodeId, '', '#cypCityCode', '.cypCityUl', 'toUnbindEvent');
+    }
+});
+
+$('.cypCityUl').on("click", "li", function () {
+    $('#cpyCompanyName').html('请选择');
+    $('.cpyCompanyUl').html('');
+    $('#cpyCompanyName').attr('data-value', '');
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+    var flag = $(this).attr('data-option');
+    var cypCityCodeValue = $('#cypCityCode').attr('data-value');
+    var cpyProvinceCodeValue = $('#cpyProvinceCode').attr('data-value');
+
+    if (flag == "") {
+        $('#cpyCompanyName').html('请选择');
+        $('.cpyCompanyUl').html('');
+        $('#cpyCompanyName').attr('data-value', '');
+    } else {
+        toLoadComponyName(cypCityCodeValue, cpyProvinceCodeValue);
+    }
+});
+
+function toLoadComponyName(cypCityCodeValue, cpyProvinceCodeValue) {
+    var cpyObject = {
+        provinceCode: cpyProvinceCodeValue,
+        cityCode: cypCityCodeValue
+    };
+    if (JSON.stringify(cpyObject) == "{}") {
+        $('#cpyCompanyName').html("请选择");
+    } else {
+        toAjaxCompany(cpyObject);
+    }
+}
+
+function toAjaxCompany(cpyObject) {
+    $.ajax({
+        type: "post",
+        url: basePath + getCompanyListUrl,
+        async: true,
+        data: cpyObject,
+        success: function (data) {
+            if (data.success == true) {
+                var dataModule = data.dataObject;
+                var cypCompanyLi = '<li data-option="">请选择</li>';
+                for (var i = 0; i < dataModule.length; i++) {
+                    cypCompanyLi += '<li data-option="' + dataModule[i].cpyId + '" data-cpyNumber="' + dataModule[i].cpyNumber + '">' + dataModule[i].cpyName + '</li>';
+                }
+                $('.cpyCompanyUl').html(cypCompanyLi);
+                toUnbindEvent();
+            }
+        }
+    });
+}
+
+$('.cpyCompanyUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option')).attr('data-cpyNumber', $(this).attr('data-cpyNumber'));
+});
+
+$('.isDefaultUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+});
+
+
+$('body').off('blur', '#levelSeq').on('blur', '#levelSeq', function () {
+    checkLevelSeq($('#levelSeq').val())
+});
+
+$('body').off('blur', '#levelName').on('blur', '#levelName', function () {
+    checkLevelName($('#levelName').val())
+});
+
+function checkLevelSeq(levelSeq) {
+    var cpyId = $('#cpyCompanyName').attr('data-value');
+    if (!cpyId) {
+        $('#cpyNumTip').html('渠道不能为空');
+        return false;
+    } else {
+        $('#cpyNumTip').html('');
+    }
+
+    if (!levelSeq) {
+        $('#levelSeqTip').html('等级序列不能为空');
+        return false;
+    }
+    if (checkIsNum(levelSeq)) {
+        $('#levelSeqTip').html('等级序列只能是数字');
+        $('#levelSeq').val('');
+        $('#levelSeq').focus();
+        return false;
+    }
+
+    var obj = {
+        cpyId: cpyId,
+        levelSeq: levelSeq
+    };
+
+    $.ajax({
+        type: "post",
+        url: basePath + checkLevelSeqUrl,
+        async: true,
+        data: obj,
+        success: function (data) {
+            if (data.success == false) {
+                $('#levelSeqTip').html('等级序列已存在，请重新输入！');
+                $('#levelSeq').val('');
+                $('#levelSeq').focus();
+                return false;
+            }
+        }
+    });
+
+    $('#levelSeqTip').html('');
+    return true;
+}
+
+function checkLevelName(levelName) {
+    var cpyId = $('#cpyCompanyName').attr('data-value');
+    if (!cpyId) {
+        $('#cpyNumTip').html('渠道不能为空');
+        return false;
+    } else {
+        $('#cpyNumTip').html('');
+    }
+
+    if (!levelName) {
+        $('#levelNameTip').html('等级名称不能为空');
+        return false;
+    }
+
+    var obj = {
+        cpyId: cpyId,
+        levelName: levelName
+    };
+
+    $.ajax({
+        type: "post",
+        url: basePath + checkLevelNameUrl,
+        async: true,
+        data: obj,
+        success: function (data) {
+            if (data.success == false) {
+                $('#levelNameTip').html('等级名称已存在，请重新输入！');
+                $('#levelName').val('');
+                $('#levelName').focus();
+                return false;
+            }
+        }
+    });
+
+    $('#levelNameTip').html('');
+    return true;
+}
+
+function checkIsNum(str) {
+    var re = /^[0-9]*$/;
+    return !re.test(str);
+}
+
+//将数据提交到后台处理
+$('#saveBtn').on('click',function(){
+    var cpyName = $('#cpyCompanyName').attr('data-value');
+    var levelSeqValue = $('#levelSeq').val();
+    var levelNameValue = $('#levelName').val();
+    if(!cpyName){
+        $('#cpyNumTip').html('渠道不能为空');
+        return false;
+    }
+    if(!levelSeqValue){
+        $('#levelSeqTip').html('等级序列不能为空');
+        return false;
+    }
+    if(!levelNameValue){
+        $('#levelNameTip').html('等级名称不能为空');
+        return false;
+    }
+    saveLevel();
+})
+function saveLevel() {
+    var cpyId = $('#cpyCompanyName').attr('data-value');
+    var levelName = $('#levelName').val();
+    var levelSeq = $('#levelSeq').val();
+    var isDefault = $('#isDefault').attr('data-value');
+    var obj = {
+        cpyId: cpyId,
+        levelName: levelName,
+        levelSeq: levelSeq,
+        isDefault: isDefault
+    };
+    $.ajax({
+        type: "post",
+        url: basePath + addLevelUrl,
+        async: true,
+        data: obj,
+        success: function (data) {
+            if (data.success == true) {
+                layer.closeAll();
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+                    shadeClose: false,
+                    closeBtn: 1,
+                    area: ['310px', '160px'],//宽高
+                    content: '保存成功！',
+                    btn: ["确定"],
+                    yes:function(){
+                        window.location.href='level.html';
+                    }
+                });
+            } else {
+                if(data.status==8888){
+                    layer.closeAll();
+                    layer.open({
+                        type: 1,
+                        offset: '100px',
+                        title: ["确认", "font-size:12px;text-align:left;padding-left:20px;"],
+                        shadeClose: false,
+                        closeBtn: 1,
+                        area: ['310px', '160px'],//宽高
+                        content: data.msg,
+                        btn: ["确定", "取消"],
+                        yes:function(){
+                            layer.closeAll();
+                            setYesDefault();
+                        },
+                        btn2: function(index, layero){
+                            layer.closeAll();
+                            setNoDefault();
+                        },
+                        cancel: function (index, layero) {
+                            layer.closeAll();
+                        }
+                    });
+                }else{
+                    layer.closeAll();
+                    layer.open({
+                        type: 1,
+                        offset: '100px',
+                        title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+                        shadeClose: false,
+                        closeBtn: 1,
+                        area: ['310px', '160px'],//宽高
+                        content: data.msg,
+                        time: 3000,
+                        btn: ["确定"]
+
+                    });
+                }
+
+            }
+        }
+    });
+}
+
+function setYesDefault(){
+    var cpyId = $('#cpyCompanyName').attr('data-value');
+    var levelName = $('#levelName').val();
+    var levelSeq = $('#levelSeq').val();
+    var isDefault = $('#isDefault').attr('data-value');
+    var obj = {
+        cpyId: cpyId,
+        levelName: levelName,
+        levelSeq: levelSeq,
+        isDefault: isDefault,
+        isCover:1
+    };
+    setDefault(obj);
+}
+function setNoDefault(){
+    var cpyId = $('#cpyCompanyName').attr('data-value');
+    var levelName = $('#levelName').val();
+    var levelSeq = $('#levelSeq').val();
+    var isDefault = $('#isDefault').attr('data-value');
+    var obj = {
+        cpyId: cpyId,
+        levelName: levelName,
+        levelSeq: levelSeq,
+        isDefault: isDefault,
+        isCover:0
+    };
+    setDefault(obj);
+}
+function setDefault(obj){
+    $.ajax({
+        type: "post",
+        url: basePath + addLevelUrl,
+        async: true,
+        data: obj,
+        success: function (data) {
+            if (data.success == true) {
+                layer.closeAll();
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+                    shadeClose: false,
+                    closeBtn: 1,
+                    area: ['310px', '160px'],//宽高
+                    content: '保存成功！',
+                    btn: ["确定"],
+                    yes:function(){
+                        window.location.href='level.html';
+                    }
+                });
+            } else{
+                layer.closeAll();
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+                    shadeClose: false,
+                    closeBtn: 1,
+                    area: ['310px', '160px'],//宽高
+                    content: data.msg,
+                    time: 3000,
+                    btn: ["确定"]
+
+                });
+            }
+
+        }
+
+    });
+}
+$('#goback').on('click', function () {
+    window.location.href = 'level.html';
+});

@@ -1,0 +1,53 @@
+/* 登陆、注册弹出
+------------------------------------------------------*/
+.LogBox{
+    position: fixed;
+	top: 50%;
+	left: 50%;
+	z-index: 1050;
+	margin: -260px 0 0 -260px;
+	background-color: #fff;
+	border: 15px solid #b8b8b8;
+	border: 15px solid rgba(184,184,184,0.6);
+    *border:15px solid #b8b8b8;
+	-webkit-border-radius: 20px;
+	-moz-border-radius: 20px;
+	border-radius: 20px;
+	outline: none;
+	-webkit-box-shadow: 0 3px 7px rgba(184,184,184,0.6);
+	-moz-box-shadow: 0 3px 7px rgba(184,184,184,0.6);
+	box-shadow: 0 3px 7px rgba(184,184,184,0.6);
+	-webkit-background-clip: padding-box;
+	-moz-background-clip: padding-box;
+	background-clip: padding-box;
+	width:500px;	
+	}
+.LogMain{ margin:0 auto;}	
+.LogMain dt{ list-style:none; margin:0; padding:0; height:60px; line-height:60px; text-align:left; font-size:24px; padding-left:20px; color:#666; border-bottom:1px solid #CCC;}
+.LogMain dt a.Close{ display:block; width:40px; height:40px; float:right; background:url(../images/img/close2.png) left 20px no-repeat;}
+.LogMain dt a:hover.Close{ display:block; width:40px; height:40px; float:right; background:url(../images/img/close2.png) left -20px no-repeat;}
+.LogMain dd{ padding:7px 0px 7px 20px; height:36px;}
+.LogMain dd.ddTop{ padding:30px 0px 7px 20px;}
+.LogMain dd.ddfooter{ margin:10px 0 24px 0;}
+.LogMain dd span.W180Left{ display:block; width:180px; height:36px; line-height:36px; font-size:14px; text-align:center; border:1px #d6d6d6 solid; border-right:0; float:left;}
+.LogMain dd span.W280Left{ display:block; width:275px; height:36px; line-height:36px; font-size:14px; text-align:left; border:1px #d6d6d6 solid; float:left; background:#e4e4e4;}
+.LogMain dd span.W100Left{ display:block; width:100px; height:36px; line-height:36px; font-size:14px; text-align:center; border:1px #d6d6d6 solid; float:left; background:#e4e4e4;}
+.LogMain dd img{ margin-left:10px; vertical-align:middle; float:left;}
+.LogMain dd a.huan{ display:block; float:left; width:50px; height:24px; line-height:24px; padding:0 10px; margin: 5px 0 0 10px; border: 1px solid #656565; border: 1px solid rgba(100,100,100,1); *border:1px solid #656565; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; background:#656565; font-size:12px; color:#fff; text-align:center;}
+.LogMain dd a:hover.huan{ display:block; float:left; width:50px; height:24px; line-height:24px; padding:0 10px; margin: 5px 0 0 10px; border: 1px solid #000; border: 1px solid rgba(0,0,0,1); *border:1px solid #000; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; background:#000; font-size:12px; color:#fff; text-align:center;}
+.LogMain dd a.huoqu{ display:block; float:left; width:100px; height:24px; line-height:24px; padding:0 10px; margin: 5px 0 0 10px; border: 1px solid #656565; border: 1px solid rgba(100,100,100,1); *border:1px solid #656565; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; background:#656565; font-size:12px; color:#fff; text-align:center;}
+.LogMain dd a:hover.huoqu{ display:block; float:left; width:100px; height:24px; line-height:24px; padding:0 10px; margin: 5px 0 0 10px; border: 1px solid #000; border: 1px solid rgba(0,0,0,1); *border:1px solid #000; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; background:#000; font-size:12px; color:#fff; text-align:center;}
+.LogMain dd a.tijiao{ display:block; float:left; width:450px; height:40px; line-height:40px; border: 1px solid #f80; border: 1px solid rgba(255,136,0,1); *border:1px solid #f80; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; background:#f80; font-size:18px; color:#fff; text-align:center;}
+.LogMain dd a:hover.tijiao{ display:block; float:left; width:450px; height:40px; line-height:40px; border: 1px solid #e37900; border: 1px solid rgba(227,121,0,1); *border:1px solid #e37900; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; background:#e37900; font-size:18px; color:#fff; text-align:center;}
+input.w280denglu{ list-style:none; margin:0; padding:0; padding-left:10px; border:0px solid #ccc; background:#e4e4e4; width:260px; height:36px; line-height:36px; font-size:16px;}
+input.w100denglu{ list-style:none; margin:0; padding:0; padding-left:10px; border:0px solid #ccc; background:#e4e4e4; width:80px; height:36px; line-height:36px; font-size:16px;}
+.wangji{ float:left;}
+.lijizhuce{ float:right;}
+.wangji,.lijizhuce{ font-size:16px; margin-right:20px;}
+.wangji a:link,.lijizhuce a:link,.wangji a:visited,.lijizhuce a:visited{ color:#666;}
+.wangji a:hover,.lijizhuce a:hover{ color:#f80;}
+.wangji a:active,.lijizhuce a:active{ color:#666;}
+
+/* 登陆、注册弹出样式结束
+--------------------------------------------------------------------------------------------------------*/
+.imageCodeHuoqu{display:block;float:left;padding-left:10px;}

@@ -1,0 +1,146 @@
+{
+    "data": [
+        {
+            "cityId": "430100",
+            "cityName": "长沙市",
+            "createDate": 1421242463000,
+            "createUser": "system",
+            "lastUpdateDate": 1421242463000,
+            "lastUpdateUser": "system",
+            "provinceId": "430000",
+            "serviceLimit": 0
+        },
+        {
+            "cityId": "430200",
+            "cityName": "株洲市",
+            "createDate": 1421242463000,
+            "createUser": "system",
+            "lastUpdateDate": 1421242463000,
+            "lastUpdateUser": "system",
+            "provinceId": "430000",
+            "serviceLimit": 0
+        },
+        {
+            "cityId": "430300",
+            "cityName": "湘潭市",
+            "createDate": 1421242463000,
+            "createUser": "system",
+            "lastUpdateDate": 1421242463000,
+            "lastUpdateUser": "system",
+            "provinceId": "430000",
+            "serviceLimit": 0
+        },
+        {
+            "cityId": "430400",
+            "cityName": "衡阳市",
+            "createDate": 1421242463000,
+            "createUser": "system",
+            "lastUpdateDate": 1421242463000,
+            "lastUpdateUser": "system",
+            "provinceId": "430000",
+            "serviceLimit": 0
+        },
+        {
+            "cityId": "430500",
+            "cityName": "邵阳市",
+            "createDate": 1421242463000,
+            "createUser": "system",
+            "lastUpdateDate": 1421242463000,
+            "lastUpdateUser": "system",
+            "provinceId": "430000",
+            "serviceLimit": 0
+        },
+        {
+            "cityId": "430600",
+            "cityName": "岳阳市",
+            "createDate": 1421242463000,
+            "createUser": "system",
+            "lastUpdateDate": 1421242463000,
+            "lastUpdateUser": "system",
+            "provinceId": "430000",
+            "serviceLimit": 0
+        },
+        {
+            "cityId": "430700",
+            "cityName": "常德市",
+            "createDate": 1421242464000,
+            "createUser": "system",
+            "lastUpdateDate": 1421242464000,
+            "lastUpdateUser": "system",
+            "provinceId": "430000",
+            "serviceLimit": 0
+        },
+        {
+            "cityId": "430800",
+            "cityName": "张家界市",
+            "createDate": 1421242464000,
+            "createUser": "system",
+            "lastUpdateDate": 1421242464000,
+            "lastUpdateUser": "system",
+            "provinceId": "430000",
+            "serviceLimit": 0
+        },
+        {
+            "cityId": "430900",
+            "cityName": "益阳市",
+            "createDate": 1421242464000,
+            "createUser": "system",
+            "lastUpdateDate": 1421242464000,
+            "lastUpdateUser": "system",
+            "provinceId": "430000",
+            "serviceLimit": 0
+        },
+        {
+            "cityId": "431000",
+            "cityName": "郴州市",
+            "createDate": 1421242464000,
+            "createUser": "system",
+            "lastUpdateDate": 1421242464000,
+            "lastUpdateUser": "system",
+            "provinceId": "430000",
+            "serviceLimit": 0
+        },
+        {
+            "cityId": "431100",
+            "cityName": "永州市",
+            "createDate": 1421242464000,
+            "createUser": "system",
+            "lastUpdateDate": 1421242464000,
+            "lastUpdateUser": "system",
+            "provinceId": "430000",
+            "serviceLimit": 0
+        },
+        {
+            "cityId": "431200",
+            "cityName": "怀化市",
+            "createDate": 1421242464000,
+            "createUser": "system",
+            "lastUpdateDate": 1421242464000,
+            "lastUpdateUser": "system",
+            "provinceId": "430000",
+            "serviceLimit": 0
+        },
+        {
+            "cityId": "431300",
+            "cityName": "娄底市",
+            "createDate": 1421242464000,
+            "createUser": "system",
+            "lastUpdateDate": 1421242464000,
+            "lastUpdateUser": "system",
+            "provinceId": "430000",
+            "serviceLimit": 0
+        },
+        {
+            "cityId": "433100",
+            "cityName": "湘西土家族苗族自治州",
+            "createDate": 1421242464000,
+            "createUser": "system",
+            "lastUpdateDate": 1421242464000,
+            "lastUpdateUser": "system",
+            "provinceId": "430000",
+            "serviceLimit": 0
+        }
+    ],
+    "msg": "操作成功!",
+    "status": 100
+}

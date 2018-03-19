@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsPureBusinessMapper">
+	<resultMap type="TblPureBusiness" id="result_business">
+		<result property="businessId" column="pk_PureBusiness" />
+		<result property="groupId" column="puBu_GroupID" />
+		<result property="companyName" column="puBu_CompanyName" />
+		<result property="nickName" column="puBu_NickName" />
+		<result property="companyAddress" column="puBu_CompanyAddress" />
+		<result property="companyEmail" column="puBu_CompanyEmail" />
+		<result property="postCode" column="puBu_PostCode" />
+		<result property="scopeBusiness" column="puBu_ScopeBusiness" />
+		<result property="authorizedName" column="puBu_AuthorizedName" />
+		<result property="authorizedPhone" column="puBu_AuthorizedPhone" />
+		<result property="authorizedCard" column="puBu_AuthorizedCard" />
+		<result property="businessLicence" column="puBu_BusinessLicence" />
+		<result property="organizationCode" column="puBu_OrganizationCode" />
+		<result property="torontoHospital" column="puBu_TorontoHospital" />
+		<result property="authorization" column="puBu_Authorization" />
+		<result property="mailingAddress" column="puBu_MailingAddress" />
+		<result property="pureBusinessStatus" column="puBu_PureBusinessStatus" />
+		<result property="loveLogin" column="puBu_LoveLogin" />
+		<result property="lovePassword" column="puBu_LovePassword" />
+		<result property="createdate" column="puBu_Createdate" />
+		<result property="updatedate" column="puBu_Updatedate" />
+		<result property="puBuPicType" column="puBu_PicType" />
+		<!-- <result property="parentLoveLoginId" column="puBu_ParentLoveLoginId" /> -->
+		<result property="puBuParentLoveLoginId" column="puBu_ParentLoveLoginId" />
+		<result property="companyId" column="puBu_CompanyId" />
+	</resultMap>
+	
+	<!-- 添加纯商家 -->
+	<insert id="saveBusiness" parameterType="TblPureBusiness" useGeneratedKeys="true" keyProperty="businessId">
+		insert into tbl_PureBusiness
+		(
+			puBu_GroupID,
+			puBu_CompanyName,
+			puBu_NickName,
+			puBu_CompanyAddress,
+			puBu_CompanyEmail,
+			puBu_PostCode,
+			puBu_ScopeBusiness,
+			puBu_AuthorizedName,
+			puBu_AuthorizedPhone,
+			puBu_OrganizationCode,
+			puBu_MailingAddress,
+			puBu_PureBusinessStatus,
+			puBu_LoveLogin,
+			puBu_LovePassword,
+			puBu_Createdate,
+			puBu_Updatedate,
+			puBu_ParentLoveLoginId,
+			puBu_CompanyId
+		)
+		values
+		(
+			#{groupId},
+			#{companyName},
+			#{nickName},
+			#{companyAddress},
+			#{companyEmail},
+			#{postCode},
+			#{scopeBusiness},
+			#{authorizedName},
+			#{authorizedPhone},
+			#{organizationCode},
+			#{mailingAddress},
+			#{pureBusinessStatus},
+			#{loveLogin},
+			#{lovePassword},
+			#{createdate},
+			#{updatedate},
+			#{puBuParentLoveLoginId},
+			#{companyId}
+		)
+	</insert>
+
+	<!-- 修改纯商家信息 -->
+	<update id="modifyBusiness" parameterType="TblPureBusiness">
+		update tbl_PureBusiness
+		<set>
+			<if test="groupId !=null"> puBu_GroupID=#{groupId}, </if>
+			<if test="companyName !=null"> puBu_CompanyName=#{companyName}, </if>
+			<if test="nickName !=null"> puBu_NickName=#{nickName}, </if>
+			<if test="companyAddress !=null"> puBu_CompanyAddress=#{companyAddress}, </if>
+			<if test="companyEmail !=null"> puBu_CompanyEmail=#{companyEmail}, </if>
+			<if test="postCode !=null"> puBu_PostCode=#{postCode}, </if>
+			<if test="scopeBusiness !=null"> puBu_ScopeBusiness=#{scopeBusiness},</if>
+			<if test="authorizedName !=null"> puBu_AuthorizedName=#{authorizedName}, </if>
+			<if test="authorizedPhone !=null"> puBu_AuthorizedPhone=#{authorizedPhone},</if>
+			<if test="authorizedCard !=null"> puBu_AuthorizedCard=#{authorizedCard},</if>
+			<if test="businessLicence !=null"> puBu_BusinessLicence=#{businessLicence},</if>
+			<if test="organizationCode !=null"> puBu_OrganizationCode=#{organizationCode},</if>
+			<if test="torontoHospital !=null"> puBu_TorontoHospital=#{torontoHospital},</if>
+			<if test="authorization !=null"> puBu_Authorization=#{authorization},</if>
+			<if test="mailingAddress !=null"> puBu_MailingAddress=#{mailingAddress},</if>
+			<if test="pureBusinessStatus !=null"> puBu_PureBusinessStatus=#{pureBusinessStatus}, </if>
+			<if test="loveLogin !=null"> puBu_LoveLogin=#{loveLogin}, </if>
+			<if test="lovePassword !=null and lovePassword !=''"> puBu_LovePassword=#{lovePassword}, </if>
+			<if test="updatedate !=null"> puBu_Updatedate=#{updatedate},</if>
+			<if test="puBuPicType !=null"> puBu_PicType=#{puBuPicType},</if>
+			<if test="companyId !=null"> puBu_CompanyId=#{companyId}</if>
+		</set>
+		<where>
+			pk_PureBusiness=#{businessId}
+		</where>
+	</update>
+		<!-- 根据ID查询纯商家 -->	
+	<select id="findBusiness" parameterType="String" resultMap="result_business">
+		select
+			pk_PureBusiness,
+			puBu_GroupID,
+			puBu_CompanyName,
+			puBu_NickName,
+			puBu_CompanyAddress,
+			puBu_CompanyEmail,
+			puBu_PostCode,
+			puBu_ScopeBusiness,
+			puBu_AuthorizedName,
+			puBu_AuthorizedPhone,
+			getFullPath('IdUnitCardImage',#{businessId}) authorizedCard,
+			getFullPath('LicenseImage',#{businessId}) businessLicence,
+			puBu_OrganizationCode,
+			getFullPath('AffairsImage',#{businessId}) torontoHospital,
+			getFullPath('AccreditImage',#{businessId}) authorization,
+			puBu_MailingAddress,
+			puBu_PureBusinessStatus,
+			puBu_LoveLogin,
+			puBu_LovePassword,
+			puBu_Createdate,
+			puBu_Updatedate,
+			puBu_PicType,
+			puBu_CompanyId
+		from tbl_PureBusiness
+		where pk_PureBusiness=#{businessId}
+	</select>
+	
+	<!-- 根据ID查询纯商家 -->	
+	<select id="findBusinessByLoveId" parameterType="String" resultMap="result_business">
+		select
+			pk_PureBusiness,
+			puBu_GroupID,
+			puBu_CompanyName,
+			puBu_NickName,
+			puBu_CompanyAddress,
+			puBu_CompanyEmail,
+			puBu_PostCode,
+			puBu_ScopeBusiness,
+			puBu_AuthorizedName,
+			puBu_AuthorizedPhone,
+			getFullPath('IdUnitCardImage',#{businessId}) authorizedCard,
+			getFullPath('LicenseImage',#{businessId}) businessLicence,
+			puBu_OrganizationCode,
+			getFullPath('AffairsImage',#{businessId}) torontoHospital,
+			getFullPath('AccreditImage',#{businessId}) authorization,
+			puBu_MailingAddress,
+			puBu_PureBusinessStatus,
+			puBu_LoveLogin,
+			puBu_LovePassword,
+			puBu_Createdate,
+			puBu_Updatedate,
+			puBu_PicType,
+			puBu_CompanyId
+		from tbl_PureBusiness
+		where puBu_LoveLogin=#{loveLogin}
+	</select>
+
+	<!-- 取得纯商家列表 -->
+	<select id="getBusinessList" resultMap="result_business">
+		select
+			pk_PureBusiness,
+			puBu_GroupID,
+			puBu_CompanyName,
+			puBu_NickName,
+			puBu_CompanyAddress,
+			puBu_CompanyEmail,
+			puBu_PostCode,
+			puBu_ScopeBusiness,
+			puBu_AuthorizedName,
+			puBu_AuthorizedPhone,
+			puBu_AuthorizedCard,
+			puBu_BusinessLicence,
+			puBu_OrganizationCode,
+			puBu_TorontoHospital,
+			puBu_Authorization,
+			puBu_MailingAddress,
+			puBu_PureBusinessStatus,
+			puBu_LoveLogin,
+			puBu_LovePassword,
+			puBu_Createdate,
+			puBu_Updatedate,
+			puBu_PicType,
+			puBu_CompanyId
+		from tbl_PureBusiness
+		ORDER BY puBu_Createdate DESC 
+	</select>
+
+	<!-- 判断手机号是否存在 -->
+	<select id="checkLoveAccount" parameterType="String" resultType="int">
+		SELECT count(1) from tbl_PureBusiness where puBu_LoveLogin=#{loveLogin}
+	</select>
+	
+	<!-- 查询全部纯商家信息 -->
+	<select id="searchBusinessList" parameterType="TblPureBusiness" resultMap="result_business">
+		SELECT
+			pk_PureBusiness,
+			<!-- (go.grou_GroupName) as groupna, -->
+			go.cpy_CompanyName as puBu_CompanyName,
+			puBu_NickName,
+			puBu_CompanyAddress,
+			puBu_CompanyEmail,
+			puBu_PostCode,
+			puBu_ScopeBusiness,
+			puBu_AuthorizedName,
+			puBu_AuthorizedPhone,
+			puBu_AuthorizedCard,
+			puBu_BusinessLicence,
+			puBu_OrganizationCode,
+			puBu_TorontoHospital,
+			puBu_Authorization,
+			puBu_MailingAddress,
+			puBu_PureBusinessStatus,
+			puBu_LoveLogin,
+			puBu_LovePassword,
+			puBu_Createdate,
+			puBu_Updatedate,
+			puBu_CompanyId
+		FROM tbl_PureBusiness AS pb LEFT JOIN tbl_Company  AS go ON go.pk_CompanyId = pb.puBu_CompanyId
+		                            LEFT JOIN tbl_user u on pb.puBu_LoveLogin = u.USER_ID
+		 
+		<where>
+		     u.user_status != '3'
+			 <if test="loveLogin !=null and loveLogin !=''">
+				and puBu_LoveLogin like concat('%',#{loveLogin},'%')
+			</if>
+			<if test="companyName  !=null and companyName !=''">
+				and cpy_CompanyName =#{companyName}
+			</if>
+			<!-- <if test="nickName !=null and nickName !=''">
+				and puBu_NickName like concat('%',#{nickName},'%')
+			</if>-->
+			<if test="puBuParentLoveLoginId !=null and puBuParentLoveLoginId !=''">
+				and puBu_ParentLoveLoginId=#{puBuParentLoveLoginId}
+			</if> 
+		</where>
+		ORDER BY puBu_Createdate DESC
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<!-- 查询纯商家数量 -->
+	<select id="searchBusinessCount" parameterType="TblPureBusiness"
+		resultType="long">
+		select
+			count(pk_PureBusiness)
+		FROM tbl_PureBusiness AS pb LEFT JOIN tbl_Company  AS go ON go.pk_CompanyId = pb.puBu_CompanyId
+		                            LEFT JOIN tbl_user u on pb.puBu_LoveLogin = u.USER_ID
+		<where>
+			 	u.user_status = != '3'
+			<if test="loveLogin !=null and loveLogin !=''">
+				and puBu_LoveLogin like concat('%',#{loveLogin},'%')
+			</if>
+			<if test="companyName  !=null and companyName !=''">
+				and cpy_CompanyName =#{companyName}
+			</if>
+			<!-- <if test="nickName !=null and nickName !=''">
+				and puBu_NickName like concat('%',#{nickName},'%')
+			</if> -->
+			<if test="puBuParentLoveLoginId !=null and puBuParentLoveLoginId !=''">
+				and puBu_ParentLoveLoginId=#{puBuParentLoveLoginId}
+			</if>
+			
+		</where>
+	</select>
+	<!-- 根据登陆账号获取纯商家信息 -->
+	<select id="findBusinessByUserId" parameterType="String" resultMap="result_business">
+		select 
+		puBu_LoveLogin,
+		puBu_ParentLoveLoginId puBuParentLoveLoginId,
+		puBu_CompanyId
+		from
+		tbl_PureBusiness a
+		where exists (select 1 from tbl_user_business b where b.busi_company_id=a.pk_PureBusiness and b.user_id=#{value})
+	</select>
+	<!-- 根据公司id获取纯商家数量-->
+	<select id="findByCompanyId" parameterType="String" resultType="int">
+		select count(pk_PureBusiness)
+		from
+		tbl_PureBusiness
+		where
+		puBu_CompanyId = #{companyId}
+	</select>
+	
+</mapper>

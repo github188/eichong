@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.dubbox.dao.TblCommitLogMapper">
+	<resultMap type="TblCommitLog" id="result_commitLog">
+		<result property="id" column="pk_CommitLog" />
+		<result property="name" column="coLo_LogName" />
+		<result property="ip" column="coLo_IpAddress" />
+		<result property="txt" column="coLo_LogContent" />
+		<result property="sts" column="coLo_Status" />
+		<result property="cdate" column="coLo_Createdate" />
+		<result property="udate" column="coLo_Updatedate" />
+		<result property="uid" column="coLo_user_id" />
+	</resultMap>
+
+	<insert id="insert" parameterType="TblCommitLog"
+		useGeneratedKeys="true" keyProperty="pkPowerstation">
+		insert into tbl_CommitLog (
+		pk_CommitLog,
+		coLo_LogName,
+		coLo_IpAddress,
+		coLo_LogContent,
+		coLo_Createdate,
+		coLo_Updatedate,
+		coLo_Status,
+		coLo_user_id
+		)values (
+		#{id},
+		#{name},
+		#{ip},
+		#{txt},
+		sysdate(),
+		sysdate(),
+		'1',
+		#{uid}
+		)
+	</insert>
+
+	<!--条件单个日志 -->
+	<select id="selectOne" parameterType="TblCommitLog" resultMap="result_commitLog">
+		select ${rtColumns}
+		from
+		tbl_CommitLog
+		where pk_CommitLog=#{id}
+	</select>
+
+	<!--查询总数 -->
+	<select id="getCount" parameterType="TblCommitLog" resultType="int">
+		SELECT
+		count(1)
+		FROM
+		tbl_CommitLog c
+		<where>
+			1=1
+			<if test="name!=null and name !=''">
+				and coLo_LogName like concat('%',#{name},'%')
+			</if>
+			<if test="ip!=null and ip !=''">
+				and coLo_IpAddress like concat('%',#{ip},'%')
+			</if>
+			<if test="slcBgDate !=null and slcBgDate !=''">
+				<![CDATA[AND TO_DAYS(coLo_Createdate) >= TO_DAYS(#{slcBgDate})]]>
+			</if>
+			<if test="slcEdDate !=null and slcEdDate !=''">
+				<![CDATA[AND TO_DAYS(coLo_Createdate) <= TO_DAYS(#{slcEdDate})]]>
+			</if>
+		</where>
+	</select>
+
+	<!--条件查询,查询多种用户级别的日志记录 -->
+	<select id="getList" parameterType="TblCommitLog" resultMap="result_commitLog">
+		SELECT ${rtColumns}
+		FROM
+		tbl_CommitLog c
+		<where>
+			1=1
+			<if test="name!=null and name !=''">
+				and coLo_LogName like concat('%',#{name},'%')
+			</if>
+			<if test="ip!=null and ip !=''">
+				and coLo_IpAddress like concat('%',#{ip},'%')
+			</if>
+			<if test="slcBgDate !=null and slcBgDate !=''">
+				<![CDATA[AND TO_DAYS(coLo_Createdate) >= TO_DAYS(#{slcBgDate})]]>
+			</if>
+			<if test="slcEdDate !=null and slcEdDate !=''">
+				<![CDATA[AND TO_DAYS(coLo_Createdate) <= TO_DAYS(#{slcEdDate})]]>
+			</if>
+		</where>
+		order by coLo_Createdate desc
+		<if test="pager!=null">LIMIT #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<!--删除 -->
+	<delete id="delete" parameterType="TblCommitLog">
+		delete from
+		tbl_CommitLog
+		where
+		pk_CommitLog in
+		<foreach item="item" index="index" collection="pkIds" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+
+</mapper>

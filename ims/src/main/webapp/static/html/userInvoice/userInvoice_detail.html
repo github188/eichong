@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/style.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/userInvoice/userInvoice_detail.css"/>
+    <title>个人开票</title>
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="ibox float-e-margins" style="margin: 0">
+                    <div class="">
+                        <div class="ibox-content">
+                            <!--<div class="">-->
+                                <div class="baseInfoShow row">
+                                    <div class="baseInfoTitle">
+                                        开票详情
+                                    </div>
+                                    <div class="col-sm-9" style="padding: 0;">
+                                        <div class="baseBlock">
+                                            <div class="perblock">
+                                                <span class="titleTip">申请人</span>
+                                                <span class="parmValue" id="userAccount"></span>
+                                            </div>
+                                            <div class="perblock">
+                                                <span class="titleTip">申请时间</span>
+                                                <span class="parmValue" id="ivCreatedate"></span>
+                                            </div>
+                                            <div class="perblock">
+                                                <span class="titleTip">处理状态</span>
+                                                <span class="parmValue" id="ivInvoiceStatus"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3"></div>
+                                    <div class="col-sm-12 sizeBlock" style="padding: 0">
+                                        <div class="typeBlock row" style="margin: 0;">
+                                            <div class="col-sm-6 col-xs-12 typeDiv">
+                                                <span class="col-sm-3 col-xs-6" style="padding:0 6px;">开票类型</span>
+                                                <div class="col-sm-5 col-xs-6 model-select-box">
+                                                    <div class="model-select-text payTypeBlock" data-value="0" id="ivInvoiceType">个人开票</div>
+                                                    <span class="downRow payTypeBlock clickRotateSpan"></span>
+                                                    <input type="text" name="cpyType" id="" value="" hidden="hidden"/>
+                                                    <ul class="model-select-option ivInvoiceTypeUl">
+                                                        <li data-option="0" class="seleced">个人开票</li>
+                                                        <li data-option="1">公司开票</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-sm-12 empty"></div>
+            <div class="col-sm-12">
+                <div class="ibox float-e-margins">
+                    <div class="">
+                        <div class="ibox-content">
+                            <div class="baseInfoShow row">
+                                <div class="col-sm-12 baseInfoTitle">开票信息</div>
+                                <div class="col-sm-6 paddingLeft">
+                                    <!--公司-->
+                                    <div class="cpyInfo" id="editUl">
+                                        <div class="editBtn" id="cpyEditBtn">编辑</div>
+                                        <ul class="cpyUl cpyInfoUl">
+                                            <li>
+                                                <span class="col-sm-6 col-xs-12">公司名称</span>
+                                                <span class="col-sm-6 col-xs-12" id="ivCompanyNameSpan"></span>
+                                            </li>
+                                            <li>
+                                                <span class="col-sm-6 col-xs-12">纳税识别号</span>
+                                                <span class="col-sm-6 col-xs-12" id="ivTaxpayerNumberSpan"></span>
+                                            </li>
+                                            <li>
+                                                <span class="col-sm-6 col-xs-12">营业地址</span>
+                                                <span class="col-sm-6 col-xs-12" id="ivCompanyAddressSpan"></span>
+                                            </li>
+                                            <li>
+                                                <span class="col-sm-6 col-xs-12">电话号码</span>
+                                                <span class="col-sm-6 col-xs-12" id="ivPhoneNumberSpan"></span>
+                                            </li>
+                                            <li>
+                                                <span class="col-sm-6 col-xs-12">公司开户行</span>
+                                                <span class="col-sm-6 col-xs-12" id="ivBankNameSpan"></span>
+                                            </li>
+                                            <li>
+                                                <span class="col-sm-6 col-xs-12">银行账户</span>
+                                                <span class="col-sm-6 col-xs-12" id="ivBankAccountSpan"></span>
+                                            </li>
+                                        </ul>
+                                        <ul class="cpyUl userInfoUl">
+                                            <li>
+                                                <span class="col-sm-6 col-xs-12">用户姓名</span>
+                                                <span class="col-sm-6 col-xs-12" id="userAccountNameSpan"></span>
+                                            </li>
+                                        </ul>
+                                        <ul class="cpyUl">
+                                            <li>
+                                                <span class="col-sm-6 col-xs-12">收件方式</span>
+                                                <span class="col-sm-6 col-xs-12" id="ivPayFreightSpan"></span>
+                                            </li>
+                                            <li class="ivFreightAmountLi">
+                                                <span class="col-sm-6 col-xs-12">邮费金额（元）</span>
+                                                <span class="col-sm-6 col-xs-12 " id="ivFreightAmountSpan"></span>
+                                            </li>
+                                            <li>
+                                                <span class="col-sm-6 col-xs-12">收件地址</span>
+                                                <span class="col-sm-6 col-xs-12" id="ivConsigneeAddressSpan"></span>
+                                            </li>
+                                            <li>
+                                                <span class="col-sm-6 col-xs-12">收件人</span>
+                                                <span class="col-sm-6 col-xs-12" id="ivRecipientsSpan"></span>
+                                            </li>
+                                            <li>
+                                                <span class="col-sm-6 col-xs-12">联系电话</span>
+                                                <span class="col-sm-6 col-xs-12" id="ivRecipientsNumberSpan"></span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="cpyInfo" id="saveUl" style="display: none;">
+                                        <div class="editBtn" id="cpySaveBtn">保存</div>
+                                        <ul class="cpyUl cpyInfoUl">
+                                            <li>
+                                                <span class="col-sm-6 col-xs-12">公司名称</span>
+                                                <input class="col-sm-6 col-xs-12" type="text" id="ivCompanyName" value=""  />
+                                            </li>
+                                            <li>
+                                                <span class="col-sm-6 col-xs-12">纳税识别号</span>
+                                                <input class="col-sm-6 col-xs-12" type="text" id="ivTaxpayerNumber" value=""  />
+                                            </li>
+                                            <li>
+                                                <span class="col-sm-6 col-xs-12">营业地址</span>
+                                                <input class="col-sm-6 col-xs-12" type="text" id="ivCompanyAddress" value=""  />
+                                            </li>
+                                            <li>
+                                                <span class="col-sm-6 col-xs-12">电话号码</span>
+                                                <input class="col-sm-6 col-xs-12" type="text" id="ivPhoneNumber" value=""  />
+                                            </li>
+                                            <li>
+                                                <span class="col-sm-6 col-xs-12">公司开户行</span>
+                                                <input class="col-sm-6 col-xs-12" type="text" id="ivBankName" value=""  />
+                                            </li>
+                                            <li>
+                                                <span class="col-sm-6 col-xs-12">银行账户</span>
+                                                <input class="col-sm-6 col-xs-12" type="text" id="ivBankAccount" value=""  />
+                                            </li>
+                                        </ul>
+                                        <ul class="cpyUl userInfoUl">
+                                            <li>
+                                                <span class="col-sm-6 col-xs-12">用户姓名</span>
+                                                <input class="col-sm-6 col-xs-12" type="text" id="userAccountName" value=""  />
+                                            </li>
+                                        </ul>
+                                        <ul class="cpyUl">
+                                            <li>
+                                                <span class="col-sm-6 col-xs-12">收件方式</span>
+                                                <span class="col-sm-6 col-xs-12 ivFreightAmount" id="ivPayFreight"></span>
+                                            </li>
+                                            <li class="ivFreightAmountLi">
+                                                <span class="col-sm-6 col-xs-12">邮费金额（元）</span>
+                                                <span class="col-sm-6 col-xs-12 ivFreightAmount" id="ivFreightAmount"></span>
+                                            </li>
+                                            <li>
+                                                <span class="col-sm-6 col-xs-12">收件地址</span>
+                                                <input class="col-sm-6 col-xs-12" type="text" id="ivConsigneeAddress" value=""  />
+                                            </li>
+                                            <li>
+                                                <span class="col-sm-6 col-xs-12">收件人</span>
+                                                <input class="col-sm-6 col-xs-12" type="text" id="ivRecipients" value=""  />
+                                            </li>
+                                            <li>
+                                                <span class="col-sm-6 col-xs-12">联系电话</span>
+                                                <input class="col-sm-6 col-xs-12" type="text" id="ivRecipientsNumber" value=""  />
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="empty"></div>
+                                <div class="col-sm-6 paddingRight">
+                                    <!--开票状态-->
+                                    <div class="cpyInfo" id="waitInvoice">
+                                        <ul class="cpyUl">
+                                            <li >
+                                                <span class="col-sm-6 col-xs-12">处理状态</span>
+                                                <p class="icStatus col-sm-6 col-xs-12" id="icStatus">待开票</p>
+                                            </li>
+                                            <li>
+                                                <span class="col-sm-6 col-xs-12">发票类型</span>
+                                                <span class="col-sm-6 col-xs-12">
+                                                    <input type="radio" class="checkInput" name="invoiceType" value="0" />普通发票
+                                                    <input type="radio" class="checkInput" name="invoiceType" value="1" checked="checked" />增值税专用发票
+                                                </span>
+                                            </li>
+                                            <li>
+                                                <span class="col-sm-6 col-xs-12">发票号码</span>
+                                                <input class="col-sm-6 col-xs-12" type="text" class="ivInvoiceNumber" value="" id="ivInvoiceNumber" />
+                                            </li>
+                                        </ul>
+                                        <div class="btnBox">
+                                            <div class="cancelBtn" id="refuseCancelBtn" hidden="hidden">取消修改</div>
+                                            <div class="cancelBtn" id="confirmCancelBtn" hidden="hidden">取消修改</div>
+                                            <div class="cancelBtn" id="refuseBtn">拒绝开票</div>
+                                            <div class="saveBtn" id="confirmBtn">确定开票</div>
+                                        </div>
+                                    </div>
+                                    <div class="cpyInfo" id="invoiceSuccess" >
+                                        <ul class="cpyUl">
+                                            <li>
+                                                <span class="col-sm-6 col-xs-12">处理状态</span>
+                                                <p class="col-sm-6 col-xs-12">已开票</p>
+                                            </li>
+                                            <li>
+                                                <span class="col-sm-6 col-xs-12">发票类型</span>
+                                                <p class="col-sm-6 col-xs-12" id="invoiceType"></p>
+                                            </li>
+                                            <li>
+                                                <span class="col-sm-6 col-xs-12">发票号码</span>
+                                                <p class="col-sm-6 col-xs-12" id="invoiceNum"></p>
+                                            </li>
+                                        </ul>
+                                        <div class="btnBox">
+                                            <div class="saveBtn" id="resetBtn">修改</div>
+                                        </div>
+                                    </div>
+                                    <div class="cpyInfo" id="refuseInvoice"  >
+                                        <ul class="cpyUl">
+                                            <li>
+                                                <span class="col-sm-6 col-xs-12">处理状态</span>
+                                                <p class="col-sm-6 col-xs-12">已拒绝开票</p>
+                                            </li>
+                                            <li>
+                                                <span class="col-sm-12 col-xs-12">拒绝理由</span>
+                                            </li>
+                                        </ul>
+                                        <p class="ivRefuseRejection col-sm-12 col-xs-12" id="ivRefuseRejectionHtml"></p>
+                                        <div class="btnBox">
+                                            <div class="saveBtn" id="resetBtnRefuse">修改</div>
+                                        </div>
+                                    </div>
+                                    <div class="empty"></div>
+                                    <div class="cpyInfo">
+                                        <ul class="cpyUl">
+                                            <li>
+                                                <span class="col-sm-6 col-xs-12">优惠后电费（元）</span>
+                                                <span id="discountChangMoney" class="col-sm-6 col-xs-12"></span>
+                                            </li>
+                                            <li>
+                                                <span class="col-sm-6 col-xs-12">优惠后服务费（元）</span>
+                                                <span id="discountServiceMoney" class="col-sm-6 col-xs-12"></span>
+                                            </li>
+                                            <li class="btnLi">
+                                                <span class="lookBtn" id="lookBtn">查看开票订单</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="bindPile" id="bindPile" style="display: none;">
+    <form id="invoiceListForm">
+        <input type="text" value="" hidden="hidden" style="display: none;" name="invoiceId" />
+
+    </form>
+    <div class="bindPileBlock table-responsive">
+        <table class="bindPileTable table">
+            <thead>
+            <tr class="active">
+                <th style="min-width: 40px;">选择</th>
+                <th style="min-width: 40px;">序号</th>
+                <th style="min-width: 80px;">订单号</th>
+                <th style="min-width: 120px;">充电时间</th>
+                <th style="min-width: 70px;">电费(元)</th>
+                <th style="min-width: 80px;">服务费(元)</th>
+                <th style="min-width: 100px;">优惠后电费(元)</th>
+                <th style="min-width: 110px;">优惠后服务费(元)</th>
+                <th style="min-width: 120px;">充电桩编码</th>
+                <th style="min-width: 80px;">充电点</th>
+                <th style="min-width: 100px;">订单状态</th>
+            </tr>
+            </thead>
+            <tbody id="invoiceListTab">
+
+            </tbody>
+        </table>
+        <div id="userInvoiceListPage" class="pagination myPagination">
+        </div>
+    </div>
+</div>
+<div class="ivRefuseRejectionBlock" style="display: none;min-height:60px;width: 100%;">
+    <textarea name="" id="ivRefuseRejectionTxt" style="resize:none;width:100%;display: block;min-height:60px;"></textarea>
+    <div class="tips"></div>
+</div>
+</body>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<!--<script src="../js/apiAddress.js" type="text/javascript" charset="utf-8"></script>-->
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="../../js/contabs.min.js"></script>
+<script src="../../js/userInvoice/userInvoice_detail.js" type="text/javascript" charset="utf-8"></script>
+</html>

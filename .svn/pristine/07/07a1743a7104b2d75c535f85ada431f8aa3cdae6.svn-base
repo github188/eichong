@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.app.dao.WebJpushMapper">
+
+	<resultMap id="tblJpushResultMap" type="TblJpush">
+		<id property="pkJpush" column="pk_JPush" />
+		<result property="jpushUserinfo" column="jpush_UserInfo" />
+		<result property="jpushRegistrationid" column="jpush_registrationID" />
+		<result property="jpushDevicetype" column="jpush_deviceType" />
+		<result property="jpushCreatedate" column="jpush_Createdate" />
+		<result property="jpushUpdatedate" column="jpush_Updatedate" />
+	</resultMap>
+	<resultMap id="pageResultMap"  type="java.util.HashMap" extends="tblJpushResultMap"></resultMap>
+	<resultMap id="findResultMap"  type="java.util.HashMap" extends="tblJpushResultMap"></resultMap>
+
+	<insert id="insert" parameterType="TblJpush">
+	   insert into tbl_JPush (
+	     pk_JPush,
+	     jpush_UserInfo,
+	     jpush_registrationID,
+	     jpush_deviceType,
+	     jpush_Createdate,
+	     jpush_Updatedate
+	   )values (
+	     #{pkJpush},
+	     #{jpushUserinfo},
+	     #{jpushRegistrationid},
+	     #{jpushDevicetype},
+	     #{jpushCreatedate},
+	     #{jpushUpdatedate}
+	   )
+	</insert>
+
+	<update id="update" parameterType="TblJpush">
+	   update tbl_JPush set
+	     pk_JPush=#{pkJpush},
+	     jpush_UserInfo=#{jpushUserinfo},
+	     jpush_registrationID=#{jpushRegistrationid},
+	     jpush_deviceType=#{jpushDevicetype},
+	     jpush_Createdate=#{jpushCreatedate},
+	     jpush_Updatedate=#{jpushUpdatedate}
+	   where 
+	    pk_JPush=#{pkJpush} 
+	</update>
+
+	<delete id="delete" parameterType="map">
+	   delete from 
+	     tbl_JPush 
+	   where 
+	    pk_JPush=#{pkJpush} 
+	</delete>
+	<!-- 根据用户id获取用户推送信息 -->
+	<select id="getByuserInfo" parameterType="map" resultMap="tblJpushResultMap">
+	   select 
+	    pk_JPush,
+	    jpush_UserInfo,
+	    jpush_registrationID,
+	    jpush_deviceType,
+	    jpush_Createdate,
+	    jpush_Updatedate
+	   from tbl_JPush
+	   where 
+	    jpush_UserInfo=#{jpushUserInfo} 
+	</select>
+
+	<select id="findOne" parameterType="map" resultMap="findResultMap">
+	   select 
+	    pk_JPush,
+	    jpush_UserInfo,
+	    jpush_registrationID,
+	    jpush_deviceType,
+	    jpush_Createdate,
+	    jpush_Updatedate
+	   from tbl_JPush
+	   where 
+	    pk_JPush=#{pkJpush} 
+	</select>
+
+	<select id="find" parameterType="map" resultMap="findResultMap">
+	   select 
+	     pk_JPush,
+	     jpush_UserInfo,
+	     jpush_registrationID,
+	     jpush_deviceType,
+	     jpush_Createdate,
+	     jpush_Updatedate
+	   from tbl_JPush
+	   <where>
+	     <if test="pkJpush != null">
+	        pk_JPush=#{pkJpush}
+	     </if>
+	     <if test="jpushUserinfo != null">
+	        and jpush_UserInfo=#{jpushUserinfo}
+	     </if>
+	     <if test="jpushRegistrationid != null">
+	        and jpush_registrationID=#{jpushRegistrationid}
+	     </if>
+	     <if test="jpushDevicetype != null">
+	        and jpush_deviceType=#{jpushDevicetype}
+	     </if>
+	     <if test="jpushCreatedate != null">
+	        and jpush_Createdate=#{jpushCreatedate}
+	     </if>
+	     <if test="jpushUpdatedate != null">
+	        and jpush_Updatedate=#{jpushUpdatedate}
+	     </if>
+	   </where>
+	</select>
+	
+	<select id="page" parameterType="map" resultMap="pageResultMap">
+	   select 
+	     pk_JPush,
+	     jpush_UserInfo,
+	     jpush_registrationID,
+	     jpush_deviceType,
+	     jpush_Createdate,
+	     jpush_Updatedate
+	   from tbl_JPush
+	   <where>
+	     <if test="pkJpush != null">
+	        pk_JPush=#{pkJpush}
+	     </if>
+	     <if test="jpushUserinfo != null">
+	        and jpush_UserInfo=#{jpushUserinfo}
+	     </if>
+	     <if test="jpushRegistrationid != null">
+	        and jpush_registrationID=#{jpushRegistrationid}
+	     </if>
+	     <if test="jpushDevicetype != null">
+	        and jpush_deviceType=#{jpushDevicetype}
+	     </if>
+	     <if test="jpushCreatedate != null">
+	        and jpush_Createdate=#{jpushCreatedate}
+	     </if>
+	     <if test="jpushUpdatedate != null">
+	        and jpush_Updatedate=#{jpushUpdatedate}
+	     </if>
+	   </where>
+	</select>
+</mapper> 

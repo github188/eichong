@@ -1,0 +1,34 @@
+@charset "utf-8";
+section{
+	width: 100%;
+	height: 80%;
+	-background: #0062CC;
+	padding: 10% 8%;
+	
+}
+section .yExplain{
+	margin-bottom: 5%;
+	font-weight: 900;
+}
+section .price{
+	color: #FF7D00;
+	
+}
+section h4{
+	margin-bottom: 10%;
+}
+section .youKnow{
+	margin: 0;
+	margin-top: 4%;
+	font-weight: 900;
+}
+section .math{
+	margin: 6% auto;
+	margin-top: 0;
+	color: #808080;
+}
+section .detailKnow{
+	margin-top: 5%;
+	line-height: 2rem;
+	color: #808080;
+}

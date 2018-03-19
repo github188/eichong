@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.app.dao.ElectricMapMapper">
+
+
+	<resultMap id="BaseResultMap" type="com.wanma.model.ElectricMap">
+		<id column="pk_PowerStation" property="pkPowerStation" jdbcType="INTEGER" />
+		<result column="poSt_Address" property="poStAddress" jdbcType="VARCHAR" />
+		<result column="poSt_Latitude" property="poStLatitude"
+			jdbcType="VARCHAR" />
+		<result column="poSt_Longitude" property="poStLongitude"
+			jdbcType="VARCHAR" />
+		<result column="poSt_Name" property="poStName" jdbcType="VARCHAR" />
+		<result column="dc" property="dc" jdbcType="VARCHAR" />
+		<result column="ac" property="ac" jdbcType="VARCHAR" />
+		<result column="freeHeadNum" property="freeHeadNum" jdbcType="VARCHAR" />
+		<result column="distance" property="distance" jdbcType="VARCHAR" />
+		<result column="rateId" property="rateId" jdbcType="INTEGER" />
+
+	</resultMap>
+
+	<resultMap id="RateResultMap" type="com.wanma.model.RateInfo">
+		<id column="pk_RateInformation" property="rateId" jdbcType="INTEGER" />
+		<result column="raIn_QuantumDate" property="raInQuantumDate"
+			jdbcType="VARCHAR" />
+		<result column="raIn_TipTimeTariff" property="raInTipTimeTariff"
+			jdbcType="VARCHAR" />
+		<result column="raIn_PeakElectricityPrice" property="raInPeakElectricityPrice"
+			jdbcType="VARCHAR" />
+		<result column="raIn_UsualPrice" property="raInUsualPrice"
+			jdbcType="VARCHAR" />
+		<result column="raIn_ValleyTimePrice" property="raInValleyTimePrice"
+			jdbcType="VARCHAR" />
+	   <result column="raIn_ServiceCharge" property="raInServiceCharge"
+			jdbcType="VARCHAR" />
+
+
+	</resultMap>
+
+	<select id="getElectricMap" resultMap="BaseResultMap">
+	select v.distance,v.ac,v.dc,v.ac+v.dc as freeHeadNum, v.rateId,
+		v.pk_PowerStation,
+		v.poSt_Name,
+		v.poSt_Address,
+		v.poSt_Latitude,
+        v.poSt_Longitude from (
+		SELECT
+		round(
+		6378.138 * 2 * asin(
+		sqrt(
+		pow(
+		sin(
+		(
+		#{poStLatitude} * pi() / 180
+		- t.poSt_Latitude * pi() / 180
+		) / 2
+		),
+		2
+		) + cos(#{poStLatitude} * pi() / 180)
+		* cos(t.poSt_Latitude * pi() / 180) *
+		pow(
+		sin(
+		(
+		#{poStLongitude} * pi() /
+		180 - t.poSt_Longitude * pi() / 180
+		) / 2
+		),
+		2
+		)
+		)
+		) * 1000
+		) AS distance,
+		(
+		SELECT
+		count(1)
+		FROM
+		tbl_electricpilehead a,
+		tbl_electricpile c
+		where
+		c.elPi_ChargingMode = 14
+		and c.elPi_State=15
+		<!--  and c.comm_status = 1 -->
+		and
+		c.elPi_RelevancePowerStation = t.pk_PowerStation
+		AND
+		a.ePHe_ElectricpileHeadState = 0
+		AND a.pk_ElectricPile =
+		c.pk_ElectricPile
+		) AS ac,
+		(
+		SELECT
+		count(1)
+		FROM
+		tbl_electricpilehead a,
+		tbl_electricpile c
+		WHERE
+		c.elPi_State=15
+		AND c.elPi_ChargingMode = 5
+		<!-- and c.comm_status = 1  -->
+		AND
+		a.ePHe_ElectricpileHeadState = 0
+		and
+		c.elPi_RelevancePowerStation =
+		t.pk_PowerStation
+		AND a.pk_ElectricPile
+		= c.pk_ElectricPile
+		) AS dc,
+		(
+		select c.elPi_RateInformationId from tbl_electricpile c where
+		t.pk_PowerStation=c.elPi_RelevancePowerStation limit 1
+		) AS rateId,
+		t.pk_PowerStation,
+		t.poSt_Name,
+		t.poSt_Address,
+		t.poSt_Latitude,
+        t.poSt_Longitude
+		FROM
+		tbl_powerstation t
+		WHERE
+		t.poSt_Status=15
+		and
+		<![CDATA[ 
+		round(6378.138*2*asin(sqrt(pow(sin(
+		(#{poStLatitude}*pi()/180-t.poSt_Latitude*pi()/180)/2),2)+cos(#{poStLatitude}*pi()/180)*cos(t.poSt_Latitude*pi()/180)*
+		pow(sin(
+		(#{poStLongitude}*pi()/180-t.poSt_Longitude*pi()/180)/2),2)))*1000)
+		<=60000
+        ]]>
+		<if test="freeparking==1">
+			and EXISTS (
+			select 1 from tbl_electricpile o
+			where o.elPi_RelevancePowerStation =t.pk_PowerStation
+			and o.elPi_Parking_Fee=0
+			)
+		</if>
+		<!-- 含有交流的桩:不空闲、不直流、交流 -->
+		<if test="freetime==0 and ac==1 and dc==0">
+			and EXISTS (
+			SELECT
+			1
+			FROM
+			tbl_electricpile p
+			WHERE
+			p.elPi_RelevancePowerStation=t.pk_PowerStation
+			and p.elPi_ChargingMode=14
+			and p.elPi_State = 15
+			<!-- and p.comm_status = 1  -->
+			)
+		</if>
+		<!-- 含有直流的桩:不空闲，不交流、直流 -->
+		<if test="freetime==0 and ac==0 and dc==1">
+			and EXISTS (
+			SELECT
+			1
+			FROM
+			tbl_electricpile p
+			WHERE
+			p.elPi_RelevancePowerStation=t.pk_PowerStation
+			and p.elPi_ChargingMode=5
+			and p.elPi_State = 15
+		<!-- 	 and p.comm_status = 1  -->
+			)
+		</if>
+
+		<!-- 含有空闲的交流充电桩:空闲、不直流 、交流 -->
+		<if test="freetime==1 and ac==1 and dc==0">
+			and EXISTS (
+			SELECT
+			1
+			FROM
+			tbl_electricpile p,tbl_electricpilehead o
+			WHERE
+			p.elPi_RelevancePowerStation=t.pk_PowerStation
+			and p.pk_ElectricPile=o.pk_ElectricPile
+			and p.elPi_ChargingMode=14
+			and o.ePHe_ElectricpileHeadState=0
+			and p.elPi_State = 15
+			<!--  and p.comm_status = 1  -->
+			)
+		</if>
+		<!--含有空闲的直流充电桩: 空闲 、直流 、不交流 -->
+		<if test="freetime==1 and ac==0 and dc==1">
+			and EXISTS (
+			SELECT
+			1
+			FROM
+			tbl_electricpile p,tbl_electricpilehead o
+			WHERE
+			p.elPi_RelevancePowerStation=t.pk_PowerStation
+			and p.pk_ElectricPile=o.pk_ElectricPile
+			and p.elPi_ChargingMode=5
+			and o.ePHe_ElectricpileHeadState=0
+			and p.elPi_State = 15
+		<!-- and p.comm_status = 1  -->
+			)
+
+		</if>
+		<!--含有空闲的桩: 不空闲 直流 交流 or 空闲 不直流 不交流 or 空闲 直流 交流 -->
+		<if test="(ac==1 and dc==1) or (ac==0 and dc==0)">
+			and EXISTS (
+			SELECT
+			1
+			FROM
+			tbl_electricpile p,tbl_electricpilehead o
+			WHERE
+			p.elPi_RelevancePowerStation=t.pk_PowerStation
+			and p.pk_ElectricPile=o.pk_ElectricPile
+			and o.ePHe_ElectricpileHeadState=0
+		    and p.elPi_State = 15
+			<!-- and p.comm_status = 1  -->
+			)
+		</if>
+) v
+	</select>
+
+	<select id="getRateInfo" resultMap="RateResultMap">
+		SELECT
+		t.pk_RateInformation,
+		t.raIn_QuantumDate,
+		t.raIn_TipTimeTariff,
+		t.raIn_ValleyTimePrice,
+		t.raIn_PeakElectricityPrice,
+		t.raIn_UsualPrice,
+		t.raIn_ServiceCharge
+		FROM
+		tbl_rateinformation t
+		where pk_RateInformation=#{rateId}
+
+	</select>
+	<select id="getElectricMapBysearch" resultMap="BaseResultMap">
+		SELECT
+		round(
+		6378.138 * 2 * asin(
+		sqrt(
+		pow(
+		sin(
+		(
+		#{poStLatitude} * pi() / 180
+		- t.poSt_Latitude * pi() / 180
+		) / 2
+		),
+		2
+		) + cos(#{poStLatitude} * pi() / 180)
+		* cos(t.poSt_Latitude * pi() / 180) *
+		pow(
+		sin(
+		(
+		#{poStLongitude} * pi() /
+		180 - t.poSt_Longitude * pi() / 180
+		) / 2
+		),
+		2
+		)
+		)
+		) * 1000
+		) AS distance,
+		(
+		SELECT
+		count(1)
+		FROM
+		tbl_electricpilehead a,
+		tbl_electricpile c
+		where
+		c.elPi_ChargingMode = 14
+		<!-- and c.comm_status = 1  -->
+		and c.elPi_State=15
+		and
+		c.elPi_RelevancePowerStation = t.pk_PowerStation
+		AND
+		a.ePHe_ElectricpileHeadState = 0
+		AND a.pk_ElectricPile =
+		c.pk_ElectricPile
+		) AS ac,
+		(
+		SELECT
+		count(1)
+		FROM
+		tbl_electricpilehead a,
+		tbl_electricpile c
+		WHERE
+		c.elPi_State=15
+	<!-- 	and c.comm_status = 1  -->
+		AND c.elPi_ChargingMode = 5
+		AND
+		a.ePHe_ElectricpileHeadState = 0
+		and
+		c.elPi_RelevancePowerStation =
+		t.pk_PowerStation
+		AND a.pk_ElectricPile
+		= c.pk_ElectricPile
+		) AS dc,
+		(
+		select c.elPi_RateInformationId from tbl_electricpile c where
+		t.pk_PowerStation=c.elPi_RelevancePowerStation limit 1
+		) AS rateId,
+		t.pk_PowerStation,
+		t.poSt_Name,
+		t.poSt_Address,
+		t.poSt_Latitude,
+        t.poSt_Longitude
+		FROM
+		tbl_powerstation t
+		WHERE
+		t.poSt_Status=15
+	<!-- 	and
+		<![CDATA[ 
+		round(6378.138*2*asin(sqrt(pow(sin(
+		(#{poStLatitude}*pi()/180-t.poSt_Latitude*pi()/180)/2),2)+cos(#{poStLatitude}*pi()/180)*cos(t.poSt_Latitude*pi()/180)*
+		pow(sin(
+		(#{poStLongitude}*pi()/180-t.poSt_Longitude*pi()/180)/2),2)))*1000)
+		<=60000
+        ]]> -->
+		and (t.poSt_Name LIKE concat('%',#{keyword},'%') OR t.poSt_Address LIKE concat('%',#{keyword},'%'))
+
+	</select>
+</mapper> 

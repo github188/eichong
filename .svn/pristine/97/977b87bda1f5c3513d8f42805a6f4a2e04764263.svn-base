@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/style.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/fav/couponVariety_list.css"/>
+    <title>现金券品种列表</title>
+</head>
+<body>
+<div class="container animated fadeInRight">
+    <div class="row">
+        <div class="formBlock clearfix">
+            <form id="couponVarietyForm">
+                <div class="col-xs-12 col-sm-11 col-md-11 col-lg-11">
+                    <div class="userListSelect row">
+                        <div class="col-sm-3  col-xs-12">
+                            <div class="col-sm-4 queryParam">
+                                电桩限制
+                            </div>
+                            <div class="col-sm-8 col-xs-12 model-select-box">
+                                <div class="model-select-text covaLimitationBlock" data-value="" id="covaLimitationHtml">全部</div>
+                                <span class="downRow covaLimitationBlock"></span>
+                                <input type="text" name="covaLimitation" value="" hidden="hidden"/>
+                                <ul class="model-select-option covaLimitationUl">
+                                    <li data-option="" class="seleced">全部</li>
+                                    <li data-option="1">仅限交流充电桩</li>
+                                    <li data-option="2">仅限直流充电桩</li>
+                                    <li data-option="3">不限充电桩</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-sm-offset-1 col-xs-12">
+                            <div class="col-sm-4 queryParam">
+                                状态
+                            </div>
+                            <div class="col-sm-8 col-xs-12 model-select-box">
+                                <div class="model-select-text covaStutasBlock" data-value="" id="covaStutasHtml">全部</div>
+                                <span class="downRow covaStutasBlock"></span>
+                                <input type="text" name="covaStutas" value="" hidden="hidden"/>
+                                <ul class="model-select-option covaStutasUl">
+                                    <li data-option="" class="seleced">全部</li>
+                                    <li data-option="0">上架</li>
+                                    <li data-option="1">下架</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-1 col-md-1 col-lg-1" style="position: relative;">
+                    <div class="queryBtn" onclick="couponVarietyListSearch()">
+                        查询
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!--按钮部分开始==========================================================-->
+        <div class="btnBlock">
+            <div class="col-sm-10 col-xs-12 col-md-10" style="">
+                <div class="col-sm-2 col-xs-2 btnStyle" id="addCouponBtn">
+                    新建
+                </div>
+            </div>
+            <div class="col-sm-2 col-md-2"></div>
+        </div>
+        <!--表格部分开始==========================================================-->
+        <div class="showSet table-responsive">
+            <table class=" table table-bordered text-center" style="border: 1px solid #DCDCDC;">
+                <thead>
+                <tr>
+                    <th class="">选择</th>
+                    <th>序号</th>
+                    <th>名称</th>
+                    <th>电桩限制</th>
+                    <th>面值</th>
+                    <th>使用条件</th>
+                    <th>有效期</th>
+                    <th>状态</th>
+                    <th>创建时间</th>
+                    <th>备注说明</th>
+                </tr>
+                </thead>
+                <tbody id="myTbogy">
+
+                </tbody>
+            </table>
+
+            <div id="couponVarietyPage" class="pagination">
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layDate-v5.0.4/laydate/laydate.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="../../js/contabs.min.js"></script>
+<script src="../../js/fav/couponVariety_list.js" type="text/javascript" charset="utf-8"></script>
+</html>

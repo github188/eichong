@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.IntegralMapper">
+	<resultMap type="IntegralDO" id="integral">
+		<result property="pkId" column="pk_id" />
+		<result property="userId" column="user_id" />
+		<result property="totalIntegrals" column="total_integrals" />
+		<result property="availableIntegrals" column="available_integrals" />
+		<result property="usedIntegrals" column="used_integrals" />
+		<result property="creator" column="creator" />
+		<result property="modifier" column="modifier" />
+		<result property="gmtCreate" column="gmt_create" />
+		<result property="gmtModified" column="gmt_modified" />
+	</resultMap>
+	
+	<!-- 积分统计 -->
+	<resultMap type="IntegralStatisticsBO" id="integralStatistics">
+		<result property="totalIntegrals" column="total_integrals" />
+		<result property="availableIntegrals" column="available_integrals" />
+		<result property="usedIntegrals" column="used_integrals" />
+		<result property="czjf" column="czjf" />
+		<result property="czrs" column="czrs" />
+		<result property="czcs" column="czcs" />
+		<result property="xfjf" column="xfjf" />
+		<result property="xfrs" column="xfrs" />
+		<result property="xfcs" column="xfcs" />
+		<result property="lqjf" column="lqjf" />
+		<result property="lqrs" column="lqrs" />
+		<result property="lqcs" column="lqcs" />
+		<result property="xgjljf" column="xgjljf" />
+		<result property="xgjlrs" column="xgjlrs" />
+		<result property="fxjf" column="fxjf" />
+		<result property="fxrs" column="fxrs" />
+		<result property="jfdhjf" column="jfdhjf" />
+		<result property="jfdhrs" column="jfdhrs" />
+		<result property="jfdhcs" column="jfdhcs" />
+		<result property="jfcjjf" column="jfcjjf" />
+		<result property="jfcjrs" column="jfcjrs" />
+		<result property="jfcjcs" column="jfcjcs" />
+	</resultMap>
+	
+	<select id="getIntegralCount" parameterType="IntegralDO" resultType="long">
+		SELECT
+			 COUNT(1)
+		FROM 
+			 tbl_integral b
+		where 1=1
+		<if test="pkId != null">
+		  and b.pk_id = #{pkId}
+		</if>
+		<if test="userId != null">
+		  and b.user_id = #{userId}
+		</if>
+		<if test="totalIntegrals != null">
+		  and b.total_integrals = #{totalIntegrals}
+		</if>
+		<if test="availableIntegrals != null">
+		  and b.available_integrals = #{availableIntegrals}
+		</if>
+		<if test="usedIntegrals != null">
+		  and b.used_integrals = #{usedIntegrals}
+		</if>
+	</select>
+	
+	<select id="getIntegralList" parameterType="IntegralDO" resultMap="integral">
+		SELECT
+			 pk_id,
+			 user_id,
+			 total_integrals,
+			 available_integrals,
+			 used_integrals,
+			 creator,
+			 modifier,
+			 gmt_create,
+			 gmt_modified
+		FROM 
+			 tbl_integral b
+		where 1=1
+		<if test="pkId != null">
+		  and b.pk_id = #{pkId}
+		</if>
+		<if test="userId != null">
+		  and b.user_id = #{userId}
+		</if>
+		<if test="totalIntegrals != null">
+		  and b.total_integrals = #{totalIntegrals}
+		</if>
+		<if test="availableIntegrals != null">
+		  and b.available_integrals = #{availableIntegrals}
+		</if>
+		<if test="usedIntegrals != null">
+		  and b.used_integrals = #{usedIntegrals}
+		</if>
+        <if test="pager!=null">limit #{pager.offset},#{pager.pageSize}</if>
+	</select>
+
+	<!-- 添加积分表 -->
+	<insert id="addIntegral" useGeneratedKeys="true" parameterType="IntegralDO" keyProperty="pkId">
+		INSERT INTO tbl_integral
+		(pk_id,user_id,total_integrals,available_integrals,used_integrals,creator,modifier,gmt_create,gmt_modified)
+		VALUES
+		(null,#{userId},#{totalIntegrals},#{availableIntegrals},#{usedIntegrals},#{creator},#{modifier},#{gmtCreate},#{gmtModified})
+	</insert>
+	
+	<!-- 修改积分表 -->
+	<update id="modifyIntegral" parameterType="IntegralDO" >
+		UPDATE tbl_integral
+		SET total_integrals = #{totalIntegrals},
+		available_integrals = #{availableIntegrals},
+		used_integrals = #{usedIntegrals},
+		modifier = #{modifier},
+		gmt_modified = #{gmtModified}
+		WHERE pk_id = #{pkId}
+	</update>
+	
+	<!-- 积分统计 -->
+	<select id="doIntegralStatistics" parameterType="IntegralDO" resultMap="integralStatistics">
+		SELECT
+			SUM(total_integrals) AS totalIntegral,
+			SUM(available_integrals) AS availableIntegrals,
+			SUM(used_integrals) AS usedIntegrals,
+			<!-- 充值积分 -->
+			(
+				SELECT
+					SUM(integral_value)
+				FROM
+					tbl_integral_details
+				WHERE
+					integral_activity_id = 1
+			) AS czjf,
+			<!-- 充值人数 -->
+			(
+				SELECT
+					count(i.user_id)
+				FROM
+					tbl_integral i
+				INNER JOIN tbl_integral_details d ON d.integral_id = i.pk_id
+				WHERE
+					d.integral_activity_id = 1
+				GROUP BY
+					i.user_id
+			) AS czrs,
+			<!-- 充值次数 -->
+			(
+				SELECT
+					count(*)
+				FROM
+					tbl_integral_details
+				WHERE
+					integral_activity_id = 1
+			) AS czcs,
+			<!-- 消费积分 -->
+			(
+				SELECT
+					SUM(integral_value)
+				FROM
+					tbl_integral_details
+				WHERE
+					integral_activity_id = 2
+			) AS xfjf,
+			<!-- 消费人数 -->
+			(
+				SELECT
+					count(i.user_id)
+				FROM
+					tbl_integral i
+				INNER JOIN tbl_integral_details d ON d.integral_id = i.pk_id
+				WHERE
+					d.integral_activity_id = 2
+				GROUP BY
+					i.user_id
+			) AS xfrs,
+			<!-- 消费次数 -->
+			(
+				SELECT
+					count(*)
+				FROM
+					tbl_integral_details
+				WHERE
+					integral_activity_id = 2
+			) AS xfcs,
+			<!-- 领取积分 -->
+			(
+				SELECT
+					SUM(integral_value)
+				FROM
+					tbl_integral_details
+				WHERE
+					integral_activity_id = 3
+			) AS lqjf,
+			<!-- 领取人数 -->
+			(
+				SELECT
+					count(i.user_id)
+				FROM
+					tbl_integral i
+				INNER JOIN tbl_integral_details d ON d.integral_id = i.pk_id
+				WHERE
+					d.integral_activity_id = 3
+				GROUP BY
+					i.user_id
+			) AS lqrs,
+			<!-- 领取次数 -->
+			(
+				SELECT
+					count(*)
+				FROM
+					tbl_integral_details
+				WHERE
+					integral_activity_id = 3
+			) AS lqcs,
+			<!-- 修改资料积分 -->
+			(
+				SELECT
+					SUM(integral_value)
+				FROM
+					tbl_integral_details
+				WHERE
+					integral_activity_id = 4
+			) AS xgjljf,
+			<!-- 修改资料人数 -->
+			(
+				SELECT
+					count(i.user_id)
+				FROM
+					tbl_integral i
+				INNER JOIN tbl_integral_details d ON d.integral_id = i.pk_id
+				WHERE
+					d.integral_activity_id = 4
+				GROUP BY
+					i.user_id
+			) AS xgjlrs,
+			<!-- 分享积分 -->
+			(
+				SELECT
+					SUM(integral_value)
+				FROM
+					tbl_integral_details
+				WHERE
+					integral_activity_id = 5
+			) AS fxjf,
+			<!-- 分享人数 -->
+			(
+				SELECT
+					count(i.user_id)
+				FROM
+					tbl_integral i
+				INNER JOIN tbl_integral_details d ON d.integral_id = i.pk_id
+				WHERE
+					d.integral_activity_id = 5
+				GROUP BY
+					i.user_id
+			) AS fxrs,
+			<!-- 积分兑换积分 -->
+			(
+				SELECT
+					SUM(integral_value)
+				FROM
+					tbl_integral_details
+				WHERE
+					integral_activity_id = 6
+			) AS jfdhjf,
+			<!-- 积分兑换人数 -->
+			(
+				SELECT
+					count(i.user_id)
+				FROM
+					tbl_integral i
+				INNER JOIN tbl_integral_details d ON d.integral_id = i.pk_id
+				WHERE
+					d.integral_activity_id = 6
+				GROUP BY
+					i.user_id
+			) AS jfdhrs,
+			<!-- 积分兑换次数 -->
+			(
+				SELECT
+					count(*)
+				FROM
+					tbl_integral_details
+				WHERE
+					integral_activity_id = 6
+			) AS jfdhcs,
+			<!-- 积分抽奖积分 -->
+			(
+				SELECT
+					SUM(integral_value)
+				FROM
+					tbl_integral_details
+				WHERE
+					integral_activity_id = 7
+			) AS jfcjjf,
+			<!-- 积分抽奖人数 -->
+			(
+				SELECT
+					count(i.user_id)
+				FROM
+					tbl_integral i
+				INNER JOIN tbl_integral_details d ON d.integral_id = i.pk_id
+				WHERE
+					d.integral_activity_id = 7
+				GROUP BY
+					i.user_id
+			) AS jfcjrs,
+			<!-- 积分抽奖次数 -->
+			(
+				SELECT
+					count(*)
+				FROM
+					tbl_integral_details
+				WHERE
+					integral_activity_id = 7
+			) AS jfcjcs
+		FROM
+			tbl_integral
+	</select>
+</mapper>

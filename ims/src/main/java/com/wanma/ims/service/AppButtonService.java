@@ -1,0 +1,81 @@
+package com.wanma.ims.service;
+
+import java.util.List;
+
+
+
+
+
+
+
+
+
+
+
+import org.springframework.web.multipart.MultipartFile;
+
+import com.wanma.ims.common.domain.AppButtonDO;
+import com.wanma.ims.common.domain.BannerDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.common.dto.ResultDTO;
+
+
+
+/**
+ * app按钮
+ */
+public interface AppButtonService {
+
+	long selectAppButtonCount(AppButtonDO appButtonDO);
+	/**
+	 * 获取buttton列表
+	 * @param appButtonDO
+	 * @return
+	 */
+	List<AppButtonDO> selectAppButtonList(AppButtonDO appButtonDO);
+	/**
+	 * 增加buttton
+	 * @param appButtonDO
+	 * @param file 
+	 * @param userDO 
+	 * @return
+	 * @throws Exception 
+	 */
+	public BaseResultDTO addAppButton(AppButtonDO appButtonDO, MultipartFile[] file, UserDO userDO) throws Exception;
+	/**
+	 * 更加id获取buttton
+	 * @param appButtonDO
+	 * @return
+	 */
+	AppButtonDO getAppButtonById(AppButtonDO appButtonDO);
+	/**
+	 * 修改buttton
+	 * @param appButtonDO
+	 * @param userDO 
+	 * @param file 
+	 * @return
+	 * @throws Exception 
+	 */
+	public BaseResultDTO updateButton(AppButtonDO appButtonDO, MultipartFile[] file, UserDO userDO) throws Exception;
+	/**
+	 * 删除 buttton
+	 * @param appButtonDO
+	 * @return
+	 */
+	boolean deleteAppButton(AppButtonDO appButtonDO);
+	/**
+	 * 下架 buttton
+	 * @param appButtonDO
+	 * @return
+	 */
+	boolean downAppButton(AppButtonDO appButtonDO);
+	/**
+	 * 修改顺序
+	 * @param appButtonDO
+	 * @return
+	 */
+	boolean changeButtonSort(AppButtonDO appButtonDO);
+
+	
+}

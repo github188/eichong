@@ -1,0 +1,87 @@
+package com.wanma.ims.task;
+
+import java.util.List;
+
+import com.wanma.ims.common.domain.*;
+import com.wanma.ims.core.GlobalSystem;
+import com.wanma.ims.mapper.*;
+import com.wanma.ims.service.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+
+@Component
+public class ChargingOrderTask {
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	@Autowired
+	private IntegralDetailsService integralDetailsService;
+	
+	@Autowired
+	private OrderMapper orderMapper;
+
+	@Autowired
+	private FinAccountSplitDetailsService finAccountSplitDetailsService;
+
+	@Autowired
+	private FavCouponService couponService;
+
+	@Autowired
+	private JPushRecordService jPushRecordService;
+
+	@Scheduled(cron = "0 */1 * * * ?")
+	public void doChargingOrderBatch(){
+		String isExecuteBatch = GlobalSystem.getConfig("isExecuteBatch");
+		if(isExecuteBatch != null && isExecuteBatch != "" && "1".equals(isExecuteBatch)){
+			//订单
+			List<OrderDO> orderDOList = orderMapper.getOrdersForBatch(new OrderDO());
+			for(OrderDO orderDO : orderDOList){
+				orderDO.setCreator("admin");
+				//爱充用户、结算已到账的订单状态才有消费赠送积分和优惠券
+				if(orderDO.getOrgNo() == null){
+					log.error(this.getClass() + ".doIntegralsBatch() info:订单编号" + orderDO.getOrderCode() + "对应的组织机构编号为空！");
+				}else {
+					if (orderDO.getOrgNo().intValue() == 1000) {
+						if(orderDO.getOrderStatus() == null) {
+							log.info(this.getClass() + ".doIntegralsBatch() info:订单编号" + orderDO.getOrderCode() + "对应的订单状态为空！");
+						}else if(orderDO.getOrderStatus().intValue() == 1){
+							try {
+								jPushRecordService.doJPushRecordForBatch(orderDO, true);
+							}catch (Exception e){
+								log.error(this.getClass() + ".doJPushRecordForBatch() info:订单编号" + orderDO.getOrderCode() + "推送消息失败！" + e.toString(), e);
+							}
+						}else if(orderDO.getOrderStatus().intValue() == 2){
+							try {
+								integralDetailsService.doIntegralForBatch(orderDO, true);
+							}catch (Exception e){
+								log.error(this.getClass() + ".doIntegralForBatch() info:订单编号" + orderDO.getOrderCode() + "消费赠送积分失败！" + e.toString(), e);
+							}
+
+							try {
+								couponService.doCouponForBatch(orderDO, true);
+							}catch (Exception e){
+								log.error(this.getClass() + ".doCouponForBatch() info:订单编号" + orderDO.getOrderCode() + "消费赠送优惠券失败！" + e.toString(), e);
+							}
+
+							try {
+								jPushRecordService.doJPushRecordForBatch(orderDO, true);
+							}catch (Exception e){
+								log.error(this.getClass() + ".doJPushRecordForBatch() info:订单编号" + orderDO.getOrderCode() + "推送消息失败！" + e.toString(), e);
+							}
+						}
+					}
+				}
+
+				//分账
+				try {
+					if(orderDO.getOrderStatus().intValue() != 1) {
+						finAccountSplitDetailsService.doFinAccountSplitDetailsForBatch(orderDO, true);
+					}
+				}catch (Exception e){
+					log.error(this.getClass() + ".doFinAccountSplitDetailsForBatch() info:订单编号" + orderDO.getOrderCode() + "分账明细失败！" + e.toString(), e);
+				}
+			}
+		}
+	}
+}

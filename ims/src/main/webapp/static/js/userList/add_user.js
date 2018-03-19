@@ -1,0 +1,509 @@
+function toUnbindEvent() {
+    $('.provinceBlock').unbind();
+    $('.cityBlock').unbind();
+    $('.companyBlock').unbind();
+    $('.levelBlock').unbind();
+    $('.statusBlock').unbind();
+    $('.sexBlock').unbind();
+    $('.cpyProvinceBlock').unbind();
+    $('.cpyCityBlock').unbind();
+    $('.accountBlock').unbind();
+    selectModel();
+}
+toLoadProvince('', '#provinceCode', '.provinceUl', 'toUnbindEvent');
+setTimeout(function () {
+    toLoadProvince('', '#cpyProvinceCode', '.cpyProvinceUl', 'toUnbindEvent');
+}, 200);
+
+//新建用户账号校验
+$('body').off('blur', '#userAccount').on('blur', '#userAccount', function () {
+    if (testAccountNum()) {
+        return true;
+    }
+});
+
+function testAccountNum() {
+    $('#accountNumTip').html('');
+    var cpyNum = $('#cpyCompanyName').attr('data-cpynumber');
+    var userAccountValue = $('#userAccount').val();
+    if (!cpyNum) {
+        $('#cpyNumTip').html('请先选择渠道');
+        return false;
+    }
+    if (!userAccountValue) {
+        $('#userAccount').focus();
+        $('#userAccount').val('');
+        $('#accountNumTip').html('账号不能为空');
+        return false;
+    }
+
+    if (cpyNum == 1000) {
+        //账号校验走爱充校验手机号流程
+        var rePhone = /^1[3|4|5|8|9|7]{1}[0-9]{9}$/;//手机号验证
+        if (userAccountValue.length > 11) {
+            $('#userAccount').focus();
+            $('#userAccount').val('');
+            $('#accountNumTip').html('账号长度不能大于11位');
+            return false;
+        } else {
+            if (!rePhone.test(userAccountValue)) {
+                $('#userAccount').focus();
+                $('#userAccount').val('');
+                $('#accountNumTip').html('格式错误，请输入正确的手机格式');
+                return false;
+            }
+        }
+    }else{
+        //增加渠道账号校验
+        var reg=/^[0-9]{12}$/;
+        if (!reg.test(userAccountValue)) {
+            $('#userAccount').focus();
+            $('#userAccount').val('');
+            $('#accountNumTip').html('格式错误，请输入12位纯数字');
+            return false;
+        }
+
+    }
+    return true;
+}
+
+
+//新建用户 姓名长度校验，不超过10字符
+function userName() {
+    var userCpyName = $('#userCpyName').val();
+    if (userCpyName) {
+        if (userCpyName.length > 10) {
+            $('#userCpyName').focus();
+            $('#userCpyName').val('');
+            $('#userNameTip').html('姓名长度不能超过10个字符');
+            return false;
+        } else {
+            $('#userNameTip').html('');
+            return true;
+        }
+    }
+    return true;
+}
+function testLevel() {
+    var levelId = $('#levelId').attr('data-value');
+    if (levelId == '') {
+        $('#levelTip').html('等级不能为空！');
+        return false;
+    } else {
+        $('#levelTip').html('');
+        return true;
+    }
+    return true;
+}
+//手机号校验
+function telTest() {
+    var userPhone = $('#userCpyPhone').val();
+    var rePhone = /^1[3|4|5|8|7|9]{1}[0-9]{9}$/;//手机号验证
+    if (userPhone) {
+        if (!rePhone.test(userPhone)) {
+            $('#userCpyPhone').focus();
+            $('#userCpyPhone').val('');
+            $('#userPhoneTip').html('格式错误，请输入正确的手机格式');
+            return false;
+        } else {
+            $('#userPhoneTip').html('');
+            return true;
+        }
+    }
+    return true;
+}
+
+//身份证号码
+function userIDCardTest() {
+    var userIdcard = $('#userIdcard').val();
+    var reg = /^[1-9]{1}[0-9]{14}$|^[1-9]{1}[0-9]{16}([0-9]|[xX])$/;
+    if (userIdcard) {
+        if (!reg.test(userIdcard)) {
+            $('#userIdcard').focus();
+            $('#userIdcard').val('');
+            $('#userIdcardTip').html('身份证号码格式错误');
+            return false;
+        } else {
+            $('#userIdcardTip').html('');
+            return true;
+        }
+    }
+    return true;
+}
+
+//点击省加载市
+$('.cpyProvinceUl').on("click", "li", function () {
+    $('#cypCityCode').html('请选择');
+    $('.cypCityUl').html('');
+    $('#cypCityCode').attr('data-value', '');
+    $('#cpyCompanyName').html('请选择');
+    $('#cpyCompanyName').attr('data-value', '');
+    $('.cpyCompanyUl').html('');
+    $('#levelId').html("请选择");
+    $('#levelId').attr('data-value', '');
+    $('.levelUl').html('');
+    $('#companyMethod').val('');
+    $('#paymentRule').val('');
+    $('#tradeType').html('').attr('data-value', '');
+    var provinceCodeId = $(this).attr('data-option');
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+    var flag = $(this).attr('data-option');
+    if (flag == "") {
+        $('#cypCityCode').html('请选择');
+        $('.cypCityUl').html('');
+        $('#cypCityCode').attr('data-value', '');
+        $('#cpyCompanyName').html('请选择');
+        $('#cpyCompanyName').attr('data-value', '');
+        $('.cpyCompanyUl').html('');
+        $('#levelId').html("请选择");
+        $('#levelId').attr('data-value', '');
+        $('.levelUl').html('');
+        $('#companyMethod').val('');
+        $('#paymentRule').val('');
+        $('#tradeType').html('').attr('data-value', '');
+    } else {
+        toLoadCity(provinceCodeId, '', '#cypCityCode', '.cypCityUl', 'toUnbindEvent');
+    }
+});
+
+$('.cypCityUl').on("click", "li", function () {
+    $('#cpyCompanyName').html('请选择');
+    $('.cpyCompanyUl').html('');
+    $('#cpyCompanyName').attr('data-value', '');
+    $('#levelId').html("请选择");
+    $('.levelUl').html('');
+    $('#levelId').attr('data-value', '');
+    $('#companyMethod').val('');
+    $('#paymentRule').val('');
+    $('#tradeType').html('').attr('data-value', '');
+    //$('#saveBtn').removeAttr('onclick').addClass('saveBtn').removeClass('saveBtnStyle');
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+    var flag = $(this).attr('data-option');
+    var cypCityCodeValue = $('#cypCityCode').attr('data-value');
+    var cpyProvinceCodeValue = $('#cpyProvinceCode').attr('data-value');
+
+    if (flag == "") {
+        $('#cpyCompanyName').html('请选择');
+        $('.cpyCompanyUl').html('');
+        $('#cpyCompanyName').attr('data-value', '');
+        $('#levelId').html("请选择");
+        $('.levelUl').html('');
+        $('#levelId').attr('data-value', '');
+        $('#companyMethod').val('');
+        $('#paymentRule').val('');
+        $('#tradeType').html('').attr('data-value', '');
+    } else {
+        toLoadComponyName(cypCityCodeValue, cpyProvinceCodeValue);
+    }
+});
+
+function toLoadComponyName(cypCityCodeValue, cpyProvinceCodeValue) {
+    var cypCompanyLi = "";
+    var cpyObject = {
+        provinceCode: cpyProvinceCodeValue,
+        cityCode: cypCityCodeValue
+    };
+    if (JSON.stringify(cpyObject) == "{}") {
+        $('#cpyCompanyName').html("请选择");
+    } else {
+        toAjaxCompany(cpyObject);
+    }
+}
+
+function toAjaxCompany(cpyObject) {
+    $.ajax({
+        type: "post",
+        url: basePath + getCompanyListUrl,
+        async: true,
+        data: cpyObject,
+        success: function (data) {
+            if (data.success == true) {
+                var dataModule = data.dataObject;
+                var cypCompanyLi = '<li data-option="">请选择</li>';
+                for (var i = 0; i < dataModule.length; i++) {
+                    cypCompanyLi += '<li data-option="' + dataModule[i].cpyId + '" data-cpyNumber="' + dataModule[i].cpyNumber + '" data-tradeType="' + dataModule[i].tradeType + '">' + dataModule[i].cpyName + '</li>';
+                }
+                $('.cpyCompanyUl').html(cypCompanyLi);
+                toUnbindEvent();
+            }
+        }
+    });
+}
+
+$('.cpyCompanyUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option')).attr('data-cpyNumber', $(this).attr('data-cpyNumber'));
+    var cpyId = $(this).attr('data-option');
+    var tradeType = $(this).attr('data-tradeType');//拿到当前公司的资金账户类型
+    window.localStorage.setItem('tradeType', tradeType);
+    //为了区别是爱充还是其他渠道公司的一个标识
+    var cpyNumber = $(this).attr('data-cpyNumber');
+    window.localStorage.setItem('cpyCompanyName', cpyNumber);
+    if (cpyId == "") {
+        $('#levelId').html("请选择");
+        $('.levelUl').html('');
+        $('#levelId').attr('data-value', '');
+        $('#companyMethod').val('');
+        $('#paymentRule').val('');
+        $('#tradeType').html('').attr('data-value', '');
+        $('#saveBtn').removeAttr('onclick').addClass('saveBtn').removeClass('saveBtnStyle');
+    } else {
+        toLoadCompnayFinMethod(cpyId);
+        $('#cpyNumTip').html('');
+        $('#levelId').html("请选择");
+        $('#levelId').attr('data-value', '');
+        toLoadLevelName(cpyId);
+    }
+});
+//	去加载等级
+function toLoadLevelName(cpyId) {
+    $.ajax({
+        type: "post",
+        url: basePath + getLevelList,
+        async: true,
+        data: {
+            cpyId: cpyId
+        },
+        success: function (data) {
+            if (data.success == true) {
+                var data = data.dataObject;
+                var levelLi = '<li data-option="">请选择</li>';
+                for (var i = 0; i < data.length; i++) {
+                    levelLi += '<li data-option="' + data[i].levelId + '">' + data[i].levelName + '</li>';
+                }
+                $('.levelUl').html(levelLi);
+                toUnbindEvent();
+            }
+        }
+    });
+}
+$('.levelUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+})
+//加载资金账户类型
+function toLoadTradType() {
+    $('#tradeType').html('储值账户').attr('data-value', 2);
+    var html = '<li data-option="2" class="seleced">储值账户</li><li data-option="1">信用账户</li>';
+    $('.tradeTypeUl').html(html);
+}
+//去加载公司付费策略
+function toLoadCompnayFinMethod(cpyId) {
+    $.ajax({
+        type: "post",
+        url: basePath + getFinAccountConfigRela4CpyUrl,
+        async: true,
+        data: {
+            cpyId: cpyId
+        },
+        success: function (data) {
+            var data = data.dataObject;
+            if (data.length == 0) {
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:center"],
+                    shadeClose: false,
+                    closeBtn: 2,
+                    area: ['310px', '160px'],//宽高
+                    content: '无对应的公司付费策略',
+                    time: 2000,
+                    btn: ["确定"]
+                });
+                $('#companyMethod').val('');
+                $('#paymentRule').val('');
+                $('#tradeType').html('').attr('data-value', '');
+                return;
+            } else {
+                for (var i = 0; i < data.length; i++) {
+                    var paymentRuleName = data[0].paymentRuleName;
+                    $('#companyMethod').val(paymentRuleName);
+                    var tradeType = window.localStorage.getItem('tradeType');
+                    var paymentRule = data[0].paymentRule;
+                    $('#paymentRule').val(paymentRule);
+                    if (tradeType == 0) {
+                        $('#tradeType').html('').attr('data-value', '');
+                        $('.tradeTypeUl').html('');
+                        return;
+                    }
+                    else {
+                        if (paymentRule == 1 || paymentRule == 3) {
+                            $('#tradeType').attr('data-value', tradeType);
+                            if (tradeType == 1) {
+                                $('#tradeType').html('信用账户').attr('data-value', tradeType);
+                                $('.tradeTypeUl').html('');
+                            } else if (tradeType == 2) {
+                                $('#tradeType').html('储值账户').attr('data-value', tradeType);
+                                $('.tradeTypeUl').html('');
+                            }
+                        } else if (paymentRule == 2) {
+                            toLoadTradType();
+                        } else if (paymentRule == 0) {
+                            layer.open({
+                                type: 1,
+                                offset: '100px',
+                                title: ["提示", "font-size:12px;text-align:center"],
+                                shadeClose: false,
+                                closeBtn: 2,
+                                area: ['310px', '160px'],//宽高
+                                content: '该公司无法创建用户',
+                                time: 2000,
+                                btn: ["确定"]
+                            });
+                        }
+                    }
+
+                }
+            }
+
+        }
+    });
+}
+//用户状态
+$('.userStatusUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+})
+//资金账户类型
+$('.tradeTypeUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+})
+//性别
+$('.sexUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+})
+//城市的加载
+$('.provinceUl').on("click", "li", function () {
+    var provinceCodeId = $(this).attr('data-option');
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+    var flag = $(this).attr('data-option');
+    if (flag == "") {
+        $('#cityHtml').html('请选择');
+        $('.cityUl').html('');
+        $('#cityHtml').attr('data-value', '');
+    } else {
+        toLoadCity(provinceCodeId, '', '#cityHtml', '.cityUl', 'toUnbindEvent');
+    }
+})
+$('.cityUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+})
+
+
+//刚一进页面就要执行的所有验证
+$('#goback').on('click', function () {
+    window.location.href = 'user_list.html';
+});
+
+//将数据提交到后台处理
+function toSaveUserInfo() {
+    if (testAccountNum() && testLevel() && telTest() && userIDCardTest() && userName()) {
+        saveUser();
+    }
+}
+function saveUser() {
+    var cpyId = $('#cpyCompanyName').attr('data-value');
+    var userAccountValue = $('#userAccount').val();
+    var obj = {
+        cpyId: cpyId,
+        userAccount: userAccountValue
+    };
+
+    $.ajax({
+        type: "post",
+        url: basePath + checkUserAccountIsUniqueUrl,
+        async: true,
+        data: obj,
+        success: function (data) {
+            if (data.success == true) {
+                if (!data.dataObject) {
+                    $('#accountNumTip').html('用户帐号已存在，请重新输入！');
+                    return false;
+                } else {
+                    lastSaveInfo();
+                }
+            } else {
+                $('#accountNumTip').html('用户帐号验证失败，请重新输入！');
+                return false;
+            }
+        }
+    });
+    return true;
+
+}
+function lastSaveInfo(){
+    var cpyCompanyName = $('#cpyCompanyName').attr('data-value');
+    var userSex = $('#userSex').attr('data-value');
+    var userAccount = $('#userAccount').val();
+    var levelId = $('#levelId').attr('data-value');
+    var userStatus = $('#userStatus').attr('data-value');
+    var tradeType = $('#tradeType').attr('data-value');
+    var provinceCode = $('#provinceCode').attr('data-value');
+    var cityHtml = $('#cityHtml').attr('data-value');
+    var userCpyName = $('#userCpyName').val();
+    var userCpyPhone = $('#userCpyPhone').val();
+    var userIdcard = $('#userIdcard').val();
+    var cpyNumber = window.localStorage.getItem('cpyCompanyName');
+
+    var obj = {
+        cpyId: cpyCompanyName,
+        userAccount: userAccount,
+        levelId: levelId,
+        userStatus: userStatus,
+        tradeType: tradeType,
+        userCpyName: userCpyName,
+        userCpyPhone: userCpyPhone,
+        userIdcard: userIdcard,
+        userSex: userSex,
+        provinceCode: provinceCode,
+        cityCode: cityHtml,
+        cpyNumber: cpyNumber
+    };
+    $.ajax({
+        type: "post",
+        url: basePath + addUserCompanyUrl,
+        async: true,
+        data: obj,
+        success: function (data) {
+            if (data.success == true) {
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:center"],
+                    shadeClose: false,
+                    closeBtn: 1,
+                    area: ['310px', '160px'],//宽高
+                    content: '添加成功',
+                    btn: ["确定"],
+                    yes:function(index,layero){
+                        window.location.href='user_list.html';
+                    },
+                    cancel: function (index, layero) {
+                        layer.closeAll();
+                        window.location.href='user_list.html';
+                    }
+                });
+
+            } else {
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:center"],
+                    shadeClose: false,
+                    closeBtn: 1,
+                    area: ['310px', '160px'],//宽高
+                    content: data.msg,
+                    time: 3000,
+                    btn: ["确定"]
+                });
+            }
+
+        }
+    });
+}

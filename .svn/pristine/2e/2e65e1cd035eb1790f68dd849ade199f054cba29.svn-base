@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+			
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="blank" />
+		<meta name="format-detection" content="telephone=no" />
+		<title>我的钱包—充值</title>
+		<!--<link rel="stylesheet" type="text/css" href="dist/css/bootstrap.min.css"/>-->
+		<link rel="stylesheet" type="text/css" href="css/mui.css"/>
+		<link rel="stylesheet" type="text/css" href="dist/css/bootstrap.css"/>
+		<link rel="stylesheet" type="text/css" href="css/base.css"/>
+		<link rel="stylesheet" type="text/css" href="css/common.css"/>
+		<link rel="stylesheet" type="text/css" href="css/myWalletCharge.css"/>
+		<!--[if lt IE 9]>
+			<script src="dist/js/html5shiv.min.js"></script>
+			<script src="dist/js/respond.min.js"></script>
+		<![endif]-->
+	</head>
+	<body>
+	<!--头部=============================================================================================-->
+	<header>
+		<div class="col-xs-2 headLeft" onclick="toMyWallet()">
+			<img src="img/nav_btn_back.png"/>
+		</div>
+		<div class="col-xs-8 col-xs-offset-2 headCenter">
+			我的钱包
+		</div>
+	</header>
+	<!--第二块=============================================================================================-->
+	<section>
+		<div class="reChargeTip">
+			<div class="col-xs-5 reChargeTitle">
+				请输入充值金额：
+			</div>
+			<div class="col-xs-7 reChargeValue">
+				当前余额：<span id="userAccountbalance">0.00</span>元
+			</div>
+		</div>
+		<!--文本框=========================================================-->
+		<div class="purseTip" style="display: none;">
+			<!--<input type="text" id="purseValue" value="" class="purseValue" readonly="readonly"/>元-->
+		</div>
+		<!--选择几种模式========================================================-->
+		<div class="choiceMoney">
+			<ul class="costList">
+				<li data-val="0.01">0.01元</li>
+				<li data-val="20">20元</li>
+				<li data-val="50">50元</li>
+			</ul>
+			<ul class="costList">
+				<li data-val="100">100元</li>
+				<li data-val="200">200元</li>
+				<li data-val="500">500元</li>
+			</ul>
+		</div>
+		<!--充值方式说明=============================================================-->
+		<div class="chargeExp">
+			充值方式:
+		</div>
+		<!--充值方式=============================================================-->
+		<div class="chargeWay">
+			<ul class="costWay">
+				<li data-val="163">支付宝</li>
+			</ul>
+		</div>
+
+		<!--充值方式说明=============================================================-->
+		<form name=alipayment action="http://10.9.3.128:8080/html/alipay/deposit" method=post id="form1">
+			<div class="body" style="clear: left">
+					<input name="total_fee" id="purseValue" value="" type="hidden"/>
+					<input name="userId" id="body" value="" type="hidden"/>
+			</div>
+		</form>
+	</div>
+		
+		<!--立即充值按钮===========================================================-->
+		<a class="btn btn-block instantCharge" id="instantCharge" style="display: block; width: 80%; height: 4rem;line-height: 3rem;color: #FFFFFF;margin: 3rem auto;">立即充值</a>
+	</section>
+
+	</body>
+	<script type="text/javascript" src="dist/js/jquery-1.11.0.js" ></script>
+	
+	<!--<script src="dist/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>-->
+	<script type="text/javascript" src="dist/js/bootstrap.js" ></script>
+	<script src="js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/userinfo.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/url.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/myWalletCharge.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/immersed.js" type="text/javascript" charset="utf-8"></script>
+	<!--<script src="js/beecloud.js" type="text/javascript" charset="utf-8"></script>-->
+</html>

@@ -1,0 +1,354 @@
+//获取现金券明细的menuId
+var getMenuMap = window.localStorage.getItem('menuMap');
+var getCurruntMap = JSON.parse(getMenuMap);
+var menuId = getCurruntMap['现金券明细'];
+$(function () {
+    ctrlMenu(menuId);
+    setTimeout("getCouponVarietyForList()", 100);
+    setTimeout("toLoadActivityList()", 200);
+    setTimeout('getPerInfo()', 300);
+})
+function getPerInfo(){
+    var userAccount=getUrlParam('userAccount');
+    //去加载表格的数据
+    if(userAccount){
+        $('input[name=userPhone]').val(userAccount);
+        couponDetailListSearch();
+    }
+    else{
+        $('input[name=userPhone]').val('');
+        couponDetailListSearch();
+    }
+}
+function ctrlMenu(menuId) {
+    $.ajax({
+        type: "post",
+        url: basePath + getSelfButtonTreeUrl,
+        async: true,
+        data: {
+            menuId: menuId
+        },
+        success: function (data) {
+            var data = data.dataObject;
+            if(data==null){
+                return;
+            }
+            if(data==null){
+                return;
+            }
+            if (data.length == 0) {
+                return;
+            } else {
+                for (var i = 0; i < data.length; i++) {
+                    var contents = data[i].contents;
+                    if (contents.indexOf('显示') > -1) {
+                        $('#showSet').show();
+                    }
+                    if (contents.indexOf('导出') > -1) {
+                        $('#dataExport').show();
+                    }
+                    if (contents.indexOf('删除') > -1) {
+                        $('#deleteBtn').show();
+                    }
+
+                }
+            }
+        }
+    });
+}
+
+function toUnbindEvent() {
+    $('.activeTypeBlock').unbind();
+    $('.activeBlock').unbind();
+    $('.cpLimitationBlock').unbind();
+    $('.cpstatesBlock').unbind();
+    $('.couponvarietyBlock').unbind();
+    selectModel();
+}
+toUnbindEvent();
+//去加载表格的数据
+
+function couponDetailListSearch() {
+    toGiveHiddenInput();
+    initTable("couponDetailForm", "couponDetailPage", getCouponListUrl, getCouponListCallback);
+}
+function getCouponListCallback(req) {
+    var data = req.dataObject;
+    var listTr = "";
+    for (var i = 0; i < data.length; i++) {
+        var cpstatesHtml='';
+        var cpLimitationHtml='';
+        if(data[i].cpstates==1){
+            cpstatesHtml='未兑换未过期';
+        }
+        if(data[i].cpstates==2){
+            cpstatesHtml='未兑换已过期';
+        }
+        if(data[i].cpstates==3){
+            cpstatesHtml='已兑换已使用';
+        }
+        if(data[i].cpstates==4){
+            cpstatesHtml='已兑换未使用未过期';
+        }
+        if(data[i].cpstates==5){
+            cpstatesHtml='已兑换未使用已过期';
+        }
+
+        //电桩限制
+        if(data[i].cpLimitation==1){
+            cpLimitationHtml='仅限交流充电桩';
+        }
+        if(data[i].cpLimitation==2){
+            cpLimitationHtml='仅限直流充电桩';
+        }
+        if(data[i].cpLimitation==3){
+            cpLimitationHtml='不限充电桩';
+        }
+        listTr += '<tr><td><input type="checkbox" name="ids" class="selectedBox" value="' + data[i].pkCoupon + '"/></td>'
+        + '<td class="couponDetail_couponvariety">' + data[i].covaActivityname
+        + '<td class="couponDetail_cpstates">' + cpstatesHtml
+        + '</td><td class="couponDetail_actActivityname">' + data[i].actActivityname
+        + '</td><td class="couponDetail_userPhone">' + data[i].userPhone
+        + '</td><td class="couponDetail_cpLimitation">' + cpLimitationHtml
+        + '</td><td class="couponDetail_cpCouponcode">' + data[i].cpCouponcode
+        + '</td><td class="couponDetail_getcouponvariety">' + data[i].cpBegindate
+        + '</td><td class="couponDetail_cpUpdatedate">' + data[i].cpUpdatedate
+        + '</td><td class="couponDetail_cpBegindate">' + data[i].cpBegindate
+        + '</td><td class="couponDetail_cpEnddate">' + data[i].cpEnddate
+        + '</td></tr>';
+
+    }
+    $("#myTbogy").html(listTr);
+    var arr = ['couponDetail_couponvariety', 'couponDetail_cpstates', 'couponDetail_actActivityname', 'couponDetail_userPhone',
+        'couponDetail_cpLimitation', 'couponDetail_cpCouponcode', 'couponDetail_getcouponvariety', 'couponDetail_cpUpdatedate',
+        'couponDetail_cpBegindate', 'couponDetail_cpEnddate'];
+    toGetLocalStorageInfo(arr);
+}
+function toGiveHiddenInput() {
+    var activeTypeValue = $('#activeType').attr('data-value');
+    var activeValue = $('#active').attr('data-value');
+    var cpLimitationHtmlValue = $('#cpLimitationHtml').attr('data-value');
+    var cpstatesHtmlValue = $('#cpstatesHtml').attr('data-value');
+    var couponvarietyHtmlValue = $('#couponvarietyHtml').attr('data-value');
+
+    if (activeTypeValue == "") {
+        $('input[name=cpActivitytype]').val('');
+    } else {
+        $('input[name=cpActivitytype]').val(activeTypeValue);
+    }
+    if (activeValue == "") {
+        $('input[name=pkActivity]').val('');
+    } else {
+        $('input[name=pkActivity]').val(activeValue);
+    }
+    if (cpLimitationHtmlValue == "") {
+        $('input[name=cpLimitation]').val('');
+    } else {
+        $('input[name=cpLimitation]').val(cpLimitationHtmlValue);
+    }
+    if (cpstatesHtmlValue == "") {
+        $('input[name=cpstates]').val('');
+    } else {
+        $('input[name=cpstates]').val(cpstatesHtmlValue);
+    }
+    if (couponvarietyHtmlValue == "") {
+        $('input[name=pkCouponvariety]').val('');
+    } else {
+        $('input[name=pkCouponvariety]').val(couponvarietyHtmlValue);
+    }
+}
+//活动类型
+$('.activeTypeUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+    var flag=$(this).attr('data-option');
+    if(flag==''){
+        $('#active').html('全部').attr('data-value','');
+        $('.activeUl').html('');
+        toLoadActivityList('');
+    }else{
+        $('#active').html('全部').attr('data-value','');
+        $('.activeUl').html('');
+        toLoadActivityList(flag);
+    }
+
+});
+//活动
+$('.activeUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+});
+//电桩限制
+$('.cpLimitationUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+});
+//状态
+$('.cpstatesUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+});
+//现金券品种
+$('.couponvarietyUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+});
+//加载活动列表
+function  toLoadActivityList(flag){
+    var flag=flag;
+    var activeLi='';
+    $.ajax({
+        type: "post",
+        url: basePath + getActivityForListUrl,
+        async: true,
+        data: {
+            cpActivitytype: flag==undefined?'':flag
+        },
+        success: function (data) {
+            if (data.success == true) {
+                var dataModule = data.dataObject;
+                activeLi = '<li data-option="">请选择</li>';
+                for (var i = 0; i < dataModule.length; i++) {
+                    activeLi += '<li data-option="' + dataModule[i].pkActivity + '">' + dataModule[i].actActivityname + '</li>';
+                }
+                $('.activeUl').html(activeLi);
+                toUnbindEvent();
+            }
+
+        }
+    });
+}
+//现金券列表
+function  getCouponVarietyForList(){
+    $.ajax({
+        type: "post",
+        url: basePath + getCouponVarietyForListUrl,
+        async: true,
+        success: function (data) {
+            if (data.success == true) {
+                var dataModule = data.dataObject;
+                var couponVarietyLi = '<li data-option="">请选择</li>';
+                for (var i = 0; i < dataModule.length; i++) {
+                    couponVarietyLi += '<li data-option="' + dataModule[i].pkCouponVariety + '">' + dataModule[i].covaActivityName + '</li>';
+                }
+                $('.couponvarietyUl').html(couponVarietyLi);
+                toUnbindEvent();
+            }
+
+        }
+    });
+}
+
+//数据导出	=====================
+$('#dataExport').on("click", function () {
+    toGiveHiddenInput();
+    var obj = {
+        cpCouponcode: $('input[name=cpCouponcode]').val(),
+        cpActivitytype: $('input[name=cpActivitytype]').val(),
+        pkActivity: $('input[name=pkActivity]').val(),
+        userPhone: $('input[name=userPhone]').val(),
+        cpLimitation: $('input[name=cpLimitation]').val(),
+        cpstates: $('input[name=cpstates]').val(),
+        pkCouponvariety: $('input[name=pkCouponvariety]').val()
+    };
+    window.location.href = basePath + exportCouponUrl + '?cpCouponcode='
+    + obj.cpCouponcode + '&cpActivitytype='
+    + obj.cpActivitytype + '&pkActivity='
+    + obj.pkActivity + '&userPhone='
+    + obj.userPhone + '&cpLimitation='
+    + obj.cpLimitation + '&cpstates='
+    + obj.cpstates + '&pkCouponvariety='
+    + obj.pkCouponvariety;
+});
+
+//删除优惠券
+$("body").off("click", "#deleteBtn").on("click", "#deleteBtn", function () {
+    layer.closeAll();
+    layer.open({
+        type: 1,
+        offset: '100px',
+        title: ["确认", "font-size:12px;text-align:left;padding-left:20px;"],
+        shadeClose: false,
+        closeBtn: 1,
+        area: ['310px', '180px'],//宽高
+        content: '确定删除优惠券吗？',
+        btn: ["确定", "取消"],
+        yes: function (index, layero) {
+            layer.closeAll();
+            toDeleteCoupon();
+        },
+        cancel: function (index, layero) {
+            layer.closeAll();
+        }
+    });
+});
+function toDeleteCoupon() {
+    var ids = '';
+    $('input[name=ids]').each(function () {
+        var flag = $(this).prop('checked');
+        if (flag == true) {
+            ids += $(this).attr('value') + ',';
+        }
+    });
+    if (!ids) {
+        layer.open({
+            type: 1,
+            offset: '100px',
+            title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+            shadeClose: false,
+            closeBtn: 1,
+            area: ['310px', '160px'],//宽高
+            content: '请指定表单元素',
+            time: 3000,
+            btn: ["确定"]
+        });
+    } else {
+        $.ajax({
+            type: "post",
+            url: basePath + removeCouponUrl,
+            async: true,
+            data: {
+                ids: ids
+            },
+            success: function (data) {
+                if (data.success == true) {
+                    layer.closeAll();
+                    layer.open({
+                        type: 1,
+                        offset: '100px',
+                        title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+                        shadeClose: false,
+                        closeBtn: 1,
+                        area: ['310px', '160px'],//宽高
+                        content: '删除成功',
+                        time:3000,
+                        btn: ["确定"],
+                        yes:function(index,layero){
+                            window.location.reload();
+                        }
+
+                    });
+
+                } else {
+                    layer.open({
+                        type: 1,
+                        offset: '100px',
+                        title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+                        shadeClose: false,
+                        closeBtn: 1,
+                        area: ['310px', '160px'],//宽高
+                        content: data.msg,
+                        time: 3000,
+                        btn: ["确定"]
+                    });
+                }
+            }
+        });
+    }
+}
+//监听回车键
+$(document).keyup(function (event) {
+    if (event.keyCode == 13) {
+        couponDetailListSearch();
+    }
+});

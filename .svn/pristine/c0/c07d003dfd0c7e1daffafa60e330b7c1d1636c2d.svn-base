@@ -1,0 +1,151 @@
+package com.wanma.controller.cczc;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.wanma.controller.cczc.util.ControllerUtil;
+import com.wanma.model.TblChargingOrder;
+import com.wanma.model.TblElectricpile;
+import com.wanma.service.TblChargingOrderService;
+import com.wanma.service.TblElectricpileService;
+import com.wanma.support.common.FailedResponse;
+import com.wanma.support.common.ResultResponse;
+import com.wanma.support.common.WanmaConstants;
+
+/**
+ * @Description: 订单管理控制层
+ * @author lhy
+ * @createTime：2015-11-19 16:25:05
+ * @updateTime：
+ * @version：V1.0
+ */
+@SuppressWarnings({ "rawtypes", "unchecked" })
+@Controller
+@RequestMapping("/cczc")
+public class CczcChargeOrderController {
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(CczcChargeOrderController.class);
+	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+	@Autowired
+	private TblChargingOrderService ordService;
+	@Autowired
+	TblElectricpileService eService;
+
+	/**
+	 * @Description: 根据订单号查询订单详情（实时信息）
+	 * @return
+	 * @throws InterruptedException
+	 */
+	@RequestMapping("/getOrderInfo")
+	@ResponseBody
+	public String getOrderInfo(HttpServletRequest request) throws Exception {
+		String org = request.getParameter("org");
+		String orderId = request.getParameter("orderId");
+		TblChargingOrder model = new TblChargingOrder();
+		model.setChorCode(orderId);
+		model = ordService.selectOne(model);
+		if(model == null){
+			ResultResponse resultRespone = new ResultResponse();
+			resultRespone.setStatus(2004);
+			resultRespone.setMsg("查询数据库失败，不存在该条订单！");
+			return resultRespone.toString();
+		}
+		int chorSts = Integer.parseInt(model.getChorChargingstatus());
+		if (chorSts > 1) {
+			LOGGER.info("订单已完成，获取历史订单详情！");
+			HashMap<String, Object> data = new HashMap<String, Object>();
+			data.put("orderId", model.getChorCode());
+			data.put("stubId", model.getChorPilenumber());
+			data.put("outOrderId", model.getChorParterExtradata());
+			data.put("driverId", model.getChorParterUserLogo());
+			data.put("timeStart", model.getBeginChargetime());
+			data.put("timeEnd", model.getEndChargetime());
+			data.put("timeCharge", (sdf.parse(model.getEndChargetime()).getTime()-sdf.parse(model.getBeginChargetime()).getTime())/1000);
+			data.put("feeTotal", Double.valueOf(model.getChorMoeny()));
+			TblElectricpile eModel = new TblElectricpile();
+			eModel.setElpiElectricpilecode(model.getChorPilenumber());
+			eModel = eService.selectOne(eModel);
+			if("5".equals(eModel.getChargingMode()))
+				data.put("chargeType", 1);
+			else
+				data.put("chargeType", 0);
+			data.put("power", Double.valueOf(model.getChorQuantityelectricity()));
+			data.put("soc", 0.00);
+			int rtSts = 0;
+			String endInfo = "";
+			if(chorSts < 4){
+				rtSts = 2;
+				endInfo = "正常结束";
+			}else{
+				rtSts = 9;
+				endInfo = "异常结束";
+			}
+			data.put("status", rtSts);
+			data.put("endInfo", endInfo);
+			data.put("feeService", model.getChorServicemoney().doubleValue());
+			data.put("feeElectric", model.getChorChargemoney().doubleValue());
+			data.put("cityCode", eModel.getElpiOwncitycode());
+			return new ResultResponse(data).toString(); 
+		}
+		String driverId = model.getChorParterUserLogo();
+		if (StringUtils.isBlank(orderId))
+			return new FailedResponse(1001, "params error").toString();
+		LOGGER.info("获取充电实时订单信息开始，司机编号：" + driverId + ";第三方标识：" + org);
+		WanmaConstants.cs.queryOrderInfo(model.getChorPilenumber(),
+				model.getChorMuzzle(), Integer.parseInt(org), driverId, "");// 获取实时充电数据
+		LOGGER.info("获取充电实时订单信息结束！");
+		return ControllerUtil.doReturn(WanmaConstants.chargingOrderEvt,
+				driverId);
+	}
+
+	/**
+	 * @Description: 查询时间间隔内的订单汇总信息
+	 * @return
+	 */
+	@RequestMapping("/checkChargeOrders")
+	@ResponseBody
+	public String checkChargeOrders(HttpServletRequest request) {
+		String org = request.getParameter("org");
+		String startTim = request.getParameter("startTim");
+		String endTim = request.getParameter("endTim");
+		if (StringUtils.isBlank(startTim) || StringUtils.isBlank(startTim))
+			return new FailedResponse(1001, "params error").toString();
+		TblChargingOrder model = new TblChargingOrder();
+		model.setBeginChargetime(startTim);
+		model.setEndChargetime(endTim);
+		model.setChOrOrgNo(org);
+		List<TblChargingOrder> list = ordService.getList(model);
+		int count = list.size();
+		String[] codes = new String[count];
+		double allEle = 0;
+		double allMoney = 0;
+		for (int i = 0; i < count; i++) {
+			TblChargingOrder order = list.get(i);
+			codes[i] = order.getChorCode();
+			allEle += Double.valueOf(order.getChorQuantityelectricity());
+			allMoney += Double.valueOf(order.getChorMoeny());
+		}
+		Map<String, Object> data = new HashMap<String, Object>();
+		SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+		data.put("checkOrderNo", format.format(new Date()) + "00001");
+		data.put("orderCount", count);
+		data.put("totalOrderPower", allEle);
+		data.put("totalOrderFee", allMoney);
+		data.put("orderList", codes);
+		return new ResultResponse(data).toString();
+	}
+
+}

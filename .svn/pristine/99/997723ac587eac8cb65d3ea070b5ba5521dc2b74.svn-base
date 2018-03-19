@@ -1,0 +1,121 @@
+a,
+input,
+button {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+input,
+button {
+  -webkit-appearance: none;
+  border-radius: 0;
+}
+body {
+  margin: 0;
+  -webkit-user-select: auto;
+  background-color: #ebebeb;
+}
+body * {
+  -webkit-user-select: auto;
+  font-family: "微软雅黑";
+}
+body {
+  -webkit-text-size-adjust: 100%;
+  font-family: "微软雅黑";
+}
+* {
+  padding: 0;
+  margin: 0;
+}
+.chargingCar {
+  width: 15rem;
+  min-height: 12.28rem;
+  background-color: #ff7d00;
+}
+.chargingCar .chargingStatus {
+  width: 15rem;
+  height: 3.2rem;
+  line-height: 3.2rem;
+  font-size: 0.72rem;
+  text-align: center;
+  color: #FFFFFF;
+}
+.chargingCar .car {
+  width: 15rem;
+  height: 2.72rem;
+  text-align: center;
+  margin-top: 1rem;
+  margin-bottom: 1.4rem;
+}
+.chargingCar .car img {
+  display: block;
+  width: 8rem;
+  height: 2.72rem;
+  margin: 0 auto;
+}
+.chargingCar .statusValue {
+  width: 15rem;
+  height: 3.72rem;
+  text-align: center;
+  color: #FFFFFF;
+  font-size: 1.6676rem;
+}
+.chargingDetail {
+  width: 12rem;
+  min-width: 2rem;
+  padding: 3.08rem 1.96rem 2.88rem 1.04rem;
+}
+.chargingDetail .detailList {
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+.chargingDetail .detailList li {
+  border-right: 1px solid #c2c2c2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-right: 1.4rem;
+}
+.chargingDetail .detailList li .paramValue {
+  display: block;
+  font-size: 0.8rem;
+  color: #333333;
+}
+.chargingDetail .detailList li .paramTip {
+  display: block;
+  font-size: 0.56rem;
+  color: #888888;
+}
+.chargingDetail .detailList li:nth-child(1) {
+  padding-right: 0.88rem;
+}
+.chargingDetail .detailList li:nth-child(2) {
+  padding: 0 1.28rem;
+}
+.chargingDetail .detailList li:last-child {
+  border: 0;
+  padding-right: 0;
+  padding-left: 0.88rem;
+}
+.endBlock {
+  width: 13.4rem;
+  min-height: 1rem;
+  padding: 0 0.8rem;
+}
+.endBlock .tip {
+  height: 1.48rem;
+  line-height: 1.48rem;
+  font-size: 0.48rem;
+  color: #888888;
+  text-align: center;
+}
+.endBlock .doneBtn {
+  width: 13.4rem;
+  height: 1.8rem;
+  background: #ff7d00;
+  color: #FFFFFF;
+  line-height: 1.8rem;
+  text-align: center;
+  font-size: 0.72rem;
+  border-radius: 0.16rem;
+}

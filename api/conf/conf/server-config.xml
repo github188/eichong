@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<server>
+
+	<!--  <game-server>
+		<description>游戏服1</description>
+		<server-name>GateServer1</server-name>
+		<server-port>10001</server-port>
+	</game-server>-->
+
+</server>

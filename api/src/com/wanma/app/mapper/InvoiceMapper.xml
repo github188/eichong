@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.app.dao.InvoiceMapper">
+
+	<resultMap id="tblInvoiceResultMap" type="TblInvoice">
+		<id property="id" column="pk_Invoice" />
+	</resultMap>	
+	
+	<select id="enableInvoiceList" parameterType="HashMap" resultType="HashMap">
+		select p.pk_PurchaseHistory pId, p.puHi_Createdate pTime, p.puHi_PurchaseContent pContent,
+			p.puHi_Monetary pMoney, (SELECT ph.puHi_Monetary FROM tbl_purchasehistory ph
+				WHERE ph.puHi_TransactionNumber = p.puHi_TransactionNumber AND ph.puHi_Type = 11) pCouponMoney
+		from tbl_purchasehistory p INNER JOIN tbl_chargingorder o ON p.puHi_TransactionNumber = o.chOr_TransactionNumber
+		where p.puHi_Type = 1 and p.puhi_InvoiceStatus = 0 and p.puHi_Createdate &gt; #{startTime}
+			and p.puHi_UserId = #{uId} AND o.chOr_ChargingStatus = 2 
+		order by p.puHi_Createdate desc
+	</select>
+	
+	<select id="invoicedList" parameterType="HashMap" resultType="HashMap">
+		select pk_Invoice iId, iv_InvoiceStatus status,iv_InvoiceType type,iv_InvoiceAmount amount,
+		date_format(iv_Createdate,'%Y-%m-%d %H:%i:%s') time from tbl_invoice
+		where iv_UserID  = #{uId} order by iv_Createdate desc
+		limit #{pageNumber},#{pageNum}
+	</select>
+	
+	<select id="invoiceDetail" parameterType="long" resultType="HashMap">
+		SELECT iv_InvoiceStatus status,iv_InvoiceType type,iv_InvoiceAmount amount,
+			date_format(iv_Createdate,'%Y-%m-%d %H:%i:%s') time,
+			iv_InvoiceContent content,iv_CompanyName compName,iv_TaxpayerNumber taxNum,iv_CompanyAddress compAddr,
+			iv_PhoneNumber compPhone,iv_BankAccount bankAcc,iv_BankName bankName,iv_Recipients recipient,
+			iv_RecipientsNumber recPhone,iv_OwnProvinceCode pCode,iv_OwnCityCode cCode,iv_OwnCountyCode aCode,
+			iv_ConsigneeAddress conAddr,iv_Pay_Freight payMod,iv_FreightAmount fAmount,
+			(select count(*) from tbl_purchasehistory b where b.pk_Invoice = a.pk_Invoice ) purNum
+		FROM tbl_invoice a
+		where pk_Invoice  = #{iId}
+	</select>
+	
+	<select id="getInvoiceCheck" parameterType="int" resultType="HashMap">
+		select ci_Invoicecheck ic from tbl_checkinformation where ci_UserID = #{uId}
+	</select>
+	
+	<insert id="addInvoiceCheck" parameterType="int">
+		insert into tbl_checkinformation(ci_UserID,ci_Invoicecheck) values(#{uId},1);
+	</insert>
+
+	<select id="invoiceConfig" parameterType="HashMap" resultType="HashMap">
+		select t.pk_ConfigContent configKey,t.coCo_Content configValue from
+		tbl_configcontent t where t.coCo_ConfigParameterID= #{configType}
+	</select>
+	
+	<insert id="saveInvoice" parameterType="TblInvoice" useGeneratedKeys="true" keyProperty="pkInvoice">
+		insert into tbl_invoice (
+		iv_TaxpayerNumber,
+		iv_CompanyName,
+		iv_CompanyAddress,
+		iv_PhoneNumber,
+		iv_BankName,
+		iv_BankAccount,
+		iv_InvoiceAmount,
+		iv_InvoiceNumber,
+		iv_InvoiceContent,
+		iv_TrackNumber,
+		iv_Recipients,
+		iv_ConsigneeAddress,
+		iv_RecipientsNumber,
+		iv_InvoiceType,
+		iv_InvoiceStatus,
+		iv_Pay_Freight,
+		iv_FreightAmount,
+		iv_OwnProvinceCode,
+		iv_OwnCityCode,
+		iv_OwnCountyCode,
+		iv_UserID,
+		iv_Createdate,
+		iv_Updatedate
+		)values (
+		#{ivTaxpayerNumber},
+		#{ivCompanyName},
+		#{ivCompanyAddress},
+		#{ivPhoneNumber},
+		#{ivBankName},
+		#{ivBankAccount},
+		#{ivInvoiceAmount},
+		#{ivInvoiceNumber},
+		#{ivInvoiceContent},
+		#{ivTrackNumber},
+		#{ivRecipients},
+		#{ivConsigneeAddress},
+		#{ivRecipientsNumber},
+		#{ivInvoiceType},
+		#{ivInvoiceStatus},
+		#{ivPayFreight},
+		#{ivFreightAmount},
+		#{ivOwnProvinceCode},
+		#{ivOwnCityCode},
+		#{ivOwnCountyCode},
+		#{ivUserId},
+		now(),
+		now()
+		)
+	</insert>
+	
+	<update id="updatePayMode" parameterType="HashMap">
+		update tbl_invoice 
+		set iv_Pay_Freight = #{ivPayFreight}, iv_FreightAmount = #{ivFreightAmount}, iv_InvoiceStatus = #{ivStatus} 
+		where pk_Invoice = #{ivId}
+	</update>
+</mapper> 

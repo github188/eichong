@@ -1,0 +1,45 @@
+package com.wanma.ims.service;
+
+import java.util.List;
+
+import com.wanma.ims.common.domain.AdvertisementDO;
+
+
+
+/**
+ * 闪屏 插屏管理
+ */
+public interface AdvertisementService {
+	/**
+	 * 闪屏列表
+	 * @param splashDO
+	 * @return
+	 */
+	long selectAdvertisementCount(AdvertisementDO advertisementDO);
+	List<AdvertisementDO> selectAdvertisementList(
+			AdvertisementDO advertisementDO);
+
+	int getLimitCount(AdvertisementDO advertisementDO);
+	/**
+	 * 新增插屏闪屏
+	 * @param advertisementDO 
+	 * @return
+	 */
+	boolean insertAdvertisement(AdvertisementDO advertisementDO);
+	/**
+	 * 根据主键获取插屏 闪屏
+	 * @param advertisementDO
+	 * @return
+	 */
+	AdvertisementDO getAdvertisementById(AdvertisementDO advertisementDO);
+	/**
+	 * 修改插屏闪屏
+	 * @param advertisementDO 
+	 * @return
+	 */
+	boolean updateAdvertisement(AdvertisementDO advertisementDO);
+
+
+	
+	
+}

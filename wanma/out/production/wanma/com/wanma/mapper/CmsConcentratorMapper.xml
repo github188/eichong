@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsConcentratorMapper">
+
+	<resultMap id="tblConcentratorResultMap" type="TblConcentrator">
+		<id property="pkConcentratorID" column="pk_concentratorID" />
+		<result property="coctConcentratorName" column="coct_concentratorName" />
+		<result property="coctSIMMAC" column="coct_SIM_MAC" />
+		<result property="coctSIMCODE" column="coct_SIM_CODE" />
+		<result property="coctSIMTYPE" column="coct_SIM_TYPE" />
+		<result property="coctState" column="coct_state" />
+		<result property="coctUserId" column="coct_user_Id" />
+		<result property="coctUserName" column="coct_user_name" />
+		<result property="coctCreatedate" column="coct_Createdate" />
+		<result property="coctUpdatedate" column="coct_Updatedate" />
+	</resultMap>
+	<resultMap id="findMap" type="java.util.HashMap"></resultMap>
+	
+	<!-- 新增集中器 -->
+	<insert id="insert" parameterType="TblConcentrator" useGeneratedKeys="true" keyProperty="pkConcentratorID">
+	   insert into tbl_concentrator (
+	     coct_concentratorName,
+	     coct_SIM_MAC,
+	     coct_SIM_CODE,
+	     coct_SIM_TYPE,
+		 coct_state,
+		 coct_user_Id,
+		 coct_user_name,
+		 coct_Createdate,
+		 coct_Updatedate
+	   )values (
+	     #{coctConcentratorName},
+	     #{coctSIMMAC},
+	     #{coctSIMCODE},
+	     #{coctSIMTYPE},
+	     #{coctState},
+	     #{coctUserId},
+	     #{coctUserName},
+	     sysdate(),
+	     sysdate()
+	   )
+	</insert>
+	
+	<!-- 修改集中器-->
+	<update id="update" parameterType="TblConcentrator">
+	   update tbl_concentrator 
+	     set
+	     <if test="coctConcentratorName !=null">
+	     	coct_concentratorName = #{coctConcentratorName},
+	   	 </if>
+	     <if test="coctSIMMAC !=null">
+	     	coct_SIM_MAC = #{coctSIMMAC},
+	   	 </if>
+	     <if test="coctSIMCODE !=null">
+	     	coct_SIM_CODE = #{coctSIMCODE},
+	   	 </if>
+	     <if test="coctSIMTYPE !=null">
+	     	coct_SIM_TYPE = #{coctSIMTYPE},
+	   	 </if>
+	     <if test="coctState !=null">
+	     	coct_state = #{coctState},
+	   	 </if>
+	   	 coct_Updatedate = sysdate()
+		where pk_concentratorID = #{pkConcentratorID}
+	</update>
+	
+	<!-- 删除集中器-->
+	<update id="delete" parameterType="map">
+	   update tbl_concentrator set coct_state = 2 where pk_concentratorID in
+	    <foreach item="id" index="index" collection="ids" open="(" separator="," close=")">  
+  			#{id} 
+ 		</foreach>
+	</update>
+	
+	<!-- 根据ID组获取集中器绑定的电桩数量-->
+	<select id="getBindedCountByIds" parameterType="map" resultType="int">
+	   select count(1) from tbl_electricpile where pk_concentratorID in
+	    <foreach item="id" index="index" collection="ids" open="(" separator="," close=")">  
+  			#{id} 
+ 		</foreach>
+	</select>
+	
+	<!-- 根据ID组判断是否存在上线状态的集中器-->
+	<select id="isOnlineCount" parameterType="map" resultType="int">
+	   select count(1) from tbl_concentrator where coct_state = 1 and pk_concentratorID in
+	    <foreach item="id" index="index" collection="ids" open="(" separator="," close=")">  
+  			#{id} 
+ 		</foreach>
+	</select>
+	
+	<!-- 获取集中器列表 -->
+	<select id="findConcentrators"  parameterType="map" resultMap="tblConcentratorResultMap">
+		select *
+		from tbl_concentrator
+		<where> coct_state !='2'
+			<if test="coctSIMTYPE!=null">
+			  and  coct_SIM_TYPE = #{coctSIMTYPE}
+	   		</if>
+			<if test="coctConcentratorName!=null">
+			  and  coct_concentratorName like concat('%',#{coctConcentratorName},'%')
+	   		</if>
+			<if test="coctSIMMAC!=null">
+			  and  coct_SIM_MAC like concat('%',#{coctSIMMAC},'%')
+	   		</if>
+		    <!-- 用户权限控制 -->
+	        <choose>
+				<when test="userLevel==3">
+			        and exists (select 1 from tbl_user_business_view b where b.user_id=coct_user_Id and exists (select 1 from tbl_user_business_view b1 where  b.busi_company_id = b1.busi_company_id and b1.user_id = #{coctUserId}))
+			    </when>
+			    <when test="userLevel==5">	
+			        and coct_user_Id=#{coctUserId}
+			    </when>
+	        </choose>
+		</where>
+		order by coct_Updatedate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	
+	<!-- 获取集中器总数 -->
+	<select id="selectConcentratorCount" parameterType="TblConcentrator"
+		resultType="long">
+		select
+		count(1)
+		from
+		tbl_concentrator
+		<where> coct_state !='2'
+			<if test="coctSIMTYPE!=null">
+			  and  coct_SIM_TYPE = #{coctSIMTYPE}
+	   		</if>
+			<if test="coctConcentratorName!=null">
+			  and  coct_concentratorName like concat('%',#{coctConcentratorName},'%')
+	   		</if>
+			<if test="coctSIMMAC!=null">
+			  and  coct_SIM_MAC like concat('%',#{coctSIMMAC},'%')
+	   		</if>
+		    <!-- 用户权限控制 -->
+	        <choose>
+				<when test="userLevel==3">
+			        and exists (select 1 from tbl_user_business_view b where b.user_id=coct_user_Id and exists (select 1 from tbl_user_business_view b1 where  b.busi_company_id = b1.busi_company_id and b1.user_id = #{coctUserId}))
+			    </when>
+			    <when test="userLevel==5">	
+			        and coct_user_Id=#{coctUserId}
+			    </when>
+	        </choose>
+		</where>
+	</select>
+	
+	<!-- 获取集中器信息-->
+	<select id="findOne"  parameterType="map" resultMap="tblConcentratorResultMap">
+		select *
+		from tbl_concentrator
+		where pk_concentratorID = #{pkConcentratorID}
+	</select>
+</mapper> 

@@ -1,0 +1,77 @@
+package com.wanma.ims.service.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.wanma.ims.common.domain.BannerDO;
+import com.wanma.ims.common.domain.CityDO;
+import com.wanma.ims.mapper.BannerMapper;
+import com.wanma.ims.mapper.InitialMapper;
+import com.wanma.ims.service.BannerService;
+
+@Service("bannerService")
+public class BannerServiceImpl implements BannerService{
+
+	@Autowired
+	private BannerMapper bannerMapper;
+	@Autowired
+	private InitialMapper initialMapper;
+	
+	
+	@Override
+	public long selectBannerCount(BannerDO banner) {
+		return bannerMapper.selectBannerCount(banner);
+	}
+
+	@Override
+	public List<BannerDO> selectBannerList(BannerDO banner) {
+		List<BannerDO> bannerList = bannerMapper.selectBannerList(banner);
+		List<CityDO>  cityList  =  initialMapper.selectCityList(null);
+		for(int j=0;j<bannerList.size();j++){
+			if(bannerList.get(j).getBannerCityCode().isEmpty()){
+				bannerList.get(j).setBannerRegion("全国");
+			}else{
+				for(int i=0;i<cityList.size();i++){
+					if(cityList.get(i).getCityId().equals(bannerList.get(j).getBannerCityCode())){
+						bannerList.get(j).setBannerRegion(cityList.get(i).getCityName().toString());
+					}	
+				}
+			}
+		}
+		return bannerList;
+	}
+
+	@Override
+	public boolean insertBanner(BannerDO banner) {
+		
+		return bannerMapper.insertBanner(banner)>0;
+	}
+
+	@Override
+	public boolean updateBanner(BannerDO banner) {
+		return bannerMapper.updateBanner(banner)>0;
+	}
+
+	@Override
+	public BannerDO getBannerById(BannerDO banner) {
+		return bannerMapper.getBannerById(banner);
+	}
+
+	@Override
+	public void offShelfBannerById(BannerDO banner) {
+		bannerMapper.offShelfBannerById(banner);
+	}
+
+	@Override
+	public boolean deleteBannerById(BannerDO banner) {
+		return bannerMapper.deleteBannerById(banner)>0;
+	}
+
+	@Override
+	public boolean changeBannerSort(BannerDO banner) {
+		return bannerMapper.changeBannerSort(banner)>0;
+	}
+
+}

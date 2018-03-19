@@ -1,0 +1,24 @@
+#线上数据库现在地址	
+	wget   http://10.9.2.49/backup/eichong_2017-10-27.sql.gz
+
+#root 帐号操作
+
+#删除数据库
+drop database eichong;
+
+#创建数据库
+create database eichong DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;  
+
+#导入数据
+zcat eichong_2017-10-27.sql.gz | mysql -uroot -p123456 eichong  
+
+#运行单个脚本的例子
+mysql -uroot -h127.0.0.1 -p123456 eichong < zhangchunyang/1_rename.sql 
+
+#测试迁移脚本的过程
+cd /root/ims/ims_sql
+sh ims_test_prepare.sh
+sh ims_transfer.sh
+
+
+

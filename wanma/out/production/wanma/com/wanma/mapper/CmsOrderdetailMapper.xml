@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsOrderdetailMapper">
+
+	<resultMap id="tblOrderdetailResultMap" type="TblOrderdetail">
+		<id property="pkOrderdetail" column="pk_OrderDetail" />
+		<result property="ordeParentid" column="orDe_ParentId" />
+		<result property="ordeProductid" column="orDe_ProductId" />
+		<result property="ordeProductname" column="orDe_ProductName" />
+		<result property="ordePrice" column="orDe_Price" />
+		<result property="ordeQuantity" column="orDe_Quantity" />
+		<result property="ordeTotalamount" column="orDe_TotalAmount" />
+		<result property="ordeCreatedate" column="orDe_Createdate" />
+		<result property="ordeUpdatedate" column="orDe_Updatedate" />
+	</resultMap>
+	<resultMap id="findResultMap"  type="java.util.HashMap" extends="tblOrderdetailResultMap"></resultMap>
+
+	<select id="findProductList" parameterType="map" resultMap="tblOrderdetailResultMap">
+	   select 
+	     od.pk_OrderDetail,
+	     od.orDe_ParentId,
+	     od.orDe_ProductId,
+	     od.orDe_ProductName,
+	     od.orDe_Price,
+	     od.orDe_Quantity,
+	     od.orDe_TotalAmount,
+	     od.orDe_Createdate,
+	     od.orDe_Updatedate,
+	     p.prod_ProductCode prodProductCode,
+	     p.prod_User prodUser
+	   from tbl_orderdetail od left join tbl_product p
+	   on
+	   od.orDe_ProductId = p.pk_Product
+	   left join tbl_order o 
+	   on
+	   o.pk_Order = od.orDe_ParentId
+	   <where>
+	   		o.orde_Status=3
+	     <if test="ordeProductname != null and ordeProductname != ''">
+	        and orDe_ProductName like concat('%',#{ordeProductname},'%') 
+	     </if>
+	     <if test="prodProductCode !=null and prodProductCode !=''">
+	     	and p.prod_ProductCode like concat('%',#{prodProductCode},'%')
+	     </if>
+	     <if test="prodUser !=null and prodUser !=''">
+	     	and p.prod_User = #{prodUser}
+	     </if>
+	   </where>
+	   ORDER BY od.orDe_Createdate DESC
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	
+	<select id="findProductCount" parameterType="map" resultType="long">
+		select count(od.pk_OrderDetail)
+		 from tbl_orderdetail od left join tbl_product p
+	   on
+	   od.orDe_ProductId = p.pk_Product
+	   left join tbl_order o 
+	   on
+	   o.pk_Order = od.orDe_ParentId
+	   <where>
+	   		o.orde_Status=3
+	   	<if test="ordeProductname != null and ordeProductname != ''">
+	        and orDe_ProductName like concat('%',#{ordeProductname},'%') 
+	     </if>
+	     <if test="prodProductCode !=null and prodProductCode !=''">
+	     	and p.prod_ProductCode like concat('%',#{prodProductCode},'%')
+	     </if>	
+	     <if test="prodUser !=null and prodUser !=''">
+	     	and p.prod_User = #{prodUser}
+	     </if>
+	   </where>	
+	</select>
+	
+	<select id="findByOrderId" parameterType="map" resultMap="tblOrderdetailResultMap">
+		select 
+		od.pk_OrderDetail,
+	     od.orDe_ParentId,
+	     od.orDe_ProductId,
+	     od.orDe_ProductName,
+	     od.orDe_Price,
+	     od.orDe_Quantity,
+	     od.orDe_TotalAmount,
+	     od.orDe_Createdate,
+	     od.orDe_Updatedate,
+	     p.prod_ProductCode prodProductCode
+	     from tbl_orderdetail od left join tbl_product p
+	     on
+	     od.orDe_ProductId = p.pk_Product
+	     where
+	     od.orDe_ParentId = #{ordeParentid}
+	     <if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	
+	<select id="findCountByOrderId" parameterType="map" resultType="int">
+		select count(od.pk_OrderDetail)
+		from tbl_orderdetail od left join tbl_product p
+	     on
+	     od.orDe_ProductId = p.pk_Product
+	     where
+	     od.orDe_ParentId = #{ordeParentid}
+	</select>
+	
+</mapper> 

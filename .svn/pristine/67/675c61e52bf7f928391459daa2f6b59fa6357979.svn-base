@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/integral/integralList/integral_list.css"/>
+    <title>积分列表</title>
+</head>
+<body>
+<div class="container animated fadeInRight">
+    <div class="row">
+        <div class="formBlock clearfix">
+            <form id="integralListForm">
+                <div class="col-xs-12 col-sm-11 col-md-11 col-lg-11">
+                    <div class="userListSelect row">
+                        <div class="col-sm-3 col-xs-12">
+                            <div class="col-sm-4 queryParam">
+                                用户账号
+                            </div>
+                            <div class="col-sm-8 userAccount">
+                                <input type="text" name="userAccount" value="" class="userAccountInput"/>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3 col-xs-12">
+                            <div class="col-sm-4 queryParam">
+                                用户名
+                            </div>
+                            <div class="col-sm-8 userAccount">
+                                <input type="text" name="normName" value="" class="userAccountInput"/>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-sm-12" style="background: #FFFFFF;height: 20px;"></div>
+                </div>
+                <div class="col-xs-12 col-sm-1 col-md-1 col-lg-1" style="position: relative;">
+                    <div class="queryBtn" onclick="integralListSearch()">
+                        查询
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="showSet table-responsive">
+            <table class=" table table-bordered text-center" style="border: 1px solid #DCDCDC;">
+                <thead>
+                <tr>
+                    <th style="min-width: 80px;">选择</th>
+                    <th style="min-width: 80px;">排序</th>
+                    <th style="min-width: 120px;">当前可用积分</th>
+                    <th style="min-width: 80px;">用户账号</th>
+                    <th style="min-width: 80px;">用户名</th>
+                    <th style="min-width: 120px;">已获取积分</th>
+                    <th style="min-width: 120px;">已消耗积分</th>
+                </tr>
+                </thead>
+                <tbody id="myTbogy">
+
+                </tbody>
+            </table>
+
+            <div id="integralListPage" class="pagination">
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="../../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="../../../js/contabs.min.js"></script>
+<script src="../../../js/integral/integralList/integral_list.js" type="text/javascript" charset="utf-8"></script>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+			
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="blank" />
+		<meta name="format-detection" content="telephone=no" />
+		<title>预约详情-完成</title>
+		<!--<link rel="stylesheet" type="text/css" href="dist/css/bootstrap.min.css"/>-->
+		<link rel="stylesheet" type="text/css" href="dist/css/bootstrap.css"/>
+		<link rel="stylesheet" type="text/css" href="css/base.css"/>
+		<link rel="stylesheet" type="text/css" href="css/orderDetailFinally.css"/>
+		<!--[if lt IE 9]>
+			<script src="dist/js/html5shiv.min.js"></script>
+			<script src="dist/js/respond.min.js"></script>
+		<![endif]-->
+	</head>
+	<body>
+	<header class="navbar-fixed-top">
+		<div class="col-xs-2 headLeft" onclick="toOrderDetail()">
+			<img src="img/nav_btn_back.png"/>
+		</div>
+		<div class="col-xs-8 headCenter">
+			预约详情
+		</div>
+		<div class="col-xs-3 headRight">
+			
+		</div>
+	</header>
+	<!--占位部分===================================================================-->
+	<div class="occupied"></div>
+	<!--第三块详细内容=====================================================================-->
+	<section>
+		<!--订单状态============================-->
+		<div class="perTip">
+			<div class="col-xs-4 commentLeft">
+				订单状态：
+			</div>
+			<div class="col-xs-8 commentRight">
+				<span>
+					已完成
+				</span>
+			</div>
+		</div>
+		<!--订单编号============================-->
+		<div class="perTip">
+			<div class="col-xs-4 commentLeft">
+				订单编号：
+			</div>
+			<div class="col-xs-8 commentRight">
+				<span id="bespResePaymentCode">
+					<!--123456789101111-->
+				</span>
+			</div>
+		</div>
+		<!--本次消费============================-->
+		<div class="perTip">
+			<div class="col-xs-4 commentLeft">
+				本次消费：
+			</div>
+			<div class="col-xs-8 commentRight">
+				<span id="expense">
+					
+				</span>元
+			</div>
+		</div>
+		<!--预约时间============================-->
+		<div class="perTip">
+			<div class="col-xs-4 commentLeft">
+				预约时间：
+			</div>
+			<div class="col-xs-8 commentRight">
+				<span id="bespBespoketime"></span>&nbsp;&nbsp;&nbsp;至
+				<span id="endTime"></span>
+			</div>
+		</div>
+		<!--预约地址============================-->
+		<div class="perTip">
+			<div class="col-xs-4 commentLeft">
+				预约地址：
+			</div>
+			<div class="col-xs-8 commentRight">
+				<span id="epAddress">
+					<!--杭州市西湖区天目山路181号-->
+				</span>
+			</div>
+		</div>
+		<!--预约内容============================-->
+		<div class="perTip">
+			<div class="col-xs-4 commentLeft">
+				预约内容：
+			</div>
+			<div class="col-xs-8 commentRight">
+				<span id="epName">
+					<!--杭州市天际大厦充电站-->
+				</span><br />
+				<span>
+					<span id="ep_num">02</span>号桩-<span id="chargingMode">快充</span>&nbsp;
+					<span id="powerInterface">国标</span>&nbsp;
+					<span id="ePHeElectricpileHeadName">
+						<!--A枪口-->
+					</span>	
+				</span><br /> 车位号
+				<span id="park_num">
+					<!--C-408-->
+				</span>
+			</div>
+		</div>
+	</section>
+	<!--再次预约按钮=============================================-->
+	<a class="btn btn-block reOrder" id="reOrderBtn" style="display: block;width: 80%;height: 4rem;line-height: 3rem;background: #FF7D00; color: #FFFFFF;margin: 0 auto;" onclick="reOrder()">再次预约</a>
+		
+	</body>
+	<script type="text/javascript" src="dist/js/jquery-1.11.0.js" ></script>
+	<script type="text/javascript">
+//		if ('addEventListener' in document) {
+//		    document.addEventListener('DOMContentLoaded', function() {
+//		        FastClick.attach(document.body);
+//		    }, false);
+//		}
+		$(function() {
+		    FastClick.attach(document.body);
+		});
+
+	</script>
+	<!--<script src="dist/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>-->
+	<script src="js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript" src="dist/js/bootstrap.js" ></script>
+	<script src="js/url.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/userinfo.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/orderDetailFinally.js" type="text/javascript" charset="utf-8"></script>
+</html>

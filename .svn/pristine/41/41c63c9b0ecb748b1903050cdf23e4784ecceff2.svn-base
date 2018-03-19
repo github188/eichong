@@ -1,0 +1,267 @@
+package com.wanma.controller.shsz;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.wanma.model.TblChargingOrder;
+import com.wanma.model.TblElectricpilehead;
+import com.wanma.model.TblPowerstation;
+import com.wanma.model.TcbElectric;
+import com.wanma.service.TblChargingOrderService;
+import com.wanma.service.TblElectricpileHeadService;
+import com.wanma.service.TblElectricpileService;
+import com.wanma.service.TblPowerstationService;
+import com.wanma.service.TblRateInformationService;
+import com.wanma.support.common.RedisService;
+import com.wanma.support.common.ResultResponse;
+import com.wanma.support.utils.AesCBC;
+
+/**
+ * @Description: 充电管理控制层
+ * @author lhy
+ * @createTime：2015-11-19 16:25:05
+ * @updateTime：
+ * @version：V1.0
+ */
+@Controller
+@RequestMapping("/shsz")
+public class ShszPowerstationController {
+	private static final SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+    private static final Logger LOGGER = LoggerFactory.getLogger(ShszPowerstationController.class);
+	@Autowired
+	private TblPowerstationService psService;
+	@Autowired
+	TblElectricpileService elcService;
+	@Autowired
+	TblElectricpileHeadService hService;
+	@Autowired
+	TblRateInformationService rateService;
+	@Autowired
+	TblChargingOrderService odrService;
+	@Autowired
+    private RedisService redisService;
+	/**
+	 * @Description: 查询站信息
+	 * @return
+	 * @throws Exception 
+	 */
+	@RequestMapping("/query_stations_info")
+	@ResponseBody
+	public String stationsInfo(@RequestBody Map<String, String> params) throws Exception {
+		JSONObject jsonData = JSON.parseObject(AesCBC.getInstance().decrypt(params.get("Data"),"utf-8","1234567890abcdef","1234567890abcdef"));
+		String lastQueryTime = jsonData.get("LastQueryTime").toString();
+		String pageNo = jsonData.get("PageNo").toString();
+		String pageSize = jsonData.get("PageSize").toString();
+		if (StringUtils.isBlank(pageNo)) 
+			pageNo = "1";
+		if (StringUtils.isBlank(pageSize)) 
+			pageSize = "10";
+		List<TblPowerstation> psList = null;
+		Map<String, Object> data = new HashMap<String, Object>();
+		int count = 0;
+		if(lastQueryTime != null&&!lastQueryTime.isEmpty()){
+	        LOGGER.info("获取最近更新站点信息开始，上次查询时间："+lastQueryTime+"开始页"+pageNo+"；每页显示数量："+pageSize);
+			Date queryTime = fmt.parse(lastQueryTime);
+			Map<String, Object> dataMap = new HashMap<String, Object>();
+			dataMap.put("queryTime", queryTime);
+			dataMap.put("pageNo", Integer.parseInt(pageNo)-1);
+			dataMap.put("pageSize", Integer.parseInt(pageSize));
+			dataMap.put("poSt_OwnProvinceCode", "310000");
+			count = psService.getNewlyUpdatedCount(dataMap);
+			psList = psService.getNewlyUpdatedList(dataMap);
+	        LOGGER.info("获取最近更新站点信息结束");
+		}else{
+	        LOGGER.info("获取全部站点信息开始");
+	        Map<String, Object> dataMap = new HashMap<String, Object>();
+	        TblPowerstation powerstation = new TblPowerstation();
+	        powerstation.setPostOwnProvinceCode("310000");
+			count = psService.getCount(powerstation);
+			psList = psService.getList(powerstation);
+	        LOGGER.info("获取全部站点信息结束");
+		}
+		data.put("ItemSize", count);
+		data.put("PageCount", count/Integer.parseInt(pageSize) + 1);
+		data.put("pageNo", pageNo);
+		List<Map<String, Object>> psDataList = new ArrayList<Map<String,Object>>();
+		Map<String, Object> psData = null;
+		Map<String, Object> elcData = null;
+		Map<String, Object> hData = null;
+		for(TblPowerstation psModel:psList){
+			psData = new HashMap<String, Object>();
+			psData.put("StationID", psModel.getPkPowerstation());
+			psData.put("OperatorID", "");
+			psData.put("EquipmentOwnerID", "");
+			psData.put("StationName", psModel.getPostName());
+			psData.put("CountryCode", "CN");
+			psData.put("AreaCode", psModel.getAreaId());
+			psData.put("Address", psModel.getPostAddress());
+			psData.put("StationTel", psModel.getPostPhone());
+			psData.put("ServiceTel", psModel.getPostPhone());
+			psData.put("StationType", 255);
+			if(psModel.getPostStatus() == 10)
+				psData.put("StationStatus", 5);
+			if(psModel.getPostStatus() == 15)
+				psData.put("StationStatus", 50);
+			else
+				psData.put("StationStatus", 0);
+			psData.put("ParkNums", 0);
+			psData.put("StationLng", psModel.getPostLongitude());
+			psData.put("StationLat", psModel.getPostLatitude());
+			psData.put("SiteGuide", "");
+			psData.put("Construction", 255);
+			String postPic = psModel.getPostPic();
+			postPic = postPic ==null? "":postPic;
+			psData.put("Pictures", postPic.split(","));
+//			psData.put("MatchCars", "");
+//			psData.put("ParkInfo", "");
+//			psData.put("ParkOwner", "");
+//			psData.put("ParkManager", "");
+			psData.put("OpenAllDay", 1);
+//			psData.put("BusineHours", psModel.getPoStOnlineTime());
+			psData.put("MinElectricityPrice", rateService.selectMinPriceByPsId(psModel.getPkPowerstation()));
+//			psData.put("ElectricityFee", "待");
+//			psData.put("ServiceFee", "待");
+			psData.put("ParkFree", 0);
+//			psData.put("ParkFee", "");
+//			psData.put("Payment", "");
+//			psData.put("SupportOrder", 1);
+//			psData.put("Remark", psModel.getPostRemark());
+			List<TcbElectric> elcList = elcService.getElectricpileListByPsId(psModel.getPkPowerstation());
+			List<Map<String, Object>> elcDataList = new ArrayList<Map<String,Object>>();
+			for(TcbElectric e:elcList){
+				elcData = new HashMap<String, Object>();
+				elcData.put("EquipmentID", e.getEquipNo());
+				elcData.put("ManufacturerID", e.getEquipNo());
+				elcData.put("EquipmentModel", e.getEquipNo());
+				elcData.put("EquipmentName", e.getEquipName());
+				elcData.put("ProductionDate", "");
+				if("14".equals(e.getEquipType()))
+					elcData.put("EquipmentType", 2);
+				if("5".equals(e.getEquipType()))
+					elcData.put("EquipmentType", 1);
+				else
+					elcData.put("EquipmentType", 3);
+				if("1".equals(e.getDeleteFlag()))
+					elcData.put("EquipmentStatus", 5);
+				if("0".equals(e.getDeleteFlag()))
+					elcData.put("EquipmentStatus", 50);
+				else
+					elcData.put("EquipmentStatus", 0);
+				elcData.put("EquipmentPower", e.getPowerRating());
+				elcData.put("NewNationalStandard", 1);
+				elcData.put("EquipmentLng", e.getElcLng());
+				elcData.put("EquipmentLat", e.getElcLat());
+				TblElectricpilehead hModel = new TblElectricpilehead();
+				hModel.setPkElectricpile(e.getPkElc());
+				List<TblElectricpilehead> headList = hService.getList(hModel);
+				List<Map<String, Object>> headDataList = new ArrayList<Map<String,Object>>();
+				for(TblElectricpilehead h:headList){
+					hData = new HashMap<String, Object>();
+					hData.put("ConnectorID", String.format("%s%02d", e.getEquipNo(), h.getEpheElectricpileHeadId()));
+					hData.put("ConnectorName", h.getEpheElectricpileheadname());
+					if("14".equals(e.getEquipType()))
+						hData.put("ConnectorType", 3);
+					if("5".equals(e.getEquipType()))
+						hData.put("ConnectorType", 4);
+					hData.put("VoltageUpperLimits", e.getVoltageRated());
+					hData.put("VoltageLowerLimits", e.getVoltageRated());
+					hData.put("Current", e.getCurrentRated());
+					hData.put("Power", e.getPowerRating());
+					hData.put("ParkNo", "");
+					headDataList.add(hData);
+				}
+				elcData.put("ConnectorInfos", headDataList);
+				elcDataList.add(elcData);
+			}
+			psData.put("EquipmentInfos", elcDataList);
+			psDataList.add(psData);
+		}
+		data.put("StationInfos", psDataList);
+		return new ResultResponse(data).toString();
+	}
+
+	/**
+	 * @Description: 查询设备状态
+	 * 
+	 * @return
+	 * @throws Exception 
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@RequestMapping("/query_station_status")
+	@ResponseBody
+	public String stationStatus(@RequestBody Map<String, String> params) throws Exception {
+		JSONObject jsonData = JSON.parseObject(AesCBC.getInstance().decrypt(params.get("Data"),"utf-8","1234567890abcdef","1234567890abcdef"));
+		String[] stationIDs = (String[]) jsonData.get("StationIDs");
+		int count = stationIDs.length;
+		if(count > 50){
+			ResultResponse resultRespone = new ResultResponse();
+			resultRespone.setStatus(500);
+			resultRespone.setMsg("数组长度超长！");
+			return resultRespone.toString();
+		}
+		List<Map<String, Object>> data = new ArrayList<Map<String,Object>>();
+		Map<String, Object> psData = null;
+		for(String psId:stationIDs){
+			psData = new HashMap<String, Object>();
+			psData.put("StationID", psId);
+			TblElectricpilehead hModel = new TblElectricpilehead();
+			hModel.setPsId(Integer.parseInt(psId));
+			psData.put("ConnectorStatusInfos", hService.getHeadStsByPsId(hModel));
+			data.add(psData);
+		}
+		return new ResultResponse(data).toString();
+	}
+
+	/**
+	 * @Description: 查询站信息
+	 * @return
+	 * @throws Exception 
+	 */
+	@RequestMapping("/query_station_stats")
+	@ResponseBody
+	public String stationStats(@RequestBody Map<String, String> params) throws Exception {
+		JSONObject jsonData = JSON.parseObject(AesCBC.getInstance().decrypt(params.get("Data"),"utf-8","1234567890abcdef","1234567890abcdef"));
+		String psId = jsonData.get("StationID").toString();
+		String startTime = jsonData.get("StartTime").toString();
+		String endTime = jsonData.get("EndTime").toString();
+		TblChargingOrder odrModel = new TblChargingOrder();
+		odrModel.setPsId(Integer.parseInt(psId));
+		odrModel.setBeginChargetime(startTime);
+		odrModel.setEndChargetime(endTime);
+		Map<String, Object> data = new HashMap<String, Object>();
+		Map<String, Object> psData = new HashMap<String, Object>();
+		List<Map<String, Object>> elcList = odrService.getListGroupByPileNumByPsId(odrModel);
+		double stationElectricity = 0.0;
+		if(elcList != null && elcList.size() > 0){
+			for(Map<String, Object> e:elcList){
+				odrModel.setChorPilenumber(e.get("EquipmentID").toString());
+				stationElectricity += Double.valueOf(e.get("EquipmentElectricity").toString());
+				e.put("ConnectorStatsInfos", odrService.getListGroupByHeadNoByPileNum(odrModel));
+			}
+		}
+		psData.put("StationID ", psId);
+		psData.put("StartTime ", startTime);
+		psData.put("EndTime ", endTime);
+		psData.put("StationElectricity ", stationElectricity);
+		psData.put("EquipmentStatsInfos", elcList);
+		data.put("StationStats", psData);
+		return new ResultResponse(data).toString();
+	}
+}

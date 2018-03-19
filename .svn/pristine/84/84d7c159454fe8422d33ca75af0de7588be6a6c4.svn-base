@@ -1,0 +1,247 @@
+package com.wanma.ims.controller.config;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.wanma.ims.common.domain.BomListDO;
+import com.wanma.ims.common.domain.ElectricPileDO;
+import com.wanma.ims.common.domain.EquipmentVersionDO;
+import com.wanma.ims.common.domain.TypeSpanDO;
+import com.wanma.ims.common.domain.base.Pager;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.constants.ResultCodeConstants;
+import com.wanma.ims.controller.BaseController;
+import com.wanma.ims.controller.result.JsonResult;
+import com.wanma.ims.service.EquipmentVersionService;
+import com.wanma.ims.service.TypeSpanService;
+
+/**
+ * 产品型号管理
+ */
+@Controller
+@RequestMapping("/config/typeSpan")
+public class TypeSpanController extends BaseController{
+	private static Logger log = Logger.getLogger(TypeSpanController.class);
+	@Autowired
+	private TypeSpanService typeSpanService;
+	@Autowired
+	private EquipmentVersionService epVersionService;
+	/**
+	 * 产品型号管理
+	 * @author mb
+	 * @param 
+	 * @return
+	 */
+	@RequestMapping(value = "/getTypeSpanList")
+	@ResponseBody
+	public void getTypeSpanList(@ModelAttribute("pager") Pager pager,
+			@ModelAttribute TypeSpanDO typeSpanDO,HttpServletRequest request) {
+		JsonResult result = new JsonResult();
+		List<TypeSpanDO> typeSpanList = null;
+		long total = 0;
+		try {
+			total = typeSpanService.getTypeSpanCount(typeSpanDO);
+			if (total <= pager.getOffset()) {
+				pager.setPageNo(1L);
+			}
+			typeSpanDO.setPager(pager);
+			typeSpanList = typeSpanService.getTypeSpanList(typeSpanDO);
+			pager.setTotal(total);
+			result.setDataObject(typeSpanList);
+			result.setPager(pager);
+		} catch (Exception e) {
+			log.error(this.getClass()+".getTypeSpanList() error:",e);
+		}
+		responseJson(result);
+	}
+	/**
+	 * 判断产品型号是否存在
+	 * @author mb
+	 * @param 
+	 * @return
+	 */
+	@RequestMapping(value = "/checkTsTypeSpan")
+	@ResponseBody
+	public void checkTsTypeSpan(@ModelAttribute("pager") Pager pager,
+			@ModelAttribute TypeSpanDO typeSpanDO,HttpServletRequest request) {
+		JsonResult result = new  JsonResult() ;
+		if(typeSpanService.checkTsTypeSpan(typeSpanDO.getTsTypeSpan())>0){
+			responseJson(new JsonResult(false,ResultCodeConstants.ERROR_MSG_UNIQUE_TYPESPAN,"产品型号已经存在"));
+			return;
+		}
+		responseJson(result);
+	}
+	/**
+	 * 新增产品型号
+	 * @author mb
+	 * @param 
+	 * @return
+	 */
+	@RequestMapping(value = "/addTypeSpan")
+	@ResponseBody
+	public void addTypeSpan(@ModelAttribute("pager") Pager pager,
+			@ModelAttribute TypeSpanDO typeSpanDO,HttpServletRequest request) {
+		JsonResult result = new  JsonResult() ;
+		try {
+			if(!typeSpanService.addTypeSpan(typeSpanDO)){
+				responseJson(new JsonResult(false,ResultCodeConstants.ERROR_MSG_ADD_TYPESPAN,"新增产品型号失败"));
+				return;
+			}
+		} catch (Exception e) {
+			log.error(this.getClass()+".addTypeSpan() error:",e);
+		}
+		
+		responseJson(result);
+	}
+	
+	/**
+	 * 根据产品型号主键获取
+	 * @author mb
+	 * @param 
+	 * @return
+	 */
+	@RequestMapping(value = "/getTypeSpanById")
+	@ResponseBody
+	public void getTypeSpanById(@ModelAttribute TypeSpanDO typeSpanDO,HttpServletRequest request) {
+		JsonResult result = new  JsonResult() ;
+		try {
+			typeSpanDO = typeSpanService.getTypeSpanById(typeSpanDO);
+			List<BomListDO> bomList =typeSpanService.getBomList(typeSpanDO);
+			typeSpanDO.setBomList(bomList);
+			result.setDataObject(typeSpanDO);
+		} catch (Exception e) {
+			log.error(this.getClass()+".getTypeSpanById() error:",e);
+		}
+		responseJson(result);
+	}
+	
+	/**
+	 * 修改产品型号
+	 * @author mb
+	 * @param 
+	 * @return
+	 */
+	@RequestMapping(value = "/updateTypeSpan")
+	@ResponseBody
+	public void updateTypeSpan(@ModelAttribute TypeSpanDO typeSpanDO,HttpServletRequest request) {
+		JsonResult result = new  JsonResult() ;
+		try {
+			if(!typeSpanService.updateTypeSpan(typeSpanDO)){
+				responseJson(new JsonResult(false,ResultCodeConstants.FAILED,"修改产品型号失败 "));
+				return;
+			}
+		} catch (Exception e) {
+			log.error(this.getClass()+".updateTypeSpan() error:",e);
+		}
+		responseJson(result);
+	}
+	/**
+	 * 新增bomlist
+	 * @author mb
+	 * @param 
+	 * @return
+	 */
+	@RequestMapping(value = "/insertBomList")
+	@ResponseBody
+	public void insertBomList(@ModelAttribute BomListDO bomListDO,HttpServletRequest request) {
+		JsonResult result = new  JsonResult() ;
+		try {
+			if(!typeSpanService.insertBomList(bomListDO)){
+				responseJson(new JsonResult(false,ResultCodeConstants.FAILED,"新增bomlist失败 "));
+				return;
+			}
+		} catch (Exception e) {
+			log.error(this.getClass()+".updateTypeSpan() error:",e);
+		}
+		responseJson(result);
+	}
+	
+	
+	/**
+	 * 产品型号管理
+	 * @author mb
+	 * @param 
+	 * @return
+	 */
+	@RequestMapping(value = "/updateEpVisionList")
+	@ResponseBody
+	public void updateEpVisionList(@ModelAttribute("pager") Pager pager,
+			@ModelAttribute ElectricPileDO electricPileDO,HttpServletRequest request) {
+		JsonResult result = new JsonResult();
+		long total = 0;
+		try {
+			total = typeSpanService.selectPileListCount(electricPileDO);
+			if (total <= pager.getOffset()) {
+				pager.setPageNo(1L);
+			}
+			electricPileDO.setPager(pager);
+			List<Map<String, Object>>  electricList = typeSpanService.selectPileList(electricPileDO);
+			pager.setTotal(total);
+			result.setDataObject(electricList);
+			result.setPager(pager);
+		} catch (Exception e) {
+			log.error(this.getClass()+".updateEpVisionList() error:",e);
+		}
+		responseJson(result);
+	}
+	/**
+	 * 根据产品型号获取bom
+	 * @author mb
+	 * @param 
+	 * @return
+	 */
+	@RequestMapping(value = "/getBomListByTypeSpanId")
+	@ResponseBody
+	public void getBomListByTypeSpanId(@ModelAttribute TypeSpanDO typeSpanDO,HttpServletRequest request) {
+		JsonResult result = new JsonResult();
+		try {
+			List<BomListDO> bomList = typeSpanService.getBomList(typeSpanDO);
+			result.setDataObject(bomList);
+		} catch (Exception e) {
+			log.error(this.getClass()+".getBomListByTypeSpanId() error:",e);
+		}
+		responseJson(result);
+	}
+	/**
+	 * 电桩版本升级
+	 * @author mb
+	 * @param 
+	 * @return
+	 */
+	@RequestMapping(value = "/updateEpVision")
+	@ResponseBody
+	public void updateEpVision(String[] pkElectricpiles,String pkBomListId,String pkTypeSpanId,HttpServletRequest request) {
+		JsonResult result = new JsonResult();
+		try {
+			EquipmentVersionDO epVersion = epVersionService.getBomList(pkBomListId);
+			for(String evProductID:pkElectricpiles){//修改桩的upgrade_flag
+	                epVersionService.deleteByProductID(evProductID);
+	                epVersion.setEvProductID(evProductID);
+	                epVersion.setEvProductType("3");
+	                epVersion.setPkBomListId(Integer.valueOf(pkBomListId));
+	                epVersionService.insertEpVersion(epVersion);
+	            }
+			  BaseResultDTO resultDTO = typeSpanService.updateEpVision(pkTypeSpanId,pkBomListId,request,getCurrentLoginUser());
+			if (resultDTO.isFailed()) {
+				result = new JsonResult(false, resultDTO.getResultCode(), resultDTO.getErrorDetail());
+	            }
+			
+		} catch (Exception e) {
+			log.error(this.getClass()+".updateEpVision() error:",e);
+		}
+		responseJson(result);
+	}
+
+	
+	
+	
+}

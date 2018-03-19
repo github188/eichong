@@ -1,0 +1,23 @@
+{
+    "tooltip" : {
+        "formatter": "{a} <br/>{b} : {c}%"
+    },
+    "toolbox": {
+        "show" : true,
+        "feature" : {
+            "mark" : {"show": true},
+            "restore" : {"show": true},
+            "saveAsImage" : {"show": true}
+        }
+    },
+    "series" : [
+        {
+            "name":"业务指标",
+            "type":"gauge",
+            "startAngle": 210,
+            "endAngle" : -30,
+            "detail" : {"formatter":"{value}%"},
+            "data":[{"value": 1, "name": "完成率"}]
+        }
+    ]
+}

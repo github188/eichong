@@ -1,0 +1,360 @@
+#处理公司、用户、卡的资金账号
+ALTER TABLE `fin_account`
+MODIFY COLUMN `account_balance`  decimal(10,2) NULL DEFAULT 0.00 COMMENT '普通用户帐户余额';
+
+
+#存储过程
+DELIMITER ;;
+CREATE FUNCTION `fun_build_accountno`(sysType int, ids int) RETURNS varchar(32) CHARSET utf8
+BEGIN
+	DECLARE retAccountNo VARCHAR(32);     #返回的accountNo
+  DECLARE strId 	 		 VARCHAR(50);     #id转换成字符串
+	DECLARE strIdLen		 INT;							#id的长度
+	DECLARE times				 VARCHAR(20);			#时间戳
+	DECLARE randNum			 INT;							#随机三位数
+	##########################################################################################################
+	### 资金账户号规则:
+	### FA + 标识位：1.用户  2.公司 3.卡 + 标识位对应的ID(需补足5位) + 年月日时分秒毫秒的时间戳 + 修改的版本号
+	##########################################################################################################
+
+	set strIdLen = 0;
+	set retAccountNo = 'FA';
+	set retAccountNo = CONCAT(retAccountNo, sysType);
+
+	set strId = CAST(ids AS CHAR);
+	set strIdLen = LENGTH(strId);
+
+	IF(strIdLen = 1) then
+		set strId = CONCAT('0000', strId);
+	ELSEIF(strIdLen = 2) then
+		set strId = CONCAT('000', strId);
+	ELSEIF(strIdLen = 3) then
+		set strId = CONCAT('00', strId);
+	ELSEIF(strIdLen = 4) then
+		set strId = CONCAT('0', strId);
+	END IF;
+
+	set retAccountNo = CONCAT(retAccountNo,strId);
+	set randNum = CEILING(RAND()*500 + 500);
+	set times = CONCAT(DATE_FORMAT(NOW(), '%Y%m%d%H%i%s'), randNum);
+	set retAccountNo = CONCAT(retAccountNo, times);
+  set retAccountNo = CONCAT(retAccountNo, '10');
+
+  RETURN retAccountNo;
+  
+END;;
+DELIMITER ;
+
+
+
+
+DELIMITER ;;
+CREATE PROCEDURE `proc_insert_company_account`()
+BEGIN
+		DECLARE cpyNumber				BIGINT(11);				#公司Id
+		DECLARE	pwd					VARCHAR(32);			#密码
+		DECLARE balance     DECIMAL(10, 2);		#账户余额
+		DECLARE warnMoney   DECIMAL(10, 4);		#预警金额
+	  DECLARE accountId		BIGINT(11);				#资金账户Id
+		DECLARE accountNo		VARCHAR(32);			#资金账号
+		DECLARE tradeType   INT;							#付费方式
+		DECLARE num BIGINT DEFAULT 0;					#数量
+		DECLARE i INT;												#偏移量
+		DECLARE count				int;
+		DECLARE userId				BIGINT(11);
+
+    #公司游标
+    DECLARE company_cursor CURSOR FOR
+				SELECT cpy_number,trade_type, account_no
+				FROM tbl_company;
+
+		#用户生成对应的资金账户
+		set i = 0;
+		SELECT COUNT(1) INTO num FROM tbl_company;
+		OPEN company_cursor;
+			WHILE i < num DO
+				fetch company_cursor into cpyNumber, tradeType, accountNo;
+
+				SELECT count(1)
+					into count
+					FROM
+						tbl_user t,
+						tbl_user_normal_old normal
+					WHERE
+						t.user_id = normal.user_id
+						AND LENGTH(t.user_account) = 12 
+						and t.user_account = accountNo;
+				
+				SELECT fun_build_accountno(2, cpyNumber) INTO accountNo;
+
+				IF count < 1 THEN
+						INSERT INTO fin_account
+								VALUES(null, accountNo, 'e10adc3949ba59abbe56e057f20f883e', 0, tradeType, 0, 1, 0, '', '', NOW(), NOW());
+				ELSE
+						SELECT
+							n.norm_account_balance,
+							n.norm_pay_password
+						INTO balance, pwd
+						FROM
+							tbl_user_normal_old n inner join tbl_user t on t.user_id = n.user_id
+						WHERE
+							LENGTH(t.user_account) = 12 
+							and t.user_account = accountNo;
+
+						IF pwd is null THEN
+							SET pwd = 'e10adc3949ba59abbe56e057f20f883e';
+						END IF;
+
+						IF balance is null THEN
+							SET balance = 0;
+						END IF;
+
+						INSERT INTO fin_account
+							VALUES(null, accountNo, pwd, balance, tradeType, 0, 1, 0, '', '', NOW(), NOW());
+				END IF;
+
+				select @@identity INTO accountId;
+
+				update tbl_company set account_id = accountId where cpy_number = cpyNumber;
+				SET i = i + 1;
+			END WHILE;
+		CLOSE company_cursor;
+ END;;
+ DELIMITER ;
+
+
+DELIMITER ;;
+CREATE PROCEDURE `proc_insert_fin_account`()
+BEGIN
+		DECLARE userId	    BIGINT(11);				
+		DECLARE	pwd					VARCHAR(32);			
+		DECLARE balance     DECIMAL(10, 2);		
+		DECLARE warnMoney   DECIMAL(10, 4);		
+		DECLARE ucId				BIGINT(11);				
+		DECLARE cpyId				BIGINT(11);				
+		DECLARE accountId		BIGINT(11);				
+		DECLARE accountNo		VARCHAR(32);			
+		DECLARE tradeType   INT;							
+		DECLARE num BIGINT DEFAULT 0;					
+		DECLARE i INT;												
+		DECLARE cnt BIGINT DEFAULT 0;	
+		
+		DECLARE user_cursor CURSOR FOR
+				SELECT user_id, norm_pay_password, norm_account_balance
+				FROM tbl_user_normal_old;
+		
+		DECLARE card_cursor CURSOR FOR
+				SELECT uc_id, new_user_id,cpy_id FROM tbl_usercard;
+
+		
+		set i = 0;
+		SELECT COUNT(1) INTO num FROM tbl_user_normal_old;
+		OPEN user_cursor;
+			WHILE i < num DO
+				fetch user_cursor into userId, pwd, balance;
+
+				SELECT trade_type INTO tradeType FROM tbl_company WHERE cpy_number = 1000;
+
+				SELECT fun_build_accountno(1, userId) INTO accountNo;
+
+				INSERT INTO fin_account
+				VALUES(null, accountNo, pwd, balance, tradeType, 0, 1, 0, '', '', NOW(), NOW());
+
+				select @@identity INTO accountId;
+
+				insert into fin_account_relation VALUES(null, userId, 1, accountId, 1, 0, '', '', NOW(), NOW());
+
+				update tbl_user_normal set account_id = accountId where user_id = userId;
+				SET i = i + 1;
+			END WHILE;
+		CLOSE user_cursor;
+
+		
+		set i = 0;
+		SELECT COUNT(1) INTO num FROM tbl_usercard_old;
+		OPEN card_cursor;
+			WHILE i < num DO
+				fetch card_cursor into ucId, userId,cpyId;
+				
+
+				SELECT pay_rule INTO tradeType FROM tbl_company WHERE cpy_id = cpyId;
+				
+				IF(tradeType = 2 or tradeType = 3) THEN
+					SELECT count(1) INTO cnt FROM fin_account_relation WHERE user_id = userId;
+					IF(cnt < 1) THEN
+						SELECT user_password INTO pwd FROM tbl_user WHERE user_id = userId;
+						
+						SELECT fun_build_accountno(3, ucId) INTO accountNo;
+
+						INSERT INTO fin_account
+						VALUES(null, accountNo, pwd, 0, tradeType, 0, 1, 0, '', '', NOW(), NOW());
+
+						select @@identity INTO accountId;
+
+						insert into fin_account_relation VALUES(null, userId, 1, accountId, 1, 0, '', '', NOW(), NOW());
+
+						update tbl_usercard set account_id = accountId where uc_id = ucId;
+					END IF;
+				END IF;
+				SET i = i + 1;
+			END WHILE;
+		CLOSE card_cursor;
+ END;;
+ DELIMITER ;
+
+
+
+DELIMITER ;;
+CREATE PROCEDURE `proc_gen_account_config_rela`()
+BEGIN
+		DECLARE cpyId				BIGINT(11);				#公司Id
+		DECLARE accountId		BIGINT(11);				#资金账户Id
+    DECLARE tradeType   INT;							#付费方式
+		DECLARE num BIGINT DEFAULT 0;					#数量
+		DECLARE i INT;												#偏移量
+
+		#公司游标
+		DECLARE cpy_cursor CURSOR FOR
+				SELECT cpy_id, account_id, pay_rule
+				FROM tbl_company;
+		
+		set i = 0;
+		SELECT COUNT(1) INTO num FROM tbl_company;
+		OPEN cpy_cursor;
+			WHILE i < num DO
+				fetch cpy_cursor into cpyId, accountId, tradeType;
+				
+				INSERT INTO fin_account_config_rela VALUES(null, cpyId, 1, tradeType, 0, '', '', NOW(), NOW());
+
+				IF(tradeType = 1) THEN
+					UPDATE tbl_user_company set account_id = accountId where cpy_id = cpyId;
+
+					UPDATE tbl_usercard set account_id = accountId where cpy_id = cpyId;
+				
+					CALL proc_gen_account_relation(cpyId, accountId);
+				END IF;
+
+				SET i = i + 1;
+			END WHILE;
+		CLOSE cpy_cursor;
+
+ END;;
+ DELIMITER ;
+
+
+
+DELIMITER ;;
+CREATE PROCEDURE `proc_gen_account_relation`(in cpyId BIGINT(11), in accountId BIGINT(11))
+BEGIN
+		DECLARE userId	    BIGINT(11);				#用户Id
+		DECLARE newUserId	  BIGINT(11);				#新用户Id
+		DECLARE num BIGINT  DEFAULT 0;				#数量
+		DECLARE i INT;												#偏移量
+		DECLARE resUserId   BIGINT(11);				#最终用户Id
+
+		#用户游标
+		DECLARE user_cursor CURSOR FOR SELECT user_id FROM tbl_user_normal WHERE cpy_id = cpyId;
+
+		#卡游标
+		DECLARE card_cursor CURSOR FOR SELECT new_user_id FROM tbl_usercard WHERE cpy_id = cpyId;
+
+		#渠道用户游标
+		DECLARE userCompany_cursor CURSOR FOR SELECT user_id FROM tbl_user_company WHERE cpy_id = cpyId;
+
+		SET i = 0;
+		SELECT COUNT(1) INTO num FROM tbl_user_normal WHERE cpy_id = cpyId;
+		OPEN user_cursor;
+			WHILE i < num DO
+				fetch user_cursor into userId;
+					insert into fin_account_relation VALUES(null, userId, 1, accountId, 1, 0, '', '', NOW(), NOW());
+					set i = i + 1;
+			END WHILE;
+		CLOSE user_cursor;
+		
+		SET resUserId = 0;
+		SET i = 0;
+		SELECT COUNT(1) INTO num FROM tbl_usercard WHERE cpy_id = cpyId and new_user_id > 0;
+		OPEN card_cursor;
+			WHILE i < num DO
+				fetch card_cursor into newUserId;
+				insert into fin_account_relation VALUES(null, newUserId, 1, accountId, 1, 0, '', '', NOW(), NOW());
+                set i = i + 1;
+            END WHILE;
+		CLOSE card_cursor;
+
+		SET i = 0;
+		SELECT COUNT(1) INTO num FROM tbl_user_company WHERE cpy_id = cpyId;
+		OPEN userCompany_cursor;
+			WHILE i < num DO
+				fetch userCompany_cursor into userId;
+					insert into fin_account_relation VALUES(null, userId, 1, accountId, 1, 0, '', '', NOW(), NOW());
+					set i = i + 1;
+			END WHILE;
+		CLOSE userCompany_cursor;
+
+ END;;
+ DELIMITER ;
+
+
+
+call proc_insert_company_account;
+call proc_insert_fin_account;
+call proc_gen_account_config_rela;
+
+UPDATE fin_account SET account_pwd = 'e10adc3949ba59abbe56e057f20f883e' WHERE account_pwd = '';
+
+#充值、充值退款账单科目：
+##充值
+INSERT INTO fin_account_relation 
+SELECT
+	NULL,
+	c.user_id,
+	(select a.pk_id from fin_bill_account a where a.bill_account_code = '100040') as bill_account_id,
+	c.account_id,
+	1,
+	0,
+	'',
+	'',
+	NOW(),
+	NOW()
+FROM
+	tbl_user_company c;
+
+##充值
+INSERT INTO fin_account_relation 
+SELECT
+	NULL,
+	n.user_id,
+	(select a.pk_id from fin_bill_account a where a.bill_account_code = '100040') as bill_account_id,
+	n.account_id,
+	1,
+	0,
+	'',
+	'',
+	NOW(),
+	NOW()
+FROM
+	tbl_user_normal n
+inner join fin_account a on n.account_id = a.account_id;
+
+
+
+
+UPDATE tbl_usercard u
+SET u.account_id = (
+	SELECT
+		n.account_id
+	FROM
+		tbl_user_normal n
+	WHERE
+		n.user_id = u.new_user_id
+)
+WHERE
+	u.account_id = 0
+AND u.is_app > 0
+AND u.cpy_id = 295
+
+
+
+
+

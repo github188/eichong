@@ -1,0 +1,60 @@
+<span class="chart_span" style="background: #006699;"><strong
+	id='cdd_txt' style="line-height: 100px;">充电点:</strong> <strong
+	id='cdd_dzcount_txt' style="line-height: 100px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;电桩数量:</strong></span>
+<span class="chart_span" style="background: #ff8800;"><strong
+	id='acd_txt' style="line-height: 100px;">爱充点:</strong> <strong
+	id='acd_dzcount_txt' style="line-height: 100px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;电桩数量:</strong></span>
+<span class="chart_span" style="background: #00cc33;"><strong
+	id='zccount_txt' style="line-height: 100px;">注册人数:</strong></span>
+<span id="cz_countSpan1" class="chart_span" style="background: #cd5c5c;"><strong
+	id='czcount_txt' style="line-height: 100px;">充值人数:</strong></span>
+<script type="text/javascript">
+
+	$.ajax({
+		type : 'POST',
+		url : "/wanma/admin/chart/getZcPeopleCount.do",
+		dataType : "json",
+		cache : false,
+		success : function(json) {
+			var zccount_txt = navTab.getCurrentPanel().find("#zccount_txt").html();
+			navTab.getCurrentPanel().find("#zccount_txt").html(zccount_txt += json.data.count);
+		}
+	});
+	
+	$.ajax({
+		type : 'POST',
+		url : "/wanma/admin/chart/getCzPeopleCount.do",
+		dataType : "json",
+		cache : false,
+		success : function(json) {
+			var czcount_txt = navTab.getCurrentPanel().find("#czcount_txt").html();
+			navTab.getCurrentPanel().find("#czcount_txt").html(czcount_txt += json.data.count);
+		}
+	});
+	
+	$.ajax({
+		type : 'POST',
+		url : "/wanma/admin/chart/getAllPileCount.do",
+		dataType : "json",
+		cache : false,
+		success : function(json) {
+			var cdd_txt = navTab.getCurrentPanel().find("#cdd_txt").html();
+			navTab.getCurrentPanel().find("#cdd_txt").html(cdd_txt += json.data.electricPositionCount);
+			var cdd_dzcount_txt = navTab.getCurrentPanel().find("#cdd_dzcount_txt").html();
+			navTab.getCurrentPanel().find("#cdd_dzcount_txt").html(cdd_dzcount_txt += json.data.pile_count);
+		}
+	});
+	
+	$.ajax({
+		type : 'POST',
+		url : "/wanma/admin/chart/getAichongPileCount.do",
+		dataType : "json",
+		cache : false,
+		success : function(json) {
+			var acd_txt = navTab.getCurrentPanel().find("#acd_txt").html();
+			navTab.getCurrentPanel().find("#acd_txt").html(acd_txt += json.data.electricPositionCount);
+			var acd_dzcount_txt = navTab.getCurrentPanel().find("#acd_dzcount_txt").html();
+			navTab.getCurrentPanel().find("#acd_dzcount_txt").html(acd_dzcount_txt += json.data.pile_count);
+		}
+	});
+</script>

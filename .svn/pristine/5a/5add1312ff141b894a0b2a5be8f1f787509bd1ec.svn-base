@@ -1,0 +1,172 @@
+package com.wanma.ims.service.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.wanma.ims.common.domain.BomListDO;
+import com.wanma.ims.common.domain.ElectricPileDO;
+import com.wanma.ims.common.domain.LogCommitDO;
+import com.wanma.ims.common.domain.TypeSpanDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.core.GlobalSystem;
+import com.wanma.ims.core.SessionMgr;
+import com.wanma.ims.mapper.BomListMapper;
+import com.wanma.ims.mapper.TypeSpanMapper;
+import com.wanma.ims.service.LogCommitService;
+import com.wanma.ims.service.TypeSpanService;
+import com.wanma.ims.util.ApiUtil;
+import com.wanma.ims.util.HttpsUtil;
+import com.wanma.ims.util.ObjectUtil;
+
+
+
+@Service("typeSpanService")
+public class TypeSpanServiceImpl implements TypeSpanService{
+	@Autowired
+	private  TypeSpanMapper typeSpanMapper;
+	@Autowired
+	private BomListMapper bomListMapper;
+	@Autowired
+	private LogCommitService logCommitService;
+	
+	
+	@Override
+	public long getTypeSpanCount(TypeSpanDO typeSpanDO) {
+		return typeSpanMapper.getTypeSpanCount(typeSpanDO);
+	}
+
+	@Override
+	public List<TypeSpanDO> getTypeSpanList(TypeSpanDO typeSpanDO) {
+		return typeSpanMapper.getTypeSpanList(typeSpanDO);
+	}
+
+	@Override
+	public int checkTsTypeSpan(String tsTypeSpan) {
+		return typeSpanMapper.checkTsTypeSpan(tsTypeSpan);
+	}
+
+	@Override
+	public boolean addTypeSpan(TypeSpanDO typeSpanDO) {
+		boolean flag = true;
+		List<BomListDO> bomList = typeSpanDO.getBomList();
+		if(!(typeSpanMapper.addTypeSpan(typeSpanDO)>0)){
+			flag = false;
+		}
+		if(bomList != null && bomList.size() > 0){
+			for(BomListDO bomListInfo:bomList){
+				bomListInfo.setPkTypeSpanId(typeSpanDO.getPkTypeSpanId());
+				if(!(bomListMapper.addBomList(bomListInfo)>0)){
+					flag = false;
+				}
+			}
+		}
+		return flag;
+	}
+
+	@Override
+	public TypeSpanDO getTypeSpanById(TypeSpanDO typeSpanDO) {
+		return typeSpanMapper.getTypeSpanById(typeSpanDO);
+	}
+
+	@Override
+	public List<BomListDO> getBomList(TypeSpanDO typeSpanDO) {
+		return bomListMapper.getBomList(typeSpanDO);
+	}
+
+	@Override
+	public boolean updateTypeSpan(TypeSpanDO typeSpanDO) {
+		typeSpanMapper.updateTypeSpan(typeSpanDO);
+		List<BomListDO> bomList = typeSpanDO.getBomList();
+		if(bomList != null && bomList.size() > 0){
+			for(BomListDO bomListDO:bomList){
+				if(bomListDO.getPkBomListId() != null){
+					bomListMapper.updateBomList(bomListDO);
+				}else{
+					bomListDO.setPkTypeSpanId(typeSpanDO.getPkTypeSpanId());
+					bomListMapper.insertBomList(bomListDO);
+				}
+			}
+		}
+		return true;
+	}
+
+	@Override
+	public long selectPileListByIdCount(ElectricPileDO electricPileDO) {
+		return typeSpanMapper.selectPileListByIdCount(electricPileDO);
+	}
+
+	@Override
+	public List<Map<String, Object>> selectPileListById(ElectricPileDO electricPileDO) {
+		return typeSpanMapper.selectPileListById(electricPileDO);
+	}
+
+	@Override
+	public BaseResultDTO updateEpVision(String pkTypeSpanId, String pkBomListId,HttpServletRequest request) {
+		BaseResultDTO baseResultDTO = new BaseResultDTO();
+		// 获取登陆用户
+		UserDO loginUser = SessionMgr.getWebUser(request);
+		TypeSpanDO typeSpanDO = new TypeSpanDO();
+		typeSpanDO.setPkTypeSpanId(Integer.valueOf(pkTypeSpanId));
+		List<BomListDO> bomList = getBomList(typeSpanDO);
+		String bomListStr = "";
+		if(bomList != null && bomList.size() > 0){
+			for(BomListDO bomInfo:bomList){
+				if(bomInfo.getPkBomListId().toString().equals(pkBomListId)){
+					bomListStr = bomInfo.getBlHardwareNumber()+";"
+						    +bomInfo.getBlHardwareVersion().replace("V", "").replace("v", "")+";"
+						    +bomInfo.getBlFirmwareNumber()+";"
+							+bomInfo.getBlFirmwareVersion().replace("V", "").replace("v", "")+";"
+							+bomInfo.getBlForceUpdate()+";"
+							+bomInfo.getBlFileMd5()+";|";
+				}
+			}
+			bomListStr = bomListStr.substring(0, bomListStr.length() - 1);
+			//调用接口更新费率
+			String apiBaseUrl = GlobalSystem.getConfig("apiRoot");
+			String result = null;
+			try {
+				result = HttpsUtil.getResponseParam(apiBaseUrl + "/app/net/updateEpVersion.do?pId=" + pkTypeSpanId + "&bomStrs=" + bomListStr+ "&t=" + ApiUtil.getToken(), "status");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			if ("100".equals(result)) {
+				// 请求的IP
+				String ip = request.getRemoteAddr();
+				LogCommitDO logCommit = new LogCommitDO();
+				logCommit.setLogName(ObjectUtil.nvlStrEmpty(loginUser.getUserAccount()));
+				logCommit.setLogIpAddress(ip);
+				logCommit.setCreatorId(loginUser.getUserId());
+				logCommit.setLogContent("产品型号升级下发，主键：["+ pkTypeSpanId + "]");
+				logCommitService.addLogCommit(logCommit);
+			}else {
+				// 请求的IP
+				String ip = request.getRemoteAddr();
+				LogCommitDO logCommit = new LogCommitDO();
+				logCommit.setLogName(ObjectUtil.nvlStrEmpty(loginUser.getUserAccount()));
+				logCommit.setLogIpAddress(ip);
+				logCommit.setCreatorId(loginUser.getUserId());
+				logCommit.setLogContent("升级命令下发失败:接口返回错误代码：" + result);
+				logCommitService.addLogCommit(logCommit);
+			}
+		
+		}
+		return baseResultDTO;
+	}
+
+	@Override
+	public List<Map<String, Object>> getCheckUpList(String item) {
+		return typeSpanMapper.getCheckUpList(item);
+	}
+
+	@Override
+	public List<Map<String, String>> getBomIdUpgrade(String items) {
+		return typeSpanMapper.getBomIdUpgrade(items);
+	}
+
+}

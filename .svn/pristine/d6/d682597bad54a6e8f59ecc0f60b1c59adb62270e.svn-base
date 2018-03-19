@@ -1,0 +1,54 @@
+
+package com.wanma.ims.controller.fin.report;
+
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.wanma.ims.common.domain.ReportOrderDO;
+import com.wanma.ims.common.domain.base.Pager;
+import com.wanma.ims.controller.BaseController;
+import com.wanma.ims.controller.result.JsonException;
+import com.wanma.ims.controller.result.JsonResult;
+import com.wanma.ims.service.ReportCpyOrderService;
+
+/**
+ * 大客户充电统计报表 
+ */
+@Controller
+@RequestMapping("/fin/report/")
+public class ReportCpyOrderController extends BaseController{
+	
+	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+    @Autowired
+    private ReportCpyOrderService reportCpyOrderService;
+    
+    
+	@RequestMapping("/cpy/getReportCpyOrder")
+	@ResponseBody
+	public void getReportCpyOrder(ReportOrderDO reportOrderDO,Pager pager){
+		JsonResult result = new JsonResult();
+		try {
+			reportOrderDO.setCpyIdList(getCurrentLoginUser().getCpyIdList());
+			Long total = reportCpyOrderService.countReportCpyOrder(reportOrderDO);
+			if (total <= pager.getOffset()) {
+				pager.setPageNo(1L);
+			}
+			pager.setTotal(total);
+			reportOrderDO.setPager(pager);
+			List<ReportOrderDO> list = reportCpyOrderService.getReportCpyOrder(reportOrderDO);
+			result.setPager(pager);
+			result.setDataObject(list);
+		} catch (Exception e) {
+			LOGGER.debug(this.getClass() + ".getReportCpyOrder() error : ", e);
+			responseJson(new JsonException("大客户订单分页列表失败"));
+			return;
+		}
+		responseJson(result);
+	}
+}

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.web.dao.WebAreaMapper">
+
+	<resultMap id="area" type="WebArea">
+		<id property="id" column="pk_District" />
+		<result property="areaName" column="dist_Name" />
+		<result property="areaCode" column="dist_Code" />
+		<result property="cityCode" column="dist_CityCode" />
+		<result property="statu" column="dist_State" />
+		<result property="createDate" column="dist_Createdate" />
+		<result property="updateDate" column="dist_Updatedate" />
+	</resultMap>
+
+	<select id="getAll" parameterType="map" resultMap="area">
+		SELECT
+			td.pk_District,
+			td.dist_CityCode,
+			td.dist_Name
+		from tbl_District td
+			WHERE 1=1
+		<if test="cityProvcode != null">
+			and dist_CityCode=#{cityCode}
+		</if>
+		<if test="pageSize != null">
+			and td.pk_District >= (SELECT t.pk_District from tbl_District t ORDER BY t.pk_District LIMIT ${begin},1) LIMIT ${pageSize}
+		</if>
+	</select>
+
+	<select id="getCount" parameterType="map" resultType="long">
+		SELECT count(p.pk_District)
+		from tbl_District p
+		WHERE 1=1
+		<if test="cityProvcode != null">
+			and dist_CityCode=#{cityCode}
+		</if>
+	</select>
+</mapper> 

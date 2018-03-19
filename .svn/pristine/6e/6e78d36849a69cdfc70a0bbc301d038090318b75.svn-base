@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.app.dao.AppChargedeductionrecordsMapper">
+
+	<resultMap id="tblChargedeductionrecordsResultMap" type="TblChargedeductionrecords">
+		<id property="pkChargedeductionrecords" column="pk_ChargeDeductionRecords" />
+		<result property="cdreElectricpileid" column="cDRe_ElectricPileID" />
+		<result property="cdreUsingmachinecode" column="cDRe_UsingMachineCode" />
+		<result property="cdreCharginginterfaceidentifier" column="cDRe_ChargingInterfaceIdentifier" />
+		<result property="cdreDebitamount" column="cDRe_DebitAmount" />
+		<result property="cdreBalance" column="cDRe_Balance" />
+		<result property="cdreSuccess" column="cDRe_Success" />
+		<result property="cdreFailure" column="cDRe_Failure" />
+		<result property="cdreCode" column="cDRe_Code" />
+		<result property="cdreTransactionnumber" column="cDRe_TransactionNumber" />
+	</resultMap>
+	<resultMap id="findResultMap"  type="java.util.HashMap" extends="tblChargedeductionrecordsResultMap"></resultMap>
+	 <!-- 新增充电扣款记录 -->
+	<insert id="insert" parameterType="TblChargedeductionrecords">
+	   insert into tbl_ChargeDeductionRecords (
+	     cDRe_ElectricPileID,
+	     cDRe_UsingMachineCode,
+	     cDRe_ChargingInterfaceIdentifier,
+	     cDRe_DebitAmount,
+	     cDRe_Balance,
+	     cDRe_Success,
+	     cDRe_Failure,
+	     cDRe_Code,
+	     cDRe_TransactionNumber
+	   )values (
+	     #{cdreElectricpileid},
+	     #{cdreUsingmachinecode},
+	     #{cdreCharginginterfaceidentifier},
+	     #{cdreDebitamount},
+	     #{cdreBalance},
+	     #{cdreSuccess},
+	     #{cdreFailure},
+	     #{cdreCode},
+	     #{cdreTransactionnumber}
+	   )
+	</insert>
+
+	<update id="update" parameterType="TblChargedeductionrecords">
+	   update tbl_ChargeDeductionRecords set
+	     cDRe_ElectricPileID=#{cdreElectricpileid},
+	     cDRe_UsingMachineCode=#{cdreUsingmachinecode},
+	     cDRe_ChargingInterfaceIdentifier=#{cdreCharginginterfaceidentifier},
+	     cDRe_DebitAmount=#{cdreDebitamount},
+	     cDRe_Balance=#{cdreBalance},
+	     cDRe_Success=#{cdreSuccess},
+	     cDRe_Failure=#{cdreFailure},
+	     cDRe_Code=#{cdreCode},
+	     cDRe_TransactionNumber=#{cdreTransactionnumber}
+	   where 
+	    pk_ChargeDeductionRecords=#{pkChargedeductionrecords} 
+	</update>
+
+	<delete id="delete" parameterType="map">
+	   delete from 
+	     tbl_ChargeDeductionRecords 
+	   where 
+	    pk_ChargeDeductionRecords=#{pkChargedeductionrecords} 
+	</delete>
+
+	<select id="get" parameterType="map" resultMap="tblChargedeductionrecordsResultMap">
+	   select 
+	    pk_ChargeDeductionRecords,
+	    cDRe_ElectricPileID,
+	    cDRe_UsingMachineCode,
+	    cDRe_ChargingInterfaceIdentifier,
+	    cDRe_DebitAmount,
+	    cDRe_Balance,
+	    cDRe_Success,
+	    cDRe_Failure,
+	    cDRe_Code,
+	    cDRe_TransactionNumber
+	   from tbl_ChargeDeductionRecords
+	   where 
+	    pk_ChargeDeductionRecords=#{pkChargedeductionrecords} 
+	</select>
+
+	<select id="findOne" parameterType="map" resultMap="findResultMap">
+	   select 
+	    pk_ChargeDeductionRecords,
+	    cDRe_ElectricPileID,
+	    cDRe_UsingMachineCode,
+	    cDRe_ChargingInterfaceIdentifier,
+	    cDRe_DebitAmount,
+	    cDRe_Balance,
+	    cDRe_Success,
+	    cDRe_Failure,
+	    cDRe_Code,
+	    cDRe_TransactionNumber
+	   from tbl_ChargeDeductionRecords
+	   where 
+	    pk_ChargeDeductionRecords=#{pkChargedeductionrecords} 
+	</select>
+
+	<select id="find" parameterType="map" resultMap="findResultMap">
+	   select 
+	     pk_ChargeDeductionRecords,
+	     cDRe_ElectricPileID,
+	     cDRe_UsingMachineCode,
+	     cDRe_ChargingInterfaceIdentifier,
+	     cDRe_DebitAmount,
+	     cDRe_Balance,
+	     cDRe_Success,
+	     cDRe_Failure,
+	     cDRe_Code,
+	     cDRe_TransactionNumber
+	   from tbl_ChargeDeductionRecords
+	   <where>
+	     <if test="pkChargedeductionrecords != null">
+	        pk_ChargeDeductionRecords=#{pkChargedeductionrecords}
+	     </if>
+	     <if test="cdreElectricpileid != null">
+	        and cDRe_ElectricPileID=#{cdreElectricpileid}
+	     </if>
+	     <if test="cdreUsingmachinecode != null">
+	        and cDRe_UsingMachineCode=#{cdreUsingmachinecode}
+	     </if>
+	     <if test="cdreCharginginterfaceidentifier != null">
+	        and cDRe_ChargingInterfaceIdentifier=#{cdreCharginginterfaceidentifier}
+	     </if>
+	     <if test="cdreDebitamount != null">
+	        and cDRe_DebitAmount=#{cdreDebitamount}
+	     </if>
+	     <if test="cdreBalance != null">
+	        and cDRe_Balance=#{cdreBalance}
+	     </if>
+	     <if test="cdreSuccess != null">
+	        and cDRe_Success=#{cdreSuccess}
+	     </if>
+	     <if test="cdreFailure != null">
+	        and cDRe_Failure=#{cdreFailure}
+	     </if>
+	     <if test="cdreCode != null">
+	        and cDRe_Code=#{cdreCode}
+	     </if>
+	     <if test="cdreTransactionnumber != null">
+	        and cDRe_TransactionNumber=#{cdreTransactionnumber}
+	     </if>
+	   </where>
+	</select>
+	
+</mapper> 

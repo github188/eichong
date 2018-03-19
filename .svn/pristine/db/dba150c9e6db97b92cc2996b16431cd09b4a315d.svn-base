@@ -1,0 +1,149 @@
+package com.wanma.ims.common.domain;
+
+import java.util.Date;
+
+import com.wanma.ims.common.domain.base.BasicModel;
+
+
+/*优惠券表*/
+public class FavCouponVarietyDO extends BasicModel {
+	private static final long serialVersionUID = 975190687178229617L;
+	private java.lang.Integer pkCouponVariety; // 优惠券品种主键
+	private java.lang.String covaActivityName; // 活动名称
+	private java.lang.Integer covaLimitation; // 电桩限制（1-仅限交流电桩，2-仅限直流电桩，3-不限充电桩）
+	private java.lang.Integer covaStutas; // 状态（0-上架，1-下架）
+	private java.lang.String covaCouponValue; // 优惠券面值
+	private java.lang.String covaCouponCondition; // 优惠券使用条件
+	private java.lang.Integer covaCouponTerm; // 有效期（天）
+	private java.lang.String covaCreateUserId; // 创建人
+	private java.lang.String covaUpdateUserId; // 操作人
+	private java.lang.String covaRemark; // 备注
+	private java.lang.String covaLabel; // 标签
+	private java.lang.String covaCreatedate; // 创建时间
+	private java.lang.String covaUpdatedate; // 修改时间
+	private java.lang.String userAccount; // 修改人账号
+	
+	//非数据库字段
+	private java.lang.Integer modifyFlag; // 能否修改
+
+	public java.lang.Integer getPkCouponVariety() {
+		return pkCouponVariety;
+	}
+
+	public void setPkCouponVariety(java.lang.Integer pkCouponVariety) {
+		this.pkCouponVariety = pkCouponVariety;
+	}
+
+	public java.lang.String getCovaActivityName() {
+		return covaActivityName;
+	}
+
+	public void setCovaActivityName(java.lang.String covaActivityName) {
+		this.covaActivityName = covaActivityName;
+	}
+
+	public java.lang.Integer getCovaLimitation() {
+		return covaLimitation;
+	}
+
+	public void setCovaLimitation(java.lang.Integer covaLimitation) {
+		this.covaLimitation = covaLimitation;
+	}
+
+	public java.lang.Integer getCovaStutas() {
+		return covaStutas;
+	}
+
+	public void setCovaStutas(java.lang.Integer covaStutas) {
+		this.covaStutas = covaStutas;
+	}
+
+	public java.lang.String getCovaCouponValue() {
+		return covaCouponValue;
+	}
+
+	public void setCovaCouponValue(java.lang.String covaCouponValue) {
+		this.covaCouponValue = covaCouponValue;
+	}
+
+	public java.lang.String getCovaCouponCondition() {
+		return covaCouponCondition;
+	}
+
+	public void setCovaCouponCondition(java.lang.String covaCouponCondition) {
+		this.covaCouponCondition = covaCouponCondition;
+	}
+
+	public java.lang.Integer getCovaCouponTerm() {
+		return covaCouponTerm;
+	}
+
+	public void setCovaCouponTerm(java.lang.Integer covaCouponTerm) {
+		this.covaCouponTerm = covaCouponTerm;
+	}
+
+	public java.lang.String getCovaCreateUserId() {
+		return covaCreateUserId;
+	}
+
+	public void setCovaCreateUserId(java.lang.String covaCreateUserId) {
+		this.covaCreateUserId = covaCreateUserId;
+	}
+
+	public java.lang.String getCovaUpdateUserId() {
+		return covaUpdateUserId;
+	}
+
+	public void setCovaUpdateUserId(java.lang.String covaUpdateUserId) {
+		this.covaUpdateUserId = covaUpdateUserId;
+	}
+
+	public java.lang.String getCovaRemark() {
+		return covaRemark;
+	}
+
+	public void setCovaRemark(java.lang.String covaRemark) {
+		this.covaRemark = covaRemark;
+	}
+
+	public java.lang.String getCovaLabel() {
+		return covaLabel;
+	}
+
+	public void setCovaLabel(java.lang.String covaLabel) {
+		this.covaLabel = covaLabel;
+	}
+
+	public java.lang.String getCovaCreatedate() {
+		return covaCreatedate;
+	}
+
+	public void setCovaCreatedate(java.lang.String covaCreatedate) {
+		this.covaCreatedate = covaCreatedate;
+	}
+
+	public java.lang.String getCovaUpdatedate() {
+		return covaUpdatedate;
+	}
+
+	public void setCovaUpdatedate(java.lang.String covaUpdatedate) {
+		this.covaUpdatedate = covaUpdatedate;
+	}
+
+	public java.lang.String getUserAccount() {
+		return userAccount;
+	}
+
+	public void setUserAccount(java.lang.String userAccount) {
+		this.userAccount = userAccount;
+	}
+
+	public java.lang.Integer getModifyFlag() {
+		return modifyFlag;
+	}
+
+	public void setModifyFlag(java.lang.Integer modifyFlag) {
+		this.modifyFlag = modifyFlag;
+	}
+	
+}

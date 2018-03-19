@@ -1,0 +1,29 @@
+package com.wanma.ims.service.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.wanma.ims.common.domain.TypeSpanDO;
+import com.wanma.ims.mapper.TypeSpanMapper;
+import com.wanma.ims.service.TypeSpanService;
+
+
+
+@Service("typeSpanService")
+public class TypeSpanServiceImpl implements TypeSpanService{
+	@Autowired
+	private  TypeSpanMapper typeSpanMapper;
+	@Override
+	public long getTypeSpanCount(TypeSpanDO typeSpanDO) {
+		return typeSpanMapper.getTypeSpanCount(typeSpanDO);
+	}
+
+	@Override
+	public List<TypeSpanDO> getTypeSpanList(TypeSpanDO typeSpanDO) {
+		return typeSpanMapper.getTypeSpanList(typeSpanDO);
+	}
+
+
+}

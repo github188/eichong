@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.app.dao.UsercollectMapper">
+
+	<resultMap id="tblUsercollectResultMap" type="TblUsercollect">
+		<id property="pkUsercollect" column="pk_UserCollect" />
+		<result property="uscoUserid" column="usCo_Userid" />
+		<result property="uscoType" column="usCo_Type" />
+		<result property="uscoObjectid" column="usCo_Objectid" />
+		<result property="uscoAddtime" column="usCo_AddTime" />
+		<result property="elPi_PowerUser" column="elPi_PowerUser"/>
+	</resultMap>
+	<resultMap id="pageResultMap"  type="java.util.HashMap" extends="tblUsercollectResultMap"></resultMap>
+	<resultMap id="findResultMap"  type="java.util.HashMap" extends="tblUsercollectResultMap"></resultMap>
+
+	<insert id="insert" parameterType="TblUsercollect">
+	   insert into tbl_UserCollect (
+	     usCo_Userid,
+	     usCo_Type,
+	     usCo_Objectid,
+	     usCo_AddTime
+	   )values (
+	     #{uscoUserid},
+	     #{uscoType},
+	     #{uscoObjectid},
+	     #{uscoAddtime}
+	   )
+	</insert>
+
+	<update id="update" parameterType="TblUsercollect">
+	   update tbl_UserCollect set
+	     usCo_Userid=#{uscoUserid},
+	     usCo_Type=#{uscoType},
+	     usCo_Objectid=#{uscoObjectid},
+	     usCo_AddTime=#{uscoAddtime}
+	   where 
+	    pk_UserCollect=#{pkUsercollect} 
+	</update>
+
+	<delete id="delete" parameterType="map">
+	   delete from 
+	     tbl_UserCollect 
+	   where 
+	    pk_UserCollect=#{pkUsercollect} 
+	</delete>
+
+	<select id="get" parameterType="map" resultMap="tblUsercollectResultMap">
+	   select 
+	    pk_UserCollect,
+	    usCo_Userid,
+	    usCo_Type,
+	    usCo_Objectid,
+	    usCo_AddTime
+	   from tbl_UserCollect
+	   where 
+	    pk_UserCollect=#{pkUsercollect} 
+	</select>
+
+	<select id="findOne" parameterType="map" resultMap="findResultMap">
+	   select 
+	    pk_UserCollect,
+	    usCo_Userid,
+	    usCo_Type,
+	    usCo_Objectid,
+	    usCo_AddTime
+	   from tbl_UserCollect
+	   where 
+	    pk_UserCollect=#{pkUsercollect} 
+	</select>
+
+	<select id="find" parameterType="map" resultMap="findResultMap">
+	   select 
+	     pk_UserCollect,
+	     usCo_Userid,
+	     usCo_Type,
+	     usCo_Objectid,
+	     usCo_AddTime
+	   from tbl_UserCollect
+	   <where>
+	     <if test="pkUsercollect != null">
+	        pk_UserCollect=#{pkUsercollect}
+	     </if>
+	     <if test="uscoUserid != null">
+	        and usCo_Userid=#{uscoUserid}
+	     </if>
+	     <if test="uscoType != null">
+	        and usCo_Type=#{uscoType}
+	     </if>
+	     <if test="uscoObjectid != null">
+	        and usCo_Objectid=#{uscoObjectid}
+	     </if>
+	     <if test="uscoAddtime != null">
+	        and usCo_AddTime=#{uscoAddtime}
+	     </if>
+	   </where>
+	</select>
+		<select id="findUserCollectByUserId" parameterType="map" resultMap="findResultMap">
+		   select 
+			     pk_UserCollect,
+			     usCo_Userid,
+			     usCo_Type,
+			     usCo_Objectid,
+			     usCo_AddTime,
+		       elPi_ElectricPileName,
+		       elPi_PowerUser
+			   from tbl_UserCollect,tbl_ElectricPile
+		 
+	   <where> usCo_Objectid=pk_ElectricPile 
+	     <if test="pkUsercollect != null">
+	        and pk_UserCollect=#{pkUsercollect}
+	     </if>
+	     <if test="uscoUserid != null">
+	        and usCo_Userid=#{uscoUserid}
+	     </if>
+	     <if test="uscoType != null">
+	        and usCo_Type=#{uscoType}
+	     </if>
+	     <if test="uscoObjectid != null">
+	        and usCo_Objectid=#{uscoObjectid}
+	     </if>
+	     <if test="uscoAddtime != null">
+	        and usCo_AddTime=#{uscoAddtime}
+	     </if>
+	   </where>
+	</select>
+	
+	<select id="findUserCollectByUserIdN" parameterType="TblUsercollect" resultType="hashmap">
+		select * from (
+		SELECT
+			pk_UserCollect,	usCo_Type, usCo_Objectid, usCo_AddTime,	poSt_IsAppoint,	poSt_Name AS NAME,	poSt_Address AS addr,
+			(select count(b.pk_ElectricpileHead) from tbl_electricpile a,tbl_electricpilehead b where a.pk_ElectricPile = b.pk_ElectricPile and a.elPi_RelevancePowerStation = ps.pk_PowerStation and a.elPi_ChargingMode = 5 ) zlHeadNum,
+			(select count(b.pk_ElectricpileHead) from tbl_electricpile a,tbl_electricpilehead b where a.pk_ElectricPile = b.pk_ElectricPile and a.elPi_RelevancePowerStation = ps.pk_PowerStation and a.elPi_ChargingMode = 5 and b.ePHe_ElectricpileHeadState = 0 and a.comm_status = 1) zlFreeHeadNum,
+			(select count(b.pk_ElectricpileHead) from tbl_electricpile a,tbl_electricpilehead b where a.pk_ElectricPile = b.pk_ElectricPile and a.elPi_RelevancePowerStation = ps.pk_PowerStation and a.elPi_ChargingMode = 14 ) jlHeadNum,
+			(select count(b.pk_ElectricpileHead) from tbl_electricpile a,tbl_electricpilehead b where a.pk_ElectricPile = b.pk_ElectricPile and a.elPi_RelevancePowerStation = ps.pk_PowerStation and a.elPi_ChargingMode = 14 and b.ePHe_ElectricpileHeadState = 0 and a.comm_status  = 1) jlFreeHeadNum,
+			poSt_Longitude AS lng,	poSt_Latitude AS lat,
+			<choose>
+				<when test="lat != null and lat != 0">
+				round(6378.138*2*asin(sqrt(pow(sin(
+				(#{lat}*pi()/180-poSt_Latitude*pi()/180)/2),2)+cos(#{lat}*pi()/180)*cos(poSt_Latitude*pi()/180)*
+				pow(sin((#{lng}*pi()/180-poSt_Longitude*pi()/180)/2),2)))*1000) distance
+				</when>
+				<otherwise>	0 distance	</otherwise>
+			</choose>
+		FROM
+			(SELECT * FROM tbl_UserCollect WHERE usCo_Userid = #{uscoUserid} AND usCo_Type = 2) uc
+		INNER JOIN tbl_powerstation ps ON uc.usCo_Objectid = ps.pk_PowerStation
+		INNER JOIN tbl_electricpile ep ON ep.elPi_RelevancePowerStation = ps.pk_PowerStation
+		where ep.elPi_State != '10'
+		GROUP BY pk_UserCollect
+		UNION ALL
+		SELECT
+			pk_UserCollect,	usCo_Type,	usCo_Objectid,	usCo_AddTime, elPi_IsAppoint, elPi_ElectricPileName, elPi_ElectricPileAddress,
+			(select count(b.pk_ElectricpileHead) from tbl_electricpilehead b where b.pk_ElectricPile = ep.pk_ElectricPile and ep.elPi_ChargingMode = 5 ) zlHeadNum,
+			(select count(b.pk_ElectricpileHead) from tbl_electricpilehead b where b.pk_ElectricPile = ep.pk_ElectricPile and ep.elPi_ChargingMode = 5 and b.ePHe_ElectricpileHeadState = 0 and ep.comm_status = 1) zlFreeHeadNum,
+			(select count(b.pk_ElectricpileHead) from tbl_electricpilehead b where b.pk_ElectricPile = ep.pk_ElectricPile and ep.elPi_ChargingMode = 14 )jlHeadNum,
+			(select count(b.pk_ElectricpileHead) from tbl_electricpilehead b where b.pk_ElectricPile = ep.pk_ElectricPile and ep.elPi_ChargingMode = 14 and b.ePHe_ElectricpileHeadState = 0 and ep.comm_status = 1) jlFreeHeadNum,
+			elPi_Longitude,	elPi_Latitude,
+			<choose>
+				<when test="lat != null and lat != 0">
+				round(6378.138*2*asin(sqrt(pow(sin(
+				(#{lat}*pi()/180-elPi_Latitude*pi()/180)/2),2)+cos(#{lat}*pi()/180)*cos(elPi_Latitude*pi()/180)*
+				pow(sin((#{lng}*pi()/180-elPi_Longitude*pi()/180)/2),2)))*1000) distance
+				</when>
+				<otherwise>0 distance</otherwise>
+			</choose>
+		FROM
+			(SELECT	* FROM tbl_UserCollect WHERE usCo_Userid = #{uscoUserid} AND usCo_Type = 1) uc
+		INNER JOIN tbl_electricpile ep ON uc.usCo_Objectid = ep.pk_ElectricPile
+		where ep.elPi_State != '10'
+		) a ORDER BY usCo_AddTime desc
+	</select>
+	
+	<select id="page" parameterType="map" resultMap="pageResultMap">
+	   select 
+	     pk_UserCollect,
+	     usCo_Userid,
+	     usCo_Type,
+	     usCo_Objectid,
+	     usCo_AddTime
+	   from tbl_UserCollect
+	   <where>
+	     <if test="pkUsercollect != null">
+	        pk_UserCollect=#{pkUsercollect}
+	     </if>
+	     <if test="uscoUserid != null">
+	        and usCo_Userid=#{uscoUserid}
+	     </if>
+	     <if test="uscoType != null">
+	        and usCo_Type=#{uscoType}
+	     </if>
+	     <if test="uscoObjectid != null">
+	        and usCo_Objectid=#{uscoObjectid}
+	     </if>
+	     <if test="uscoAddtime != null">
+	        and usCo_AddTime=#{uscoAddtime}
+	     </if>
+	   </where>
+	</select>
+</mapper> 

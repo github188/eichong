@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/style.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/userList/add_user.css"/>
+    <title>用户主页</title>
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="container-fluid">
+        <div class="row">
+            <!--<div class="btnLine">-->
+                <!--<div class="goBack">返回</div>-->
+            <!--</div>-->
+        </div>
+        <div class="row">
+            <div class="col-sm-12" style="padding: 0">
+                <div class="ibox float-e-margins">
+
+                    <div class="">
+                        <div class="ibox-content">
+                            <div class="add_userBlock">
+                                <div class="add_greyBlock">
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">渠道<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8">
+                                            <div class=" col-sm-3 col-xs-12 model-select-box">
+                                                <div class="model-select-text provinceBlock" data-value="" id="cpyProvinceCode">请选择</div>
+                                                <span class="downRow provinceBlock"></span>
+                                                <input type="text" name="" hidden="hidden" id="" value="" />
+                                                <ul class="model-select-option cpyProvinceUl">
+                                                    <!--<li data-option="" class="seleced">请选择</li>-->
+                                                    <!--<li data-option="">全部</li>-->
+                                                    <!--<li data-option="1">正常</li>-->
+                                                    <!--<li data-option="2">禁用</li>-->
+                                                </ul>
+                                            </div>
+                                            <div class=" col-sm-3 col-xs-12 model-select-box">
+                                                <div class="model-select-text cpyCityBlock" data-value="" id="cypCityCode">请选择</div>
+                                                <span class="downRow cpyCityBlock"></span>
+                                                <!--<input type="text" name="cityCode" hidden="hidden" id="" value="" />-->
+                                                <ul class="model-select-option cypCityUl">
+                                                    <!--<li data-option="" class="seleced">请选择</li>-->
+                                                    <!--<li data-option="">全部</li>-->
+                                                    <!--<li data-option="1">正常</li>-->
+                                                    <!--<li data-option="2">禁用</li>-->
+                                                </ul>
+                                            </div>
+                                            <div class=" col-sm-6 col-xs-12 model-select-box">
+                                                <div class="model-select-text companyBlock" data-value="" id="cpyCompanyName">请选择</div>
+                                                <span class="downRow companyBlock"></span>
+                                                <input type="text" name="provinceCode" hidden="hidden" id="" value="" />
+                                                <ul class="model-select-option cpyCompanyUl">
+                                                    <!--<li data-option="" class="seleced">请选择</li>-->
+                                                    <!--<li data-option="">全部</li>-->
+                                                    <!--<li data-option="1">正常</li>-->
+                                                    <!--<li data-option="2">禁用</li>-->
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="cpyNumTip">
+
+                                        </div>
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">公司付费策略</div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="" id="companyMethod" class="commonStyle"  readonly="readonly"/>
+                                            <input type="text" name="" id="paymentRule" class="commonStyle"  hidden="hidden"/>
+                                        </div>
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">资金账户类型<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8">
+                                            <div class=" col-sm-3 col-xs-4 model-select-box" style="width: 100%">
+                                                <div class="model-select-text accountBlock" data-value="" id="tradeType"></div>
+                                                <span class="downRow accountBlock"></span>
+                                                <!--<input type="text" name="" hidden="hidden" id="" value="" />-->
+                                                <ul class="model-select-option tradeTypeUl">
+                                                    <!--<li data-option="1" class="seleced">储值账户</li>
+                                                    <li data-option="2">信用账户</li>-->
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+
+                                        </div>
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">账号<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="userAccount" id="userAccount" class="commonStyle" placeholder="请输入账号"/>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="accountNumTip">
+
+                                        </div>
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">级别<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8">
+                                            <div class=" col-sm-3 col-xs-4 model-select-box" style="width: 100%">
+                                                <div class="model-select-text levelBlock" data-value="" id="levelId">请选择</div>
+                                                <span class="downRow levelBlock"></span>
+                                                <input type="text" name="levelId" hidden="hidden" id="" value="" />
+                                                <ul class="model-select-option levelUl">
+                                                    <!--<li data-option="" class="seleced">请选择</li>-->
+                                                    <!--<li data-option="">全部</li>-->
+                                                    <!--<li data-option="1">正常</li>-->
+                                                    <!--<li data-option="2">禁用</li>-->
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="levelTip">
+
+                                        </div>
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">状态<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8">
+                                            <div class=" col-sm-3 col-xs-4 model-select-box" style="width: 100%">
+                                                <div class="model-select-text statusBlock" data-value="1" id="userStatus">正常</div>
+                                                <span class="downRow statusBlock"></span>
+                                                <input type="text" name="" hidden="hidden" id="" value="" />
+                                                <ul class="model-select-option userStatusUl">
+                                                    <li data-option="1" class="seleced">正常</li>
+                                                    <li data-option="2">禁用</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+
+                                        </div>
+                                    </div>
+
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">姓名</div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="userCpyName" id="userCpyName" class="commonStyle" placeholder="请输入姓名"/>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="userNameTip">
+
+                                        </div>
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">手机号</div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="userCpyPhone" id="userCpyPhone" class="commonStyle" placeholder="请输入手机号"/>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="userPhoneTip">
+
+                                        </div>
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">身份证号</div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="userIdcard" id="userIdcard" class="commonStyle" placeholder="请输入身份证号码"/>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="userIdcardTip">
+
+                                        </div>
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">性别</div>
+                                        <div class="col-sm-8">
+                                            <div class=" col-sm-3 col-xs-4 model-select-box" style="width: 100%">
+                                                <div class="model-select-text sexBlock" data-value="0" id="userSex">未知</div>
+                                                <span class="downRow sexBlock"></span>
+                                                <input type="text" name="" hidden="hidden" id="" value="" />
+                                                <ul class="model-select-option sexUl">
+                                                    <li data-option="0" class="seleced">未知</li>
+                                                    <li data-option="1">男</li>
+                                                    <li data-option="2">女</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+
+                                        </div>
+                                    </div>
+                                    <!--城市-->
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">城市</div>
+                                        <div class="col-sm-8">
+                                            <div class=" col-sm-6 col-xs-6  model-select-box">
+                                                <div class="model-select-text cpyProvinceBlock" data-value="" id="provinceCode">请选择</div>
+                                                <span class="downRow cpyProvinceBlock"></span>
+                                                <!--<input type="text" name="provinceCode" hidden="hidden" id="" value="" />-->
+                                                <ul class="model-select-option provinceUl">
+                                                    <!--<li data-option="" class="seleced">请选择</li>-->
+                                                    <!--<li data-option="">全部</li>-->
+                                                    <!--<li data-option="1">正常</li>-->
+                                                    <!--<li data-option="2">禁用</li>-->
+                                                </ul>
+                                            </div>
+                                            <div class=" col-sm-6 col-xs-6 col-sm-offset-0 model-select-box">
+                                                <div class="model-select-text cityBlock" data-value="" id="cityHtml">请选择</div>
+                                                <span class="downRow cityBlock"></span>
+                                                <!--<input type="text" name="cityCode" hidden="hidden" id="" value="" />-->
+                                                <ul class="model-select-option cityUl">
+                                                    <!--<li data-option="" class="seleced">请选择</li>-->
+                                                    <!--<li data-option="">全部</li>-->
+                                                    <!--<li data-option="1">正常</li>-->
+                                                    <!--<li data-option="2">禁用</li>-->
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+
+                                        </div>
+                                    </div>
+                                    <!--按钮组合-->
+                                    <div class="saveBtn commonBtn" id="saveBtn" onclick="toSaveUserInfo()">保存</div>
+                                    <div class="quitBtn commonBtn" id="goback">取消</div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<!--<script src="../js/apiAddress.js" type="text/javascript" charset="utf-8"></script>-->
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/userList/add_user.js" type="text/javascript" charset="utf-8"></script>
+</html>

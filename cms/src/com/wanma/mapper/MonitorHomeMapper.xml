@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.MonitorHomeMapper">
+	 <!-- 充电点明细-->
+	<select id="countChargePointMap" parameterType="java.util.Map" resultType="int">
+	  SELECT
+			count(1)
+		FROM
+			tbl_PowerStation p
+		 <where>
+			poSt_Status in (10, 15)
+			<if test="pointInfo != null and pointInfo != ''">
+				and (poSt_Name like concat('%',#{pointInfo},'%') or
+				poSt_Address like
+				concat('%',#{pointInfo},'%'))
+			</if>
+			and pk_PowerStation in (select elPi_RelevancePowerStation from
+			tbl_electricpile a
+			where elPi_State in (10, 15) and elPi_Binding=1
+			<if test="headState != null and headState != ''">
+				and a.pk_ElectricPile in(select pk_ElectricPile from
+				tbl_electricpilehead where ePHe_ElectricpileHeadState=#{headState})
+			</if>
+			<!-- 权限控制 -->
+			<choose>
+				<when test="userLevel==3">
+					and exists (select 1 from tbl_user_business_view b
+					where
+					b.user_id=a.elPi_UserId and exists (select 1 from
+					tbl_user_business_view b1 where b.busi_company_id =
+					b1.busi_company_id and b1.user_id = #{userId}))
+				</when>
+				<when test="userLevel==5">
+					and a.elPi_UserId=#{userId}
+				</when>
+			</choose>
+			<if test="provinceCode != null and provinceCode != ''">
+				and (elPi_OwnCityCode=#{provinceCode} or
+				elPi_OwnProvinceCode =
+				#{provinceCode})
+			</if>
+			)
+		</where>
+	</select>
+	
+	<!-- 充电点明细 -->
+	<select id="selectChargePointMap" parameterType="java.util.Map" resultType="java.util.Map">
+	   SELECT
+			pk_PowerStation pId,
+			poSt_Name pName,
+			poSt_Address pAddress,
+			poSt_Longitude pLongitude,
+			(
+				SELECT elPi_OwnerCompany FROM tbl_electricpile
+				WHERE elPi_RelevancePowerStation = p.pk_PowerStation LIMIT 1
+			) elPiOwnerCompany,
+			poSt_Latitude pLatitude,
+			(
+				CASE WHEN NOT EXISTS (
+					SELECT 1 FROM tbl_electricpile a
+					WHERE a.elPi_RelevancePowerStation = p.pk_PowerStation AND a.comm_status = '1'
+				) THEN 0 ELSE 1 END
+			) elecPileStatus,
+			(
+				CASE WHEN EXISTS (
+		      SELECT 1 FROM tbl_electricpile a
+					WHERE a.elPi_RelevancePowerStation = p.pk_PowerStation
+					AND EXISTS (
+						SELECT 1 FROM tbl_electricpilehead b
+						WHERE
+							b.pk_ElectricPile = a.pk_ElectricPile
+						AND b.ePHe_ElectricpileHeadState = '0'
+						AND a.comm_status = '1'
+					)
+				) THEN 1 END
+			) isFree,
+			(
+				CASE WHEN EXISTS (
+					SELECT 1 FROM tbl_electricpile a
+					WHERE a.elPi_RelevancePowerStation = p.pk_PowerStation
+					AND EXISTS (
+						SELECT 1 FROM tbl_electricpilehead b
+						WHERE
+							b.pk_ElectricPile = a.pk_ElectricPile
+						AND b.ePHe_ElectricpileHeadState = '3'
+						AND a.comm_status = '1'
+					)
+				) THEN 1 END
+			) isBespeak,
+			(
+				CASE WHEN EXISTS (
+					SELECT 1 FROM tbl_electricpile a
+					WHERE
+						a.elPi_RelevancePowerStation = p.pk_PowerStation
+					AND EXISTS (
+						SELECT 1 FROM tbl_electricpilehead b
+						WHERE
+							b.pk_ElectricPile = a.pk_ElectricPile
+						AND b.ePHe_ElectricpileHeadState = '6'
+						AND a.comm_status = '1'
+					)
+				) THEN 1 END
+			) isCharge,
+			(
+				CASE WHEN EXISTS (
+					SELECT 1 FROM tbl_electricpile a
+					WHERE
+						a.elPi_RelevancePowerStation = p.pk_PowerStation
+					AND EXISTS (
+						SELECT 1 FROM tbl_electricpilehead b
+						WHERE
+							b.pk_ElectricPile = a.pk_ElectricPile
+						AND b.ePHe_ElectricpileHeadState = '9'
+						AND a.comm_status = '1'
+					)
+				) THEN 1 END
+			) isError,
+			(
+				CASE WHEN EXISTS (
+					SELECT 1 FROM tbl_electricpile a
+					WHERE
+						a.elPi_RelevancePowerStation = p.pk_PowerStation
+					AND EXISTS (
+						SELECT 1 FROM tbl_electricpilehead b
+						WHERE
+							b.pk_ElectricPile = a.pk_ElectricPile
+						AND b.ePHe_ElectricpileHeadState = '17'
+						AND a.comm_status = '1'
+					)
+				) THEN 1 END
+			) isWait
+		FROM
+			tbl_PowerStation p
+		 <where>
+			poSt_Status in (10, 15)
+			<if test="pointInfo != null and pointInfo != ''">
+				and (poSt_Name like concat('%',#{pointInfo},'%') or
+				poSt_Address like
+				concat('%',#{pointInfo},'%'))
+			</if>
+			and pk_PowerStation in (select elPi_RelevancePowerStation from
+			tbl_electricpile a
+			where elPi_State in (10, 15) and elPi_Binding=1
+			<if test="headState != null and headState != ''">
+				and a.pk_ElectricPile in(select pk_ElectricPile from
+				tbl_electricpilehead where ePHe_ElectricpileHeadState=#{headState})
+			</if>
+			<!-- 权限控制 -->
+			<choose>
+				<when test="userLevel==3">
+					and exists (select 1 from tbl_user_business_view b
+					where
+					b.user_id=a.elPi_UserId and exists (select 1 from
+					tbl_user_business_view b1 where b.busi_company_id =
+					b1.busi_company_id and b1.user_id = #{userId}))
+				</when>
+				<when test="userLevel==5">
+					and a.elPi_UserId=#{userId}
+				</when>
+			</choose>
+			<if test="provinceCode != null and provinceCode != ''">
+				and (elPi_OwnCityCode=#{provinceCode} or
+				elPi_OwnProvinceCode =
+				#{provinceCode})
+			</if>
+			)
+		</where>
+	   <if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	<!-- 统计累计充电次数、累计充电时长、累计充电度数-->
+	<select id="selectChargeCount" parameterType="java.util.Map" resultType="java.util.Map">
+	  SELECT
+		IFNULL(count(1),0) allChargeCount,
+		IFNULL(sum(a.chOr_QuantityElectricity),0) allChargeC,
+		IFNULL(TRUNCATE (sum((
+				UNIX_TIMESTAMP(end_charge_time) - UNIX_TIMESTAMP(begin_charge_time)
+				) / 3600),2),0) allChargeT
+		FROM
+		tbl_chargingorder a,
+		tbl_electricpile b
+		WHERE a.chOr_PileNumber = b.elPi_ElectricPileCode
+		AND a.chOr_ChargingStatus >= 2
+		and a.chOr_ChargingStatus !=4
+		<if test="eId !=null and eId !=''">
+				and b.pk_ElectricPile = #{eId}
+		</if>
+		<if test="pId !=null and pId !=''">
+				and b.elPi_RelevancePowerStation = #{pId}
+		</if>
+		<if test="headId !=null and headId !=''">
+				and exists(select 1 from tbl_electricpilehead c where c.pk_ElectricPile = b.pk_ElectricPile and c.ePHe_ElectricpileHeadId=a.chOr_Muzzle and c.pk_ElectricpileHead = #{headId})
+		</if>
+	</select>
+	<!-- 根据充电点统计今日充电次数、今日充电时长、今日充电度数-->
+	<select id="selectChargeToday" parameterType="java.util.Map" resultType="java.util.Map">
+	   SELECT
+		IFNULL(count(1),0) chargeCount,
+		IFNULL(sum(a.chOr_QuantityElectricity),0) chargeC,
+		IFNULL(TRUNCATE (sum((
+				UNIX_TIMESTAMP(end_charge_time) - UNIX_TIMESTAMP(begin_charge_time)
+				) / 3600),2),0) chargeT
+		FROM
+		tbl_chargingorder a,
+		tbl_electricpile b
+		WHERE a.chOr_PileNumber = b.elPi_ElectricPileCode
+		AND a.chOr_ChargingStatus >= 2
+		and a.chOr_ChargingStatus !=4
+		AND left(a.chOr_Createdate,10) = left(sysdate(),10)
+		<if test="eId !=null and eId !=''">
+				and b.pk_ElectricPile = #{eId}
+		</if>
+		<if test="pId !=null and pId !=''">
+				and b.elPi_RelevancePowerStation = #{pId}
+		</if>
+		<if test="headId !=null and headId !=''">
+				and exists(select 1 from tbl_electricpilehead c where c.pk_ElectricPile = b.pk_ElectricPile and c.ePHe_ElectricpileHeadId=a.chOr_Muzzle and c.pk_ElectricpileHead = #{headId})
+		</if>
+	</select>
+	<!-- 根据充电点统计电桩总数、枪口总数、直流桩数、交流桩数-->
+	<select id="selectElecCount" parameterType="java.util.Map" resultType="java.util.Map">
+	   SELECT * FROM
+			(
+				SELECT
+					sum(IF (t.elPi_ChargingMode = 5, 1, 0)) AS dc,
+					sum(IF (t.elPi_ChargingMode = 14, 1, 0)) AS ac
+				FROM tbl_electricpile t
+				WHERE t.elPi_State IN ('10', '15') AND t.delete_flag = '0'
+        <if test="eId !=null and eId !=''">
+				and t.pk_ElectricPile = #{eId}
+		</if>
+		<if test="pId !=null and pId !=''">
+				and t.elPi_RelevancePowerStation = #{pId}
+		</if>
+			) a,
+			(
+				SELECT
+					COUNT(pk_ElectricpileHead) AS headCount
+				FROM tbl_electricpilehead tt
+				WHERE tt.delete_flag = 0
+        <if test="eId !=null and eId !=''">
+				and tt.pk_ElectricPile = #{eId}
+		</if>
+		<if test="pId !=null and pId !=''">
+				and exists(select 1 from tbl_electricpile e where e.pk_ElectricPile=t.pk_ElectricPile and e.elPi_RelevancePowerStation = #{pId})
+		</if>
+			) c
+	</select>
+	<!-- 根据充电点统计充电、空闲、故障、离线 -->
+	<select id="selectElecHeadFaultCount" parameterType="java.util.Map" resultType="java.util.Map">
+	   select * from
+		(select count(1) free_count from tbl_electricpilehead t
+		where t.delete_flag =
+		'0' and t.ePHe_ElectricpileHeadState='0'
+		and
+		exists (select 1 from tbl_electricpile e where
+		e.pk_ElectricPile=t.pk_ElectricPile and e.comm_status = '1')
+		<if test="eId !=null and eId !=''">
+			and t.pk_ElectricPile = #{eId}
+		</if>
+		<if test="pId !=null and pId !=''">
+			and exists(select 1 from tbl_electricpile e where e.pk_ElectricPile=t.pk_ElectricPile and e.elPi_RelevancePowerStation = #{pId})
+		</if>
+		) a,
+		(select count(1) bespoke_count from tbl_electricpilehead t where
+		t.delete_flag = '0' and t.ePHe_ElectricpileHeadState='3'
+		<if test="eId !=null and eId !=''">
+			and t.pk_ElectricPile = #{eId}
+		</if>
+		<if test="pId !=null and pId !=''">
+			and exists(select 1 from tbl_electricpile e where e.pk_ElectricPile=t.pk_ElectricPile  AND e.comm_status = '1' and e.elPi_RelevancePowerStation = #{pId})
+		</if>
+		) b,
+		(select count(1) charging_count from tbl_electricpilehead t where
+		t.delete_flag = '0' and t.ePHe_ElectricpileHeadState='6'
+		<if test="eId !=null and eId !=''">
+			and t.pk_ElectricPile = #{eId}
+		</if>
+		<if test="pId !=null and pId !=''">
+			and exists(select 1 from tbl_electricpile e where e.pk_ElectricPile=t.pk_ElectricPile AND e.comm_status = '1' and e.elPi_RelevancePowerStation = #{pId})
+		</if>
+		) c,
+		(select count(1) error_count from tbl_electricpilehead t where
+		t.delete_flag
+		= '0' and t.ePHe_ElectricpileHeadState='9'
+		<if test="eId !=null and eId !=''">
+			and t.pk_ElectricPile = #{eId}
+		</if>
+		<if test="pId !=null and pId !=''">
+			and exists(select 1 from tbl_electricpile e where e.pk_ElectricPile=t.pk_ElectricPile AND e.comm_status = '1' and e.elPi_RelevancePowerStation = #{pId})
+		</if>
+		) d,
+		(
+		SELECT count(1) countOff
+		FROM
+		tbl_electricpile t,
+		tbl_electricpilehead t2
+		WHERE
+		t.pk_ElectricPile = t2.pk_ElectricPile
+		and t.comm_status='0' 
+		and t2.delete_flag = '0'	
+		<if test="eId !=null and eId !=''">
+			and t.pk_ElectricPile = #{eId}
+		</if>
+		<if test="pId !=null and pId !=''">
+			and t.elPi_RelevancePowerStation = #{pId}
+		</if>
+		) e
+	</select>
+	<!-- 充电点-桩-枪详情 -->
+	<select id="selectPileHeadDetail4Pid" parameterType="java.util.Map" resultType="java.util.Map">
+	   SELECT
+		a.pk_ElectricPile elecId,
+		a.elPi_ElectricPileCode elecCode,
+		b.pk_ElectricpileHead elecHeadId,
+		b.ePHe_ElectricpileHeadId elecHeadCode,
+		a.ep_num epNum,
+		a.comm_status commStatus,
+		(select c.coCo_Content from tbl_configcontent
+		c where
+		c.pk_ConfigContent=a.elPi_PowerSize) powerSize,
+		a.elPi_ChargingMode chargMode,
+		b.ePHe_ElectricpileHeadState elecHeadState,
+		b.ePHe_ElectricpileHeadName elecHeadName
+		FROM
+		tbl_electricpile a,
+		tbl_electricpilehead b
+		WHERE
+		a.pk_ElectricPile = b.pk_ElectricPile
+		and
+		b.delete_flag = '0'
+		<if test="pType == 1">
+			and a.pk_ElectricPile = #{pId}
+		</if>
+		<if test="pType == 2">
+			and a.elPi_RelevancePowerStation = #{pId}
+		</if>
+		ORDER BY a.ep_num
+	</select>
+	<!-- 实时信息： 额定功率-->
+	<select id="selectElecRatPower" parameterType="hashmap" resultType="String">
+	SELECT DISTINCT coCo_Content FROM
+			tbl_ConfigContent a,
+			tbl_electricpile b
+	 WHERE  a.pk_ConfigContent = b.elPi_PowerSize
+		AND coCo_ConfigParameterID = 4
+		AND coCo_ConfigPStatus = 0
+		<if test="headId !=null and headId !=''">
+	     and exists(select 1 from tbl_electricpilehead c where c.pk_ElectricPile = b.pk_ElectricPile  and c.pk_ElectricpileHead = #{headId})
+		</if>
+	</select>
+	<!-- 充电统计：维度 枪 -->
+	<!-- 枪头累计充电统计 -->
+	<select id="selectElecHeadChargeHistory" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		SELECT
+		IFNULL(left(min(a.chOr_Createdate),10),'0000-00-00')  ch01,
+		IFNULL(count(1),0)
+		chCount01,
+		IFNULL(sum(a.chOr_Moeny),0) chMoney01,
+		IFNULL(sum(a.chOr_QuantityElectricity),0) chQuantity01
+		FROM
+		tbl_chargingorder a,
+		tbl_electricpile b
+		WHERE
+		a.chOr_PileNumber = b.elPi_ElectricPileCode
+		AND a.chOr_ChargingStatus >= 2
+	    AND a.chOr_ChargingStatus!=4
+		AND
+		b.elPi_ElectricPileCode = #{epCode}
+		AND a.chOr_Muzzle =#{headCode}
+
+	</select>
+	<!-- 本年枪口充电统计 -->
+	<select id="selectElecHeadChargeYear" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		SELECT
+		IFNULL(left(a.chOr_Createdate,4),0) ch01,
+		IFNULL(count(1),0) chCount01,
+		IFNULL(sum(a.chOr_Moeny),0) chMoney01,
+		IFNULL(sum(a.chOr_QuantityElectricity),0) chQuantity01
+		FROM
+		tbl_chargingorder a,
+		tbl_electricpile b
+		WHERE
+		a.chOr_PileNumber = b.elPi_ElectricPileCode
+		AND a.chOr_ChargingStatus >= 2
+		AND a.chOr_ChargingStatus!=4
+		AND
+		b.elPi_ElectricPileCode = #{epCode}
+		AND a.chOr_Muzzle = #{headCode}
+		AND left(a.chOr_Createdate,4) = left(sysdate(),4)
+		group by
+		left(a.chOr_Createdate,4)
+		order by left(a.chOr_Createdate,4);
+	</select>
+	<!-- 本月枪口充电统计 -->
+	<select id="selectElecHeadChargeMonth" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		SELECT
+		IFNULL(left(a.chOr_Createdate,7),0) ch01,
+		IFNULL(count(1),0) chCount01,
+		IFNULL(sum(a.chOr_Moeny),0) chMoney01,
+		IFNULL(sum(a.chOr_QuantityElectricity),0) chQuantity01
+		FROM
+		tbl_chargingorder a,
+		tbl_electricpile b
+		WHERE
+		a.chOr_PileNumber = b.elPi_ElectricPileCode
+		AND a.chOr_ChargingStatus >= 2
+		AND a.chOr_ChargingStatus!=4
+		AND
+		b.elPi_ElectricPileCode = #{epCode}
+		AND a.chOr_Muzzle = #{headCode}
+		AND left(a.chOr_Createdate,7) = left(sysdate(),7)
+		group by
+		left(a.chOr_Createdate,7)
+		order by left(a.chOr_Createdate,7);
+	</select>
+	<!-- 当天枪口充电统计 -->
+	<select id="selectElecHeadChargeToday" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		SELECT
+		IFNULL(left(a.chOr_Createdate,10),0) ch01,
+		IFNULL(count(1),0) chCount01,
+		IFNULL(sum(a.chOr_Moeny),0) chMoney01,
+		IFNULL(sum(a.chOr_QuantityElectricity),0) chQuantity01
+		FROM
+		tbl_chargingorder a,
+		tbl_electricpile b
+		WHERE
+		a.chOr_PileNumber = b.elPi_ElectricPileCode
+		AND a.chOr_ChargingStatus >= 2
+		AND a.chOr_ChargingStatus!=4
+		AND
+		b.elPi_ElectricPileCode = #{epCode}
+		AND a.chOr_Muzzle =#{headCode}
+		AND left(a.chOr_Createdate,10) = left(sysdate(),10);
+	</select>
+</mapper> 

@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.web.dao.WebEquipmentrepairMapper">
+
+	<resultMap id="tblEquipmentrepairResultMap" type="TblEquipmentrepair">
+		<id property="pkEquipmentrepair" column="pk_EquipmentRepair" />
+		<result property="eqreWarrantytypeid" column="eqRe_WarrantyTypeId" />
+		<result property="eqreContent" column="eqRe_Content" />
+		<result property="eqreUserid" column="eqRe_UserId" />
+		<result property="eqreWarrantystatus" column="eqRe_WarrantyStatus" />
+		<result property="eqreCreatedate" column="eqRe_Createdate" />
+		<result property="eqreUpdatedate" column="eqRe_Updatedate" />
+		<result property="eqreStatus" column="eqRe_Status" />
+	</resultMap>
+	<resultMap id="pageResultMap"  type="java.util.HashMap" extends="tblEquipmentrepairResultMap"></resultMap>
+	<resultMap id="findResultMap"  type="java.util.HashMap" extends="tblEquipmentrepairResultMap"></resultMap>
+
+	<insert id="insert" parameterType="TblEquipmentrepair">
+	   insert into tbl_EquipmentRepair (
+	     pk_EquipmentRepair,
+	     eqRe_WarrantyTypeId,
+	     eqRe_Content,
+	     eqRe_UserId,
+	     eqRe_WarrantyStatus,
+	     eqRe_Createdate,
+	     eqRe_Updatedate,
+	     eqRe_Status
+	   )values (
+	     #{pkEquipmentrepair},
+	     #{eqreWarrantytypeid},
+	     #{eqreContent},
+	     #{eqreUserid},
+	     #{eqreWarrantystatus},
+	     #{eqreCreatedate},
+	     #{eqreUpdatedate},
+	     #{eqreStatus}
+	   )
+	</insert>
+
+	<update id="update" parameterType="TblEquipmentrepair">
+	   update tbl_EquipmentRepair set
+	     pk_EquipmentRepair=#{pkEquipmentrepair},
+	     eqRe_WarrantyTypeId=#{eqreWarrantytypeid},
+	     eqRe_Content=#{eqreContent},
+	     eqRe_UserId=#{eqreUserid},
+	     eqRe_WarrantyStatus=#{eqreWarrantystatus},
+	     eqRe_Createdate=#{eqreCreatedate},
+	     eqRe_Updatedate=#{eqreUpdatedate},
+	     eqRe_Status=#{eqreStatus}
+	   where 
+	    pk_EquipmentRepair=#{pkEquipmentrepair} 
+	</update>
+
+	<delete id="delete" parameterType="map">
+	   delete from 
+	     tbl_EquipmentRepair 
+	   where 
+	    pk_EquipmentRepair=#{pkEquipmentrepair} 
+	</delete>
+
+	<select id="get" parameterType="map" resultMap="tblEquipmentrepairResultMap">
+	   select 
+	    pk_EquipmentRepair,
+	    eqRe_WarrantyTypeId,
+	    eqRe_Content,
+	    eqRe_UserId,
+	    eqRe_WarrantyStatus,
+	    eqRe_Createdate,
+	    eqRe_Updatedate,
+	    eqRe_Status
+	   from tbl_EquipmentRepair
+	   where 
+	    pk_EquipmentRepair=#{pkEquipmentrepair} 
+	</select>
+
+	<select id="findOne" parameterType="map" resultMap="findResultMap">
+	   select 
+	    pk_EquipmentRepair,
+	    eqRe_WarrantyTypeId,
+	    eqRe_Content,
+	    eqRe_UserId,
+	    eqRe_WarrantyStatus,
+	    eqRe_Createdate,
+	    eqRe_Updatedate,
+	    eqRe_Status
+	   from tbl_EquipmentRepair
+	   where 
+	    pk_EquipmentRepair=#{pkEquipmentrepair} 
+	</select>
+
+	<select id="find" parameterType="map" resultMap="findResultMap">
+	   select 
+	     pk_EquipmentRepair,
+	     eqRe_WarrantyTypeId,
+	     eqRe_Content,
+	     eqRe_UserId,
+	     eqRe_WarrantyStatus,
+	     eqRe_Createdate,
+	     eqRe_Updatedate,
+	     eqRe_Status
+	   from tbl_EquipmentRepair
+	   <where>
+	     <if test="pkEquipmentrepair != null">
+	        pk_EquipmentRepair=#{pkEquipmentrepair}
+	     </if>
+	     <if test="eqreWarrantytypeid != null">
+	        and eqRe_WarrantyTypeId=#{eqreWarrantytypeid}
+	     </if>
+	     <if test="eqreContent != null">
+	        and eqRe_Content=#{eqreContent}
+	     </if>
+	     <if test="eqreUserid != null">
+	        and eqRe_UserId=#{eqreUserid}
+	     </if>
+	     <if test="eqreWarrantystatus != null">
+	        and eqRe_WarrantyStatus=#{eqreWarrantystatus}
+	     </if>
+	     <if test="eqreCreatedate != null">
+	        and eqRe_Createdate=#{eqreCreatedate}
+	     </if>
+	     <if test="eqreUpdatedate != null">
+	        and eqRe_Updatedate=#{eqreUpdatedate}
+	     </if>
+	     <if test="eqreStatus != null">
+	        and eqRe_Status=#{eqreStatus}
+	     </if>
+	   </where>
+	</select>
+	
+	<select id="page" parameterType="map" resultMap="pageResultMap">
+	   select 
+	     pk_EquipmentRepair,
+	     eqRe_WarrantyTypeId,
+	     eqRe_Content,
+	     eqRe_UserId,
+	     eqRe_WarrantyStatus,
+	     eqRe_Createdate,
+	     eqRe_Updatedate,
+	     eqRe_Status
+	   from tbl_EquipmentRepair
+	   <where>
+	     <if test="pkEquipmentrepair != null">
+	        pk_EquipmentRepair=#{pkEquipmentrepair}
+	     </if>
+	     <if test="eqreWarrantytypeid != null">
+	        and eqRe_WarrantyTypeId=#{eqreWarrantytypeid}
+	     </if>
+	     <if test="eqreContent != null">
+	        and eqRe_Content=#{eqreContent}
+	     </if>
+	     <if test="eqreUserid != null">
+	        and eqRe_UserId=#{eqreUserid}
+	     </if>
+	     <if test="eqreWarrantystatus != null">
+	        and eqRe_WarrantyStatus=#{eqreWarrantystatus}
+	     </if>
+	     <if test="eqreCreatedate != null">
+	        and eqRe_Createdate=#{eqreCreatedate}
+	     </if>
+	     <if test="eqreUpdatedate != null">
+	        and eqRe_Updatedate=#{eqreUpdatedate}
+	     </if>
+	     <if test="eqreStatus != null">
+	        and eqRe_Status=#{eqreStatus}
+	     </if>
+	   </where>
+	</select>
+</mapper> 

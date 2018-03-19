@@ -1,0 +1,249 @@
+#container1 {
+	height: 100%;
+}
+:-moz-placeholder {
+	color: #666666; opacity:1;
+}
+
+::-moz-placeholder {
+	color: #666666;opacity:1;
+}
+
+input:-ms-input-placeholder{
+	color: #666666;opacity:1;
+}
+
+input::-webkit-input-placeholder{
+	color: #666666;opacity:1;
+}
+#container1 .box {
+	width: 100%;
+	min-height: 50px;
+	margin: 0 auto;
+	background: #FFFFFF;
+	padding:0 30px;
+	position: absolute;
+	position: fixed;
+	top:63px;
+	z-index: 100;
+}
+/*#container1 .box .AssetStatistics {
+	width: 100%;
+	height: 68px;
+	background: #FFFFFF;
+	line-height: 88px;
+}*/
+
+#container1 .box .AssetStatistics span {
+	font-size: 18px;
+	color: #333333;
+}
+#container1 .box .formList {
+	width: 100%;
+	padding: 20px;
+	background: #FFFFFF;
+	/*border-bottom: 1px solid #C0C0C0;*/
+}
+
+/*#container1 .box .formList .160width{*/
+	/*width: 160px;*/
+	/*height: 26px;*/
+	/*border: 1px solid #E5E5E5;*/
+	/*border-radius: 4px;*/
+	/*color: #999999;*/
+/*}*/
+#container1 .box .formList input{
+	border: 1px solid #DCDCDC;
+	border-radius: 4px;
+	height: 26px;
+	color: #999999;
+}
+#container1 .box .formList select {
+	width: 100px;
+	height: 26px;
+	margin-left: 10px;
+	color: #999999;
+	font-size: 12px;
+	border: 1px solid #E5E5E5;
+	border-radius: 4px;
+	appearance:none;
+	-moz-appearance:none;
+	-webkit-appearance:none;
+	background: url(../images/triangle_right_114px_1189854_easyicon.net-down-8.png) no-repeat 90% 8px !important;
+}
+
+#container1 .box .formList .check {
+	display: inline-block;
+	width: 48px;
+	height: 26px;
+	background: #FF7D00;
+	color: #FFFFFF;
+	border-radius: 4px;
+	margin-left: 20px;
+	text-align: center;
+	line-height: 22px;
+	cursor: pointer;
+	font-size: 12px;
+}
+
+#container1 .box2 {
+	width: 100%;
+	min-height: 420px;
+	background: #FFFFFF;
+	padding: 0;
+}
+
+#container1 .box .btnGroup {
+	width: 100%;
+	height: 64px;
+	font-size: 12px;
+	background: #FFFFFF;
+	padding-right: 50px;
+	position: relative;
+}
+#container1 .box .btnGroup span {
+	display: inline-block;
+	width: 76px;
+	height: 30px;
+	background: #FF7D00;
+	color: #FFFFFF;
+	margin-top: 20px;
+	border-radius: 4px;
+	text-align: center;
+	line-height: 30px;
+	margin-left: 20px;
+	cursor: pointer;
+}
+.myTable tr:nth-child(odd) {
+	background: #FFFFFF;
+}
+.myTable tr:nth-child(even) {
+	background: #f5f5f5;
+}
+.padding30 {
+	padding: 30px;
+	padding-left: 30px;
+	padding-top: 0;
+	background: #FFFFFF;
+	overflow-x: auto;
+}
+.myTable {
+	overflow: auto;
+	margin-top: 160px;
+	width: 100%;
+}
+.myTable tr th {
+	/*min-width: 90px;*/
+	text-align: left;
+	min-height: 39px !important;
+	line-height: 39px !important;
+	color: #333333;
+	font-size: 12px;
+	background: #F5F5F5;
+	padding-left: 10px;
+	border:1px solid #DCDCDC;!important;
+
+}
+.myTable thead tr th:nth-child(1){
+	padding-top: 5px;
+}
+.myTable thead tr th:nth-child(2){
+	padding: 0;
+}
+.myTable tr:hover{
+	background: #E5E5E5 !important;
+}
+.myTable tr td {
+	text-align: left;
+	min-height: 42px !important;
+	padding: 10px 0;
+	padding-left: 10px;
+	border:1px solid #DCDCDC;!important;
+}
+.myTable tr td span{
+	cursor: pointer;
+}
+.myTable tbody tr{
+	min-height: 39px !important;
+	font-size: 12px;
+	color: #666666;
+	border:1px solid #DCDCDC;!important;
+}
+/*分页部分开始*/
+.pagination {
+	width: 100%;
+	height: 50px;
+	margin: 0;
+	padding: 0;
+	background: #FFFFFF;
+	padding-top:16px ;
+	position: absolute;
+	bottom: 0;
+	left: 14.6667%;
+	position: fixed;
+}
+.pagination ul li{
+	list-style: none;
+	float: left;
+	margin-left: 20px;
+}
+.pagination ul li:last-Child{
+	list-style: none;
+	float: left;
+	margin-left: 0;
+	
+}
+.pagination ul li:last-Child a{
+	text-decoration: none;
+	pointer-events: none;
+}
+.pagination ul li:nth-last-child(2) a{
+	text-decoration: none;
+	pointer-events: none;
+}
+.pagination ul li:last-Child a:hover{
+	color: #666666;
+	text-decoration: none;
+}
+.pagination ul li:nth-last-child(2) a:hover{
+	color: #666666;
+	text-decoration: none;
+}
+.pagination ul .jump{
+	margin-top: -4px;
+}
+.pagination ul li a{
+	font-size: 12px;
+	color: #333333;
+	text-decoration: underline;
+	cursor: pointer;
+}
+.pagination ul li a:visited,.pagination ul li a:hover,.pagination ul li a:focus,.pagination ul li a:active{
+	font-size: 12px;
+	color: #FF9900;
+	text-decoration: none;
+}
+.textInput{
+	font-size: 14px;
+	display: inline-block;
+	width: 30px;
+	height: 30px;
+}
+.selected{
+	font-size: 14px;
+	color: #FF9900;
+	text-decoration: none;
+}
+.superLink{
+	width: 80px; 
+	height: 28px;
+	line-height: 28px; 
+	position: absolute;right: 17%; top: 0;
+	background: none !important;
+	color: #666666 !important;
+	text-decoration: underline;
+}
+input::-webkit-input-placeholder{
+	color: #999999 !important;
+}
+

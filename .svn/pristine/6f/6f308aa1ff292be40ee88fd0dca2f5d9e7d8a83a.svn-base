@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.dubbox.dao.TblUserRoleMapper">
+	<resultMap id="result_role" type="TblUserRole">
+		<result property="uid" column="user_id" />
+		<result property="rid" column="role_id" />
+		<result property="cdate" column="create_date" />
+		<result property="creUs" column="create_user" />
+		<result property="udate" column="last_update_date" />
+		<result property="updUs" column="last_update_user" />
+	</resultMap>
+
+	<insert id="insert" parameterType="TblUserRole">
+		insert
+		into p_m_user_role
+		(
+		user_id,
+		role_id,
+		create_date,
+		create_user,
+		last_update_date,
+		last_update_user
+		)
+		values
+		(
+		#{uid},
+		#{rid},
+		now(),
+		1,
+		now(),
+		1
+		)
+	</insert>
+
+	<select id="getList" parameterType="TblUserRole" resultMap="result_role">
+		select
+		${rtColumns}
+		from
+		p_m_user_role
+		where 1=1
+		<if test="rid !=null and rid !=''"> and role_id=#{rid}</if>
+		<if test="uid !=null and uid !=''"> and user_id=#{uid}</if>
+	</select>
+
+	<delete id="delete" parameterType="TblUserRole">
+		delete from p_m_user_role
+		<where>
+			1=1
+			<if test="uid !=null and uid !=''"> and user_id=#{uid} </if>
+			<if test="rid !=null and rid !=''"> and role_id=#{rid}</if>
+		</where>
+	</delete>
+
+</mapper>

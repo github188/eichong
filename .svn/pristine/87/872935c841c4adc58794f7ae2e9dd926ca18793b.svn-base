@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.CompanyChargeRelaMapper">
+    <resultMap id="resultCompanyChargeRela" type="CompanyChargeRelaDO">
+        <id column="pk_id" property="id"/>
+        <result column="cpy_id" property="cpyId"/>
+        <result column="powerstation_id" property="powerStationId"/>
+        <result column="electricpile_id" property="electricPileId"/>
+        <result column="electricpile_code" property="electricPileCode"/>
+        <result column="" property="isDel"/>
+        <result column="creator" property="creator"/>
+        <result column="modifier" property="modifier"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="gmt_modified" property="gmtModified"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        pk_id, cpy_id, powerstation_id, electricpile_id, electricpile_code, creator,
+        modifier, gmt_create, gmt_modified
+    </sql>
+
+    <select id="selectCompanyChargeRelaById" parameterType="Long" resultMap="resultCompanyChargeRela">
+        select
+        <include refid="Base_Column_List"/>
+        from tbl_company_charge_rela
+        where pk_id = #{pkId}
+    </select>
+
+    <sql id="condition">
+        <where>
+            <if test="id != null">
+                AND pk_id = #{id}
+            </if>
+            <if test="cpyId != null">
+                AND cpy_id = #{cpyId}
+            </if>
+            <if test="powerStationId != null">
+                AND powerstation_id = #{powerStationId}
+            </if>
+            <if test="electricPileId != null">
+                AND electricpile_id = #{electricPileId}
+            </if>
+            <if test="electricPileCode != null">
+                AND electricpile_code = #{electricPileCode}
+            </if>
+        </where>
+    </sql>
+
+    <select id="getCompanyChargeRelaList" parameterType="Map" resultMap="resultCompanyChargeRela">
+        select
+        <include refid="Base_Column_List"/>
+        from tbl_company_charge_rela
+        <include refid="condition"/>
+    </select>
+
+    <delete id="deleteCompanyChargeRelaById" parameterType="Long">
+        DELETE FROM tbl_company_charge_rela
+        WHERE pk_id = #{pkId}
+    </delete>
+
+    <delete id="deleteByCpyIdAndPowerStationIds" parameterType="Map">
+        DELETE FROM tbl_company_charge_rela
+        WHERE cpy_id = #{cpyId}
+        <if test="powerStationIds != null and powerStationIds.size() > 0">
+            and powerstation_id in
+            <foreach collection="powerStationIds" item="powerStationId" open="(" close=")" separator=",">
+                #{powerStationId}
+            </foreach>
+        </if>
+    </delete>
+
+    <insert id="insertCompanyChargeRela" parameterType="CompanyChargeRelaDO">
+        INSERT INTO tbl_company_charge_rela (pk_id, cpy_id, powerstation_id,
+                                             electricpile_id, electricpile_code,
+                                             creator, modifier, gmt_create,
+                                             gmt_modified)
+        VALUES (#{id}, #{cpyId}, #{powerStationId},
+                #{electricPileId}, #{electricPileCode},
+                #{creator}, #{modifier}, now(),
+                #{gmtModified})
+    </insert>
+
+    <update id="updateCompanyChargeRelaSelective" parameterType="CompanyChargeRelaDO">
+        update tbl_company_charge_rela
+        <set>
+            <if test="cpyId != null">
+                cpy_id = #{cpyId},
+            </if>
+            <if test="powerStationId != null">
+                powerstation_id = #{powerStationId},
+            </if>
+            <if test="electricPileId != null">
+                electricpile_id = #{electricPileId},
+            </if>
+            <if test="electricPileCode != null">
+                electricpile_code = #{electricPileCode},
+            </if>
+            <if test="modifier != null">
+                modifier = #{modifier},
+            </if>
+            gmt_modified = now()
+        </set>
+        where pk_id = #{pkId}
+    </update>
+</mapper>

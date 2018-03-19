@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.web.dao.WebUsershareelecMapper">
+
+	<resultMap id="tblUsershareelecResultMap" type="TblUsershareelec">
+		<id property="pkUsershareelec" column="pk_UserShareElec" />
+		<result property="uselUserid" column="uSEl_Userid" />
+		<result property="uselElecaddress" column="uSEl_ElecAddress" />
+		<result property="uselMaker" column="uSEl_Maker" />
+		<result property="uselPilechargingmode" column="uSEl_PileChargingMode" />
+		<result property="uselPowerinterface" column="uSEl_PowerInterface" />
+		<result property="uselOther" column="uSEl_Other" />
+		<result property="uselParam" column="uSEl_Param" />
+		<result property="uselImage" column="uSEl_Image" />
+	</resultMap>
+	<resultMap id="pageResultMap"  type="java.util.HashMap" extends="tblUsershareelecResultMap"></resultMap>
+	<resultMap id="findResultMap"  type="java.util.HashMap" extends="tblUsershareelecResultMap"></resultMap>
+
+	<insert id="insert" parameterType="TblUsershareelec">
+	   insert into tbl_UserShareElec (
+	     pk_UserShareElec,
+	     uSEl_Userid,
+	     uSEl_ElecAddress,
+	     uSEl_Maker,
+	     uSEl_PileChargingMode,
+	     uSEl_PowerInterface,
+	     uSEl_Other,
+	     uSEl_Param,
+	     uSEl_Image
+	   )values (
+	     #{pkUsershareelec},
+	     #{uselUserid},
+	     #{uselElecaddress},
+	     #{uselMaker},
+	     #{uselPilechargingmode},
+	     #{uselPowerinterface},
+	     #{uselOther},
+	     #{uselParam},
+	     #{uselImage}
+	   )
+	</insert>
+
+	<update id="update" parameterType="TblUsershareelec">
+	   update tbl_UserShareElec set
+	     pk_UserShareElec=#{pkUsershareelec},
+	     uSEl_Userid=#{uselUserid},
+	     uSEl_ElecAddress=#{uselElecaddress},
+	     uSEl_Maker=#{uselMaker},
+	     uSEl_PileChargingMode=#{uselPilechargingmode},
+	     uSEl_PowerInterface=#{uselPowerinterface},
+	     uSEl_Other=#{uselOther},
+	     uSEl_Param=#{uselParam},
+	     uSEl_Image=#{uselImage}
+	   where 
+	    pk_UserShareElec=#{pkUsershareelec} 
+	</update>
+
+	<delete id="delete" parameterType="map">
+	   delete from 
+	     tbl_UserShareElec 
+	   where 
+	    pk_UserShareElec=#{pkUsershareelec} 
+	</delete>
+
+	<select id="get" parameterType="map" resultMap="tblUsershareelecResultMap">
+	   select 
+	    pk_UserShareElec,
+	    uSEl_Userid,
+	    uSEl_ElecAddress,
+	    uSEl_Maker,
+	    uSEl_PileChargingMode,
+	    uSEl_PowerInterface,
+	    uSEl_Other,
+	    uSEl_Param,
+	    uSEl_Image
+	   from tbl_UserShareElec
+	   where 
+	    pk_UserShareElec=#{pkUsershareelec} 
+	</select>
+
+	<select id="findOne" parameterType="map" resultMap="findResultMap">
+	   select 
+	    pk_UserShareElec,
+	    uSEl_Userid,
+	    uSEl_ElecAddress,
+	    uSEl_Maker,
+	    uSEl_PileChargingMode,
+	    uSEl_PowerInterface,
+	    uSEl_Other,
+	    uSEl_Param,
+	    uSEl_Image
+	   from tbl_UserShareElec
+	   where 
+	    pk_UserShareElec=#{pkUsershareelec} 
+	</select>
+
+	<select id="find" parameterType="map" resultMap="findResultMap">
+	   select 
+	     pk_UserShareElec,
+	     uSEl_Userid,
+	     uSEl_ElecAddress,
+	     uSEl_Maker,
+	     uSEl_PileChargingMode,
+	     uSEl_PowerInterface,
+	     uSEl_Other,
+	     uSEl_Param,
+	     uSEl_Image
+	   from tbl_UserShareElec
+	   <where>
+	     <if test="pkUsershareelec != null">
+	        pk_UserShareElec=#{pkUsershareelec}
+	     </if>
+	     <if test="uselUserid != null">
+	        and uSEl_Userid=#{uselUserid}
+	     </if>
+	     <if test="uselElecaddress != null">
+	        and uSEl_ElecAddress=#{uselElecaddress}
+	     </if>
+	     <if test="uselMaker != null">
+	        and uSEl_Maker=#{uselMaker}
+	     </if>
+	     <if test="uselPilechargingmode != null">
+	        and uSEl_PileChargingMode=#{uselPilechargingmode}
+	     </if>
+	     <if test="uselPowerinterface != null">
+	        and uSEl_PowerInterface=#{uselPowerinterface}
+	     </if>
+	     <if test="uselOther != null">
+	        and uSEl_Other=#{uselOther}
+	     </if>
+	     <if test="uselParam != null">
+	        and uSEl_Param=#{uselParam}
+	     </if>
+	     <if test="uselImage != null">
+	        and uSEl_Image=#{uselImage}
+	     </if>
+	   </where>
+	</select>
+	
+	<select id="page" parameterType="map" resultMap="pageResultMap">
+	   select 
+	     pk_UserShareElec,
+	     uSEl_Userid,
+	     uSEl_ElecAddress,
+	     uSEl_Maker,
+	     uSEl_PileChargingMode,
+	     uSEl_PowerInterface,
+	     uSEl_Other,
+	     uSEl_Param,
+	     uSEl_Image
+	   from tbl_UserShareElec
+	   <where>
+	     <if test="pkUsershareelec != null">
+	        pk_UserShareElec=#{pkUsershareelec}
+	     </if>
+	     <if test="uselUserid != null">
+	        and uSEl_Userid=#{uselUserid}
+	     </if>
+	     <if test="uselElecaddress != null">
+	        and uSEl_ElecAddress=#{uselElecaddress}
+	     </if>
+	     <if test="uselMaker != null">
+	        and uSEl_Maker=#{uselMaker}
+	     </if>
+	     <if test="uselPilechargingmode != null">
+	        and uSEl_PileChargingMode=#{uselPilechargingmode}
+	     </if>
+	     <if test="uselPowerinterface != null">
+	        and uSEl_PowerInterface=#{uselPowerinterface}
+	     </if>
+	     <if test="uselOther != null">
+	        and uSEl_Other=#{uselOther}
+	     </if>
+	     <if test="uselParam != null">
+	        and uSEl_Param=#{uselParam}
+	     </if>
+	     <if test="uselImage != null">
+	        and uSEl_Image=#{uselImage}
+	     </if>
+	   </where>
+	</select>
+</mapper> 

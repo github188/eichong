@@ -1,0 +1,79 @@
+package com.echong.controller;
+
+import com.alibaba.fastjson.JSON;
+import com.echong.eums.EChongWangType;
+import com.echong.model.ElectricLabel;
+import com.echong.model.OperateLabelModel;
+import com.echong.model.Result;
+import com.echong.service.OperateLabelService;
+import com.echong.validator.OperateLabelValidator;
+import com.wanma.service.PileFilterService;
+import com.wanma.support.common.FailedResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.WebApplicationContext;
+
+/**
+ * Created by zangyaoyi on 2016/12/29.
+ */
+@Controller
+@Scope(WebApplicationContext.SCOPE_REQUEST)
+@RequestMapping(value = "/")
+public class OperateLabelController extends AbstractController {
+    @Autowired
+    private OperateLabelService operateLabelService;
+    @Autowired
+    private PileFilterService pileFilterService;
+
+    @RequestMapping(value = "operateLabel", method = RequestMethod.POST)
+    @ResponseBody
+    String operateLabel(String app_id, String sig, String info) {
+        logger.info("operateLabel is begin");
+        ElectricLabel electricLabel = JSON.parseObject(info, ElectricLabel.class);
+        OperateLabelModel model = new OperateLabelModel();
+        Result result = new Result();
+        model.setApp_id(app_id);
+        model.setSig(sig);
+
+        model.setElectricLabel(electricLabel);
+        if (!OperateLabelValidator.ensureOperateLabel(model)) {
+            logger.error("operateLabel is error ,model:", model);
+            return JSON.toJSONString(new Result("4003", "POST 参数不合法,请确认必须参数是否缺失"));
+        }
+
+        if (EChongWangType.ACTION_START.equals(electricLabel.getAction())) {
+            logger.debug("operateLabel open is begin ,model={}", JSON.toJSON(model));
+            //对充电桩进行过滤--begin
+            logger.info("开始校验e充网能否对此充电桩进行充电");
+            boolean ok = pileFilterService.checkPileIsOk("1011", electricLabel.getPile_code());
+            if (ok == false) {
+                return new FailedResponse(6804, "no right").toString();
+            }
+            logger.info("结束校验e充网能否对此充电桩进行充电");
+            //对充电桩进行过滤-end
+            result = operateLabelService.startOperate(electricLabel);
+            logger.debug("operateLabel open is end ,model={}", JSON.toJSON(model));
+        } else if (EChongWangType.ACTION_STOP.equals(electricLabel.getAction())) {
+            logger.debug("operateLabel close is begin ,model:", JSON.toJSON(model));
+            result = operateLabelService.stopOperate(electricLabel);
+            logger.debug("operateLabel close is end ,model={}", JSON.toJSON(model));
+        } else {
+            logger.error("operateLabel direct is invalid,model:", JSON.toJSON(model));
+        }
+        return JSON.toJSONString(result);
+    }
+
+    @RequestMapping(value = "queryOffLinePile", method = RequestMethod.POST)
+    @ResponseBody
+    String queryOffLinePile(Integer companyId) {
+        if (null == companyId) {
+            return "fail";
+        }
+        operateLabelService.queryOffLinePile(companyId);
+        return "success";
+    }
+}

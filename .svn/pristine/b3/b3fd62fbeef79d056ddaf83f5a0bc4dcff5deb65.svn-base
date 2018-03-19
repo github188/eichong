@@ -1,0 +1,610 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.app.dao.AppBespokeMapper">
+
+	<resultMap id="tblBespokeResultMap" type="TblBespoke">
+		<id property="pkBespoke" column="pk_Bespoke" />
+		<result property="bespElectricpileid" column="besp_ElectricPileId" />
+		<result property="bespBespoketime" column="besp_BespokeTime" />
+		<result property="bespBespokeremark" column="besp_BespokeRemark" />
+		<result property="bespBespoketimes" column="besp_BespokeTimes" />
+		<result property="bespBespokeprice" column="besp_BespokePrice" />
+		<result property="bespBespokestatus" column="besp_BespokeStatus" />
+		<result property="bespCreatedate" column="besp_Createdate" />
+		<result property="bespUpdatedate" column="besp_Updatedate" />
+		<result property="bespElectricpilehead" column="besp_ElectricPileHead" />
+		<result property="eleHeadNum" column="ePHe_ElectricpileHeadId" />
+		<result property="bespUserinfo" column="besp_UserInfo" />
+		<result property="bespResepaymentcode" column="besp_ResePaymentCode" />
+		<result property="bespFrozenamt" column="besp_FrozenAmt" />
+		<result property="bespBeginTime" column="besp_BeginTime" />
+		<result property="bespEndTime" column="besp_EndTime" />
+		<result property="bespRealityTime" column="besp_RealityTime" />
+		<result property="did" column="usIn_device_id" />
+		<result property="park_num" column="eph_num" />
+		<result property="park_lock" column="hava_car_place_lock" />
+		<result property="led_flash" column="have_led_flash" />
+		<result property="epName" column="elPi_ElectricPileName" />
+		<result property="epAddress" column="elPi_ElectricPileAddress" />
+		<result property="chargingMode" column="elPi_ChargingMode" />
+		<result property="ep_num" column="ep_num" />
+		<result property="powerInterface" column="elPi_PowerInterface" />
+	</resultMap>
+	<resultMap id="pageResultMap" type="java.util.HashMap"
+		extends="tblBespokeResultMap"></resultMap>
+	<resultMap id="findResultMap" type="java.util.HashMap"
+		extends="tblBespokeResultMap"></resultMap>
+	<!-- 新增预约 -->
+	<insert id="insert" parameterType="TblBespoke" useGeneratedKeys="true"
+		keyProperty="pkBespoke">
+		insert into tbl_Bespoke (
+		besp_ElectricPileId,
+		besp_BespokeTime,
+		besp_BespokeRemark,
+		besp_BespokeTimes,
+		besp_BespokePrice,
+		besp_BespokeStatus,
+		besp_Updatedate,
+		besp_ElectricPileHead,
+		besp_UserInfo,
+		besp_ResePaymentCode,
+		besp_FrozenAmt,
+		besp_BeginTime,
+		besp_EndTime,
+		besp_RealityTime
+		)values (
+		#{bespElectricpileid},
+		#{bespBespoketime},
+		#{bespBespokeremark},
+		#{bespBespoketimes},
+		#{bespBespokeprice},
+		#{bespBespokestatus},
+		#{bespUpdatedate},
+		#{bespElectricpilehead},
+		#{bespUserinfo},
+		#{bespResepaymentcode},
+		#{bespFrozenamt},
+		#{bespBeginTime},
+		#{bespEndTime},
+		#{bespEndTime}
+		)
+		<!-- 在插入时将预约结束时间作为真实结束时间插入 -->
+	</insert>
+
+	<update id="update" parameterType="TblBespoke">
+		update tbl_Bespoke set
+		besp_ElectricPileId=#{bespElectricpileid},
+		besp_BespokeTime=#{bespBespoketime},
+		besp_BespokeRemark=#{bespBespokeremark},
+		besp_BespokeTimes=#{bespBespoketimes},
+		besp_BespokePrice=#{bespBespokeprice},
+		besp_BespokeStatus=#{bespBespokestatus},
+		besp_Updatedate=#{bespUpdatedate},
+		besp_ElectricPileHead=#{bespElectricpilehead},
+		besp_UserInfo=#{bespUserinfo},
+		besp_ResePaymentCode=#{bespResepaymentcode},
+		besp_FrozenAmt=#{bespFrozenamt},
+		besp_BeginTime = #{bespBeginTime},
+		besp_EndTime = #{bespEndTime},
+		<if test="bespRealityTime != null">
+			besp_RealityTime = #{bespRealityTime}
+		</if>
+		where
+		pk_Bespoke=#{pkBespoke}
+	</update>
+
+	<delete id="delete" parameterType="map">
+		delete from
+		tbl_Bespoke
+		where
+		pk_Bespoke=#{pkBespoke}
+	</delete>
+	<!-- 获取预约信息 -->
+	<select id="get" parameterType="map" resultMap="tblBespokeResultMap">
+		select
+		pk_Bespoke,
+		besp_ElectricPileId,
+		besp_BespokeTime,
+		besp_BespokeRemark,
+		besp_BespokeTimes,
+		besp_BespokePrice,
+		besp_BespokeStatus,
+		besp_Createdate,
+		besp_Updatedate,
+		besp_ElectricPileHead,
+		besp_UserInfo,
+		besp_ResePaymentCode,
+		besp_FrozenAmt,
+		besp_BeginTime,
+		besp_EndTime
+		from
+		tbl_Bespoke
+		where
+		pk_Bespoke=#{pkBespoke}
+	</select>
+
+	<select id="findOne" parameterType="map" resultMap="findResultMap">
+		select
+		pk_Bespoke,
+		besp_ElectricPileId,
+		besp_BespokeTime,
+		besp_BespokeRemark,
+		besp_BespokeTimes,
+		besp_BespokePrice,
+		besp_BespokeStatus,
+		besp_Createdate,
+		besp_Updatedate,
+		besp_ElectricPileHead,
+		besp_UserInfo,
+		besp_ResePaymentCode,
+		besp_FrozenAmt
+		from tbl_Bespoke
+		where
+		pk_Bespoke=#{pkBespoke}
+	</select>
+
+	<select id="find" parameterType="map" resultMap="findResultMap">
+		select
+		pk_Bespoke,
+		besp_ElectricPileId,
+		besp_BespokeTime,
+		besp_BespokeRemark,
+		besp_BespokeTimes,
+		besp_BespokePrice,
+		besp_BespokeStatus,
+		besp_Createdate,
+		besp_Updatedate,
+		besp_ElectricPileHead,
+		besp_UserInfo,
+		besp_ResePaymentCode,
+		besp_FrozenAmt
+		from tbl_Bespoke
+		<where>
+			<if test="pkBespoke != null">
+				pk_Bespoke=#{pkBespoke}
+			</if>
+			<if test="bespElectricpileid != null">
+				and besp_ElectricPileId=#{bespElectricpileid}
+			</if>
+			<if test="bespBespoketime != null">
+				and besp_BespokeTime=#{bespBespoketime}
+			</if>
+			<if test="bespBespokeremark != null">
+				and besp_BespokeRemark=#{bespBespokeremark}
+			</if>
+			<if test="bespBespoketimes != null">
+				and besp_BespokeTimes=#{bespBespoketimes}
+			</if>
+			<if test="bespBespokeprice != null">
+				and besp_BespokePrice=#{bespBespokeprice}
+			</if>
+			<if test="bespBespokestatus != null">
+				and besp_BespokeStatus=#{bespBespokestatus}
+			</if>
+			<if test="bespCreatedate != null">
+				and besp_Createdate=#{bespCreatedate}
+			</if>
+			<if test="bespUpdatedate != null">
+				and besp_Updatedate=#{bespUpdatedate}
+			</if>
+			<if test="bespElectricpilehead != null">
+				and besp_ElectricPileHead=#{bespElectricpilehead}
+			</if>
+			<if test="bespUserinfo != null">
+				and besp_UserInfo=#{bespUserinfo}
+			</if>
+			<if test="bespResepaymentcode != null">
+				and besp_ResePaymentCode=#{bespResepaymentcode}
+			</if>
+			<if test="bespFrozenamt != null">
+				and besp_FrozenAmt=#{bespFrozenamt}
+			</if>
+		</where>
+	</select>
+
+	<select id="page" parameterType="map" resultMap="pageResultMap">
+		select
+		pk_Bespoke,
+		besp_ElectricPileId,
+		besp_BespokeTime,
+		besp_BespokeRemark,
+		besp_BespokeTimes,
+		besp_BespokePrice,
+		besp_BespokeStatus,
+		besp_Createdate,
+		besp_Updatedate,
+		besp_ElectricPileHead,
+		besp_UserInfo,
+		besp_ResePaymentCode,
+		besp_FrozenAmt
+		from tbl_Bespoke
+		<where>
+			<if test="pkBespoke != null">
+				pk_Bespoke=#{pkBespoke}
+			</if>
+			<if test="bespElectricpileid != null">
+				and besp_ElectricPileId=#{bespElectricpileid}
+			</if>
+			<if test="bespBespoketime != null">
+				and besp_BespokeTime=#{bespBespoketime}
+			</if>
+			<if test="bespBespokeremark != null">
+				and besp_BespokeRemark=#{bespBespokeremark}
+			</if>
+			<if test="bespBespoketimes != null">
+				and besp_BespokeTimes=#{bespBespoketimes}
+			</if>
+			<if test="bespBespokeprice != null">
+				and besp_BespokePrice=#{bespBespokeprice}
+			</if>
+			<if test="bespBespokestatus != null">
+				and besp_BespokeStatus=#{bespBespokestatus}
+			</if>
+			<if test="bespCreatedate != null">
+				and besp_Createdate=#{bespCreatedate}
+			</if>
+			<if test="bespUpdatedate != null">
+				and besp_Updatedate=#{bespUpdatedate}
+			</if>
+			<if test="bespElectricpilehead != null">
+				and besp_ElectricPileHead=#{bespElectricpilehead}
+			</if>
+			<if test="bespUserinfo != null">
+				and besp_UserInfo=#{bespUserinfo}
+			</if>
+			<if test="bespResepaymentcode != null">
+				and besp_ResePaymentCode=#{bespResepaymentcode}
+			</if>
+			<if test="bespFrozenamt != null">
+				and besp_FrozenAmt=#{bespFrozenamt}
+			</if>
+		</where>
+	</select>
+
+	<!-- 预约 获取电桩枪口名称 预约单价 -->
+	<select id="selectBespoke" parameterType="map" resultMap="findResultMap">
+		select
+		ePHe_ElectricpileHeadName ePHeElectricpileHeadName,
+		ePHe_ElectricpileHeadState ePHeElectricpileHeadState,
+		(select
+		raIn_ReservationRate
+		from
+		tbl_RateInformation r left join
+		tbl_ElectricPile e on r.pk_RateInformation = e.elPi_RateInformationId
+		where e.pk_ElectricPile=#{pkElectricPile}) unitPrice
+		from
+		tbl_ElectricPileHead
+		<where>
+			<if test="pkElectricpilehead != null">
+				pk_ElectricpileHead = #{pkElectricpilehead}
+			</if>
+		</where>
+	</select>
+	<!-- 根据id获取预约信息 -->
+	<select id="selectBespokeById" parameterType="String" resultMap="findResultMap">
+		select
+		e.ePHe_ElectricpileHeadName ePHeElectricpileHeadName,
+		e.ePHe_ElectricpileHeadState ePHeElectricpileHeadState,
+		e.ePHe_ElectricpileHeadId,
+		e.eph_num,
+		e.hava_car_place_lock,
+		d.have_led_flash,
+		d.elPi_ElectricPileCode,
+		d.elPi_ElectricPileName,
+		d.elPi_ElectricPileAddress,
+		d.elPi_ChargingMode,
+		d.ep_num,
+		d.elPi_PowerInterface,
+		d.pk_ElectricPile,
+		d.elPi_RelevancePowerStation,
+		(CASE WHEN
+		b.besp_BespokeTime IS NULL THEN '' ELSE b.besp_BespokeTime
+		END)
+		besp_BespokeTime,
+		(CASE WHEN b.besp_FrozenAmt IS NULL THEN '' ELSE
+		b.besp_FrozenAmt END) besp_FrozenAmt,
+		b.pk_Bespoke,
+		b.besp_ResePaymentCode,
+		b.besp_BeginTime,
+		b.besp_EndTime,
+		besp_ElectricPileHead,elPi_Longitude,elPi_Latitude,
+		(select
+		raIn_ReservationRate
+		from
+		tbl_RateInformation r
+		left join tbl_ElectricPile e on
+		r.pk_RateInformation=e.elPi_RateInformationId
+		where e.pk_ElectricPile = b.besp_ElectricPileId ) unitPrice
+		from
+		(select
+		besp_BespokeTime,besp_FrozenAmt,pk_Bespoke,besp_ResePaymentCode,
+		besp_BeginTime,besp_EndTime,besp_ElectricPileHead,besp_ElectricPileId,besp_BespokeStatus
+		from tbl_Bespoke where pk_Bespoke = #{pkBespoke}) b
+		left join tbl_ElectricPileHead e on e.pk_ElectricpileHead =
+		b.besp_ElectricPileHead
+		left join tbl_electricpile d on e.pk_ElectricPile = d.pk_ElectricPile
+		<!-- where (b.besp_BespokeStatus = 4 or b.besp_BespokeStatus = 3) -->
+	</select>
+
+	<!-- 获取电桩，枪口信息,账户余额 -->
+	<select id="selectElectInfo" parameterType="map" resultType="map">
+		select
+		eh.ePHe_ElectricpileHeadName ePHeElectricpileHeadName,
+		e.elPi_ElectricPileName elPiElectricPileName,
+		eh.pk_ElectricpileHead
+		pkElectricpileHead,
+		e.elPi_ElectricPileAddress elPiElectricPileAddress,
+		e.pk_ElectricPile pkElectricPile,
+		(select usIn_AccountBalance from
+		tbl_UserInfo where pk_UserInfo = #{pkUserinfo}) usInAccountBalance,
+		(select sum(besp_FrozenAmt) from tbl_Bespoke where besp_UserInfo =
+		#{pkUserinfo}
+		and (besp_BespokeStatus =3 or besp_BespokeStatus =4) and <![CDATA[besp_EndTime>(select now())]]>)
+		frozenAmt
+		from
+		tbl_ElectricPileHead eh left join tbl_ElectricPile e
+		on
+		eh.pk_ElectricPile = e.pk_ElectricPile
+		where
+		eh.pk_ElectricpileHead =
+		#{pkElectricpileHead}
+	</select>
+	<!-- 获取用户被冻结金额 -->
+	<select id="selectFrozenAmt" parameterType="map" resultType="double">
+		select sum(besp_FrozenAmt)
+		from tbl_Bespoke
+		<where>
+			besp_UserInfo = #{pkUserinfo}
+			<if test="pkBespoke !=null">
+				and pk_Bespoke != #{pkBespoke}
+			</if>
+			and
+			(besp_BespokeStatus = 3 or besp_BespokeStatus = 4)
+			and
+			<![CDATA[besp_EndTime>(select now())]]>
+		</where>
+
+	</select>
+
+	<!-- 我的预约列表 -->
+	<select id="selectBespokes" parameterType="map" resultMap="findResultMap">
+		select
+		b.pk_Bespoke,
+		b.besp_Createdate,
+		b.besp_FrozenAmt,
+		besp_BespokeTime,
+		b.besp_BespokeStatus,
+		b.besp_ElectricPileHead,
+		(SELECT
+		ePHe_ElectricpileHeadId from tbl_electricpilehead where
+		pk_ElectricpileHead = b.besp_ElectricPileHead) electricPileHeadCode,
+		b.besp_BeginTime,
+		b.besp_RealityTime besp_EndTime,
+		besp_BespokePrice,
+		b.besp_OrderType,
+		e.elPi_ElectricPileCode elPiElectricPileCode,
+		e.pk_ElectricPile,
+		e.elPi_Longitude,
+		e.elPi_Latitude,
+		besp_ResePaymentCode,
+		elPi_ElectricPileName,
+		elPi_ElectricPileAddress
+		from
+		tbl_Bespoke b left join tbl_ElectricPile e on
+		b.besp_ElectricPileId = e.pk_ElectricPile
+		where
+		b.besp_UserInfo =
+		#{bespUserInfo} and b.besp_BespokeStatus!=5 and
+		b.besp_BespokeStatus!=6
+		order by b.besp_BeginTime desc limit 0,10
+	</select>
+
+	<select id="selectBespokesN" parameterType="map" resultType="HashMap">
+		select
+		b.pk_Bespoke,
+		b.besp_Createdate,
+		b.besp_FrozenAmt,
+		b.besp_BespokeTimes,
+		b.besp_BespokeStatus,
+		b.besp_ElectricPileHead,
+		b.besp_BeginTime,
+		b.besp_EndTime,
+		b.besp_BespokeStatus,
+		e.elPi_ElectricPileCode elPiElectricPileCode,
+		e.elPi_ElectricPileAddress
+		from
+		tbl_Bespoke b left join
+		tbl_ElectricPile
+		e
+		on b.besp_ElectricPileId =
+		e.pk_ElectricPile
+		where
+		b.besp_UserInfo =
+		#{bespUserInfo}
+		and
+		b.besp_BespokeStatus!=5
+		group by
+		b.besp_EndTime
+		desc,b.besp_BeginTime desc
+		limit 0,4
+	</select>
+
+	<!-- 更新预约状态 -->
+	<update id="updateBespStatus" parameterType="map">
+		update tbl_Bespoke
+		set
+		<if test="bespUpdatedate !=null">
+			besp_Updatedate=#{bespUpdatedate},
+		</if>
+		<if test="bespEndTime != null">
+			besp_EndTime = #{bespEndTime},
+		</if>
+		<if test="bespBespoketime !=null">
+			besp_BespokeTime = #{bespBespoketime},
+		</if>
+		<if test="bespFrozenamt !=null">
+			besp_FrozenAmt = #{bespFrozenamt},
+		</if>
+		<if test="bespFrozenamt !=null">
+			besp_FrozenAmt = #{bespFrozenamt},
+		</if>
+		<if test="bespRealityTime !=null">
+			besp_RealityTime = #{bespRealityTime},
+		</if>
+		besp_BespokeStatus=#{bespBespokestatus}
+		where
+		pk_Bespoke=#{pkBespoke}
+	</update>
+	<!-- 判断此枪口是否被预约 -->
+	<select id="isBespoke" parameterType="int" resultType="map">
+		select count(pk_Bespoke) bespokeCount,
+		(select
+		ePHe_ElectricpileHeadState from tbl_ElectricPileHead where
+		pk_ElectricpileHead = #{bespElectricPileHead}) headState
+		from
+		tbl_Bespoke
+		where
+		besp_ElectricPileHead =
+		#{bespElectricPileHead}
+		and
+		(besp_BespokeStatus = 3 or
+		besp_BespokeStatus = 4)
+		and <![CDATA[besp_EndTime>(select now())]]>
+	</select>
+
+	<!-- <resultMap id="TblUserinfo" type="TblUserinfo"> <id property="usinAccountbalance" 
+		column="usIn_AccountBalance" /> <result property="usinIccode" column="usInICcode" 
+		/> <result property="usinPhone" column="usInPhone"/> <result property="elPiElectricPileCode" 
+		column="elPiElectricPileCode"/> <result property="electricpileHeadId" column="electricpileHeadId"/> 
+		</resultMap> -->
+
+	<!-- 获取电桩编号 用户账户 用户余额 枪头编号 -->
+	<select id="selectUserAndElectInfo" parameterType="TblBespoke"
+		resultType="TblUserinfo">
+		select
+		(
+		SELECT
+		b.account_balance
+		FROM
+		fin_account b
+		WHERE
+		a.account_id = b.account_id
+		) AS usInAccountBalance,
+		(SELECT
+		user_account
+		FROM
+		tbl_user
+		WHERE
+		user_id = #{bespUserinfo}
+		) AS usInPhone,
+		norm_device_id did,
+		(SELECT
+		elPi_ElectricPileCode
+		FROM
+		tbl_ElectricPile
+		WHERE
+		pk_ElectricPile = #{bespElectricpileid}
+		)AS elPiElectricPileCode,
+		(SELECT
+		ePHe_ElectricpileHeadId
+		FROM
+		tbl_ElectricPileHead
+		WHERE
+		pk_ElectricpileHead = #{bespElectricpilehead}
+		) AS electricpileHeadId
+		from
+		tbl_user_normal a
+		where
+		a.user_id = #{bespUserinfo}
+	</select>
+
+	<!-- 获取预约电桩单价 -->
+	<select id="selectUnitPrice" parameterType="int" resultType="double">
+
+		select
+		raIn_ReservationRate unitPrice
+		from
+		tbl_RateInformation r left
+		join
+		tbl_ElectricPile e on r.pk_RateInformation =
+		e.elPi_RateInformationId
+		where e.pk_ElectricPile=#{pkElectricPile}
+
+		<!-- select raIn_ReservationRate unitPrice from tbl_RateInformation where 
+			raIn_ElectricPileID = #{pkElectricPile} -->
+	</select>
+	<!-- 判断此枪口是否处于锁定桩体 1：取消预约 2：结束预约 3：续预约 4：预约中 5:预约确认中 6：预约失败 -->
+	<select id="selectLockPilehead" parameterType="map" resultType="long">
+		select count(pk_Bespoke)
+		from
+		tbl_Bespoke
+		where
+		besp_ElectricPileHead =
+		#{bespElectricpilehead}
+		and
+		besp_BespokeStatus = #{bespokeStatus}
+	</select>
+	<!-- 根据用户id判断此用户当前是否有预约枪口 -->
+	<select id="selectCountByUserId" parameterType="TblBespoke"
+		resultType="int">
+		select
+		count(pk_Bespoke)
+		from
+		tbl_Bespoke
+		where
+		besp_UserInfo =
+		#{bespUserinfo}
+		and (besp_BespokeStatus = 3 or besp_BespokeStatus = 4)
+		and <![CDATA[besp_EndTime>(select now())]]>
+	</select>
+
+	<!-- 获取用户未支付的预约单数量 -->
+	<select id="getUnpayNumByUserId" parameterType="TblBespoke"
+		resultType="int">
+		select count(*) from tbl_Bespoke
+		where besp_UserInfo = #{bespUserinfo} and besp_OrderType = 0
+		and besp_BespokeStatus != 5
+		and besp_BespokeStatus != 6
+	</select>
+
+	<!-- 获取到预约结束时间还未处理的预约 -->
+	<select id="selectAtEndTime" parameterType="map" resultMap="tblBespokeResultMap">
+		select
+		pk_Bespoke,
+		besp_ElectricPileId,
+		besp_BespokeTime,
+		besp_BespokeRemark,
+		besp_BespokeTimes,
+		besp_BespokePrice,
+		besp_BespokeStatus,
+		besp_Createdate,
+		besp_Updatedate,
+		besp_ElectricPileHead,
+		besp_UserInfo,
+		besp_ResePaymentCode,
+		besp_FrozenAmt,
+		besp_BeginTime,
+		besp_EndTime
+		from tbl_Bespoke
+		where
+		(besp_BespokeStatus = 3 or besp_BespokeStatus = 4)
+		and 
+		<![CDATA[besp_EndTime<=(select now())]]>
+	</select>
+
+	<select id="getBpByUidAndHeadid" parameterType="map" resultType="String">
+		select besp_ResePaymentCode from tbl_bespoke where
+		besp_ElectricPileHead=#{headid} and besp_UserInfo=#{uid} and
+		besp_ElectricPileId=#{epid}
+	</select>
+
+	<select id="getBespIdByBespCodeAndUid" parameterType="TblBespoke"
+		resultType="int">
+		select case when pk_Bespoke is null then 0 else pk_Bespoke
+		end pk_Bespoke from tbl_bespoke
+		where besp_ResePaymentCode = #{bespResepaymentcode} and besp_UserInfo =
+		#{bespUserinfo}
+	</select>
+</mapper> 

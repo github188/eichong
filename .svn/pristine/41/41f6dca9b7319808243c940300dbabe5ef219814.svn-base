@@ -1,0 +1,82 @@
+package com.wanma.ims.service;
+
+import java.util.List;
+
+import com.wanma.ims.common.domain.LevelDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.dto.BaseResultDTO;
+/**
+ * 等级Service
+ */
+public interface LevelService {
+
+	/**
+	 * 根据ID查询等级
+	 * @param
+	 * */
+	public List<LevelDO> getLevelListByIds(List<Long> ids);
+	
+	/**
+	 * 根据渠道ID查询等级
+	 * @param cpyId
+	 * */
+	public List<LevelDO> getLevelListByCpyId(Long cpyId);
+	/**
+	 * 获取等级数量
+	 * @param level
+	 * @return
+	 */
+	public long getLevelCount(LevelDO level);
+	/**
+	 * 获取等级列表
+	 * @param level
+	 * @return
+	 */
+	public List<LevelDO> getLevelList(LevelDO level);
+	/**
+	 * 删除等级
+	 * @param level
+	 * @return
+	 */
+	public BaseResultDTO removeLevel(LevelDO level, UserDO loginUser);
+	/**
+	 * 设为默认
+	 * @param level
+	 * @return
+	 */
+	public boolean setLevelDefault(LevelDO level);
+	/**
+	 * 判断序列是否存在
+	 * @author mb
+	 * @param 
+	 * @return
+	 */
+	public boolean checkLevelCode(LevelDO level);
+	/**
+	 * 判断等级名称是否存在
+	 * @author mb
+	 * @param 
+	 * @return
+	 */
+	public boolean checkLevelName(LevelDO level);
+	/**
+	 * 新增等级
+	 * @author mb
+	 * @param 
+	 * @return
+	 */
+	public boolean addLevel(LevelDO level);
+	/**
+	 * 根据公司id 查询等级
+	 * @author mb
+	 * @param 
+	 * @return
+	 */
+	public List<LevelDO> getLevelByCpyId(Long cpyId);
+
+	
+	
+	
+	
+
+}

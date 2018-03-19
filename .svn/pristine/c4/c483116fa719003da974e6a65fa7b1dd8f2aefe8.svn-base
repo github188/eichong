@@ -1,0 +1,70 @@
+﻿<!-- 定义一个工程，默认任务为warFile。 -->
+<!DOCTYPE xml>
+<project name="api" default="war" basedir=".">
+	<tstamp>
+		<format property="now.time" pattern="MMddhhmm" />
+	</tstamp>
+
+	<property name="html.version" value="4.2.2" />
+
+	<property name="war.name" value="html-${html.version}-${now.time}.war" />
+
+	<property name="path.wai" value="D:/configure/tomcat/apache-tomcat-7.0.471/lib" />
+
+	<!-- 定义路径，编译java文件时用到的jar包。 -->
+	<path id="project.lib">
+		<fileset dir="${basedir}/webroot/WEB-INF/lib">
+			<include name="**/*.jar" />
+		</fileset>
+		<fileset dir="${path.wai}">
+			<include name="jsp-api.jar" />
+			<include name="servlet-api.jar" />
+		</fileset>
+	</path>
+
+	<!-- 定义任务，清空任务：清空原有的class文件，创建新的build路径。 -->
+	<target name="clean">
+		<delete dir="${basedir}/build" />
+		<mkdir dir="${basedir}/build" />
+	</target>
+
+	<!-- 定义任务，编译src文件夹中的java文件，编译后的class文件放到创建的文件夹下。 -->
+	<target name="compile" depends="clean">
+		<javac srcdir="${basedir}/src" destdir="${basedir}/build" includeantruntime="false" debug="true">
+
+			<classpath refid="project.lib">
+			</classpath>
+
+		</javac>
+		<copy todir="${basedir}/build/">
+			<fileset dir="${basedir}/src">
+				<exclude name="**/*.java" />
+			</fileset>
+			<fileset dir="${basedir}/conf">
+				<exclude name="**/*.java" />
+			</fileset>
+		</copy>
+	</target>
+
+	<!-- 定义默认任务，将class文件集合成jar包。 -->
+	<target name="war" depends="compile">
+		<!-- 删除原有war包。 -->
+		<delete dir="${basedir}/target/${war.name}" />
+		<!-- 建立新war包。 -->
+		<war destfile="${basedir}/target/${war.name}" webxml="${basedir}/webroot/WEB-INF/web.xml">
+			<!-- 将非jar和非class文件拷贝到war包的对应路径下。 -->
+			<fileset dir="${basedir}/webroot">
+				<include name="**/**.*" />
+				<exclude name="**/*.jar" />
+				<exclude name="**/*.class" />
+			</fileset>
+			<!-- 将jar和class文件拷贝到war包的对应路径下。 -->
+			<lib dir="${basedir}/webroot/WEB-INF/lib" />
+			<classes dir="${basedir}/build" />
+		</war>
+
+		<scp file="${basedir}/target/${war.name}" todir="apache:Frdr2312dd22@10.9.2.49:deploy/html" trust="true" />
+		<echo message="文件服务器路径:http://10.9.2.49/deploy/html/${war.name}" />
+	</target>
+
+</project>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.AppLoginRecordMapper">
+	<resultMap type="AppLoginRecord" id="resultRecord">
+		<id property="pkLoginRecord" column="pk_loginRecord" />
+		<result property="userId" column="userId" />
+		<result property="deviceType" column="deviceType" />
+		<result property="registrationID" column="registrationID" />
+		<result property="ipAddress" column="ip_address" />
+		<result property="provinceCode" column="province_code" />
+		<result property="cityCode" column="city_code" />
+		<result property="areaCode" column="area_code" />
+		<result property="longitude" column="longitude" />
+		<result property="latitude" column="latitude" />
+		<result property="createdate" column="createdate" />
+		<result property="userAccount" column="user_account" />
+	</resultMap>
+	    <sql id="query-columns">
+	    ar.pk_loginRecord,ar.userId,ar.deviceType,ar.registrationID,ar.ip_address,ar.province_code,ar.city_code,ar.area_code,
+	    ar.longitude,ar.latitude,date_format(ar.createdate,'%Y-%m-%d %T') createdate
+	    </sql>
+ 
+	<select id="getAppLoginRecordList" parameterType="AppLoginRecord" resultMap="resultRecord">
+		select <include refid="query-columns"/>,
+			(SELECT mp.PROVINCE_NAME FROM tb_m_province mp where ar.province_code = mp.PROVINCE_ID) provinceName,
+			(SELECT mc.CITY_NAME FROM tb_m_city mc where ar.city_code = mc.CITY_ID) cityName,
+			 u.user_account
+		from 
+		tbl_applogin_record ar,tbl_user u
+		where u.user_id = ar.userId
+		<if test="userAccount !=null and userAccount !='' ">
+			and u.user_account = #{userAccount}
+		</if>
+		<if test="deviceType !=null">
+			and ar.deviceType = #{deviceType}
+		</if>
+		<if test="createdateBegin !=null and createdateBegin != ''">
+			and ar.createdate &gt;= #{createdateBegin}
+		</if>
+		<if test="createdateEnd !=null and createdateEnd != '' ">
+			and ar.createdate &lt;= DATE_ADD(#{createdateEnd},INTERVAL 1 DAY)
+		</if>
+		order by ar.createdate desc
+		<if test="pager!=null">
+           limit #{pager.offset},#{pager.pageSize}
+        </if>
+	</select>
+	 <select id="getAppLoginRecordCount" parameterType="AppLoginRecord" resultType="long">
+		select count(*)
+		from 
+		tbl_applogin_record ar,tbl_user u
+		where u.user_id = ar.userId
+		 <if test="userAccount !=null and userAccount !='' ">
+			 and u.user_account = #{userAccount}
+		 </if>
+		 <if test="deviceType !=null">
+			 and ar.deviceType = #{deviceType}
+		 </if>
+		 <if test="createdateBegin !=null and createdateBegin != ''">
+			 and ar.createdate &gt;= #{createdateBegin}
+		 </if>
+		 <if test="createdateEnd !=null and createdateEnd != '' ">
+			 and ar.createdate &lt;= DATE_ADD(#{createdateEnd},INTERVAL 1 DAY)
+		 </if>
+	</select>
+ 
+   
+</mapper>

@@ -1,0 +1,85 @@
+package com.wanma.ims.service.impl;
+
+import java.util.Date;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.wanma.ims.common.domain.IntegralActivityDO;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.mapper.IntegralActivityMapper;
+import com.wanma.ims.service.IntegralActivityService;
+
+@Service("integralActivityService")
+public class IntegralActivityServiceImpl implements IntegralActivityService {
+
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	@Autowired
+    private IntegralActivityMapper integralActivityMapper;
+	
+	@Override
+	public Long getIntegralActivityCount(IntegralActivityDO integralActivity) {
+		return integralActivityMapper.getIntegralActivityCount(integralActivity);
+	}
+	
+	@Override
+	public List<IntegralActivityDO> getIntegralActivityList(IntegralActivityDO integralActivity) {
+		return integralActivityMapper.getIntegralActivityList(integralActivity);
+	}
+	
+	@Override
+	public BaseResultDTO modifyIntegralActivity(IntegralActivityDO integralActivity) throws Exception{
+		BaseResultDTO baseResultDTO = new BaseResultDTO();
+		
+		if (integralActivity.getModifier() == null) {
+			integralActivity.setModifier("");
+		}
+		if (integralActivity.getGmtModified() == null) {
+			integralActivity.setGmtModified(new Date());
+		}
+		
+		int result =  integralActivityMapper.modifyIntegralActivity(integralActivity);
+		if (result != 1) {
+			log.error(this.getClass() + ".modifyIntegralActivity() error : 修改积分活动扩展属性失败!");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("修改积分活动扩展属性失败!");
+		}
+		return baseResultDTO;
+	}
+
+	@Override
+	public BaseResultDTO addIntegralActivity(IntegralActivityDO integralActivity) throws Exception {
+		BaseResultDTO baseResultDTO = new BaseResultDTO();
+		
+		if (integralActivity.getCreator() == null) {
+			integralActivity.setCreator("");
+		}
+		if (integralActivity.getGmtCreate() == null) {
+			integralActivity.setGmtCreate(new Date());
+		}
+		
+		int result =  integralActivityMapper.addIntegralActivity(integralActivity);
+		if (result != 1) {
+			log.error(this.getClass() + ".addIntegralActivity() error : 增加积分活动扩展属性失败!");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("增加积分活动扩展属性失败！");
+		}
+		return baseResultDTO;
+	}
+
+	@Override
+	public BaseResultDTO deleteIntegralActivity(IntegralActivityDO integralActivity) throws Exception {
+		BaseResultDTO baseResultDTO = new BaseResultDTO();
+		
+		int result =  integralActivityMapper.deleteIntegralActivity(integralActivity);
+		if (result != 1) {
+			log.error(this.getClass() + ".deleteIntegralActivity() error : 删除积分活动扩展属性失败!");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("删除积分活动扩展属性失败！");
+		}
+		return baseResultDTO;
+	}
+}

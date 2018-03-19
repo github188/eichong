@@ -1,0 +1,206 @@
+package com.wanma.ims.service.impl;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Maps;
+import com.wanma.ims.common.domain.CompanyDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.common.dto.BatchResultDTO;
+import com.wanma.ims.common.facade.CompanyFacadeService;
+import com.wanma.ims.constants.ResultCodeConstants;
+import com.wanma.ims.constants.WanmaConstants;
+import com.wanma.ims.mapper.CompanyMapper;
+import com.wanma.ims.mapper.InitialMapper;
+import com.wanma.ims.service.CompanyService;
+import com.wanma.ims.service.FinAccountService;
+import com.wanma.ims.util.ObjectUtil;
+
+@Service
+public class CompanyServiceImpl implements CompanyService, CompanyFacadeService {
+
+	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+	@Autowired
+	private CompanyMapper companyMapper;
+	@Autowired
+	private FinAccountService finAccountService;
+	@Autowired
+	private InitialMapper initialMapper;
+
+	@Override
+	public BatchResultDTO<CompanyDO> getCpyListByUserLevel(UserDO loginUser, String provinceCode, String cityCode) {
+		BatchResultDTO<CompanyDO> result = new BatchResultDTO<CompanyDO>();
+		try {
+			if (loginUser.getUserLevel() == WanmaConstants.USER_LEVEL_WORK && ObjectUtil.isEmpty(loginUser.getCpyId())) {
+				result.setResultCode(ResultCodeConstants.ERROR_PARAM);
+				result.setErrorDetail("渠道ID不能为空");
+				result.setSuccess(false);
+				return result;
+			}
+			Map<String, String> paramMap = new HashMap<String, String>();
+			paramMap.put("provinceCode", provinceCode);
+			paramMap.put("cityCode", cityCode);
+			paramMap.put("cpyId", String.valueOf(loginUser.getCpyId()));
+
+			List<CompanyDO> list = null;
+			switch (loginUser.getUserLevel()) {
+				case WanmaConstants.USER_LEVEL_SUPER:
+				case WanmaConstants.USER_LEVEL_ADMIN:
+					list = companyMapper.selectCpyListBySystem(paramMap);
+					break;
+				case WanmaConstants.USER_LEVEL_WORK:
+					list = companyMapper.selectCpyListByWork(paramMap);
+					break;
+				default:
+					list = companyMapper.selectCpyListByOwner(paramMap);
+					break;
+			}
+			result.setModule(list);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setErrorDetail("系统异常!");
+			LOGGER.error("CompanyServiceImpl called getCpyListByProvinces failed", e);
+		}
+		return result;
+	}
+
+	@Override
+	public List<CompanyDO> getCompanyListByIds(List<Long> ids) {
+		return companyMapper.selectCpyListByIds(ids);
+	}
+
+	@Override
+	public CompanyDO getCompanyListById(Long cpyId) {
+		CompanyDO company = companyMapper.selectCpyListById(cpyId);
+		Map<Long, CompanyDO> companyMap = getCompanyMap(null);
+		if (CollectionUtils.isNotEmpty(companyMap.keySet())) {
+			generalCompany(company,companyMap);
+		}
+		return company;
+	}
+
+	@Override
+	public Long countCompanyList(CompanyDO companyDO) {
+		return companyMapper.countCompanyList(companyDO);
+	}
+
+	@Override
+	public List<CompanyDO> getCompanyList(CompanyDO companyDO) {
+		List<CompanyDO> list = companyMapper.selectCompanyList(companyDO);
+		if (CollectionUtils.isEmpty(list)) {
+			return new ArrayList<CompanyDO>();
+		}
+		Map<Long, CompanyDO> companyMap = getCompanyMap(null);
+		for (CompanyDO company : list) {
+			if(CollectionUtils.isNotEmpty(companyMap.keySet())){
+				generalCompany(company,companyMap);
+			}
+		}
+		return list;
+	}
+
+	@Override
+	@Transactional
+	public BaseResultDTO addCompany(CompanyDO companyDO) throws Exception{
+		BaseResultDTO result = new BaseResultDTO();
+			if (companyMapper.insertCompany(companyDO) <= 0) {
+				result.setSuccess(false);
+				result.setErrorDetail(ResultCodeConstants.ERROR_MSG_ADD_COMPANY);
+				return result;
+			}
+			companyDO.setSysType(WanmaConstants.SYS_TYPE_COMPANY);
+			Long accountId = finAccountService.addFinAccount(companyDO);
+			if (ObjectUtil.isEmpty(accountId)) {
+				result.setSuccess(false);
+				result.setErrorDetail(ResultCodeConstants.ERROR_MSG_EMPTY_ADD_ACCOUNT);
+				return result;
+			}
+			CompanyDO update = new CompanyDO();
+			update.setAccountId(accountId);
+			update.setCpyId(companyDO.getCpyId());
+			update.setModifier(companyDO.getCreator());
+			if (companyMapper.updateCompany(update) > 0) {
+				result.setSuccess(false);
+				result.setErrorDetail(ResultCodeConstants.ERROR_MSG_MODIFY_COMPANY_ACCOUNT);
+				return result;
+			}
+		return result;
+	}
+
+	@Override
+	public boolean modifyCompany(CompanyDO companyDO) {
+		return companyMapper.updateCompany(companyDO) > 0 ? true : false;
+	}
+
+	@Override
+	public boolean disableCompany(CompanyDO companyDO) {
+		return companyMapper.updateCompany(companyDO) > 0 ? true : false;
+	}
+
+	@Override
+	public Map<Long, CompanyDO> getCompanyMap(CompanyDO companyDO) {
+		Map<Long, CompanyDO> companyMap = new HashMap<Long, CompanyDO>();
+		try {
+			List<CompanyDO> companyList = companyMapper.selectCompanyList(companyDO);
+			if (CollectionUtils.isNotEmpty(companyList)) {
+				companyMap = Maps.uniqueIndex(companyList, new Function<CompanyDO, Long>() {
+
+					@Override
+					public Long apply(CompanyDO company) {
+						return company.getCpyId();
+					}
+				});
+			}
+		} catch (Exception e) {
+			LOGGER.error("CompanyServiceImpl called getCompanyMap failed", e);
+		}
+		return companyMap;
+	}
+
+	@Override
+	public boolean checkCompanyUnique(Map<String, String> param) {
+		return companyMapper.checkCompanyUnique(param) > 0 ? true : false;
+	}
+
+	@Override
+	public List<CompanyDO> getOperateCompanyList() {
+		return companyMapper.selectOperateCompanyList();
+	}
+	
+	private CompanyDO generalCompany(CompanyDO companyDO, Map<Long, CompanyDO> companyMap) {
+		CompanyDO parentCompany = companyMap.get(companyDO.getCpyParentId());
+		CompanyDO slaveCompany = companyMap.get(companyDO.getSlaveCpyId());
+		if (null != parentCompany) {
+			companyDO.setCpyParentName(parentCompany.getCpyName());
+		}
+		if (null != slaveCompany) {
+			companyDO.setSlaveCpyName(slaveCompany.getCpyName());
+		}
+		//TODO:省市区有时间改成批量
+		companyDO.setCpyProvinceName(initialMapper.selectProvinceById(companyDO.getCpyProvince()));
+		companyDO.setCpyCityName(initialMapper.selectCityById(companyDO.getCpyCity()));
+		return companyDO;
+	}
+
+	@Override
+	public List<CompanyDO> getCompanyByMaster(Long cpyId) {
+		return companyMapper.selectCpyListByMaster(cpyId);
+	}
+
+	@Override
+	public CompanyDO getCompanyByCpyInfo(CompanyDO companyDO) {
+		return companyMapper.getCompanyByCpyInfo(companyDO);
+	}
+
+}

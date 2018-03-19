@@ -1,0 +1,80 @@
+package com.wanma.ims.service.impl;
+
+import java.util.Date;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.wanma.ims.common.domain.FinAccountConfigRelaDO;
+import com.wanma.ims.common.domain.FinAccountRelationDO;
+import com.wanma.ims.common.domain.FinBillAccountDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.mapper.FinAccountConfigRelaMapper;
+import com.wanma.ims.service.FinAccountConfigRelaService;
+import com.wanma.ims.service.FinAccountRelationService;
+import com.wanma.ims.util.DateUtil;
+
+
+@Service("finAccountConfigRelaService")
+public class FinAccountConfigRelaServiceImpl implements FinAccountConfigRelaService {
+
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	
+	@Autowired
+	private FinAccountConfigRelaMapper finAccountConfigRelaMapper;
+
+	@Override
+	public Long getFinAccountConfigRelaCount(FinAccountConfigRelaDO finAccountConfigRela) {
+		return finAccountConfigRelaMapper.getFinAccountConfigRelaCount(finAccountConfigRela);
+	}
+	
+	@Override
+	public List<FinAccountConfigRelaDO> getFinAccountConfigRelaList(FinAccountConfigRelaDO finAccountConfigRela) {
+		return finAccountConfigRelaMapper.getFinAccountConfigRelaList(finAccountConfigRela);
+	}
+	
+	@Override
+	public int addFinAccountConfigRela(FinAccountConfigRelaDO finAccountConfigRela, UserDO user) {
+		finAccountConfigRela.setIsDel(0);
+
+		finAccountConfigRela.setCreator(user.getUserAccount());
+		finAccountConfigRela.setModifier(user.getUserAccount());
+		// 取系统当前时间
+		Date now = DateUtil.parse(DateUtil.getNow(DateUtil.TYPE_COM_YMDHMS));
+		finAccountConfigRela.setGmtCreate(now);
+		finAccountConfigRela.setGmtModified(now);
+
+		return finAccountConfigRelaMapper.addFinAccountConfigRela(finAccountConfigRela);
+	}
+	
+	@Override
+	public int modifyFinAccountConfigRela(FinAccountConfigRelaDO finAccountConfigRela, UserDO user) throws Exception{
+		FinAccountConfigRelaDO qryFinAccountConfigRela = new FinAccountConfigRelaDO();
+		qryFinAccountConfigRela.setPkId(qryFinAccountConfigRela.getPkId());
+		Long qryResult = finAccountConfigRelaMapper.getFinAccountConfigRelaCount(qryFinAccountConfigRela);
+		if (qryResult < 1) {
+			return 2;
+		}
+
+		finAccountConfigRela.setModifier(user.getUserAccount());
+		finAccountConfigRela.setGmtModified(DateUtil.parse(DateUtil.getNow(DateUtil.TYPE_COM_YMDHMS)));
+
+		return finAccountConfigRelaMapper.modifyFinAccountConfigRela(finAccountConfigRela);
+	}
+	
+	@Override
+	public int removeFinAccountConfigRela(FinAccountConfigRelaDO finAccountConfigRela) {
+		// 判断是否有维护账务配置
+		FinAccountConfigRelaDO qryFinAccountConfigRela = new FinAccountConfigRelaDO();
+		qryFinAccountConfigRela.setBillAccountId(finAccountConfigRela.getPkId());
+		Long qryReslut = finAccountConfigRelaMapper.getFinAccountConfigRelaCount(qryFinAccountConfigRela);
+		if (qryReslut > 0) {
+			return 2;
+		}
+
+		return finAccountConfigRelaMapper.removeFinAccountConfigRela(finAccountConfigRela);
+	}
+}

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsPurchasehistoryMapper">
+
+	<resultMap id="tblPurchasehistoryResultMap" type="TblPurchasehistory">
+		<id property="pkPurchasehistory" column="pk_PurchaseHistory" />
+		<result property="puhiType" column="puHi_Type" />
+		<result property="puhiPurchasehistorytime" column="puHi_PurchaseHistoryTime" />
+		<result property="puhiMonetary" column="puHi_Monetary" />
+		<result property="puhiConsumerremark" column="puHi_ConsumerRemark" />
+		<result property="puhiCreatedate" column="puHi_Createdate" />
+		<result property="puhiUpdatedate" column="puHi_Updatedate" />
+		<result property="puhiPurchasecontent" column="puHi_PurchaseContent" />
+		<result property="puhiUserid" column="puHi_UserId" />
+		<result property="puhiChargeType" column="puhi_ChargeType" />
+	</resultMap>
+	<resultMap id="findResultMap"  type="java.util.HashMap" extends="tblPurchasehistoryResultMap"></resultMap>
+
+	<select id="findPurchasehistory" parameterType="map" resultMap="tblPurchasehistoryResultMap">
+	  SELECT
+		ph.pk_PurchaseHistory,
+		ph.puHi_Type,
+		ph.puHi_PurchaseHistoryTime,
+		ph.puHi_Monetary,
+		ph.puHi_ConsumerRemark,
+		ph.puHi_Createdate,
+		ph.puHi_Updatedate,
+		ph.puHi_PurchaseContent,
+		ph.puHi_UserId,
+		a.user_account userPhone,
+		b.norm_real_name userName,
+		puhi_ChargeType
+	FROM
+		tbl_purchasehistory ph
+	<!-- INNER JOIN (select a.user_account,b.user_id,b.norm_real_name from tbl_user a,tbl_user_normal b where a.user_leval='6' and a.user_id=b.user_id) USER ON ph.puHi_UserId = USER.user_id -->
+	  LEFT JOIN tbl_user a on  ph.puHi_UserId = a.user_id
+	left JOIN tbl_user_normal b on ph.puHi_UserId = b.user_id
+	   <where>
+	   	and a.user_leval = 6 
+	     <if test="puhiType != null">
+	        and ph.puHi_Type=#{puhiType}
+	     </if>
+	     <if test="puhiUserid != null">
+	        and ph.puHi_UserId=#{puhiUserid}
+	     </if>
+	     
+	     <if test="userName != null and userName != ''">
+	        and (b.norm_real_name like concat('%',#{userName},'%') or a.user_account like concat('%',#{userName},'%') )
+	     </if>
+	     	<if test="beginTime !=null and beginTime !=''">
+				and puHi_PurchaseHistoryTime>=#{beginTime}
+			</if>
+			<if test="endTime !=null and endTime !=''">
+				<![CDATA[and puHi_PurchaseHistoryTime<= date_add(#{endTime}, interval 1 day)]]>
+				
+			</if>
+	   </where>
+	   order by ph.puHi_Createdate desc
+	   <if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	
+	<select id="findPurchasehistoryCount" parameterType="map" resultType="long">
+		 select 
+	     count(1)
+	   from tbl_purchasehistory ph 
+	   <!-- inner join (select a.user_account,b.user_id,b.norm_real_name from tbl_user a,tbl_user_normal b where a.user_id=b.user_id) user on
+	   ph.puHi_UserId = user.user_id -->
+	   LEFT JOIN tbl_user a on  ph.puHi_UserId = a.user_id
+	   left JOIN tbl_user_normal b on ph.puHi_UserId = b.user_id
+	   <where>
+	   		and a.user_leval = 6
+	     <if test="puhiType != null">
+	        and ph.puHi_Type=#{puhiType}
+	     </if>
+	     <if test="puhiUserid != null">
+	        and ph.puHi_UserId=#{puhiUserid}
+	     </if>
+	   	 <if test="beginTime !=null and beginTime !=''">
+				and puHi_PurchaseHistoryTime>=#{beginTime}
+		 </if>
+		 <if test="endTime !=null and endTime !=''">
+				<![CDATA[and puHi_PurchaseHistoryTime<=date_add(#{endTime}, interval 1 day)]]>
+		 </if>
+	     <if test="userName != null and userName != ''">
+	        and (b.norm_real_name like concat('%',#{userName},'%') or a.user_account like concat('%',#{userName},'%') )
+	     </if>
+	   </where>
+	</select>
+	
+</mapper> 

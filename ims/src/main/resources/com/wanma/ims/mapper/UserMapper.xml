@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.UserMapper">
+    <resultMap type="UserDO" id="resultUser">
+        <id column="user_id" property="userId"/>
+        <result column="user_account" property="userAccount"/>
+        <result column="user_password" property="userPassword"/>
+        <result column="user_leval" property="userLevel"/>
+        <result column="user_status" property="userStatus"/>
+        <result column="user_idcard" property="userIdcard"/>
+        <result column="user_head_img" property="userHeadImg"/>
+        <result column="province_code" property="provinceCode"/>
+        <result column="city_code" property="cityCode"/>
+        <result column="area_code" property="areaCode"/>
+        <result column="level_id" property="levelId"/>
+        <result column="creator" property="creator"/>
+        <result column="modifier" property="modifier"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="gmt_modified" property="gmtModified"/>
+    </resultMap>
+
+    <sql id="selectAllField">
+        user_id, user_account, user_password, user_leval, user_status, user_idcard, user_head_img,
+        province_code, city_code, area_code, level_id, creator, modifier, gmt_create, gmt_modified
+    </sql>
+
+    <!-- 根据id查询用户信息 -->
+    <select id="selectUserByUserId" parameterType="Long" resultMap="resultUser">
+        select
+        <include refid="selectAllField"/>
+        from tbl_user
+        where user_id = #{userId}
+    </select>
+
+    <!-- 根据ids查询用户信息 -->
+    <select id="selectUserByUserIds" parameterType="java.util.List" resultMap="resultUser">
+        select
+        <include refid="selectAllField"/>
+        from tbl_user
+        where 1 = 1
+        <if test="ids != null and ids.size() > 0">
+            and user_id in
+            <foreach collection="ids" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </if>
+    </select>
+
+    <!-- 根据用户帐号查询基表用户信息 -->
+    <select id="selectUserByUserAccount" parameterType="String" resultMap="resultUser">
+        select
+        <include refid="selectAllField"/>
+        from tbl_user
+        where user_account = #{userAccount} AND user_status != 3
+    </select>
+
+    <!-- 根据用户帐号和渠道Id查询用户信息 -->
+    <select id="selectUserByUserAccountAndCpyId" parameterType="Map" resultMap="resultUser">
+      SELECT * FROM
+        (SELECT tuser.*,companyUser.cpy_id cpyId,companyUser.account_id accountId FROM tbl_user tuser ,tbl_user_company companyUser WHERE tuser.user_id = companyUser.user_id
+        UNION ALL
+        SELECT tuser.*,normalUser.cpy_id cpyId,normalUser.account_id accountId FROM tbl_user tuser ,tbl_user_normal normalUser WHERE tuser.user_id = normalUser.user_id) tuser
+      WHERE user_account = #{userAccount} AND cpyId = #{cpyId}
+    </select>
+
+ 	<!-- 根据用户帐号和渠道Id查询用户信息 -->
+    <select id="selectNomalUserByUserAccount" parameterType="String" resultMap="resultUser">
+       SELECT * FROM tbl_user u,tbl_user_normal n
+		WHERE
+			u.user_id = n.user_id
+		AND u.user_status != 3
+		AND u.user_account = #{userAccount}
+    </select>
+
+    <!-- 登录 -->
+    <select id="loginUser" parameterType="UserDO" resultMap="resultUser">
+        SELECT
+            user_id,
+            user_account,
+            user_password,
+            user_leval,
+            user_status,
+            getFullPath('userAvatar', user_id) userImage
+        FROM tbl_user
+        WHERE user_status = 1
+              AND user_account = #{userAccount}
+              AND user_leval in (1,2,8)
+    </select>
+
+    <delete id="deleteByUserId" parameterType="Long">
+        DELETE FROM tbl_user
+        WHERE user_id = #{userId}
+    </delete>
+
+    <sql id="condition">
+        <where>
+            <if test="userId != null">
+                AND user_id = #{userId}
+            </if>
+            <if test="userAccount != null">
+                AND user_account LIKE "%"#{userAccount}"%"
+            </if>
+            <if test="userName != null">
+                AND user_name LIKE "%"#{userName}"%"
+            </if>
+            <if test="userStatus != null">
+                AND user_status = #{userStatus}
+            </if>
+            <if test="provinceCode != null">
+                AND province_code = #{provinceCode}
+            </if>
+            <if test="cityCode != null">
+                AND city_code = #{cityCode}
+            </if>
+            <if test="cpyId != null">
+                AND cpy_id = #{cpyId}
+            </if>
+            <if test="levelId != null">
+                AND level_id = #{levelId}
+            </if>
+            <if test="userIds != null and userIds.size() > 0">
+                and user_id in
+                <foreach collection="userIds" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+            AND user_status != 3
+        </where>
+    </sql>
+
+    <!-- 查询用户列表 -->
+    <select id="selectUserList" parameterType="UserDO" resultMap="resultUser">
+        SELECT * FROM
+        (SELECT tuser.*,normal.cpy_id cpy_id,normal.norm_car_company_id norm_car_company_id,
+        normal.norm_car_type_id norm_car_type_id,normal.norm_real_name user_real_name,normal.norm_name user_name,
+        normal.norm_sex user_sex,normal.norm_phone user_phone,0 cpy_type,normal.gmt_create
+        registered_time,normal.account_id account_id,normal.norm_car_company_id car_company_id,normal.norm_car_type_id
+        car_info_id,normal.norm_plate_num normPlateNum 
+        FROM tbl_user tuser, tbl_user_normal normal WHERE tuser.user_id = normal.user_id
+        <if test="cpyIdList != null and cpyIdList.size() > 0">
+            AND normal.cpy_id in
+            <foreach collection="cpyIdList" item="cpyIds" open="(" close=")" separator=",">
+                #{cpyIds}
+            </foreach>
+        </if>
+        UNION ALL
+        SELECT tuser.*,cpy_user.cpy_id cpy_id,-1 norm_car_company_id,
+        -1 norm_car_type_id,cpy_user.user_cpy_name user_real_name,cpy_user.user_name user_name,
+        cpy_user.user_cpy_sex user_sex,cpy_user.user_cpy_phone user_phone,1 cpy_type,cpy_user.gmt_create
+        registered_time,cpy_user.account_id
+        account_id,0 car_company_id,0 car_info_id,cpy_user.user_plate_num normPlateNum
+        FROM tbl_user tuser,tbl_user_company cpy_user WHERE tuser.user_id = cpy_user.user_id
+        <if test="cpyIdList != null and cpyIdList.size() > 0">
+            AND cpy_user.cpy_id in
+            <foreach collection="cpyIdList" item="cpyIds" open="(" close=")" separator=",">
+                #{cpyIds}
+            </foreach>
+        </if>
+        ) basic_user
+        <include refid="condition"/>
+        ORDER BY basic_user.cpy_type,gmt_modified DESC
+        <if test="pager!=null">
+            limit #{pager.offset},#{pager.pageSize}
+        </if>
+    </select>
+
+    <!-- 统计用户列表 -->
+    <select id="countUser" parameterType="UserDO" resultType="long">
+        SELECT count(1) FROM
+        (SELECT tuser.*,normal.cpy_id cpy_id,normal.norm_name user_name,normal.norm_real_name
+        user_real_name,normal.norm_sex user_sex,normal.norm_phone user_phone,0 user_type
+        FROM tbl_user tuser, tbl_user_normal normal WHERE tuser.user_id = normal.user_id
+        <if test="cpyIdList != null and cpyIdList.size() > 0">
+            AND normal.cpy_id in
+            <foreach collection="cpyIdList" item="cpyIds" open="(" close=")" separator=",">
+                #{cpyIds}
+            </foreach>
+        </if>
+        UNION ALL
+        SELECT tuser.*,cpy_user.cpy_id cpy_id, cpy_user.user_cpy_name user_name,"" user_real_name,''
+        user_sex,cpy_user.user_cpy_phone user_phone,1 user_type
+        FROM tbl_user tuser,tbl_user_company cpy_user WHERE tuser.user_id = cpy_user.user_id
+        <if test="cpyIdList != null and cpyIdList.size() > 0">
+            AND cpy_user.cpy_id in
+            <foreach collection="cpyIdList" item="cpyIds" open="(" close=")" separator=",">
+                #{cpyIds}
+            </foreach>
+        </if>
+        ) basic_user
+        <include refid="condition"/>
+    </select>
+
+    <insert id="insertUser" parameterType="UserDO" useGeneratedKeys="true" keyProperty="userId">
+        INSERT INTO tbl_user (user_id, user_account, user_password,
+                              user_leval, user_status, user_idcard,
+                              user_head_img, province_code, city_code,
+                              area_code, level_id, creator, modifier,
+                              gmt_create, gmt_modified)
+        VALUES (#{userId}, #{userAccount}, #{userPassword},
+                #{userLevel}, #{userStatus}, #{userIdcard},
+                #{userHeadImg}, #{provinceCode}, #{cityCode},
+                #{areaCode}, #{levelId}, #{creator},
+                #{modifier}, now(), now())
+    </insert>
+
+
+    <update id="updateByUserIdSelective" parameterType="UserDO">
+        update tbl_user
+        <set>
+            <if test="userAccount != null">
+                user_account = #{userAccount},
+            </if>
+            <if test="userPassword != null">
+                user_password = #{userPassword},
+            </if>
+            <if test="userLevel != null">
+                user_leval = #{userLevel},
+            </if>
+            <if test="userStatus != null">
+                user_status = #{userStatus},
+            </if>
+            <if test="userIdcard != null">
+                user_idcard = #{userIdcard},
+            </if>
+            <if test="userHeadImg != null">
+                user_head_img = #{userHeadImg},
+            </if>
+            <if test="provinceCode != null">
+                province_code = #{provinceCode},
+            </if>
+            <if test="cityCode != null">
+                city_code = #{cityCode},
+            </if>
+            <if test="areaCode != null">
+                area_code = #{areaCode},
+            </if>
+            <if test="levelId != null">
+                level_id = #{levelId},
+            </if>
+            <if test="userHeadImg != null">
+                user_head_img = #{userHeadImg},
+            </if>
+            <if test="modifier != null">
+                modifier = #{modifier},
+            </if>
+            gmt_modified = now(),
+        </set>
+        where user_id = #{userId}
+    </update>
+
+    <update id="updateByUserId" parameterType="UserDO">
+        UPDATE tbl_user
+        SET user_account  = #{userAccount},
+            user_password = #{userPassword},
+            user_leval    = #{userLeval},
+            user_status   = #{userStatus},
+            user_idcard   = #{userIdcard},
+            user_head_img = #{userHeadImg},
+            province_code = #{provinceCode},
+            city_code     = #{cityCode},
+            area_code     = #{areaCode},
+            level_id      = #{levelId},
+            modifier      = #{modifier},
+            gmt_modified  = now()
+        WHERE user_id = #{userId}
+    </update>
+
+
+    <select id="getUserListByCpyId" parameterType="long" resultMap="resultUser">
+	SELECT
+		c.user_id userId,
+		f.account_id accountId,
+		f.account_balance userBalance
+	FROM
+	fin_account f,
+	tbl_user_company c
+	where f.account_id = c.account_id
+	AND c.cpy_id = #{cpyId}
+	</select>
+
+    <select id="getCpyUserByAccountId" parameterType="long" resultType="UserDO">
+	select cpy_id,u.user_id from tbl_user_company c ,tbl_user u
+	where account_id = #{accountId} and c.user_id = u.user_id and u.user_status =1
+	</select>
+</mapper>

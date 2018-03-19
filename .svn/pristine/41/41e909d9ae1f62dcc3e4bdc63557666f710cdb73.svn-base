@@ -1,0 +1,40 @@
+#container1 .box .formList {
+	padding: 40px 0 0 0px;
+	border: none;
+}
+#container1 .box .formList input,#container1 .box .formList select{
+	border: 1px solid #E1E1E1 !important;
+	height: 26px;
+	border-radius: 4px;
+	color: #999999;
+}
+#container1 .box .formListSelect{
+	padding: 0;
+	padding-bottom: 10px;
+	margin-top: 10px;
+	margin-left: -10px;
+}
+#container1 .box .formList .exportTable{
+	width: 68px;
+	height: 26px;
+	background: none;
+	text-decoration: underline;
+	color: #666666;
+	line-height: 26px;
+	cursor: pointer;
+	font-size: 12px;
+	position: absolute;
+	right: 17%;
+	top: 78px;
+}
+.marginLeft10{
+	margin-left: 10px;
+}
+.myTable{
+	margin-top: 143px;
+}
+.padding30 {
+	padding: 0 10px 30px 20px !important;
+	background: #FFFFFF;
+	overflow-x: auto;
+}

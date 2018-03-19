@@ -1,0 +1,189 @@
+package com.wanma.controller;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.bluemobi.product.common.CommonConsts;
+import com.bluemobi.product.controller.BaseController;
+import com.bluemobi.product.model.common.DwzAjaxResult;
+import com.bluemobi.product.model.common.DwzPagerMySQL;
+import com.bluemobi.product.utils.AccessErrorResult;
+import com.bluemobi.product.utils.JsonObject;
+import com.bluemobi.product.utils.MultipartFileUtil;
+import com.wanma.common.SessionMgr;
+import com.wanma.common.WanmaConstants;
+import com.wanma.model.TblBanner;
+import com.wanma.model.TblNewsInfo;
+import com.wanma.model.TblUser;
+import com.wanma.service.CmsNewsInfoService;
+
+
+/**
+ * @Description: 资讯管理controller
+ * @author mb
+ * @updateTime：
+ * @version：V4.0
+ */
+@Controller
+@RequestMapping("/admin/newsInfo")
+public class CmsNewsInfoController extends BaseController {
+	// 日志输出对象
+	private static Logger log = Logger
+			.getLogger(CmsNewsInfoController.class);
+	/* 制造厂商service */
+	@Autowired
+	private  CmsNewsInfoService cmsNewsInfoService;
+	
+	/**
+	 *资讯列表
+	 * 
+	 * @param pager
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/listNewsInfo")
+	public String listNewsInfo(@ModelAttribute("pager") DwzPagerMySQL pager,TblNewsInfo newsInfo,
+			 Model model, HttpServletRequest request) {
+		log.info("******************获取资讯信息列表-begin************************");
+		try {
+			List<TblNewsInfo> newsInfoList = null;
+			long total = cmsNewsInfoService.getNewsInfoListCount(newsInfo);
+			if (total <= pager.getOffset()) {
+				pager.setPageNum(1L);
+			}
+			//设置查询参数
+			pager.setTotal(total);
+			newsInfo.setPager(pager);
+			//获取资讯
+			newsInfoList = cmsNewsInfoService.getNewsInfoList(newsInfo);
+			//将数据放入会话
+			model.addAttribute("newsInfo",newsInfo);
+			model.addAttribute("newsInfoList",newsInfoList);
+			model.addAttribute("pager",pager);
+		} catch (Exception e) {
+			log.error("获取资讯列表失败", e);
+			// 返回登录信息错误信息
+			return new AccessErrorResult(1000, "error.msg.invalid.parameter")
+					.toString();
+		}
+		log.info("******************获取资讯信息列表-end************************");
+		// 跳转至资讯列表页面
+		return "backstage/newsInfo/newsInfoList";
+	}
+	/**
+	 * 跳转资讯新增
+	 * 
+	 */
+	@RequestMapping("/addNewsInfoUi")
+	public String addNewsInfoUi(Model model,HttpServletRequest request){
+		//跳转button新增页面
+		return "backstage/newsInfo/newsInfoAdd";
+	}
+	/**
+	 * 
+	 * 资讯新增
+	 * 
+	 */
+	@RequestMapping("/addNewsInfo")
+	@ResponseBody
+	public String addNewsInfo(TblNewsInfo newsInfo,HttpServletRequest request,HttpSession session){
+		// 处理结果信息
+				DwzAjaxResult dwzResult = null;
+		try {
+			cmsNewsInfoService.insertNewsInfo(newsInfo);
+			
+			
+			dwzResult = new DwzAjaxResult("200", "新增成功", "newsInfoList",
+					"closeCurrent", "");
+		} catch (Exception e) {
+			log.error("新增资讯失败", e);
+			// 返回错误信息
+			dwzResult = new DwzAjaxResult("300", "新增失败", "newsInfoAddPage",
+					"", "");	
+		}
+		// 返回处理结果信息
+				return new JsonObject(dwzResult).toString();
+	}
+	/**
+	 * 跳转资讯编辑
+	 * 
+	 */
+	@RequestMapping("/editNewsInfoUi")
+	public String editNewsInfoUi(@RequestParam("id") int newsInfoId ,Model model,HttpServletRequest request){
+		TblNewsInfo  newsInfo = cmsNewsInfoService.getNewsInfoById(newsInfoId);
+		model.addAttribute("newsInfo",newsInfo);
+		//跳转button新增页面
+		return "backstage/newsInfo/newsInfoEdit";
+	}
+	/**
+	 * 修改资讯
+	 * 
+	 * @param session
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/editNewsInfo")
+	@ResponseBody
+	public String editNewsInfo(TblNewsInfo newsInfo,HttpSession session, HttpServletRequest request) {
+		// 处理结果信息
+		DwzAjaxResult dwzResult = null;
+		try {
+			cmsNewsInfoService.updateNewsInfo(newsInfo);
+			dwzResult = new DwzAjaxResult("200", "修改成功", "newsInfoList",
+					"closeCurrent", "");
+		} catch (Exception e) {
+			log.error("编辑资讯失败", e);
+			// 返回错误信息
+			dwzResult = new DwzAjaxResult("300", "修改失败", "newsInfoEditPage",
+					"", "");
+		}
+		// 返回处理结果信息
+		return new JsonObject(dwzResult).toString();
+	}
+ 
+	/**
+	 * 删除资讯
+	 * 
+	 * @param session
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/deleteNewsInfo")
+	@ResponseBody
+	public String deleteBanner(@RequestParam("id") int newsInfoId) {
+		// 处理结果信息
+		DwzAjaxResult dwzResult = null;
+		try {
+			//软删除
+			cmsNewsInfoService.deleteNewsInfoById(newsInfoId);
+				dwzResult = new DwzAjaxResult("200", "删除成功", "newsInfoList",
+						"", "");
+		} catch (Exception e) {
+			log.error("删除资讯失败", e);
+			// 返回错误信息
+			dwzResult = new DwzAjaxResult("300", "删除失败", "newsInfoEditPage",
+					"", "");
+		}
+		// 返回处理结果信息
+		return new JsonObject(dwzResult).toString();
+	}
+
+}
+
+

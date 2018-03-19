@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.app.dao.AppOrdertrackingMapper">
+
+	<resultMap id="tblOrdertrackingResultMap" type="TblOrdertracking">
+		<id property="pkOrdertracking" column="pk_OrderTracking" />
+		<result property="ortrId" column="orTr_Id" />
+		<result property="ortrStatus" column="orTr_Status" />
+		<result property="ortrUpdatedate" column="orTr_Updatedate" />
+		<result property="ortrCreatedate" column="orTr_Createdate" />
+	</resultMap>
+	<resultMap id="pageResultMap" type="java.util.HashMap"
+		extends="tblOrdertrackingResultMap"></resultMap>
+	<resultMap id="findResultMap" type="java.util.HashMap"
+		extends="tblOrdertrackingResultMap"></resultMap>
+	
+	<!-- 新增订单跟踪信息 -->
+	<insert id="insert" parameterType="TblOrdertracking">
+		insert into tbl_OrderTracking (
+		orTr_Id,
+		orTr_Status,
+		orTr_Updatedate,
+		orTr_Createdate
+		)values (
+		#{ortrId},
+		#{ortrStatus},
+		#{ortrUpdatedate},
+		#{ortrCreatedate}
+		)
+	</insert>
+
+	<update id="update" parameterType="TblOrdertracking">
+		update tbl_OrderTracking set
+		orTr_Id=#{ortrId},
+		orTr_Status=#{ortrStatus},
+		orTr_Updatedate=#{ortrUpdatedate},
+		orTr_Createdate=#{ortrCreatedate}
+		where
+		pk_OrderTracking=#{pkOrdertracking} 
+	</update>
+
+	<delete id="delete" parameterType="map">
+		delete from
+		tbl_OrderTracking
+		where
+		pk_OrderTracking=#{pkOrdertracking} 
+	</delete>
+
+	<select id="get" parameterType="map" resultMap="tblOrdertrackingResultMap">
+		select
+		pk_OrderTracking,
+		orTr_Id,
+		orTr_Status,
+		orTr_Updatedate,
+		orTr_Createdate
+		from tbl_OrderTracking
+		where
+		pk_OrderTracking=#{pkOrdertracking} 
+	</select>
+
+	<select id="findOne" parameterType="map" resultMap="findResultMap">
+		select
+		pk_OrderTracking,
+		orTr_Id,
+		orTr_Status,
+		orTr_Updatedate,
+		orTr_Createdate
+		from tbl_OrderTracking
+		where
+		pk_OrderTracking=#{pkOrdertracking} 
+	</select>
+	<!-- 获取订单跟踪详情 -->
+	<select id="findOrderTracks" parameterType="int" resultMap="findResultMap">
+		select
+		pk_OrderTracking,
+		orTr_Id,
+		orTr_Status,
+		orTr_Updatedate,
+		orTr_Createdate
+		from tbl_OrderTracking
+		where
+		orTr_Id=#{pkOrder}
+	</select>
+
+</mapper> 

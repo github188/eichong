@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.app.dao.TblFeedbackMapper">
+
+	<resultMap id="tblFeedbackResultMap" type="TblFeedback">
+		<id property="pkFeedback" column="pk_FeedBack" />
+		<result property="febaContent" column="feBa_Content" />
+		<result property="febaUserid" column="feBa_UserId" />
+		<result property="febaCreatedate" column="feBa_Createdate" />
+		<result property="febaUpdatedate" column="feBa_Updatedate" />
+	</resultMap>
+	<resultMap id="pageResultMap"  type="java.util.HashMap" extends="tblFeedbackResultMap"></resultMap>
+	<resultMap id="findResultMap"  type="java.util.HashMap" extends="tblFeedbackResultMap"></resultMap>
+
+	<insert id="insert" parameterType="TblFeedback">
+	   insert into tbl_FeedBack (
+	     feBa_Content,
+	     feBa_UserId,
+	     feBa_Createdate
+	   )values (
+	     #{febaContent},
+	     #{febaUserid},
+	     #{febaCreatedate}
+	   )
+	</insert>
+
+	<update id="update" parameterType="TblFeedback">
+	   update tbl_FeedBack set
+	     feBa_Content=#{febaContent},
+	     feBa_UserId=#{febaUserid},
+	     feBa_Createdate=#{febaCreatedate},
+	     feBa_Updatedate=#{febaUpdatedate}
+	   where 
+	    pk_FeedBack=#{pkFeedback} 
+	</update>
+
+	<delete id="delete" parameterType="map">
+	   delete from 
+	     tbl_FeedBack 
+	   where 
+	    pk_FeedBack=#{pkFeedback} 
+	</delete>
+
+	<select id="get" parameterType="map" resultMap="tblFeedbackResultMap">
+	   select 
+	    pk_FeedBack,
+	    feBa_Content,
+	    feBa_UserId,
+	    feBa_Createdate,
+	    feBa_Updatedate
+	   from tbl_FeedBack
+	   where 
+	    pk_FeedBack=#{pkFeedback} 
+	</select>
+
+	<select id="find" parameterType="map" resultMap="findResultMap">
+	   select 
+	     pk_FeedBack,
+	     feBa_Content,
+	     feBa_UserId,
+	     feBa_Createdate,
+	     feBa_Updatedate,
+	     feBa_Status,
+	     feBa_Reason
+	   from tbl_FeedBack
+	   <where>
+	     <if test="pkFeedback != null">
+	        pk_FeedBack=#{pkFeedback}
+	     </if>
+	     <if test="febaContent != null">
+	        and feBa_Content=#{febaContent}
+	     </if>
+	     <if test="febaUserid != null">
+	        and feBa_UserId=#{userId}
+	     </if>
+	     <if test="febaCreatedate != null">
+	        and feBa_Createdate=#{febaCreatedate}
+	     </if>
+	     <if test="febaUpdatedate != null">
+	        and feBa_Updatedate=#{febaUpdatedate}
+	     </if>
+	   </where>
+	</select>
+	
+	<select id="page" parameterType="map" resultMap="pageResultMap">
+	   select 
+	     pk_FeedBack,
+	     feBa_Content,
+	     feBa_UserId,
+	     feBa_Createdate,
+	     feBa_Updatedate
+	   from tbl_FeedBack
+	   <where>
+	     <if test="pkFeedback != null">
+	        pk_FeedBack=#{pkFeedback}
+	     </if>
+	     <if test="febaContent != null">
+	        and feBa_Content=#{febaContent}
+	     </if>
+	     <if test="febaUserid != null">
+	        and feBa_UserId=#{febaUserid}
+	     </if>
+	     <if test="febaCreatedate != null">
+	        and feBa_Createdate=#{febaCreatedate}
+	     </if>
+	     <if test="febaUpdatedate != null">
+	        and feBa_Updatedate=#{febaUpdatedate}
+	     </if>
+	   </where>
+	</select>
+	
+	<select id="getMyFeedbackList" parameterType="map" resultType="HashMap">
+		select pk_FeedBack as feedback_id, 
+			feBa_Status,
+			CASE when feBa_Status=0 then '插入' 
+			  when feBa_Status=1 then '接收正在处理' 
+			  when feBa_Status=2 then '处理完成' end  as status_value,
+			feBa_Content,
+			feBa_Createdate,
+			feBa_Updatedate,
+			feBa_Reason
+		 from tbl_feedback
+		 where feBa_UserId = #{userId}
+		 ORDER BY feBa_Createdate DESC 
+		 <if test="page != null">
+		 limit #{pageNumber},#{pageNum}
+		 </if>
+	</select>
+	
+	<select id="getMyFeedbackContent" resultType="HashMap" parameterType="int">
+		select feedback_id,feBa_Content,feBa_Reason
+		 from tbl_feedback
+		 where id = #{feedbackId}
+	</select>
+</mapper> 

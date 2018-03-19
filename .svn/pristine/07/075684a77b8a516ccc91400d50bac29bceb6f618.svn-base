@@ -1,0 +1,76 @@
+package com.wanma.ims.service;
+
+import java.util.List;
+
+import com.wanma.ims.model.UserDO;
+
+/**
+ * 用户主表Service
+ */
+public interface UserService {
+	
+	/** 
+	 * 登录
+	 * @param 用户名
+	 * @param 密码
+	 * 
+	 * */
+	public UserDO loginUser(UserDO user) throws Exception;
+    
+	/** 
+	 * 重置密码
+	 * @param 用户ID
+	 * @param 密码
+	 * 
+	 * */
+	public Integer resetPassword(Long userId,String password) throws Exception;
+	
+	/** 
+	 * 新增
+	 * @param userDO
+	 * @param 
+	 * 
+	 * */
+	public Integer addUser(UserDO userDO) throws Exception;
+	
+	/** 
+	 * 编辑
+	 * @param userDO
+	 * @param 
+	 * 
+	 * */
+	public Integer modifyUser(UserDO userDO) throws Exception;
+	
+	/** 
+	 * 冻结(批量冻结)
+	 * @param 用户ID
+	 * @param 
+	 * 
+	 * */
+	public Integer freezeUser(Long userId) throws Exception;
+	
+	/** 
+	 * 解冻(批量解冻)
+	 * @param 用户ID
+	 * @param 
+	 * 
+	 * */
+	public Integer unfreezeUser(Long userId) throws Exception;
+	
+	/** 
+	 * 删除(批量删除)
+	 * @param 用户ID
+	 * @param 
+	 * 
+	 * */
+	public Integer removeUser(Long userId) throws Exception;
+	
+	/** 
+	 * 用户列表(根据userId获取用户信息)
+	 * @param 用户ID
+	 * @param 
+	 * 
+	 * */
+	public List<UserDO> getUserListById(Long userId) throws Exception;
+	
+}

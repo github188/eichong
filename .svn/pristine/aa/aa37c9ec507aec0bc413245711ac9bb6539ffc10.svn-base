@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.SimCardMapper">
+	<resultMap type="SimCardBO" id="result_simCard">
+		<id property="pkId" column="pk_ElectricPile" />
+		<id property="epCode" column="ep_code" />
+		<id property="epNum" column="ep_num" />
+		<id property="postName" column="powerStation_name" />
+		<id property="argId" column="ARG_ID" />
+		<id property="simCode" column="arg_value" />
+		<id property="simOperator" column="arg_value" />
+		<id  property="commStatus" column="comm_status" />
+		<id  property="createDate" column="create_date" />
+		<id  property="updateDate" column="update_date" />
+		<id property="elpiElectricpilecode" column="elPi_ElectricPileCode" />
+	</resultMap>
+	<select id="getSimCardList" parameterType="SimCardBO" resultMap="result_simCard">
+			SELECT
+			e.elPi_ElectricPileCode,
+			e.ep_num,
+			p.powerStation_name,
+			e.comm_status commStatus,
+			t.arg_value simCode,
+			left(w.arg_value,5) as simOperator,
+			t.create_date createDate,
+			IF(t.update_date='0000-00-00 00:00:00',null,t.update_date) updateDate
+      		FROM
+			tbl_electricpile e
+			LEFT JOIN tbl_powerstation p on p.powerStation_id = e.elPi_RelevancePowerStation
+			LEFT JOIN tbl_electricpile_workarg t on t.ep_code = e.elPi_ElectricPileCode and t.arg_id=21
+			LEFT JOIN tbl_electricpile_workarg w on w.ep_code = e.elPi_ElectricPileCode and w.arg_id=22
+			where 1=1
+			<if test="elpiElectricpilecode !=null and elpiElectricpilecode!=''">
+				and e.elPi_ElectricPileCode LIKE CONCAT('%',#{elpiElectricpilecode},'%' )
+			</if>
+			<if test="postName !=null and postName!=''">
+				and p.powerStation_name LIKE CONCAT('%',#{postName},'%' )
+			</if>
+			<if test="simCode !=null and simCode!=''">
+				and t.arg_value LIKE CONCAT('%',#{simCode},'%' )
+			</if>
+			<if test="simOperator =='10'">
+				and (w.arg_value LIKE CONCAT('%',46000,'%' ) or w.arg_value LIKE CONCAT('%',46002,'%' ) 
+				or w.arg_value LIKE CONCAT('%',46004,'%' ) or w.arg_value LIKE CONCAT('%',46007,'%' ) 
+				or w.arg_value LIKE CONCAT('%',46020,'%' ) or w.arg_value LIKE CONCAT('%',46060,'%' ))
+			</if>
+			<if test="simOperator =='11'">
+				and (w.arg_value LIKE CONCAT('%',46001,'%' ) or w.arg_value LIKE CONCAT('%',46006,'%' )
+				or w.arg_value LIKE CONCAT('%',46010,'%' ))
+			</if>
+			<if test="simOperator =='12'">
+				and (w.arg_value LIKE CONCAT('%',46003,'%' ) or w.arg_value LIKE CONCAT('%',46005,'%' )
+				or w.arg_value LIKE CONCAT('%',46011,'%' ))
+			</if>
+		 	 <choose>
+	        	<when test="(userLevel==1 || userLevel==2)">
+	        	 	and exists (select 1 from tbl_user b where b.user_id = e.elPi_UserId )
+			    </when>
+				<when test="userLevel==3">
+			        and exists (select 1 from tbl_user_business_view b where b.user_id=e.elPi_UserId and exists (select 1 from tbl_user_business_view b1 where  b.busi_company_id = b1.busi_company_id and b1.user_id = #{elpiUserid}))
+			    </when>
+			    <when test="userLevel==5">	
+			        and e.elPi_UserId=#{elpiUserid}
+			    </when>
+	        </choose> 
+			order by t.update_date DESC
+		<if test="pager!=null">limit #{pager.offset},#{pager.pageSize}</if>
+	</select>
+	
+	<select id="getSimCardListCount" parameterType="SimCardBO" resultType="long">
+		SELECT count(*) FROM
+			tbl_electricpile e
+			LEFT JOIN tbl_powerstation p on p.powerStation_id = e.elPi_RelevancePowerStation
+			LEFT JOIN tbl_electricpile_workarg t on t.ep_code = e.elPi_ElectricPileCode and t.arg_id=21
+			LEFT JOIN tbl_electricpile_workarg w on w.ep_code = e.elPi_ElectricPileCode and w.arg_id=22
+			where 1=1
+			<if test="elpiElectricpilecode !=null and elpiElectricpilecode!=''">
+				and e.elPi_ElectricPileCode LIKE CONCAT('%',#{elpiElectricpilecode},'%' )
+			</if>
+			<if test="postName !=null and postName!=''">
+				and p.powerStation_name LIKE CONCAT('%',#{postName},'%' )
+			</if>
+			<if test="simCode !=null and simCode!=''">
+				and t.arg_value LIKE CONCAT('%',#{simCode},'%' )
+			</if>
+			<if test="simOperator =='10'">
+				and (w.arg_value LIKE CONCAT('%',46000,'%' ) or w.arg_value LIKE CONCAT('%',46002,'%' ) 
+				or w.arg_value LIKE CONCAT('%',46004,'%' ) or w.arg_value LIKE CONCAT('%',46007,'%' ) 
+				or w.arg_value LIKE CONCAT('%',46020,'%' ) or w.arg_value LIKE CONCAT('%',46060,'%' ))
+			</if>
+			<if test="simOperator =='11'">
+				and (w.arg_value LIKE CONCAT('%',46001,'%' ) or w.arg_value LIKE CONCAT('%',46006,'%' )
+				or w.arg_value LIKE CONCAT('%',46010,'%' ))
+			</if>
+			<if test="simOperator =='12'">
+				and (w.arg_value LIKE CONCAT('%',46003,'%' ) or w.arg_value LIKE CONCAT('%',46005,'%' )
+				or w.arg_value LIKE CONCAT('%',46011,'%' ))
+			</if>
+		 	 <!-- 权限控制 -->
+	       <choose>
+	        	<when test="(userLevel==1 || userLevel==2)">
+	        	 	and exists (select 1 from tbl_user b where b.user_id = e.elPi_UserId )
+			    </when>
+				<when test="userLevel==3">
+			        and exists (select 1 from tbl_user_business_view b where b.user_id=e.elPi_UserId and exists (select 1 from tbl_user_business_view b1 where  b.busi_company_id = b1.busi_company_id and b1.user_id = #{elpiUserid})
+			       <!--  <if test="elPiUserName != '' and elPiUserName != null">
+		          		and b.user_account like concat('%',#{elPiUserName},'%')
+		         	</if> -->
+			        )
+			    </when>
+			    <when test="userLevel==5">	
+			        and e.elPi_UserId=#{elpiUserid}
+			    </when>
+	        </choose> 
+	</select>
+	<select id="findSimCardCount" parameterType="String" resultType="int">
+		select count(*) from tbl_electricpile_workarg 
+		where ep_code = #{elpiElectricpilecode} and arg_id=21
+	</select>
+	<select id="findSimOperatorCount" parameterType="String" resultType="int">
+		select count(*) from tbl_electricpile_workarg 
+		where ep_code = #{elpiElectricpilecode} and arg_id=22
+	</select>
+	<insert id="insertSimCard" parameterType="SimCardBO">
+		insert into tbl_electricpile_workarg
+			(
+			 ep_code,
+			 arg_id,
+			 arg_value,
+			 ISSUED_STATUS,
+			 delete_flag,
+			 creator,
+			 create_date,
+			 update_date
+			)values(
+			 #{elpiElectricpilecode},
+			 '21',
+			 '0',
+			 '0',
+			 '0',
+			 #{operator},
+			 now(),
+			 now()
+			)
+	</insert>
+	<insert id="insertSimOperator" parameterType="SimCardBO">
+		insert into tbl_electricpile_workarg
+			(
+			 ep_code,
+			 arg_id,
+			 arg_value,
+			 ISSUED_STATUS,
+			 delete_flag,
+			 creator,
+			 create_date,
+			 update_date
+			)values(
+			 #{elpiElectricpilecode},
+			 '22',
+			 '0',
+			 '0',
+			 '0',
+			 #{operator},
+			 now(),
+			 now()
+			)
+	</insert>
+	<update id="updateSimCard" parameterType="SimCardBO">
+		update tbl_electricpile_workarg 
+		set	
+		modifier=#{operator},
+		UPDATE_DATE=now()
+		where ep_code = #{elpiElectricpilecode}
+	</update>
+</mapper>

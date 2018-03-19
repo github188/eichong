@@ -1,0 +1,165 @@
+*{
+	margin: 0;
+	padding: 0;
+}
+
+.col-xs-1,.col-xs-2,.col-xs-3,.col-xs-4,.col-xs-5,.col-xs-6,.col-xs-7,.col-xs-8,.col-xs-9,.col-xs-10,.col-xs-11,.col-xs-12{
+	padding: 0;
+	margin: 0;
+}
+/*第一块===================================================*/
+.container{
+	padding: 0;
+	width: 100%;
+	height: 4rem;
+	background-color: #FF7D00;
+}
+.container .row{
+	padding: 0;
+	margin: 0;
+}
+.container .row .back{
+	padding: 0;
+	padding: 1.2rem 0 0 1.5rem;
+}
+.container .row .back img{
+	width: 1rem;
+	height: 1.5rem;
+	
+}
+.container .row .head{
+	line-height: 4rem;
+	
+	padding: 0;
+	padding-left:5.8rem ;
+	font-size: 1.6rem;
+	color:#FFFFFF;
+	font-weight: 900;
+	font-family: "微软雅黑";
+}
+/*第二块======================================================*/
+.content-list{
+	width: 100%;
+	padding-top: 2rem;
+	padding-top: 4.5rem;
+}
+.content-list .detailList{
+	width: 86%;
+	height: 4rem;
+	border-bottom: 0.1rem solid #CCCCCC;
+	margin: 0 auto;
+	line-height: 3.8rem;
+	position: relative;
+	overflow: hidden;
+	display: -webkit-flex;
+	display: -moz-flex;
+	display: -ms-flex;
+	-webkit-flex-flow:row;
+	-moz-flex-flow:row;
+	-ms-flex-flow:row;
+	-webkit-justify-content: flex-start;
+	-moz-justify-content: flex-start;
+	-ms-justify-content: flex-start;
+}
+.content-list .detailList .choice-enter{
+	text-align: right;
+	padding-right: 0.4rem;
+	color: #8A8A8A;
+	font-size: 1.2rem;
+	font-family: "微软雅黑";
+}
+.content-list .detailList .choice-enter a img{
+	width: 0.8rem;
+	height: 1.4rem;
+}
+.content-list .detailList .textTip{
+	padding-left: 0.4rem;
+	color: #8A8A8A;
+	font-size: 1.6rem;
+	font-family: "微软雅黑";
+	
+}
+.nextStep{
+	width:100%;
+	height: 4rem;
+	margin-top: 2rem;
+	}
+
+.nextStep .btn, .nextStep .btn-default{
+	width: 80%;
+	margin-left:10%;
+	color: #FFFFFF;
+	background-color: #FF7D00;
+	font-family: "微软雅黑";
+}
+.nextStep .btn:focus,.nextStep .btn:active{
+	width: 80%;
+	margin-left:10%;
+	color: #FFFFFF;
+	background-color: #FF7D00;
+	outline-style: none;
+	font-family: "微软雅黑";
+	
+}
+.content-list .detailList .choice-enter .peopleInfo{
+	height: 3rem;
+	width: 100%;
+	border: 0;
+	text-align: right;
+	line-height: 3rem;
+	padding: 0;
+	margin: 0;
+}
+.content-list .detailList .choice-enter .peopleInfo:focus,.content-list .detailList .choice-enter .peopleInfo:active{
+	border: 0;
+	outline-style: none;
+	height: 3rem;
+	line-height: 3rem;
+}
+.typeInfoBlockTip{
+	width: 20rem;
+	height: 20rem;
+	border: 0.1rem solid #CCCCCC;
+	background: #FFFFFF;
+	position: absolute;
+	top: 20rem;
+	left: 20rem;
+	z-index: 500;
+	margin-left: -15rem;
+	margin-top: -15rem;
+}
+/*申请类型部分================================================================*/
+.typeInfo{
+	height: 3rem;
+	background: #FFFFFF;
+	border: 0;
+	font-size: 1.4rem;
+	-webkit-appearance: none;
+	/*background: url(../img/btn_map_arrow.png) no-repeat center right;
+	background-size:30% 70%;
+	padding-right: 1rem;*/
+}
+.typeInfo:focus,.typeInfo:active{
+	border: 0;
+	outline-style: none;
+	font-size: 1.4rem;
+}
+/*分类部分=====================================================================*/
+.classInfo{
+	height: 3rem;
+	background: #FFFFFF;
+	border: 0;
+	font-size: 1.4rem;
+	-webkit-appearance: none;
+}
+.classInfo:focus,.classInfo:active{
+	border: 0;
+	outline-style: none;
+	font-size: 1.4rem;
+}
+.peopleInfo2{
+	width: 100%;
+	height: 3rem;
+	
+}
+

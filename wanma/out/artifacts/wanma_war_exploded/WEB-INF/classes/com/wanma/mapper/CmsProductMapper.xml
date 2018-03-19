@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsProductMapper">
+	<resultMap type="TblProduct" id="result_product">
+		<result property="pkProduct" column="pk_Product" />
+		<result property="prodProductcode" column="prod_ProductCode" />
+		<result property="prodProductname" column="prod_ProductName" />
+		<result property="prodCategoryid" column="prod_CategoryId" />
+		<result property="prodProductprice" column="prod_ProductPrice" />
+		<result property="prodProductdiscount" column="prod_ProductDiscount" />
+		<result property="prodDiscountprice" column="prod_DiscountPrice" />
+		<result property="prodMarketprice" column="prod_MarketPrice" />
+		<result property="prodStockquantity" column="prod_StockQuantity" />
+		<result property="prodProductlsadd" column="prod_ProductlsAdd" />
+		<result property="prodSoldquantity" column="prod_SoldQuantity" />
+		<result property="prodBrowsenum" column="prod_BrowseNum" />
+		<result property="prodProducttag" column="prod_ProductTag" />
+		<result property="prodQrcodepic" column="prod_QrCodePic" />
+		<result property="prodDetailimage" column="prod_DetailImage" />
+		<result property="prodProductimage" column="prod_ProductImage" />
+		<result property="prodRemark" column="prod_Remark" />
+		<result property="prodParameters" column="prod_Parameters" />
+		<result property="prodArtificialservice" column="prod_ArtificialService" />
+		<result property="prodCreatedate" column="prod_Createdate" />
+		<result property="prodUpdatedate" column="prod_Updatedate" />
+		<result property="prodFeature" column="prod_Feature" />
+		<result property="prodStatus" column="prod_status" />
+		<result property="prodChargingMode" column="prod_ChargingMode" />
+		<result property="soldQuantity" column="prod_SoldQuantity" />
+		<result property="prodBrand" column="prod_Brand" />
+		<result property="prodpicType" column="prod_picType" />
+		<result property="prodPowerInterface" column="prod_PowerInterface" />
+		<result property="prodCarType" column="prod_CarType" />
+		<result property="prodSubsidies" column="prod_Subsidies" />
+		
+		<result property="prodBattery" column="prod_Battery" />
+		<result property="prodOdometer" column="prod_Odometer" />
+		<result property="prodChargingTime" column="prod_ChargingTime" />
+		<result property="prodUser" column="prod_User" />
+		
+	</resultMap>
+	<resultMap id="result_category" type="TblProductcategory"
+		extends="result_product"></resultMap>
+
+	<!-- 新增商品（充电桩） -->
+	<insert id="addProduct" parameterType="TblProduct" useGeneratedKeys="true" keyProperty="pkProduct">
+		insert into tbl_Product
+		(
+			prod_ProductCode,
+			prod_ProductName,
+			prod_CategoryId,
+			prod_ProductPrice,
+			prod_ProductDiscount,
+			prod_DiscountPrice,
+			prod_MarketPrice,
+			prod_StockQuantity,
+			prod_ProductlsAdd,
+			prod_SoldQuantity,
+			prod_BrowseNum,
+			prod_ProductTag,
+			prod_QrCodePic,
+			prod_DetailImage,
+			prod_ProductImage,
+			prod_Remark,
+			prod_ArtificialService,
+			prod_Createdate,
+			prod_Updatedate,
+			prod_status,
+			prod_Parameters,
+			prod_ChargingMode,
+			prod_Feature,
+			prod_Brand,
+			prod_picType,
+			prod_PowerInterface,
+			prod_CarType,
+			prod_Subsidies,
+			prod_Battery,
+			prod_Odometer,
+			prod_ChargingTime,
+			prod_User
+		)
+		values
+		(
+			#{prodProductcode},
+			#{prodProductname},
+			#{prodCategoryid},
+			#{prodProductprice},
+			#{prodProductdiscount},
+			#{prodDiscountprice},
+			#{prodMarketprice},
+			#{prodStockquantity},
+			#{prodProductlsadd},
+			#{prodSoldquantity},
+			#{prodBrowsenum},
+			#{prodProducttag},
+			#{prodQrcodepic},
+			#{prodDetailimage},
+			#{prodProductimage},
+			#{prodRemark},
+			#{prodArtificialservice},
+			#{prodCreatedate},
+			#{prodUpdatedate},
+			#{prodStatus},
+			#{prodParameters},
+			#{prodChargingMode},
+			#{prodFeature},
+			#{prodBrand},
+			#{prodpicType},
+			#{prodPowerInterface},
+			#{prodCarType},
+			#{prodSubsidies},
+			#{prodBattery},
+			#{prodOdometer},
+			#{prodChargingTime},
+			#{prodUser}
+		)
+	</insert>
+
+	<!-- 修改产品信息 -->
+	<update id="modifyProduct" parameterType="TblProduct">
+		update tbl_Product
+		<set>
+			<if test="prodProductcode!=null"> prod_ProductCode=#{prodProductcode}, </if>
+			<if test="prodProductname!=null"> prod_ProductName=#{prodProductname}, </if>
+			<if test="prodCategoryid!=null"> prod_CategoryId=#{prodCategoryid}, </if>
+			<if test="prodProductprice!=null"> prod_ProductPrice=#{prodProductprice}, </if>
+			<if test="prodProductdiscount!=null"> prod_ProductDiscount=#{prodProductdiscount}, </if>
+			<if test="prodDiscountprice!=null and prodDiscountprice!=-1"> prod_DiscountPrice=#{prodDiscountprice}, </if>
+			<if test="prodDiscountprice==-1"> prod_DiscountPrice=null, </if>
+			<if test="prodMarketprice!=null"> prod_MarketPrice=#{prodMarketprice},</if>
+			<if test="prodStockquantity!=null"> prod_StockQuantity=#{prodStockquantity}, </if>
+			<if test="prodProductlsadd!=null"> prod_ProductlsAdd=#{prodProductlsadd},</if>
+			<if test="prodSoldquantity!=null"> prod_SoldQuantity=#{prodSoldquantity},</if>
+			<if test="prodBrowsenum!=null"> prod_BrowseNum=#{prodBrowsenum},</if>
+			<if test="prodProducttag!=null"> prod_ProductTag=#{prodProducttag},</if>
+			<if test="prodQrcodepic!=null"> prod_QrCodePic=#{prodQrcodepic},</if>
+			<if test="prodDetailimage!=null"> prod_DetailImage=#{prodDetailimage},</if>
+			<if test="prodProductimage!=null"> prod_ProductImage=#{prodProductimage},</if>
+			<if test="prodRemark!=null"> prod_Remark=#{prodRemark}, </if>
+			<if test="prodArtificialservice!=null"> prod_ArtificialService=#{prodArtificialservice}, </if>
+			<if test="prodCreatedate!=null"> prod_Createdate=#{prodCreatedate}, </if>
+			<if test="prodStatus!=null"> prod_status=#{prodStatus},</if>
+			<if test="prodParameters!=null"> prod_Parameters=#{prodParameters},</if>
+			<if test="prodChargingMode!=null"> prod_ChargingMode=#{prodChargingMode},</if>
+			<if test="prodFeature!=null"> prod_Feature=#{prodFeature},</if>
+			<if test="prodBrand!=null"> prod_Brand=#{prodBrand},</if>
+			<if test="prodpicType!=null"> prod_picType=#{prodpicType},</if>
+			<if test="prodPowerInterface!=null"> prod_PowerInterface=#{prodPowerInterface},</if>
+			<if test="prodCarType!=null"> prod_CarType=#{prodCarType},</if>
+			<if test="prodSubsidies!=null"> prod_Subsidies=#{prodSubsidies},</if>
+			<if test="prodBattery!=null"> prod_Battery=#{prodBattery},</if>
+			<if test="prodOdometer!=null"> prod_Odometer=#{prodOdometer},</if>
+			<if test="prodChargingTime!=null"> prod_ChargingTime=#{prodChargingTime},</if>
+			<if test="prodUpdatedate!=null"> prod_Updatedate=#{prodUpdatedate}</if>
+		</set>
+		<where>
+			pk_Product=#{pkProduct}
+		</where>
+	</update>
+	
+	<!-- 根据ID删除产品 -->
+	<delete id="removeProduct" parameterType="TblProduct">
+	   delete from 
+	     tbl_Product 
+	   where 
+	    pk_Product=#{pkProduct}
+	</delete>
+
+	<!-- 根据ID查询产品 -->
+	<select id="findProduct" parameterType="String" resultMap="result_product">
+		SELECT
+			pk_Product,
+			prod_ProductName,
+			prod_ProductCode,
+			(pc.prCa_Name) as caName,
+			prod_ProductPrice,
+			prod_MarketPrice,
+			prod_ProductlsAdd,
+			prod_Parameters,
+			prod_Updatedate,
+			getFullPath('ListImage',#{pkProduct}) prodProductimage,
+			getFullPath('DetailImage',#{pkProduct}) prodDetailimage,
+			prod_StockQuantity,
+			prod_picType,
+			prod_ProductDiscount,
+			prod_DiscountPrice,
+			prod_ArtificialService,
+			prod_PowerInterface,
+			prod_CarType,
+			prod_Subsidies,
+			prod_Battery,
+			prod_Odometer,
+			prod_ChargingTime,
+			prod_Brand
+		FROM tbl_Product pd INNER JOIN tbl_ProductCategory pc ON pc.pk_ProductCategory = pd.prod_CategoryId
+		where pk_Product=#{pkProduct}
+	</select>
+
+	<!-- 取得产品列表 -->
+	<select id="getProductList" resultMap="result_product">
+		SELECT
+			pk_Product,
+			prod_ProductName,
+			prod_ProductCode,
+			(pc.prCa_Name) as caName,
+			prod_MarketPrice,
+			prod_ProductlsAdd,
+			prod_Updatedate,
+			prod_StockQuantity,
+			prod_picType
+		FROM tbl_Product pd INNER JOIN tbl_ProductCategory pc ON pc.pk_ProductCategory = pd.prod_CategoryId
+		<where>
+			<if test="prodProductname !=null and prodProductname !=''">
+				 prod_ProductName like concat('%',#{prodProductname},'%')
+			</if>
+			<if test="prodProductcode !=null and prodProductcode !=''">
+				and prod_ProductCode=#{prodProductcode}
+			</if>
+			<if test="prodProductlsadd !=null and prodProductlsadd !=''">
+				and prod_ProductlsAdd=#{prodProductlsadd}
+			</if>
+		</where>
+	    ORDER BY prod_Updatedate DESC
+	</select>
+
+	
+	<!-- 查询全部产品 -->
+	<select id="searchProductList" parameterType="TblProduct" resultMap="result_product">
+		SELECT
+			pk_Product,
+			prod_ProductName,
+			prod_ProductCode,
+			(pc.prCa_Name) as caName,
+			prod_MarketPrice,
+			prod_ProductlsAdd,
+			prod_Updatedate,
+			prod_StockQuantity
+		FROM tbl_Product pd INNER JOIN tbl_ProductCategory pc ON pc.pk_ProductCategory = pd.prod_CategoryId
+		<where>
+			<if test="prodProductname !=null and prodProductname !=''">
+				 prod_ProductName like concat('%',#{prodProductname},'%')
+			</if>
+			<if test="prodProductcode !=null and prodProductcode !=''">
+				and prod_ProductCode=#{prodProductcode}
+			</if>
+			<if test="prodProductlsadd !=null and prodProductlsadd !=''">
+				and prod_ProductlsAdd=#{prodProductlsadd}
+			</if>
+			<if test="prodUser !=null and prodUser !=''">
+				and prod_User=#{prodUser}
+			</if>
+		</where>
+	    ORDER BY prod_Updatedate DESC
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<!-- 查询产品数量 -->
+	<select id="searchProductCount" parameterType="TblProduct"
+		resultType="long">
+		select
+		count(pk_Product)	
+		FROM tbl_Product pd INNER JOIN tbl_ProductCategory pc ON pc.pk_ProductCategory = pd.prod_CategoryId
+		<where>
+			<if test="prodProductname !=null and prodProductname !=''">
+				 prod_ProductName like concat('%',#{prodProductname},'%')
+			</if>
+			<if test="prodProductcode !=null and prodProductcode !=''">
+				and prod_ProductCode=#{prodProductcode}
+			</if>
+			<if test="prodProductlsadd !=null and prodProductlsadd !=''">
+				and prod_ProductlsAdd=#{prodProductlsadd}
+			</if>
+			<if test="prodUser !=null and prodUser !=''">
+				and prod_User=#{prodUser}
+			</if>
+		</where>
+	</select>
+	
+	<!-- 查询所属类目 -->
+	<select id="searchCategoryList" parameterType="TblProductcategory" resultMap="result_product">
+		SELECT pk_ProductCategory pkCategory,prCa_Name caName FROM tbl_ProductCategory
+	</select>
+	
+	<!-- 上架 -->
+	<update id="updateStatus" parameterType="TblProduct">
+		update tbl_Product
+		<set>
+			<if test="prodProductlsadd!=null"> prod_ProductlsAdd=#{prodProductlsadd}</if>
+		</set>
+		<where>
+			pk_Product=#{pkProduct}
+		</where>
+	</update>
+</mapper>

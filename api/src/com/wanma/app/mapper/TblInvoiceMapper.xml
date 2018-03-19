@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.app.dao.TblInvoiceMapper">
+
+	
+
+	<update id="updateInvoice" parameterType="TblInvoice">
+	   update tbl_invoice set
+	     iv_Pay_Freight=#{ivPayFreight},
+	     iv_InvoiceStatus=#{ivInvoiceStatus},
+	     iv_FreightAmount=#{ivFreightAmount},
+	     iv_Updatedate=now()
+	   where 
+	    pk_Invoice=#{pkInvoice} 
+	</update>
+
+	
+</mapper> 

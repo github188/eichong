@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.app.dao.AppCarinfoMapper">
+
+	<resultMap id="tblCarinfoResultMap" type="TblCarinfo">
+		<id property="pkCarinfo" column="pk_CarInfo" />
+		<result property="carinfoStylename" column="CarInfo_StyleName" />
+		<result property="carinfoMaxodometer" column="CarInfo_MaxOdometer" />
+		<result property="carinfoBatterycapacity" column="CarInfo_BatteryCapacity" />
+		<result property="carinfoCreatedate" column="CarInfo_CreateDate" />
+		<result property="carinfoUpdatedate" column="CarInfo_UpdateDate" />
+		<result property="carinfoRemark" column="CarInfo_Remark" />
+		<result property="carinfoBrandicon" column="CarInfo_BrandIcon" />
+	</resultMap>
+	<resultMap id="pageResultMap"  type="java.util.HashMap" extends="tblCarinfoResultMap"></resultMap>
+	<resultMap id="findResultMap"  type="java.util.HashMap" extends="tblCarinfoResultMap"></resultMap>
+
+	<insert id="insert" parameterType="TblCarinfo">
+	   insert into tbl_CarInfo (
+	     CarInfo_StyleName,
+	     CarInfo_MaxOdometer,
+	     CarInfo_BatteryCapacity,
+	     CarInfo_CreateDate,
+	     CarInfo_UpdateDate,
+	     CarInfo_Remark,
+	     CarInfo_BrandIcon,
+	     CarInfo_BrandName
+	   )values (
+	     #{carinfoStylename},
+	     #{carinfoMaxodometer},
+	     #{carinfoBatterycapacity},
+	     #{carinfoCreatedate},
+	     #{carinfoUpdatedate},
+	     #{carinfoRemark},
+	     #{carinfoBrandicon},
+	     #{carinfoBrandname}
+	   )
+	</insert>
+
+	<update id="update" parameterType="TblCarinfo">
+	   update tbl_CarInfo set
+	     CarInfo_StyleName=#{carinfoStylename},
+	     CarInfo_MaxOdometer=#{carinfoMaxodometer},
+	     CarInfo_BatteryCapacity=#{carinfoBatterycapacity},
+	     CarInfo_CreateDate=#{carinfoCreatedate},
+	     CarInfo_UpdateDate=#{carinfoUpdatedate},
+	     CarInfo_Remark=#{carinfoRemark},
+	     CarInfo_BrandIcon=#{carinfoBrandicon},
+	     CarInfo_BrandName=#{carinfoBrandname}
+	   where 
+	    pk_CarInfo=#{pkCarinfo} 
+	</update>
+
+	<delete id="delete" parameterType="map">
+	   delete from 
+	     tbl_CarInfo 
+	   where 
+	    pk_CarInfo=#{pkCarinfo} 
+	</delete>
+
+	<select id="get" parameterType="map" resultMap="tblCarinfoResultMap">
+	   select 
+	    pk_CarInfo,
+	    CarInfo_StyleName,
+	    CarInfo_MaxOdometer,
+	    CarInfo_BatteryCapacity,
+	    CarInfo_CreateDate,
+	    CarInfo_UpdateDate,
+	    CarInfo_Remark,
+	    CarInfo_BrandIcon,
+	    CarInfo_BrandName
+	   from tbl_CarInfo
+	   where 
+	    pk_CarInfo=#{pkCarinfo} 
+	</select>
+
+	<select id="findOne" parameterType="map" resultMap="findResultMap">
+	   select 
+	    pk_CarInfo,
+	    CarInfo_StyleName,
+	    CarInfo_MaxOdometer,
+	    CarInfo_BatteryCapacity,
+	    CarInfo_CreateDate,
+	    CarInfo_UpdateDate,
+	    CarInfo_Remark,
+	    CarInfo_BrandIcon,
+	    CarInfo_BrandName
+	   from tbl_CarInfo
+	   where 
+	    pk_CarInfo=#{pkCarinfo} 
+	</select>
+
+	<select id="find" parameterType="map" resultMap="findResultMap">
+	   select 
+	     pk_CarInfo,
+	     CarInfo_StyleName,
+	     CarInfo_MaxOdometer,
+	     CarInfo_BatteryCapacity,
+	     CarInfo_CreateDate,
+	     CarInfo_UpdateDate,
+	     CarInfo_Remark,
+	     CarInfo_BrandIcon
+	   from tbl_CarInfo a
+	   <where>
+	    and a.CarInfo_CarStatus=0
+	      <if test="pkCarinfo != null">
+	       and  pk_CarInfo=#{pkCarinfo}
+	     </if>
+	     <if test="carinfoStylename != null">
+	        and CarInfo_StyleName=#{carinfoStylename}
+	     </if>
+	     <if test="carinfoMaxodometer != null">
+	        and CarInfo_MaxOdometer=#{carinfoMaxodometer}
+	     </if>
+	     <if test="carinfoBatterycapacity != null">
+	        and CarInfo_BatteryCapacity=#{carinfoBatterycapacity}
+	     </if>
+	     <if test="carinfoCreatedate != null">
+	        and CarInfo_CreateDate=#{carinfoCreatedate}
+	     </if>
+	     <if test="carinfoUpdatedate != null">
+	        and CarInfo_UpdateDate=#{carinfoUpdatedate}
+	     </if>
+	     <if test="carinfoRemark != null">
+	        and CarInfo_Remark=#{carinfoRemark}
+	     </if>
+	     <if test="carinfoBrandicon != null">
+	        and CarInfo_BrandIcon=#{carinfoBrandicon}
+	     </if>
+	      <if test="carcompanyId != null">
+	        and CarInfo_CompanyId=#{carcompanyId}
+	     </if>
+	   </where>
+	</select>
+	
+	<select id="page" parameterType="map" resultMap="pageResultMap">
+	   select 
+	     pk_CarInfo,
+	     CarInfo_StyleName,
+	     CarInfo_MaxOdometer,
+	     CarInfo_BatteryCapacity,
+	     CarInfo_CreateDate,
+	     CarInfo_UpdateDate,
+	     CarInfo_Remark,
+	     CarInfo_BrandIcon,
+	     CarInfo_BrandName
+	   from tbl_CarInfo
+	   <where>
+	     <if test="pkCarinfo != null">
+	        pk_CarInfo=#{pkCarinfo}
+	     </if>
+	     <if test="carinfoStylename != null">
+	        and CarInfo_StyleName=#{carinfoStylename}
+	     </if>
+	     <if test="carinfoMaxodometer != null">
+	        and CarInfo_MaxOdometer=#{carinfoMaxodometer}
+	     </if>
+	     <if test="carinfoBatterycapacity != null">
+	        and CarInfo_BatteryCapacity=#{carinfoBatterycapacity}
+	     </if>
+	     <if test="carinfoCreatedate != null">
+	        and CarInfo_CreateDate=#{carinfoCreatedate}
+	     </if>
+	     <if test="carinfoUpdatedate != null">
+	        and CarInfo_UpdateDate=#{carinfoUpdatedate}
+	     </if>
+	     <if test="carinfoRemark != null">
+	        and CarInfo_Remark=#{carinfoRemark}
+	     </if>
+	     <if test="carinfoBrandicon != null">
+	        and CarInfo_BrandIcon=#{carinfoBrandicon}
+	     </if>
+	     <if test="carinfoBrandname != null">
+	        and CarInfo_BrandName=#{carinfoBrandname}
+	     </if>
+	   </where>
+	</select>
+	<select id="getEntityByName" parameterType="string" resultMap="tblCarinfoResultMap">
+	   select 
+	    pk_CarInfo,
+	    CarInfo_StyleName,
+	    CarInfo_MaxOdometer,
+	    CarInfo_BatteryCapacity,
+	    CarInfo_CreateDate,
+	    CarInfo_UpdateDate,
+	    CarInfo_Remark,
+	    CarInfo_BrandIcon
+	   from tbl_CarInfo
+	   where 
+	    CarInfo_StyleName='${_parameter}'
+	</select>
+</mapper> 

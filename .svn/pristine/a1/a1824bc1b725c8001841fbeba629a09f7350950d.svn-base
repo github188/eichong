@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dubbox.dao.TblFeedbackMapper">
+	<resultMap id="feedbackResultMap" type="TblFeedback">
+		<id property="id" column="pk_FeedBack" />
+		<result property="uid" column="feBa_UserId" />
+		<result property="txt" column="feBa_Content" />
+		<result property="cdate" column="feBa_Createdate" />
+		<result property="udate" column="feBa_Updatedate" />
+		<result property="sts" column="feBa_Status" />
+		<result property="rsn" column="feBa_Reason" />
+		<result property="udtUid" column="feBa_update_user_id" />
+	</resultMap>
+
+	<!-- 添加数据 -->
+	<insert id="insert" parameterType="TblFeedback">
+		insert into tbl_FeedBack (
+		feBa_UserId,
+		feBa_Content,
+		feBa_Createdate,
+		feBa_Updatedate,
+		feBa_Status,
+		feBa_Reason,
+		feBa_update_user_id
+		)values (
+		#{uid},
+		#{txt},
+		sysdate(),
+		sysdate(),
+		#{sts},
+		#{rsn},
+		#{udtUid}
+		)
+	</insert>
+
+	<!-- 查询数量 -->
+	<select id="getCount" parameterType="TblFeedback" resultType="int">
+		SELECT
+		count(fb.pk_FeedBack)
+		FROM
+		tbl_FeedBack AS fb
+		<where>
+			1=1
+			<if test="cdate !=null and cdate !=''">
+				 <![CDATA[and fb.feBa_Createdate <=#{cdate}]]>
+			</if>
+			<if test="sts!=null and sts !=''">
+				and fb.feBa_Status = #{sts}
+			</if>
+			<if test="slcBgDate !=null and slcBgDate !=''">
+			<![CDATA[AND TO_DAYS(feBa_Createdate) >= TO_DAYS(#{slcBgDate})]]>
+			</if>
+			<if test="slcEdDate !=null and slcEdDate !=''">
+			<![CDATA[AND TO_DAYS(feBa_Createdate) <= TO_DAYS(#{slcEdDate})]]>
+			</if>
+			<if test="userIds != null">
+				and feBa_UserId in
+				<foreach item="item" index="index" collection="userIds"
+					open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+		</where>
+	</select>
+
+	<!-- 查询列表 -->
+	<select id="getList" parameterType="TblFeedback" resultMap="feedbackResultMap">
+		SELECT ${rtColumns}
+		FROM
+		tbl_FeedBack AS fb
+		<where>
+			1=1
+			<if test="cdate !=null and cdate !=''">
+				 <![CDATA[and fb.feBa_Createdate <=#{cdate}]]>
+			</if>
+			<if test="sts!=null and sts !=''">
+				and fb.feBa_Status = #{sts}
+			</if>
+			<if test="slcBgDate !=null and slcBgDate !=''">
+			<![CDATA[AND TO_DAYS(feBa_Createdate) >= TO_DAYS(#{slcBgDate})]]>
+			</if>
+			<if test="slcEdDate !=null and slcEdDate !=''">
+			<![CDATA[AND TO_DAYS(feBa_Createdate) <= TO_DAYS(#{slcEdDate})]]>
+			</if>
+			<if test="userIds != null">
+				and feBa_UserId in
+				<foreach item="item" index="index" collection="userIds"
+					open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+		</where>
+		ORDER BY feBa_Createdate DESC
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<!-- 删除 -->
+	<delete id="delete" parameterType="TblFeedback">
+		delete from
+		tbl_FeedBack
+		where
+		pk_FeedBack=#{id}
+	</delete>
+
+	<!-- 修改 -->
+	<update id="update" parameterType="TblFeedback">
+		update tbl_FeedBack set
+		<if test="uid and uid !=''">
+			feBa_UserId=#{uid},
+		</if>
+		<if test="txt and txt !=''">
+			feBa_Content=#{txt},
+		</if>
+		<if test="sts and sts !=''">
+			feBa_Status=#{sts},
+		</if>
+		<if test="rsn and rsn !=''">
+			feBa_Reason=#{rsn},
+		</if>
+		<if test="udtUid and udtUid !=''">
+			feBa_update_user_id=#{udtUid},
+		</if>
+		feBa_Updatedate=sysdate()
+		where
+		pk_FeedBack=#{id}
+	</update>
+
+	<!-- 获取单条记录 -->
+	<select id="selectOne" parameterType="TblFeedback" resultMap="feedbackResultMap">
+		SELECT ${rtColumns}
+		FROM
+		tbl_FeedBack AS fb
+		where pk_FeedBack=#{id}
+	</select>
+
+</mapper> 

@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/style.min.css"/>
+    <!--<link rel="stylesheet" type="text/css" href="../../../js/lib/layui/css/layui.css"/>-->
+    <link rel="stylesheet" type="text/css" href="../../../css/activity/userActivity/add_userActivity.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../js/lib/My97DatePicer/skin/WdatePicker.css"/>
+    <title>新增用户活动</title>
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="container-fluid">
+        <div class="row">
+        </div>
+        <div class="row">
+            <div class="col-sm-12" style="padding: 0">
+                <div class="ibox float-e-margins">
+                    <div class="">
+                        <div class="ibox-content">
+                            <!--user=>company-->
+                            <div class="add_companyBlock">
+
+                                <form id="uploadForm" name="uploadForm">
+                                <div class="add_greyBlock">
+                                    <!--活动名称-->
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">名称<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="actActivityname" maxlength="50" id="actActivityname" value="" class="commonStyle" placeholder="请输入活动名称"/>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="actActivitynameTip">
+
+                                        </div>
+                                    </div>
+                                    <!--发行方-->
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">活动组织方/优惠券发行方/成本承担方<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8">
+                                            <div class=" col-sm-3 col-xs-4 model-select-box" style="width: 100%">
+                                                <div class="model-select-text actChanneltypeBlock" data-value="" id="actChanneltype">请选择</div>
+                                                <span class="downRow actChanneltypeBlock clickRotateSpan"></span>
+                                                <input type="text" name="actChanneltype" hidden="hidden" id="" value="" />
+                                                <ul class="model-select-option actChanneltypeUl">
+
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="actChanneltypeTip">
+
+                                        </div>
+                                    </div>
+                                    <!--活动类型-->
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">规则<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8">
+                                            <div class=" col-sm-3 col-xs-4 model-select-box" style="width: 100%">
+                                                <!--<div class="model-select-text actActivityruleBlock" data-value="1" id="actActivityrule">注册送现金券活动</div>-->
+                                                <div class="model-select-text actActivityruleBlock" data-value="1" id="actActivityrule">注册送</div>
+                                                <span class="downRow actActivityruleBlock clickRotateSpan"></span>
+                                                <input type="text" name="actActivityrule" hidden="hidden" id="" value="" />
+                                                <ul class="model-select-option actActivityruleUl">
+                                                    <!--<li data-option="1" class="seleced">注册送现金券活动</li>-->
+                                                    <!--<li data-option="2">首次体验享现金券</li>-->
+                                                    <!--<li data-option="3">邀请注册返现金券活动</li>-->
+                                                    <!--<li data-option="4">邀请首次消费返现金券活动</li>-->
+                                                    <!--<li data-option="5">充值送</li>-->
+                                                    <!--<li data-option="6">消费送</li>-->
+                                                    <!--<li data-option="7">指定送</li>-->
+                                                    <li data-option="1" class="seleced">注册送</li>
+                                                    <li data-option="5">充值送</li>
+                                                    <li data-option="6">消费送</li>
+                                                    <li data-option="7">指定送</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+
+                                        </div>
+                                    </div>
+                                    <!--注册、充值、消费送的范围-->
+                                    <div class="container-fluid" id="actScopeBlock">
+                                        <div class="col-sm-12 comTitle">范围<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8">
+                                            <div class=" col-sm-3 col-xs-4 model-select-box" style="width: 100%">
+                                                <div class="model-select-text actScopeBlock" data-value="0" id="actScope">全国活动</div>
+                                                <span class="downRow actScopeBlock clickRotateSpan"></span>
+                                                <input type="text" name="actScope" hidden="hidden" id="" value="" />
+                                                <ul class="model-select-option actScopeUl">
+                                                    <li data-option="0" class="seleced">全国活动</li>
+                                                    <!--<li data-option="1">城市活动</li>-->
+                                                    <!--<li data-option="2">站点活动</li>-->
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+
+                                        </div>
+                                    </div>
+                                    <!--充值送、消费送-->
+                                    <div class="container-fluid" id="consumptionSendRange" style="display: none;">
+                                        <div class="col-sm-12 comTitle">选择</div>
+                                        <div class="col-sm-4" id="province" style="display: none;">
+                                            <div class=" col-sm-3 col-xs-4 model-select-box" style="width: 100%">
+                                                <div class="model-select-text provinceBlock" data-value="" id="provinceCode">选择省</div>
+                                                <span class="downRow provinceBlock clickRotateSpan"></span>
+                                                <input type="text" name="" hidden="hidden" id="" value="" />
+                                                <ul class="model-select-option provinceUl">
+
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4" id="city" style="display: none;">
+                                            <div class=" col-sm-3 col-xs-4 model-select-box" style="width: 100%">
+                                                <div class="model-select-text cityBlock" data-value="" id="cityCode">选择市</div>
+                                                <span class="downRow cityBlock clickRotateSpan"></span>
+                                                <input type="text" name="cityCode" hidden="hidden" id="" value="" />
+                                                <ul class="model-select-option cityUl">
+
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+
+                                        </div>
+                                        <div id="station" style="display: none;">
+                                            <div class="col-sm-12" style="height: 20px;"></div>
+                                            <div class="col-sm-4">
+                                                <div class=" col-sm-3 col-xs-4 model-select-box" style="width: 100%">
+                                                    <div class="model-select-text areaCodeBlock" data-value="" id="areaCode">选择区</div>
+                                                    <span class="downRow areaCodeBlock clickRotateSpan"></span>
+                                                    <input type="text" name="" hidden="hidden" id="" value="" />
+                                                    <ul class="model-select-option areaUl">
+
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class=" col-sm-3 col-xs-4 model-select-box" style="width: 100%">
+                                                    <div class="model-select-text actStationBlock" data-value="" id="pkPowerstation">选择充电点</div>
+                                                    <span class="downRow actStationBlock clickRotateSpan"></span>
+                                                    <input type="text" name="pkPowerstation" hidden="hidden" id="" value="" />
+                                                    <ul class="model-select-option pkPowerstationUl">
+
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--开始时间-->
+                                    <div class="container-fluid" id="startDate" style="display: block;">
+                                        <div class="col-sm-12 comTitle">开始时间<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input  class="textInput required" id="actBegindate_f1" name="actBegindates" class="commonStyle" readonly="readonly" style="width: 100%;height: 32px;text-indent: 20px;"
+                                                    onClick="WdatePicker({el:'actBegindate_f1',minDate:'new Date()',maxDate:'#F{$dp.$D(\'actEnddate_f1\')}'})">
+
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="actBegindatesTip">
+
+                                        </div>
+                                    </div>
+                                    <!--结束时间-->
+                                    <div class="container-fluid" id="endDate" style="display: block;">
+                                        <div class="col-sm-12 comTitle">结束时间<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input  class="textInput required" id="actEnddate_f1" name="actEnddates" class="commonStyle" readonly="readonly" style="width: 100%;height: 32px;text-indent: 20px;"
+                                                    onClick="WdatePicker({el:'actEnddate_f1',minDate:'#F{$dp.$D(\'actBegindate_f1\')}'})">
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="actEnddatesTip">
+
+                                        </div>
+                                    </div>
+                                    <!--到期时间-->
+                                    <div class="container-fluid" id="stopDate" style="display: block;">
+                                        <div class="col-sm-12 comTitle">到期时间<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input class="textInput required" id="actCouponEnddate_f1" name="actCouponEndDates"  class="commonStyle" readonly="readonly" style="width: 100%;height: 32px;text-indent: 20px;"
+                                                   onClick="WdatePicker({el:'actCouponEnddate_f1',minDate:'#F{$dp.$D(\'actEnddate_f1\')}'})">
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="actCouponEndDatesTip">
+
+                                        </div>
+                                    </div>
+                                    <!--指定送的到期时间-->
+                                    <div class="container-fluid" id="stopTime" style="display: none;">
+                                        <div class="col-sm-12 comTitle">到期时间<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input  class="textInput required" id="beginTime" name="" class="commonStyle" readonly="readonly" style="width: 100%;height: 32px;text-indent: 20px;"
+                                                    onClick="WdatePicker({el:'beginTime',minDate:'new Date()'})">
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="beginTimeTip">
+
+                                        </div>
+                                    </div>
+                                    <!--指定用户-->
+                                    <div class="container-fluid" id="specificUser" style="display: none;">
+                                        <div class="col-sm-3 userTitle">用户列表<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-2 userHeight">
+                                            <!--<input type="file" name="file" id="file" value="" class="aaaStyle"/>-->
+                                            <a href="javascript:;" class="filea">选择文件
+                                                <input type="file" name="file" id="file" value="" class="aaaStyle" multiple="multiple" />
+                                            </a>
+                                        </div>
+                                        <div class="col-sm-3 userHeight">
+                                            <div class="fileList" id="fileListUl">
+
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="fileNameTip">
+
+                                        </div>
+                                    </div>
+                                    <!--充值送内容-->
+                                    <div class="container-fluid" id="rechargeSend" style="display: none;">
+                                        <div class="col-sm-12 comTitle">单人最高充值金额<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="actTopMoney" id="actTopMoney" value="" class="commonStyle" placeholder="金额"/>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle"  id="actTopMoneyTip">
+
+                                        </div>
+                                        <div class="col-sm-12 comTitle">单笔充值满多少送<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="singelMoney" id="singelMoneyR" value="" class="commonStyle" placeholder="金额"/>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="singelMoneyRTip">
+
+                                        </div>
+                                    </div>
+                                    <!--消费送内容-->
+                                    <div class="container-fluid" id="consumeSend" style="display: none;">
+                                        <div class="col-sm-12 comTitle">单笔消费满多少送<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="singelMoney" id="singelMoneyC" value="" class="commonStyle" placeholder="金额"/>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="singelMoneyCTip">
+
+                                        </div>
+                                    </div>
+
+                                    <!--选择奖品-->
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">选择奖品<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8">
+                                            <div class=" col-sm-3 col-xs-4 model-select-box" style="width: 100%">
+                                                <div class="model-select-text prizeListBlock" data-value="1" id="prizeList">现金券</div>
+                                                <span class="downRow prizeListBlock clickRotateSpan"></span>
+                                                <input type="text" name="prizeList" hidden="hidden" id="" value="" />
+                                                <ul class="model-select-option prizeListUl">
+                                                    <li data-option="1" class="seleced">现金券</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4" >
+                                        </div>
+                                        <div class="col-sm-12" style="height: 20px;"></div>
+                                        <div class="col-sm-8">
+                                            <div class=" col-sm-3 col-xs-4 model-select-box" style="width: 100%">
+                                                <div class="model-select-text prizeTypeBlock" data-value="" id="prizeType">请选择</div>
+                                                <span class="downRow prizeTypeBlock clickRotateSpan"></span>
+                                                <input type="text" name="prizeType" hidden="hidden" id="" value="" />
+                                                <ul class="model-select-option prizeTypeUl">
+
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="prizeNameTip">
+
+                                        </div>
+                                        <div class="col-sm-12" style="height: 20px;"></div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="" id="prizeNumber" value="" class="commonStyle" placeholder="数量"/>
+                                        </div>
+                                        <div class="col-sm-4">
+
+                                            <div class="addNumber" id="addPrizeList">增加</div>
+                                        </div>
+                                    </div>
+                                    <!--已选择的奖励-->
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">已选择的奖励</div>
+                                        <div class="col-sm-8 comHeight">
+                                            <ul class="prizeList" id="prizeListUl">
+
+                                            </ul>
+                                        </div>
+                                        <div class="col-sm-4" >
+
+                                        </div>
+                                    </div>
+                                    <!--文字显示-->
+                                    <div class="container-fluid">
+                                        <div class="col-sm-8 comHeight">
+                                            <div class="prizeCon" id="prizeShow">
+                                                <div id="prizeShowTit" class="textTitle"></div>
+                                                <div id="prizeShowCon" class="textCon"></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" >
+
+                                        </div>
+                                    </div>
+
+                                    <!--备注-->
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">备注</div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="actRemark" style="min-height:60px;width:100%;" />
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" >
+
+                                        </div>
+                                    </div>
+                                    <!--按钮组合-->
+                                    <div class="saveBtn commonBtn" id="saveBtn" onclick="saveInfo()">保存</div>
+                                    <div class="quitBtn commonBtn" id="goCancel">取消</div>
+                                </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="../../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<!--<script src="../../../js/lib/layui/layui.all.js" type="text/javascript" charset="utf-8"></script>-->
+<script src="../../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<!--<script src="../js/apiAddress.js" type="text/javascript" charset="utf-8"></script>-->
+<script src="../../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/activity/userActivity/add_userActivity.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../lib/My97DatePicer/WdatePicker.js" type="text/javascript" charset="utf-8"></script>
+</html>

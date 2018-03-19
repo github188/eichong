@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.app.dao.GovBusiRecordMapper">
+
+
+
+	<select id="getorder" parameterType="Map" resultType="hashmap">
+		SELECT
+			pk_ChargingOrder,
+			chOr_Code,
+			elPi_ElectricPileCode,
+			elPi_ElectricPileName,
+			elPi_ElectricPileAddress,
+			chOr_ChargingStatus,
+			chOr_Createdate,
+			chOr_QuantityElectricity,
+			REPLACE (FORMAT(chOr_ChargeMoney, 4),',','') AS chOr_ChargeMoney,
+			REPLACE (FORMAT(chOr_ServiceMoney, 4),',','') AS chOr_ServiceMoney,
+			chOr_CouponMoney couMoney,
+			begin_charge_time,
+			end_charge_time,
+			chOr_Muzzle AS headCode,
+			chRe_FrozenAmt
+		FROM tbl_chargingorder co
+		LEFT JOIN tbl_electricpile ep ON co.chOr_PileNumber = ep.elPi_ElectricPileCode
+		LEFT JOIN tbl_chargingrecord r ON co.chOr_Code = r.chRe_Code
+		WHERE chOr_UserId = #{userId} 
+		<if test="coId != null and coId != '0'"> and pk_ChargingOrder = #{coId}
+		</if>
+		<choose>
+			<when test="type==0"> and chOr_ChargingStatus in ('3','5','2')
+			</when>
+			<when test="type==1"> and chOr_ChargingStatus in ('1','4') </when>
+		</choose>
+		order by chOr_Createdate
+		desc
+		<if test="pager != null"> limit #{pager.pageNumber},#{pager.pageNum}
+		</if>
+	</select>
+
+
+
+
+
+
+	<select id="getbill" parameterType="map" resultType="hashmap">
+
+	<if test="type!=null and type!=''"> 
+
+	 <if test="type==11">
+	 select
+	pk_PurchaseHistory,
+	puHi_Type,
+	puHi_PurchaseHistoryTime,
+	puHi_Monetary,
+	puHi_ConsumerRemark,
+	puHi_Createdate,
+	puHi_Updatedate,
+	puHi_PurchaseContent,
+	puHi_UserId,
+	puHi_ChargeType
+	from tbl_purchasehistory where puHi_UserId = #{userId}
+	and puHi_Type = #{type}
+	order by puHi_PurchaseHistoryTime desc
+	<if test="pager != null">
+	limit #{pager.pageNumber},#{pager.pageNum}
+	</if>
+	</if>
+	<if test="type==0">
+
+	SELECT
+	'' AS puHi_ConsumerRemark,
+	chRe_FrozenAmt AS puHi_Monetary,
+	chRe_StartDate AS puHi_Createdate,
+	chRe_StartDate AS puHi_Updatedate,
+	chRe_StartDate as puHi_PurchaseHistoryTime,
+	user_id AS puHi_UserId,
+	1 AS pk_PurchaseHistory,
+	0 as puHi_Type,
+	1 AS puHi_ChargeType,
+	'充电冻结' as puHi_PurchaseContent
+	from tbl_chargingrecord where user_id = #{userId} and chRe_Status = 0
+	order by
+	puHi_PurchaseHistoryTime desc
+	<if test="pager != null">
+	limit #{pager.pageNumber},#{pager.pageNum}
+	</if>
+	</if>
+
+	</if>
+
+ 
+
+    <if test="type!=0 and type!=11"> 
+	select
+	pk_PurchaseHistory,
+	puHi_Type,
+	puHi_PurchaseHistoryTime,
+	puHi_Monetary,
+	puHi_ConsumerRemark,
+	puHi_Createdate,
+	puHi_Updatedate,
+	puHi_PurchaseContent,
+	puHi_UserId,
+	puHi_ChargeType
+	from
+	tbl_purchasehistory where puHi_UserId = #{userId} 
+	and puHi_Type != 4
+	UNION
+	(
+	SELECT
+			1 AS pk_PurchaseHistory,
+			0 AS puHi_Type,
+			chRe_StartDate AS puHi_PurchaseHistoryTime,
+			chRe_FrozenAmt AS puHi_Monetary,
+			'' AS puHi_ConsumerRemark,
+			chRe_StartDate AS puHi_Createdate,
+			chRe_StartDate AS puHi_Updatedate,
+			'充电冻结' AS puHi_PurchaseContent,
+			user_id AS puHi_UserId,
+			1 AS puHi_ChargeType
+	FROM
+	tbl_chargingrecord
+	WHERE
+	user_id =  #{userId} 
+	AND chRe_Status = 0)
+
+	order by puHi_PurchaseHistoryTime desc
+	<if test="pager != null">
+	limit #{pager.pageNumber},#{pager.pageNum}
+	</if>
+	</if>
+	
+	
+
+	
+	</select>
+
+	
+	
+
+</mapper> 

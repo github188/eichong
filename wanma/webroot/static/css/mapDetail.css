@@ -1,0 +1,267 @@
+@charset "utf-8";
+html,body{
+	font-family: "Microsoft YaHei", "微软雅黑" !important;
+}
+.wordSize{
+	font-size: 16px;
+}
+.mapArea{
+	background: #333;
+	overflow: hidden;
+}
+.allArea{
+	width: 300px;
+	height: 788px;
+	background: #333;
+	position: absolute;
+	top: 43px;
+	right: 36px;
+}
+.allArea .allCount,.allArea .property,.allArea .pileStateTotal{
+	width: 190px;
+	background: #5c5c5c;
+	border-radius: 8px;
+	margin-top: 20px;
+	padding: 20px;
+	padding-left: 40px;
+	margin-left: 24px;
+}
+/*全国的标题*/
+.allArea .allAreaTitle{
+	width: 210px;
+	background: #5c5c5c;
+	border-radius: 8px;
+	margin-top: 20px;
+	height: 10px;
+	color: #FFFFFF;
+	text-align: center;
+	line-height: 10px;
+	font-size: 18px;
+	padding: 20px;
+	margin-left: 24px;
+}
+/*总数统计信息*/
+.allArea .allCount{
+	height: 190px;
+}
+.allArea .allChargeTimes{
+	height: 64px;
+	/*background: #f00;*/
+}
+.allArea .allChargeTimes .lable{
+	color: #FFFFFF;
+	font-size: 16px;
+	margin-bottom: 4px;
+}
+.allArea .allChargeTimes .lableValue{
+	color: #fe9a2a;
+	font-size: 20px;
+}
+/*资产统计信息*/
+.allArea .property{
+	height: 193px;
+}
+.allArea .property .propertyTitle{
+	color: #FFFFFF;
+	font-size: 18px;
+	height: 36px;
+	/*background: #ccc;*/
+}
+.allArea .property .propertyList{
+	height: 30px;
+	/*background: #FE9A2A;
+	display: flex;
+	display: -webkit-flex;
+	flex-direction: row;*/
+}
+.allArea .property .propertyList .propertyTag{
+	width: 60%;
+	float:left;
+	/*background: #00ff00;*/
+	color: #FFFFFF;
+	font-size: 16px;
+}
+.allArea .property .propertyList .propertyTagValue{
+	width: 40%;
+	float:left;
+	/*background: #0000FF;*/
+	color: #fe9a2a;
+	font-size: 16px;
+}
+/*枪口状态数量统计*/
+.allArea .pileStateTotal{
+	height: 145px;
+}
+.allArea .pileStateTotal .pileStateList{
+	height: 30px;
+	/*background: #FE9A2A;
+	display: flex;
+	display: -webkit-flex;
+	flex-direction: row;*/
+}
+.allArea .pileStateTotal .pileStateList .pileStateListTag{
+	width: 60%;
+	float:left;
+	/*background: #00ff00;*/
+	color: #FFFFFF;
+	font-size: 16px;
+}
+.allArea .pileStateTotal .pileStateList .pileStateListValue{
+	width: 40%;
+	float:left;
+	/*background: #0000FF;*/
+	color: #fe9a2a;
+	font-size: 16px;
+}
+
+
+/*单个城市的详细信息====================================================================*/
+.cityArea{
+	width: 300px;
+	height: 788px;
+	background: #333;
+	/*background: #FFFFFF;*/
+	position: absolute;
+	top: 43px;
+	right: 36px;
+}
+.cityArea .allCount,.cityArea .property,.cityArea .pileStateTotal{
+	width: 190px;
+	background: #5c5c5c;
+	border-radius: 8px;
+	margin-top: 20px;
+	padding: 20px;
+	padding-left: 40px;
+	margin-left: 24px;
+}
+/*全国的标题*/
+.cityArea .allAreaTitle{
+	width: 272px;
+	/*background: #ccc;*/
+	border-radius: 8px;
+	margin-top: 20px;
+	height: 10px;
+	color: #FFFFFF;
+	text-align: center;
+	line-height: 10px;
+	font-size: 18px;
+	padding: 20px;
+	padding-left: 0;
+	padding-right: 0;
+	overflow: hidden;
+	
+}
+.cityArea .allAreaTitle span{
+	display: block;
+	float: left;
+}
+.cityArea .allAreaTitle .back{
+	display: block;
+	/*top: 83px;
+	right:294px;*/
+	width: 24px;
+	height: 24px;
+	background: #5C5C5C url(/wanma/static/images/img/back.png) no-repeat center;
+	border-radius: 5px;
+	cursor: pointer;
+}
+.cityArea .allAreaTitle .cityName{
+	font-size: 16px;
+	color: #FFFFFF;
+	font-weight: 900;
+	margin-left: 14px;
+	margin-top: 5px;
+	float: left;
+}
+
+.linkPoint{
+	cursor:pointer;
+}
+
+.cityArea .allAreaTitle .numMap{
+	font-size: 14px;
+	color: #FFFFFF;
+	width: 80px;
+	height: 24px;
+	line-height: 24px;
+	background: #fe9a2a;
+	text-align: center;
+	border-radius: 5px;
+	margin-left: 24px;
+	cursor: pointer;
+	float: right;
+}
+/*总数统计信息*/
+.cityArea .allCount{
+	height: 190px;
+}
+.cityArea .allChargeTimes{
+	height: 64px;
+	/*background: #f00;*/
+}
+.cityArea .allChargeTimes .lable{
+	color: #FFFFFF;
+	font-size: 16px;
+	margin-bottom: 4px;
+	font-size: 16px;
+}
+.cityArea .allChargeTimes .lableValue{
+	color: #fe9a2a;
+	font-size: 20px;
+}
+/*资产统计信息*/
+.cityArea .property{
+	height: 193px;
+}
+.cityArea .property .propertyTitle{
+	color: #FFFFFF;
+	font-size: 18px;
+	height: 36px;
+	/*background: #ccc;*/
+}
+.cityArea .property .propertyList{
+	height: 30px;
+	/*background: #FE9A2A;
+	display: flex;
+	display: -webkit-flex;
+	flex-direction: row;*/
+}
+.cityArea .property .propertyList .propertyTag{
+	width: 60%;
+	float:left;
+	/*background: #00ff00;*/
+	color: #FFFFFF;
+	font-size: 16px;
+}
+.cityArea .property .propertyList .propertyTagValue{
+	width: 40%;
+	float:left;
+	/*background: #0000FF;*/
+	color: #fe9a2a;
+	font-size: 16px;
+}
+/*枪口状态数量统计*/
+.cityArea .pileStateTotal{
+	height: 145px;
+}
+.cityArea .pileStateTotal .pileStateList{
+	height: 30px;
+	/*background: #FE9A2A;
+	display: flex;
+	display: -webkit-flex;
+	flex-direction: row;*/
+}
+.cityArea .pileStateTotal .pileStateList .pileStateListTag{
+	width: 60%;
+	float:left;
+	/*background: #00ff00;*/
+	color: #FFFFFF;
+	font-size: 16px;
+}
+.cityArea .pileStateTotal .pileStateList .pileStateListValue{
+	width: 40%;
+	float:left;
+	/*background: #0000FF;*/
+	color: #fe9a2a;
+	font-size: 16px;
+}

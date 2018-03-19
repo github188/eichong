@@ -1,0 +1,50 @@
+#\u53D1\u5E03\u73AF\u5883URL\uFF08\u4FEE\u6539\u540E\u7CFB\u7EDF\u9700\u8981\u91CD\u542F\uFF09
+#deploy.url=http://localhost:8080/wanma
+deploy.url=http://10.9.2.108:80/wanma
+#deploy.url=http://119.254.210.85/wanma
+#deploy.url=http://www.eichong.com/wanma
+#api\u8BF7\u6C42\u5730\u5740
+apiRoot=http://10.9.2.109:80/api
+#apiRoot=http://10.9.3.100:8080/api
+#apiRoot=http://119.254.210.85/api
+#apiRoot=http://www.eichong.com/api
+
+apiTokenPath=/app/common/getToken.do
+
+#hbase\u5730\u5740
+hbaseUrl=http://10.9.2.109:80/hbase/itf/hbase
+#\u7528\u6237\u9ED8\u8BA4\u5BC6\u7801
+user.default.password=123456
+# \u8D44\u6E90\u8DEF\u5F84
+storage.path.base=/res
+# \u6B63\u5F0F\u6587\u4EF6\u5B58\u653E\u8DEF\u5F84
+storage.path.real.file=/storage
+# \u4E34\u65F6\u6587\u4EF6\u5B58\u653E\u8DEF\u5F84
+storage.path.temp.file=/upload
+# \u7528\u6237\u56FE\u7247\u5B58\u653E\u8DEF\u5F84
+storage.path.user.image=/img/user
+storage.path.rich.text=/richtext
+
+#\u6587\u4EF6\u5B58\u653E\u7C7B\u578B\u4E0E\u8DEF\u5F84properties key\u5BF9\u5E94
+userImg=storage.path.user.image
+
+#\u7B2C\u4E09\u65B9\u767B\u5F55client_id
+oauth.server.myserver.client.id=unity-client
+oauth.server.myserver.response.type=code
+oauth.server.myserver.scope=read
+#\u7231\u5145\u7F51
+company.acw=\u7231\u5145\u7F51
+
+#\u56FE\u7247\u4E0A\u4F20\u670D\u52A1\u5668\u5730\u5740ftp://img:img.com@172.51.96.192:21/
+picture.service.uploadUrl=ftp://web:aichong@10.9.2.111:21/img/
+#\u56FE\u7247\u6D41\u7A0B\u670D\u52A1\u5668\u5730\u5740http://112.64.173.178:9000/img/
+picture.service.scanUrl=http://cs.ep.eichong.com:7070/img/
+# \u73AF\u5883\u533A\u5206\u6807\u8BC6\uFF0C\u6D4B\u8BD5\u73AF\u58831 \u6B63\u5F0F\u73AF\u58830
+notCheckAuthCode=1
+
+# \u4E0A\u6D77\u63A8\u9001\u5145\u7535\u7AD9\u4FE1\u606F
+URL_GET_TOKEN=http://180.163.178.38:6063/shevcs/v1/query_token
+URL_SEND_STATION=http://180.163.178.38:6063/shevcs/v1/notification_stationInfo
+
+#\u8BA2\u5355\u4EBA\u5DE5\u7ED3\u7B97\u65F6\u95F4\u914D\u7F6E\uFF08\u6BEB\u79D2\uFF09
+settleTime=60000

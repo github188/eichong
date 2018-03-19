@@ -1,0 +1,513 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.TblElectricpileMapper">
+	<resultMap id="tblElectricpileMap" type="TblElectricpile">
+		<id property="pkElectricpile" column="pk_ElectricPile" />
+		<result property="elpiElectricpilename" column="elPi_ElectricPileName" />
+		<result property="elpiElectricpilecode" column="elPi_ElectricPileCode" />
+		<result property="elpiElectricpileaddress" column="elPi_ElectricPileAddress" />
+		<result property="elpiLongitude" column="elPi_Longitude" />
+		<result property="elpiLatitude" column="elPi_Latitude" />
+		<result property="elpiPowernumber" column="elPi_PowerNumber" />
+		<result property="elpiAreacode" column="elPi_AreaCode" />
+		<result property="elpiState" column="elPi_State" />
+		<result property="elpiRejectionreason" column="elPi_RejectionReason" />
+		<result property="elpiType" column="elPi_Type" />
+		<result property="elpiPoweruser" column="elPi_PowerUser" />
+		<result property="elpiChargingmode" column="elPi_ChargingMode" />
+		<result property="elpiPowersize" column="elPi_PowerSize" />
+		<result property="elpiPowerinterface" column="elPi_PowerInterface" />
+		<result property="elpiMaker" column="elPi_Maker" />
+		<result property="elpiImage" column="elPi_Image" />
+		<result property="elpiDetailimage" column="elPi_DetailImage" />
+		<result property="elpiOutputvoltage" column="elPi_OutputVoltage" />
+		<result property="elpiInputvoltage" column="elPi_InputVoltage" />
+		<result property="elpiOutputcurrent" column="elPi_OutputCurrent" />
+		<result property="elpiInputcurrent" column="elPi_InputCurrent" />
+		<result property="elpiUsertype" column="elPi_UserType" />
+		<result property="elpiUserid" column="elPi_UserId" />
+		<result property="elpiCreatedate" column="elPi_Createdate" />
+		<result property="elpiUpdatedate" column="elPi_Updatedate" />
+		<result property="elpiRemark" column="elPi_Remark" />
+		<result property="elpiCarid" column="elPi_Carid" />
+		<result property="elpiBinding" column="elPi_Binding" />
+		<result property="elpiIsappoint" column="elPi_IsAppoint" />
+		<result property="elpiPaystyle" column="elPi_PayStyle" />
+		<result property="elpiMaxelectricity" column="elPi_MaxElectricity" />
+		<result property="elpiPowerusername" column="elPi_PowerUserName" />
+		<result property="elpiChargingmodename" column="elPi_ChargingModeName" />
+		<result property="elpiPowerinterfacename" column="elPi_PowerInterfaceName" />
+		<result property="elpiRelevancepowerstation" column="elPi_RelevancePowerStation" />
+		<result property="elpiTell" column="elPi_Tell" />
+		<result property="elpiRateinformationid" column="elPi_RateInformationId" />
+		<result property="commStatus" column="comm_status" />
+		<result property="epNum" column="ep_num" />
+		<result property="elpiUsername" column="elPi_UserName" />
+		<result property="elpiOnlinetime" column="elPi_OnlineTime" />
+		<result property="elpiOwnprovincecode" column="elpi_Ownprovincecode" />
+		<result property="elpiOwncitycode" column="elpi_Owncitycode" />
+		<result property="elpiOwncountycode" column="elpi_Owncountycode" />
+		<result property="elpiOfflinetime" column="elpi_Offlinetime" />
+		<result property="elpiGateid" column="elpi_Gateid" />
+		<result property="elpiOwnercompany" column="elpi_Ownercompany" />
+		<result property="simMac" column="sim_Mac" />
+		<result property="simPhoneNum" column="sim_Phone_Num" />
+		<result property="haveLedFlash" column="have_Led_Flash" />
+		<result property="haveGps" column="have_Gps" />
+		<result property="pkConcentratorid" column="pk_Concentratorid" />
+		<result property="concentratorNum" column="concentrator_Num" />
+	</resultMap>
+	<sql id="sql_select">
+		t.pk_ElectricPile,t.elPi_ElectricPileName,t.elPi_ElectricPileCode,t.elPi_ElectricPileAddress,t.elPi_Longitude,
+		t.elPi_Latitude,t.elPi_PowerNumber,t.elPi_AreaCode,t.elPi_State,t.elPi_RejectionReason,
+		t.elPi_Type,t.elPi_PowerUser,t.elPi_ChargingMode,t.elPi_PowerSize,t.elPi_PowerInterface,
+		t.elPi_Maker,t.elPi_Image,t.elPi_DetailImage,t.elPi_OutputVoltage,t.elPi_InputVoltage,
+		t.elPi_OutputCurrent,t.elPi_InputCurrent,t.elPi_UserType,t.elPi_UserId,t.elPi_Createdate,
+		t.elPi_Updatedate,t.elPi_Remark,t.elPi_Carid,t.elPi_Binding,t.elPi_IsAppoint,
+		t.elPi_PayStyle,t.elPi_MaxElectricity,t.elPi_PowerUserName,t.elPi_ChargingModeName,t.elPi_PowerInterfaceName,
+		t.elPi_RelevancePowerStation,t.elPi_Tell,t.elPi_RateInformationId,t.comm_status,t.ep_num,
+		t.elPi_UserName,t.elPi_OnlineTime,t.elpi_Ownprovincecode,t.elpi_Owncitycode,t.elpi_Owncountycode,
+		t.elpi_Offlinetime,t.elpi_Gateid,t.elpi_Ownercompany,t.sim_Mac,t.sim_Phone_Num,
+		t.have_Led_Flash,t.have_Gps,t.pk_Concentratorid,t.concentrator_Num,t.have_connect_line,t.elPi_Parking_Fee
+	</sql>
+	<sql id="sql_update">
+		update tbl_ElectricPile
+		<set>
+			<if test="elpiElectricpilename != null">elPi_ElectricPileName=#{elpiElectricpilename},</if>
+			<if test="elpiElectricpilecode!=null">elPi_ElectricPileCode=#{elpiElectricpilecode},</if>
+			<if test="elpiElectricpileaddress!=null">elPi_ElectricPileAddress=#{elpiElectricpileaddress},</if>
+			<if test="elpiLongitude!=null">elPi_Longitude=#{elpiLongitude},</if>
+			<if test="elpiLatitude!=null">elPi_Latitude=#{elpiLatitude},</if>
+			<if test="elpiPowernumber!=null">elPi_PowerNumber=#{elpiPowernumber},</if>
+			<!-- <if test="elpiAreacode!=null">elPi_AreaCode=#{elpiAreacode},</if> -->
+			<if test="elpiState!=null">elPi_State=#{elpiState},</if>
+			<if test="elpiRejectionreason!=null">elPi_RejectionReason=#{elpiRejectionreason},</if>
+			<if test="elpiType!=null">elPi_Type=#{elpiType},</if>
+			<if test="elpiPoweruser!=null">elPi_PowerUser=#{elpiPoweruser},</if>
+			<if test="elpiChargingmode!=null">elPi_ChargingMode=#{elpiChargingmode},</if>
+			<if test="elpiPowersize!=null">elPi_PowerSize=#{elpiPowersize},</if>
+			<if test="elpiPowerinterface!=null">elPi_PowerInterface=#{elpiPowerinterface},</if>
+			<if test="elpiMaker!=null">elPi_Maker=#{elpiMaker},</if>
+			<if test="elpiOutputvoltage!=null">elPi_OutputVoltage=#{elpiOutputvoltage},</if>
+			<if test="elpiInputvoltage!=null">elPi_InputVoltage=#{elpiInputvoltage},</if>
+			<if test="elpiOutputcurrent!=null">elPi_OutputCurrent=#{elpiOutputcurrent},</if>
+			<if test="elpiInputcurrent!=null">elPi_InputCurrent=#{elpiInputcurrent},</if>
+			<if test="elpiUsertype!=null">elPi_UserType=#{elpiUsertype},</if>
+			<if test="elpiUserid!=null">elPi_UserId=#{elpiUserid},</if>
+			<if test="elpiCarid!=null">elPi_Carid=#{elpiCarid},</if>
+			<if test="elpiBinding!=null">elPi_Binding=#{elpiBinding},</if>
+			<if test="elpiIsappoint!=null">elPi_IsAppoint=#{elpiIsappoint},</if>
+			<if test="elpiPaystyle!=null">elPi_PayStyle=#{elpiPaystyle},</if>
+			<if test="elpiMaxelectricity!=null">elPi_MaxElectricity=#{elpiMaxelectricity},</if>
+			<if test="elpiOnlinetime !=null and elpiOnlinetime !=''">elpi_Onlinetime=#{elpiOnlinetime},</if>
+			<if test="elpiOfflinetime !=null and elpiOfflinetime !=''">elPi_offlineTime=#{elpiOfflinetime},</if>
+			elpi_Updatedate=#{elpiUpdatedate}
+		</set>
+	</sql>
+
+	<!-- ____________________________查询开始___________________________ -->
+	<select id="getElectricpileDetail" parameterType="map"
+		resultMap="tblElectricpileMap">
+		select
+		<include refid="sql_select" />
+		,
+		(case when c.coCo_Content is null then '' else c.coCo_Content end)
+		elpiChargingmodename,
+		(case when c1.coCo_Content is null then '' else c1.coCo_Content end)
+		elpiPowersizename,
+		(case when c2.coCo_Content is null then '' else c2.coCo_Content end)
+		elpiPowerinterfacename,
+		<if test="epheElectricpileheadid != null or pkElectricpilehead != null">
+			eph.pk_ElectricpileHead pkElectricpilehead,
+			eph.ePHe_ElectricpileHeadId ePHeElectricpileHeadId,
+			eph.ePHe_ElectricpileHeadState ePHe_ElectricpileHeadState,
+		</if>
+		(select USER_LEVAL from tbl_user where USER_ID=t.elPi_UserId)
+		userLevel ,
+		(select raIn_ReservationRate from tbl_rateinformation where
+		pk_RateInformation = t.elPi_RateInformationId) raInReservationRate
+		from tbl_ElectricPile t
+		left join tbl_ConfigContent c on
+		t.elPi_ChargingMode = c.pk_ConfigContent
+		left join tbl_ConfigContent c1 on t.elPi_PowerSize = c1.pk_ConfigContent
+		left join tbl_ConfigContent c2 on t.elPi_PowerInterface =
+		c2.pk_ConfigContent
+		<if test="epheElectricpileheadid != null or pkElectricpilehead != null">
+			left join tbl_ElectricPileHead eph on t.pk_ElectricPile =
+			eph.pk_ElectricPile
+		</if>
+		where 1=1
+		<if test="pkElectricpile != null and pkElectricpile != ''">and t.pk_ElectricPile=#{pkElectricpile}</if>
+		<if test="elpiElectricpilename != null"> and t.elPi_ElectricPileName=#{elpiElectricpilename} </if>
+		<if test="elpiElectricpilecode != null">and t.elPi_ElectricPileCode=#{elpiElectricpilecode} </if>
+		<if test="elpiElectricpileaddress != null">and t.elPi_ElectricPileAddress=#{elpiElectricpileaddress}
+		</if>
+		<if test="elpiState != null">and t.elPi_State=#{elpiState}</if>
+		<if test="elpiType != null">and t.elPi_Type=#{elpiType}</if>
+		<if test="elpiPoweruser != null">and t.elPi_PowerUser=#{elpiPoweruser}</if>
+		<if test="elpiChargingmode != null">and t.elPi_ChargingMode=#{elpiChargingmode} </if>
+		<if test="elpiPowersize != null">and t.elPi_PowerSize=#{elpiPowersize}</if>
+		<if test="elpiPowerinterface != null">and t.elPi_PowerInterface=#{elpiPowerinterface} </if>
+		<if test="elpiMaker != null">and t.elPi_Maker=#{elpiMaker}</if>
+		<if test="elpiOutputvoltage != null">and t.elPi_OutputVoltage=#{elpiOutputvoltage}</if>
+		<if test="elpiInputvoltage != null">and t.elPi_InputVoltage=#{elpiInputvoltage}</if>
+		<if test="elpiOutputcurrent != null">and t.elPi_OutputCurrent=#{elpiOutputcurrent}</if>
+		<if test="elpiInputcurrent != null">and t.elPi_InputCurrent=#{elpiInputcurrent}</if>
+		<if test="elpiUsertype != null">and t.elPi_UserType=#{elpiUsertype}</if>
+		<if test="elpiUserid != null">and t.elPi_UserId=#{elpiUserid} </if>
+		<if test="elpiCarid != null">and t.elPi_Carid=#{elpiCarid}</if>
+		<if test="elpiBinding != null">and t.elPi_Binding=#{elpiBinding}</if>
+		<if test="elpiIsappoint != null">and t.elPi_IsAppoint=#{elpiIsappoint}</if>
+		<if test="elpiPaystyle != null">and t.elPi_PayStyle=#{elpiPaystyle}</if>
+		<if test="elpiMaxelectricity != null">and t.elPi_MaxElectricity=#{elpiMaxelectricity}</if>
+		<if test="elpiRelevancepowerstation!= null">and
+			t.elPi_RelevancePowerStation=#{elpiRelevancepowerstation}</if>
+		<if test="epheElectricpileheadid != null">and eph.ePHe_ElectricpileHeadId =
+			#{epheElectricpileheadid}</if>
+		<if test="pkElectricpilehead != null">and eph.pk_ElectricpileHead = #{pkElectricpilehead}</if>
+	</select>
+
+	<select id="getElectricpileListForMap" parameterType="map"
+		resultMap="tblElectricpileMap">
+		select * from (
+		select
+		pk_PowerStation pkElectricpile,
+		2 electricType,
+		poSt_Name elpiElectricpilename,
+		(select count(1) from tbl_ElectricPile where elPi_RelevancePowerStation =
+		pk_PowerStation) electricPileSum,
+		poSt_Address elpiElectricpileaddress,
+		<!-- getFullPath('powerListImage',pk_PowerStation) as elpiImage, -->
+		poSt_PowerUser elpiPoweruser,
+		null elpiChargingmode,
+		null elpiPowerinterface,
+		null elpiPowersize,
+		null elpiMaxelectricity,
+		poSt_Longitude elpiLongitude,
+		poSt_Latitude elpiLatitude,
+		poSt_OwnCityCode elpiOwncitycode,
+		poSt_IsAppoint elpiIsappoint,
+		(SELECT count(*) FROM tbl_ElectricPile a, tbl_electricpilehead b WHERE
+		a.pk_ElectricPile = b.pk_ElectricPile AND a.elPi_RelevancePowerStation
+		= pk_PowerStation) headNum,
+		(SELECT count(*) FROM tbl_ElectricPile a, tbl_electricpilehead b WHERE
+		a.pk_ElectricPile = b.pk_ElectricPile AND a.elPi_RelevancePowerStation
+		= pk_PowerStation AND b.ePHe_ElectricpileHeadState = 0) freeHeadNum,
+		(select elPi_OwnerCompany from tbl_ElectricPile where
+		elPi_RelevancePowerStation=pk_PowerStation limit 1) elpiOwnercompany,
+		(select case when count(1)>0 then 15 else 10 end from tbl_ElectricPile
+		where elPi_RelevancePowerStation=pk_PowerStation and elPi_State=15)
+		elpiState
+		from
+		tbl_PowerStation
+		<where>
+			poSt_Status in (10, 15)
+			<if
+				test="elpiElectricpileaddress != null and elpiElectricpileaddress != ''">
+				and poSt_Address like CONCAT('%','${elpiElectricpileaddress}','%' )
+			</if>
+			<if test="elpiElectricpilename != null and elpiElectricpilename != ''">
+				and poSt_Name like CONCAT('%','${elpiElectricpilename}','%' )
+			</if>
+			<if test="elpiState != null and elpiState != ''">
+				and poSt_Status=#{elpiState}
+			</if>
+			<if test="elpiIsappoint != null and elpiIsappoint != ''">
+				and ps.poSt_IsAppoint=#{elpiIsappoint}
+			</if>
+			<if test="elpiOwncitycode != null">
+				and poSt_OwnCityCode = #{elpiOwncitycode}
+			</if>
+			<if test="screenRadius != null">
+				<!-- * mysql 通过两点经纬度，算两点之间距离(单位米) * 第一点经纬度：@lng1 @lat1 第二点经纬度：@lng2 @lat2 
+					范例：round(6378.138*2*asin(sqrt(pow(sin( (@lat1*pi()/180-@lat2*pi()/180)/2),2)+cos(@lat1*pi()/180)*cos(@lat2*pi()/180)* 
+					pow(sin( (@lng1*pi()/180-@lng2*pi()/180)/2),2)))*1000) 电桩查找 列表模式，距离排序 默认5km以内 -->
+		             <![CDATA[ 
+					       and round(6378.138*2*asin(sqrt(pow(sin( (#{latitude}*pi()/180-ps.poSt_Latitude*pi()/180)/2),2)+cos(#{latitude}*pi()/180)*cos(ps.poSt_Latitude*pi()/180)* 
+		                                pow(sin( (#{longitude}*pi()/180-ps.poSt_Longitude*pi()/180)/2),2)))*1000)
+							        <=#{screenRadius}
+					       ]]>
+			</if>
+			and pk_PowerStation in (select elPi_RelevancePowerStation from
+			tbl_electricpile a
+			where elPi_State in (10, 15) and elPi_Binding=1
+			<if test="headState != null and headState != ''">
+				and a.pk_ElectricPile in(select pk_ElectricPile from
+				tbl_electricpilehead where ePHe_ElectricpileHeadState=#{headState})
+			</if>
+			<if test="commStatus != null and commStatus != ''">
+				and comm_Status = #{commStatus} and elPi_State =15
+			</if>
+			<if test="elpiChargingmode != null and elpiChargingmode!=''">
+				and elPi_ChargingMode = #{elpiChargingmode}
+			</if>
+			<if test="elpiPowerinterface != null  and elpiPowerinterface!=''">
+				and elPi_PowerInterface = #{elpiPowerinterface}
+			</if>
+			<if test="elpiPoweruser != null and elpiPoweruser!=''">
+				and (elPi_PowerUser=#{elpiPoweruser} or elPi_PowerUser=13)
+			</if>
+			<if test="elpiUpdatedate != null">
+				and elPi_Updatedate &gt; #{elpiUpdatedate}
+			</if>
+			)
+		</where>
+		union all
+		select
+		a.pk_ElectricPile pkElectricpile,
+		1 electricType,
+		elPi_ElectricPileName elpiElectricpilename,
+		null electricPileSum,
+		elPi_ElectricPileAddress elpiElectricpileaddress,
+		<!-- getFullPath('electricListImage',a.pk_ElectricPile) as elpiImage, -->
+		elPi_PowerUser elpiPoweruser,
+		elPi_ChargingMode elpiChargingmode,
+		elPi_PowerInterface elpiPowerinterface,
+		elPi_PowerSize elpiPowersize,
+		elPi_MaxElectricity elpiMaxelectricity,
+		elPi_Longitude elpiLongitude,
+		elPi_Latitude elpiLatitude,
+		elPi_OwnCityCode elpiOwncitycode,
+		elPi_IsAppoint elpiIsappoint,
+		(select count(*) from tbl_electricpilehead e where e.pk_ElectricPile =
+		a.pk_ElectricPile) headNum,
+		(select count(*) from tbl_electricpilehead e where e.pk_ElectricPile =
+		a.pk_ElectricPile and e.ePHe_ElectricpileHeadState = 0) freeHeadNum,
+		elPi_OwnerCompany elpiOwnercompany,
+		elPi_State elpiState
+		from
+		tbl_ElectricPile a
+		<where>
+			elPi_State in (10, 15) and elPi_Binding=0
+			<if
+				test="elpiElectricpileaddress != null and elpiElectricpileaddress != ''">
+				and elPi_ElectricPileAddress like
+				CONCAT('%','${elpiElectricpileaddress}','%' )
+			</if>
+			<if test="elpiElectricpilename != null and elpiElectricpilename != ''">
+				and elPi_ElectricPileName like CONCAT('%','${elpiElectricpilename}','%'
+				)
+			</if>
+			<if test="elpiState != null and elpiState != ''">
+				and elPi_State=#{elpiState}
+			</if>
+			<if test="elpiIsappoint != null and elpiIsappoint != ''">
+				and elPi_State=#{elpiState}
+			</if>
+			<if test="headState != null and headState != ''">
+				and a.pk_ElectricPile in(select pk_ElectricPile from
+				tbl_electricpilehead where ePHe_ElectricpileHeadState=#{headState})
+			</if>
+			<if test="commStatus != null and commStatus != ''">
+				and comm_Status = #{commStatus} and elPi_State =15
+			</if>
+			<if test="elpiChargingmode != null and elpiChargingmode != ''">
+				and elPi_ChargingMode=#{elpiChargingmode}
+			</if>
+			<if test="elpiPowerinterface != null  and elpiPowerinterface!=''">
+				and elPi_PowerInterface = #{elpiPowerinterface}
+			</if>
+			<if test="elpiPoweruser != null and elpiPoweruser!=''">
+				and (elPi_PowerUser=#{elpiPoweruser} or elPi_PowerUser=13)
+			</if>
+			<if test="elpiOwncitycode != null">
+				and elPi_OwnCityCode=#{elpiOwncitycode}
+			</if>
+			<if test="elpiUpdatedate != null">
+				and elPi_Updatedate &gt; #{elpiUpdatedate}
+			</if>
+		</where>
+		) as list
+		order by electricType desc
+		<if test="pager!=null and pager.pageNum!=null">limit #{pager.offset},#{pager.pageSize }</if>
+	</select>
+
+	<select id="getElectricpileListCountForMap" parameterType="map"
+		resultType="int">
+		select count(1) from (
+		select
+		pk_PowerStation pkElectricpile
+		from
+		tbl_PowerStation
+		<where>
+			poSt_Status in (10, 15)
+			<if
+				test="elpiElectricpileaddress != null and elpiElectricpileaddress != ''">
+				and poSt_Address like CONCAT('%','${elpiElectricpileaddress}','%' )
+			</if>
+			<if test="elpiElectricpilename != null and elpiElectricpilename != ''">
+				and poSt_Name like CONCAT('%','${elpiElectricpilename}','%' )
+			</if>
+			<if test="elpiState != null and elpiState != ''">
+				and poSt_Status=#{elpiState}
+			</if>
+			<if test="elpiIsappoint != null and elpiIsappoint != ''">
+				and ps.poSt_IsAppoint=#{elpiIsappoint}
+			</if>
+			<if test="screenRadius != null">
+				<!-- * mysql 通过两点经纬度，算两点之间距离(单位米) * 第一点经纬度：@lng1 @lat1 第二点经纬度：@lng2 @lat2 
+					范例：round(6378.138*2*asin(sqrt(pow(sin( (@lat1*pi()/180-@lat2*pi()/180)/2),2)+cos(@lat1*pi()/180)*cos(@lat2*pi()/180)* 
+					pow(sin( (@lng1*pi()/180-@lng2*pi()/180)/2),2)))*1000) 电桩查找 列表模式，距离排序 默认5km以内 -->
+		             <![CDATA[ 
+					       and round(6378.138*2*asin(sqrt(pow(sin( (#{latitude}*pi()/180-ps.poSt_Latitude*pi()/180)/2),2)+cos(#{latitude}*pi()/180)*cos(ps.poSt_Latitude*pi()/180)* 
+		                                pow(sin( (#{longitude}*pi()/180-ps.poSt_Longitude*pi()/180)/2),2)))*1000)
+							        <=#{screenRadius}
+					       ]]>
+			</if>
+			and pk_PowerStation in (select elPi_RelevancePowerStation from
+			tbl_electricpile a
+			where elPi_State in (10, 15) and elPi_Binding=1
+			<if test="headState != null and headState != ''">
+				and a.pk_ElectricPile in(select pk_ElectricPile from
+				tbl_electricpilehead where ePHe_ElectricpileHeadState=#{headState})
+			</if>
+			<if test="commStatus != null and commStatus != ''">
+				and comm_Status = #{commStatus} and elPi_State =15
+			</if>
+			<if test="elpiChargingmode != null and elpiChargingmode!=''">
+				and elPi_ChargingMode = #{elpiChargingmode}
+			</if>
+			<if test="elpiPowerinterface != null  and elpiPowerinterface!=''">
+				and elPi_PowerInterface = #{elpiPowerinterface}
+			</if>
+			<if test="elpiPoweruser != null and elpiPoweruser!=''">
+				and (elPi_PowerUser=#{elpiPoweruser} or elPi_PowerUser=13)
+			</if>
+			)
+		</where>
+		union all
+		select
+		a.pk_ElectricPile pkElectricpile
+		from
+		tbl_ElectricPile a
+		<where>
+			elPi_State in (10, 15) and elPi_Binding=0
+			<if
+				test="elpiElectricpileaddress != null and elpiElectricpileaddress != ''">
+				and elPi_ElectricPileAddress like
+				CONCAT('%','${elpiElectricpileaddress}','%' )
+			</if>
+			<if test="elpiElectricpilename != null and elpiElectricpilename != ''">
+				and elPi_ElectricPileName like CONCAT('%','${elpiElectricpilename}','%'
+				)
+			</if>
+			<if test="elpiState != null and elpiState != ''">
+				and elPi_State=#{elpiState}
+			</if>
+			<if test="elpiIsappoint != null and elpiIsappoint != ''">
+				and elPi_State=#{elpiState}
+			</if>
+			<if test="headState != null and headState != ''">
+				and a.pk_ElectricPile in(select pk_ElectricPile from
+				tbl_electricpilehead where ePHe_ElectricpileHeadState=#{headState})
+			</if>
+			<if test="commStatus != null and commStatus != ''">
+				and comm_Status = #{commStatus} and elPi_State =15
+			</if>
+			<if test="elpiChargingmode != null and elpiChargingmode != ''">
+				and elPi_ChargingMode=#{elpiChargingmode}
+			</if>
+			<if test="elpiPowerinterface != null  and elpiPowerinterface!=''">
+				and elPi_PowerInterface = #{elpiPowerinterface}
+			</if>
+			<if test="elpiPoweruser != null and elpiPoweruser!=''">
+				and (elPi_PowerUser=#{elpiPoweruser} or elPi_PowerUser=13)
+			</if>
+		</where>
+		) as list
+	</select>
+
+	<update id="update" parameterType="TblElectricpile">
+		<include refid="sql_update" />
+		where
+		pk_ElectricPile=#{pkElectricpile}
+	</update>
+	<update id="updateByCode" parameterType="TblElectricpile">
+		<include refid="sql_update" />
+		where
+		elPi_ElectricPileCode=#{elpiElectricpilecode}
+	</update>
+
+	<select id="selectDetailList" parameterType="map" resultType="hashMap">
+		select
+		t.pk_ElectricPile pkId,
+		t.elPi_ElectricPileCode id,
+		t.elPi_ElectricPileName stubName,
+		t.elPi_Parking_Fee parkingFeeInfo,
+		t.elPi_PowerSize kw,
+		CASE
+		t.elPi_ChargingMode
+		WHEN '5' THEN '1'
+		WHEN '14' THEN '0'
+		END type,
+		(IF(exists(select 1 from tbl_ElectricPileHead h where
+		h.pk_ElectricPile=t.pk_ElectricPile and
+		h.ePHe_ElectricpileHeadState='0'),'0',
+		IF(exists(select 1 from tbl_ElectricPileHead h where
+		h.pk_ElectricPile=t.pk_ElectricPile and
+		h.ePHe_ElectricpileHeadState='6'),'1',
+		IF(exists(select 1 from tbl_ElectricPileHead h where
+		h.pk_ElectricPile=t.pk_ElectricPile and
+		h.ePHe_ElectricpileHeadState='9'),'2','')
+		)
+		)
+		) as state,
+		t.have_connect_line existsGun,
+		p.raIn_ServiceCharge
+		serviceFee,
+		p.raIn_QuantumDate efQuantumDate,
+		p.raIn_TipTimeTariff
+		efTip,
+		p.raIn_PeakElectricityPrice efPeak,
+		p.raIn_UsualPrice efUsual,
+		p.raIn_ValleyTimePrice efValley
+		from tbl_electricpile t,
+		tbl_rateinformation p,
+		tbl_company_rela q
+		where t.elPi_RelevancePowerStation=#{stubGroupId}
+		and q.pk_ElectricPile=t.pk_ElectricPile
+		and q.pk_cpy_operate_id= (select
+		pk_CompanyId from
+		tbl_company where
+		cpy_CompanyNumber=9002)
+		AND t.elPi_RateInformationId = p.pk_RateInformation
+		and exists(select 1 from tbl_electricpilehead c where c.pk_ElectricPile =
+		t.pk_ElectricPile and c.delete_flag='0' and
+		c.ePHe_ElectricpileHeadState='0')
+	</select>
+
+	<select id="selectOne" parameterType="TblElectricpile"
+		resultMap="tblElectricpileMap">
+		select * from tbl_electricpile t where 1=1
+		<if test="pkElectricpile != null and pkElectricpile != ''">
+			and t.pk_ElectricPile=#{pkElectricpile}
+		</if>
+		<if test="elpiElectricpilecode != null and elpiElectricpilecode != ''">
+			and t.elPi_ElectricPileCode = #{elpiElectricpilecode}
+		</if>
+	</select>
+	<!-- ____________________________查询开始___________________________ -->
+	<select id="getElectricListByPsId" parameterType="int"
+		resultType="TcbElectric">
+		SELECT
+		t.pk_ElectricPile pkElc,
+		t.elPi_Longitude elcLng,
+		t.elPi_Latitude elcLat,
+		elPi_RelevancePowerStation stationNo,
+		t.elPi_ElectricPileCode equipNo,
+		t.elPi_ElectricPileName equipName,
+		t.elPi_ElectricPileAddress equipAddr,
+		t.elPi_ChargingMode equipType,
+		t.elPi_PowerSize powerRating,
+		t.elPi_OutputCurrent currentRated,
+		t.elPi_OutputVoltage voltageRated,
+		t.elpi_state equipStatus,
+		t.have_connect_line haveConnectLine,
+		t.delete_flag deleteFlag
+		FROM
+		tbl_electricpile t
+		where t.elPi_RelevancePowerStation = #{stationNo}
+	</select>
+</mapper> 

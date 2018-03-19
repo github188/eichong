@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/style.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/userList/add_user.css"/>
+    <title>新增等级</title>
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12" style="padding: 0">
+                <div class="ibox float-e-margins">
+                    <div class="">
+                        <div class="ibox-content">
+                            <div class="add_userBlock">
+                                <div class="add_greyBlock">
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">渠道<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8">
+                                            <div class=" col-sm-3 col-xs-12 model-select-box" style="border-right:0;">
+                                                <div class="model-select-text cpyProvinceBlock" data-value=""
+                                                     id="cpyProvinceCode">请选择
+                                                </div>
+                                                <span class="downRow cpyProvinceBlock clickRotateSpan"></span>
+                                                <ul class="model-select-option cpyProvinceUl">
+                                                </ul>
+                                            </div>
+                                            <div class=" col-sm-3 col-xs-12 model-select-box" style="border-right:0;">
+                                                <div class="model-select-text cpyCityBlock" data-value=""
+                                                     id="cypCityCode">请选择
+                                                </div>
+                                                <span class="downRow cpyCityBlock clickRotateSpan"></span>
+                                                <ul class="model-select-option cypCityUl">
+                                                </ul>
+                                            </div>
+                                            <div class=" col-sm-6 col-xs-12 model-select-box">
+                                                <div class="model-select-text companyBlock" data-value=""
+                                                     id="cpyCompanyName">请选择
+                                                </div>
+                                                <span class="downRow companyBlock clickRotateSpan"></span>
+                                                <ul class="model-select-option cpyCompanyUl">
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="cpyNumTip">
+                                        </div>
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">等级序列<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="levelSeq" id="levelSeq" class="commonStyle"
+                                                   placeholder="请输入等级序列"/>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="levelSeqTip">
+                                        </div>
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">等级名称<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="levelName" id="levelName" class="commonStyle"
+                                                   placeholder="请输入等级名称"/>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="levelNameTip">
+                                        </div>
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">是否是默认</div>
+                                        <div class="col-sm-8">
+                                            <div class=" col-sm-3 col-xs-4 model-select-box" style="width: 100%">
+                                                <div class="model-select-text sexBlock" data-value="0" id="isDefault">否
+                                                </div>
+                                                <span class="downRow sexBlock clickRotateSpan"></span>
+                                                <ul class="model-select-option isDefaultUl">
+                                                    <li data-option="0">否</li>
+                                                    <li data-option="1">是</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                        </div>
+                                    </div>
+                                    <!--按钮组合-->
+                                    <div class="saveBtn cursor" id="saveBtn">保存</div>
+                                    <div class="quitBtn commonBtn" id="goback">取消</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/level/add_level.js" type="text/javascript" charset="utf-8"></script>
+</html>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.UserVinRelaMapper">
+    <resultMap type="UserVinRelaDO" id="resultUserVinRela">
+        <result property="pkId" column="pk_id"/>
+        <result property="vinId" column="vin_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="cvVinCode" column="cv_vin_code"/>
+        <result property="cvLicenseNumber" column="cv_license_number"/>
+
+    </resultMap>
+
+    <select id="checkUserVinRela" parameterType="UserVinRelaDO" resultType="Integer">
+      SELECT COUNT(*) from tbl_user_vin_rela
+        where vin_id = #{vinId}
+        AND user_id = #{userId}
+    </select>
+
+    <insert id="addUserVinRela" parameterType="UserVinRelaDO">
+        INSERT  into tbl_user_vin_rela (vin_id,user_id) VALUES (#{vinId},#{userId})
+    </insert>
+
+    <select id="getVinInfoByUserId" parameterType="Long" resultMap="resultUserVinRela">
+    SELECT
+        pk_id,
+        vin_id,
+        (SELECT cv_vin_code from tbl_car_vin_rela where pk_id = vin_id) cv_vin_code,
+        (SELECT cv_license_number from tbl_car_vin_rela where pk_id = vin_id) cv_license_number,
+        user_id
+    FROM
+        tbl_user_vin_rela
+    WHERE
+        user_id = #{userId}
+    </select>
+
+    <delete id="deleteUserVinRela" parameterType="Long">
+        DELETE FROM  tbl_user_vin_rela where pk_id = #{pkId}
+    </delete>
+    
+    <update id="updateUserVinRela">
+        UPDATE tbl_user_vin_rela set user_id = #{userId} where user_id = #{ucUserId}
+    </update>
+    <select id="getVinCountByUserId" parameterType="Long" resultType="Integer">
+    SELECT count(*) from tbl_user_vin_rela where user_id = #{userId}
+    </select>
+</mapper>

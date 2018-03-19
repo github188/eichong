@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="blank" />
+		<meta name="format-detection" content="telephone=no" />
+		<title>状态说明</title>
+		<link rel="stylesheet" type="text/css" href="css/style.css"/>
+	</head>
+	<body>
+    
+   <!-- 第三部分 -->
+    <section class="status">
+        <div class="statusMark">
+        	充电中：车辆正在充电中
+        </div>
+        <div class="statusMark">
+        	已完成：车辆已经完成充电，并且支付结算完成
+        </div>
+        <div class="statusMark">
+        	临时结算：由于充电桩网络异常，该订单临时结算。网络恢复后，订单会正式结算，订单余额会返还到账户
+        </div>
+        <div class="statusMark">
+        	已退款：充电订单存在异常，已退款到您的账户
+        </div>
+        <div class="statusMark">
+        	完成操作：车辆已经完成充电，没有支付
+        </div>
+    </section>
+	
+	</body>
+	
+</html>

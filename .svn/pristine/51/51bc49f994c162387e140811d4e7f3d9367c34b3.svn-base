@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wanma.dubbox.dao.TblElectricPileHeadMapper">
+	<resultMap id="BaseResultMap" type="com.wanma.dubbox.model.TblElectricPileHead">
+		<id column="pk_ElectricpileHead" property="id" jdbcType="INTEGER" />
+		<result column="pk_ElectricPile" property="eId" jdbcType="INTEGER" />
+		<result column="ePHe_ElectricpileHeadName" property="name"
+			jdbcType="VARCHAR" />
+		<result column="ePHe_ElectricpileHeadState" property="ste"
+			jdbcType="INTEGER" />
+		<result column="ePHe_ElectricpileHeadId" property="hid"
+			jdbcType="INTEGER" />
+		<result column="eph_num" property="hnum" jdbcType="VARCHAR" />
+		<result column="delete_flag" property="delFlag" jdbcType="SMALLINT" />
+		<result column="have_gun_lid" property="gunlid" jdbcType="TINYINT" />
+		<result column="have_gun_site_signal" property="gsgnal"
+			jdbcType="TINYINT" />
+		<result column="have_radar" property="rad" jdbcType="TINYINT" />
+		<result column="hava_car_place_lock" property="plcLock"
+			jdbcType="TINYINT" />
+		<result column="have_bms_comm" property="bmCom" jdbcType="TINYINT" />
+		<result column="total_charge_dl" property="talDl" jdbcType="DECIMAL" />
+		<result column="total_charge_time" property="talTim" jdbcType="INTEGER" />
+		<result column="total_charge_amt" property="talCmt" jdbcType="DECIMAL" />
+		<result column="ePHe_qr_codes" property="qcd" jdbcType="VARCHAR" />
+		<result column="ePHe_qrdate" property="qrdt" jdbcType="BIGINT" />
+	</resultMap>
+
+	<insert id="insert" parameterType="TblElectricPileHead">
+		insert into tbl_electricpilehead
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				pk_ElectricpileHead,
+			</if>
+			<if test="eId != null">
+				pk_ElectricPile,
+			</if>
+			<if test="name != null">
+				ePHe_ElectricpileHeadName,
+			</if>
+			<if test="ste != null">
+				ePHe_ElectricpileHeadState,
+			</if>
+			<if test="hid != null">
+				ePHe_ElectricpileHeadId,
+			</if>
+			<if test="hnum != null">
+				eph_num,
+			</if>
+			<if test="delFlag != null">
+				delete_flag,
+			</if>
+			<if test="gunlid != null">
+				have_gun_lid,
+			</if>
+			<if test="gsgnal != null">
+				have_gun_site_signal,
+			</if>
+			<if test="rad != null">
+				have_radar,
+			</if>
+			<if test="plcLock != null">
+				hava_car_place_lock,
+			</if>
+			<if test="bmCom != null">
+				have_bms_comm,
+			</if>
+			<if test="talDl != null">
+				total_charge_dl,
+			</if>
+			<if test="talTim != null">
+				total_charge_time,
+			</if>
+			<if test="talCmt != null">
+				total_charge_amt,
+			</if>
+			<if test="qcd != null">
+				ePHe_qr_codes,
+			</if>
+			<if test="qrdt != null">
+				ePHe_qrdate,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="eId != null">
+				#{eId,jdbcType=INTEGER},
+			</if>
+			<if test="name != null">
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="ste != null">
+				#{ste,jdbcType=INTEGER},
+			</if>
+			<if test="hid != null">
+				#{hid,jdbcType=INTEGER},
+			</if>
+			<if test="hnum != null">
+				#{hnum,jdbcType=VARCHAR},
+			</if>
+			<if test="delFlag != null">
+				#{delFlag,jdbcType=SMALLINT},
+			</if>
+			<if test="gunlid != null">
+				#{gunlid,jdbcType=TINYINT},
+			</if>
+			<if test="gsgnal != null">
+				#{gsgnal,jdbcType=TINYINT},
+			</if>
+			<if test="rad != null">
+				#{rad,jdbcType=TINYINT},
+			</if>
+			<if test="plcLock != null">
+				#{plcLock,jdbcType=TINYINT},
+			</if>
+			<if test="bmCom != null">
+				#{bmCom,jdbcType=TINYINT},
+			</if>
+			<if test="talDl != null">
+				#{talDl,jdbcType=DECIMAL},
+			</if>
+			<if test="talTim != null">
+				#{talTim,jdbcType=INTEGER},
+			</if>
+			<if test="talCmt != null">
+				#{talCmt,jdbcType=DECIMAL},
+			</if>
+			<if test="qcd != null">
+				#{qcd,jdbcType=VARCHAR},
+			</if>
+			<if test="qrdt != null">
+				#{qrdt,jdbcType=BIGINT},
+			</if>
+		</trim>
+	</insert>
+	<update id="update" parameterType="TblElectricPileHead">
+		update tbl_electricpilehead
+		<set>
+			<if test="name != null">
+				ePHe_ElectricpileHeadName = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="ste != null">
+				ePHe_ElectricpileHeadState = #{ste,jdbcType=INTEGER},
+			</if>
+			<if test="hid != null">
+				ePHe_ElectricpileHeadId = #{hid,jdbcType=INTEGER},
+			</if>
+			<if test="hnum != null">
+				eph_num = #{hnum,jdbcType=VARCHAR},
+			</if>
+			<if test="delFlag != null">
+				delete_flag = #{delFlag,jdbcType=SMALLINT},
+			</if>
+			<if test="gunlid != null">
+				have_gun_lid = #{gunlid,jdbcType=TINYINT},
+			</if>
+			<if test="gsgnal != null">
+				have_gun_site_signal = #{gsgnal,jdbcType=TINYINT},
+			</if>
+			<if test="rad != null">
+				have_radar = #{rad,jdbcType=TINYINT},
+			</if>
+			<if test="plcLock != null">
+				hava_car_place_lock = #{plcLock,jdbcType=TINYINT},
+			</if>
+			<if test="bmCom != null">
+				have_bms_comm = #{bmCom,jdbcType=TINYINT},
+			</if>
+			<if test="talDl != null">
+				total_charge_dl = #{talDl,jdbcType=DECIMAL},
+			</if>
+			<if test="talTim != null">
+				total_charge_time = #{talTim,jdbcType=INTEGER},
+			</if>
+			<if test="talCmt != null">
+				total_charge_amt = #{talCmt,jdbcType=DECIMAL},
+			</if>
+			<if test="qcd != null">
+				ePHe_qr_codes = #{qcd,jdbcType=VARCHAR},
+			</if>
+			<if test="qrdt != null">
+				ePHe_qrdate = #{qrdt,jdbcType=BIGINT},
+			</if>
+		</set>
+		where pk_ElectricpileHead = #{id,jdbcType=INTEGER}
+	</update>
+
+	<update id="delete" parameterType="TblElectricPileHead">
+		update tbl_electricpilehead
+		set
+		delete_flag = 1
+		where 1=1
+		<if test="id != null and id !=''">
+			and pk_ElectricpileHead = #{id}
+		</if>
+		<if test="eId != null">
+			and pk_ElectricPile = #{eId,jdbcType=INTEGER}
+		</if>
+		<if test="pkIds != null">
+			and pk_ElectricpileHead in
+			<foreach item="item" index="index" collection="pkIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="fkIds != null">
+			and pk_ElectricPile in
+			<foreach item="item1" index="index" collection="fkIds" open="("
+				separator="," close=")">
+				#{item1}
+			</foreach>
+		</if>
+	</update>
+
+	<select id="selectOne" resultMap="BaseResultMap" parameterType="TblElectricPileHead">
+		select ${rtColumns}
+		from tbl_electricpilehead
+		<where>
+			1=1
+			<if test="id != null">
+				and pk_ElectricpileHead = #{id}
+			</if>
+			<if test="hid != null">
+				and ePHe_ElectricpileHeadId = #{hid}
+			</if>
+			<if test="qcd != null">
+				and ePHe_qr_codes = #{qcd}
+			</if>
+		</where>
+	</select>
+
+	<select id="getCount" resultType="int" parameterType="TblElectricPileHead">
+		select count(1) from tbl_electricpilehead t
+		<where>
+			delete_flag = '0'
+			<if test="eId != null">
+				and pk_ElectricPile = #{eId}
+			</if>
+			<if test="pkIds != null">
+				and pk_ElectricpileHead in
+				<foreach item="item" index="index" collection="pkIds" open="("
+					separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			<if test="fkIds != null">
+				and pk_ElectricPile in
+				<foreach item="item" index="index" collection="fkIds" open="("
+					separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+		</where>
+	</select>
+
+	<select id="getList" resultMap="BaseResultMap" parameterType="TblElectricPileHead">
+		select ${rtColumns} from tbl_electricpilehead t
+		<where>
+			delete_flag = '0'
+			<if test="eId != null">
+				and pk_ElectricPile = #{eId}
+			</if>
+			<if test="pkIds != null">
+				and pk_ElectricpileHead in
+				<foreach item="item" index="index" collection="pkIds" open="("
+					separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			<if test="fkIds != null">
+				and pk_ElectricPile in
+				<foreach item="item" index="index" collection="fkIds" open="("
+					separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+		</where>
+	</select>
+
+</mapper>

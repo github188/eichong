@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,user-scalable=no"/>
+	<title>关于</title>
+	<script>
+        (function(){
+            var html = document.documentElement;
+            var hWidth = html.getBoundingClientRect().width;
+            html.style.fontSize = hWidth/15 + "px";
+        })()
+	</script>
+	<link rel="stylesheet" href="css/common.css">
+	<link rel="stylesheet" href="css/about.css">
+</head>
+<body>
+	<div class="main">
+		<div class="pic">
+			<img src="img/aichong.png" alt="">
+		</div>
+		<div class="content">
+			<p>爱充网络隶属于浙江万马集团新能源事业群，致力于为新能源车主提供更好的充电服务。</p>
+			<p>爱充app，是爱充网推出的适用于新能源车主找充电桩、扫码充电、管理账单等产品，目前可以在各大应用市场，通过搜索“爱充”关键词找到并下载。</p>
+		</div>
+		<div class="code">
+			<p class="codeTitle">也可以扫描二维码下载爱充app：</p>
+			<img src="img/code.jpg" alt="">
+			<p class="smallTip">在图片上长按，选择“识别图中二维码”</p>
+		</div>
+	</div>
+
+</body>
+</html>
+<script src="js/base64.js"></script>
+<script src="js/config.js"></script>

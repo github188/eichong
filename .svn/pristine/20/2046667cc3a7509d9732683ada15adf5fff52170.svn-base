@@ -1,0 +1,13 @@
+package com.wanma.ims.controller.company;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+/**
+ * 公司管理-公司管理 
+ */
+@Controller
+@RequestMapping("/company")
+public class CompanyController {
+
+}

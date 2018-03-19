@@ -1,0 +1,55 @@
+package com.wanma.ims.util;
+
+import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by xyc on 2016/1/17.
+ * 字符串转集合工具
+ * defaultValue == null 表示不需要,直接忽略
+ */
+public class SplitterUtil {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SplitterUtil.class);
+
+    public static List<Integer> splitToIntegerList(String str, String splitter, Integer defaultValue) {
+        List<String> strings = Splitter.on(splitter).trimResults().omitEmptyStrings().splitToList(str);
+        List<Integer> intList = new ArrayList<Integer>();
+        for (String s : strings) {
+            try {
+                Integer v = Integer.valueOf(s);
+                intList.add(v);
+            } catch (Exception e) {
+                LOGGER.error("Convert String to Integer error|str=" + s);
+                if (defaultValue != null) {
+                    intList.add(defaultValue);
+                }
+            }
+        }
+        return intList;
+    }
+
+    public static List<Long> splitToLongList(String str, String splitter, Long defaultValue) {
+        if (Strings.isNullOrEmpty(str)) {
+            return new ArrayList<>();
+        }
+        List<String> strings = Splitter.on(splitter).trimResults().omitEmptyStrings().splitToList(str);
+        List<Long> longList = new ArrayList<>();
+        for (String s : strings) {
+            try {
+                Long v = Long.valueOf(s);
+                longList.add(v);
+            } catch (Exception e) {
+                LOGGER.error("Convert String to Long error|str=" + s);
+                if (defaultValue != null) {
+                    longList.add(defaultValue);
+                }
+            }
+        }
+        return longList;
+    }
+}

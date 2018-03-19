@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no"/>
+    <title>账单</title>
+
+    <script>
+        (function(){
+            var html = document.documentElement;
+            var hWidth = html.getBoundingClientRect().width;
+            html.style.fontSize = hWidth/15 + "px";
+        })()
+        function getUrlParam(name){
+		    var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+		    var params=decodeURI(window.location.search);
+		    var r = params.substr(1).match(reg);
+		    if(r!=null)return  r[2]; return null;
+		}
+        
+        
+    </script>
+    <link rel="stylesheet" href="../../css/common.css">
+    <link rel="stylesheet" href="../../css/account.css">
+</head>
+<body>
+<div class="main" id="mainBlock">
+    <!--<div class="mainContent" onclick="toMonthDetail()">-->
+        <!--<div class="month">-->
+            <!--<div class="monthNum">-->
+                <!--<span class="font28">10月</span>-->
+                <!--<span class="font26">查看明细</span>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<ul>-->
+            <!--<li>消费&nbsp;&nbsp;<span>1800</span>元</li>-->
+            <!--<li>充电&nbsp;&nbsp;<span>1000</span>&nbsp;&nbsp;KWh(度)</li>-->
+        <!--</ul>-->
+    <!--</div>-->
+
+
+</div>
+
+</body>
+<script src="../../js/common.js"></script>
+<script src="../../js/jquery-2.1.0.js"></script>
+<script src="../../lib/layer_mobile/layer.js"></script>
+<script src="../../js/account.js"></script>
+</html>

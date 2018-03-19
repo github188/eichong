@@ -1,0 +1,319 @@
+$(function () {
+    var headId = window.localStorage.getItem('monitor_headId');
+    loadshishiData();
+    var intervalIdloadRunTime;
+    function loadshishiData(){
+        getRunTimeData();
+        clearInterval(intervalIdloadRunTime);
+        intervalIdloadRunTime=setInterval('getRunTimeData()',300000);
+    }
+})
+function getRunTimeData() {
+    var headId = window.localStorage.getItem('monitor_headId');
+    var index = layer.load(1);
+    $.ajax({
+        type: "post",
+        url: basePath + getRunTimeDataUrl,
+        async: true,
+        data: {
+            pkHeadId: headId
+        },
+        success: function (data) {
+            layer.closeAll();
+            if (data.success == true) {
+                var data = data.dataObject;
+                var epType = data.epType; //5-直流  14-交流
+                var epCode = data.epCode;
+                window.localStorage.setItem('monitor_epType', epType);
+                window.localStorage.setItem('monitor_epCode', epCode);
+                editChargeDataTbody(epType, epCode);
+                var voltageValue = data.voltageValue;
+                var currentValue = data.currentValue;
+                var presentChargeValue = data.presentChargeValue;
+                var powerRateValue = parseFloat(parseFloat(voltageValue) * parseFloat(currentValue)).toFixed(2);
+                drawVoltageChart(voltageValue);
+                drawCurrentChart(currentValue);
+                drawAllChargeChart(presentChargeValue);
+                drawPowerRateChart(powerRateValue);
+                var runHtml = ''; //拼接的运行数据值
+                var carHtml = ''; //车端数据运行值
+                if (epType == 5) {
+                    runHtml = '<tr><td>'
+                    + data.epCode + '</td><td>'
+                    + data.headNum + '号</td><td>'
+                    + data.chPower + '</td><td>'
+                    + data.chargeStatus + '</td><td>'
+                    + data.chargeModel + '</td><td>'
+                    + data.powerHighestTemperature + '</td><td>'
+                    + data.chargeTime + '</td><td>'
+                    + data.isError + '</td><td>'
+                    + data.errorType + '</td></tr>';
+
+                    carHtml = '<tr><td>'
+                    + ' ' + '</td><td>'
+                    + data.carIdentification + '</td><td>'
+                    + data.soc + '</td><td>'
+                    + data.batteryType + '</td><td>'
+                    + data.carTotalVoltage + '</td><td>'
+                    + data.bpHighestVoltage + '</td><td>'
+                    + data.bpHighestTemperature + '</td><td>'
+                    + data.bpLowestTemperature + '</td></tr>';
+
+                    $('#zlRunDataTbody').html(runHtml);
+                    $('.zlRunDataBlock').show();
+                    $('#carInfoTbody').html(carHtml);
+                    $('.carInfo').show();
+                    $('.jlRunDataBlock').hide();
+                } else if (epType == 14) {
+                    runHtml = '<tr><td>'
+                    + data.epCode + '</td><td>'
+                    + data.headNum + '号</td><td>'
+                    + data.chPower + '</td><td>'
+                    + data.chargeStatus + '</td><td>'
+                    + data.chargeTime + '</td><td>'
+                    + data.isError + '</td><td>'
+                    + data.errorType + '</td></tr>';
+                    $('#jlRunDataTbody').html(runHtml);
+                    $('.jlRunDataBlock').show();
+                    $('.zlRunDataBlock').hide();
+                    $('#carInfoTbody').html('');
+                    $('.carInfo').hide();
+                }
+            }
+        }
+    });
+}
+//枪口输出
+var volOption = {
+    title: {
+        text: '',
+        textStyle: {
+            fontSize: 12
+        },
+        left: 'center'
+
+    },
+    series: [
+        {
+            name: '',
+            type: 'gauge',
+            detail: {
+                formatter: '{value}%',
+                fontSize: 10
+            },
+            data: [{value: 0, name: ''}]
+        }
+    ]
+};
+var currentOption = {
+    title: {
+        text: '',
+        textStyle: {
+            fontSize: 12
+        },
+        left: 'center'
+
+    },
+    series: [
+        {
+            name: '',
+            type: 'gauge',
+            detail: {
+                formatter: '{value}%',
+                fontSize: 10
+            },
+            data: [{value: 0, name: ''}]
+        }
+    ]
+};
+var allChargeOption = {
+    title: {
+        text: '',
+        textStyle: {
+            fontSize: 12
+        },
+        left: 'center'
+
+    },
+    series: [
+        {
+            name: '',
+            type: 'gauge',
+            detail: {
+                formatter: '{value}%',
+                fontSize: 10
+            },
+            data: [{value: 0, name: ''}]
+        }
+    ]
+};
+var powerRateOption = {
+    title: {
+        text: '',
+        textStyle: {
+            fontSize: 12
+        },
+        left: 'center'
+
+    },
+    series: [
+        {
+            name: '',
+            type: 'gauge',
+            detail: {
+                formatter: '{value}%',
+                fontSize: 10
+            },
+            data: [{value: 0, name: ''}]
+        }
+    ]
+};
+var voltageChart;
+var currentChart;
+var powerRateChart;
+var allChargeChart;
+//初始化电压表
+function drawVoltageChart(vol) {
+    voltageChart = echarts.init(document.getElementById('voltageDiv'), 'macarons');
+    voltageChart.resize();
+    if (voltageChart) {
+        voltageChart.clear();
+    }
+    var series = volOption.series[0];
+    series.name = '电压';
+    series.min = 0;
+    series.max = 850;
+    series.data[0].value = vol;
+    volOption.title.text = '输出电压(V)';
+    voltageChart.setOption(volOption);
+
+}
+//初始化电流表
+function drawCurrentChart(currentValue) {
+    currentChart = echarts.init(document.getElementById('currentDiv'), 'macarons');
+    currentChart.resize();
+    if (currentChart) {
+        currentChart.clear();
+    }
+    var series = currentOption.series[0];
+    series.name = '电流';
+    series.min = 0;
+    series.max = 125;
+    series.data[0].value = currentValue;
+    currentOption.title.text = '输出电流(A)';
+    currentChart.setOption(currentOption);
+}
+//初始化总电量表
+function drawAllChargeChart(presentChargeValue) {
+    allChargeChart = echarts.init(document.getElementById('allChargeDiv'), 'macarons');
+    allChargeChart.resize();
+
+    if (allChargeChart) {
+        allChargeChart.clear();
+    }
+    var series = allChargeOption.series[0];
+    series.name = '输出总电量';
+    series.min = 0;
+    series.max = 300;
+    series.data[0].value = presentChargeValue;
+    allChargeOption.title.text = '输出总电量(KWh)';
+    allChargeChart.setOption(allChargeOption);
+}
+
+//初始化功率表
+function drawPowerRateChart(powerRateValue) {
+    powerRateChart = echarts.init(document.getElementById('powerRateDiv'), 'macarons');
+    powerRateChart.resize();
+
+    if (powerRateChart) {
+        powerRateChart.clear();
+    }
+    var series = powerRateOption.series[0];
+    series.name = '输出功率（KW）';
+    series.min = 0;
+    series.max = 130;
+    series.data[0].value = powerRateValue;
+    powerRateOption.title.text = '输出功率（KW）';
+    powerRateChart.setOption(powerRateOption);
+}
+//根据交直流加载不同表头
+function editChargeDataTbody(epType, epCode) {
+    var epType = epType;//5-直流  14-交流
+    var chargeDataTheadHtml = '';
+    if (epType == 5) {
+        chargeDataTheadHtml = '<tr><th>时间</th><th>电表读数</th><th>已充度数（度）</th>'
+        + '<th>已消费金额（元）</th><th>电池电量</th></tr>';
+    } else if (epType == 14) {
+        chargeDataTheadHtml = '<tr><th>时间</th><th>电表读数</th><th>已充度数（度）</th>'
+        + '<th>已消费金额（元）</th></tr>';
+    }
+    $('#chargeDataThead').html(chargeDataTheadHtml);
+    toRenderChargeTable(epType, epCode);
+
+}
+//根据交直流加载不同表体
+function toRenderChargeTable(epType, epCode) {
+    var headId = window.localStorage.getItem('monitor_headId');
+    $.ajax({
+        type: "post",
+        url: basePath + getChargingDataUrl,
+        async: true,
+        data: {
+            headId: headId,
+            epType: epType,
+            epCode: epCode
+        },
+        success: function (data) {
+            var chargeDataThbodyHtml = '';
+            if (data.success == true) {
+                var data = data.dataObject;
+                var chargeData = data.data;
+                if (chargeData == null || chargeData == '') {
+                    return;
+                }
+                chargeData = chargeData.slice(0, 2);
+                for (var i = 0; i < chargeData.length; i++) {
+                    var chargeDataTime = chargeData[i].ts;
+                    if (epType == 5) {
+                        chargeDataThbodyHtml += '<tr><td>'
+                        + new Date(chargeDataTime).format("hh:MM:ss") + '</td><td>'
+                        + chargeData[i].allChargeValue + '</td><td>'
+                        + chargeData[i].presentChargeValue + '</td><td>'
+                        + chargeData[i].presentChargeFee + '</td><td>'
+                        + chargeData[i].soc + '%</td></tr>';
+                    } else if (epType == 14) {
+                        chargeDataThbodyHtml += '<tr><td>'
+                        + new Date(chargeDataTime).format("hh:MM:ss") + '</td><td>'
+                        + chargeData[i].allChargeValue + '</td><td>'
+                        + chargeData[i].presentChargeValue + '</td><td>'
+                        + chargeData[i].presentChargeFee + '</td></tr>';
+                    }
+                }
+                $('#chargeDataTbody').html(chargeDataThbodyHtml);
+            }
+        }
+    });
+}
+
+//查看全部数据的弹框
+$('body').off('click', '#queryAllData').on('click', '#queryAllData', function () {
+    layer.closeAll();
+    layer.open({
+        type: 1,
+        offset: '100px',
+        title: ["充电数据采样", "font-size:12px;text-align:left;padding-left:20px;"],
+        shadeClose: false,
+        closeBtn: 1,
+        anim: 0,
+        area: ['700px', '480px'],//宽高
+        content: $('.queryAllChargeData'),
+        btn: ["确定", '取消'],
+        yes: function (index, layero) {
+            layer.closeAll();
+        },
+        cancel: function (index, layero) {
+            layer.closeAll();
+        }
+    });
+})
+

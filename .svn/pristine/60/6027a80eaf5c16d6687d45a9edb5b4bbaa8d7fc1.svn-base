@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.dao.AreaMapper">
+	<resultMap type="Area" id="result_data">
+		<result property="provinceId" column="province_id" />
+		<result property="cityId" column="city_id" />
+		<result property="areaId" column="area_id" />
+		<result property="keyWord" column="key_word" />
+		<result property="areaName" column="area_name" />
+	</resultMap>
+
+	<select id="getProvincCityAreaList" resultType="hashMap">
+		SELECT
+		a.PROVINCE_ID id,
+		a.PROVINCE_NAME name,
+		0 pId
+	FROM
+		tb_m_province a
+	union
+	SELECT
+		b.CITY_ID id,
+		b.CITY_NAME name,
+		b.PROVINCE_ID pId
+	FROM
+		tb_m_city b
+	union
+	SELECT
+		c.area_id id,
+		c.area_name name,
+		c.city_id pId
+	FROM
+		tb_m_area c
+	</select>
+
+	<select id="getAreaList" parameterType="Area" resultMap="result_data">
+		select 
+		tma.province_id,
+		tma.city_id,
+		tma.area_id,
+		tma.area_name,
+		get_first_pinyin_char(tma.area_name) as key_word
+		from tb_m_province cdg,
+		tb_m_city cdd,
+		tb_m_area tma
+		where cdg.province_id = cdd.province_id
+		and tma.province_id = cdd.province_id
+		and tma.city_id = cdd.city_id
+		<if test="provinceId!=null"> and tma.province_id= #{provinceId} </if>
+		<if test="cityId!=null"> and tma.city_id= #{cityId} </if>
+		order by tma.hot_flag desc,tma.area_id asc
+	</select>
+	<select id="getAreaList1" parameterType="Area" resultMap="result_data">
+		select 
+		tma.province_id,
+		tma.city_id,
+		tma.area_id,
+		tma.area_name
+		
+		from tb_m_province cdg,
+		tb_m_city cdd,
+		tb_m_area tma
+		where cdg.province_id = cdd.province_id
+		and tma.province_id = cdd.province_id
+		and tma.city_id = cdd.city_id
+		<if test="provinceId!=null"> and tma.province_id= #{provinceId} </if>
+		<if test="cityId!=null"> and tma.city_id= #{cityId} </if>
+		order by tma.hot_flag desc,tma.area_id asc
+	</select>
+	<select id="getAreaByName" parameterType="Area" resultType="String">
+		select 
+		tma.area_id
+		from tb_m_province cdg,
+		tb_m_city cdd,
+		tb_m_area tma
+		where cdg.province_id = cdd.province_id
+		and tma.province_id = cdd.province_id
+		and tma.city_id = cdd.city_id
+		and cdg.province_name like concat('%',#{provinceName},'%')
+		and tma.area_name like concat('%', #{areaName},'%')
+		limit 1
+	</select>
+
+	<select id="getAreaListByAuth" parameterType="Area" resultMap="result_data">
+		select 
+		tma.province_id,
+		tma.city_id,
+		tma.area_id,
+		tma.area_name,
+		get_first_pinyin_char(tma.area_name) as key_word
+		from tb_m_province cdg,
+		tb_m_city cdd,
+		tb_m_area tma
+		where cdg.province_id = cdd.province_id
+		and tma.province_id = cdd.province_id
+		and tma.city_id = cdd.city_id
+		<if test="provinceId!=null"> and tma.province_id= #{provinceId} </if>
+		<if test="cityId!=null"> and tma.city_id= #{cityId} </if>
+		<!-- 物业权限控制 -->
+		<if test="authUserType == '002'">
+			and exists( select
+			*
+			from
+			tb_community tc,
+			p_m_department
+			pmd,
+			p_m_company pmc,
+			p_m_user_department pmud
+			where
+			tc.province_id = tma.province_id
+			and tc.city_id = tma.city_id
+			and tc.area_id = tma.area_id
+			and tc.company_id = pmc.company_id
+			and tc.company_id =
+			pmd.company_id
+			and tc.department_id = pmd.department_id
+			and
+			pmud.user_id = #{authUserId}
+			and pmud.company_id = pmd.company_id
+			and
+			exists( select
+			*
+			from
+			p_m_department_inclusion pmdi
+			where
+			pmd.department_id = pmdi.department_id
+			and pmd.company_id =
+			pmdi.company_id
+			and pmdi.parent_department_id = pmud.department_id))
+		</if>
+		order by tma.hot_flag desc,tma.area_id asc
+	</select>
+</mapper>

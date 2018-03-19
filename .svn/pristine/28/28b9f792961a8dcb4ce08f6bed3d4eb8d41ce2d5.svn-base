@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.ParkingLockMapper">
+    <resultMap id="resultParkingLock" type="ParkingLockDO">
+        <id column="id" property="id"/>
+        <result column="code" property="code"/>
+        <result column="status" property="status"/>
+        <result column="parking_lock_platform" property="parkingLockPlatform"/>
+        <result column="power_station_id" property="powerStationId"/>
+        <result column="province_code" property="provinceCode"/>
+        <result column="city_code" property="cityCode"/>
+        <result column="area_code" property="areaCode"/>
+        <result column="address" property="address"/>
+        <result column="platform_lock_key" property="platformLockKey"/>
+        <result column="platform_modify_time" property="platformModifyTime"/>
+        <result column="platform_status" property="platformStatus"/>
+        <result column="platform_error_code" property="platformErrorCode"/>
+        <result column="platform_error_msg" property="platformErrorMsg"/>
+        <result column="is_del" property="isDel"/>
+        <result column="creator_id" property="creatorId"/>
+        <result column="creator" property="creator"/>
+        <result column="modifier" property="modifier"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="gmt_modified" property="gmtModified"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, code, status, parking_lock_platform, power_station_id, province_code, city_code, 
+    area_code, address, platform_lock_key, platform_modify_time, platform_status, platform_error_code, platform_error_msg,
+    is_del, creator_id, creator, modifier, gmt_create, gmt_modified
+  </sql>
+
+    <select id="selectById" parameterType="Long" resultMap="resultParkingLock">
+        select
+        <include refid="Base_Column_List"/>
+        from parking_lock
+        where id = #{id}
+    </select>
+
+    <select id="selectByPlatformLockKey" parameterType="Map" resultMap="resultParkingLock">
+        select
+        <include refid="Base_Column_List"/>
+        from parking_lock
+        where parking_lock_platform = #{parkingLockPlatform} and platform_lock_key = #{platformLockKey}
+    </select>
+
+    <select id="selectLockDetailById" parameterType="Long" resultMap="resultParkingLock">
+        SELECT
+        tbllock.*,tblpower.powerStation_name
+        FROM parking_lock tbllock LEFT JOIN tbl_powerstation tblpower ON tbllock.power_station_id = tblpower.powerStation_id
+        where tbllock.is_del = 0 AND tbllock.id = #{id}
+    </select>
+
+    <sql id="condition">
+        <where>
+            <if test="code != null and code !=''">
+                AND tbllock.code LIKE "%"#{code}"%"
+            </if>
+            <if test="status != null">
+                AND tbllock.status = #{status}
+            </if>
+            <if test="parkingLockPlatform != null">
+                AND tbllock.parking_lock_platform = #{parkingLockPlatform}
+            </if>
+            <if test="provinceCode != null and provinceCode!=''">
+                AND tbllock.province_code = #{provinceCode}
+            </if>
+            <if test="cityCode != null and cityCode!=''">
+                AND tbllock.city_code = #{cityCode}
+            </if>
+            <if test="areaCode != null and areaCode!=''">
+                AND tbllock.area_code = #{areaCode}
+            </if>
+            <if test="powerStationName != null and powerStationName != ''">
+                AND tblpower.powerStation_name LIKE "%"#{powerStationName}"%"
+            </if>
+            AND tbllock.is_del = 0
+        </where>
+    </sql>
+
+    <select id="selectList" parameterType="Map" resultMap="resultParkingLock">
+        SELECT
+        tbllock.*,tblpower.powerStation_name
+        FROM parking_lock tbllock LEFT JOIN tbl_powerstation tblpower ON tbllock.power_station_id = tblpower.powerStation_id
+        <include refid="condition"/>
+        ORDER BY tbllock.code DESC
+        <if test="pager!=null">
+            limit #{pager.offset},#{pager.pageSize}
+        </if>
+    </select>
+
+    <select id="count" parameterType="Map" resultType="Long">
+        select count(1)
+        FROM parking_lock tbllock LEFT JOIN tbl_powerstation tblpower ON tbllock.power_station_id = tblpower.powerStation_id
+        <include refid="condition"/>
+    </select>
+
+    <delete id="deleteById" parameterType="Long">
+    delete from parking_lock
+    where id = #{id}
+  </delete>
+
+    <insert id="insertParkingLock" parameterType="ParkingLockDO">
+    insert into parking_lock (id, code, status, 
+      parking_lock_platform, power_station_id, province_code, 
+      city_code, area_code, address, platform_lock_key,
+      platform_modify_time, platform_status, platform_error_code, 
+      platform_error_msg, is_del, creator_id, 
+      creator, modifier, gmt_create, 
+      gmt_modified)
+    values (#{id}, #{code}, #{status}, 
+      #{parkingLockPlatform}, #{powerStationId}, #{provinceCode}, 
+      #{cityCode}, #{areaCode}, #{address}, #{platformLockKey},
+      #{platformModifyTime}, #{platformStatus}, #{platformErrorCode}, 
+      #{platformErrorMsg}, 0, #{creatorId},
+      #{creator}, #{modifier}, now(),now())
+  </insert>
+
+    <update id="updateByIdSelective" parameterType="ParkingLockDO">
+        update parking_lock
+        <set>
+            <if test="code != null">
+                code = #{code},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="parkingLockPlatform != null">
+                parking_lock_platform = #{parkingLockPlatform},
+            </if>
+            <if test="powerStationId != null">
+                power_station_id = #{powerStationId},
+            </if>
+            <if test="provinceCode != null">
+                province_code = #{provinceCode},
+            </if>
+            <if test="cityCode != null">
+                city_code = #{cityCode},
+            </if>
+            <if test="areaCode != null">
+                area_code = #{areaCode},
+            </if>
+            <if test="address != null">
+                address = #{address},
+            </if>
+            <if test="platformLockKey != null">
+                platform_lock_key = #{platformLockKey},
+            </if>
+            <if test="platformModifyTime != null">
+                platform_modify_time = #{platformModifyTime},
+            </if>
+            <if test="platformStatus != null">
+                platform_status = #{platformStatus},
+            </if>
+            <if test="platformErrorCode != null">
+                platform_error_code = #{platformErrorCode},
+            </if>
+            <if test="platformErrorMsg != null">
+                platform_error_msg = #{platformErrorMsg},
+            </if>
+            <if test="isDel != null">
+                is_del = #{isDel},
+            </if>
+            <if test="modifier != null">
+                modifier = #{modifier},
+            </if>
+            gmt_modified = now()
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="updateLockPlatformInfo" parameterType="ParkingLockDO">
+        update parking_lock
+        SET
+        status = #{status},
+        platform_modify_time = #{platformModifyTime},
+        platform_status = #{platformStatus},
+        platform_error_code = #{platformErrorCode},
+        platform_error_msg = #{platformErrorMsg},
+        gmt_modified = now()
+        where id = #{id} and platform_modify_time &lt; #{platformModifyTime}
+    </update>
+</mapper>

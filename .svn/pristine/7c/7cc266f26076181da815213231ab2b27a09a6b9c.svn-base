@@ -1,0 +1,300 @@
+package com.wanma.service.impl;
+
+import com.alibaba.fastjson.JSON;
+import com.ec.usrcore.server.IEventCallBack;
+import com.echong.dto.Callback;
+import com.echong.eums.EChongWangType;
+import com.echong.service.EChongService;
+import com.echong.utils.DateUtils;
+import com.wanma.model.WxRepay;
+import com.wanma.service.WeChatService;
+import com.wanma.support.common.RedisService;
+import com.wanma.support.common.WanmaConstants;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentMap;
+
+@Service
+public class EpServiceImpl implements IEventCallBack {
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(EpServiceImpl.class);
+	@Autowired
+	private EChongService eChongService;
+	@Autowired
+	private RedisService redisService;
+
+	@Autowired
+	private WeChatService weChatService;
+
+	@Override
+	public void onCanUseEp(int i, String s, String s1, int i1, String s2,
+			int i2, int i3, int i4, int i5) {
+
+	}
+
+	@Override
+	public void onChargeEvent(int orgNo, String userIdentity, String epCode,
+			int epGunNo, String extra, int status) {
+
+		if (orgNo == WanmaConstants.WX_CODE) {
+			
+			if (!"".equals(extra)) {
+				String[] extras = extra.split("\\|");
+				// 异常结束充电
+				if ("0".equals(extras[11])) {
+					LOGGER.info("异常结束充电结束事件应答onChargeEvent进入-等待10分钟插枪未反应");
+					WxRepay repay = new WxRepay();
+
+					repay = putWeChatData(WanmaConstants.stopCgEvt, extra,
+							userIdentity);
+
+					if (Integer.parseInt(repay.getRefundFee()) > 0) {
+						try {
+							weChatService.wxRepay(repay);
+
+						} catch (Exception e) {
+							LOGGER.error("微信进行退款操作失败！微信商户订单号为："
+									+ repay.getOutTradeNo());
+						}
+
+					}
+					redisService.strRemove("wechat:"+userIdentity);
+
+				}
+			}
+		}
+
+	}
+
+	@Override
+	public void onChargeOrder(int arg0, String arg1, String arg2, int arg3,
+			String arg4, Map<String, Object> arg5) {
+		
+	}
+
+	@Override
+	public void onGunLinkStatusChange(int arg0, String arg1, String arg2,
+			int arg3, String arg4, int arg5) {
+		
+
+	}
+
+	@Override
+	public void onQueryOrderInfo(int arg0, String arg1, String arg2, int arg3,
+			String arg4, int arg5, int arg6) {
+		if (arg0 == WanmaConstants.CCZC_CODE) {
+			if (arg6 > 0)
+				WanmaConstants.chargingOrderEvt.put("errorCode" + arg1, arg6);
+			else
+				putCCZCData(WanmaConstants.chargingOrderEvt, arg4, arg1);
+		} else if (arg0 == WanmaConstants.WX_CODE) {
+			LOGGER.info("微信查询实时订单应答进入成功!");
+			if (arg6 > 0) {
+				LOGGER.error("微信获取充电实时应答失败,返回错误码" + arg6);
+				WanmaConstants.chargingOrderEvt.put("errorCode" + arg1, arg6);
+			} else {
+				putCCZCData(WanmaConstants.chargingOrderEvt, arg4, arg1);
+			}
+
+		}
+	}
+
+	@Override
+	public void onRealData(int arg0, String arg1, String arg2, int arg3,
+			String arg4, Map<String, Object> arg5) {
+		if (arg0 == WanmaConstants.WX_CODE) {
+			LOGGER.info("微信获取实时数据应答进入成功!");
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+			Date now = new Date();
+			if (redisService.strGet("wechat:"+arg1) != null) {
+				redisService.strSet("wechat:"+arg1,sdf.format(now));
+			}
+		}
+
+	}
+
+	/**
+	 * 启动充电应答
+	 */
+	@Override
+	public void onStartCharge(int orgNo, String userIdentity, String epCode,
+			int epGunNo, String extra, int ret, int errorCode) {
+		if (orgNo == WanmaConstants.CCZC_CODE) {
+			if (errorCode > 0)
+				WanmaConstants.startCgEvt.put("errorCode" + userIdentity,
+						errorCode);
+			else
+				putCCZCData(WanmaConstants.startCgEvt, extra, userIdentity);// 曹操专车数据缓存
+		} else if (WanmaConstants.ECW_CODE == orgNo && ret > 1) {
+			Callback callback = new Callback();
+			fullCallback(callback, epCode, epGunNo,
+					Integer.valueOf(userIdentity), EChongWangType.ACTION_START,
+					1, 0, extra);
+			String result = eChongService.sendCallback(callback);
+			if (result.substring(result.indexOf("ret") + 5,
+					result.indexOf("msg") - 2).equals("0")) {
+				LOGGER.info("onChargeEvent is success; info:{}|result:{}",
+						JSON.toJSON(callback), result);
+			} else {
+				LOGGER.error("onChargeEvent is fail; info:{}|result:{}",
+						JSON.toJSON(callback), result);
+			}
+		} else if (orgNo == WanmaConstants.WX_CODE) {
+			LOGGER.info("微信启动充电应答进入成功!");
+			if (errorCode > 0) {
+				WanmaConstants.startCgEvt.put("errorCode" + userIdentity,
+						errorCode);
+				LOGGER.error("微信启动充电应答失败,返回错误码" + errorCode);
+			} else {
+				WanmaConstants.startCgEvt.put("errorCode" + userIdentity,
+						"success");
+			}
+
+		}
+	}
+
+	/**
+	 * 停止充电应答
+	 */
+	@Override
+	public void onStopCharge(int orgNo, String userIdentity, String epCode,
+			int epGunNo, String extra, int ret, int errorCode) {
+
+		if (orgNo == WanmaConstants.CCZC_CODE) {
+			if (errorCode > 0)
+				WanmaConstants.stopCgEvt.put("errorCode" + userIdentity,
+						errorCode);
+			else
+				putCCZCData(WanmaConstants.stopCgEvt, extra, userIdentity);// 曹操专车数据缓存
+		} else if (WanmaConstants.ECW_CODE == orgNo && ret > 1) {
+			Callback callback = new Callback();
+			fullCallback(callback, epCode, epGunNo,
+					Integer.valueOf(userIdentity), EChongWangType.ACTION_STOP,
+					ret, errorCode, extra);
+			String result = eChongService.sendCallback(callback);
+			if (result.substring(result.indexOf("ret") + 5,
+					result.indexOf("msg") - 2).equals("0")) {
+				LOGGER.info("onStopCharge is success; info:{}|result:{}",
+						JSON.toJSON(callback), result);
+			} else {
+				LOGGER.error("onStopCharge is fail; info:{}|result:{}",
+						JSON.toJSON(callback), result);
+			}
+		} else if (orgNo == WanmaConstants.WX_CODE) {
+			LOGGER.info("微信停止充电应答进入成功!");
+				WxRepay repay = new WxRepay();
+				if (errorCode > 0) {
+					LOGGER.error("微信停止充电应答失败,返回错误码" + errorCode);
+					WanmaConstants.stopCgEvt.put("errorCode" + userIdentity,
+							errorCode);
+				} else {
+					repay = putWeChatData(WanmaConstants.stopCgEvt, extra,
+							userIdentity);
+				}
+				if (Integer.parseInt(repay.getRefundFee()) > 0) {
+					try {
+						weChatService.wxRepay(repay);
+
+					} catch (Exception e) {
+						LOGGER.error("微信进行退款操作失败！微信商户订单号为："
+								+ repay.getOutTradeNo());
+					}
+
+				}
+				redisService.strRemove("wechat:"+userIdentity);
+		}
+	}
+
+	private WxRepay putWeChatData(ConcurrentMap<String, Object> evtMap,
+			String extra, String key) {
+		WxRepay rep = new WxRepay();
+		if (extra != null && !"".equals(extra)) {
+			String[] extras = extra.split("\\|");
+			HashMap<String, Object> data = new HashMap<String, Object>();
+			data.put("orderId", extras[0]);
+			data.put("stubId", extras[1]);
+			data.put("outOrderId", extras[2]);
+			data.put("openId", extras[3]);
+			data.put("timeStart", extras[4]);
+			data.put("timeEnd", extras[5]);
+			data.put("timeCharge", new Long(extras[6]));
+			data.put("feeTotal", Double.valueOf(extras[7]));
+			data.put("chargeType", Integer.parseInt(extras[8]));
+			data.put("power", Double.valueOf(extras[9]));
+			data.put("soc", Double.valueOf(extras[10]));
+			data.put("status", Integer.parseInt(extras[11]));
+			data.put("endInfo", extras[12]);
+			data.put("feeService", Double.valueOf(extras[13]));
+			data.put("feeElectric", Double.valueOf(extras[14]));
+			data.put("cityCode", extras[15]);
+			data.put("chargAmt", extras[16]);
+
+			evtMap.put(key, data);// 以司机编号作为此次缓存数据的唯一标识
+			rep.setTotalFee(extras[16]);
+			rep.setRefundFee(String.valueOf((int) ((Double.valueOf(extras[16]) - 100 * Double
+					.valueOf(extras[7])))));
+			// rep.setOutOrderId(extras[2]);
+			rep.setOutRefundNo(extras[2]);
+			rep.setOutTradeNo(extras[2]);
+		}
+		return rep;
+	}
+
+	@Override
+	public void onGunWorkStatusChange(int arg0, String arg1, String arg2,
+			int arg3, String arg4, int arg5) {
+
+	}
+
+	private void putCCZCData(ConcurrentMap<String, Object> evtMap,
+			String extra, String key) {
+		if (extra != null && !"".equals(extra)) {
+			String[] extras = extra.split("\\|");
+			HashMap<String, Object> data = new HashMap<String, Object>();
+			data.put("orderId", extras[0]);
+			data.put("stubId", extras[1]);
+			data.put("outOrderId", extras[2]);
+			data.put("driverId", extras[3]);
+			data.put("timeStart", extras[4]);
+			data.put("timeEnd", extras[5]);
+			data.put("timeCharge", new Long(extras[6]));
+			data.put("feeTotal", Double.valueOf(extras[7]));
+			data.put("chargeType", Integer.parseInt(extras[8]));
+			data.put("power", Double.valueOf(extras[9]));
+			data.put("soc", Double.valueOf(extras[10]));
+			data.put("status", Integer.parseInt(extras[11]));
+			data.put("endInfo", extras[12]);
+			data.put("feeService", Double.valueOf(extras[13]));
+			data.put("feeElectric", Double.valueOf(extras[14]));
+			data.put("cityCode", extras[15]);
+			evtMap.put(key, data);// 以司机编号作为此次缓存数据的唯一标识
+		}
+	}
+
+	private static void fullCallback(Callback callback, String epCode,
+			int epGunNo, int accountId, int action, int ret, int errorCode,
+			String extra) {
+		String[] extras = extra.split("\\|");
+		long sessionId;
+		int soc;
+		callback.setPile_code(epCode + "0" + epGunNo);// 桩编号+两位枪编号，枪编号是一位，所以前面加个0。
+		callback.setInter_no(epGunNo);
+		callback.setUser_id(accountId);
+		callback.setAction(action);
+		callback.setResult(EChongWangType.RESULT_SUCCESS);
+		sessionId = "".equals(extras[0]) ? 0 : Long.valueOf(extras[0]);
+		soc = Integer.valueOf(extras[1]);
+		callback.setEcode(errorCode);
+		callback.setTime(DateUtils.getUnixTime());
+		callback.setSession_id(sessionId);
+		callback.setSoc(soc);
+	}
+}

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/admin/add_role.css"/>
+    <link rel="stylesheet" type="text/css" href="../../js/lib/ztree/css/demo.css"/>
+    <link rel="stylesheet" type="text/css" href="../../js/lib/ztree/css/zTreeStyle/zTreeStyle.css"/>
+    <title>新建角色</title>
+</head>
+<body>
+<div class="container animated fadeInRight">
+    <div class="row">
+        <div class="formBlock clearfix">
+            <form id="roleListForm">
+                <div class="col-xs-12 col-sm-4 col-md-6 col-lg-6" >
+                    <div class="userListSelect row">
+                        <div class="col-sm-8 col-xs-12">
+                            <div class="col-sm-3 queryParam">
+                                角色名称
+                            </div>
+                            <div class=" col-sm-7 userAccount">
+                                <input type="text" placeholder="" name="roleName" id="roleName" value="" class="userAccountInput"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="userListSelect row clearfix">
+                        <div class="col-sm-8 col-xs-12">
+                            <div class="col-sm-3 queryParam">
+                                角色选择
+                            </div>
+                            <div class=" col-sm-7 userAccount">
+                                <ul id="treeDemo" class="ztree"></ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+            <div id="submit" class="cursor commonBtn saveBtn">保存</div>
+            <div id="goback" class="cursor commonBtn goback">取消</div>
+        </div>
+
+    </div>
+</div>
+</body>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="../../js/contabs.min.js"></script>
+<script src="../../js/lib/ztree/js/jquery.ztree.core.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/ztree/js/jquery.ztree.excheck.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/admin/add_role.js" type="text/javascript" charset="utf-8"></script>
+</html>

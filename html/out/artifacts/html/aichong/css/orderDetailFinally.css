@@ -1,0 +1,37 @@
+@charset "utf-8";
+section{
+	width: 100%;
+	min-height: 10rem;
+	=background: #FFCC33;
+	padding: 1rem 1rem 2rem 2rem;
+	margin-top: 3rem;
+}
+section .perTip{
+	width: 100%;
+	min-height: 3rem;
+	-background: #F0FF0F;
+	overflow: hidden;
+	color: #666666;
+}
+
+section .perTip .commentLeft,section .perTip .commentRight{
+	min-height: 3rem;
+	word-break: break-word;
+	font-size: 1.6rem;
+}
+section .perTip .commentLeft{
+	text-align: center;
+}
+.reOrder{
+	width: 65%;
+	height: 4rem;
+	margin: 0 auto;
+	color: #FFFFFF;
+	background: #FF7D00;
+	font-size: 1.8rem;
+}
+.reOrder:focus,.reOrder:active{
+	border: 0.1rem solid #FF7D00;
+	outline-style: none;
+	color: #FFFFFF;
+}

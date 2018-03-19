@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="blank" />
+		<meta name="format-detection" content="telephone=no" />
+		<title>订单-预约-充电</title>
+		<!--<link rel="stylesheet" type="text/css" href="dist/css/bootstrap.min.css"/>-->
+		<link rel="stylesheet" type="text/css" href="dist/css/bootstrap.css"/>
+		<link rel="stylesheet" type="text/css" href="css/mui.css"/>
+		<link rel="stylesheet" type="text/css" href="css/app.css"/>
+		<link rel="stylesheet" type="text/css" href="css/order_appointment.css"/>
+		<link rel="stylesheet" type="text/css" href="css/base.css"/>
+		<link rel="stylesheet" type="text/css" href="css/iconfont.css"/>
+		
+		<!--[if lt IE 9]>
+			<script src="dist/js/html5shiv.min.js"></script>
+			<script src="dist/js/respond.min.js"></script>
+		<![endif]-->
+	</head>
+	<body>
+			<!--第一块头部切换===========================================================================-->
+		<header class="navbar-fixed-top">
+			<div class="headTip">
+				<span class="activeLeft orderBtn">
+					预约
+				</span>
+				<span class="chargeBtn" onclick="chargeList()">
+					充电
+				</span>
+			</div>
+		</header>
+		<!--占位div========================================================================================-->
+		<div class="occupied"></div>
+		<!--中间主题部分=======================================================================================-->	
+		<section>
+			<!--充电展示部分========================================-->
+			<div class="chargeBlock">
+				<!--充电中======-->
+				<div class="charging" style="display: none;">
+					<p style="display: none;">充电中</p>
+					<!--动态创建充电中的订单-->
+					<!--<div class="chargingDetail">
+						<div class="elPi_ElectricPileName">
+							杭州天际大厦充电站
+						</div>
+						<div class="chargingTime">
+							<span>正在充电，开始时间：</span>
+							<span>13:00</span>
+						</div>
+						<div class="elPi_ElectricPileAddress">
+							杭州市西湖区天目山路
+						</div>
+					</div>
+					-->
+					
+				</div>
+			    <!--充电已完成=============-->
+			    <div class="CHfinished" id="CHfinished"  style="display:none;">
+					<p>已完成</p>
+					<!--动态创建的已经完成订单-->
+					<!--<div class="finishedDetail">
+						<div class="CelectricName">
+							杭州天际大厦充电站
+						</div>
+						<div class="CtotalTime">
+							<span>2016.05.16 17:00</span>
+							<span> - </span>
+							<span>19:00</span>
+						</div>
+						<div class="CelectricAddress">
+							杭州市西湖区天目
+						</div>
+					</div>-->
+					
+				</div>
+				<div class="message chargeMessage" style="display: none;">
+				
+				</div>
+			</div>
+			<!--订单展示部分========================================-->
+			<div class="orderBlock">
+				<!--预约中========-->
+				<div class="bespCreate" style="display:none;">
+					<p>预约中</p>
+					<!--动态创建预约中的订单-->
+					<!--<div class="bespCreateDetail">
+						<div class="epName">
+							杭州天际大厦充电站
+						</div>
+						<div class="bespCreateDate">
+							<span>13:00</span>
+							<span> - </span>
+							<span>15:00</span>
+						</div>
+						<div class="epAddress">
+							杭州天际大厦181号
+						</div>
+						<div class="navMap" id="navMap">
+							导航
+						</div>
+						<div class="toReOrder" id="toReOrder">
+							续约
+						</div>
+					</div>-->
+				</div>
+				<!--预约已完成==========-->
+				<div class="finished" style="display:none;">
+					<p class="finishedTitle">已完成</p>
+					<!--动态创建的已经完成订单-->
+					<!--<div class="bespCreateFinishedDetail">
+						<div class="BelectricName">
+							杭州天际大厦充电站
+						</div>
+						<div class="BtotalTime">
+							<span>预约时间：</span>
+							<span>2016.05.16 17:00</span>
+							<span> - </span>
+							<span>19:00</span>
+						</div>
+						<div class="BelectricAddress">
+							杭州市西湖
+						</div>
+					</div>-->
+				
+				</div>
+				<div class="message bespCreateMessage" style="display: none;">
+				
+				</div>
+			</div>
+		
+			<!--无数据时提示内容======================================-->
+			
+		</section>
+		<!--第四块底部=====================================================================================-->
+		<nav class="mui-bar mui-bar-tab menuBtn" id="menuBtn">
+				<a class="mui-tab-item mui-active " href="#tabbar" style="color: #929292;" onclick="toMapIndex()">
+					<span class="mui-icon iconfont">&#xe60e;</span>
+					<span class="mui-tab-label">首页</span>
+				</a>
+				<a class="mui-tab-item" href="#tabbar-with-map" style="color: #FF7D00;">
+					<span class="mui-icon iconfont">&#xe63d;</span>
+					<span class="mui-tab-label">订单</span>
+				</a>
+				<!--<a class="mui-tab-item" href="#tabbar-with-contact" style="color: #929292;" onclick="toMyPage()">
+					<span class="mui-icon iconfont">&#xe613;</span>
+					<span class="mui-tab-label">我的</span>
+				</a>-->
+				<a class="mui-tab-item"  style="color: #929292;" id="myWallet">
+					<span class="mui-icon iconfont">&#xe620;</span>
+					<span class="mui-tab-label">钱包</span>
+				</a>
+		</nav>
+		<!--底部占位部分================================================================-->
+		<div class="occupied_bottom">
+			
+		</div>
+	
+		
+	</body>
+	
+	<script type="text/javascript" src="dist/js/jquery-1.11.0.js" ></script>
+	<script type="text/javascript">
+		$(function() {
+		    FastClick.attach(document.body);
+		});
+	</script>
+	<script src="js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript" src="dist/js/bootstrap.js" ></script>
+	<script src="js/url.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/userinfo.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/order_appointment.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+	
+</html>

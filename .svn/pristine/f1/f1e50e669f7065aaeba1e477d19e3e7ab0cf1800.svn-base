@@ -1,0 +1,727 @@
+package com.wanma.controller.itf;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.wanma.support.common.FailedResponse;
+import com.wanma.support.common.WanmaConstants;
+import com.wanma.support.utils.HttpUtil;
+import com.wanma.support.utils.MD5Util;
+import com.wanma.support.utils.PasswordUtil;
+
+/**
+ * 个人中心Controller
+ * @author cdy
+ * @createTime：2015-12-25 10:30:00
+ * @updateTime：
+ * @version：V1.0
+ */
+@Controller
+@RequestMapping("/itf/userinfo/")
+public class UserInfoController {
+	/**
+	 * 我的钱包
+	 * @author cdy
+	 * @param request
+	 */
+	@RequestMapping("/getMyWallet")
+	@ResponseBody
+	public String getMyWallet(HttpServletRequest request) {
+		String userId = request.getParameter("userId");			// 用户 id(必填)
+		String starttime = request.getParameter("starttime");	// 查询开始时间(2015-04-09 00:00:00)
+		String endtime = request.getParameter("endtime");		// 查询结束时间(2015-04-09 23:59:59) 
+		String type = request.getParameter("type");				// 消费类型(1-充电消费 2-预约消费 3-购物消费 4-充值)
+		// 用户id为必填参数，若为空直接返回FailedResponse
+		if (StringUtils.isBlank(userId)) {
+			return new FailedResponse(1050,"用户id不能为空").toString();
+		}
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("userId", StringUtils.isNotBlank(userId) ? userId : null);
+		params.put("starttime", StringUtils.isNotBlank(starttime) ? starttime : null);
+		params.put("endtime", StringUtils.isNotBlank(endtime) ? endtime : null);
+		params.put("type", StringUtils.isNotBlank(type) ? type : null);
+		// 调用API并将结果返回
+		return HttpUtil.doPost(WanmaConstants.API_URL_MY_WALLET, params);
+	}
+	
+//	/**
+//	 * 我的收藏
+//	 * @author cdy
+//	 * @param request
+//	 */
+//	@RequestMapping(value="/getFavoriteListN")
+//	@ResponseBody
+//	public String getFavoriteList(HttpServletRequest request) {
+//		String userId = request.getParameter("userId");		// 用户 id(必填)
+//		String lat = request.getParameter("lat");			// 纬度(必填)
+//		String lng = request.getParameter("lng");			// 经度(必填)
+//		// 判断信息是否完整, 如不完整则返回FailedResponse
+//		if (StringUtils.isBlank(userId)) {
+//			return new FailedResponse(1050, "用户id不能为空").toString();
+//		}
+//		if (StringUtils.isBlank(lng)) {
+//			return new FailedResponse(1050, "经度不能为空").toString();
+//		}
+//		if (StringUtils.isBlank(lat)) {
+//			return new FailedResponse(1050, "纬度不能为空").toString();
+//		}
+//		// 准备参数params
+//		Map<String, String> params = new HashMap<String, String>();
+//		params.put("userId", StringUtils.isNotBlank(userId) ? userId : null);
+//		params.put("lat", StringUtils.isNotBlank(lat) ? lat : null);
+//		params.put("lng", StringUtils.isNotBlank(lng) ? lng : null);
+//		// 调用API并将结果返回
+//		return HttpUtil.doPost(WanmaConstants.API_URL_FAVORITE_LIST, params);
+//	}
+
+	/**
+	 * 获取用户信息
+	 * @author mb
+	 * @param request
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@RequestMapping("/getUserInfo")
+	@ResponseBody
+	public String getUserInfo(HttpServletRequest request){
+		String userId = request.getParameter("userId");
+		// 准备参数params
+				Map<String, String> params = new HashMap<String, String>();
+		// 判断信息是否完整, 如不完整则返回FailedResponse
+			if (StringUtils.isBlank(userId)) {
+				return new FailedResponse(1050, "用户id不能为空").toString();
+			}else {
+				params.put("userId", userId);
+			}
+			// 调用API并将结果返回
+			return HttpUtil.doPost(WanmaConstants.API_URL_GETUSERINFO, params);
+	}
+	
+	/**
+	 * 完善用户资料/申领充电卡
+	 * @author mb
+	 * @param request
+	 */
+	@RequestMapping("/getUserInfo")
+	@ResponseBody
+	public String modifyUser(HttpServletRequest request){
+		String pkUserinfo = request.getParameter("pkUserinfo");//用户id
+		String usinPhone = request.getParameter("usinPhone");//手机号
+		String allMultiFile = request.getParameter("allMultiFile");//头像（文件流）
+		String usinEmail = request.getParameter("usinEmail");//邮箱
+		String usinFacticityname = request.getParameter("usinFacticityname");//真实姓名
+		String usinUsername = request.getParameter("usinUsername");//昵称
+		String usinSex = request.getParameter("usinSex");//性别（0男1女）
+		String usinBirthdate = request.getParameter("usinBirthdate");//出生日期
+		String usinMembercode = request.getParameter("usinMembercode");//会员卡号
+		String usinIccode = request.getParameter("usinIccode");//ic卡号
+		String usinDrivinglicense = request.getParameter("usinDrivinglicense");//驾驶证号
+		String usinCarinfoId = request.getParameter("usinCarinfoId");//车型ID
+		String usinUseraddress = request.getParameter("usinUseraddress");//联系地址
+		String pCode = request.getParameter("pCode");//省份代码
+		String cCode = request.getParameter("cCode");//城市代码
+		String aCode = request.getParameter("aCode");//区县代码
+		String isCard = request.getParameter("isCard");//是否申请电卡
+		// 准备参数params
+		Map<String, String> params = new HashMap<String, String>();
+		// 判断信息是否完整, 如不完整则返回FailedResponse
+		if (StringUtils.isBlank(pkUserinfo)) {
+			return new FailedResponse(1050, "用户id不能为空").toString();
+		}else {
+			params.put("pkUserinfo", pkUserinfo);
+		}
+		params.put("usinPhone",StringUtils.isNotBlank(usinPhone)?usinPhone:null);
+		params.put("allMultiFile",StringUtils.isNotBlank(allMultiFile)?allMultiFile:null);
+		params.put("usinEmail",StringUtils.isNotBlank(usinEmail)?usinEmail:null);
+		params.put("usinFacticityname",StringUtils.isNotBlank(usinFacticityname)?usinFacticityname:null);
+		params.put("usinUsername",StringUtils.isNotBlank(usinUsername)?usinUsername:null);
+		params.put("usinSex",StringUtils.isNotBlank(usinSex)?usinSex:null);
+		params.put("usinBirthdate",StringUtils.isNotBlank(usinBirthdate)?usinBirthdate:null);
+		params.put("usinMembercode",StringUtils.isNotBlank(usinMembercode)?usinMembercode:null);
+		params.put("usinIccode",StringUtils.isNotBlank(usinIccode)?usinIccode:null);
+		params.put("usinDrivinglicense",StringUtils.isNotBlank(usinDrivinglicense)?usinDrivinglicense:null);
+		params.put("usinCarinfoId",StringUtils.isNotBlank(usinCarinfoId)?usinCarinfoId:null);
+		params.put("usinUseraddress",StringUtils.isNotBlank(usinUseraddress)?usinUseraddress:null);
+		params.put("pCode",StringUtils.isNotBlank(pCode)?pCode:null);
+		params.put("cCode",StringUtils.isNotBlank(cCode)?cCode:null);
+		params.put("aCode",StringUtils.isNotBlank(aCode)?aCode:null);
+		params.put("isCard",StringUtils.isNotBlank(isCard)?isCard:null);
+		// 调用API并将结果返回
+		return HttpUtil.doPost(WanmaConstants.API_URL_MODIFYUSER, params);
+	}
+	
+	/**
+	 * 获取用户余额
+	 * @author mb
+	 * @param request
+	 */
+	@RequestMapping("/getUserAB")
+	@ResponseBody
+	public String getUserAB(HttpServletRequest request){
+		String uid = request.getParameter("uid");//用户id
+		// 准备参数params
+		Map<String, String> params = new HashMap<String, String>();
+		// 判断信息是否完整, 如不完整则返回FailedResponse
+		if (StringUtils.isBlank(uid)) {
+			return new FailedResponse(1050, "用户id不能为空").toString();
+		}else {
+			params.put("uid", uid);
+		}		
+		return HttpUtil.doPost(WanmaConstants.API_URL_GET_USERAB, params);
+	}
+	
+	/**
+	 * 设置支付密码
+	 * @author mb
+	 * @param request
+	 */
+	@RequestMapping("/setPayPwd")
+	@ResponseBody
+	public String setPayPwd(HttpServletRequest request){
+		String uid = request.getParameter("uid");//用户id
+		String pwd = request.getParameter("pwd");
+		pwd = MD5Util.Md5(pwd);//Md5加密密码
+		// 准备参数params
+		Map<String, String> params = new HashMap<String, String>();
+		// 判断信息是否完整, 如不完整则返回FailedResponse
+		if (StringUtils.isBlank(uid)) {
+			return new FailedResponse(1050, "用户id不能为空").toString();
+		}else {
+			params.put("uid", uid);
+		}	
+		if (StringUtils.isBlank(pwd)) {
+			return new FailedResponse(1050, "密码不能为空").toString();
+		}else {
+			params.put("pwd", pwd);
+		}	
+		return HttpUtil.doPost(WanmaConstants.API_URL_SET_PAYPWD, params);
+	}
+	
+	/**
+	 * 检查支付密码有效性（连续输错3次，当天锁定）
+	 * @author mb
+	 * @param request
+	 */
+	@RequestMapping("/checkPayPwd")
+	@ResponseBody
+	public String checkPayPwd(HttpServletRequest request){
+		String uid = request.getParameter("uid");//用户id
+		String pwd = request.getParameter("pwd");
+		String phone=request.getParameter("phone");
+		pwd = PasswordUtil.getWanmaEncodePassword(pwd,phone);//Md5加密密码
+		// 准备参数params
+		Map<String, String> params = new HashMap<String, String>();
+		// 判断信息是否完整, 如不完整则返回FailedResponse
+		if (StringUtils.isBlank(uid)) {
+			return new FailedResponse(1050, "用户id不能为空").toString();
+		}else {
+			params.put("uid", uid);
+		}	
+		if (StringUtils.isBlank(pwd)) {
+			return new FailedResponse(1050, "密码不能为空").toString();
+		}else {
+			params.put("pwd", pwd);
+		}	
+		return HttpUtil.doPost(WanmaConstants.API_URL_CHECK_PAYPWD, params);
+	}
+	
+	/**
+	 * 修改支付密码
+	 * @author mb
+	 * @param request
+	 */
+	@RequestMapping("/modPayPwd")
+	@ResponseBody
+	public String modPayPwd(HttpServletRequest request){
+		String uid = request.getParameter("uid");//用户id
+		String oppw = request.getParameter("oppw");//原支付密码
+		String nppw = request.getParameter("nppw");//新支付密码
+		oppw = MD5Util.Md5(oppw);//Md5加密原支付密码
+		nppw = MD5Util.Md5(nppw);//Md5加密新支付密码
+		// 准备参数params
+		Map<String, String> params = new HashMap<String, String>();
+		// 判断信息是否完整, 如不完整则返回FailedResponse
+		if (StringUtils.isBlank(uid)) {
+			return new FailedResponse(1050, "用户id不能为空").toString();
+		}else {
+			params.put("uid", uid);
+		}	
+		if (StringUtils.isBlank(oppw)) {
+			return new FailedResponse(1050, "原支付密码不能为空").toString();
+		}else {
+			params.put("oppw", oppw);
+		}	
+		if (StringUtils.isBlank(nppw)) {
+			return new FailedResponse(1050, "新支付密码不能为空").toString();
+		}else {
+			params.put("nppw", nppw);
+		}	
+		return HttpUtil.doPost(WanmaConstants.API_URL_MOD_PAYPWD, params);
+	}
+	
+	/**
+	 * 修改登陆密码
+	 * @author mb
+	 * @param request
+	 */
+	@RequestMapping("/modPassword")
+	@ResponseBody
+	public String modPassword(HttpServletRequest request){
+		String uid = request.getParameter("uid");//用户id
+		String opw = request.getParameter("opw");//原密码
+		String npw = request.getParameter("npw");//新密码
+		opw = MD5Util.Md5(opw);//Md5加密原密码
+		npw = MD5Util.Md5(npw);//Md5加密新密码
+		// 准备参数params
+		Map<String, String> params = new HashMap<String, String>();
+		// 判断信息是否完整, 如不完整则返回FailedResponse
+		if (StringUtils.isBlank(uid)) {
+			return new FailedResponse(1050, "用户id不能为空").toString();
+		}else {
+			params.put("uid", uid);
+		}	
+		if (StringUtils.isBlank(opw)) {
+			return new FailedResponse(1050, "原密码不能为空").toString();
+		}else {
+			params.put("opw", opw);
+		}	
+		if (StringUtils.isBlank(npw)) {
+			return new FailedResponse(1050, "新密码不能为空").toString();
+		}else {
+			params.put("npw", npw);
+		}	
+		return HttpUtil.doPost(WanmaConstants.API_URL_MOD_PASSWORD, params);
+	}
+	
+	/**
+	 * 车型品牌获取
+	 * @author mb
+	 * @param request
+	 */
+	@RequestMapping("/findParaconfigList")
+	@ResponseBody
+	public String findParaconfigList(HttpServletRequest request){
+		String paraType = request.getParameter("paraType");//配置类型
+		// 准备参数params
+		Map<String, String> params = new HashMap<String, String>();
+		// 判断信息是否完整, 如不完整则返回FailedResponse
+		if (StringUtils.isBlank(paraType)) {
+			return new FailedResponse(1050, "配置类型不能为空").toString();
+		}else {
+			params.put("paraType", paraType);
+		}	
+		
+		return HttpUtil.doPost(WanmaConstants.API_URL_FIND_PARACONFIG, params);
+	}
+	
+	/**
+	 * 车型获取
+	 * @author mb
+	 * @param request
+	 */
+	@RequestMapping("/findCarinfoList")
+	@ResponseBody
+	public String findCarinfoList(HttpServletRequest request){
+		String carinfoBrandname = request.getParameter("carinfoBrandname");//品牌
+		String carcompanyId = request.getParameter("carcompanyId");//品牌厂家ID
+		// 准备参数params
+		Map<String, String> params = new HashMap<String, String>();
+		// 判断信息是否完整, 如不完整则返回FailedResponse
+		if (StringUtils.isBlank(carinfoBrandname)
+				||StringUtils.isBlank(carcompanyId)) {
+			return new FailedResponse(1050,"输入参数不全！").toString();
+		}	
+		params.put("carinfoBrandname", carinfoBrandname);
+		params.put("carcompanyId", carcompanyId);
+		return HttpUtil.doPost(WanmaConstants.API_URL_FIND_CARINFO, params);
+	}
+	
+	/**
+	 * 活动列表页
+	 * @author mb
+	 * @param request
+	 */
+	@RequestMapping("/list")
+	@ResponseBody
+	public String list(HttpServletRequest request){
+		String pageNumber = request.getParameter("pageNumber");//当前页码从1开始
+		String pageNum = request.getParameter("pageNum");//每页数据量
+		// 准备参数params
+		Map<String, String> params = new HashMap<String, String>();
+		// 判断信息是否完整, 如不完整则返回FailedResponse
+		if(StringUtils.isBlank(pageNumber)
+		|| StringUtils.isBlank(pageNum)){
+		    return new FailedResponse(1050,"输入参数不全！").toString();	
+		}
+		params.put("pageNumber", pageNumber);
+		params.put("pageNum", pageNum);	
+		return HttpUtil.doPost(WanmaConstants.API_URL_DYNAMIC_LIST, params);
+	}
+	
+	/**
+	 * 我的反馈
+	 * @author mb
+	 * @param request
+	 */
+	@RequestMapping("/getMyFB")
+	@ResponseBody
+	public String getMyFB(HttpServletRequest request){
+		String userId = request.getParameter("userId");//用户id
+		// 准备参数params
+		Map<String, String> params = new HashMap<String, String>();
+		// 判断信息是否完整, 如不完整则返回FailedResponse
+		if(StringUtils.isBlank(userId)){
+		    return new FailedResponse(1050,"输入参数不全！").toString();	
+		}
+		params.put("userId", userId);
+		return HttpUtil.doPost(WanmaConstants.API_URL_MY_FB, params);
+	}
+	/**
+	 * 系统消息
+	 * @author mb
+	 * @param request
+	 */
+	@RequestMapping("/mylist")
+	@ResponseBody
+	public String mylist(HttpServletRequest request){
+		String userId = request.getParameter("userId");//用户id
+		// 准备参数params
+		Map<String, String> params = new HashMap<String, String>();
+		// 判断信息是否完整, 如不完整则返回FailedResponse
+		if(StringUtils.isBlank(userId)){
+			return new FailedResponse(1050,"输入参数不全！").toString();	
+		}
+		params.put("userId", userId);
+		return HttpUtil.doPost(WanmaConstants.API_URL_USERMESSAGE, params);
+	}
+	/**
+	 * 系统消息详情
+	 * @author mb
+	 * @param request
+	 */
+	@RequestMapping("/messageContent")
+	@ResponseBody
+	public String messageContent(HttpServletRequest request){
+		String mid = request.getParameter("mid");//消息id
+		// 准备参数params
+		Map<String, String> params = new HashMap<String, String>();
+		// 判断信息是否完整, 如不完整则返回FailedResponse
+		if(StringUtils.isBlank(mid)){
+			return new FailedResponse(1050,"输入参数不全！").toString();	
+		}
+		params.put("mid", mid);
+		return HttpUtil.doPost(WanmaConstants.API_URL_USERMESSAGE_DETAIL, params);
+	}
+	
+	
+	/**
+	 * 版本更新
+	 * @author mb
+	 * @param request
+	 */
+	@RequestMapping("/getVersionInfo")
+	@ResponseBody
+	public String getVersionInfo(HttpServletRequest request){
+		String versNumber = request.getParameter("versNumber");//版本号
+		String versType = request.getParameter("versType");//设备类型 1安卓 2iOS
+		// 准备参数params
+		Map<String, String> params = new HashMap<String, String>();
+		// 判断信息是否完整, 如不完整则返回FailedResponse
+		if(StringUtils.isBlank(versNumber)
+		||StringUtils.isBlank(versType)
+		){
+			return new FailedResponse(1050,"输入参数不全！").toString();	
+		}
+		params.put("versNumber", versNumber);
+		params.put("versType", versType);
+		return HttpUtil.doPost(WanmaConstants.API_URL_VERSIONINFO, params);
+	}
+	
+	/**
+	 * @Description：意见反馈增加
+	 * @return
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@RequestMapping("/feedBack")
+	@ResponseBody   
+	public String addTblFeedBack(HttpServletRequest request){
+		String febaUserid = request.getParameter("febaUserid");
+		String febaContent = request.getParameter("febaContent");
+		Map params = new HashMap();
+		if(StringUtils.isBlank(febaUserid)){
+			return new FailedResponse(1050,"用户id不能为空").toString();
+		} else {
+			params.put("febaUserid", febaUserid);
+		}
+		if(StringUtils.isBlank(febaContent)){
+			return new FailedResponse(1050,"反馈内容不能为空").toString();
+		} else {
+			params.put("febaContent", febaContent);
+		}
+		// 调用API并将结果返回
+		return HttpUtil.doPost(WanmaConstants.API_URL_ADD_FEEDBACK, params);	
+	
+	}
+	
+	/**
+	 * @Description：车辆维修列表
+	 * @return
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@RequestMapping("/carGarage")
+	@ResponseBody
+	public String garagelist(HttpServletRequest request){
+		String latitude = request.getParameter("latitude");
+		String longitude = request.getParameter("longitude");
+		String pageNumber = request.getParameter("pageNumber");
+		String pageNum = request.getParameter("pageNum");
+		String kw = request.getParameter("kw");//查询关键字
+		String type = request.getParameter("type");//查询类型 1名称 2地址
+		Map params = new HashMap();
+		if(StringUtils.isBlank(latitude)){
+			return new FailedResponse(1050,"经度不能为空").toString();
+		} else {
+			params.put("latitude", latitude);
+		}
+		if(StringUtils.isBlank(longitude)){
+			return new FailedResponse(1050,"纬度不能为空").toString();
+		} else {
+			params.put("longitude", longitude);
+		}
+		params.put("pageNumber", StringUtils.isNotBlank(pageNumber)?pageNumber:null);
+		params.put("pageNum", StringUtils.isNotBlank(pageNum)?pageNum:null);
+		params.put("kw", StringUtils.isNotBlank(kw)?kw:null);
+		params.put("type", StringUtils.isNotBlank(type)?type:null);
+		// 调用API并将结果返回
+		return HttpUtil.doPost(WanmaConstants.API_URL_CARGARAGE_LIST, params);	
+		
+		
+	}
+	
+	/**
+	 * @Description：救援电话列表
+	 * @return
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@RequestMapping("/rescue")
+	@ResponseBody
+	public String rescuelist(HttpServletRequest request){
+		Map params = new HashMap();
+		// 调用API并将结果返回
+		return HttpUtil.doPost(WanmaConstants.API_URL_RESCUE_LIST,params);	
+	
+	}	
+	
+	/**
+	 * @Description：获取短信验证码
+	 * @return
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@RequestMapping("/getAuthCode")
+	@ResponseBody
+	public String getAuthCode(HttpServletRequest request){
+		String mobileNumber = request.getParameter("mobileNumber");
+		
+		Map params = new HashMap();
+		if(StringUtils.isBlank(mobileNumber)){
+			return new FailedResponse(1050,"信息不完整").toString();
+		} 
+		params.put("mobileNumber", mobileNumber);
+		
+		// 调用API并将结果返回
+		return HttpUtil.doPost(WanmaConstants.API_URL_GETAUTHCODE, params);	
+		
+	}	
+	
+	/**
+	 * @Description：判断短信验证码是否正确
+	 * @return
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@RequestMapping("/checkAuthCode")
+	@ResponseBody
+	public String checkAuthCode(HttpServletRequest request){
+		String usinPhone = request.getParameter("usinPhone");
+		String authCode=request.getParameter("authCode");
+		Map params = new HashMap();
+		if(StringUtils.isBlank(usinPhone)||StringUtils.isBlank(authCode)){
+			return new FailedResponse(1050,"信息不完整").toString();
+		} 
+		params.put("usinPhone", usinPhone);
+		params.put("authCode", authCode);
+		
+		// 调用API并将结果返回
+		return HttpUtil.doPost(WanmaConstants.API_URL_CHECKAUTHCODE, params);	
+		
+	}	
+	
+	/**
+	 * @Description：检查手机号是否注册
+	 * @return
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@RequestMapping("/checkphone")
+	@ResponseBody
+	public String checkphone(HttpServletRequest request){
+		String usinPhone = request.getParameter("phone");
+		Map params = new HashMap();
+		if(StringUtils.isBlank(usinPhone)){
+			return new FailedResponse(1050,"信息不完整").toString();
+		} 
+		params.put("usinPhone", usinPhone);
+		
+		// 调用API并将结果返回
+		return HttpUtil.doPost(WanmaConstants.API_URL_CHECKPHONE, params);	
+		
+	}	
+	
+	/**
+	 * @Description：登录
+	 * @return
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@RequestMapping("/login")
+	@ResponseBody
+	public String login(HttpServletRequest request){
+		String usinPhone = request.getParameter("usinPhone");
+		String usInPassword = request.getParameter("usInPassword");
+		usInPassword = PasswordUtil.getWanmaEncodePassword(usInPassword,usinPhone);//Md5加密密码
+		String jpushRegistrationid = request.getParameter("jpushRegistrationid");
+		String jpushDevicetype = request.getParameter("jpushDevicetype");
+		String did = request.getParameter("did");//查询关键字
+		Map params = new HashMap();
+		if(StringUtils.isBlank(usinPhone)){
+			return new FailedResponse(1050,"手机号不能为空").toString();
+		} else {
+			params.put("usinPhone", usinPhone);
+		}
+		if(StringUtils.isBlank(usInPassword)){
+			return new FailedResponse(1050,"密码不能为空").toString();
+		} else {
+			params.put("usInPassword", usInPassword);
+		}
+		if(StringUtils.isBlank(jpushRegistrationid)){
+			return new FailedResponse(1050,"极光推送手机唯一标示不能为空").toString();
+		} else {
+			params.put("jpushRegistrationid", jpushRegistrationid);
+		}
+		if(StringUtils.isBlank(jpushDevicetype)){
+			return new FailedResponse(1050,"设备类型不能为空").toString();
+		} else {
+			params.put("jpushDevicetype", jpushDevicetype);
+		}
+		params.put("did", PasswordUtil.getWanmaDeviceId());
+//		if(StringUtils.isBlank(did)){
+//			return new FailedResponse(1050,"设备唯一标识不能为空").toString();
+//		} else {
+//			params.put("did", did);
+//		}
+	
+		// 调用API并将结果返回
+		return HttpUtil.doPost(WanmaConstants.API_URL_LOGIN, params);	
+		
+	}	
+	/**
+	 * @Description：退出登录
+	 * @return
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@RequestMapping("/logout")
+	@ResponseBody
+	public String logout(HttpServletRequest request){
+		String userId = request.getParameter("userId");
+		
+		Map params = new HashMap();
+		if(StringUtils.isBlank(userId)){
+			return new FailedResponse(1050,"手机号不能为空").toString();
+		} else {
+			params.put("userId", userId);
+		}
+		
+		
+		// 调用API并将结果返回
+		return HttpUtil.doPost(WanmaConstants.API_URL_LOGOUT, params);	
+		
+	}	
+	/**
+	 * @Description：注册
+	 * @return
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@RequestMapping("/regist")
+	@ResponseBody
+	public String regist(HttpServletRequest request){
+		String usinPhone = request.getParameter("usinPhone");
+		String usinPassword = request.getParameter("usinPassword");
+		String platform = request.getParameter("platform");//3android 4ios(固定)
+		
+		Map params = new HashMap();
+		if(StringUtils.isBlank(usinPhone)||
+		   StringUtils.isBlank(usinPassword)||
+		   StringUtils.isBlank(platform)){
+			return new FailedResponse(1050,"信息不完整").toString();
+		} 
+		params.put("usinPhone", usinPhone);
+		params.put("usinPassword", usinPassword);
+		params.put("platform", platform);
+		
+		// 调用API并将结果返回
+		return HttpUtil.doPost(WanmaConstants.API_URL_REGIST, params);	
+		
+	}	
+	
+	/**
+	 * @Description：找回密码
+	 * @return
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@RequestMapping("/resetPasswrod")
+	@ResponseBody
+	public String resetPasswrod(HttpServletRequest request){
+		String usinPhone = request.getParameter("usinPhone");
+		String usinPassword = request.getParameter("usinPassword");
+		String authCode = request.getParameter("authCode");
+		
+		Map params = new HashMap();
+		if(StringUtils.isBlank(usinPhone)||
+		   StringUtils.isBlank(usinPassword)||
+		   StringUtils.isBlank(authCode)){
+			return new FailedResponse(1050,"信息不完整").toString();
+		} 
+		params.put("usinPhone", usinPhone);
+		params.put("usinPassword", usinPassword);
+		params.put("authCode", authCode);
+		
+		// 调用API并将结果返回
+		return HttpUtil.doPost(WanmaConstants.API_URL_RESETPASSWORD, params);	
+		
+	}	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+}

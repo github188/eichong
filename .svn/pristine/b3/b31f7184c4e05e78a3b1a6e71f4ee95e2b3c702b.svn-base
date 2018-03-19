@@ -1,0 +1,414 @@
+package com.wanma.ims.service.impl;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.google.gson.Gson;
+import com.wanma.ims.mapper.ElectricPileMapper;
+import net.sf.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Maps;
+import com.wanma.ims.common.domain.CityDO;
+import com.wanma.ims.common.domain.ElectricPileDO;
+import com.wanma.ims.common.domain.PowerStationDO;
+import com.wanma.ims.common.domain.RateInfoDO;
+import com.wanma.ims.common.domain.RateUniqueRelaDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.constants.ResultCodeConstants;
+import com.wanma.ims.constants.WanmaConstants;
+import com.wanma.ims.mapper.CompanyChargeRelaMapper;
+import com.wanma.ims.mapper.RateInfoMapper;
+import com.wanma.ims.mapper.RateUniqueRelaMapper;
+import com.wanma.ims.service.CompanyChargeRelaService;
+import com.wanma.ims.service.InitialService;
+import com.wanma.ims.service.RateUniqueRelaService;
+
+@Service
+public class RateUniqueRelaServiceImpl implements RateUniqueRelaService {
+
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	@Autowired
+	private RateUniqueRelaMapper rateUniqueRelaMapper;
+	
+	@Autowired
+	private RateInfoMapper rateInfoMapper;
+	
+	@Autowired
+	private CompanyChargeRelaMapper companyChargeRelaMapper;
+	
+	@Autowired
+	private CompanyChargeRelaService companyChargeRelaService;
+	
+	@Autowired
+    private InitialService initialService;
+
+	@Autowired
+	private ElectricPileMapper electricPileMapper;
+	
+	@Override
+	public Long getRateUniqueRelaCount(RateUniqueRelaDO rateUniqueRela) {
+		return rateUniqueRelaMapper.getRateUniqueRelaCount(rateUniqueRela);
+	}
+	
+	@Override
+	public List<RateUniqueRelaDO> getRateUniqueRelaList(RateUniqueRelaDO rateUniqueRela) {
+		return rateUniqueRelaMapper.getRateUniqueRelaList(rateUniqueRela);
+	}
+	
+	@Override
+	@Transactional
+	public BaseResultDTO addRateUniqueRela(RateUniqueRelaDO rateUniqueRela, UserDO loginUser) throws Exception{
+		BaseResultDTO baseResultDTO = new BaseResultDTO();
+		if (rateUniqueRela == null||rateUniqueRela.getCpyId() == null||
+				rateUniqueRela.getLevelId() == null||rateUniqueRela.getRateinfoId() == null) {
+			log.error(this.getClass() + ".addRateUniqueRela() error : 输入参数不全！",rateUniqueRela.toString());
+			return new BaseResultDTO(false, ResultCodeConstants.FAILED, "输入参数不全！");
+		}
+		String errorString="";
+		String[] electricPileIdArray = rateUniqueRela.getElectricpileIds().split(",");
+		if (electricPileIdArray.length>0&&rateUniqueRela.getElectricpileIds()!=""&&rateUniqueRela.getRateinfoId()!=0 ){
+			//比较是否和该levelid下其他桩重复
+			errorString=contrastElectricPile(electricPileIdArray,rateUniqueRela);
+			if (errorString!=""){
+				return new BaseResultDTO(false, ResultCodeConstants.FAILED, errorString);
+			}
+			//比较选中的桩的默认费率时间段是否一致  用户输入的费率是否和选择的电桩费率时间段一致
+			errorString=contrastElectricPileRateTime(electricPileIdArray,rateUniqueRela);
+			if (errorString!=""){
+				return new BaseResultDTO(false, ResultCodeConstants.FAILED, errorString);
+			}
+			RateInfoDO rateInfoDO = new RateInfoDO();
+			rateInfoDO.setPk_RateInformation(rateUniqueRela.getRateinfoId());
+			rateInfoDO.setRaIn_type(WanmaConstants.NEW_ACCOUNT_RATEINFO);
+			Long count = rateInfoMapper.getRateInfoCount(rateInfoDO);
+			if (count == null || count.intValue() == 0) {
+				return new BaseResultDTO(false, ResultCodeConstants.FAILED, "输入的费率Id不存在或者不是新账户费率！");
+			}
+		}
+
+		RateUniqueRelaDO addRateUniqueRela;
+		//删除这个公司、等级和费率 下的所有桩数据
+		RateUniqueRelaDO oldRateUniqueRelaDO = new RateUniqueRelaDO();
+		oldRateUniqueRelaDO.setCpyId(rateUniqueRela.getCpyId());
+		oldRateUniqueRelaDO.setLevelId(rateUniqueRela.getLevelId());
+		oldRateUniqueRelaDO.setRateinfoId(rateUniqueRela.getOldRateinfoId());
+		rateUniqueRelaMapper.removeRateUniqueRela(oldRateUniqueRelaDO);
+		
+		List<RateUniqueRelaDO> rateUniqueRelaList = new ArrayList<RateUniqueRelaDO>();
+		if(!"".equals(rateUniqueRela.getElectricpileIds())&&rateUniqueRela.getRateinfoId()!=0){
+			for (String str : electricPileIdArray) {
+				addRateUniqueRela = new RateUniqueRelaDO();
+				addRateUniqueRela.setElectricpileId(Long.parseLong(str));
+				addRateUniqueRela.setCpyId(rateUniqueRela.getCpyId());
+				addRateUniqueRela.setLevelId(rateUniqueRela.getLevelId());
+				addRateUniqueRela.setRateinfoId(rateUniqueRela.getRateinfoId());
+				addRateUniqueRela.setCreator(loginUser.getUserId().toString());
+				addRateUniqueRela.setGmtCreate(new Date());
+				rateUniqueRelaList.add(addRateUniqueRela);
+			}
+			int result = rateUniqueRelaMapper.batchAddRateUniqueRela(rateUniqueRelaList);
+			if (result < 1) {
+				log.error(this.getClass() + ".addRateUniqueRela() error : " + ResultCodeConstants.ERROR_MSG_ERROR_ADD,rateUniqueRelaList.toString());
+				return new BaseResultDTO(false, ResultCodeConstants.FAILED, ResultCodeConstants.ERROR_MSG_ERROR_ADD);
+			}
+		}
+		
+		return baseResultDTO;
+	}
+
+	/**
+	 * 对比选中的电桩是否存在费率时间段不一致的情况
+	 * @param electricPileIdArray
+	 * @param rateUniqueRela
+	 * @return
+	 */
+	private String contrastElectricPileRateTime(String[] electricPileIdArray, RateUniqueRelaDO rateUniqueRela) {
+		String errorString="";
+		List<Map<String,String>> rateQuantumDate = new ArrayList<>();
+		for (String str : electricPileIdArray){
+			RateInfoDO rateInfoDO = new RateInfoDO();
+			rateInfoDO = rateUniqueRelaMapper.getRateInfoByEpId(new Long(str));
+//			rateInfoDO.setRaIn_QuantumDate(time);
+			rateQuantumDate.add(gsonConvert(str,rateInfoDO));
+		}
+		for (int i=0;i<rateQuantumDate.size();i++){
+			for (int j=i+1;j<rateQuantumDate.size();j++){
+				if (!rateQuantumDate.get(i).get("value").equals(rateQuantumDate.get(j).get("value"))){
+					ElectricPileDO electricPileDO =electricPileMapper.selectByElectricPileId(new Long(rateQuantumDate.get(i).get("id")));
+					errorString += electricPileDO.getName()+"费率时间段存在不一致";
+				}
+			}
+		}
+		if (errorString==""){
+			RateInfoDO rateInfoDO  = rateUniqueRelaMapper.getRateInfoByRtId(rateUniqueRela.getRateinfoId());
+			if (!rateQuantumDate.get(0).get("value").equals(gsonConvert(null,rateInfoDO).get("value"))){
+				errorString += "选中的电桩和输入的费率id 时间段不一致";
+			}
+		}
+		return errorString;
+	}
+
+	/**
+	 * 将费率表的时间段 转成map格式
+	 * @param str
+	 * @param rateInfoDO
+	 * @return
+	 */
+	public Map<String,String> gsonConvert(String str,RateInfoDO rateInfoDO){
+		Map<String, List<Map<String, String>>> newMap= new HashMap<>();
+		Gson gson = new Gson();
+		newMap = gson.fromJson(rateInfoDO.getRaIn_QuantumDate(), newMap.getClass());
+		List<Map<String,String>> newList= new ArrayList<>();
+		newList=newMap.get("data");
+		//把尖峰平谷字段设为统一后去比较
+		for (int i = 0; i < newList.size(); i++) {
+			newList.get(i).put("mark", "0");
+		}
+		Map<String,String> map = new HashMap<>();
+		map.put("id",str);
+		map.put("value",newList.toString());
+		return  map;
+	}
+
+	/**
+	 * 对比同一个levelId下绑定的电桩是否存在重复
+	 * @param electricPileIdArray
+	 * @param rateUniqueRela
+	 * @return
+	 */
+	public String contrastElectricPile(String[] electricPileIdArray, RateUniqueRelaDO rateUniqueRela){
+		String errorString="";
+		List<String> newIdList = new ArrayList<>();
+		for (String str :electricPileIdArray){
+			newIdList.add(str);
+		}
+		List<String> oldIdList = rateUniqueRelaMapper.getEpListByLevelAndCpy(rateUniqueRela);
+		for (int i=0;i<newIdList.size();i++){
+			for (int j=0;j<oldIdList.size();j++){
+				if (newIdList.get(i).equals(oldIdList.get(j))){
+					ElectricPileDO electricPileDO =electricPileMapper.selectByElectricPileId(new Long(newIdList.get(i)));
+					errorString += electricPileDO.getName()+"重复";
+				}
+			}
+		}
+		return  errorString;
+	}
+
+
+
+
+	@Override
+	public List<RateUniqueRelaDO> getRateUniqueRelaGroup(
+			RateUniqueRelaDO rateUniqueRela) {
+		return rateUniqueRelaMapper.getRateUniqueRelaGroup(rateUniqueRela);
+	}
+
+	@Override
+	public List<CityDO> getStationAndPile(RateUniqueRelaDO rateUniqueRela,
+			UserDO loginUser) throws Exception {
+		//选中的电桩
+		List<RateUniqueRelaDO> rateUniqueRelaDOList = rateUniqueRelaMapper.getRateUniqueRelaList(rateUniqueRela);
+		Map<Long, RateUniqueRelaDO> relaMap = Maps.uniqueIndex(rateUniqueRelaDOList, new Function<RateUniqueRelaDO, Long>() {
+            @Override
+            public Long apply(RateUniqueRelaDO input) {
+                return input.getElectricpileId();
+            }
+        });
+		
+		List<CityDO> resultList = new ArrayList<>();
+        Map<String, CityDO> cityMap = new HashMap<>();
+		CityDO city;
+		List<RateUniqueRelaDO> tempCityList = rateUniqueRelaMapper.getRateUniqueRelaCity(rateUniqueRela);
+		
+		for (RateUniqueRelaDO rateUniqueRelaDO : tempCityList) {
+			city = new CityDO();
+            city.setCityId(rateUniqueRelaDO.getCityCode());
+            city.setList(new ArrayList<PowerStationDO>());
+            city.setIsSelected(false);
+            city.setName(rateUniqueRelaDO.getCityName());
+            cityMap.put(rateUniqueRelaDO.getCityCode(), city);
+            resultList.add(city);
+		}
+		
+		List<PowerStationDO> tempPowerStationList = new ArrayList<PowerStationDO>();
+		List<ElectricPileDO> tempElectricPileList = new ArrayList<ElectricPileDO>();
+		RateUniqueRelaDO tempPowerStationDO;
+		RateUniqueRelaDO tempElectricPileDO;
+		PowerStationDO powerStationDO;
+		ElectricPileDO electricPileDO;
+		boolean isSelected = false;
+		int checkedNum;
+		int i = 0;
+		int j = 0;
+		int count = 0;
+		int count2 = 0;
+		List<RateUniqueRelaDO> powerStationList = rateUniqueRelaMapper.getRateUniqueRelaPowerStation(rateUniqueRela);
+		//选中的电站
+		Map<Long, RateUniqueRelaDO> powerStationMap = Maps.uniqueIndex(powerStationList, new Function<RateUniqueRelaDO, Long>() {
+            @Override
+            public Long apply(RateUniqueRelaDO input) {
+                return input.getPowerStationId();
+            }
+        });
+		
+		List<RateUniqueRelaDO> electricPileList = rateUniqueRelaMapper.getRateUniqueRelaElectricPile(rateUniqueRela);
+		for (CityDO tempCity : resultList) {
+			tempPowerStationList = new ArrayList<PowerStationDO>();
+			for ( ; i < powerStationList.size(); i++) {
+				tempPowerStationDO = powerStationList.get(i);
+				if (tempCity.getCityId().equals(tempPowerStationDO.getCityCode())) {
+					powerStationDO = new PowerStationDO();
+					powerStationDO.setPowerstationId(tempPowerStationDO.getPowerStationId());
+					powerStationDO.setName(tempPowerStationDO.getPowerStationName());
+					powerStationDO.setIsSelected(false);
+					tempElectricPileList = new ArrayList<ElectricPileDO>();
+					checkedNum = 0;
+					for ( ; j < electricPileList.size(); j++) {
+						tempElectricPileDO = electricPileList.get(j);
+						if (tempPowerStationDO.getPowerStationId().equals(tempElectricPileDO.getPowerStationId())) {
+							electricPileDO = new ElectricPileDO();
+							electricPileDO.setId(tempElectricPileDO.getElectricpileId());
+							electricPileDO.setName(tempElectricPileDO.getElectricpileName());
+							isSelected = false;
+							if (relaMap.containsKey(tempElectricPileDO.getElectricpileId())) {
+								checkedNum++;
+								isSelected = true;
+							}
+							electricPileDO.setIsSelected(isSelected);
+							tempElectricPileList.add(electricPileDO);
+							count++;
+						}else{
+							if (powerStationMap.containsKey(powerStationDO.getPowerstationId())
+									&& checkedNum == tempElectricPileList.size()) {
+								powerStationDO.setIsSelected(true);
+							}
+							powerStationDO.setList(tempElectricPileList);
+							checkedNum = 0;
+							break;
+						}
+						if (count == electricPileList.size()) {
+							if (powerStationMap.containsKey(powerStationDO.getPowerstationId())
+									&& checkedNum == tempElectricPileList.size()) {
+								powerStationDO.setIsSelected(true);
+							}
+							powerStationDO.setList(tempElectricPileList);
+							checkedNum = 0;
+						}
+					}
+					tempPowerStationList.add(powerStationDO);
+					count2++;
+				}else {
+					tempCity.setList(tempPowerStationList);
+					break;
+				}
+				if (count2 == powerStationList.size()) {
+					tempCity.setList(tempPowerStationList);
+				}
+			}
+		}
+		
+		return resultList;
+	}
+
+	@Override
+	@Transactional
+	public BaseResultDTO modifyRateUniqueRela(RateUniqueRelaDO rateUniqueRela, UserDO loginUser)throws Exception {
+		BaseResultDTO baseResultDTO = new BaseResultDTO();
+		if (rateUniqueRela == null) {
+			log.error(this.getClass() + ".modifyRateUniqueRela() error : 唯一费率信息不能为空！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("唯一费率信息不能为空！");
+			return baseResultDTO;
+		}
+		
+		if (rateUniqueRela.getCpyId() == null) {
+			log.error(this.getClass() + ".modifyRateUniqueRela() error : 渠道信息不能为空！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("渠道信息不能为空！");
+			return baseResultDTO;
+		}
+		
+		if (rateUniqueRela.getLevelId() == null) {
+			log.error(this.getClass() + ".modifyRateUniqueRela() error : 级别信息不能为空！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("级别信息不能为空！");
+			return baseResultDTO;
+		}
+		
+		rateUniqueRelaMapper.removeRateUniqueRela(rateUniqueRela);
+		
+		if (rateUniqueRela.getRateinfoId() == null) {
+			log.error(this.getClass() + ".modifyRateUniqueRela() error : 费率信息不能为空！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("费率信息不能为空！");
+			return baseResultDTO;
+		}
+		
+		if (rateUniqueRela.getElectricpileIds() == null || rateUniqueRela.getElectricpileIds().length() == 0) {
+			log.error(this.getClass() + ".modifyRateUniqueRela() error : 请选择电桩！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("请选择电桩！");
+			return baseResultDTO;
+		}
+		String[] electricpileIds = rateUniqueRela.getElectricpileIds().split(",");
+		List<RateUniqueRelaDO> rateUniqueRelaList = new ArrayList<RateUniqueRelaDO>();
+		RateUniqueRelaDO obj = new RateUniqueRelaDO();
+		for (String string : electricpileIds) {
+			obj.setCpyId(rateUniqueRela.getCpyId());
+			obj.setElectricpileId(Long.parseLong(string));
+			obj.setLevelId(rateUniqueRela.getLevelId());
+			obj.setRateinfoId(rateUniqueRela.getRateinfoId());
+			obj.setCreator(loginUser.getUserId().toString());
+			obj.setGmtCreate(new Date());
+			
+			rateUniqueRelaList.add(obj);
+		}
+		
+		int count = rateUniqueRelaMapper.batchAddRateUniqueRela(rateUniqueRelaList);
+		if (count != 1) {
+			log.error(this.getClass() + ".modifyRateUniqueRela() error : 更新数据失败！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("更新数据失败！");
+			return baseResultDTO;
+		}
+		return baseResultDTO;
+	}
+	
+	@Override
+	@Transactional
+	public BaseResultDTO modifyRateUniqueRelaRateinfoId(RateUniqueRelaDO rateUniqueRela, UserDO loginUser)throws Exception {
+		BaseResultDTO baseResultDTO = new BaseResultDTO();
+		if (rateUniqueRela == null || rateUniqueRela.getPkId() == null) {
+			log.error(this.getClass() + ".modifyRateUniqueRela() error : 唯一费率信息不能为空！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("唯一费率信息不能为空！");
+			return baseResultDTO;
+		}
+		
+		if (rateUniqueRela.getRateinfoId() == null) {
+			log.error(this.getClass() + ".modifyRateUniqueRela() error : 费率值不能为空！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("费率值不能为空！");
+			return baseResultDTO;
+		}
+		
+		int result = rateUniqueRelaMapper.modifyRateUniqueRelaRateinfoId(rateUniqueRela);
+		if (result != 1) {
+			log.error(this.getClass() + ".modifyRateUniqueRelaRateinfoId() error : 更新数据失败！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("更新数据失败！");
+			return baseResultDTO;
+		}
+		return baseResultDTO;
+	}
+}

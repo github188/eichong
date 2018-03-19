@@ -1,0 +1,490 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.TblCompanyMapper">
+
+	<resultMap id="tblCompanyResultMap" type="TblCompany">
+		<id property="pkCompanyid" column="pk_CompanyId" />
+		<result property="cpyCompanyname" column="cpy_CompanyName" />
+		<result property="cpyCompanyaddress" column="cpy_CompanyAddress" />
+		<result property="cpyCompanyemail" column="cpy_CompanyEmail" />
+		<result property="cpyPostcode" column="cpy_PostCode" />
+		<result property="cpyScopebusiness" column="cpy_ScopeBusiness" />
+		<result property="cpyAuthorizedname" column="cpy_AuthorizedName" />
+		<result property="cpyAuthorizedphone" column="cpy_AuthorizedPhone" />
+		<result property="cpyAuthorizedcard" column="cpy_AuthorizedCard" />
+		<result property="cpyBusinesslicence" column="cpy_BusinessLicence" />
+		<result property="cpyOrganizationcode" column="cpy_OrganizationCode" />
+		<result property="cpyTorontohospital" column="cpy_TorontoHospital" />
+		<result property="cpyAuthorization" column="cpy_Authorization" />
+		<result property="cpyMailingaddress" column="cpy_MailingAddress" />
+		<result property="cpyCreatedate" column="cpy_Createdate" />
+		<result property="cpyUpdatedate" column="cpy_Updatedate" />
+		<result property="cpyPictype" column="cpy_PicType" />
+		<result property="cpyCompanyNumber" column="cpy_CompanyNumber" />
+	</resultMap>
+	<resultMap id="pageResultMap"  type="java.util.HashMap" extends="tblCompanyResultMap"></resultMap>
+	<resultMap id="findResultMap"  type="java.util.HashMap" extends="tblCompanyResultMap"></resultMap>
+
+	<insert id="insert" parameterType="TblCompany" useGeneratedKeys="true" keyProperty="pkCompanyid">
+	   insert into tbl_company (
+	     pk_CompanyId,
+	     cpy_CompanyName,
+	     cpy_CompanyAddress,
+	     cpy_CompanyEmail,
+	     cpy_PostCode,
+	     cpy_ScopeBusiness,
+	     cpy_AuthorizedName,
+	     cpy_AuthorizedPhone,
+	     cpy_AuthorizedCard,
+	     cpy_BusinessLicence,
+	     cpy_OrganizationCode,
+	     cpy_TorontoHospital,
+	     cpy_Authorization,
+	     cpy_MailingAddress,
+	     cpy_Createdate,
+	     cpy_Updatedate,
+	     cpy_PicType
+	   )values (
+	     #{pkCompanyid},
+	     #{cpyCompanyname},
+	     #{cpyCompanyaddress},
+	     #{cpyCompanyemail},
+	     #{cpyPostcode},
+	     #{cpyScopebusiness},
+	     #{cpyAuthorizedname},
+	     #{cpyAuthorizedphone},
+	     #{cpyAuthorizedcard},
+	     #{cpyBusinesslicence},
+	     #{cpyOrganizationcode},
+	     #{cpyTorontohospital},
+	     #{cpyAuthorization},
+	     #{cpyMailingaddress},
+	     #{cpyCreatedate},
+	     #{cpyUpdatedate},
+	     #{cpyPictype}
+	   )
+	</insert>
+
+	<update id="update" parameterType="TblCompany">
+	   update tbl_company set
+	     pk_CompanyId=#{pkCompanyid},
+	     cpy_CompanyName=#{cpyCompanyname},
+	     cpy_CompanyAddress=#{cpyCompanyaddress},
+	     cpy_CompanyEmail=#{cpyCompanyemail},
+	     cpy_PostCode=#{cpyPostcode},
+	     cpy_ScopeBusiness=#{cpyScopebusiness},
+	     cpy_AuthorizedName=#{cpyAuthorizedname},
+	     cpy_AuthorizedPhone=#{cpyAuthorizedphone},
+	     cpy_AuthorizedCard=#{cpyAuthorizedcard},
+	     cpy_BusinessLicence=#{cpyBusinesslicence},
+	     cpy_OrganizationCode=#{cpyOrganizationcode},
+	     cpy_TorontoHospital=#{cpyTorontohospital},
+	     cpy_Authorization=#{cpyAuthorization},
+	     cpy_MailingAddress=#{cpyMailingaddress},
+	     cpy_Createdate=#{cpyCreatedate},
+	     cpy_Updatedate=#{cpyUpdatedate},
+	     cpy_PicType=#{cpyPictype}
+	   where 
+	    pk_CompanyId=#{pkCompanyid} 
+	</update>
+
+	<update id="updateFlag" parameterType="TblCompany">
+	   update tbl_company set
+	     cpy_CompanyNumber=#{cpyCompanyNumber},
+	     cpy_Updatedate=sysdate()
+	   where 
+	    pk_CompanyId=#{pkCompanyid}
+	</update>
+
+	<delete id="deleteFlag" parameterType="map">
+	   update tbl_company set
+	     cpy_CompanyNumber = 0
+	   where 
+	    pk_CompanyId in
+	    <foreach item="id" index="index" collection="ids" open="(" separator="," close=")">  
+  			#{id} 
+ 		</foreach>
+	</delete>
+
+	<select id="getUsedCompanyFlagCount" parameterType="map" resultType="long">
+	   select count(1) from (
+		   select a.pk_CompanyId from tbl_company a
+		   where exists (select 1 from tbl_usercard b where b.uc_CompanyNumber = a.cpy_CompanyNumber)
+		    and a.pk_CompanyId in 
+		    <foreach item="id" index="index" collection="ids" open="(" separator="," close=")">  
+  				#{id} 
+ 			</foreach>
+ 			and a.cpy_CompanyNumber > 0
+			union
+	  	   select a.pk_CompanyId from tbl_company a
+		   where exists (select 1 from tbl_electricpile b where b.company_number = a.cpy_CompanyNumber)
+		    and a.pk_CompanyId in 
+		    <foreach item="id" index="index" collection="ids" open="(" separator="," close=")">  
+  				#{id} 
+ 			</foreach>
+ 			and a.cpy_CompanyNumber > 0
+	   ) a
+	</select>
+
+	<select id="findCompanyFlagListCountByCompanyNumber" parameterType="map" resultType="long">
+	   select count(1) from tbl_company
+	   where pk_CompanyId != #{pkCompanyid} and cpy_CompanyNumber = #{cpyCompanyNumber}
+	</select>
+
+	<delete id="delete" parameterType="map">
+	   delete from 
+	     tbl_company 
+	   where 
+	    pk_CompanyId=#{pkCompanyid} 
+	</delete>
+	<select id="get" parameterType="map" resultMap="tblCompanyResultMap">
+	   select 
+	    pk_CompanyId,
+	    cpy_CompanyName,
+	    cpy_CompanyAddress,
+	    cpy_CompanyEmail,
+	    cpy_PostCode,
+	    cpy_ScopeBusiness,
+	    cpy_AuthorizedName,
+	    cpy_AuthorizedPhone,
+	   getFullPath('IdUnitCardImage',#{businessId})  cpy_AuthorizedCard,
+	    getFullPath('LicenseImage',#{businessId}) cpy_BusinessLicence,
+	    cpy_OrganizationCode,
+	    getFullPath('AffairsImage',#{businessId}) cpy_TorontoHospital,
+	    getFullPath('AccreditImage',#{businessId}) cpy_Authorization,
+	    cpy_MailingAddress,
+	    cpy_Createdate,
+	    cpy_Updatedate,
+	    cpy_PicType,
+	    cpy_CompanyNumber
+	   from tbl_company
+	   where 
+	    pk_CompanyId=#{pkCompanyid} 
+	</select>
+
+	<select id="countByCompanyName" parameterType="string" resultType="int">
+		select count(*) num from tbl_company where cpy_CompanyName = #{companyName}
+	</select>
+	
+	<select id="findOne" parameterType="map" resultMap="findResultMap">
+	   select 
+	    pk_CompanyId,
+	    cpy_CompanyName,
+	    cpy_CompanyAddress,
+	    cpy_CompanyEmail,
+	    cpy_PostCode,
+	    cpy_ScopeBusiness,
+	    cpy_AuthorizedName,
+	    cpy_AuthorizedPhone,
+	    cpy_AuthorizedCard,
+	    cpy_BusinessLicence,
+	    cpy_OrganizationCode,
+	    cpy_TorontoHospital,
+	    cpy_Authorization,
+	    cpy_MailingAddress,
+	    cpy_Createdate,
+	    cpy_Updatedate,
+	    cpy_PicType
+	   from tbl_company
+	   where 
+	    pk_CompanyId=#{pkCompanyid} 
+	</select>
+
+	<select id="find" parameterType="map" resultMap="findResultMap">
+	   select 
+	     pk_CompanyId,
+	     cpy_CompanyName,
+	     cpy_CompanyAddress,
+	     cpy_CompanyEmail,
+	     cpy_PostCode,
+	     cpy_ScopeBusiness,
+	     cpy_AuthorizedName,
+	     cpy_AuthorizedPhone,
+	     cpy_AuthorizedCard,
+	     cpy_BusinessLicence,
+	     cpy_OrganizationCode,
+	     cpy_TorontoHospital,
+	     cpy_Authorization,
+	     cpy_MailingAddress,
+	     cpy_Createdate,
+	     cpy_Updatedate,
+	     cpy_PicType,
+	     cpy_CompanyNumber
+	   from tbl_company
+	   <where>
+	   	 1=1
+	     <if test="pkCompanyid != null">
+	        and pk_CompanyId=#{pkCompanyid}
+	     </if>
+	     <if test="cpyCompanyname != null and cpyCompanyname != ''">
+	        and cpy_CompanyName like concat('%',#{cpyCompanyname},'%') 
+	     </if>
+	     <if test="cpyCompanyaddress != null and cpyCompanyaddress != ''">
+	        and cpy_CompanyAddress like concat('%',#{cpyCompanyaddress},'%') 
+	     </if>
+	     <if test="cpyCompanyemail != null and cpyCompanyemail != ''">
+	        and cpy_CompanyEmail=#{cpyCompanyemail}
+	     </if>
+	     <if test="cpyPostcode != null and cpyPostcode != ''">
+	        and cpy_PostCode=#{cpyPostcode}
+	     </if>
+	     <if test="cpyScopebusiness != null and cpyScopebusiness != ''">
+	        and cpy_ScopeBusiness=#{cpyScopebusiness}
+	     </if>
+	     <if test="cpyAuthorizedname != null and cpyAuthorizedname != ''">
+	        and cpy_AuthorizedName=#{cpyAuthorizedname}
+	     </if>
+	     <if test="cpyAuthorizedphone != null and cpyAuthorizedphone != ''">
+	        and cpy_AuthorizedPhone=#{cpyAuthorizedphone}
+	     </if>
+	     <if test="cpyAuthorizedcard != null and cpyAuthorizedcard != ''">
+	        and cpy_AuthorizedCard=#{cpyAuthorizedcard}
+	     </if>
+	     <if test="cpyBusinesslicence != null and cpyBusinesslicence != ''">
+	        and cpy_BusinessLicence=#{cpyBusinesslicence}
+	     </if>
+	     <if test="cpyOrganizationcode != null and cpyOrganizationcode != ''">
+	        and cpy_OrganizationCode=#{cpyOrganizationcode}
+	     </if>
+	     <if test="cpyTorontohospital != null and cpyTorontohospital != ''">
+	        and cpy_TorontoHospital=#{cpyTorontohospital}
+	     </if>
+	     <if test="cpyAuthorization != null and cpyAuthorization != ''">
+	        and cpy_Authorization=#{cpyAuthorization}
+	     </if>
+	     <if test="cpyMailingaddress != null and cpyMailingaddress != ''">
+	        and cpy_MailingAddress=#{cpyMailingaddress}
+	     </if>
+	     <if test="cpyCreatedate != null">
+	        and cpy_Createdate=#{cpyCreatedate}
+	     </if>
+	     <if test="cpyUpdatedate != null">
+	        and cpy_Updatedate=#{cpyUpdatedate}
+	     </if>
+	     <if test="cpyPictype != null and cpyPictype != ''">
+	        and cpy_PicType=#{cpyPictype}
+	     </if>
+	     <if test="cpyCompanyNumber != null and cpyCompanyNumber != ''">
+	        and cpy_CompanyNumber=#{cpyCompanyNumber}
+	     </if>
+	   </where>
+	   	order by cpy_Updatedate desc
+	   <if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	
+	<select id="findCount" parameterType="map" resultType="long">
+	   select 
+	     count(1)
+	   from tbl_company
+	   <where>
+	  	 1=1
+	     <if test="pkCompanyid != null">
+	        and pk_CompanyId=#{pkCompanyid}
+	     </if>
+	     <if test="cpyCompanyname != null and cpyCompanyname != ''">
+	        and cpy_CompanyName like concat('%',#{cpyCompanyname},'%') 
+	     </if>
+	     <if test="cpyCompanyaddress != null and cpyCompanyaddress != ''">
+	        and cpy_CompanyAddress like concat('%',#{cpyCompanyaddress},'%')
+	     </if>
+	     <if test="cpyCompanyemail != null and cpyCompanyemail != ''">
+	        and cpy_CompanyEmail=#{cpyCompanyemail}
+	     </if>
+	     <if test="cpyPostcode != null and cpyPostcode != ''">
+	        and cpy_PostCode=#{cpyPostcode}
+	     </if>
+	     <if test="cpyScopebusiness != null and cpyScopebusiness != ''">
+	        and cpy_ScopeBusiness=#{cpyScopebusiness}
+	     </if>
+	     <if test="cpyAuthorizedname != null and cpyAuthorizedname != ''">
+	        and cpy_AuthorizedName=#{cpyAuthorizedname}
+	     </if>
+	     <if test="cpyAuthorizedphone != null and cpyAuthorizedphone != ''">
+	        and cpy_AuthorizedPhone=#{cpyAuthorizedphone}
+	     </if>
+	     <if test="cpyAuthorizedcard != null and cpyAuthorizedcard != ''">
+	        and cpy_AuthorizedCard=#{cpyAuthorizedcard}
+	     </if>
+	     <if test="cpyBusinesslicence != null and cpyBusinesslicence != ''">
+	        and cpy_BusinessLicence=#{cpyBusinesslicence}
+	     </if>
+	     <if test="cpyOrganizationcode != null and cpyOrganizationcode != ''">
+	        and cpy_OrganizationCode=#{cpyOrganizationcode}
+	     </if>
+	     <if test="cpyTorontohospital != null and cpyTorontohospital != ''">
+	        and cpy_TorontoHospital=#{cpyTorontohospital}
+	     </if>
+	     <if test="cpyAuthorization != null and cpyAuthorization != ''">
+	        and cpy_Authorization=#{cpyAuthorization}
+	     </if>
+	     <if test="cpyMailingaddress != null and cpyMailingaddress != ''">
+	        and cpy_MailingAddress=#{cpyMailingaddress}
+	     </if>
+	     <if test="cpyCreatedate != null">
+	        and cpy_Createdate=#{cpyCreatedate}
+	     </if>
+	     <if test="cpyUpdatedate != null">
+	        and cpy_Updatedate=#{cpyUpdatedate}
+	     </if>
+	     <if test="cpyPictype != null and cpyPictype != ''">
+	        and cpy_PicType=#{cpyPictype}
+	     </if>
+	     <if test="cpyCompanyNumber != null and cpyCompanyNumber != ''">
+	        and cpy_CompanyNumber=#{cpyCompanyNumber}
+	     </if>
+	   </where>
+	</select>
+	
+	<select id="findCompanyFlagList" parameterType="map" resultMap="findResultMap">
+	   select 
+	     a.pk_CompanyId,
+	     a.cpy_CompanyName,
+	     a.cpy_CompanyNumber
+	   from tbl_company a
+	   <where>
+	   	 1=1
+	     <if test="cpyCompanyname != null and cpyCompanyname != ''">
+	        and a.cpy_CompanyName  like concat('%',#{cpyCompanyname},'%')
+	     </if>
+	     <if test="cpyCompanyNumber != null and cpyCompanyNumber != ''">
+	        and a.cpy_CompanyNumber=#{cpyCompanyNumber}
+	     </if>
+	     <if test="bindQueryFlag != null and bindQueryFlag == 1">
+	        and a.cpy_CompanyNumber > 0
+	     </if>
+		 <!-- 权限控制 -->
+	     <choose>
+			<when test="userLevel==3">
+				and exists (select 1 from tbl_user_business_view b where b.busi_company_id=a.pk_CompanyId and b.user_id=#{userId})
+			</when>
+	    </choose>
+	   </where>
+	   	order by cpy_CompanyNumber desc,cpy_Updatedate desc
+	   <if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	
+	<select id="findCompanyFlagListCount" parameterType="map" resultType="long">
+	   select 
+	     count(1)
+	   from tbl_company a
+	   <where>
+	  	 1=1
+	     <if test="cpyCompanyname != null and cpyCompanyname != ''">
+	        and a.cpy_CompanyName  like concat('%',#{cpyCompanyname},'%')
+	     </if>
+	     <if test="cpyCompanyNumber != null and cpyCompanyNumber != ''">
+	        and a.cpy_CompanyNumber=#{cpyCompanyNumber}
+	     </if>
+	     <if test="bindQueryFlag != null and bindQueryFlag == 1">
+	        and a.cpy_CompanyNumber > 0
+	     </if>
+		 <!-- 权限控制 -->
+	     <choose>
+			<when test="userLevel==3">
+				and exists (select 1 from tbl_user_business_view b where b.busi_company_id=a.pk_CompanyId and b.user_id=#{userId})
+			</when>
+	    </choose>
+	   </where>
+	</select>
+	
+	<select id="page" parameterType="map" resultMap="pageResultMap">
+	   select 
+	     pk_CompanyId,
+	     cpy_CompanyName,
+	     cpy_CompanyAddress,
+	     cpy_CompanyEmail,
+	     cpy_PostCode,
+	     cpy_ScopeBusiness,
+	     cpy_AuthorizedName,
+	     cpy_AuthorizedPhone,
+	     cpy_AuthorizedCard,
+	     cpy_BusinessLicence,
+	     cpy_OrganizationCode,
+	     cpy_TorontoHospital,
+	     cpy_Authorization,
+	     cpy_MailingAddress,
+	     cpy_Createdate,
+	     cpy_Updatedate,
+	     cpy_PicType
+	   from tbl_company
+	   <where>
+	     <if test="pkCompanyid != null">
+	        and pk_CompanyId=#{pkCompanyid}
+	     </if>
+	     <if test="cpyCompanyname != null">
+	        and cpy_CompanyName=#{cpyCompanyname}
+	     </if>
+	     <if test="cpyCompanyaddress != null">
+	        and cpy_CompanyAddress=#{cpyCompanyaddress}
+	     </if>
+	     <if test="cpyCompanyemail != null">
+	        and cpy_CompanyEmail=#{cpyCompanyemail}
+	     </if>
+	     <if test="cpyPostcode != null">
+	        and cpy_PostCode=#{cpyPostcode}
+	     </if>
+	     <if test="cpyScopebusiness != null">
+	        and cpy_ScopeBusiness=#{cpyScopebusiness}
+	     </if>
+	     <if test="cpyAuthorizedname != null">
+	        and cpy_AuthorizedName=#{cpyAuthorizedname}
+	     </if>
+	     <if test="cpyAuthorizedphone != null">
+	        and cpy_AuthorizedPhone=#{cpyAuthorizedphone}
+	     </if>
+	     <if test="cpyAuthorizedcard != null">
+	        and cpy_AuthorizedCard=#{cpyAuthorizedcard}
+	     </if>
+	     <if test="cpyBusinesslicence != null">
+	        and cpy_BusinessLicence=#{cpyBusinesslicence}
+	     </if>
+	     <if test="cpyOrganizationcode != null">
+	        and cpy_OrganizationCode=#{cpyOrganizationcode}
+	     </if>
+	     <if test="cpyTorontohospital != null">
+	        and cpy_TorontoHospital=#{cpyTorontohospital}
+	     </if>
+	     <if test="cpyAuthorization != null">
+	        and cpy_Authorization=#{cpyAuthorization}
+	     </if>
+	     <if test="cpyMailingaddress != null">
+	        and cpy_MailingAddress=#{cpyMailingaddress}
+	     </if>
+	     <if test="cpyCreatedate != null">
+	        and cpy_Createdate=#{cpyCreatedate}
+	     </if>
+	     <if test="cpyUpdatedate != null">
+	        and cpy_Updatedate=#{cpyUpdatedate}
+	     </if>
+	     <if test="cpyPictype != null">
+	        and cpy_PicType=#{cpyPictype}
+	     </if>
+	   </where>
+	</select>
+	<select id="getUnSelectCompanyList" parameterType="map" resultMap="findResultMap">
+	   select 
+	     pk_CompanyId,
+	     cpy_CompanyName,
+	     cpy_CompanyAddress,
+	     cpy_CompanyEmail,
+	     cpy_PostCode,
+	     cpy_ScopeBusiness,
+	     cpy_AuthorizedName,
+	     cpy_AuthorizedPhone,
+	     cpy_AuthorizedCard,
+	     cpy_BusinessLicence,
+	     cpy_OrganizationCode,
+	     cpy_TorontoHospital,
+	     cpy_Authorization,
+	     cpy_MailingAddress,
+	     cpy_Createdate,
+	     cpy_Updatedate,
+	     cpy_PicType
+	   from tbl_company
+	   <where>
+	   	  pk_CompanyId not in (select busi_company_id from tbl_user_business_view where user_status!=3)
+	    </where> 
+	</select>
+</mapper> 

@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.web.dao.WebEarningsMapper">
+
+	<resultMap id="tblEarningsResultMap" type="TblEarnings">
+		<id property="pkEarnings" column="pk_Earnings" />
+		<result property="earType" column="ear_Type" />
+		<result property="earPurchasehistorytime" column="ear_PurchaseHistoryTime" />
+		<result property="earMonetary" column="ear_Monetary" />
+		<result property="earConsumerremark" column="ear_ConsumerRemark" />
+		<result property="earCreatedate" column="ear_Createdate" />
+		<result property="earUpdatedate" column="ear_Updatedate" />
+		<result property="earContent" column="ear_Content" />
+		<result property="earUserid" column="ear_UserId" />
+	</resultMap>
+	<resultMap id="pageResultMap"  type="java.util.HashMap" extends="tblEarningsResultMap"></resultMap>
+	<resultMap id="findResultMap"  type="java.util.HashMap" extends="tblEarningsResultMap"></resultMap>
+
+	<insert id="insert" parameterType="TblEarnings">
+	   insert into tbl_Earnings (
+	     pk_Earnings,
+	     ear_Type,
+	     ear_PurchaseHistoryTime,
+	     ear_Monetary,
+	     ear_ConsumerRemark,
+	     ear_Createdate,
+	     ear_Updatedate,
+	     ear_Content,
+	     ear_UserId
+	   )values (
+	     #{pkEarnings},
+	     #{earType},
+	     #{earPurchasehistorytime},
+	     #{earMonetary},
+	     #{earConsumerremark},
+	     #{earCreatedate},
+	     #{earUpdatedate},
+	     #{earContent},
+	     #{earUserid}
+	   )
+	</insert>
+
+	<update id="update" parameterType="TblEarnings">
+	   update tbl_Earnings set
+	     pk_Earnings=#{pkEarnings},
+	     ear_Type=#{earType},
+	     ear_PurchaseHistoryTime=#{earPurchasehistorytime},
+	     ear_Monetary=#{earMonetary},
+	     ear_ConsumerRemark=#{earConsumerremark},
+	     ear_Createdate=#{earCreatedate},
+	     ear_Updatedate=#{earUpdatedate},
+	     ear_Content=#{earContent},
+	     ear_UserId=#{earUserid}
+	   where 
+	    pk_Earnings=#{pkEarnings} 
+	</update>
+
+	<delete id="delete" parameterType="map">
+	   delete from 
+	     tbl_Earnings 
+	   where 
+	    pk_Earnings=#{pkEarnings} 
+	</delete>
+
+	<select id="get" parameterType="map" resultMap="tblEarningsResultMap">
+	   select 
+	    pk_Earnings,
+	    ear_Type,
+	    ear_PurchaseHistoryTime,
+	    ear_Monetary,
+	    ear_ConsumerRemark,
+	    ear_Createdate,
+	    ear_Updatedate,
+	    ear_Content,
+	    ear_UserId
+	   from tbl_Earnings
+	   where 
+	    pk_Earnings=#{pkEarnings} 
+	</select>
+
+	<select id="findOne" parameterType="map" resultMap="findResultMap">
+	   select 
+	    pk_Earnings,
+	    ear_Type,
+	    ear_PurchaseHistoryTime,
+	    ear_Monetary,
+	    ear_ConsumerRemark,
+	    ear_Createdate,
+	    ear_Updatedate,
+	    ear_Content,
+	    ear_UserId
+	   from tbl_Earnings
+	   where 
+	    pk_Earnings=#{pkEarnings} 
+	</select>
+
+	<select id="find" parameterType="map" resultMap="tblEarningsResultMap">
+	   select 
+	     pk_Earnings,
+	     ear_Type,
+	     ear_PurchaseHistoryTime,
+	     ear_Monetary,
+	     ear_ConsumerRemark,
+	     ear_Createdate,
+	     ear_Updatedate,
+	     ear_Content,
+	     ear_UserId
+	   from tbl_Earnings
+	   <where>
+	     <if test="pkEarnings != null">
+	        pk_Earnings=#{pkEarnings}
+	     </if>
+	     <if test="earType != null">
+	        and ear_Type=#{earType}
+	     </if>
+	     <if test="earPurchasehistorytime != null">
+	        and ear_PurchaseHistoryTime=#{earPurchasehistorytime}
+	     </if>
+	     <if test="earMonetary != null">
+	        and ear_Monetary=#{earMonetary}
+	     </if>
+	     <if test="earConsumerremark != null">
+	        and ear_ConsumerRemark=#{earConsumerremark}
+	     </if>
+	     <if test="earCreatedate != null">
+	        and ear_Createdate=#{earCreatedate}
+	     </if>
+	     <if test="earUpdatedate != null">
+	        and ear_Updatedate=#{earUpdatedate}
+	     </if>
+	     <if test="earContent != null">
+	        and ear_Content=#{earContent}
+	     </if>
+	     <if test="earUserid != null">
+	        and ear_UserId=#{earUserid}
+	     </if>
+	   </where>
+	</select>
+	
+	<select id="page" parameterType="map" resultMap="pageResultMap">
+	   select 
+	     pk_Earnings,
+	     ear_Type,
+	     ear_PurchaseHistoryTime,
+	     ear_Monetary,
+	     ear_ConsumerRemark,
+	     ear_Createdate,
+	     ear_Updatedate,
+	     ear_Content,
+	     ear_UserId
+	   from tbl_Earnings
+	   <where>
+	     <if test="pkEarnings != null">
+	        pk_Earnings=#{pkEarnings}
+	     </if>
+	     <if test="earType != null">
+	        and ear_Type=#{earType}
+	     </if>
+	     <if test="earPurchasehistorytime != null">
+	        and ear_PurchaseHistoryTime=#{earPurchasehistorytime}
+	     </if>
+	     <if test="earMonetary != null">
+	        and ear_Monetary=#{earMonetary}
+	     </if>
+	     <if test="earConsumerremark != null">
+	        and ear_ConsumerRemark=#{earConsumerremark}
+	     </if>
+	     <if test="earCreatedate != null">
+	        and ear_Createdate=#{earCreatedate}
+	     </if>
+	     <if test="earUpdatedate != null">
+	        and ear_Updatedate=#{earUpdatedate}
+	     </if>
+	     <if test="earContent != null">
+	        and ear_Content=#{earContent}
+	     </if>
+	     <if test="earUserid != null">
+	        and ear_UserId=#{earUserid}
+	     </if>
+	   </where>
+	</select>
+	<select id="findPage" parameterType="map" resultMap="tblEarningsResultMap">
+	   select 
+	     pk_Earnings,
+	     ear_Type,
+	     ear_PurchaseHistoryTime,
+	     ear_Monetary,
+	     ear_ConsumerRemark,
+	     ear_Createdate,
+	     ear_Updatedate,
+	     ear_Content,
+	     ear_UserId
+	   from tbl_Earnings
+	   where ear_UserId=#{userId}
+		 and ear_PurchaseHistoryTime between #{beginTime} and #{endTime}
+	   order by 
+	   	 ear_PurchaseHistoryTime desc
+	   limit #{pageNumber},#{pageNum}
+	</select>
+	<select id="countEarning" parameterType="map" resultType="long">
+	   select count(*)
+	   from tbl_Earnings
+	   where ear_UserId=#{userId}
+		 and ear_PurchaseHistoryTime between #{beginTime} and #{endTime}
+	</select>
+</mapper> 

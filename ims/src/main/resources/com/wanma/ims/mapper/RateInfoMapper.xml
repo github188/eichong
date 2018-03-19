@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.RateInfoMapper">
+	<resultMap type="RateInfoDO" id="rateInfo">
+		<result property="pk_RateInformation" column="pk_RateInformation" />
+		<result property="raIn_ModelId" column="raIn_ModelId" />
+		<result property="raIn_Name" column="raIn_Name" />
+		<result property="raIn_EffectiveDates" column="raIn_EffectiveDates" />
+		<result property="raIn_ExpiryDate" column="raIn_ExpiryDate" />
+		<result property="raIn_FreezingMoney" column="raIn_FreezingMoney" />
+		<result property="raIn_MinFreezingMoney" column="raIn_MinFreezingMoney" />
+		<result property="raIn_QuantumDate" column="raIn_QuantumDate" />
+		<result property="raIn_StartQuantumDate" column="raIn_StartQuantumDate" />
+		<result property="raIn_EndQuantumDate" column="raIn_EndQuantumDate" />
+		<result property="raIn_TimeMarker" column="raIn_TimeMarker" />
+		<result property="raIn_TipTimeTariffPrice" column="raIn_TipTimeTariffPrice" />
+		<result property="raIn_TipTimeTariffMoney" column="raIn_TipTimeTariffMoney" />
+		<result property="raIn_PeakElectricityPrice" column="raIn_PeakElectricityPrice" />
+		<result property="raIn_PeakElectricityMoney" column="raIn_PeakElectricityMoney" />
+		<result property="raIn_UsualPrice" column="raIn_UsualPrice" />
+		<result property="raIn_UsualMoney" column="raIn_UsualMoney" />
+		<result property="raIn_ValleyTimePrice" column="raIn_ValleyTimePrice" />
+		<result property="raIn_ValleyTimeMoney" column="raIn_ValleyTimeMoney" />
+		<result property="raIn_ReservationRate" column="raIn_ReservationRate" />
+		<result property="raIn_ServiceCharge" column="raIn_ServiceCharge" />
+		<result property="raIn_WarnMoney" column="raIn_WarnMoney" />
+		<result property="raIn_area_id" column="raIn_area_id" />
+		<result property="raIn_city_id" column="raIn_city_id" />
+		<result property="raIn_province_id" column="raIn_province_id" />
+		<result property="raIn_remarks" column="raIn_remarks" />
+		<result property="raIn_type" column="raIn_type" />
+		<result property="creator_id" column="creator_id" />
+		<result property="raIn_Createdate" column="raIn_Createdate" />
+		<result property="raIn_Updatedate" column="raIn_Updatedate" />
+	</resultMap>
+	
+	<select id="getRateInfoCount" parameterType="RateInfoDO" resultType="long">
+		SELECT
+			 COUNT(*)
+		FROM
+			 tbl_rateinformation b 
+		where 1=1
+		<if test="pk_RateInformation != null and pk_RateInformation !=''">
+		  and pk_RateInformation = #{pk_RateInformation}
+		</if>
+		<if test="raIn_ModelId != null">
+		  and raIn_ModelId = #{raIn_ModelId}
+		</if>
+		<if test="raIn_Name != null and raIn_Name !=''">
+		  and raIn_Name like concat('%',#{raIn_Name},'%')
+		</if>
+		<if test="raIn_province_id != null and raIn_province_id !=''">
+			and raIn_province_id = #{raIn_province_id}
+		</if>
+		<if test="raIn_city_id != null and raIn_city_id !=''">
+			and raIn_city_id = #{raIn_city_id}
+		</if>
+		<if test="raIn_area_id != null and raIn_area_id !=''">
+			and raIn_area_id = #{raIn_area_id}
+		</if>
+		<if test="raIn_type != null">
+			and raIn_type = #{raIn_type}
+		</if>
+		<if test="qryPrice != null">
+			and (raIn_TipTimeTariffPrice = #{qryPrice} or raIn_PeakElectricityPrice = #{qryPrice} or
+			raIn_UsualPrice = #{qryPrice} or raIn_ValleyTimePrice = #{qryPrice} or
+			raIn_TipTimeTariffMoney = #{qryPrice} or raIn_PeakElectricityMoney = #{qryPrice} or
+			raIn_UsualMoney = #{qryPrice} or raIn_ValleyTimeMoney = #{qryPrice})
+		</if>
+	</select>
+	
+	<select id="getRateInfoList" parameterType="RateInfoDO" resultMap="rateInfo">
+		SELECT
+			b.pk_RateInformation,b.raIn_ModelId, b.raIn_Name,b.raIn_EffectiveDates, b.raIn_ExpiryDate, b.raIn_FreezingMoney, b.raIn_MinFreezingMoney,
+			b.raIn_QuantumDate, b.raIn_StartQuantumDate, b.raIn_EndQuantumDate, b.raIn_TimeMarker, b.raIn_TipTimeTariffPrice,
+			b.raIn_TipTimeTariffMoney,b.raIn_PeakElectricityPrice, b.raIn_PeakElectricityMoney, b.raIn_UsualPrice, b.raIn_UsualMoney,
+			b.raIn_ValleyTimePrice,b.raIn_ValleyTimeMoney, b.raIn_ReservationRate, b.raIn_ServiceCharge, b.raIn_WarnMoney, b.raIn_area_id,
+			b.raIn_city_id, b.raIn_province_id, b.raIn_remarks, b.raIn_type, b.creator_id, b.raIn_Createdate, b.raIn_Updatedate
+		FROM
+			tbl_rateinformation b
+		where 1=1
+		<if test="pk_RateInformation != null and pk_RateInformation !=''">
+		  and pk_RateInformation = #{pk_RateInformation}
+		</if>
+		<if test="raIn_ModelId != null">
+		  and raIn_ModelId = #{raIn_ModelId}
+		</if>
+		<if test="raIn_Name != null and raIn_Name !=''">
+		  and raIn_Name like concat('%',#{raIn_Name},'%')
+		</if>
+		<if test="raIn_province_id != null and raIn_province_id !=''">
+			and raIn_province_id = #{raIn_province_id}
+		</if>
+		<if test="raIn_city_id != null and raIn_city_id !=''">
+			and raIn_city_id = #{raIn_city_id}
+		</if>
+		<if test="raIn_area_id != null and raIn_area_id !=''">
+			and raIn_area_id = #{raIn_area_id}
+		</if>
+		<if test="raIn_type != null">
+			and raIn_type = #{raIn_type}
+		</if>
+		<if test="qryPrice != null">
+			and (raIn_TipTimeTariffPrice = #{qryPrice} or raIn_PeakElectricityPrice = #{qryPrice} or
+			raIn_UsualPrice = #{qryPrice} or raIn_ValleyTimePrice = #{qryPrice} or
+			raIn_TipTimeTariffMoney = #{qryPrice} or raIn_PeakElectricityMoney = #{qryPrice} or
+			raIn_UsualMoney = #{qryPrice} or raIn_ValleyTimeMoney = #{qryPrice})
+		</if>
+		order by b.pk_RateInformation desc
+        <if test="pager!=null">limit #{pager.offset},#{pager.pageSize}</if>
+	</select>
+
+	<!-- 添加费率管理 -->
+	<insert id="addRateInfo" useGeneratedKeys="true" parameterType="RateInfoDO" keyProperty="pk_RateInformation">
+		INSERT INTO tbl_rateinformation
+		(raIn_ModelId, raIn_Name,raIn_EffectiveDates, raIn_ExpiryDate, raIn_FreezingMoney, raIn_MinFreezingMoney, raIn_QuantumDate, 
+		raIn_StartQuantumDate, raIn_EndQuantumDate, raIn_TimeMarker, raIn_TipTimeTariffPrice, raIn_TipTimeTariffMoney,
+		raIn_PeakElectricityPrice, raIn_PeakElectricityMoney, raIn_UsualPrice, raIn_UsualMoney, raIn_ValleyTimePrice,
+		raIn_ValleyTimeMoney, raIn_ReservationRate, raIn_ServiceCharge, raIn_WarnMoney, raIn_area_id,
+		raIn_city_id, raIn_province_id, raIn_remarks, raIn_type, creator_id, raIn_Createdate, raIn_Updatedate)
+		VALUES
+		(0,#{raIn_Name},#{raIn_EffectiveDates},#{raIn_ExpiryDate},#{raIn_FreezingMoney},#{raIn_MinFreezingMoney},#{raIn_QuantumDate},
+		#{raIn_StartQuantumDate},#{raIn_EndQuantumDate},#{raIn_TimeMarker},#{raIn_TipTimeTariffPrice},#{raIn_TipTimeTariffMoney},
+		#{raIn_PeakElectricityPrice},#{raIn_PeakElectricityMoney},#{raIn_UsualPrice},#{raIn_UsualMoney},#{raIn_ValleyTimePrice},
+		#{raIn_ValleyTimeMoney},#{raIn_ReservationRate},#{raIn_ServiceCharge},#{raIn_WarnMoney},#{raIn_area_id},
+		#{raIn_city_id},#{raIn_province_id},#{raIn_remarks},#{raIn_type},#{creator_id},#{raIn_Createdate},#{raIn_Updatedate})
+	</insert>
+	
+	<!-- 修改费率管理 -->
+	<update id="modifyRateInfo" parameterType="RateInfoDO" >
+		UPDATE tbl_rateinformation
+		SET raIn_Name = #{raIn_Name},
+		raIn_TipTimeTariffPrice = #{raIn_TipTimeTariffPrice},
+		raIn_TipTimeTariffMoney = #{raIn_TipTimeTariffMoney},
+		raIn_PeakElectricityPrice = #{raIn_PeakElectricityPrice},
+		raIn_PeakElectricityMoney = #{raIn_PeakElectricityMoney},
+		raIn_UsualPrice = #{raIn_UsualPrice},
+		raIn_UsualMoney = #{raIn_UsualMoney},
+		raIn_ValleyTimePrice = #{raIn_ValleyTimePrice},
+		raIn_ValleyTimeMoney = #{raIn_ValleyTimeMoney},
+		raIn_ServiceCharge = #{raIn_ServiceCharge},
+		raIn_type = #{raIn_type},
+		raIn_Updatedate = #{raIn_Updatedate},
+		raIn_QuantumDate = #{raIn_QuantumDate}
+		WHERE pk_RateInformation = #{pk_RateInformation}
+	</update>
+	
+	<!-- 删除费率管理 -->
+	<delete id="removeRateInfo" parameterType="Integer">
+		DELETE FROM tbl_rateinformation WHERE pk_RateInformation=#{pk_RateInformation}
+	</delete>
+	
+	<select id="getRateInfoById" parameterType="RateInfoDO" resultMap="rateInfo">
+		SELECT
+			b.pk_RateInformation,b.raIn_ModelId, b.raIn_Name,b.raIn_EffectiveDates, b.raIn_ExpiryDate, b.raIn_FreezingMoney, b.raIn_MinFreezingMoney,
+			b.raIn_QuantumDate, b.raIn_StartQuantumDate, b.raIn_EndQuantumDate, b.raIn_TimeMarker, b.raIn_TipTimeTariffPrice,
+			b.raIn_TipTimeTariffMoney,b.raIn_PeakElectricityPrice, b.raIn_PeakElectricityMoney, b.raIn_UsualPrice, b.raIn_UsualMoney,
+			b.raIn_ValleyTimePrice,b.raIn_ValleyTimeMoney, b.raIn_ReservationRate, b.raIn_ServiceCharge, b.raIn_WarnMoney, b.raIn_area_id,
+			b.raIn_city_id, b.raIn_province_id, b.raIn_remarks, b.raIn_type, b.creator_id, b.raIn_Createdate, b.raIn_Updatedate
+		FROM
+			tbl_rateinformation b
+		where pk_RateInformation = #{pk_RateInformation}
+	</select>
+</mapper>

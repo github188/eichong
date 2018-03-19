@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.UserNormalMapper">
+    <resultMap id="resultUserNormal" type="UserNormalDO">
+        <id column="user_id" jdbcType="BIGINT" property="userId"/>
+        <result column="norm_name" jdbcType="VARCHAR" property="normName"/>
+        <result column="norm_real_name" jdbcType="VARCHAR" property="normRealName"/>
+        <result column="norm_registe_type" jdbcType="SMALLINT" property="normRegisteType"/>
+        <result column="norm_device_id" jdbcType="VARCHAR" property="normDeviceId"/>
+        <result column="norm_email" jdbcType="VARCHAR" property="normEmail"/>
+        <result column="norm_address" jdbcType="VARCHAR" property="normAddress"/>
+        <result column="norm_phone" jdbcType="VARCHAR" property="normPhone"/>
+        <result column="norm_sex" jdbcType="SMALLINT" property="normSex"/>
+        <result column="norm_birthday" jdbcType="VARCHAR" property="normBirthday"/>
+        <result column="norm_integrate" jdbcType="INTEGER" property="normIntegrate"/>
+        <result column="norm_car_company_id" jdbcType="SMALLINT" property="normCarCompanyId"/>
+        <result column="norm_car_type_id" jdbcType="SMALLINT" property="normCarTypeId"/>
+        <result column="norm_vehicle_number" jdbcType="VARCHAR" property="normVehicleNumber"/>
+        <result column="norm_plate_num" jdbcType="VARCHAR" property="normPlateNum"/>
+        <result column="norm_driving_licence" jdbcType="VARCHAR" property="normDrivingLicence"/>
+        <result column="apply_card" jdbcType="SMALLINT" property="applyCard"/>
+        <result column="norm_origin" jdbcType="SMALLINT" property="normOrigin"/>
+        <result column="norm_invitePhone" jdbcType="VARCHAR" property="normInvitephone"/>
+        <result column="account_id" jdbcType="BIGINT" property="accountId"/>
+        <result column="cpy_id" jdbcType="BIGINT" property="cpyId"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified"/>
+    </resultMap>
+
+    <sql id="selectAllField">
+        user_id, norm_name, norm_real_name, norm_registe_type, norm_device_id,
+        norm_email, norm_address, norm_phone, norm_sex, norm_birthday, norm_integrate, norm_car_company_id,
+        norm_car_type_id, norm_vehicle_number, norm_plate_num, norm_driving_licence, apply_card,
+        norm_origin, norm_invitePhone, account_id, cpy_id, gmt_create, gmt_modified
+    </sql>
+
+    <select id="selectUserNormalByUserId" parameterType="Long" resultMap="resultUserNormal">
+        select
+        <include refid="selectAllField"/>
+        from tbl_user_normal
+        where user_id = #{userId}
+    </select>
+
+    <select id="countNormalUserByCpyId" parameterType="Long" resultType="Map">
+        SELECT
+        count(1) num,
+        user.level_id level_id
+        FROM tbl_user user, tbl_user_normal normal
+        WHERE user.user_id = normal.user_id AND normal.cpy_id = #{cpyId} and user.user_status != 3
+        GROUP BY user.level_id
+    </select>
+
+    <delete id="deleteByUserId" parameterType="Long">
+        DELETE FROM tbl_user_normal
+        WHERE user_id = #{userId}
+    </delete>
+
+    <insert id="insertUserNormal" parameterType="UserNormalDO">
+        INSERT INTO tbl_user_normal (user_id, norm_name, norm_real_name,
+                                     norm_registe_type, norm_device_id,
+                                     norm_email, norm_address, norm_phone,
+                                     norm_sex, norm_birthday, norm_integrate,
+                                     norm_car_company_id, norm_car_type_id, norm_vehicle_number,
+                                     norm_plate_num, norm_driving_licence, apply_card,
+                                     norm_origin, norm_invitePhone,
+                                     account_id, cpy_id, gmt_create,
+                                     gmt_modified)
+        VALUES (#{userId}, #{normName}, #{normRealName},
+                #{normRegisteType}, #{normDeviceId},
+                #{normEmail}, #{normAddress}, #{normPhone},
+                #{normSex}, #{normBirthday}, #{normIntegrate},
+                #{normCarCompanyId}, #{normCarTypeId},
+                #{normVehicleNumber},
+                #{normPlateNum}, #{normDrivingLicence},
+                #{applyCard},
+                #{normOrigin}, #{normInvitephone},
+                #{accountId}, #{cpyId}, now(),
+                now())
+    </insert>
+
+    <update id="updateByUserId" parameterType="UserNormalDO">
+        UPDATE tbl_user_normal
+        SET norm_name            = #{normName},
+            norm_real_name       = #{normRealName},
+            norm_registe_type    = #{normRegisteType},
+            norm_device_id       = #{normDeviceId},
+            norm_email           = #{normEmail},
+            norm_address         = #{normAddress},
+            norm_phone           = #{normPhone},
+            norm_sex             = #{normSex},
+            norm_birthday        = #{normBirthday},
+            norm_integrate       = #{normIntegrate},
+            norm_car_company_id  = #{normCarCompanyId},
+            norm_car_type_id     = #{normCarTypeId},
+            norm_vehicle_number  = #{normVehicleNumber},
+            norm_plate_num       = #{normPlateNum},
+            norm_driving_licence = #{normDrivingLicence},
+            apply_card           = #{applyCard},
+            norm_origin          = #{normOrigin},
+            norm_invitePhone     = #{normInvitephone},
+            account_id           = #{accountId},
+            cpy_id               = #{cpyId},
+            gmt_modified         = now()
+        WHERE user_id = #{userId}
+    </update>
+
+    <update id="updateByUserIdSelective" parameterType="UserNormalDO">
+        update tbl_user_normal
+        <set>
+            <if test="normName != null">
+                norm_name = #{normName},
+            </if>
+            <if test="normRealName != null">
+                norm_real_name = #{normRealName},
+            </if>
+            <if test="normRegisteType != null">
+                norm_registe_type = #{normRegisteType},
+            </if>
+            <if test="normDeviceId != null">
+                norm_device_id = #{normDeviceId},
+            </if>
+            <if test="normEmail != null">
+                norm_email = #{normEmail},
+            </if>
+            <if test="normAddress != null">
+                norm_address = #{normAddress},
+            </if>
+            <if test="normPhone != null">
+                norm_phone = #{normPhone},
+            </if>
+            <if test="normSex != null">
+                norm_sex = #{normSex},
+            </if>
+            <if test="normBirthday != null">
+                norm_birthday = #{normBirthday},
+            </if>
+            <if test="normIntegrate != null">
+                norm_integrate = #{normIntegrate},
+            </if>
+            <if test="normCarCompanyId != null">
+                norm_car_company_id = #{normCarCompanyId},
+            </if>
+            <if test="normCarTypeId != null">
+                norm_car_type_id = #{normCarTypeId},
+            </if>
+            <if test="normVehicleNumber != null">
+                norm_vehicle_number = #{normVehicleNumber},
+            </if>
+            <if test="normPlateNum != null">
+                norm_plate_num = #{normPlateNum},
+            </if>
+            <if test="normDrivingLicence != null">
+                norm_driving_licence = #{normDrivingLicence},
+            </if>
+            <if test="applyCard != null">
+                apply_card = #{applyCard},
+            </if>
+            <if test="normOrigin != null">
+                norm_origin = #{normOrigin},
+            </if>
+            <if test="normInvitephone != null">
+                norm_invitePhone = #{normInvitephone},
+            </if>
+            <if test="accountId != null">
+                account_id = #{accountId},
+            </if>
+            <if test="cpyId != null">
+                cpy_id = #{cpyId},
+            </if>
+            gmt_modified = now()
+        </set>
+        where user_id = #{userId}
+    </update>
+</mapper>

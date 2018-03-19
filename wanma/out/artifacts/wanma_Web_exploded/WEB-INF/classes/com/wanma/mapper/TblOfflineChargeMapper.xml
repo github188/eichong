@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsOfflineChargeMapper">
+	<resultMap type="TblCompany" id="result_company">
+		<result property="pkCompanyid" column="pk_CompanyId" />
+		<result property="cpyCompanyname" column="cpy_CompanyName" />
+		<result property="cpyCompanyNumber" column="cpy_CompanyNumber" />
+		<result property="cpyNum" column="cpy_num" />
+	</resultMap>
+	<select id="getCompanyList" parameterType="TblCompany" resultMap="result_company">
+		select 
+			pk_CompanyId,
+			cpy_CompanyName,
+			cpy_CompanyNumber,
+			cpy_num
+		from tbl_company 
+		ORDER BY
+		cpy_Updatedate DESC
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	<select id="getCompanyCount" parameterType="TblCompany" resultType="long">
+		select 
+			count(1)
+		from tbl_company 
+	</select>
+	<select id="getUnsetCompanyList" parameterType="TblCompany" resultMap="result_company">
+		select 
+			pk_CompanyId,
+			cpy_CompanyName
+		from tbl_company 
+		where cpy_num = 0
+	</select>
+	
+	<select id="getCpyCompanyNumberById" parameterType="int" resultType="string">
+		select 
+			cpy_CompanyNumber
+		from tbl_company 
+		where pk_CompanyId = #{pkCompanyid}
+	</select>
+	<select id="getCompanyById" parameterType="int" resultMap="result_company">
+		select 
+			pk_CompanyId,
+			cpy_CompanyName,
+			cpy_CompanyNumber,
+			cpy_num
+		from tbl_company 
+		where pk_CompanyId = #{pkCompanyid}
+	</select>
+	<update id="insertOfflineCharge" parameterType="TblCompany"  >
+		update tbl_company 
+			set
+		cpy_num = #{cpyNum}
+		where pk_CompanyId = #{pkCompanyid}
+	</update>
+	<update id="deleteOfflineCharge" parameterType="int"  >
+		update tbl_company 
+			set
+		cpy_num = 0
+		where pk_CompanyId = #{pkCompanyid}
+	</update>
+</mapper> 

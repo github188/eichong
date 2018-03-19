@@ -1,0 +1,340 @@
+/**
+ * FileName:AppFeedbackMapper.java
+ * Author: Administrator
+ * Create: 2014年6月26日
+ * Last Modified: 2014年6月26日
+ * Version: V1.0 
+ */
+package com.wanma.app.dao;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import com.wanma.model.PowerElectricPile;
+import com.wanma.model.TblConcentrator;
+import com.wanma.model.TblElectricpile;
+import com.wanma.model.TblElectricpilehead;
+import com.wanma.model.TblEquipmentVersion;
+import com.wanma.model.TblTypespan;
+import com.wanma.model.TcbElectric;
+
+/**
+ * 反馈表操作用DAO接口Mapper
+ * 
+ * @version V1.0
+ * @author Administrator
+ * @date 2014年6月26日
+ */
+public interface TblElectricpileMapper {
+
+	/**
+	 * 分享电桩信息
+	 * 
+	 * @param feedback
+	 */
+	public TblElectricpile getShareElectricPile(TblElectricpile tblElectricpile);
+
+	/**
+	 * 获取电桩数据
+	 * 
+	 * @param feedback
+	 */
+	public List<?> getElectricpile(TblElectricpile tblElectricpile);
+
+	/**
+	 * 新的快速查询接口
+	 * @param params
+	 * @return
+	 */
+	public List<Map<String, String>> getSearchElecPileList(Map<String, String> params);
+	/**
+	 * 新接口后去电桩列表
+	 * @param tblElectricpile
+	 * @return
+	 */
+	public List<?> getElectricpileN(TblElectricpile tblElectricpile);
+	/**
+	 * 获取地图模式电桩数据
+	 * 
+	 * @param feedback
+	 */
+	public List<?> getElectricpileForMap(TblElectricpile tblElectricpile);
+
+	/**
+	 * 通过Id获取电桩数据
+	 * 
+	 * @param feedback
+	 */
+	public List<TblElectricpile> getElectricpileById(
+			TblElectricpile tblElectricpile);
+
+	/**
+	 * 通过Id获取电桩数据
+	 * 
+	 * @param feedback
+	 */
+	public List<TblElectricpile> findOne(TblElectricpile tblElectricpile);
+
+	/**
+	 * 通过Id获取电桩数据
+	 * 
+	 * @param feedback
+	 */
+	public List<TblElectricpile> findOneN(TblElectricpile tblElectricpile);
+	
+	/**
+	 * 通过枪头Id获取电桩数据
+	 * 
+	 * @param params
+	 */
+	public <T, K, V> T getbyPkElecpileHead(Map<K, V> params);
+
+	/**
+	 * 后台电桩列表获取数据
+	 * 
+	 * @param feedback
+	 */
+	public List<?> getElectricpileByCondition(TblElectricpile tblElectricpile);
+
+	/**
+	 * 后台电桩列表获取数据
+	 * 
+	 * @param feedback
+	 */
+	public long getElectricpileByConditionCount(TblElectricpile tblElectricpile);
+
+	/**
+	 * 添加电桩数据
+	 * 
+	 * @param feedback
+	 */
+	public void insert(TblElectricpile tblElectricpile);
+
+	/**
+	 * 修改电桩数据
+	 * 
+	 * @param feedback
+	 */
+	public void update(TblElectricpile tblElectricpile);
+
+	/**
+	 * 电桩绑定充电点
+	 * 
+	 * @param feedback
+	 */
+	public void electricPileBindPower(TblElectricpile tblElectricpile);
+
+	/**
+	 * 通过ID获取桩体数据
+	 * 
+	 * @param feedback
+	 */
+	public TblElectricpile get(TblElectricpile tblElectricpile);
+
+	/**
+	 * 通过电桩编号获取电桩信息
+	 * 
+	 * @param feedback
+	 */
+	public long searchElectricCountByElecCode(TblElectricpile tblElectricpile);
+
+	/**
+	 * 修改电桩状态
+	 * 
+	 * @param feedback
+	 */
+	public long updateElectricPileSate(TblElectricpile tblElectricpile);
+
+	/**
+	 * 审核驳回电桩
+	 * 
+	 * @param feedback
+	 */
+	public long updateElectricPileExamineReason(TblElectricpile tblElectricpile);
+
+	/**
+	 * 后台电桩列表获取数据
+	 * 
+	 * @param feedback
+	 */
+	public List<?> getElectricpileByCondition1(TblElectricpile tblElectricpile);
+
+	/**
+	 * 后台电桩列表获取数据
+	 * 
+	 * @param feedback
+	 */
+	public long getElectricpileByConditionCount1(TblElectricpile tblElectricpile);
+
+	/**
+	 * @Title: selectPileInfo
+	 * @Description: 手机端扫描二维码显示电桩和枪口信息
+	 * @param params
+	 * @return
+	 */
+	public <T, K, V> T selectPileInfo(Map<K, V> params);
+
+	public List<?> findRelevancePowerStation(TblElectricpile tblElectricpile);
+
+	/**
+	 * 根据电桩编号获取电桩信息
+	 * 
+	 * @param feedback
+	 */
+	public TblElectricpile getElectricPileByCode(String elpiElectricpilecode);
+	/**
+	 * 修改电桩数据
+	 * 
+	 * @param feedback
+	 */
+	public void updateByElecId(TblElectricpile tblElectricpile);
+	/**
+	 * 删除电桩数据
+	 * 
+	 * @param feedback
+	 */
+	public void delete(TblElectricpile tblElectricpile);
+	/**
+	 * 删除电桩数据(通过修改标记)
+	 * 
+	 * @param feedback
+	 */
+	public void updateDeleteFlag(TblElectricpile tblElectricpile);
+	/**
+	 * 获取充电点所属电桩数量
+	 * @param pkElectricpile
+	 * @return
+	 */
+	public int getElectricpileByPowerId(TblElectricpile tblElectricpile);
+	
+	/**
+	 * 获取电桩表中的所有记录
+	 * @param epId 暂时不用，以后可能会根据id获取某条记录
+	 * @return
+	 */
+	public List<Map<String, Object>> initEpFromDB(int epId);
+	
+	/**
+	 * 根据电桩编号获取电桩信息
+	 * 
+	 * @param elpiElectricpilecode
+	 *        电桩编号
+	 */
+	public TblElectricpile getElectricPileInfo(String elpiElectricpilecode );
+	
+	/**
+	 * 修改电桩状态，电桩编号
+	 * 
+	 * @param tblElectricpile
+	 */
+	public long updateSateAndCode(TblElectricpile tblElectricpile);
+	
+	/**
+	 * 获取需要下线的桩体 
+	 * @return
+	 */
+	public List<TblElectricpile> getOfflineElectric();
+	
+	/**
+	 * 根据id更新电桩状态
+	 * @return
+	 */
+	public int updateEleState(TblElectricpile tblElectricpile);
+	
+
+	/**
+	 * 根据制造厂商获取电桩信息
+	 * @return
+	 */
+	public List<TblElectricpile> getElectricPileByMaker(Integer pkCarmaker);
+	
+	/**
+	 * 查询电桩以及电桩所有枪头
+	 * @param tblElectricpile
+	 * @return
+	 */
+	public List<PowerElectricPile> getElectricpileHeadN(TblElectricpile tblElectricpile);
+	
+	/**
+	 * 查询电桩以及电桩数量
+	 * @param tblElectricpile
+	 * @return
+	 */
+	public int getCountElectricpileHeadN(TblElectricpile tblElectricpile);
+
+	public List<?> getRateElectricpileByCondition(
+			TblElectricpile tblElectricpile);
+
+	public long getRateElectricpileByConditionCount(
+			TblElectricpile tblElectricpile);
+
+
+	/**
+	 * 后台未绑定集中器电桩列表获取数据
+	 * 
+	 * @param feedback
+	 */
+	public List<?> getElectricpileForConcentrator(
+			TblElectricpile tblElectricpile);
+
+	/**
+	 * 后台未绑定集中器电桩列表数量
+	 * 
+	 * @param feedback
+	 */
+	public long getElectricpileForConcentratorCount(
+			TblElectricpile tblElectricpile);
+
+	/**
+	 * 电桩绑定集中器
+	 * 
+	 * @param feedback
+	 */
+	public void electricPileBindConcentrator(TblElectricpile tblElectricpile);
+
+
+	/**
+	 * 后台绑定集中器电桩列表获取数据
+	 * 
+	 * @param feedback
+	 */
+	public ArrayList<TblElectricpilehead> findElectricpileList();
+
+	/**
+	 * @Description: 更新电桩所属图片信息
+	 * @author wbc	
+	 * 2015年11月28日 	
+	 * @return: void 
+	 */
+	public void updateImageInfo(Map<String,Object> map);
+
+	/**
+	 * 获取绑定集中器电桩列表
+	 * @param concentrator 
+	 * @return
+	 */
+	public List<?> findBindedConcentratorElectricpileList(TblConcentrator concentrator);
+	
+	/**
+	 * 集中器电桩解绑
+	 * @param unbindPkElectricpile
+	 */
+	public void unbindConcentrator(String unbindPkElectricpile);
+
+	public int getbindedConcentratorElectricpileCount(
+			TblConcentrator concentrator);
+
+	public void delete(String ids);
+
+	public int getBespokeOrChargingHeadCount(TblElectricpile tblElectricpile);
+
+	public List<TblTypespan> getTypespanList();
+
+	public List<TcbElectric> getElectricpileListByPsId(Integer pkPowerstation);
+
+	public int getTypeSpanId(Integer pkElectricpile);
+
+	public List<TblEquipmentVersion> getVersionByProductID(int pkElectricpile);
+
+}

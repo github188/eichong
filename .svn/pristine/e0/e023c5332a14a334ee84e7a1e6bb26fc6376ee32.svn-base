@@ -1,0 +1,41 @@
+function ajaxFileUpload() {
+    $.ajaxFileUpload({
+        url : basePath+companyTaskUrl,   //submit to UploadFileServlet
+        secureuri : false,
+        fileElementId : 'fileToUpload',
+        dataType : 'json', //or json xml whatever you like~
+        success : function(data, status) {
+            if (data.success == true) {
+                layer.closeAll();
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:center"],
+                    shadeClose: false,
+                    closeBtn: 2,
+                    area: ['310px', '160px'],//宽高
+                    content: data.msg,
+                    time: 2000,
+                    btn: ["确定"]
+                });
+            }else{
+                layer.closeAll();
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:center"],
+                    shadeClose: false,
+                    closeBtn: 2,
+                    area: ['310px', '160px'],//宽高
+                    content: data.msg,
+                    time: 2000,
+                    btn: ["确定"]
+                });
+            }
+        },
+        error : function(data, status, e) {
+
+        }
+    });
+    return false;
+}

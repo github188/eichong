@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsPayOrderMapper">
+	<resultMap type="TblPayOrder" id="result_pay">
+		<id property="pkPayOrder" column="pk_PayOrder" />
+		<result property="payoUserId" column="payo_UserId" />
+		<result property="payoGroupId" column="payo_GroupId" />
+		<result property="payoTypePay" column="payo_TypePay" />
+		<result property="payoPayNo" column="payo_PayNo" />
+		<result property="payoPayMoney" column="payo_PayMoney" />
+		<result property="payoStatus" column="payo_Status" />
+		<result property="payoOrderType" column="payo_OrderType" />
+	</resultMap>
+	
+	<!-- 取得充值订单列表 -->
+	<select id="getPayList" resultMap="result_pay">
+		SELECT
+			pk_PayOrder,
+			(ui.usIn_UserName) AS facname,
+			(go.grou_GroupName) AS grname,
+			payo_PayNo,
+			payo_PayMoney,
+			payo_Status,
+			payo_OrderType
+		FROM  
+			tbl_PayOrder po INNER JOIN tbl_user_normal_view AS ui ON ui.user_id  = po.payo_UserId
+					INNER JOIN tbl_Group go ON go.pk_Group = po.payo_GroupId
+		<where>
+			<if test="payoPayNo !=null and payoPayNo !=''">
+				and payo_PayNo=#{payoPayNo}
+			</if>
+			<if test="payoStatus !=null and payoStatus !=''">
+				and payo_Status=#{payoStatus}
+			</if>
+			<if test="facname !=null and facname !=''">
+				and ui.usIn_UserName like concat('%',#{facname},'%')
+			</if>
+		</where>
+	</select>
+	
+	<!-- 根据ID查询充值订单 -->
+	<select id="findPay" parameterType="String" resultMap="result_pay">
+		SELECT
+			pk_PayOrder,
+			(ui.usIn_UserName) AS facname,
+			(go.grou_GroupName) AS grname,
+			payo_PayNo,
+			payo_PayMoney,
+			payo_Status,
+			payo_OrderType
+		FROM  
+			tbl_PayOrder po INNER JOIN tbl_user_normal_view AS ui ON ui.user_id = po.payo_UserId
+					INNER JOIN tbl_Group go ON go.pk_Group = po.payo_GroupId
+		WHERE pk_PayOrder=#{pkPayOrder}
+	</select>
+	
+	<!-- 查询充值订单数量 -->
+	<select id="searchPayCount" parameterType="TblPayOrder" resultType="long">
+		select
+			count(pk_PayOrder)
+		from 
+			tbl_PayOrder
+	</select>
+	
+	<!-- 查询全部充值订单 -->
+	<select id="searchPayList" parameterType="TblPayOrder" resultMap="result_pay">
+		SELECT
+			pk_PayOrder,
+			(ui.usIn_UserName) AS facname,
+			(go.grou_GroupName) AS grname,
+			payo_PayNo,
+			payo_PayMoney,
+			payo_Status,
+			payo_OrderType
+		FROM  
+			tbl_PayOrder po left JOIN tbl_user_normal_view AS ui ON ui.user_id = po.payo_UserId
+					left JOIN tbl_Group go ON go.pk_Group = po.payo_GroupId
+		<where>
+			<if test="payoPayNo !=null and payoPayNo !=''">
+				and payo_PayNo like concat('%',#{payoPayNo},'%') 
+			</if>
+			<if test="payoStatus !=null and payoStatus !=''">
+				and payo_Status=#{payoStatus}
+			</if>
+			<if test="facname !=null and facname !=''">
+				and ui.usIn_UserName like concat('%',#{facname},'%')
+			</if>
+		</where>
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	
+	<!-- 删除查询充值订单 -->
+	<update id="deletePay" parameterType="String">
+		DELETE FROM tbl_PayOrder WHERE pk_PayOrder=#{pkPayOrder}
+	</update>
+</mapper>

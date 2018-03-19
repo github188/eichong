@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.CountAdminEpRelaMapper">
+	<resultMap type="CountAdminEpRelaDO" id="resultCountAdminEpRela">
+		<result property="pkId" column="pk_id" />
+		<result property="adminId" column="admin_id" />
+		<result property="powerStationId" column="powerStation_id" />
+		<result property="electricPileId" column="electricpile_id" />
+		<result property="electricPileCode" column="electricpile_code"/>
+		<result property="adminArea" column="admin_area" />
+		<result property="isDel" column="is_del" />
+		<result property="creator" column="creator" />
+		<result property="modifier" column="modifier" />
+		<result property="gmtCreate" column="gmt_create" />
+		<result property="gmtModified" column="gmt_modified" />
+	</resultMap>
+   
+    <sql id="query-columns">
+		pk_id,admin_id,powerStation_id,electricpile_id,electricpile_code,admin_area,is_del,creator,modifier,gmt_create,gmt_modified
+	</sql>
+	
+<!--     获取当前登录人充电点权限 -->
+    <select id="selectPowerStationIdsByAdminId" parameterType="Long" resultType="Long">
+       select powerStation_id from count_admin_ep_rela where is_del = 0 and admin_id = #{adminId}
+    </select>
+    
+<!--     获取当前登录人充电桩权限 -->
+    <select id="selectElectricPileIdsByAdminId" parameterType="Long" resultType="Long">
+       select electricpile_id from count_admin_ep_rela where is_del = 0 and admin_id = #{adminId}
+    </select>
+    
+    <!-- 判断当前登录人是否拥有电桩权限 -->
+    <select id="selectElectricPileByAdminIdAndEpCode" parameterType="map" resultMap="resultCountAdminEpRela">
+       select electricpile_id,electricpile_code,powerStation_id from count_admin_ep_rela where is_del = 0 and admin_id = #{adminId} and electricpile_code = #{electricPileCode}
+    </select>
+    
+     <!-- 获取当前登录人所有的电桩权限-统计 -->
+    <select id="countAdminEPList" parameterType="CountAdminEpRelaDO" resultType="long">
+       select count(1) from count_admin_ep_rela where is_del = 0 and admin_id = #{adminId}
+       <if test="electricPileCode != null and electricPileCode !=''">
+          and electricpile_code = #{electricPileCode}
+       </if>
+    </select>
+    
+    <!-- 获取当前登录人所有的电桩权限 -->
+    <select id="selectCountAdminEPList" parameterType="CountAdminEpRelaDO" resultMap="resultCountAdminEpRela">
+       select electricpile_id,electricpile_code,powerStation_id from count_admin_ep_rela where is_del = 0 and admin_id = #{adminId}
+       <if test="electricPileCode != null and electricPileCode !=''">
+          and electricpile_code = #{electricPileCode}
+       </if>
+       order by gmt_create desc
+       <if test="pager != null"> limit #{pager.offset},#{pager.pageSize}</if>
+    </select>
+    
+    <!-- 新增 -->
+    <insert id="insertCountAdminEpRela" parameterType="CountAdminEpRelaDO">
+       insert into count_admin_ep_rela 
+         (pk_id,admin_id,powerStation_id,electricpile_id,electricpile_code,admin_area,is_del,creator,modifier,gmt_create,gmt_modified) values 
+         (null,#{adminId},#{powerStationId},#{electricPileId},#{electricPileCode},'',0,#{creator},'',NOW(),NULL)
+    </insert>
+    
+     <!-- 新增 -->
+    <insert id="batchInsertCountAdminEpRela" useGeneratedKeys="true" parameterType="java.util.List" >
+	     <selectKey resultType="long" keyProperty="id" order="AFTER">  
+	        SELECT LAST_INSERT_ID()  
+	    </selectKey> 
+        insert into count_admin_ep_rela  
+        (pk_id,admin_id,powerStation_id,electricpile_id,electricpile_code,admin_area,is_del,creator,modifier,gmt_create,gmt_modified) values 
+        <foreach collection="list" item="item" index="index" separator="," >
+              (null,#{item.adminId},#{item.powerStationId},#{item.electricPileId},#{item.electricPileCode},'',0,#{item.creator},#{item.modifier},NOW(),NOW())
+         </foreach>
+    </insert>
+    
+     <!-- 修改 -->
+    <update id="updateCountAdminEpRela" parameterType="map">
+       update count_admin_ep_rela set is_del = 1,modifier = #{modifier},gmt_modified = NOW() where is_del = 0 and admin_id = #{adminId} 
+            <if test="epIds != null and epIds.size() > 0">
+	          and electricpile_id in 
+			   <foreach collection="epIds" item="id" open="(" close=")" separator=",">
+			        #{id}
+			   </foreach>
+	        </if>
+    </update>
+    
+	<!-- 根据充电点ID查询电桩权限 -->
+    <select id="selectElectricPileByAdminIdAndPsId" resultMap="resultCountAdminEpRela">
+         select electricpile_id,electricpile_code,powerStation_id from count_admin_ep_rela where is_del = 0 and admin_id = #{adminId} and powerStation_id = #{powerStationId}
+    </select>
+   
+   <!-- 根据充电点ID删除电桩权限 -->
+    <update id="deleteElectricPileByAdminIdAndPsId">
+         update count_admin_ep_rela set is_del = 1,gmt_modified = NOW() where admin_id = #{adminId} and powerStation_id = #{powerStationId}
+    </update>
+    
+</mapper>

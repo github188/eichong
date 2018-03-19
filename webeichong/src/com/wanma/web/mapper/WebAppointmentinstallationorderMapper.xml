@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.web.dao.WebAppointmentinstallationorderMapper">
+
+	<resultMap id="tblAppointmentinstallationorderResultMap" type="TblAppointmentinstallationorder">
+		<id property="pkAppointmentinstallationorder" column="pk_AppointmentInstallationOrder" />
+		<result property="alorInstallationordercode" column="aLOr_InstallationOrderCode" />
+		<result property="alorInstallationorderproductid" column="aLOr_InstallationOrderProductID" />
+		<result property="alorInstallationorderproductname" column="aLOr_InstallationOrderProductName" />
+		<result property="alorUserid" column="aLOr_UserID" />
+		<result property="alorTellogin" column="aLOr_TelLogin" />
+		<result property="alorMoney" column="aLOr_Money" />
+		<result property="alorInstallationorderstatus" column="aLOr_InstallationOrderStatus" />
+		<result property="alorBuyingtime" column="aLOr_BuyingTime" />
+		<result property="aiorInstallationaddress" column="aiOr_InstallationAddress" />
+		<result property="alorInstallationperson" column="aLOr_InstallationPerson" />
+		<result property="alorLnstallationtel" column="aLOr_LnstallationTel" />
+		<result property="alorCommoditytotal" column="aLOr_CommodityTotal" />
+		<result property="alorCommodityshops" column="aLOr_CommodityShops" />
+		<result property="aLorOrderType" column="aLor_OrderType" />
+	</resultMap>
+	<resultMap id="pageResultMap"  type="java.util.HashMap" extends="tblAppointmentinstallationorderResultMap"></resultMap>
+	<resultMap id="findResultMap"  type="java.util.HashMap" extends="tblAppointmentinstallationorderResultMap"></resultMap>
+	
+	<insert id="insert" parameterType="TblAppointmentinstallationorder" useGeneratedKeys="true"
+		keyProperty="pkAppointmentinstallationorder">
+	   insert into tbl_AppointmentInstallationOrder (
+	     pk_AppointmentInstallationOrder,
+	     aLOr_InstallationOrderCode,
+	     aLOr_InstallationOrderProductID,
+	     aLOr_InstallationOrderProductName,
+	     aLOr_UserID,
+	     aLOr_TelLogin,
+	     aLOr_Money,
+	     aLOr_InstallationOrderStatus,
+	     aLOr_BuyingTime,
+	     aiOr_InstallationAddress,
+	     aLOr_InstallationPerson,
+	     aLOr_LnstallationTel,
+	     aLOr_CommodityTotal,
+	     aLOr_CommodityShops,
+	     aLor_OrderType
+	   )values (
+	     #{pkAppointmentinstallationorder},
+	     #{alorInstallationordercode},
+	     #{alorInstallationorderproductid},
+	     #{alorInstallationorderproductname},
+	     #{alorUserid},
+	     #{alorTellogin},
+	     #{alorMoney},
+	     #{alorInstallationorderstatus},
+	     #{alorBuyingtime},
+	     #{aiorInstallationaddress},
+	     #{alorInstallationperson},
+	     #{alorLnstallationtel},
+	     #{alorCommoditytotal},
+	     #{alorCommodityshops},
+	     #{aLorOrderType}
+	   )
+	</insert>
+
+	<update id="update" parameterType="TblAppointmentinstallationorder">
+	   update tbl_AppointmentInstallationOrder set
+	     pk_AppointmentInstallationOrder=#{pkAppointmentinstallationorder},
+	     aLOr_InstallationOrderCode=#{alorInstallationordercode},
+	     aLOr_InstallationOrderProductID=#{alorInstallationorderproductid},
+	     aLOr_InstallationOrderProductName=#{alorInstallationorderproductname},
+	     aLOr_UserID=#{alorUserid},
+	     aLOr_TelLogin=#{alorTellogin},
+	     aLOr_Money=#{alorMoney},
+	     aLOr_InstallationOrderStatus=#{alorInstallationorderstatus},
+	     aLOr_BuyingTime=#{alorBuyingtime},
+	     aiOr_InstallationAddress=#{aiorInstallationaddress},
+	     aLOr_InstallationPerson=#{alorInstallationperson},
+	     aLOr_LnstallationTel=#{alorLnstallationtel},
+	     aLOr_CommodityTotal=#{alorCommoditytotal},
+	     aLOr_CommodityShops=#{alorCommodityshops}
+	   where 
+	    pk_AppointmentInstallationOrder=#{pkAppointmentinstallationorder} 
+	</update>
+
+	<delete id="delete" parameterType="map">
+	   delete from 
+	     tbl_AppointmentInstallationOrder 
+	   where 
+	    pk_AppointmentInstallationOrder=#{pkAppointmentinstallationorder} 
+	</delete>
+
+	<select id="get" parameterType="map" resultMap="tblAppointmentinstallationorderResultMap">
+	   select 
+	    pk_AppointmentInstallationOrder,
+	    aLOr_InstallationOrderCode,
+	    aLOr_InstallationOrderProductID,
+	    aLOr_InstallationOrderProductName,
+	    aLOr_UserID,
+	    aLOr_TelLogin,
+	    aLOr_Money,
+	    aLOr_InstallationOrderStatus,
+	    aLOr_BuyingTime,
+	    aiOr_InstallationAddress,
+	    aLOr_InstallationPerson,
+	    aLOr_LnstallationTel,
+	    aLOr_CommodityTotal,
+	    aLOr_CommodityShops
+	   from tbl_AppointmentInstallationOrder
+	   where 
+	    pk_AppointmentInstallationOrder=#{pkAppointmentinstallationorder} 
+	</select>
+
+	<select id="findOne" parameterType="map" resultMap="findResultMap">
+	   select 
+	    pk_AppointmentInstallationOrder,
+	    aLOr_InstallationOrderCode,
+	    aLOr_InstallationOrderProductID,
+	    aLOr_InstallationOrderProductName,
+	    aLOr_UserID,
+	    aLOr_TelLogin,
+	    aLOr_Money,
+	    aLOr_InstallationOrderStatus,
+	    aLOr_BuyingTime,
+	    aiOr_InstallationAddress,
+	    aLOr_InstallationPerson,
+	    aLOr_LnstallationTel,
+	    aLOr_CommodityTotal,
+	    aLOr_CommodityShops
+	   from tbl_AppointmentInstallationOrder
+	   where 
+	    pk_AppointmentInstallationOrder=#{pkAppointmentinstallationorder} 
+	</select>
+
+	<select id="find" parameterType="map" resultMap="findResultMap">
+	   select 
+	     pk_AppointmentInstallationOrder,
+	     aLOr_InstallationOrderCode,
+	     aLOr_InstallationOrderProductID,
+	     aLOr_InstallationOrderProductName,
+	     aLOr_UserID,
+	     aLOr_TelLogin,
+	     aLOr_Money,
+	     aLOr_InstallationOrderStatus,
+	     aLOr_BuyingTime,
+	     aiOr_InstallationAddress,
+	     aLOr_InstallationPerson,
+	     aLOr_LnstallationTel,
+	     aLOr_CommodityTotal,
+	     aLOr_CommodityShops
+	   from tbl_AppointmentInstallationOrder
+	   <where>
+	     <if test="pkAppointmentinstallationorder != null">
+	        pk_AppointmentInstallationOrder=#{pkAppointmentinstallationorder}
+	     </if>
+	     <if test="alorInstallationordercode != null">
+	        and aLOr_InstallationOrderCode=#{alorInstallationordercode}
+	     </if>
+	     <if test="alorInstallationorderproductid != null">
+	        and aLOr_InstallationOrderProductID=#{alorInstallationorderproductid}
+	     </if>
+	     <if test="alorInstallationorderproductname != null">
+	        and aLOr_InstallationOrderProductName=#{alorInstallationorderproductname}
+	     </if>
+	     <if test="alorUserid != null">
+	        and aLOr_UserID=#{alorUserid}
+	     </if>
+	     <if test="alorTellogin != null">
+	        and aLOr_TelLogin=#{alorTellogin}
+	     </if>
+	     <if test="alorMoney != null">
+	        and aLOr_Money=#{alorMoney}
+	     </if>
+	     <if test="alorInstallationorderstatus != null">
+	        and aLOr_InstallationOrderStatus=#{alorInstallationorderstatus}
+	     </if>
+	     <if test="alorBuyingtime != null">
+	        and aLOr_BuyingTime=#{alorBuyingtime}
+	     </if>
+	     <if test="aiorInstallationaddress != null">
+	        and aiOr_InstallationAddress=#{aiorInstallationaddress}
+	     </if>
+	     <if test="alorInstallationperson != null">
+	        and aLOr_InstallationPerson=#{alorInstallationperson}
+	     </if>
+	     <if test="alorLnstallationtel != null">
+	        and aLOr_LnstallationTel=#{alorLnstallationtel}
+	     </if>
+	     <if test="alorCommoditytotal != null">
+	        and aLOr_CommodityTotal=#{alorCommoditytotal}
+	     </if>
+	     <if test="alorCommodityshops != null">
+	        and aLOr_CommodityShops=#{alorCommodityshops}
+	     </if>
+	   </where>
+	</select>
+	
+	<select id="page" parameterType="map" resultMap="pageResultMap">
+	   select 
+	     pk_AppointmentInstallationOrder,
+	     aLOr_InstallationOrderCode,
+	     aLOr_InstallationOrderProductID,
+	     aLOr_InstallationOrderProductName,
+	     aLOr_UserID,
+	     aLOr_TelLogin,
+	     aLOr_Money,
+	     aLOr_InstallationOrderStatus,
+	     aLOr_BuyingTime,
+	     aiOr_InstallationAddress,
+	     aLOr_InstallationPerson,
+	     aLOr_LnstallationTel,
+	     aLOr_CommodityTotal,
+	     aLOr_CommodityShops
+	   from tbl_AppointmentInstallationOrder
+	   <where>
+	     <if test="pkAppointmentinstallationorder != null">
+	        pk_AppointmentInstallationOrder=#{pkAppointmentinstallationorder}
+	     </if>
+	     <if test="alorInstallationordercode != null">
+	        and aLOr_InstallationOrderCode=#{alorInstallationordercode}
+	     </if>
+	     <if test="alorInstallationorderproductid != null">
+	        and aLOr_InstallationOrderProductID=#{alorInstallationorderproductid}
+	     </if>
+	     <if test="alorInstallationorderproductname != null">
+	        and aLOr_InstallationOrderProductName=#{alorInstallationorderproductname}
+	     </if>
+	     <if test="alorUserid != null">
+	        and aLOr_UserID=#{alorUserid}
+	     </if>
+	     <if test="alorTellogin != null">
+	        and aLOr_TelLogin=#{alorTellogin}
+	     </if>
+	     <if test="alorMoney != null">
+	        and aLOr_Money=#{alorMoney}
+	     </if>
+	     <if test="alorInstallationorderstatus != null">
+	        and aLOr_InstallationOrderStatus=#{alorInstallationorderstatus}
+	     </if>
+	     <if test="alorBuyingtime != null">
+	        and aLOr_BuyingTime=#{alorBuyingtime}
+	     </if>
+	     <if test="aiorInstallationaddress != null">
+	        and aiOr_InstallationAddress=#{aiorInstallationaddress}
+	     </if>
+	     <if test="alorInstallationperson != null">
+	        and aLOr_InstallationPerson=#{alorInstallationperson}
+	     </if>
+	     <if test="alorLnstallationtel != null">
+	        and aLOr_LnstallationTel=#{alorLnstallationtel}
+	     </if>
+	     <if test="alorCommoditytotal != null">
+	        and aLOr_CommodityTotal=#{alorCommoditytotal}
+	     </if>
+	     <if test="alorCommodityshops != null">
+	        and aLOr_CommodityShops=#{alorCommodityshops}
+	     </if>
+	   </where>
+	</select>
+</mapper> 

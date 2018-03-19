@@ -1,0 +1,59 @@
+package com.wanma.ims.service;
+
+import java.util.List;
+
+
+
+import com.wanma.ims.common.domain.BannerDO;
+
+
+
+/**
+ * 活动
+ */
+public interface BannerService {
+
+	long selectBannerCount(BannerDO banner);
+	/**
+	 * 获取banner列表
+	 * @param banner
+	 * @return
+	 */
+	List<BannerDO> selectBannerList(BannerDO banner);
+	/**
+	 * 新增banner
+	 * @param banner
+	 */
+	boolean insertBanner(BannerDO banner);
+	/**
+	 * 编辑banner
+	 * @param banner 
+	 * @param banner
+	 */
+	boolean updateBanner(BannerDO banner);
+	/**
+	 * 根据banner主键查询
+	 * @param banner 
+	 * @param banner
+	 */
+	BannerDO getBannerById(BannerDO banner);
+	/**
+	 * 下架banner
+	 * @param banner 
+	 * @param banner
+	 */
+	void offShelfBannerById(BannerDO banner);
+	/**
+	 * 删除banner
+	 * @param banner 
+	 * @param banner
+	 */
+	boolean deleteBannerById(BannerDO banner);
+	/**
+	 * 修改轮播顺序
+	 * @param banner 
+	 * @param banner
+	 */
+	boolean changeBannerSort(BannerDO banner);
+	
+}

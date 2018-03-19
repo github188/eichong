@@ -1,0 +1,37 @@
+package com.wanma.ims.controller.sys;
+
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+
+@RequestMapping("/admin/user")
+@Controller
+public class UserController {
+//		private static Logger log = Logger.getLogger(UserController.class);
+//
+//		/** 用户业务处理对象 */
+//		@Autowired
+//		private UserService userService;
+//		@Autowired
+//		private RoleService roleService;
+//
+//    @RequestMapping(value = "queryAdminAll")
+//    @ResponseBody
+//    public void queryAllUser(){
+//    	ActionResult result = new ActionResult();
+//		try{
+//			HashMap<String,String> params = new HashMap<String,String>();
+//			params.put("","");
+//			BatchResultDTO<TblUser> dto =  userService.getUserList(params);
+//			if(dto.isSuccess() && null != dto.getModule()){
+//				result.setDataObject(dto.getModule());
+//			}
+//			result.setSuccess(dto.isSuccess());
+//		}catch(Exception e){
+//			result.setSuccess(false);
+//			result.setMsg("UserController called queryAllUser failed");
+//		}
+//		responseJson(result);
+//    }
+}

@@ -1,0 +1,10 @@
+package com.wanma.ims.service.impl;
+
+
+import com.wanma.ims.service.UserCompanyService;
+import org.springframework.stereotype.Service;
+
+@Service
+public class UserCompanyServiceImpl implements UserCompanyService {
+
+}

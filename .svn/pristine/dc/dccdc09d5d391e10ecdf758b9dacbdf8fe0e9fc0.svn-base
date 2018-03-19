@@ -1,0 +1,746 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib uri="/WEB-INF/mytag.tld" prefix="my"%>
+<%@ taglib uri="/WEB-INF/bluemobi-tag.tld" prefix="bmtag"%>
+
+<link href="<%=request.getContextPath()%>/res/commen.css"
+	rel="stylesheet" />
+<script type="text/javascript">
+	var webroot = "${webroot}";
+	function ajaxDoneCallback(json){
+	}
+	//获取城市
+	function getCity(proviceId){
+		 
+		$.get(webroot + "/admin/electric/getCityCode.do?proviceId="+proviceId.value+"",{}, function(data) {
+			var json = eval("(" + data + ")");
+			$(".editCityId").html("");
+			$("<option value=''>-请选择-</option>").appendTo(
+					$(".editCityId"));
+			$.each(json, function(i) { 
+				$(  
+						"<option value='"+json[i].cityId+"'>"
+								+ json[i].cityName + "</option>").appendTo(
+						$(".editCityId"));
+			});
+		});
+	}
+	//获取区县
+	function getCounty(cityId){
+		$.get(webroot + "/admin/electric/getCountyCode.do?cityId="+cityId.value+"", {}, function(data) {
+			var json = eval("(" + data + ")");
+			$(".editCountyId").html("");
+			$("<option value=''>-请选择-</option>").appendTo(
+					$(".editCountyId"));
+			$.each(json, function(i) {
+				$(
+						"<option value='"+json[i].areaId+"'>"
+								+ json[i].areaName + "</option>").appendTo(
+						$(".editCountyId"));
+			});
+			 
+		});
+	}
+	
+	function getRateinfo(countyCode){
+		$.get(webroot + "/admin/electric/getRateInfo.do?countyCode="+countyCode.value+"",{}, function(data) {			
+			if(data){
+				var json = eval("(" + data + ")");
+				$(".editElPiRateInformationId").html("");
+				$("<option value=''>-请选择-</option>").appendTo(
+						$(".editElPiRateInformationId"));
+				if(json.length>0){
+						$.each(json, function(i) { 					
+							$(     "<option value='"+json[i].pk_RateInformation+"'>预约单价:"
+									+ json[i].raIn_ReservationRate+"&nbsp;,&nbsp;服务费:"+json[i].raIn_ServiceCharge+  "</option>").appendTo(
+									$(".editElPiRateInformationId"));										
+					});			
+				}else{
+					alertMsg.error("该地区未设置费率");					
+				}
+
+			}
+			
+		});
+	}
+	//删除公司标志
+	$("#deleteCompanyNumber").on("click",function(){
+		$("#companyNumber").val(0);
+		$("#companyName").val("");
+	});
+	function changeByElpiState(){
+		elpiState=$("#elpiState").val();
+		if(elpiState !=15){
+			$(".btnLook").show();
+			$(".delete").show();
+			
+		}else{
+			$(".btnLook").hide();
+			$(".delete").hide();
+		}
+	}
+	changeByElpiState();
+	//分享状态的电桩限制编辑省市区
+	function changeRegion(){
+		var elpiState = $("#elpiState").val();
+		if(elpiState==12){
+			$("#elPiOwnProvinceCode").prop("disabled",true);
+			$("#editCityId").prop("disabled",true);
+			$("#editCountyId").prop("disabled",true);
+		}
+	}
+	changeRegion();
+</script>
+<h2 class="contentTitle">
+	<bmtag:message messageKey="electriclabel.editUser" />
+</h2>
+<div class="pageContent">
+	<form method="post" action="electric/changeElectricPile.do"
+		class="pageForm required-validate" enctype="multipart/form-data"
+		onsubmit="return iframeCallback(this, navTabAjaxDone)">
+		<input type="hidden" name="pkElectricpile"
+			value="${tblElectricpile.pkElectricpile}" />
+		<!-- 电桩状态 -->
+		<input type="hidden" name="elpiPoweruser" value="3" />
+		<div class="pageFormContent nowrap" layoutH="97">
+			<input type="hidden" name="elpiElectricpilecode"
+				value="${tblElectricpile.elpiElectricpilecode}" />
+			<%-- <dl>
+				<dt>
+					<bmtag:message messageKey="electric.label.code" />
+				</dt>
+				<dd>
+					<input type="hidden" name="elpiElectricpilecode"
+						value="${tblElectricpile.elpiElectricpilecode}" /> <input
+						name="elpiElectricpilecode1" disabled="disabled"
+						class="textInput alphanumeric required"
+						value="${tblElectricpile.elpiElectricpilecode}"
+						remote="user/checkUserUnique.do" maxlength="10"
+						style="width: 165px;" /> <span class="info"></span>
+				</dd>
+			</dl> --%>
+			<dl>
+				<dt>
+					<bmtag:message messageKey="electric.label.name" />
+				</dt>
+				<dd>
+					<input name="elpiElectricpilename"
+						value="${tblElectricpile.elpiElectricpilename}"
+						class="textInput required" maxlength="20" style="width: 165px;" />
+					<span class="info"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>
+					<bmtag:message messageKey="electric.label.longitude" />
+				</dt>
+				<dd>
+					<input name="elpiLongitude" maxlength="20"
+						class="textInput required" style="width: 165px;" max="136"
+						min="74" value="${tblElectricpile.elpiLongitude}" /> <span
+						class="info"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>
+					<bmtag:message messageKey="electric.label.latitude" />
+				</dt>
+				<dd>
+					<input name="elpiLatitude" maxlength="20"
+						class="textInput required" style="width: 165px;" max="54" min="18"
+						value="${tblElectricpile.elpiLatitude}" /> <span class="info"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>
+					<bmtag:message messageKey="electric.label.way" />
+				</dt>
+				<dd>
+					<select name="elpiChargingmode" id="elpiChargingmode"
+						class="select_Style" onchange="changePileNum(this.value)">
+						<c:forEach var="item" items="${chargeList}">
+							<option value="${item.pkConfigcontent}"
+								${item.pkConfigcontent==
+								tblElectricpile.elpiChargingmode ? 'selected="selected"' : ''}>
+								${item.cocoContent}</option>
+						</c:forEach>
+					</select> <span class="info"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>
+					<bmtag:message messageKey="electric.label.state" />
+				</dt>
+				<dd>
+					<input type="hidden" id="elpiState" name="elpiState"
+						value="${tblElectricpile.elpiState}" />
+					<c:if test="${tblElectricpile.elpiState ==0}">草稿</c:if>
+					<c:if test="${tblElectricpile.elpiState ==5}">提交审核 </c:if>
+					<c:if test="${tblElectricpile.elpiState ==12}">分享申请中 </c:if>
+					<c:if test="${tblElectricpile.elpiState ==3}">已驳回 </c:if>
+					<c:if test="${tblElectricpile.elpiState ==10}">专属 </c:if>
+					<c:if test="${tblElectricpile.elpiState ==15}">分享</c:if>
+					<%--  <c:choose>
+						<c:when test="${tblElectricpile.elpiState!=3}">
+							<select name="elpiState" class="select_Style">
+								<option value="0" ${tblElectricpile.elpiState==0 ? 'selected="selected"' : ''}>草稿</option>
+								<option value="5" ${tblElectricpile.elpiState==5 ? 'selected="selected"' : ''}>提交审核</option>
+								<option value="3" ${tblElectricpile.elpiState==3 ? 'selected="selected"' : ''}>已驳回</option>
+								<option value="10" ${tblElectricpile.elpiState==10 ? 'selected="selected"' : ''}>离线</option>
+								<option value="15" ${tblElectricpile.elpiState==15 ? 'selected="selected"' : ''}>上线</option>
+							 </select> 
+						</c:when>
+						<c:otherwise>
+							<select name="elpiState" class="select_Style">
+								<!-- <option value="0" ${tblPowerstation.postStatus==0
+									? 'selected="selected"' : ''}>草稿</option>
+								<option value="5" ${tblPowerstation.postStatus==5
+									? 'selected="selected"' : ''}>提交审核</option> -->
+								<option value="3" ${tblElectricpile.elpiState==3
+									? 'selected="selected"' : ''}>已驳回</option>
+								<option value="10" ${tblElectricpile.elpiState==10
+									? 'selected="selected"' : ''}>离线</option>
+						<!-- 		<option value="15" ${tblPowerstation.postStatus==15
+									? 'selected="selected"' : ''}>上线</option> -->
+							</select>
+						</c:otherwise>
+					</c:choose> --%>
+					<span class="info"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>
+					<bmtag:message messageKey="electric.label.power" />
+				</dt>
+				<dd>
+					<select name="elpiPowersize" class="select_Style">
+						<c:forEach var="item" items="${powerList}">
+							<option value="${item.pkConfigcontent}"
+								${item.pkConfigcontent==
+								tblElectricpile.elpiPowersize ? 'selected="selected"' : ''}>
+								${item.cocoContent}</option>
+
+						</c:forEach>
+					</select> <span class="info"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>
+					<bmtag:message messageKey="electric.label.address" />
+				</dt>
+				<dd>
+					<input name="elpiElectricpileaddress" class="textInput"
+						maxlength="50" style="width: 165px;"
+						value="${tblElectricpile.elpiElectricpileaddress}" /> <span
+						class="info"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>
+					<bmtag:message messageKey="备注信息" />
+				</dt>
+				<dd>
+					<input name="elpiRemark" class="textInput" maxlength="50"
+						style="width: 165px;" value="${tblElectricpile.elpiRemark}" /> <span
+						class="info"></span>
+				</dd>
+			</dl>
+
+
+
+			<%-- <dl>
+				<dt>
+					<bmtag:message messageKey="electric.label.eleUser" />
+				</dt>
+				<dd>
+					<select name="elpiPoweruser" class="select_Style">
+						<c:forEach var="item" items="${elctrcUseList}">
+							<option value="${item.pkConfigcontent}" ${item.pkConfigcontent==
+								tblElectricpile.elpiPoweruser ? 'selected="selected"' : ''} >
+								${item.cocoContent}</option>
+
+						</c:forEach>
+					</select> <span class="info"></span>
+				</dd>
+			</dl> --%>
+			<dl>
+				<dt>
+					<bmtag:message messageKey="electric.label.type" />
+				</dt>
+				<dd>
+					<select name="elpiType" class="select_Style">
+						<c:forEach var="item" items="${typeList}">
+							<option value="${item.pkConfigcontent}"
+								${item.pkConfigcontent==
+								tblElectricpile.elpiType ? 'selected="selected"' : ''}>
+								${item.cocoContent}</option>
+
+						</c:forEach>
+					</select> <span class="info"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>
+					<bmtag:message messageKey="接口标准" />
+				</dt>
+				<dd>
+					<select name="elpiPowerinterface" class="select_Style">
+						<c:forEach var="item" items="${connectorList}">
+							<option value="${item.pkConfigcontent}"
+								${item.pkConfigcontent==
+								tblElectricpile.elpiPowerinterface ? 'selected="selected"' : ''}>
+								${item.cocoContent}</option>
+
+						</c:forEach>
+					</select> <span class="info"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>
+					<bmtag:message messageKey="制造厂家" />
+				</dt>
+				<dd>
+					<select name="elpiMaker" id="elpiMaker"
+						class="select_Style required">
+						<c:forEach var="item" items="${markList}">
+							<option value="${item.pkCarmaker}"
+								${item.pkCarmaker==
+								tblElectricpile.elpiMaker ? 'selected="selected"' : ''}>
+								${item.makerName}</option>
+						</c:forEach>
+					</select> <span class="info"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>
+					<bmtag:message messageKey="产品型号" />
+				</dt>
+				<dd>
+					<select name="elpiTypeSpanId" id="elpiTypeSpanId"
+						class="select_Style required">
+						<option value="">请选择</option>
+						<c:forEach var="item" items="${typespanList}">
+							<option value="${item.pkTypeSpanId}"
+								${item.pkTypeSpanId==
+								tblElectricpile.elpiTypeSpanId ? 'selected="selected"' : ''}>
+								${item.tsTypeSpan}</option>
+						</c:forEach>
+					</select> <span class="info"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>
+					<bmtag:message messageKey="软硬件信息" />
+				</dt>
+				<dd>
+					<c:forEach var="epVersion" items="${epVersionList}">
+						<td>硬件编号：${epVersion.evHardwareNumber}
+							硬件版本：${epVersion.evHardwareVersion}
+							固件编号：${epVersion.evFirmwareNumber}
+							固件版本号：${epVersion.evFirmwareVersion}</td>
+						<br>
+					</c:forEach>
+				</dd>
+			</dl>
+			<c:if test="${loginUserLevel != 5}">
+				<dl>
+					<dt>
+						<bmtag:message messageKey="公司标识" />
+					</dt>
+					<dd>
+						<input name="companyNumber" type="hidden"
+							value="${tblElectricpile.companyNumber}" id="companyNumber" /> <input
+							name="companyName" type="text"
+							value="${tblElectricpile.companyName}" disabled id="companyName" />
+						<a class="btnLook"
+							href="../admin/electric/getCompanyNumberList.do" lookupGroup="">查找公司</a>
+						<span class="info">(请选择公司)</span> <input type="button" value="删除"
+							class="delete" id="deleteCompanyNumber" />
+					</dd>
+				</dl>
+			</c:if>
+			<dl>
+				<dt>
+					<bmtag:message messageKey="运营平台" />
+				</dt>
+				<dd>
+					<select name="elPiOwnerCompany" class="select_Style required">
+						<option value="1"
+							${tblElectricpile.elPiOwnerCompany == 1? 'selected="selected"' : ''}>爱充</option>
+						<option value="2"
+							${tblElectricpile.elPiOwnerCompany == 2? 'selected="selected"' : ''}>国网</option>
+						<option value="3"
+							${tblElectricpile.elPiOwnerCompany == 3? 'selected="selected"' : ''}>特斯拉</option>
+						<option value="0"
+							${tblElectricpile.elPiOwnerCompany == 0? 'selected="selected"' : ''}>其他</option>
+					</select> <span class="info"></span>
+				</dd>
+			</dl>
+
+			<dl>
+				<dt>
+					<bmtag:message messageKey="所有权" />
+				</dt>
+				<dd>
+					<input name="ownerShip" id="ownerShip" class="textInput required"
+						maxlength="13" style="width: 165px;"
+						value="${tblElectricpile.ownerShip}" /> <span class="info"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>
+					<bmtag:message messageKey="省份" />
+				</dt>
+				<dd>
+					<select name="elPiOwnProvinceCode" id="elPiOwnProvinceCode"
+						style="width: 172px !important" class="select_Style"
+						onchange="getCity(this)">
+						<option value="">-请选择-</option>
+						<c:forEach var="item" items="${provinceCodeList}">
+							<option value="${item.provinceId}"
+								${item.provinceId==
+								tblElectricpile.elPiOwnProvinceCode ? 'selected="selected"' : ''}>${item.provinceName}</option>
+						</c:forEach>
+					</select> <span class="info"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>
+					<bmtag:message messageKey="城市" />
+				</dt>
+				<dd>
+					<select id="editCityId" name="elPiOwnCityCode"
+						class="select_Style editCityId" onchange="getCounty(this)">
+						<option value="">-请选择-</option>
+						<c:forEach var="item" items="${cityList}">
+							<option value="${item.cityId}"
+								${item.cityId==
+								tblElectricpile.elPiOwnCityCode ? 'selected="selected"' : ''}>${item.cityName}</option>
+						</c:forEach>
+					</select> <span class="info"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>
+					<bmtag:message messageKey="区/县" />
+				</dt>
+				<dd>
+					<select id="editCountyId" name="elPiOwnCountyCode"
+						class="select_Style editCountyId" onchange="getRateinfo(this)">
+						<option value="">-请选择-</option>
+						<c:forEach var="item" items="${countyList}">
+							<option value="${item.areaId}"
+								${item.areaId==
+								tblElectricpile.elPiOwnCountyCode ? 'selected="selected"' : ''}>${item.areaName}</option>
+						</c:forEach>
+					</select> <span class="info"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>
+					<bmtag:message messageKey="所属用户" />
+				</dt>
+				<dd>
+					<input type="hidden" name="tblElectricpile.elPiOwner" />
+					${tblElectricpile.elPiUserName} <span class="info"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>
+					<bmtag:message messageKey="electric.label.listImage" />
+				</dt>
+				<dd id="imageDD">
+					<c:forEach var="item" items="${tblElectricpile.elpiImageUrl}"
+						varStatus="status">
+						<t> <img src="${item}" style="width: 150px; height: 150px;" />
+						<a href="javascript:void(0);"
+							onclick="deleteFile('${item}',this,'${tblElectricpile.pkElectricpile}')">删除</a>
+						</t>
+					</c:forEach>
+					<input type="hidden" id="businessType" name="businessType"
+						value="electricListImage" /> <input type="hidden" id="fileId"
+						name="fileId" /> <input id="electricEditFileInput" type="file"
+						name="listImage" class="file" style="width: 260px;"
+						uploaderOption="{
+							swf:'<%=request.getContextPath()%>/res/dwz/uploadify/scripts/uploadify.swf',
+							uploader:'<%=request.getContextPath()%>/common/uploadFile.do;jsessionid=<%=session.getId()%>',
+							formData:{type:'electricListImage',isZip:'1',referenceId:'${tblElectricpile.pkElectricpile}'},
+							buttonText:'请选择文件',
+							queueID:'fileQueue',
+							queueSizeLimit:'6',
+							fileSizeLimit:'8MB',
+							fileTypeDesc:'*.jpg;*.jpeg;*.gif;*.png;',
+							fileTypeExts:'*.jpg;*.jpeg;*.gif;*.png;',
+							fileObjName: 'file', 
+							auto:true,
+							multi:true,
+							overrideEvents:[ 'onDialogClose', 'onUploadSuccess', 'onUploadError', 'onSelectError' ],
+							onSelectError:uploadify_onSelectError,
+   							onUploadError:uploadify_onUploadError,
+							onUploadStart:electricFileUploadStart,
+							onUploadSuccess:electricFileUploadSuccess,
+							onQueueComplete:electricFileUploadComplete
+						}" />
+					<input type="hidden" id="fileQueue" name="fileQueue" />
+				</dd>
+			</dl>
+			<dl>
+				<dt>
+					<bmtag:message messageKey="联系电话" />
+				</dt>
+				<dd>
+					<input name="elPi_Tell" class="textInput"
+						value="${tblElectricpile.elPi_Tell}" maxlength="50"
+						style="width: 165px;" /> <span class="info"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>
+					<bmtag:message messageKey="开放时间" />
+				</dt>
+				<dd>
+					<input name="elPiOnlineTime"
+						value="${tblElectricpile.elPiOnlineTime}" class="textInput"
+						style="width: 165px">
+				</dd>
+			</dl>
+			<dl>
+				<dt>
+					<bmtag:message messageKey="费率 / 分钟" />
+				</dt>
+				<dd>
+					<select class="required editElPiRateInformationId"
+						id="editElPiRateInformationId" name="elPiRateInformationId"
+						class="select_Style">
+						<option value="">-请选择-</option>
+						<c:forEach var="item" items="${rateList}">
+							<option value="${item.pk_RateInformation}"
+								${item.pk_RateInformation==
+								tblElectricpile.elPiRateInformationId? 'selected="selected"' : ''}>id:${item.pk_RateInformation}&nbsp;,预约单价:${item.raIn_ReservationRate}&nbsp;,&nbsp;服务费:${item.raIn_ServiceCharge}</option>
+						</c:forEach>
+					</select> <span class="info"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>
+					<bmtag:message messageKey="sim卡卡号" />
+				</dt>
+				<dd>
+					<input name="elPiSimPhoneNum" class="phone textInput "
+						maxlength="13" style="width: 165px;"
+						value="${tblElectricpile.elPiSimPhoneNum}" /> <span class="info"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>
+					<bmtag:message messageKey="sim卡编码" />
+				</dt>
+				<dd>
+					<input name="elPiSimMac" class="textInput " maxlength="20"
+						style="width: 165px;" value="${tblElectricpile.elPiSimMac}" /> <span
+						class="info"></span>
+				</dd>
+			</dl>
+			<%-- <c:if test="${loginUserLevel == '3'}"> --%>
+			<dl>
+				<dt>
+					<bmtag:message messageKey="下线时间" />
+				</dt>
+				<dd>
+					<input id="change_offlineTime" class="date"
+						value="${tblElectricpile.offlineTime}" type="text" readonly="true"
+						datefmt="yyyy-MM-dd HH:mm" name="offlineTime" style="width: 130px"
+						onClick="WdatePicker({el:'change_offlineTime',dateFmt:'yyyy-MM-dd HH:mm',minDate:'1970-01-01'})">
+					<span class="info"></span>
+				</dd>
+			</dl>
+			<%-- </c:if> --%>
+			<dl>
+				<dt>
+					<bmtag:message messageKey="是否支持预约" />
+				</dt>
+				<dd>
+					<select name="elpiIsappoint" class="select_Style required">
+						<option value="">-请选择-</option>
+						<option value="1"
+							<c:if test="${tblElectricpile.elpiIsappoint == 1}">selected="selected"</c:if>>是</option>
+						<option value="0"
+							<c:if test="${tblElectricpile.elpiIsappoint == 0}">selected="selected"</c:if>>否</option>
+					</select> <span class="info"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>
+					<bmtag:message messageKey="是否支持通讯" />
+				</dt>
+				<dd>
+					<select name="elPiHaveGps" class="select_Style required">
+						<option value="">-请选择-</option>
+						<option value="1"
+							<c:if test="${tblElectricpile.elPiHaveGps == 1}">selected="selected"</c:if>>是</option>
+						<option value="0"
+							<c:if test="${tblElectricpile.elPiHaveGps == 0}">selected="selected"</c:if>>否</option>
+					</select> <span class="info"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>
+					<bmtag:message messageKey="是否有LED灯" />
+				</dt>
+				<dd>
+					<select name="elPiHaveLedFlash" class="select_Style required">
+						<option value="">-请选择-</option>
+						<option value="1"
+							<c:if test="${tblElectricpile.elPiHaveLedFlash == 1}">selected="selected"</c:if>>是</option>
+						<option value="0"
+							<c:if test="${tblElectricpile.elPiHaveLedFlash == 0}">selected="selected"</c:if>>否</option>
+					</select> <span class="info"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>
+					<bmtag:message messageKey="是否有枪" />
+				</dt>
+				<dd>
+					<select name="elPiHaveConnectLine" class="select_Style required">
+						<option value="">-请选择-</option>
+						<option value="1"
+							${tblElectricpile.elPiHaveConnectLine == 1?'selected':''}>是</option>
+						<option value="0"
+							${tblElectricpile.elPiHaveConnectLine == 0?'selected':''}>否</option>
+					</select> <span class="info"></span>
+				</dd>
+			</dl>
+			<input type="hidden" name="gateId" value="${tblElectricpile.gateId}" />
+			<dl>
+				<dt>
+					<bmtag:message messageKey="最大输出电压" />
+				</dt>
+				<dd>
+					<input id="elpiOutputvoltage" name="elpiOutputvoltage"
+						class="textInput required number" maxlength="20"
+						style="width: 165px;" value="${tblElectricpile.elpiOutputvoltage}" />
+					<span class="info"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>
+					<bmtag:message messageKey="最大输出电流" />
+				</dt>
+				<dd>
+					<input id="elpiOutputcurrent" name="elpiOutputcurrent"
+						class="textInput required number" maxlength="20"
+						style="width: 165px;" value="${tblElectricpile.elpiOutputcurrent}" />
+					<span class="info"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>
+					<bmtag:message messageKey="electric.icon.muzzleSum" />
+				</dt>
+				<dd>
+					<%--  <input type="hidden" name="elpiPowernumber" value="${tblElectricpile.elpiPowernumber}" /> --%>
+					<input id="elpiPowernumber" name="elpiPowernumber" maxlength="20"
+						class="textInput required" readonly style="width: 165px;"
+						value="${tblElectricpile.elpiPowernumber}" />
+				</dd>
+			</dl>
+			<dl>
+				<dt>
+					<strong>枪头信息：</strong>
+				</dt>
+			</dl>
+			<dl>
+				<dt>
+					<table width="100%">
+						<colgroup width="40%">
+						<colgroup width="30%">
+						<colgroup width="30%">
+						<thead>
+							<tr height="20">
+								<th align="left">车位号</th>
+								<th align="left">地锁</th>
+								<th align="left">雷达</th>
+							</tr>
+						</thead>
+						<tbody id="row_head">
+							<c:forEach var="headInfo" items="${tblElectricpile.headList}"
+								varStatus="status">
+								<tr>
+									<td><input
+										name="headList[${status.index}].pkElectricpilehead"
+										type="hidden" value="${headInfo.pkElectricpilehead}">
+										<input class="required"
+										name="headList[${status.index}].ephNum" type="text"
+										value="${headInfo.ephNum}"></td>
+									<td><select style="width: 80px" class="required"
+										name="headList[${status.index}].havaCarPlaceLock">
+											<option value="0"
+												<c:if test="${headInfo.havaCarPlaceLock == '0'}">selected</c:if>>无</option>
+											<option value="1"
+												<c:if test="${headInfo.havaCarPlaceLock == '1'}">selected</c:if>>有</option>
+									</select></td>
+									<td><select style="width: 80px" class="required"
+										name="headList[${status.index}].haveRadar">
+											<option value="0"
+												<c:if test="${headInfo.haveRadar == '0'}">selected</c:if>>无</option>
+											<option value="1"
+												<c:if test="${headInfo.haveRadar == '1'}">selected</c:if>>有</option>
+									</select></td>
+								</tr>
+							</c:forEach>
+						</tbody>
+					</table>
+				</dt>
+			</dl>
+		</div>
+
+		<div class="formBar">
+			<ul>
+				<li><bmtag:button messageKey="common.button.submit"
+						type="submit" id="formSubmitter" /></li>
+				<li><bmtag:button messageKey="common.button.back" type="button"
+						dwzClass="close" /></li>
+			</ul>
+		</div>
+	</form>
+</div>
+
+<script type="text/javascript">
+	var state ="${tblElectricpile.elpiState}";
+	if(state=="10" || state=="15"){
+		$("#elpiMaker").attr("disabled","disabled");
+		$("#elPiOwnProvinceCode").attr("disabled","disabled");
+		$("#editCityId").attr("disabled","disabled");
+		$("#editCountyId").attr("disabled","disabled");
+		$("#elpiChargingmode").attr("disabled","disabled");
+	}
+	if( state=="12"){
+		$("#editElPiRateInformationId").prop("disabled",true);
+	}
+	
+	var loginUserLevel = "${loginUserLevel}";//登陆用户类型
+	var userLevel = "${tblElectricpile.userLevel}";//电桩所属用户类型
+	if(loginUserLevel =='1' || loginUserLevel=='2'){
+		if(userLevel=='3'||userLevel=='5'){
+			$("#editElPiRateInformationId").attr("disabled","disabled");
+		}
+	}
+
+	function changePileNum(num){
+		if(num == 5){
+			$("input[name=elpiPowernumber]").attr("max",4)
+		}else if(num == 14){
+			$("input[name=elpiPowernumber]").attr("max",2)
+		}
+		
+	}
+	
+</script>
+<script type="text/javascript"
+	src="<%=request.getContextPath()%>/static/js/electric/electric-uploadFile.js" />
+<script type="text/javascript"
+	src="<%=request.getContextPath()%>/static/js/electric/electric-pileHead.js" />

@@ -1,0 +1,284 @@
+//新建校验
+$('body').off('blur', '#raIn_Name').on('blur', '#raIn_Name', function () {
+});
+
+function checkIsNullOrIsNum(checkVal, tip, isNullErrorMsg, isNotNumErrorMsg) {
+    if (!checkVal) {
+        $(tip).html(isNullErrorMsg);
+        return false;
+    }
+    if (checkIsNum(checkVal)) {
+        $(tip).html(isNotNumErrorMsg);
+        return false;
+    }
+
+    $(tip).html('');
+    return true;
+}
+
+function checkIsNum(str) {
+    var re = /^(([1-9][0-9]*\.[0-9][0-9]*)|([0]\.[0-9][0-9]*)|([1-9][0-9]*)|([0]{1}))$/;
+    return !re.test(str);
+}
+
+//将数据提交到后台处理
+function saveRateInfo() {
+    var raIn_Name = $('#raIn_Name').val();
+    var raIn_TipTimeTariffPrice = $('#raIn_TipTimeTariffPrice').val();
+    var raIn_PeakElectricityPrice = $('#raIn_PeakElectricityPrice').val();
+    var raIn_UsualPrice = $('#raIn_UsualPrice').val();
+    var raIn_ValleyTimePrice = $('#raIn_ValleyTimePrice').val();
+    var raIn_type = $("input[name='raIn_type']:checked").val();
+    var uniformPrice = $('#uniformPrice').val();
+    var raIn_TipTimeTariffMoney = $('#raIn_TipTimeTariffMoney').val();
+    var raIn_PeakElectricityMoney = $('#raIn_PeakElectricityMoney').val();
+    var raIn_UsualMoney = $('#raIn_UsualMoney').val();
+    var raIn_ValleyTimeMoney = $('#raIn_ValleyTimeMoney').val();
+    var raIn_QuantumDate = formatTimeListToJSON('rateinfoTbody');
+
+    var obj = {
+        raIn_Name: raIn_Name,
+        raIn_TipTimeTariffPrice: raIn_TipTimeTariffPrice,
+        raIn_PeakElectricityPrice: raIn_PeakElectricityPrice,
+        raIn_UsualPrice: raIn_UsualPrice,
+        raIn_ValleyTimePrice: raIn_ValleyTimePrice,
+        raIn_type: raIn_type,
+        uniformPrice: uniformPrice,
+        raIn_TipTimeTariffMoney: raIn_TipTimeTariffMoney,
+        raIn_PeakElectricityMoney: raIn_PeakElectricityMoney,
+        raIn_UsualMoney: raIn_UsualMoney,
+        raIn_ValleyTimeMoney: raIn_ValleyTimeMoney,
+        raIn_QuantumDate: raIn_QuantumDate
+    };
+
+    $.ajax({
+        type: "post",
+        url: basePath + addRateInfoUrl,
+        async: true,
+        data: obj,
+        success: function (data) {
+            if (data.success == true) {
+                window.location.href = 'rateInfo.html';
+            } else {
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:center"],
+                    shadeClose: false,
+                    closeBtn: 2,
+                    area: ['310px', '160px'],//宽高
+                    content: data.msg,
+                    time: 3000,
+                    btn: ["确定", "取消"]
+                });
+            }
+        }
+    });
+}
+
+//返回列表页
+$('#goback').on('click', function () {
+    window.location.href = 'rateInfo.html';
+});
+
+//费率表格逻辑处理
+cleanRow("rateinfoTbody");
+timeListAddRow("rateinfoTbody");
+$("#timeListAddBtn").off("click").on("click", function () {
+    $(".rateInfoAddTipText").html("").hide();
+    timeListAddRow("rateinfoTbody");
+});
+var tempHour = 0;
+var tempMinute = 0;
+function cleanRow(tableId) {
+    tempHour = 0;
+    tempMinute = 0;
+    $("#" + tableId).html("");
+}
+function timeListAddRow(tableId, data) {
+    //第一行复选框禁用
+    var tempType = "";
+    var selected = "";
+    var indexList = $("#" + tableId + " tr").length;
+    var disabled = indexList == 0 ? 'disabled="disabled"' : "";
+    var typeOptions = "";
+    var shOptions = "", smOptions = "", ehOptions = "", emOptions = "";
+    var type = "", sh = 0, sm = 0, eh = 0, em = 0;
+
+    if (data) {
+        type = data.mark;
+        sh = data.sh;
+        sm = data.sm;
+        eh = data.eh;
+        em = data.em;
+    }
+    var typeArray = new Array("尖", "峰", "平", "谷");
+    for (var i = 1; i <= 4; i++) {
+        if (type == i) {
+            selected = "selected";
+        } else {
+            selected = "";
+        }
+        typeOptions += '<option value="' + i + '" ' + selected + '>' + typeArray[i - 1] + '</option>';
+    }
+    for (var i = 0; i <= 24; i++) {
+        if ((tempHour != 0 && tempHour == i) || sh == i) {
+            selected = "selected";
+        } else {
+            selected = "";
+        }
+        shOptions += '<option value="' + i + '" ' + selected + '>' + i + '</option>';
+    }
+    for (var i = 0; i <= 24; i++) {
+        if (eh == i) {
+            selected = "selected";
+        } else {
+            selected = "";
+        }
+        ehOptions += '<option value="' + i + '" ' + selected + '>' + i + '</option>';
+    }
+    for (var i = 0; i < 60; i++) {
+        if ((tempMinute != 0 && tempMinute == i) || sm == i) {
+            selected = "selected";
+        } else {
+            selected = "";
+        }
+        smOptions += '<option value="' + i + '" ' + selected + '>' + i + '</option>';
+    }
+    for (var i = 0; i < 60; i++) {
+        if (em == i) {
+            selected = "selected";
+        } else {
+            selected = "";
+        }
+        emOptions += '<option value="' + i + '" ' + selected + '>' + i + '</option>';
+    }
+    var html = '<tr><td class="smallWidth"><input ' + disabled + ' type="checkbox" name="test" class="selectPer" value=""/></td>'
+        + '<td><select name="mark">' + typeOptions + '</select></td>'
+        + '<td><select name="starth">' + shOptions + '</select><span>时</span>'
+        + '<select name="startm">' + smOptions + '</select><span>分</span></td>'
+        + '<td><select name="endh" onchange="setHour(this)">' + ehOptions + '</select><span>时</span>'
+        + '<select name="endm" onchange="setMinute(this)">' + emOptions + '</select><span>分</span></td></tr>';
+    $("#" + tableId).append(html);
+}
+function setHour(obj) {
+    tempHour = obj.value;
+}
+function setMinute(obj) {
+    tempMinute = obj.value;
+}
+function formatTimeListToJSON(tableId) {
+    var json = "{\"data\":[";
+    $("#" + tableId + " tr").each(function (i) {
+        var mark = $(this).find("select[name='mark']").val();
+        var starth = $(this).find("select[name='starth']").val();
+        var startm = $(this).find("select[name='startm']").val();
+        var endh = $(this).find("select[name='endh']").val();
+        var endm = $(this).find("select[name='endm']").val();
+        var st = parseInt(starth) * 60 + parseInt(startm);
+        var et = parseInt(endh) * 60 + parseInt(endm);
+        json += "{\"st\":" + st + ",\"et\":" + et + ",\"mark\":" + "\"" + mark + "\"},";
+    });
+    json = json.substring(0, json.length - 1);
+    json += "]}";
+    return json;
+}
+$("#timeListDeleteBtn").off("click").on("click", function () {
+    timeListDelete();
+});
+
+function timeListDelete() {
+    if ($("#rateinfoTbody tr").length == 1) {
+        $(".rateInfoAddTipText").html("第一行不能删除").show();
+        return;
+    }
+    if ($("#rateinfoTbody tr").length > 1) {
+        if ($("#rateinfoTbody tr").length == $("input[name='test']:checked").length) {
+            $("#rateinfoTbody tr:not(:first)").remove();
+            $(".rateInfoAddTipText").html("第一行不能删除").show();
+        } else {
+            $("input[name='test']:checked").each(function () { // 遍历选中的checkbox
+                n = $(this).parents("tr").index() + 1; // 获取checkbox所在行的顺序，多加1行是因为标题
+                $("table#rateInfoAddTable").find("tr:eq(" + n + ")").remove();
+                $(".rateInfoAddTipText").html("").hide();
+            });
+        }
+
+    }
+    return true;
+}
+function toAddRateInfo() {
+    testTimeAdd();
+}
+function testTimeAdd() {
+    var firstEndH = "";
+    var firstEndM = "";
+    var firstEndHT = "";
+    var firstEndMT = "";
+    var secondStartH = "";
+    var secondStartM = "";
+    var boo = 1;
+    $("#rateinfoTbody").find("tr").each(function (index) {
+        //遍历每行的每个select
+        $("select", this).each(function (cindex) {
+            var name = $(this).attr("name");
+            //		alert(cindex);
+            //将每行的开始时间存放起来
+            if (name == "starth") {
+                secondStartH = $(this).val();
+            } else if (name == "startm") {
+                secondStartM = $(this).val();
+            } else if (name == "endh") {
+                firstEndH = $(this).val();
+            } else if (name == "endm") {
+                firstEndM = $(this).val();
+            }
+        });
+
+        //第一行的开始时间必须从0点开始
+        if (index == 0) {
+            if (secondStartH != 0 || secondStartM != 0) {
+                //			alert("费率的起始时间必须从每天0点开始，请重新设置");
+                $(".rateInfoAddTipText").html("费率的起始时间必须从每天0点开始，请重新设置").show();
+                boo = 0;
+                return false;
+            }
+        }
+        if ((parseInt(secondStartH) * 60 + parseInt(secondStartM)) >= (parseInt(firstEndH) * 60 + parseInt(firstEndM))) {
+            //alert(((secondStartH * 60 + secondStartM) >= (firstEndH * 60 + firstEndM)) + "||" + (secondStartH * 60 + secondStartM) + "--" + (firstEndH * 60 + firstEndM));
+            //		alert("时间段设置--同行的结束时间必须大于开始时间，请重新设置");
+            $(".rateInfoAddTipText").html("时间段设置--同行的结束时间必须大于开始时间，请重新设置").show();
+            boo = 0;
+            return false;
+        }
+        //在有多行的时候再开始判断
+        if (index > 0) {
+            //alert(secondStartH + ":" + secondStartM + "--" + firstEndHT + ":" + firstEndMT);
+            //上一次的结束时间不等于这一次的开始时间的话给出提示
+            if (secondStartH != firstEndHT || secondStartM != firstEndMT) {
+                //			alert("时间段设置--上一行的结束时间必需与下一行的开始时间相一致，请重新设置");
+                $(".rateInfoAddTipText").html("时间段设置--上一行的结束时间必需与下一行的开始时间相一致，请重新设置").show();
+                boo = 0;
+                return false;
+            }
+            firstEndHT = "";
+            firstEndMT = "";
+        }
+        //将本行最后的时间保存下来，用来与下一行的开始时间比对
+        firstEndHT = firstEndH;
+        firstEndMT = firstEndM;
+        //费率的结束时间必须是每天24点
+    });
+    if (firstEndH != "24") {
+        $(".rateInfoAddTipText").html("费率的最终结束时间必须为每天的24点，请重新设置").show();
+        boo = 0;
+        return false;
+    }
+    if (boo == 0) {
+        return false;
+    } else {
+        $(".rateInfoAddTipText").hide();
+        return true;
+    }
+
+}

@@ -1,0 +1,66 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ include file="../../base.jsp" %>
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>预约收益订单</title>
+		<link rel="stylesheet" type="text/css" href="${ctx}/static/css/order/listBusBespoke.css"/>
+	</head>
+	<body>
+		<div id="container1">
+			<div class="box">
+				<div class="formList">
+					<form id="listBusBespokeForm">
+						<input name="bespResepaymentcode" type="text" style="width: 200px;" class="160width" placeholder="订单编号/电桩编号/电桩名称">
+						<input name="comName" type="text" style="width: 160px;" class="160width" placeholder="商家">
+							<div class="dataBlock">
+								<input type="" name="startDate" id="startDateBusBespoke" value="" placeholder="起始时间"
+									onClick="WdatePicker({el:'startDateBusBespoke',minDate:'2015-01-01',maxDate:'#F{$dp.$D(\'endDateBusBespoke\')}'})"/>
+								<span>至</span>
+								<input type="" name="endDate" id="endDateBusBespoke" value="" placeholder="截止时间" 
+									onClick="WdatePicker({el:'endDateBusBespoke',minDate:'#F{$dp.$D(\'startDateBusBespoke\')}'})"/>
+							</div>
+						<select class="marginLeft10" name="bespOrderType" id="elpiState">
+							<option disabled selected>订单状态</option>
+						</select>
+						
+						<span class="check marginLeft10" onclick="listBusBespokeSearch()">查询</span>
+						<!-- <span class="exportTable marginLeft10 fileExport" rel="listBusBespokeForm" href="/admin/order/bespokeEarnOrderExport.do" >导出EXCEL</span> -->
+					</form>
+				</div>
+			</div>
+			<div class="box2 col-md-10 col-sm-8">
+				<div class="padding30">
+					<table class="myTable listPayOrderTable">
+						<thead>
+							<tr class="active">
+								<th class="smallWidth"><input type="checkbox" name="" class="selAll" value=""/></th>
+								<th class="smallWidth">序号</th>
+								<th>订单编号</th>
+								<th>桩体编号</th>
+								<th>电桩名称</th>
+								<th>商家名称</th>
+								<th>收益</th>
+								<th>预约开始时间</th>
+								<th>预约结束时间</th>
+								<th>实际预约结束时间</th>
+								<th>订单状态</th>
+							</tr>
+						</thead>
+						<tbody id="listBusBespokeTbody">
+						</tbody>
+					</table>
+					<div class="" style="height: 40px; width: auto;">
+						&nbsp;&nbsp;&nbsp;&nbsp;
+					</div>
+				</div>
+			</div>
+			<div id="listBusBespokePage" class="pagination col-md-10 col-sm-10">
+				
+			</div>
+		</div>
+	</body>
+<script src="${ctx}/static/js/order/listBusBespoke.js" type="text/javascript" charset="utf-8"></script>
+</html>

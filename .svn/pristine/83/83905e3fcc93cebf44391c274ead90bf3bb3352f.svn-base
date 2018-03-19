@@ -1,0 +1,179 @@
+package com.wanma.ims.service.impl;
+
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.wanma.ims.common.domain.CarVinRelaDO;
+import com.wanma.ims.common.domain.CompanyDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.common.dto.BatchResultDTO;
+import com.wanma.ims.constants.ResultCodeConstants;
+import com.wanma.ims.mapper.CarVinRelaMapper;
+import com.wanma.ims.mapper.CompanyMapper;
+import com.wanma.ims.mapper.UserMapper;
+import com.wanma.ims.service.CarVinRelaService;
+import com.wanma.ims.util.ExcelImportUtil;
+
+
+@Service
+public class CarVinRelaServiceImpl implements CarVinRelaService{
+
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	@Autowired
+	private CarVinRelaMapper carVinRelaMapper;
+	
+	@Autowired
+	private UserMapper userMapper;
+	
+	@Autowired
+	private CompanyMapper companyMapper;
+	
+	//excel中相同数据集
+	StringBuffer equalDatas = new StringBuffer();
+	
+	//重复数据集
+	StringBuffer repeatDatas = new StringBuffer();
+	
+	//错误数据集
+	StringBuffer errorDatas = new StringBuffer();
+	
+	@Override
+	public BaseResultDTO addCarVinRela(CarVinRelaDO carVinRela)  throws Exception{
+		BaseResultDTO baseResultDTO = new BaseResultDTO();
+		if (carVinRela == null) {
+			log.error(this.getClass() + ".addCarVinRela() error : VIN码信息不能为空！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("VIN码信息不能为空！");
+			return baseResultDTO;
+		}
+		
+		if (carVinRela.getCpyNumber() == null) {
+			log.error(this.getClass() + ".addCarVinRela() error : 渠道不能为空！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("渠道不能为空！");
+			return baseResultDTO;
+		}
+		
+		if (carVinRela.getCvVinCode() == null || "".equals(carVinRela.getCvVinCode())) {
+			log.error(this.getClass() + ".addCarVinRela() error : VIN码不能为空！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("VIN码不能为空！");
+			return baseResultDTO;
+		}
+		
+		Integer cpyNumber = carVinRela.getCpyNumber();
+		CompanyDO company = new CompanyDO();
+		company.setCpyNumber(cpyNumber);
+		company = companyMapper.selectCompanyByCpyInfo(company);
+		if (company.getCpyId() == null) {
+			log.error(this.getClass() + ".addCarVinRela() error : 找不到" + cpyNumber + "对应的公司！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("找不到" + cpyNumber + "对应的公司！");
+			return baseResultDTO;
+		}
+		carVinRela.setCpyId(company.getCpyId());
+		
+		Integer result = carVinRelaMapper.addCarVinRela(carVinRela);
+		if (result == null || result == 0) {
+			log.error(this.getClass() + ".addRateInfo() error : " + ResultCodeConstants.ERROR_MSG_ERROR_ADD);
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail(ResultCodeConstants.ERROR_MSG_ERROR_ADD);
+		}
+		
+		return baseResultDTO;
+	}
+	
+	@Override
+	public Long getCarVinRelaCount(CarVinRelaDO CarVinRela)  throws Exception{
+		return carVinRelaMapper.getCarVinRelaCount(CarVinRela);
+	}
+
+	@Override
+	public List<CarVinRelaDO> getCarVinRelaList(CarVinRelaDO CarVinRela) {
+		return carVinRelaMapper.getCarVinRelaList(CarVinRela);
+	}
+
+	@Override
+	public Integer removeCarVinRela(CarVinRelaDO CarVinRela)  throws Exception{
+		return carVinRelaMapper.removeCarVinRela(CarVinRela);
+	}
+
+	@Override
+	public BaseResultDTO importCarVinRela(MultipartFile file, 
+			CarVinRelaDO carVinRela, UserDO loginUser) throws Exception {
+		if (file == null || file.isEmpty()) {
+			log.error(this.getClass() + ".importCarVinRela() error, file is null");
+            return new BaseResultDTO(false, ResultCodeConstants.FAILED, "请导入正确的VIN码文件！");
+        }
+
+        try {
+            BatchResultDTO<List<String>> result = ExcelImportUtil.importListFromExcel(file);
+            if (result.isFailed()) {
+                return result;
+            }
+            
+            if (carVinRela.getCpyNumber() == null) {
+    			log.error(this.getClass() + ".addCarVinRela() error : 渠道不能为空！");
+    			return new BaseResultDTO(false, ResultCodeConstants.FAILED, "渠道不能为空！");
+    		}
+            Integer cpyNumber = carVinRela.getCpyNumber();
+    		CompanyDO company = new CompanyDO();
+    		company.setCpyNumber(cpyNumber);
+    		company = companyMapper.selectCompanyByCpyInfo(company);
+    		if (company.getCpyId() == null) {
+    			log.error(this.getClass() + ".addCarVinRela() error : 找不到" + cpyNumber + "对应的公司！");
+    			return new BaseResultDTO(false, ResultCodeConstants.FAILED, "找不到" + cpyNumber + "对应的公司！");
+    		}
+    		carVinRela.setCpyId(company.getCpyId());
+
+            processingData(result.getModule(), loginUser, carVinRela);
+        } catch (Exception e) {
+            log.error(this.getClass() + ".importCarVinRela() error|fileName={}", file.getOriginalFilename(), e);
+            return new BaseResultDTO(false, ResultCodeConstants.FAILED, "导入VIN码失败，请刷新页面后重试！");
+        }
+        
+        return new BaseResultDTO(false, ResultCodeConstants.FAILED, 
+        		"导入VIN码成功！" + (repeatDatas.length() > 0 ? (" 重复数据：" + repeatDatas.toString()) : "")
+        		+ (errorDatas.length() > 0 ? (" 错误数据" + errorDatas.toString()) : ""));
+	}
+	
+	private void processingData(List<List<String>> data, UserDO loginUser, CarVinRelaDO carVinRela) {
+		String vinCode = "";
+		repeatDatas = new StringBuffer();
+		errorDatas = new StringBuffer();
+		for (List<String> line : data) {
+			try {
+				CarVinRelaDO carVinRelaDO = new CarVinRelaDO();
+				vinCode = line.get(0);
+				carVinRelaDO.setCvVinCode(vinCode);
+				carVinRelaDO.setCpyId(carVinRela.getCpyId());
+				Long count = carVinRelaMapper.getCarVinRelaCount(carVinRelaDO);
+				if (count > 0) {
+					log.error(this.getClass() + ".processingData() repeat VIN code|VIN码={}", vinCode);
+					repeatDatas.append(vinCode).append("、");
+				}else{
+					carVinRelaDO.setIsUsed(0);
+					carVinRelaDO.setCreatorId(loginUser.getUserId());
+					
+					carVinRelaMapper.addCarVinRela(carVinRelaDO);
+				}
+			} catch (Exception e) {
+				log.error(this.getClass() + ".processingData() error|VIN码={}", vinCode);
+				errorDatas.append(vinCode).append("、");
+			}
+		}
+		
+		if (repeatDatas.length() > 0) {			
+			repeatDatas.substring(0, (repeatDatas.length() - 1));
+		}
+		if (errorDatas.length() > 0) {
+			errorDatas.substring(0, (errorDatas.length() - 1));
+		}
+	}
+}

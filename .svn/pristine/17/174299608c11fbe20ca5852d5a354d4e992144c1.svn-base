@@ -1,0 +1,14 @@
+package com.wanma.ims.model;
+
+import java.io.Serializable;
+
+/**
+ * 等级LevelDO 
+ */
+public class LevelDO implements Serializable{
+
+	private static final long serialVersionUID = 8804644891290769205L;
+	
+	
+    
+}

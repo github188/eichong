@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dubbox.dao.TblCarinfoMapper">
+
+	<resultMap id="tblCarinfoResultMap" type="TblCarinfo">
+		<id property="id" column="pk_CarInfo" />
+		<result property="name" column="CarInfo_StyleName" />
+		<result property="maxOdo" column="CarInfo_MaxOdometer" />
+		<result property="bttCty" column="CarInfo_BatteryCapacity" />
+		<result property="cdate" column="CarInfo_CreateDate" />
+		<result property="udate" column="CarInfo_UpdateDate" />
+		<result property="remark" column="CarInfo_Remark" />
+		<result property="icon" column="CarInfo_BrandIcon" />
+		<result property="comId" column="CarInfo_CompanyId" />
+		<result property="sts" column="CarInfo_CarStatus" />
+		<result property="cgTim" column="CarInfo_ChargingTime" />
+		<result property="bttTp" column="CarInfo_BatteryType" />
+		<result property="cgMod" column="charging_mode" />
+		<result property="inf" column="power_interface" />
+		<result property="brandName" column="CarInfo_BrandName" />
+	</resultMap>
+
+	<!-- 新增电动车品牌类型 -->
+	<insert id="insert" parameterType="TblCarinfo">
+		insert into tbl_CarInfo (
+		CarInfo_StyleName,
+		CarInfo_MaxOdometer,
+		CarInfo_BatteryCapacity,
+		CarInfo_CreateDate,
+		CarInfo_UpdateDate,
+		CarInfo_Remark,
+		CarInfo_BrandIcon,
+		CarInfo_CompanyId,
+		CarInfo_CarStatus,
+		CarInfo_ChargingTime,
+		CarInfo_BatteryType,
+		charging_mode,
+		power_interface,
+		CarInfo_BrandName
+		)values (
+		#{name},
+		#{maxOdo},
+		#{bttCty},
+		#{cdate},
+		#{udate},
+		#{remark},
+		#{icon},
+		#{comId},
+		0,
+		#{cgTim},
+		#{bttTp},
+		#{cgMod},
+		#{inf},
+		#{brandName}
+		)
+	</insert>
+	<!-- 更新电动车品牌类型 -->
+	<update id="update" parameterType="TblCarinfo">
+		update tbl_CarInfo set
+		<if test="name != null">
+			CarInfo_StyleName=#{name},
+		</if>
+		<if test="maxOdo != null">
+			CarInfo_MaxOdometer=#{maxOdo},
+		</if>
+		<if test="bttCty != null">
+			CarInfo_BatteryCapacity=#{bttCty},
+		</if>
+		<if test="remark != null">
+			CarInfo_Remark=#{remark},
+		</if>
+		<if test="icon != null">
+			CarInfo_BrandIcon=#{icon},
+		</if>
+		<if test="comId != null">
+			CarInfo_CompanyId=#{comId},
+		</if>
+		<if test="cgTim != null">
+			CarInfo_ChargingTime=#{cgTim},
+		</if>
+		<if test="bttTp != null">
+			CarInfo_BatteryType=#{bttTp},
+		</if>
+		<if test="cgMod != null">
+			charging_mode=#{cgMod},
+		</if>
+		<if test="inf != null">
+			power_interface=#{inf},
+		</if>
+		CarInfo_UpdateDate=sysdate()
+		where
+		pk_CarInfo=#{id}
+	</update>
+
+	<!-- 删除电动车品牌类型 -->
+	<delete id="delete" parameterType="TblCarinfo">
+		update
+		tbl_CarInfo
+		set
+		CarInfo_CarStatus=1
+		where 1=1
+		<if test="id != null">
+			and pk_CarInfo=#{id}
+		</if>
+		<if test="pkIds != null">
+			and pk_CarInfo in
+			<foreach item="item" index="index" collection="pkIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+	</delete>
+
+	<!-- 获取电动车品牌类型 -->
+	<select id="selectOne" parameterType="TblCarinfo" resultMap="tblCarinfoResultMap">
+		select
+		${rtColumns}
+		from tbl_CarInfo
+		where
+		pk_CarInfo=#{id}
+		<if test="name != null and name !=''">
+			and CarInfo_StyleName=#{name}
+		</if>
+	</select>
+
+	<!-- 获取车型号数量 -->
+	<select id="getCount" parameterType="TblCarinfo" resultType="int">
+		select count(1)
+		from tbl_CarInfo c
+		<where>
+			1=1
+			<if test="id != null">
+				and pk_CarInfo=#{id}
+			</if>
+			<if test="name != null and name !=''">
+				and CarInfo_StyleName like
+				concat('%',#{name},'%')
+			</if>
+			<if test="maxOdo != null">
+				and CarInfo_MaxOdometer=#{maxOdo}
+			</if>
+			<if test="bttCty != null">
+				and CarInfo_BatteryCapacity=#{bttCty}
+			</if>
+			<if test="cdate != null">
+				and CarInfo_CreateDate=#{cdate}
+			</if>
+			<if test="udate != null">
+				and CarInfo_UpdateDate=#{udate}
+			</if>
+			<if test="remark != null and remark !=''">
+				and CarInfo_Remark=#{remark}
+			</if>
+			<if test="icon != null and icon !=''">
+				and CarInfo_BrandIcon=#{icon}
+			</if>
+			<if test="comId != null and comId != ''">
+				and CarInfo_CompanyId=#{comId}
+			</if>
+			<if test="sts != null">
+				and CarInfo_CarStatus=#{sts}
+			</if>
+		</where>
+	</select>
+
+	<!-- 获取车型号列表 -->
+	<select id="getList" parameterType="TblCarinfo" resultMap="tblCarinfoResultMap">
+		select
+		${rtColumns}
+		from tbl_CarInfo c
+		<where>
+			1=1
+			<if test="id != null">
+				and pk_CarInfo=#{id}
+			</if>
+			<if test="name != null and name !=''">
+				and CarInfo_StyleName like
+				concat('%',#{name},'%')
+			</if>
+			<if test="maxOdo != null">
+				and CarInfo_MaxOdometer=#{maxOdo}
+			</if>
+			<if test="bttCty != null">
+				and CarInfo_BatteryCapacity=#{bttCty}
+			</if>
+			<if test="cdate != null">
+				and CarInfo_CreateDate=#{cdate}
+			</if>
+			<if test="udate != null">
+				and CarInfo_UpdateDate=#{udate}
+			</if>
+			<if test="remark != null and remark !=''">
+				and CarInfo_Remark=#{remark}
+			</if>
+			<if test="icon != null and icon !=''">
+				and CarInfo_BrandIcon=#{icon}
+			</if>
+			<if test="comId != null and comId != ''">
+				and CarInfo_CompanyId=#{comId}
+			</if>
+			<if test="sts != null">
+				and CarInfo_CarStatus=#{sts}
+			</if>
+		</where>
+		order by CarInfo_CreateDate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+</mapper> 

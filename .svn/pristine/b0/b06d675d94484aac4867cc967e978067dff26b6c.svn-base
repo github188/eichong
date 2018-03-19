@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/style.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/fav/couponVariety_detail.css"/>
+    <title>现金券品种详细</title>
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="container-fluid">
+        <div class="row">
+        </div>
+        <div class="row">
+            <div class="col-sm-12" style="padding: 0">
+                <div class="ibox float-e-margins">
+                    <div class="">
+                        <div class="ibox-content">
+                            <div class="add_userBlock">
+                                <div class="add_greyBlock">
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">现金券名称<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="covaActivityName" id="" class="commonStyle"
+                                                   readonly="readonly"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">电桩限制<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8">
+                                            <div class=" col-sm-3 col-xs-4 model-select-box" style="width: 100%">
+                                                <div class="model-select-text covaLimitationBlock" data-value=""
+                                                     id="covaLimitationHtml">
+                                                </div>
+                                                <span class="downRow covaLimitationBlock"></span>
+                                                <!--<ul class="model-select-option covaLimitationUl">
+                                                    <li data-option="1" class="seleced">仅限交流充电桩</li>
+                                                    <li data-option="2">仅限直流充电桩</li>
+                                                    <li data-option="3">不限充电桩</li>
+                                                </ul>-->
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">面值(元)<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="covaCouponValue" id="covaCouponValue" class="commonStyle"
+                                                   readonly="readonly"/>
+                                        </div>
+
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">使用条件<span class="errorStyle">*</span>(满x元使用)</div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="covaCouponCondition" id="covaCouponCondition" class="commonStyle"
+                                                   readonly="readonly"/>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">状态<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8">
+                                            <div class=" col-sm-3 col-xs-4 model-select-box" style="width: 100%">
+                                                <div class="model-select-text covaStutasBlock" data-value="" id="covaStutasHtml">
+                                                </div>
+                                                <span class="downRow covaStutasBlock"></span>
+                                               <!-- <ul class="model-select-option covaStutasUl">
+                                                    <li data-option="0" class="seleced">上架</li>
+                                                    <li data-option="1">下架</li>
+                                                </ul>-->
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">标签</div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="covaLabel" id="covaLabel" class="commonStyle"
+                                                   readonly="readonly"/>
+                                        </div>
+
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">备注</div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="covaRemark" id="covaRemark" class="commonStyle"
+                                                   readonly="readonly"/>
+                                        </div>
+
+                                    </div>
+                                    <!--按钮组合-->
+                                    <div class="saveBtn commonBtn" id="saveBtn" onclick="editCouponVariety()">编辑</div>
+                                    <div class="quitBtn commonBtn" id="goback">取消</div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/fav/couponVariety_detail.js" type="text/javascript" charset="utf-8"></script>
+</html>

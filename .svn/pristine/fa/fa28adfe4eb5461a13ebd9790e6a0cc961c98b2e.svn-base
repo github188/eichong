@@ -1,0 +1,118 @@
+package com.wanma.controller.hikvision;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.wanma.service.PileFilterService;
+import com.wanma.service.StartChargeService;
+import com.wanma.service.StopChargeService;
+import com.wanma.support.common.AccessSuccessResult;
+import com.wanma.support.common.FailedResponse;
+
+/**
+ * @Description: 充电管理控制层
+ * @author gx
+ * @createTime：2017-07-27
+ * @updateTime：
+ */
+@Controller
+@RequestMapping("/eichong")
+public class HikVisionController {
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(HikVisionController.class);
+
+	
+
+	/**
+	 * @Description: 开始充电
+	 * @return
+	 * @throws Exception
+	 */
+
+
+
+	/**
+	 * @Description:是否降锁
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/hk/checkLockDown")
+	@ResponseBody
+	public String checkLockDown(HttpServletRequest request) throws Exception {
+		// 爱充平台第三方标识
+		String org = request.getParameter("org");
+		// 车牌号
+		String carNumber = request.getParameter("carNumber");
+		// 停车场id
+		String pointId = request.getParameter("pointId");
+		// 地锁标识
+		String lockId = request.getParameter("lockId");
+		
+		if ( StringUtils.isBlank(org)||StringUtils.isBlank(carNumber)
+				|| StringUtils.isBlank(pointId) || StringUtils.isBlank(lockId))
+			return new FailedResponse(1001, "params error").toString();
+			
+
+		   Map<String, Object> data = new HashMap<String, Object>();
+			
+		    SimpleDateFormat timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		        data.put("timestamp", timeStamp.format(new Date()));
+		        data.put("isDown", 0);
+		        data.put("NoDownReason", "");
+		  
+		        return new AccessSuccessResult(data).toString();
+		
+	}
+
+	/**
+	 * @Description:降锁结果通知接口
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/hk/lockDownResult")
+	@ResponseBody
+	public String lockDownResult(HttpServletRequest request) throws Exception {
+		// 爱充平台第三方标识
+		String org = request.getParameter("org");
+		// 车牌号
+		String carNumber = request.getParameter("carNumber");
+		// 停车场id
+		String pointId = request.getParameter("pointId");
+		// 地锁标识
+		String lockId = request.getParameter("lockId");
+		//降锁开始时间
+		String beginTime = request.getParameter("beginTime");
+		//降锁结束时间
+		String endTime = request.getParameter("endTime");
+		//降锁是否成功
+		String isSuccess = request.getParameter("isSuccess");
+		//失败原因
+		String errorMsg = request.getParameter("errorMsg");
+
+		
+		if ( StringUtils.isBlank(org)||StringUtils.isBlank(carNumber)
+				|| StringUtils.isBlank(pointId) || StringUtils.isBlank(lockId)|| StringUtils.isBlank(beginTime)
+				|| StringUtils.isBlank(endTime)|| StringUtils.isBlank(isSuccess))
+			return new FailedResponse(1001, "params error").toString();
+			
+
+		   Map<String, Object> data = new HashMap<String, Object>();
+		   SimpleDateFormat timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	        data.put("timestamp", timeStamp.format(new Date()));
+		        data.put("returnCode", 0);
+		        return new AccessSuccessResult(data).toString();
+		
+	}
+}

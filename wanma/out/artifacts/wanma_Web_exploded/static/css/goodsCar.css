@@ -1,0 +1,75 @@
+.content{
+	width: 1162px;
+	height: 780px;
+	border-radius: 15px;
+	margin: 0px auto;
+}
+.god-moudel{
+	margin: 20px 0;
+	border: 1px solid #ccc;
+}
+.god-moudel .tit{
+	height: 44px;
+	background-color: #ccc;
+	font-size: 22px;
+	color: #fff;
+	text-indent: 10px;
+	letter-spacing: 1px;
+}
+.con{
+	padding: 20px ;
+	color: #5b5b5b;
+}
+.god-moudel .check{
+	width: 26px;
+	height: 26px;
+	margin:70px 20px 0;
+	display: block;
+}
+.god-moudel .con .pic{
+	width: 240px;
+	height: 168px;
+	margin-right: 20px;
+}
+.god-moudel .tx{
+    text-indent: 40px;
+    line-height: 36px;
+}
+.god-moudel .sort{
+	background: url("../images/icon/sort.png") no-repeat;
+	background-position: 0px 7px;
+}
+.god-moudel h3{
+	font-size: 28px;
+	color: #5B5B5B;
+}
+.god-moudel .sort,.god-moudel .car{
+	font-size: 22px;
+}
+.god-moudel .pay{
+	font-size: 26px;
+}
+.all{
+	padding: 0 20px;
+	height: 110px;
+	background-color: #fadab4;
+	line-height: 110px;
+	color: #5B5B5B;
+}
+.all .fs{
+	font-size: 26px;
+	color: #aaa;
+}
+.all .all-r{
+	font-size: 22px;
+}
+.all .all-btn{
+	width: 212px;
+	height: 60px;
+	background-color: #f08307;
+	color: #fff;
+	line-height: 60px;
+	border-radius: 6px;
+	border: none;
+	font-size: 20px
+}

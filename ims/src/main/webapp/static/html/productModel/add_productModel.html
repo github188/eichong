@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/style.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/productModel/add_productModel.css"/>
+    <title>产品型号新增</title>
+</head>
+<body>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 ">
+                <div class="ibox float-e-margins" style="margin: 0">
+                    <div class="">
+                        <div class="ibox-content clearfix">
+                            <div class="userBaseInfo col-sm-12 ">
+                                <div class="col-sm-12 titleTip">产品型号属性</div>
+                                <div class="col-sm-6" style="padding: 0">
+                                    <ul class="baseInfoLeft commonUl">
+                                        <li>
+                                            <span class="col-sm-6 col-xs-12">内部产品型号</span>
+                                            <input type="" name="tsTypeSpan" id="tsTypeSpan" value=""
+                                                   class="col-sm-6 col-xs-12" placeholder="请输入内部产品型号"/>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-12">产品型号名称</span>
+                                            <input type="" name="tsModelName" id="tsModelName" value=""
+                                                   class="col-sm-6 col-xs-12" placeholder="请输入产品型号名称"/>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-sm-6" style="padding: 0">
+                                    <ul class="baseInfoRight commonUl">
+                                        <li>
+                                            <span class="col-sm-6 col-xs-12">外部产品型号</span>
+                                            <input type="tsProductNumber" name="" id="tsProductNumber" value=""
+                                                   class="col-sm-6 col-xs-12" placeholder="请输入外部产品型号"/>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-12">备注</span>
+                                            <input type="" name="tsRemarks" id="tsRemarks" value=""
+                                                   class="col-sm-6 col-xs-12" placeholder="备注"/>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-sm-12" style="height:20px;"></div>
+
+                                <div class="col-sm-12 titleTip">适配电桩</div>
+                                <div class="col-sm-6" style="padding: 0">
+                                    <ul class="baseInfoLeft commonUl">
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">制造商</span>
+                                            <div class="col-sm-6 col-xs-6 model-select-box" style="padding: 0;">
+                                                <div class="model-select-text elPiMakerBlock" data-value="" id="elPiMaker">
+                                                    请选择
+                                                </div>
+                                                <span class="downRow elPiMakerBlock clickRotateSpan"></span>
+                                                <ul class="model-select-option" id="elPiMakerUl">
+                                                    <li data-option="" class="seleced">请选择</li>
+
+                                                </ul>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">功率</span>
+                                            <div class="col-sm-6 col-xs-6 model-select-box" style="padding: 0;">
+                                                <div class="model-select-text elPiPowerSizeBlock" data-value="" id="elPiPowerSize">
+                                                    请选择
+                                                </div>
+                                                <span class="downRow elPiPowerSizeBlock clickRotateSpan"></span>
+                                                <ul class="model-select-option" id="electricPower">
+                                                    <li data-option="" class="seleced">请选择</li>
+
+                                                </ul>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-12">枪口数量</span>
+                                            <input type="" name="elPiPowerNumber" id="elPiPowerNumber" value=""
+                                                   class="col-sm-6 col-xs-12" placeholder="枪口数量"/>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-sm-6" style="padding: 0">
+                                    <ul class="baseInfoRight commonUl">
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">充电方式</span>
+                                            <div class="col-sm-6 col-xs-6 model-select-box" style="padding: 0;">
+                                                <div class="model-select-text electricPowerBlock" data-value="" id="elPiChargingMode">
+                                                    请选择
+                                                </div>
+                                                <span class="downRow electricPowerBlock clickRotateSpan"></span>
+                                                <ul class="model-select-option" id="electricChargeMode">
+                                                    <li data-option="" class="seleced">请选择</li>
+                                                    <!--<li data-option="5" >直流充电桩</li>-->
+                                                    <!--<li data-option="14" >交流充电桩</li>-->
+
+                                                </ul>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">电桩类型</span>
+                                            <div class="col-sm-6 col-xs-6 model-select-box" style="padding: 0;">
+                                                <div class="model-select-text elPiTypeBlock" data-value="" id="elPiType">
+                                                    请选择
+                                                </div>
+                                                <span class="downRow elPiTypeBlock clickRotateSpan"></span>
+                                                <ul class="model-select-option" id="electricPileType">
+                                                    <li data-option="" class="seleced">请选择</li>
+
+                                                </ul>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <!--按钮组合-->
+                            <div class="saveBtn cursor" onclick="toSavetsTypeSpan()">保存</div>
+                            <div class="goBack cursor" id="toProductModelList">返回</div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="../../js/contabs.min.js"></script>
+<script src="../../js/productModel/add_productModel.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/checkBox.js" type="text/javascript" charset="utf-8"></script>
+</html>

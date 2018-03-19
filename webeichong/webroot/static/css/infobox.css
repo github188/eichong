@@ -1,0 +1,100 @@
+.label, .badge {
+	display: inline-block;
+	padding: 4px;
+	font-size: 10.152px;
+	font-weight: normal;
+	line-height: 14px;
+	color: #fff;
+	vertical-align: baseline;
+	white-space: nowrap;
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+	background-color: #56a022
+}
+
+.label {
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px
+}
+
+.badge {
+	padding-left: 9px;
+	padding-right: 9px;
+	-webkit-border-radius: 9px;
+	-moz-border-radius: 9px;
+	border-radius: 9px
+}
+
+.label:empty, .badge:empty {
+	display: none
+}
+
+a.label:hover, a.label:focus, a.badge:hover, a.badge:focus {
+	color: #fff;
+	text-decoration: none;
+	cursor: pointer
+}
+
+.label-error, .badge-error {
+	background-color: #db4a37
+}
+
+.label-error[href], .badge-error[href] {
+	background-color: #bd3422
+}
+
+.label-warn, .badge-warn {
+	background-color: #f0ad4e
+}
+
+.label-warn[href], .badge-warn[href] {
+	background-color: #ec971f
+}
+
+.label-success, .badge-success {
+	background-color: #5cb85c
+}
+
+.label-success[href], .badge-success[href] {
+	background-color: #449d44
+}
+
+.label-info, .badge-info {
+	background-color: #5bc0de
+}
+
+.label-info[href], .badge-info[href] {
+	background-color: #31b0d5
+}
+
+.label-inverse, .badge-inverse {
+	background-color: #333
+}
+
+.label-inverse[href], .badge-inverse[href] {
+	background-color: #1a1a1a
+}
+
+.information {
+	position: fixed;
+	top: 35px;
+	left: 45%;
+	opacity: 1;
+	filter: alpha(opacity = 0);
+	line-height: 23px;
+	border-radius: 2px;
+	padding: 5px 15px;
+	font-size: 12px;
+	box-shadow: 1px 0 3px #aaa;
+	font-family: tahoma, arial, 'Hiragino Sans GB', "\5b8b\4f53", sans-serif;
+	-webkit-transition: all .4s ease-in-out;
+	-o-transition: all .4s ease-in-out;
+	-moz-transition: all .4s ease-in-out;
+	transition: all .4s ease-in-out;
+	z-index: 2015
+}
+.infohide{
+	z-index: 0；
+	top: 25px;
+	opacity: 0;
+}

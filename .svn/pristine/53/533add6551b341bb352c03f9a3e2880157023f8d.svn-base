@@ -1,0 +1,43 @@
+package com.sgcc.service.impl;
+
+import com.sgcc.model.SGCCElectric;
+import com.sgcc.service.SGCCService;
+import org.springframework.stereotype.Service;
+
+import java.util.Date;
+
+/**
+ * Created by zangyaoyi on 2017/6/1.
+ */
+@Service
+public class SGCCServiceImpl implements SGCCService {
+ /*   @Autowired
+    private TcbElectricService tcbElectricService;*/
+
+    @Override
+    public void syncStationInfo(Date startTime, Date endTime) {
+        SGCCElectric sgccElectric = new SGCCElectric();
+        //List<TcbElectric> electricPileList = tcbElectricService.getElectricList(null);
+    }
+
+    @Override
+    public void syncStationStatsInfo(Date startTime, Date endTime) {
+
+    }
+
+    @Override
+    public void syncEquipmentInfo(Date startTime, Date endTime) {
+
+    }
+
+    @Override
+    public void syncEquipmentStatsInfo(Date startTime, Date endTime) {
+
+    }
+
+    @Override
+    public void syncConnectorInfo(Date startTime, Date endTime) {
+
+    }
+
+}

@@ -1,0 +1,8 @@
+package com.wanma.ims.controller.electric;
+
+/**
+ * 桩体管理-电站管理 
+ */
+public class PowerstationController {
+
+}

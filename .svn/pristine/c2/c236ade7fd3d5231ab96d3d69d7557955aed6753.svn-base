@@ -1,0 +1,42 @@
+
+package com.wanma.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import com.wanma.model.TblPowerstation;
+
+
+public interface TblPowerstationMapper {
+
+	public int getCount(TblPowerstation model);
+	/**
+	 * 查询List
+	 * @param TblPowerstation
+	 * @return
+	 */
+	public List<TblPowerstation> getList(TblPowerstation model);
+	
+	/**
+	 * 根据城市编号查询充电点信息
+	 * @param TblPowerstation
+	 * @return
+	 */
+	public List<Map<String,String>> getPointsInfoByCityCode(TblPowerstation model);
+
+	/**
+	 * 查询站点详情
+	 * @param TblPowerstation
+	 * @return
+	 */
+	public Map<String, Object> selectDetail(TblPowerstation model);
+
+	/**
+	 * 根据最近查询时间查询电站列表
+	 * @param TblPowerstation
+	 * @return
+	 */
+	public List<TblPowerstation> getNewlyUpdatedList(Map<String, Object> param);
+	public int getNewlyUpdatedCount(Map<String, Object> param);
+
+}

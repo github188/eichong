@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" metadata-complete="true" version="3.1">
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+  </welcome-file-list>
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+  <listener>
+    <listener-class>com.wanma.ims.common.SpringContextHolder</listener-class>
+  </listener>
+  <listener>
+    <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+  </listener>
+  <filter>
+    <filter-name>WebAccessFilter</filter-name>
+    <filter-class>com.wanma.ims.filter.WebAccessFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>WebAccessFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  <!-- api入口配置 -->
+<!--   <filter> -->
+<!--     <filter-name>WebFilter</filter-name> -->
+<!--     <filter-class>com.bluemobi.product.web.WebFilter</filter-class> -->
+<!--   </filter> -->
+<!--   <filter-mapping> -->
+<!--     <filter-name>WebFilter</filter-name> -->
+<!--     <url-pattern>*.do</url-pattern> -->
+<!--   </filter-mapping> -->
+<!--    <filter-mapping> -->
+<!--     <filter-name>WebFilter</filter-name> -->
+<!--     <url-pattern>*.jsp</url-pattern> -->
+<!--   </filter-mapping> -->
+   <!-- 字符集编码UTF-8 -->
+   <filter>
+    <filter-name>encodingFilter</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+    <init-param>
+      <param-name>forceEncoding</param-name>
+      <param-value>true</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>encodingFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+    <dispatcher>FORWARD</dispatcher>
+  </filter-mapping>
+   <!-- 登录校验 -->
+  <filter>
+	    <filter-name>LoginFilter</filter-name>
+	    <filter-class>com.wanma.ims.filter.LoginFilter</filter-class>
+	    <init-param>
+	      <param-name>SECURITY_URI</param-name>
+	      <param-value>/admin/*,/security/*</param-value>
+	    </init-param>
+
+	  <filter-mapping>
+	    <filter-name>LoginFilter</filter-name>
+	    <url-pattern>/*</url-pattern>
+	  </filter-mapping>
+   </filter>
+  
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>classpath:spring_mybatis.xml;classpath:spring/spring_redis.xml</param-value>
+  </context-param>
+  <servlet>
+    <servlet-name>springMVC</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>classpath:spring_mvc.xml</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>springMVC</servlet-name>
+    <url-pattern>*.do</url-pattern>
+  </servlet-mapping>
+  
+  <!-- durid Filter -->
+   <filter>  
+	    <filter-name>DruidWebStatFilter</filter-name>  
+	    <filter-class>com.alibaba.druid.support.http.WebStatFilter</filter-class>  
+	    <init-param>  
+	        <param-name>exclusions</param-name>  
+	        <param-value>*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*</param-value>  
+	    </init-param>  
+	    <init-param>  
+	        <param-name>sessionStatMaxCount</param-name>  
+	        <param-value>2000</param-value>  
+	    </init-param>  
+	    <init-param>  
+	        <param-name>sessionStatEnable</param-name>  
+	        <param-value>true</param-value>  
+	    </init-param>  
+	    <init-param>  
+	        <param-name>principalSessionName</param-name>  
+	        <param-value>session_user_key</param-value>  
+	    </init-param>  
+	    <init-param>  
+	        <param-name>profileEnable</param-name>  
+	        <param-value>true</param-value>  
+	    </init-param>  
+    </filter>  
+	<filter-mapping>  
+	    <filter-name>DruidWebStatFilter</filter-name>  
+	    <url-pattern>/*</url-pattern>  
+	</filter-mapping>  
+	<servlet>  
+	    <servlet-name>DruidStatView</servlet-name>  
+	    <servlet-class>com.alibaba.druid.support.http.StatViewServlet</servlet-class>  
+	    <init-param>  
+	        <!-- 允许清空统计数据 -->  
+	        <param-name>resetEnable</param-name>  
+	        <param-value>true</param-value>  
+	    </init-param>  
+	    <init-param>  
+	        <!-- 用户名 -->  
+	        <param-name>loginUsername</param-name>  
+	        <param-value>eichong</param-value>  
+	    </init-param>  
+	    <init-param>  
+	        <!-- 密码 -->  
+	        <param-name>loginPassword</param-name>  
+	        <param-value>eichongdurid</param-value>  
+	    </init-param>  
+	</servlet>  
+	<servlet-mapping>  
+	    <servlet-name>DruidStatView</servlet-name>  
+	    <url-pattern>/druid/*</url-pattern>  
+	</servlet-mapping>  
+	
+	<session-config>
+	   <session-timeout>300</session-timeout>
+    </session-config>
+</web-app>

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.StatisticsAppMapper">
+ 	
+ 	
+ 	<select id="queryAppRechargeDataCount" parameterType="Map" resultType="Map">
+ 		SELECT
+	*
+FROM
+	(
+		SELECT
+			count(1) countYesterday
+		FROM
+			tbl_user_normal n,
+			tbl_purchasehistory p
+		WHERE
+			n.user_id = p.puHi_UserId AND
+		<![CDATA[	TO_DAYS(NOW()) - TO_DAYS(p.puHi_Createdate) <= 1 ]]> 
+		AND p.puHi_Type = 4
+	)aa,
+(
+		SELECT
+			count(1) countTotal
+		FROM
+			tbl_user_normal n,
+			tbl_purchasehistory p
+		WHERE
+			n.user_id = p.puHi_UserId
+	    <if test="beginTime != null and beginTime !=''">
+		AND p.puHi_Createdate &gt; #{beginTime}
+		</if>
+		<if test="endTime != null and endTime !=''">
+		AND p.puHi_Createdate &lt; DATE_ADD(#{endTime},INTERVAL 1 DAY)
+		</if>
+		AND p.puHi_Type = 4
+	)bb,
+ (
+		SELECT
+			FORMAT(IFNULL(SUM(p.puHi_Monetary), 0),2) countTotalMoney
+		FROM
+			tbl_user_normal n,
+			tbl_purchasehistory p
+		WHERE
+			n.user_id = p.puHi_UserId
+		    <if test="beginTime != null and beginTime !=''">
+		AND p.puHi_Createdate &gt; #{beginTime}
+		</if>
+		<if test="endTime != null and endTime !=''">
+		AND p.puHi_Createdate &lt; DATE_ADD(#{endTime},INTERVAL 1 DAY)
+		</if>
+		AND p.puHi_Type = 4
+	)cc,
+	(
+		SELECT
+			FORMAT(IFNULL(SUM(p.puHi_Monetary), 0),2) countYesterdayMoney
+		FROM
+			tbl_user_normal n,
+			tbl_purchasehistory p
+		WHERE
+			n.user_id = p.puHi_UserId AND
+		<![CDATA[	TO_DAYS(NOW()) - TO_DAYS(p.puHi_Createdate) <= 1 ]]> 
+		AND p.puHi_Type = 4
+	)dd
+ 	</select>
+ 	
+ 	<select id="queryAppRechargeDataLine" parameterType="Map" resultType="Map">
+ 	SELECT
+			SUM(p.puHi_Monetary) countTotalMoney,
+			DATE_FORMAT(p.puHi_Createdate, '%Y-%m-%d') AS time
+		FROM
+		tbl_user_normal n,
+		tbl_purchasehistory p
+		WHERE
+			n.user_id = p.puHi_UserId
+	     <if test="beginTime != null and beginTime !=''">
+		AND p.puHi_Createdate &gt; #{beginTime}
+		</if>
+		<if test="endTime != null and endTime !=''">
+		AND p.puHi_Createdate &lt; DATE_ADD(#{endTime},INTERVAL 1 DAY)
+		</if>
+		AND p.puHi_Type = 4
+		GROUP BY
+		DATE_FORMAT(p.puHi_Createdate, '%Y-%m-%d')
+ 	</select>
+ 	<select id="queryAppRechargeDataList" parameterType="Map" resultType="Map">
+ 	SELECT
+	SUM(IF(p.puHi_ChargeType = 1,p.puHi_Monetary,0)) as AliPay,
+	SUM(IF(p.puHi_ChargeType = 1,1,0)) as AliPayNum,
+	SUM(IF(p.puHi_ChargeType = 2,p.puHi_Monetary,0)) as WxPay,
+	SUM(IF(p.puHi_ChargeType = 2,1,0)) as WxPayNum,
+	DATE_FORMAT(
+		p.puHi_Createdate,
+		'%Y-%m-%d'
+	) AS time
+		FROM
+			tbl_user_normal n,
+			tbl_purchasehistory p
+		WHERE
+			n.user_id = p.puHi_UserId
+		    <if test="beginTime != null and beginTime !=''">
+		AND p.puHi_Createdate &gt; #{beginTime}
+		</if>
+		<if test="endTime != null and endTime !=''">
+		AND p.puHi_Createdate &lt; DATE_ADD(#{endTime},INTERVAL 1 DAY)
+		</if>
+		AND p.puHi_Type = 4
+		GROUP BY
+			DATE_FORMAT(
+				p.puHi_Createdate,
+				'%Y-%m-%d'
+			)
+		order by p.puHi_Createdate DESC
+		<if test="pager!=null">
+           limit #{pager.offset},#{pager.pageSize}
+        </if>
+ 	</select>
+ 	<select id="queryAppRechargeDataListCount" parameterType="Map" resultType="long">
+ 	SELECT count(1) from (
+ 	SELECT
+	SUM(IF(p.puHi_ChargeType = 1,p.puHi_Monetary,0)) as AliPay,
+	SUM(IF(p.puHi_ChargeType = 1,1,0)) as AliPayNum,
+	SUM(IF(p.puHi_ChargeType = 2,p.puHi_Monetary,0)) as WxPay,
+	SUM(IF(p.puHi_ChargeType = 2,1,0)) as WxPayNum,
+	DATE_FORMAT(
+		p.puHi_Createdate,
+		'%Y-%m-%d'
+	) AS time
+		FROM
+			tbl_user_normal n,
+			tbl_purchasehistory p
+		WHERE
+			n.user_id = p.puHi_UserId
+		    <if test="beginTime != null and beginTime !=''">
+		AND p.puHi_Createdate &gt; #{beginTime}
+		</if>
+		<if test="endTime != null and endTime !=''">
+		AND p.puHi_Createdate &lt; DATE_ADD(#{endTime},INTERVAL 1 DAY)
+		</if>
+		AND p.puHi_Type = 4
+		GROUP BY
+			DATE_FORMAT(
+				p.puHi_Createdate,
+				'%Y-%m-%d'
+			)
+		order by p.puHi_Createdate DESC
+	)aa
+ 	</select>
+</mapper>

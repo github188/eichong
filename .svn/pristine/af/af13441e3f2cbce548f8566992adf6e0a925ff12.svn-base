@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.CarVinRelaMapper">
+	<resultMap type="CarVinRelaDO" id="carVinRela">
+		<result property="pkId" column="pk_id" />
+		<result property="cvVinCode" column="cv_vin_code" />
+		<result property="cpyId" column="cpy_id" />
+		<result property="isUsed" column="is_used" />
+		<result property="isDel" column="is_del" />
+		<result property="creator" column="creator" />
+		<result property="modifier" column="modifier" />
+		<result property="gmtCreate" column="gmt_create" />
+		<result property="gmtModified" column="gmt_modified" />
+	</resultMap>
+	
+    <sql id="query-columns">
+        pk_id,cv_vin_code,cpy_id,is_used,is_del,creator,modifier,gmt_create,gmt_modified
+	</sql>
+	<sql id="where-columns">
+	    is_del = 0
+	    <if test="pkId != null and pkId != ''">
+			and pk_id = #{pkId}
+	    </if>
+        <if test="cvVinCode != null and cvVinCode != ''">
+			and cv_vin_code = #{cvVinCode}
+	    </if>
+        <if test="cpyId != null and cpyId != ''">
+			and cpy_id = #{cpyId}
+	    </if>
+		<if test="isUsed != null and isUsed != ''">
+			and is_used = #{isUsed}
+		</if>
+	</sql>
+
+	<!-- 添加VIN码鉴权-->
+	<insert id="addCarVinRela" useGeneratedKeys="true" parameterType="CarVinRelaDO">
+		<selectKey resultType="long" keyProperty="id" order="AFTER">
+			SELECT
+			LAST_INSERT_ID()
+		</selectKey>
+		insert into tbl_user_black_white_rela
+		<include refid="query-columns"/>
+		values
+		(null,#{cvVinCode},#{cpyId},#{isUsed},0,#{creator},'',NOW(),NULL)
+	</insert>
+
+	<!-- 批量添加用户VIN码鉴权 -->
+	<insert id="batchAddCarVinRela" useGeneratedKeys="true" parameterType="java.util.List">
+		<selectKey resultType="long" keyProperty="pk_id" order="AFTER">
+			SELECT
+			LAST_INSERT_ID()
+		</selectKey>
+		insert into TBL_CAR_VIN_RELA<include refid="query-columns"/>
+		   values
+		<foreach collection="list" item="item" index="index" separator="," >
+			(null,#{item.cvVinCode},#{item.cpyId},#{item.isUsed},0,#{item.creator},'',NOW(),NULL)
+		</foreach>
+	</insert>
+	
+	<!-- 删除VIN码鉴权 -->
+	<delete id="removeCarVinRela" parameterType="String">
+		DELETE FROM TBL_CAR_VIN_RELA WHERE pk_id = #{pkId}
+	</delete>
+	
+	<!-- 取得VIN码鉴权的数量 -->
+	<select id="getCarVinRelaCount" parameterType="CarVinRelaDO" resultType="long">
+		SELECT
+			 COUNT(*)
+		FROM
+			 TBL_CAR_VIN_RELA
+		where <include refid="where-columns"/>
+	</select>
+	
+    <!-- 获取用户VIN码鉴权 -->
+    <select id="getCarVinRelaList" parameterType="CarVinRelaDO" resultMap="carVinRela">
+		select <include refid="query-columns"/> from TBL_CAR_VIN_RELA where <include refid="where-columns"/>
+	</select>
+</mapper>

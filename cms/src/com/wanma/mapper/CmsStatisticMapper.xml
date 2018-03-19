@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsStatisticMapper">
+	<!-- 获取月度注册人数 -->
+	<select id="queryMonthPeopleCountList" parameterType="PeopleCountEchartsModel"
+		resultType="hashmap">
+		SELECT cast(DATE_FORMAT(createdate,'%Y%m') as signed
+		integer) AS 'month',COUNT(*) AS 'count'
+		FROM tbl_user_normal_view   a 
+		where 1=1
+		<if test="begin_date !=null and begin_date !=''">
+			<![CDATA[and date_format(a.createdate,'%Y-%m-%d') >= #{begin_date}]]>
+		</if>
+		<if test="end_date !=null and end_date !=''">
+			<![CDATA[ and date_format(a.createdate,'%Y-%m-%d') <= #{end_date} ]]>
+		</if>
+		GROUP BY cast(DATE_FORMAT(createdate,'%Y%m') as signed integer);
+	</select>
+
+	<!-- 获取来源注册人数 -->
+	<select id="queryZcFromPeopleCountList" parameterType="PeopleCountEchartsModel"
+		resultType="hashmap">
+		SELECT cast(DATE_FORMAT(createdate,'%Y%m') as signed integer) AS 'month',
+		(case <!-- when a.norm_registe_type='0' then '其他'  -->
+			when a.norm_registe_type='1' then '管理后台' 
+			when a.norm_registe_type='2' then 'Web' 
+			when a.norm_registe_type='3' then 'android' 
+			when a.norm_registe_type='4' then 'ios' 
+			else '其他'
+		end) as zcfrom,
+		count(*) as count
+		FROM tbl_user_normal_view a
+		where 1=1
+		<if test="begin_date !=null and begin_date !=''">
+			<![CDATA[and date_format(a.createdate,'%Y-%m-%d') >= #{begin_date}]]>
+		</if>
+		<if test="end_date !=null and end_date !=''">
+			<![CDATA[ and date_format(a.createdate,'%Y-%m-%d') <= #{end_date} ]]>
+		</if>
+		GROUP BY cast(DATE_FORMAT(createdate,'%Y%m') as signed integer),a.norm_registe_type;
+	</select>	
+
+	<!-- 获取消费信息 -->
+	<select id="queryPeopleConsumptionList" parameterType="ConsumptionEchartsModel"
+		resultType="hashmap">
+		select cast(DATE_FORMAT(puHi_Createdate,'%Y%m') as signed integer) AS 'month',
+		(case when puHi_Type='1' then '充电消费'  when puHi_Type='2' then '预约消费'  when puHi_Type='3' then '购物消费' when puHi_Type='4' then '充值' else '其他' end) as 'consumptionType',
+		count(*) as 'count',sum(puHi_Monetary) as 'amount'
+		from tbl_purchasehistory 
+		WHERE 1=1
+		<if test="begin_date !=null and begin_date !=''">
+			<![CDATA[
+			and date_format(puHi_Createdate,'%Y-%m-%d') >= #{begin_date}]]>
+		</if>
+		<if test="end_date !=null and end_date !=''">
+			<![CDATA[
+			and date_format(puHi_Createdate,'%Y-%m-%d') <= #{end_date} ]]>
+		</if>
+		group by cast(DATE_FORMAT(puHi_Createdate,'%Y%m') as signed integer),puHi_Type;
+	</select>
+
+	<!-- 获取充值信息 -->
+	<select id="queryPeopleChargeList" parameterType="ChargeEchartsModel"
+		resultType="hashmap">
+		select cast(DATE_FORMAT(puHi_Createdate,'%Y%m') as signed integer) AS 'month',
+		(case when puHi_ChargeType='1' then '支付宝充值'  when puHi_ChargeType='2' then '微信充值'  when puHi_ChargeType='3' then '银联充值' else '平台人工充值' end) as 'puHiChargeType',
+		count(*) as 'count',sum(puHi_Monetary) as 'amount'
+		from tbl_purchasehistory 
+		WHERE puHi_Type = '4'
+		<if test="begin_date !=null and begin_date !=''">
+			<![CDATA[
+			and date_format(puHi_Createdate,'%Y-%m-%d') >= #{begin_date}]]>
+		</if>
+		<if test="end_date !=null and end_date !=''">
+			<![CDATA[
+			and date_format(puHi_Createdate,'%Y-%m-%d') <= #{end_date} ]]>
+		</if>
+		group by cast(DATE_FORMAT(puHi_Createdate,'%Y%m') as signed integer),puHi_ChargeType;
+	</select>
+		
+	<!-- 电桩数量统计 -->
+	<select id="getPileCount" parameterType="String" resultType="hashmap">
+		select substring(b.city_name, 1, 3) as '城市',
+		(case when a.elPi_State='10' then '专属' 
+			when a.elPi_State='15' then '分享' end) as '桩体类型',
+		count(*) as '数量' 
+		from tbl_electricpile a ,tb_m_city b,tbl_user c
+		where a.elPi_OwnCityCode = b.city_id
+		  and a.elPi_UserId = c.user_id
+		  and a.elPi_State in ('10','15')
+		  <if test="value !=null and value !=''">
+			<![CDATA[and c.user_id = #{value}]]>
+		  </if>
+		group by a.elPi_OwnCityCode,a.elPi_State order by a.elPi_State,a.elPi_OwnCityCode;
+	</select>
+	
+	<!-- 电桩分布统计 -->
+	<select id="getDistributePileByArea" parameterType="String" resultType="hashmap">
+		select substring(b.city_name, 1, 3) as '所在城市',count(*) as '上线数量',(case when a.elPi_ChargingMode='5' then '快充' when a.elPi_ChargingMode='14' then '慢充' else '其他' end) as '充电类型',
+			(case when a.elPi_PowerUser = '3' then '电动车' when a.elPi_PowerUser='4' then '电动自行车' when a.elPi_PowerUser='13' then '多功能' else '其他' end) as '电桩类型'
+			from tbl_electricpile a ,tb_m_city b,tbl_user c where  a.elPi_OwnCityCode = b.city_id and a.elPi_UserId = c.user_id
+			<if test="value !=null and value !=''">
+				<![CDATA[and c.user_id = #{value}]]>
+		  	</if>
+			group by a.elPi_OwnCityCode,a.elPi_PowerUser,elPi_ChargingMode order by a.elPi_ChargingMode desc;
+	</select>
+
+
+	<!-- 电桩消费统计 -->
+	<select id="getPileConsume" parameterType="PileEchartsModel" resultType="hashmap">
+		select   cast(DATE_FORMAT(chOr_Createdate,'%Y%m') as signed integer) AS '收益月份',sum(a.chOr_Moeny) as '充电收益',sum(a.chOr_QuantityElectricity) as '总电量',count(*) as '充电次数'
+		from tbl_chargingorder a,
+				tbl_electricpile b,
+				tbl_user c  where a.chOr_PileNumber = b.elPi_ElectricPileCode
+							  AND b.elPi_UserId = c.user_id
+							  AND a.chOr_ChargingStatus >= '2'
+							  and a.chOr_ChargingStatus!=4
+		<if test="userId !=null and userId !=''">
+			<![CDATA[and c.user_id = #{userId}]]>
+		</if>
+		<if test="startDate !=null and startDate !=''">
+			<![CDATA[and date_format(a.chOr_Createdate,'%Y-%m-%d') >=#{startDate}]]> 
+		</if>
+		<if test="endDate !=null and endDate !=''">
+			<![CDATA[and date_format(a.chOr_Createdate,'%Y-%m-%d') < #{endDate} ]]>
+		</if>
+		group by cast(DATE_FORMAT(chOr_Createdate,'%Y%m') as signed integer) order by chOr_Createdate;
+	</select>
+	
+	<!-- 电桩故障统计 -->
+	<select id="getPileFault" parameterType="PileEchartsModel" resultType="hashmap">
+		SELECT c.CITY_NAME AS '城市',	count(*) AS '故障次数', e.fc_FaultCause AS '故障原因'
+		FROM tbl_chargingfaultrecord a,	tbl_faultcode e,
+			 tbl_electricpile b,	tb_m_city c,tbl_user d
+		WHERE a.cFRe_FaultCause = e.fc_FaultID
+		and a.cFRe_ElectricPileID = b.pk_ElectricPile
+		AND b.elPi_OwnCityCode = c.CITY_ID
+		AND b.elPi_UserId = d.user_id
+		<if test="userId !=null and userId !=''">
+			<![CDATA[and d.user_id = #{userId}]]>
+		</if>
+		<if test="startDate !=null and startDate !=''">
+			<![CDATA[and date_format(a.cFRe_Createdate,'%Y-%m-%d') >=#{startDate}]]> 
+		</if>
+		<if test="endDate !=null and endDate !=''">
+			<![CDATA[and date_format(a.cFRe_Createdate,'%Y-%m-%d') < #{endDate} ]]>
+		</if>
+		group by b.elPi_OwnCityCode,a.cFRe_FaultCause order by a.cFRe_FaultCause,b.elPi_OwnCityCode;
+	</select>
+	
+	<!-- 电桩预约中统计 -->
+	<select id="getPileBespoking" parameterType="PileEchartsModel" resultType="hashmap">
+		select c.CITY_NAME as '城市',count(a.pk_ElectricPile) as '电桩数量' 
+		from tbl_electricpilehead a, tbl_electricpile b ,tb_m_city c,tbl_user d
+		where a.pk_ElectricPile= b.pk_ElectricPile  
+		and b.elPi_OwnCityCode=c.CITY_ID
+		AND b.elPi_UserId = d.user_id
+		and a.ePHe_ElectricpileHeadState=3
+		<if test="userId !=null and userId !=''">
+			<![CDATA[and d.user_id = #{userId}]]>
+		</if>
+		group by elPi_OwnCityCode order by elPi_OwnCityCode;
+	</select>
+	<!-- 电桩充电中统计 -->
+	<select id="getPileCharging" parameterType="PileEchartsModel" resultType="hashmap">
+		select c.CITY_NAME as '城市',count(a.pk_ElectricPile) as '电桩数量'
+		from tbl_electricpilehead a, tbl_electricpile b ,tb_m_city c,tbl_user d
+		where a.pk_ElectricPile= b.pk_ElectricPile 
+		and b.elPi_UserId = d.user_id
+		and b.elPi_OwnCityCode=c.CITY_ID
+		and a.ePHe_ElectricpileHeadState=6
+		<if test="userId !=null and userId !=''">
+			<![CDATA[and d.user_id = #{userId}]]>
+		</if>
+		group by elPi_OwnCityCode order by elPi_OwnCityCode;
+	</select>	
+		<!-- 电桩分享数量省份统计 -->
+	<select id="getPileProviceCount" parameterType="PileEchartsModel" resultType="hashmap">
+		select a.PROVINCE_NAME province_name,b.pile_count pile_count from tb_m_province a LEFT JOIN 
+		(select t.elPi_OwnProvinceCode,count(1) pile_count
+		from  tbl_electricpile t,tbl_user p
+		where t.elPi_UserId = p.user_id
+		and t.elPi_State in ('10','15')
+		<if test="userId !=null and userId !=''">
+			<![CDATA[and p.user_id = #{userId}]]>
+		</if>
+		group by t.elPi_OwnProvinceCode) b
+		on a.PROVINCE_ID=b.elPi_OwnProvinceCode;
+	</select>
+		
+		<!-- 省份各充电类型电桩数量统计 -->
+	<select id="getPileProviceAndCompanyCount" parameterType="string" resultType="hashmap">
+		select a.PROVINCE_NAME province_name,b.elPi_OwnerCompany,b.pile_count pile_count from tb_m_province a LEFT JOIN 
+		(select t.elPi_OwnProvinceCode,t.elPi_OwnerCompany,count(1) pile_count
+		from  tbl_electricpile  t
+		where t.elPi_State in ('10','15')
+		group by t.elPi_OwnProvinceCode,t.elPi_OwnerCompany) b
+		on a.PROVINCE_ID=b.elPi_OwnProvinceCode;
+	</select>
+	
+		<!-- 电桩预约统计 -->
+		<select id="queryPileBespokeCountList" parameterType="PileEchartsModel"
+		resultType="hashMap">
+		SELECT
+		cast(DATE_FORMAT(besp_Createdate, '%Y%m') AS signed INTEGER) AS 'month',
+		count(besp_ElectricPileId) AS 'orderNumber',
+		sum(besp_BespokeTime) AS 'totalChargingTime'
+		FROM
+			tbl_bespoke a,
+			tbl_electricpile b,
+			tbl_user c
+		WHERE
+			a.besp_ElectricPileId = b.pk_ElectricPile
+		AND b.elPi_UserId = c.user_id
+		<if test="userId !=null and userId !=''">
+			<![CDATA[and c.user_id = #{userId}]]>
+		</if>
+		<if test="beginDate !=null and beginDate !=''">
+			<![CDATA[and date_format(besp_Createdate,'%Y-%m-%d') >= #{beginDate}]]>
+		</if>
+		<if test="endDate !=null and endDate !=''">
+			<![CDATA[ and date_format(besp_Createdate,'%Y-%m-%d') <= #{endDate} ]]>
+		</if>    
+		GROUP BY cast(DATE_FORMAT(besp_Createdate, '%Y%m') AS signed INTEGER);
+	</select>
+		<!-- 数据挖掘电桩充电相关查询 -->	
+	<select id="queryPileChargeCountList" parameterType="PileEchartsModel"
+		resultType="hashmap">
+		select cast(DATE_FORMAT(chOr_Createdate,'%Y%m') as signed integer) AS 'chargeMonth',
+		sum(b.chOr_QuantityElectricity) as 'chargingDegree', 
+		count(1) as 'chargeNumber' 
+		from 
+		tbl_chargingorder b,
+		tbl_electricpile c,
+		tbl_user d
+		where b.chOr_PileNumber = c.elPi_ElectricPileCode
+		AND c.elPi_UserId = d.user_id
+		 and b.chOr_ChargingStatus!=4
+		<if test="userId !=null and userId !=''">
+			<![CDATA[and d.user_id = #{userId}]]>
+		</if>
+		<if test="beginDate !=null and beginDate !=''">
+			<![CDATA[and date_format(chOr_Createdate,'%Y-%m-%d') >= #{beginDate}]]>
+		</if>
+		<if test="endDate !=null and endDate !=''">
+			<![CDATA[ and date_format(chOr_Createdate,'%Y-%m-%d') <= #{endDate} ]]>
+		</if> 		
+		group by cast(DATE_FORMAT(chOr_Createdate,'%Y%m') as signed integer)
+	</select>
+	
+	<!-- 数据挖掘注册人数相关查询 -->	
+	<select id="getZcPeopleCount"
+		resultType="hashmap">
+		select count(1) as count from tbl_user_normal_view t
+	</select>
+	
+	<!-- 数据挖掘充值人数相关查询 -->	
+	<select id="getCzPeopleCount"
+		resultType="hashmap">
+		  SELECT
+			count(1) as count
+				FROM
+					(
+						SELECT
+							sum(t.puHi_Monetary),
+							t.puHi_UserId
+						FROM
+							tbl_purchasehistory t
+						WHERE
+							t.puHi_Type = '4'
+						AND t.puHi_Monetary > 0
+						GROUP BY
+							t.puHi_UserId
+					) a
+	</select>
+	
+	
+	<!-- 数据挖掘电桩数量相关查询 -->	
+	<select id="getAllPileCount"
+		resultType="hashmap">
+			select * from (select count(1) pile_count from tbl_electricpile t where t.elPi_State in ('10','15')) a,
+				(select sum(count) electricPositionCount from 
+					(select count(1) as count from tbl_electricpile t where t.elPi_State in ('10','15') and t.elPi_Binding = '0'
+				      union all
+					 select count(1) as count from tbl_powerstation p where p.poSt_Status in ('10','15')
+					) a
+				) b
+	</select>
+		
+	<!-- 数据挖掘爱充点电桩数量相关查询 -->	
+	<select id="getAichongPileCount"
+		resultType="hashmap">
+			select * from (select count(1) pile_count from tbl_electricpile t where t.elPi_State in ('10','15') and t.elPi_OwnerCompany = '1') a,
+				(select sum(count) electricPositionCount from 
+					(select count(1) as count from  tbl_electricpile t where t.elPi_State in ('10','15') and t.elPi_Binding = '0' and t.elPi_OwnerCompany = '1'
+					  union all
+					 select count(1) as count from tbl_powerstation p where p.poSt_Status in ('10','15') and exists (select 1 from tbl_electricpile b where b.elPi_State in ('10','15') and b.elPi_OwnerCompany = '1' and b.elPi_RelevancePowerStation=p.pk_PowerStation)
+					) a
+				) b
+	</select>
+	
+</mapper>

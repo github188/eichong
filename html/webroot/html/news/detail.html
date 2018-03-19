@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>内容详情</title>
+<style>
+@media screen and (max-width: 480px) {
+body{ padding:20px;}
+h1{ color:#333333; font-size:18px; text-align:left;}
+h2{ color:#333333; font-size:14px;}
+hr{ color:#dcdcdc; margin-bottom:12px;}
+span{ font-size:12px; color:#666666; margin-right:14px;}
+p{ color:#666666; font-size:14px; line-height:22px;}
+img{MAX-WIDTH: 100%!important;HEIGHT: auto!important;}
+}
+@media screen and (min-width: 480px) and (max-width: 720px){
+body{ padding:30px;}
+h1{ color:#333333; font-size:26px; text-align:left;}
+h2{ color:#333333; font-size:20px;}
+hr{ color:#dcdcdc; margin-bottom:18px;}
+span{ font-size:18px; color:#666666; margin-right:18px;}
+p{ color:#666666; font-size:20px; line-height:28px;}
+img{MAX-WIDTH: 100%!important;HEIGHT: auto!important;}
+}
+@media screen and (min-width:720px) {
+body{ padding:40px;}
+h1{ color:#333333; font-size:36px; text-align:left;}
+h2{ color:#333333; font-size:28px;}
+hr{ color:#dcdcdc; margin-bottom:24px;}
+span{ font-size:24px; color:#666666; margin-right:28px;}
+p{ color:#666666; font-size:28px; line-height:40px;}
+img{MAX-WIDTH: 100%!important;HEIGHT: auto!important;}
+}
+</style>
+</head>
+<body>
+<h1 id="releTitle"></h1>
+<hr>
+<span id="releUpdatedate"></span>
+<br />
+<div id="releContent">
+</div>
+</body>
+<script src="../../static/js/jquery-1.10.2.min.js" type="text/javascript"></script>
+<script src="../../static/js/common.js" type="text/javascript"></script>
+<script type="text/javascript">
+var id =getUrlParam("id");
+var type=getUrlParam("type");
+if(id&&type){
+	var userId=getUrlParam("userId");
+	infoDetails(id,type,userId);
+}else{
+	alert('请求参数不合法！')
+}
+function infoDetails(id,type,userId) {
+	$.ajax({
+	         type: 'get',
+	         url: getRootPath()+'/itf/news/'+id,
+	         data:{
+	        	 type:type,
+	        	 userId:userId
+	         },
+	         dataType: "json",
+	         success: function(datas){
+	        	 if(datas.status==100){
+		        	 var data=datas.data;
+		        	 $("#releTitle").html(data.releTitle);
+		        	 $("#releContent").html(data.releContent);
+		        	 var format='yyyy/MM/dd hh:mm';
+		        	 $("#releUpdatedate").html(new Date(parseInt(data.releUpdatedate)).format(format));
+	        	 }else{
+	        		 alert(datas.msg);
+	        	 }	 
+	         }	         
+	    });
+}
+</script>
+</html>

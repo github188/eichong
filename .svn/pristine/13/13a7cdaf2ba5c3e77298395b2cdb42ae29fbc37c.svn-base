@@ -1,0 +1,623 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsEchartsStatisticMapper">
+
+	<!-- 数据挖掘充电点数量相关查询 -->
+	<select id="queryAllPointCount" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT
+		sum(count) count_point
+		FROM
+		(
+		SELECT
+		count(1) count
+		FROM
+		tbl_powerstation t
+		WHERE 1=1
+		and poSt_Status in (10, 15)
+		<choose>
+			<when test="userLevel==3">
+				and exists (select 1 from tbl_user_business_view b
+				where
+				b.user_id=t.poSt_createUserId and exists (select 1 from
+				tbl_user_business_view b1 where b.busi_company_id =
+				b1.busi_company_id and b1.user_id = #{userId}))
+			</when>
+			<when test="userLevel==5">
+				and t.poSt_createUserId=#{userId}
+
+			</when>
+		</choose>
+		<if test="province !=null and province !=''">
+						<![CDATA[
+							and t.poSt_OwnProvinceCode = #{province}
+						]]>
+		</if>
+		UNION ALL
+		SELECT
+		count(1) count
+		FROM
+		tbl_electricpile p
+		WHERE
+		p.elPi_Binding = 0
+		AND elpi_state IN (10, 15)
+
+		<choose>
+			<when test="userLevel==3">
+				and exists (select 1 from tbl_user_business_view b
+				where
+				b.user_id=p.elPi_UserId and exists (select 1 from
+				tbl_user_business_view b1 where b.busi_company_id =
+				b1.busi_company_id and b1.user_id = #{userId}))
+			</when>
+			<when test="userLevel==5">
+				and p.elPi_UserId=#{userId}
+			</when>
+		</choose>
+		<if test="province !=null and province !=''">
+						<![CDATA[
+							and elPi_OwnProvinceCode = #{province}
+						]]>
+		</if>
+		) a
+	</select>
+
+	<!-- 数据挖掘充电桩数量相关查询 -->
+	<select id="queryPileInfoCount" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT * FROM
+		(SELECT count(1) countDc FROM tbl_electricpile t WHERE
+		t.elPi_ChargingMode =
+		'5' and t.delete_flag = '0' AND t.elpi_state IN
+		(10, 15)
+		<choose>
+			<when test="userLevel==3">
+				and exists (select 1 from tbl_user_business_view b
+				where
+				b.user_id=elPi_UserId and exists (select 1 from
+				tbl_user_business_view b1 where b.busi_company_id =
+				b1.busi_company_id and b1.user_id = #{userId}))
+			</when>
+			<when test="userLevel==5">
+				and elPi_UserId=#{userId}
+			</when>
+		</choose>
+		<if test="province !=null and province !=''">
+					<![CDATA[and t.elPi_OwnProvinceCode = #{province}]]>
+		</if>
+		) a,
+		(SELECT count(1) countAc FROM tbl_electricpile t WHERE
+		t.elPi_ChargingMode =
+		'14' and t.delete_flag = '0' AND t.elpi_state IN
+		(10, 15)
+		<choose>
+			<when test="userLevel==3">
+				and exists (select 1 from tbl_user_business_view b
+				where
+				b.user_id=elPi_UserId and exists (select 1 from
+				tbl_user_business_view b1 where b.busi_company_id =
+				b1.busi_company_id and b1.user_id = #{userId}))
+			</when>
+			<when test="userLevel==5">
+				and elPi_UserId=#{userId}
+			</when>
+		</choose>
+		<if test="province !=null and province !=''">
+					<![CDATA[and t.elPi_OwnProvinceCode = #{province}]]>
+		</if>
+		) b
+	</select>
+
+	<!-- 数据挖掘充电概况相关查询 -->
+	<select id="queryChargeInfoCount" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT
+		count(1) all_charge_count,
+		sum(a.chOr_QuantityElectricity)
+		allCharge_c,
+	<!-- 	TRUNCATE  ((SELECT sum(t.total_charge_time) FROM tbl_electricpilehead t
+		WHERE
+			t.pk_ElectricPile IN (
+				SELECT DISTINCT
+					pk_ElectricPile
+				FROM
+					tbl_electricpile b
+				WHERE
+				1=1
+				 <if test="province !=null and province !=''">
+					<![CDATA[
+					and b.elPi_OwnProvinceCode = #{province}
+				]]>
+		</if>
+			)) / 60,
+			2
+		) allCharge_t -->
+		FORMAT (
+		sum(
+			(
+				UNIX_TIMESTAMP(end_charge_time) - UNIX_TIMESTAMP(begin_charge_time)
+			) / 3600
+		),
+		2
+	) allCharge_t
+		FROM
+		tbl_chargingorder a,
+		tbl_electricpile b
+		WHERE a.chOr_PileNumber = b.elPi_ElectricPileCode
+		AND a.chOr_ChargingStatus >= 2
+		and a.chOr_ChargingStatus!=4
+		<choose>
+			<when test="userLevel==3">
+				and exists (select 1 from tbl_user_business_view b
+				where
+				b.user_id=elPi_UserId and exists (select 1 from
+				tbl_user_business_view b1 where b.busi_company_id =
+				b1.busi_company_id and b1.user_id = #{userId}))
+			</when>
+			<when test="userLevel==5">
+				and elPi_UserId=#{userId}
+			</when>
+		</choose>
+		<if test="province !=null and province !=''">
+			<![CDATA[
+				and b.elPi_OwnProvinceCode = #{province}
+			]]>
+		</if>
+	</select>
+
+	<!-- 数据挖掘枪头数量相关查询 -->
+	<select id="queryAllHeadCount" parameterType="hashmap"
+		resultType="hashmap">
+		select count(1) all_head_count from tbl_electricpilehead t where
+		t.delete_flag = '0'
+		<choose>
+			<when test="userLevel==3">
+				and exists (select 1 from tbl_electricpile e where
+				e.pk_ElectricPile =
+				t.pk_ElectricPile
+				and exists (select 1 from
+				tbl_user_business_view b where
+				b.user_id=elPi_UserId and exists
+				(select 1 from
+				tbl_user_business_view b1 where b.busi_company_id =
+				b1.busi_company_id and b1.user_id = #{userId})))
+			</when>
+			<when test="userLevel==5">
+				and exists (select 1 from tbl_electricpile e where
+				e.pk_ElectricPile =
+				t.pk_ElectricPile and elPi_UserId=#{userId})
+			</when>
+		</choose>
+		<if test="province !=null and province !=''">
+						<![CDATA[
+							and exists (select 1 from tbl_electricpile e where e.pk_ElectricPile = t.pk_ElectricPile
+							and e.elPi_OwnProvinceCode = #{province})
+						]]>
+		</if>
+	</select>
+
+	<!-- 数据挖掘枪头概况相关查询 -->
+	<select id="queryHeadInfoCount" parameterType="hashmap"
+		resultType="hashmap">
+		select * from
+		(select count(1) free_count from tbl_electricpilehead t
+		where t.delete_flag =
+		'0' and t.ePHe_ElectricpileHeadState='0'
+		and
+		exists (select 1 from tbl_electricpile e where e.pk_ElectricPile =
+		t.pk_ElectricPile
+		AND e.comm_status ='1'
+		AND e.elpi_state IN (10, 15)
+		<choose>
+			<when test="userLevel==3">
+				and exists (select 1 from tbl_user_business_view b
+				where
+				b.user_id=e.elPi_UserId and exists (select 1 from
+				tbl_user_business_view b1 where b.busi_company_id =
+				b1.busi_company_id and b1.user_id = #{userId}))
+			</when>
+			<when test="userLevel==5">
+				and e.elPi_UserId=#{userId}
+			</when>
+		</choose>
+		<if test="province !=null and province !=''">
+							<![CDATA[
+								and e.elPi_OwnProvinceCode = #{province}
+							]]>
+		</if>
+		)) a,
+		(select count(1) bespoke_count from tbl_electricpilehead t where
+		t.delete_flag = '0' and t.ePHe_ElectricpileHeadState='3'
+		and exists
+		(select 1 from tbl_electricpile e where e.pk_ElectricPile =
+		t.pk_ElectricPile
+		AND e.comm_status ='1'
+		AND e.elpi_state IN (10, 15)
+		<choose>
+			<when test="userLevel==3">
+				and exists (select 1 from tbl_user_business_view b
+				where
+				b.user_id=e.elPi_UserId and exists (select 1 from
+				tbl_user_business_view b1 where b.busi_company_id =
+				b1.busi_company_id and b1.user_id = #{userId}))
+			</when>
+			<when test="userLevel==5">
+				and e.elPi_UserId=#{userId}
+			</when>
+		</choose>
+		<if test="province !=null and province !=''">
+							<![CDATA[
+								and e.elPi_OwnProvinceCode = #{province}
+							]]>
+		</if>
+		)) b,
+		(select count(1) charging_count from tbl_electricpilehead t where
+		t.delete_flag = '0' and t.ePHe_ElectricpileHeadState='6'
+		and exists
+		(select 1 from tbl_electricpile e where e.pk_ElectricPile =
+		t.pk_ElectricPile
+		AND e.comm_status ='1'
+		AND e.elpi_state IN (10, 15)
+		<choose>
+			<when test="userLevel==3">
+				and exists (select 1 from tbl_user_business_view b
+				where
+				b.user_id=e.elPi_UserId and exists (select 1 from
+				tbl_user_business_view b1 where b.busi_company_id =
+				b1.busi_company_id and b1.user_id = #{userId}))
+			</when>
+			<when test="userLevel==5">
+				and e.elPi_UserId=#{userId}
+			</when>
+		</choose>
+		<if test="province !=null and province !=''">
+							<![CDATA[
+								and e.elPi_OwnProvinceCode = #{province}
+							]]>
+		</if>
+		)) c,
+		(select count(1) error_count from tbl_electricpilehead t where
+		t.delete_flag
+		= '0' and t.ePHe_ElectricpileHeadState='9'
+		and exists
+		(select 1 from tbl_electricpile e where e.pk_ElectricPile =
+		t.pk_ElectricPile
+		AND e.comm_status ='1'
+		AND e.elpi_state IN (10, 15)
+		<choose>
+			<when test="userLevel==3">
+				and exists (select 1 from tbl_user_business_view b
+				where
+				b.user_id=e.elPi_UserId and exists (select 1 from
+				tbl_user_business_view b1 where b.busi_company_id =
+				b1.busi_company_id and b1.user_id = #{userId}))
+			</when>
+			<when test="userLevel==5">
+				and e.elPi_UserId=#{userId}
+			</when>
+		</choose>
+		<if test="province !=null and province !=''">
+							<![CDATA[
+								and e.elPi_OwnProvinceCode = #{province}
+							]]>
+		</if>
+		)) d,
+		(SELECT count(1) countOff FROM tbl_electricpile t WHERE
+		t.comm_status='0' and
+		t.delete_flag = '0' AND t.elpi_state IN (10, 15)
+		<choose>
+			<when test="userLevel==3">
+				and exists (select 1 from tbl_user_business_view b
+				where
+				b.user_id=elPi_UserId and exists (select 1 from
+				tbl_user_business_view b1 where b.busi_company_id =
+				b1.busi_company_id and b1.user_id = #{userId}))
+			</when>
+			<when test="userLevel==5">
+				and elPi_UserId=#{userId}
+			</when>
+		</choose>
+		<if test="province !=null and province !=''">
+						<![CDATA[and t.elPi_OwnProvinceCode = #{province}]]>
+		</if>
+		) e
+	</select>
+
+	<!-- 数据挖掘枪头充电统计相关查询 -->
+	<select id="getHeadChargeConsumeAll" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT
+		left(a.chOr_Createdate,7) '收益月份',
+		count(1) '充电次数',
+		sum(a.chOr_Moeny) '充电金额',
+		sum(a.chOr_QuantityElectricity) '充电度数'
+		FROM
+		tbl_chargingorder a,
+		tbl_electricpile b,
+		tbl_electricpilehead c
+		WHERE
+		a.chOr_PileNumber = b.elPi_ElectricPileCode
+		AND b.pk_ElectricPile =
+		c.pk_ElectricPile
+		AND a.chOr_ChargingStatus >= 2
+		AND
+		c.ePHe_ElectricpileHeadId = '1'
+		group by left(a.chOr_Createdate,7)
+		order by left(a.chOr_Createdate,7);
+	</select>
+
+	<!-- 地图电桩数据统计 -->
+	<select id="getMapData" parameterType="hashmap" resultType="hashmap">
+		select a.province_id,a.PROVINCE_NAME province_name,b.pile_count
+		pile_count from tb_m_province a LEFT JOIN
+		(SELECT
+		a.elPi_OwnProvinceCode,
+		sum(pile_count) pile_count
+		FROM
+		(
+		select
+		t.elPi_OwnProvinceCode,count(1) pile_count
+		from tbl_electricpile t
+		where t.elPi_State in ('10','15')
+		and t.elPi_Binding = 0
+		<choose>
+			<when test="userLevel==3">
+				and exists (select 1 from tbl_user_business_view b
+				where
+				b.user_id=elPi_UserId and exists (select 1 from
+				tbl_user_business_view b1 where b.busi_company_id =
+				b1.busi_company_id and b1.user_id = #{userId}))
+			</when>
+			<when test="userLevel==5">
+				and elPi_UserId=#{userId}
+			</when>
+		</choose>
+		GROUP BY
+		t.elPi_OwnProvinceCode
+		UNION all
+		SELECT
+		a.poSt_OwnProvinceCode
+		elPi_OwnProvinceCode,
+		count(1) pile_count
+		FROM
+		tbl_powerstation a
+		where
+		1=1
+		and poSt_Status in (10, 15)
+		<choose>
+			<when test="userLevel==3">
+				and exists (select 1 from tbl_user_business_view b
+				where
+				b.user_id=a.poSt_createUserId and exists (select 1 from
+				tbl_user_business_view b1 where b.busi_company_id =
+				b1.busi_company_id and b1.user_id = #{userId}))
+			</when>
+			<when test="userLevel==5">
+				and a.poSt_createUserId=#{userId}
+			</when>
+		</choose>
+		GROUP BY
+		a.poSt_OwnProvinceCode
+		) a
+		GROUP BY
+		a.elPi_OwnProvinceCode) b
+		on
+		a.PROVINCE_ID=b.elPi_OwnProvinceCode;
+	</select>
+
+	<!-- 数据挖掘充电桩数量相关查询 -->
+	<select id="queryPileInfoCountInner" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT * FROM
+		(SELECT count(1) countDc FROM tbl_electricpile t WHERE
+		t.elPi_ChargingMode =
+		'5' and t.delete_flag = '0' AND t.elpi_state IN
+		(10, 15)
+		<if test="eId !=null and eId !=''">
+					<![CDATA[
+						and t.pk_ElectricPile = #{eId}
+					]]>
+		</if>
+		<if test="pId !=null and pId !=''">
+					<![CDATA[
+						and t.elPi_RelevancePowerStation = #{pId}
+					]]>
+		</if>
+		) a,
+		(SELECT count(1) countAc FROM tbl_electricpile t WHERE
+		t.elPi_ChargingMode =
+		'14' and t.delete_flag = '0' AND t.elpi_state IN
+		(10, 15)
+		<if test="eId !=null and eId !=''">
+					<![CDATA[
+						and t.pk_ElectricPile = #{eId}
+					]]>
+		</if>
+		<if test="pId !=null and pId !=''">
+					<![CDATA[
+						and t.elPi_RelevancePowerStation = #{pId}
+					]]>
+		</if>
+		) b
+	</select>
+
+	<!-- 数据挖掘充电概况相关查询 -->
+	<select id="queryChargeInfoCountInner" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT
+		count(1) all_charge_count,
+		sum(a.chOr_QuantityElectricity)
+		allCharge_c,
+		TRUNCATE (sum((
+				UNIX_TIMESTAMP(end_charge_time) - UNIX_TIMESTAMP(begin_charge_time)
+				) / 3600),2) allCharge_t
+		<!-- <choose>
+			<when test="headId !=null and headId !=''"> -->
+				<!-- TRUNCATE ((select sum(total_charge_time) from
+				tbl_electricpilehead c where c.pk_ElectricpileHead = #{headId}) /
+				60,2) allCharge_t -->
+				
+			<!-- </when>
+			<otherwise>
+				<if test="eId !=null and eId !=''">
+					<![CDATA[
+						TRUNCATE ((select sum(total_charge_time) from tbl_electricpilehead c where c.pk_ElectricPile = b.pk_ElectricPile) / 60,2) allCharge_t
+					]]>
+				</if>
+				<if test="pId !=null and pId !=''">
+					<![CDATA[
+						TRUNCATE ((select sum(total_charge_time) from tbl_electricpilehead c where exists (select 1 from tbl_electricpile d where c.pk_ElectricPile = d.pk_ElectricPile and d.elPi_RelevancePowerStation = #{pId})) / 60,2) allCharge_t
+					]]>
+				</if>
+			</otherwise>
+		</choose> -->
+		
+		FROM
+		tbl_chargingorder a,
+		tbl_electricpile b
+		WHERE a.chOr_PileNumber = b.elPi_ElectricPileCode
+		AND a.chOr_ChargingStatus >= 2
+		and a.chOr_ChargingStatus !=4
+		<if test="eId !=null and eId !=''">
+			<![CDATA[
+				and b.pk_ElectricPile = #{eId}
+			]]>
+		</if>
+		<if test="pId !=null and pId !=''">
+			<![CDATA[
+				and b.elPi_RelevancePowerStation = #{pId}
+			]]>
+		</if>
+		<if test="headId !=null and headId !=''">
+			<![CDATA[
+				and exists(select 1 from tbl_electricpilehead c where c.pk_ElectricPile = b.pk_ElectricPile and c.ePHe_ElectricpileHeadId=a.chOr_Muzzle and c.pk_ElectricpileHead = #{headId})
+			]]>
+		</if>
+	</select>
+<!-- 根据枪头获取额定功率 -->
+	<select id="getPilePowerSize" parameterType="hashmap" resultType="String">
+	SELECT DISTINCT coCo_Content FROM
+			tbl_ConfigContent a,
+			tbl_electricpile b,
+			tbl_electricpilehead c
+	WHERE  a.pk_ConfigContent = b.elPi_PowerSize
+		AND coCo_ConfigParameterID = 4
+		AND coCo_ConfigPStatus = 0
+
+		
+		<if test="headId !=null and headId !=''">
+			<![CDATA[
+				and exists(select 1 from tbl_electricpilehead c where c.pk_ElectricPile = b.pk_ElectricPile  and c.pk_ElectricpileHead = #{headId})
+			]]>
+		</if>
+	</select>
+
+
+	<!-- 数据挖掘枪头数量相关查询 -->
+	<select id="queryAllHeadCountInner" parameterType="hashmap"
+		resultType="hashmap">
+		select count(1) all_head_count from tbl_electricpilehead t where
+		t.delete_flag = '0'
+		<if test="eId !=null and eId !=''">
+			<![CDATA[
+				and t.pk_ElectricPile = #{eId}
+			]]>
+		</if>
+		<if test="pId !=null and pId !=''">
+			<![CDATA[
+				and exists(select 1 from tbl_electricpile e where e.pk_ElectricPile=t.pk_ElectricPile and e.elPi_RelevancePowerStation = #{pId})
+			]]>
+		</if>
+	</select>
+
+	<!-- 数据挖掘枪头概况相关查询 -->
+	<select id="queryHeadInfoCountInner" parameterType="hashmap"
+		resultType="hashmap">
+		select * from
+		(select count(1) free_count from tbl_electricpilehead t
+		where t.delete_flag =
+		'0' and t.ePHe_ElectricpileHeadState='0'
+		and
+		exists (select 1 from tbl_electricpile e where
+		e.pk_ElectricPile=t.pk_ElectricPile and e.comm_status = '1')
+		<if test="eId !=null and eId !=''">
+							<![CDATA[
+								and t.pk_ElectricPile = #{eId}
+							]]>
+		</if>
+		<if test="pId !=null and pId !=''">
+							<![CDATA[
+								and exists(select 1 from tbl_electricpile e where e.pk_ElectricPile=t.pk_ElectricPile and e.elPi_RelevancePowerStation = #{pId})
+							]]>
+		</if>
+		) a,
+		(select count(1) bespoke_count from tbl_electricpilehead t where
+		t.delete_flag = '0' and t.ePHe_ElectricpileHeadState='3'
+		<if test="eId !=null and eId !=''">
+							<![CDATA[
+								and t.pk_ElectricPile = #{eId}
+							]]>
+		</if>
+		<if test="pId !=null and pId !=''">
+							<![CDATA[
+								and exists(select 1 from tbl_electricpile e where e.pk_ElectricPile=t.pk_ElectricPile  AND e.comm_status = '1' and e.elPi_RelevancePowerStation = #{pId})
+							]]>
+		</if>
+		) b,
+		(select count(1) charging_count from tbl_electricpilehead t where
+		t.delete_flag = '0' and t.ePHe_ElectricpileHeadState='6'
+		<if test="eId !=null and eId !=''">
+							<![CDATA[
+								and t.pk_ElectricPile = #{eId}
+							]]>
+		</if>
+		<if test="pId !=null and pId !=''">
+							<![CDATA[
+								and exists(select 1 from tbl_electricpile e where e.pk_ElectricPile=t.pk_ElectricPile AND e.comm_status = '1' and e.elPi_RelevancePowerStation = #{pId})
+							]]>
+		</if>
+		) c,
+		(select count(1) error_count from tbl_electricpilehead t where
+		t.delete_flag
+		= '0' and t.ePHe_ElectricpileHeadState='9'
+		<if test="eId !=null and eId !=''">
+							<![CDATA[
+								and t.pk_ElectricPile = #{eId}
+							]]>
+		</if>
+		<if test="pId !=null and pId !=''">
+							<![CDATA[
+								and exists(select 1 from tbl_electricpile e where e.pk_ElectricPile=t.pk_ElectricPile AND e.comm_status = '1' and e.elPi_RelevancePowerStation = #{pId})
+							]]>
+		</if>
+		) d,
+		(<!-- SELECT count(1) countOff FROM tbl_electricpile t WHERE
+		t.comm_status='0' and
+		t.delete_flag = '0' 
+		AND t.elpi_state IN(10,12,15)
+		 -->
+		SELECT count(1) countOff
+		FROM
+		tbl_electricpile t,
+		tbl_electricpilehead t2
+		WHERE
+		t.pk_ElectricPile = t2.pk_ElectricPile
+		and t.comm_status='0' 
+		and t2.delete_flag = '0'	
+		
+		<if test="eId !=null and eId !=''">
+							<![CDATA[
+								and t.pk_ElectricPile = #{eId}
+							]]>
+		</if>
+		<if test="pId !=null and pId !=''">
+							<![CDATA[
+								 and t.elPi_RelevancePowerStation = #{pId}
+							]]>
+		</if>
+		) e
+	</select>
+
+</mapper>

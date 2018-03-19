@@ -1,0 +1,56 @@
+{
+    "data": {
+        "children": [
+            {
+                "children": [
+                    {
+                        "id": "XJPI9YbrqCDz7oPFzPS",
+                        "name": "app注册",
+                        "target": "/static/html/consumeStatistics/appRegister.html"
+                    },
+                    {
+                        "id": "XFvK75Di5d2B055LPJQ",
+                        "name": "实时数据",
+                        "target": "/static/html/consumeStatistics/realTimeDate.html"
+                    },
+                    {
+                        "id": "I1vEWHykv6Ndy1YK8pk",
+                        "name": "历史数据",
+                        "target": "/static/html/consumeStatistics/historyData.html"
+                    }
+                ],
+                "id": "vw09dhvGeegfkk8ton2",
+                "name": "消费统计",
+                "target": ""
+            },
+            {
+                "children": [
+                    {
+                        "id": "zJe5f5zvQS",
+                        "name": "资产统计",
+                        "target": "/static/html/electricStatistics/assetData.html"
+                    },
+                    
+                    {
+                        "id": "Uqsvo73hv0",
+                        "name": "故障统计",
+                        "target": "/static/html/electricStatistics/faultData.html"
+                    },
+                    {
+                        "id": "4Ey9xGVn9D",
+                        "name": "充电统计",
+                        "target": "/static/html/electricStatistics/chargeData.html"
+                    }
+                ],
+                "id": "gX1ihA6Py0",
+                "name": "电桩统计",
+                "target": ""
+            }
+        ],
+        "id": "PEIO10uBCSkCIR2iG2n",
+        "name": "统计分析",
+        "target": ""
+    },
+    "msg": "操作成功!",
+    "status": 100
+}

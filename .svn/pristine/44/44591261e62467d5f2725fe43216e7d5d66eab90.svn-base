@@ -1,0 +1,176 @@
+package com.wanma.ims.common.domain;
+
+import java.lang.Integer;
+import java.math.BigDecimal;
+
+public class ElectricPileHeadDO {
+    private Integer id;//主键 ref表字段: pk_ElectricpileHead
+
+    private Long electricPileId;//电桩Id ref表字段: pk_ElectricPile
+
+    private String name;//枪头名称 ref表字段: ePHe_ElectricpileHeadName
+
+    private Integer status;//电桩枪头状态（0空闲中，3预约中，6充电中，9停用中,17等待充电） ref表字段: ePHe_ElectricpileHeadState
+
+    private Integer code;//枪头编号 ref表字段: ePHe_ElectricpileHeadId
+
+    private String num;//枪口对应车位号 ref表字段: eph_num
+
+    private Integer isDel;//是否被删除 ref表字段: delete_flag
+
+    private Integer haveGunCover;//有无枪盖(0:无;1:有) ref表字段: have_gun_lid
+
+    private Integer haveGunSeat;//有无枪座(0:无;1:有） ref表字段: have_gun_site_signal
+
+    private Integer haveRadar;//有无雷达(0:无;1:有) ref表字段: have_radar
+
+    private Integer haveParkingLock;//有无车位锁(地锁)(0:无;1:有) ref表字段: hava_car_place_lock
+
+    private Integer haveBmsComm;//有无BMS通讯设备支持(0:无;1:有) ref表字段: have_bms_comm
+
+    private BigDecimal totalChargeDl;//累计充电度量 ref表字段: total_charge_dl
+
+    private Integer totalChargeTime;//累计充电时间，单位分钟 ref表字段: total_charge_time
+
+    private BigDecimal totalChargeAmt;//累计充电费用 ref表字段: total_charge_amt
+
+    private String qrCodes;//二维码编码 ref表字段: ePHe_qr_codes
+
+    private Long qrInvalid;//二维码过期时间 ref表字段: ePHe_qrdate
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Long getElectricPileId() {
+        return electricPileId;
+    }
+
+    public void setElectricPileId(Long electricPileId) {
+        this.electricPileId = electricPileId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public Integer getCode() {
+        return code;
+    }
+
+    public void setCode(Integer code) {
+        this.code = code;
+    }
+
+    public String getNum() {
+        return num;
+    }
+
+    public void setNum(String num) {
+        this.num = num;
+    }
+
+    public Integer getIsDel() {
+        return isDel;
+    }
+
+    public void setIsDel(Integer isDel) {
+        this.isDel = isDel;
+    }
+
+    public Integer getHaveGunCover() {
+        return haveGunCover;
+    }
+
+    public void setHaveGunCover(Integer haveGunCover) {
+        this.haveGunCover = haveGunCover;
+    }
+
+    public Integer getHaveGunSeat() {
+        return haveGunSeat;
+    }
+
+    public void setHaveGunSeat(Integer haveGunSeat) {
+        this.haveGunSeat = haveGunSeat;
+    }
+
+    public Integer getHaveRadar() {
+        return haveRadar;
+    }
+
+    public void setHaveRadar(Integer haveRadar) {
+        this.haveRadar = haveRadar;
+    }
+
+    public Integer getHaveParkingLock() {
+        return haveParkingLock;
+    }
+
+    public void setHaveParkingLock(Integer haveParkingLock) {
+        this.haveParkingLock = haveParkingLock;
+    }
+
+    public Integer getHaveBmsComm() {
+        return haveBmsComm;
+    }
+
+    public void setHaveBmsComm(Integer haveBmsComm) {
+        this.haveBmsComm = haveBmsComm;
+    }
+
+    public BigDecimal getTotalChargeDl() {
+        return totalChargeDl;
+    }
+
+    public void setTotalChargeDl(BigDecimal totalChargeDl) {
+        this.totalChargeDl = totalChargeDl;
+    }
+
+    public Integer getTotalChargeTime() {
+        return totalChargeTime;
+    }
+
+    public void setTotalChargeTime(Integer totalChargeTime) {
+        this.totalChargeTime = totalChargeTime;
+    }
+
+    public BigDecimal getTotalChargeAmt() {
+        return totalChargeAmt;
+    }
+
+    public void setTotalChargeAmt(BigDecimal totalChargeAmt) {
+        this.totalChargeAmt = totalChargeAmt;
+    }
+
+    public String getQrCodes() {
+        return qrCodes;
+    }
+
+    public void setQrCodes(String qrCodes) {
+        this.qrCodes = qrCodes;
+    }
+
+    public Long getQrInvalid() {
+        return qrInvalid;
+    }
+
+    public void setQrInvalid(Long qrInvalid) {
+        this.qrInvalid = qrInvalid;
+    }
+}

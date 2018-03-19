@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.IntegralRulesMapper">
+	<resultMap type="IntegralRulesDO" id="integralRules">
+		<result property="pkId" column="pk_id" />
+		<result property="integralActivityId" column="integral_activity_id" />
+		<result property="highestPriority" column="highest_priority" />
+		<result property="fixedIntegralValue" column="fixed_integral_value" />
+		<result property="ratioIntegralValue" column="ratio_integral_value" />
+		<result property="startDate" column="start_date" />
+		<result property="endDate" column="end_date" />
+		<result property="effectiveTimes" column="effective_times" />
+		<result property="provinceId" column="province_id" />
+		<result property="cityId" column="city_id" />
+		<result property="powerStationId" column="powerStation_id" />
+		<result property="minValue" column="min_value" />
+		<result property="isChoice" column="is_choice" />
+		<result property="choiceMoney" column="choice_money" />
+		<result property="isShareChoice" column="is_share_choice" />
+		<result property="shareIntegralValue" column="share_integral_value" />
+		<result property="shareChoice" column="share_choice" />
+		<result property="contents" column="contents" />
+		<result property="creator" column="creator" />
+		<result property="modifier" column="modifier" />
+		<result property="gmtCreate" column="gmt_create" />
+		<result property="gmtModified" column="gmt_modified" />
+	</resultMap>
+	
+	<resultMap type="IntegralRulesExtensionsDO" id="integralRulesExtensions" extends="integralRules">
+		<result property="integralRulesId" column="integral_rules_id" />
+		<result property="electricPileId" column="electricPile_id" />
+	</resultMap>
+	
+	<select id="getIntegralRulesCount" parameterType="IntegralRulesDO" resultType="long">
+		SELECT
+			 COUNT(1)
+		FROM 
+			 tbl_integral_rules b
+		where 1=1
+		<if test="pkId != null">
+		  and b.pk_id = #{pkId}
+		</if>
+		<if test="integralActivityId != null">
+		  and b.integral_activity_id = #{integralActivityId}
+		</if>
+		<if test="highestPriority != null">
+		  and b.highest_priority = #{highestPriority}
+		</if>
+		<if test="startDate != null">
+		  and b.start_date = #{startDate}
+		</if>
+		<if test="endDate != null">
+		  #{endDate} = and b.end_date
+		</if>
+		<if test="provinceId != null and provinceId !='' ">
+		  and b.province_id = #{provinceId}
+		</if>
+		<if test="cityId != null and cityId !='' ">
+		  and b.city_id = #{cityId}
+		</if>
+		<if test="powerStationId != null and powerStationId !='' ">
+		  and b.powerStation_id = #{powerStationId}
+		</if>
+	</select>
+	
+	<select id="getIntegralRulesList" parameterType="IntegralRulesDO" resultMap="integralRules">
+		SELECT
+			 pk_id,
+			 integral_activity_id,
+			 highest_priority,
+			 fixed_integral_value,
+			 ratio_integral_value,
+			 start_date,
+			 end_date,
+			 effective_times,
+			 province_id,
+			 city_id,
+			 powerStation_id,
+			 electricPile_ids,
+			 min_value,
+			 is_choice,
+			 choice_money,
+			 is_share_choice,
+			 share_integral_value,
+			 share_choice,
+			 contents,
+			 creator,
+			 modifier,
+			 gmt_create,
+			 gmt_modified
+		FROM 
+			 tbl_integral_rules b
+		where 1=1
+		<if test="pkId != null">
+		  and b.pk_id = #{pkId}
+		</if>
+		<if test="integralActivityId != null">
+		  and b.integral_activity_id = #{integralActivityId}
+		</if>
+		<if test="highestPriority != null">
+		  and b.highest_priority = #{highestPriority}
+		</if>
+		<if test="startDate != null">
+		  and b.start_date = #{startDate}
+		</if>
+		<if test="endDate != null">
+		  #{endDate} = and b.end_date
+		</if>
+		<if test="provinceId != null and provinceId !='' ">
+		  and b.province_id = #{provinceId}
+		</if>
+		<if test="cityId != null and cityId !='' ">
+		  and b.city_id = #{cityId}
+		</if>
+		<if test="powerStationId != null and powerStationId !='' ">
+		  and b.powerStation_id = #{powerStationId}
+		</if>
+        <if test="pager!=null">limit #{pager.offset},#{pager.pageSize}</if>
+	</select>
+
+	<!-- 添加积分规则表 -->
+	<insert id="addIntegralRules" useGeneratedKeys="true" parameterType="IntegralRulesDO" keyProperty="pkId">
+		INSERT INTO tbl_integral_rules
+		(pk_id,integral_activity_id,highest_priority,fixed_integral_value,ratio_integral_value,start_date,end_date,
+			 effective_times,province_id,city_id,powerStation_id,min_value,is_choice,choice_money,is_share_choice,
+			 share_integral_value,share_choice,contents,creator,modifier,gmt_create,gmt_modified)
+		VALUES
+		(null,#{integralActivityId},#{highestPriority},#{fixedIntegralValue},#{ratioIntegralValue},#{startDate},#{endDate},
+		#{effectiveTimes},#{provinceId},#{cityId},#{powerStationId},#{minValue},#{isChoice},#{choiceMoney},#{isShareChoice},
+		#{shareIntegralValue},#{shareChoice},#{contents},#{creator},#{modifier},#{gmtCreate},#{gmtModified})
+	</insert>
+	
+	<!-- 修改积分规则表 -->
+	<update id="modifyIntegralRules" parameterType="IntegralRulesDO" >
+		UPDATE tbl_integral_rules
+		SET
+		<if test="highestPriority != null">
+		  highest_priority = #{highestPriority}
+		</if>
+		<if test="fixedIntegralValue != null">
+		  fixed_integral_value = #{fixedIntegralValue},
+		</if>
+		<if test="ratioIntegralValue != null">
+		  ratio_integral_value = #{ratioIntegralValue},
+		</if>
+		<if test="startDate != null">
+		  start_date = #{startDate},
+		</if>
+		<if test="endDate != null">
+		  end_date = #{endDate},
+		</if>
+		<if test="effectiveTimes != null">
+		  effective_times = #{effectiveTimes},
+		</if>
+		<if test="provinceId != null and provinceId !='' ">
+		  province_id = #{provinceId},
+		</if>
+		<if test="cityId != null and cityId !='' ">
+		  city_id = #{cityId},
+		</if>
+		<if test="powerStationId != null">
+		  powerStation_id = #{powerStationId},
+		</if>
+		<if test="minValue != null">
+		  min_value = #{minValue},
+		</if>
+		<if test="isChoice != null">
+		  is_choice = #{isChoice},
+		</if>
+		<if test="choiceMoney != null">
+		  choice_money = #{choiceMoney},
+		</if>
+		<if test="isShareChoice != null">
+		  is_share_choice = #{isShareChoice},
+		</if>
+		<if test="shareIntegralValue != null">
+		  share_integral_value = #{shareIntegralValue},
+		</if>
+		<if test="shareChoice != null">
+		  share_choice = #{shareChoice},
+		</if>
+		<if test="contents != null and contents !='' ">
+		  contents = #{contents},
+		</if>
+		modifier = #{modifier},
+		gmt_modified = #{gmtModified}
+		WHERE pk_id = #{pkId}
+	</update>
+	
+	<!-- 删除积分规则表 -->
+	<delete id="deleteIntegralRules" parameterType="String">
+		DELETE FROM tbl_integral_rules WHERE pk_id = #{pkId}
+	</delete>
+</mapper>

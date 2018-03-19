@@ -1,0 +1,65 @@
+//退出系统
+$('body').off('click','#loginOut').on('click','#loginOut',function(){
+    window.top.location.href = basePath + toLoginUrl;
+})
+$('body').on('click', '.firstText>a', function () {
+    $(this).next().toggle(300);
+    $(this).parent().siblings().find('ul').hide(300);
+})
+// 加载菜单部分
+loadMenu();
+function loadMenu() {
+    $.ajax({
+        type: "post",
+        url: basePath + getSelfMeunTreeUrl,
+        async: true,
+        dataType: "json",
+        success: function (req) {
+            if (req.success == true) {
+                //alert(JSON.stringify(req)) //${ctx}
+                getMenuMap(req);
+                setTimeout(function () {
+                    var data = req.dataObject;
+                    var html = "";
+                    for (var i = 0; i < data.length; i++) {
+                        if (i == 0) {
+                            html += '<li class="firstText"><a href="#"><i><img src="'+ basePath + data[i].imageUrl + '"/></i>'
+                            + '<span class="nav-label">' + data[i].contents
+                            + '</span><span class="fa arrow"></span></a><ul class="nav nav-second-level">';
+                        }
+                        else {
+                            html += '<li class="firstText"><a href="#"><i><img src="'+ basePath + data[i].imageUrl + '"/></i>'
+                            + '<span class="nav-label">' + data[i].contents
+                            + '</span><span class="fa arrow"></span></a><ul class="nav nav-second-level" style="display: none;">';
+                        }
+                        for (var j = 0; j < data[i].menuList.length; j++) {
+                            var ctrStr = data[i].menuList[j].contents;
+                            if (ctrStr.indexOf('主页') > -1) {
+                                html += '<li style="display: none;"><a class="J_menuItem" href="' + basePath + data[i].menuList[j].url + '?menuId='
+                                + data[i].menuList[j].menuId + '">' + data[i].menuList[j].contents + '</a></li>';
+                            } else {
+                                html += '<li><a class="J_menuItem" href="' + basePath + data[i].menuList[j].url + '?menuId='
+                                + data[i].menuList[j].menuId + '">' + data[i].menuList[j].contents + '</a></li>';
+                            }
+
+                        }
+                        html += '</ul></li>';
+                    }
+                    $(".nav-header").after(html);
+                }, 200)
+            }
+        }
+    });
+}
+function getMenuMap(req) {
+    var data = req.dataObject;
+    var menuMap = {};
+    for (var i = 0; i < data.length; i++) {
+        var menuList = data[i].menuList;
+        for (var j = 0; j < menuList.length; j++) {
+            menuMap[menuList[j].contents] = menuList[j].menuId;
+        }
+    }
+    var menuMap = JSON.stringify(menuMap);
+    window.localStorage.setItem('menuMap', menuMap);
+}

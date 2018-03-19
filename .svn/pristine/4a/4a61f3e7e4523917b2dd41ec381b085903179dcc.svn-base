@@ -1,0 +1,41 @@
+package com.wanma.ims.constants;
+
+
+public enum AdminEnum {
+
+	SYSTEM("系统管理员", 0), INVEST("投资公司管理员", 1), CHANNEL("渠道公司管理员", 2), PILEOWNER("桩主公司管理员", 3),LANDOWNER("业主公司管理员", 4),EICHONE("爱充管理员", 5);
+
+	private String name;
+	private int val;
+
+	private AdminEnum(String name, int val){
+		this.name = name;
+		this.val = val;
+	}
+
+	public static String getName(int val) {
+		for (CompanyEnum c : CompanyEnum.values()) {
+			if (c.getVal() == val) {
+				return c.getName();
+			}
+		}
+		return null;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public int getVal() {
+		return val;
+	}
+
+	public void setVal(int val) {
+		this.val = val;
+	}
+
+}

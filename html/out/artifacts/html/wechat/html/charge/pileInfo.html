@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no"/>
+    <title>充电</title>
+    <script>
+        (function(){
+            var html = document.documentElement;
+            var hWidth = html.getBoundingClientRect().width;
+            html.style.fontSize = hWidth/15 + "px";
+        })()
+    </script>
+    <link rel="stylesheet" href="../../css/common.css">
+    <link rel="stylesheet" href="../../css/pileInfo.css">
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+</head>
+<body>
+<div class="chargeInfo">
+    <div class="chargeInfoTitle" id="elPiElectricPileName"></div>
+    <ul class="chargeDetailparam">
+        <li>
+            <span class="writeColor" id="elPiPowerSize"></span>
+            <span class="tip">功率(kw)</span>
+        </li>
+        <li>
+            <span class="writeColor" id="elPiOutputCurrent"></span>
+            <span class="tip">电流(A)</span>
+        </li>
+        <li>
+            <span class="writeColor" id="currentRate"></span>
+            <span class="tip">电价(元/度)</span>
+        </li>
+    </ul>
+</div>
+<div class="chargeAccountBlock">
+    <div class="chargeAccountTitle">预充金额</div>
+    <input type="number" pattern="[0-9]*" class="chargeNum" value="50" id="chargeValue"/>
+    <div class="tip"></div>
+    <ul class="accountTab">
+        <li data-val="50" class="active">50元</li>
+        <li data-val="40">40元</li>
+        <li data-val="30">30元</li>
+    </ul>
+</div>
+<div class="payBlock">
+    <div class="tip">暂时冻结金额，停止充电时结束</div>
+    <div class="tip">如有退款，将退还到您的微信钱包</div>
+    <!--<div class="payBtn" onclick="getlocations();" id="payBtn">微信支付</div>-->
+    <div class="payBtn"  id="payBtn">支付并开始充电</div>
+</div>
+
+
+</body>
+<script src="../../js/common.js"></script>
+<script src="../../js/jquery-2.1.0.js"></script>
+<script src="../../lib/layer_mobile/layer.js"></script>
+<script src="../../js/pileInfo.js"></script>
+
+</html>

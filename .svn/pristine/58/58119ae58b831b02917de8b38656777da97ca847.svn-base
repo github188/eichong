@@ -1,0 +1,24 @@
+package com.wanma.ims.service;
+
+import com.wanma.ims.model.UserBlackWhiteDO;
+
+
+
+/**
+ * 黑白名单-APP用户或渠道用户
+ */
+public interface UserBlackWhiteService {
+
+	/**
+	 * 黑白名单-新增
+	 * @param
+	 * */
+	public boolean addUserBlackWhite(UserBlackWhiteDO userBlackWhiteDO);
+	
+	/**
+	 * 黑白名单-查询(根据用户ID或者卡ID查询黑白名单)
+	 * @param
+	 * */
+	public boolean getUserBlackWhiteByUserId(Long userId);
+
+}

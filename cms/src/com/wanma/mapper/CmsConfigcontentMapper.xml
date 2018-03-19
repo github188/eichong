@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsConfigcontentMapper">
+
+	<resultMap id="tblConfigcontentResultMap" type="TblConfigcontent">
+		<id property="pkConfigcontent" column="pk_ConfigContent" />
+		<result property="cocoConfigparameterid" column="coCo_ConfigParameterID" />
+		<result property="cocoContent" column="coCo_Content" />
+		<result property="coCoMemo" column="coCo_memo" />
+		<result property="cocoConfigpstatus" column="coCo_ConfigPStatus" />
+		<result property="cocoCreatedate" column="coCo_Createdate" />
+		<result property="cocoUpdatedate" column="coCo_Updatedate" />
+	</resultMap>
+	<resultMap id="pageResultMap"  type="java.util.HashMap" extends="tblConfigcontentResultMap"></resultMap>
+	<resultMap id="findResultMap"  type="java.util.HashMap" extends="tblConfigcontentResultMap"></resultMap>
+	<!-- 新增配置参数内容 -->
+	<insert id="insertContent" parameterType="TblConfigcontent">
+	   insert into tbl_ConfigContent (
+	     coCo_ConfigParameterID,
+	     coCo_Content,
+	     coCo_memo,
+	     coCo_ConfigPStatus,
+	     coCo_Createdate,
+	     coCo_Updatedate
+	   )values (
+	     #{cocoConfigparameterid},
+	     #{cocoContent},
+	     #{coCoMemo},
+	     #{cocoConfigpstatus},
+	     #{cocoCreatedate},
+	     #{cocoUpdatedate}
+	   )
+	</insert>
+	<!-- 更新配置参数内容 -->
+	<update id="updateContent" parameterType="TblConfigcontent">
+	   update tbl_ConfigContent set
+	     coCo_Content=#{cocoContent},
+	     coCo_memo=#{coCoMemo},
+	     coCo_Updatedate=#{cocoUpdatedate}
+	   where 
+	    pk_ConfigContent=#{pkConfigcontent} 
+	</update>
+	<!-- 删除配置参数内容 -->
+	<delete id="deleteById" parameterType="map">
+	   update
+	     tbl_ConfigContent 
+	     set coCo_ConfigPStatus = #{cocoConfigpstatus}
+	   where 
+	    pk_ConfigContent=#{pkConfigcontent} 
+	</delete>
+	<!-- 获取配置参数内容 -->
+	<select id="findContent" parameterType="map" resultMap="tblConfigcontentResultMap">
+	   select 
+	    pk_ConfigContent,
+	    coCo_ConfigParameterID,
+	    coCo_Content,
+	    coCo_memo,
+	    coCo_ConfigPStatus,
+	    coCo_Createdate,
+	    coCo_Updatedate
+	   from tbl_ConfigContent
+	   where 
+	    pk_ConfigContent=#{pkConfigcontent} 
+	</select>
+	<!-- 获取配置参数内容列表 -->
+	<select id="findContentList" parameterType="map" resultMap="tblConfigcontentResultMap">
+	   select 
+	     pk_ConfigContent,
+	     coCo_ConfigParameterID,
+	     coCo_Content,
+	     coCo_ConfigPStatus,
+	     coCo_Createdate,
+	     coCo_Updatedate
+	   from tbl_ConfigContent
+	   <where>
+	     <if test="pkConfigcontent != null">
+	        pk_ConfigContent=#{pkConfigcontent}
+	     </if>
+	     <if test="cocoConfigparameterid != null">
+	        and coCo_ConfigParameterID=#{cocoConfigparameterid}
+	     </if>
+	     <if test="cocoContent != null">
+	        and coCo_Content=#{cocoContent}
+	     </if>
+	     <if test="cocoConfigpstatus != null">
+	        and coCo_ConfigPStatus=#{cocoConfigpstatus}
+	     </if>
+	     <if test="cocoCreatedate != null">
+	        and coCo_Createdate=#{cocoCreatedate}
+	     </if>
+	     <if test="cocoUpdatedate != null">
+	        and coCo_Updatedate=#{cocoUpdatedate}
+	     </if>
+	   </where>
+	   order by coCo_Createdate desc
+	   <if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	<!-- 获取配置参数内容总数-->
+	<select id="findCount" parameterType="map" resultType="long">
+		select count(pk_ConfigContent)
+		from tbl_ConfigContent
+	   <where>
+	     <if test="pkConfigcontent != null">
+	        pk_ConfigContent=#{pkConfigcontent}
+	     </if>
+	     <if test="cocoConfigparameterid != null">
+	        and coCo_ConfigParameterID=#{cocoConfigparameterid}
+	     </if>
+	     <if test="cocoContent != null">
+	        and coCo_Content=#{cocoContent}
+	     </if>
+	     <if test="cocoConfigpstatus != null">
+	        and coCo_ConfigPStatus=#{cocoConfigpstatus}
+	     </if>
+	     <if test="cocoCreatedate != null">
+	        and coCo_Createdate=#{cocoCreatedate}
+	     </if>
+	     <if test="cocoUpdatedate != null">
+	        and coCo_Updatedate=#{cocoUpdatedate}
+	     </if>
+	   </where>
+	</select>
+	<select id="getConfigContentListByCpId" parameterType="String" resultType="HashMap">
+		SELECT pk_ConfigContent,coCo_ConfigParameterID,coCo_Content 
+		from tbl_configcontent 
+		where  coCo_ConfigPStatus = 0 
+		<if test="cpId != null and cpId!=''">
+			and coCo_ConfigParameterID = #{cpId}
+	     </if>
+	     order by coCo_ConfigParameterID
+	</select>	
+	<select id="getConfigIdByContent" parameterType="hashMap" resultType="int">
+		SELECT pk_ConfigContent
+		from tbl_configcontent 
+		where  coCo_ConfigPStatus = 0 
+		and coCo_Content = #{txt}
+		and coCo_ConfigParameterID = #{cpId}
+	</select>
+	<select id="getAllConfigContentList"  resultType="HashMap">
+		SELECT coCo_ConfigParameterID t,pk_ConfigContent k,coCo_Content v
+		from tbl_configcontent 
+		where  coCo_ConfigPStatus = 0  order by coCo_ConfigParameterID
+	</select>	
+</mapper> 

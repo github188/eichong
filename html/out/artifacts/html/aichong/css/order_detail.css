@@ -1,0 +1,342 @@
+@charset "utf-8";
+body{
+	background: #FFFFFF !important;
+	font-family: "微软雅黑" !important;
+	
+	/*background: #EBECED;*/
+	width: 100%;
+	height: 100%;
+}
+header .headCenter{
+	height: 100%;
+	-background: #008000;
+	text-align: center;
+	color: #FFFFFF;
+	line-height: 5rem;
+	font-size: 1.8rem;
+	padding-left: 2rem;
+}
+/*剩余时间=====================================================*/
+.residualTime{
+	position: relative;
+	width: 95%;
+	min-height:3rem;
+	margin: 0 auto;
+	/*background: #008000;*/
+	padding: 5%;
+	padding-top: 8%;
+	padding-bottom: 0;
+	overflow: hidden;
+}
+.residualTime .reOrder{
+	width: 3rem;
+	height: 3rem;
+	border: 0.1rem solid #aeaeae;
+	border-radius: 50%;
+	line-height: 3rem;
+	text-align: center;
+	color: #4E4E4E;
+	position: absolute;
+	top: 18%;
+	right: 0;
+	font-size: 1.2rem;
+}
+.residualTime .chargePoint{
+	min-height: 3rem;
+	color: #FF7D00;
+	font-size: 2.2rem;
+	/*background: #0062CC;*/
+	
+}
+.residualTime .chargeTime{
+	min-height: 2rem;
+	color: #666666;
+	font-size: 1.6rem;
+}
+.residualTime .chargeTime .chargeDate{
+	float: left;
+	width: 40%;
+	min-height: 3rem;
+}
+.residualTime .chargeTime .countDown{
+	float: left;
+	width: 60%;
+	min-height: 3rem;
+}
+.orderInfo{
+	width: 95%;
+	min-height: 4rem;
+	margin: 0 auto;
+	-background: #F0AD4E;	
+	padding: 1%;
+	border-top:0.1rem solid #C0C0C0;
+	border-bottom: 0.1rem solid #C0C0C0;
+	padding: 5%;
+}
+.orderInfo .perTip{
+	width: 100%;
+	min-height: 2rem;
+	-background: #F0FF0F;
+	overflow: hidden;
+	color: #666666;
+	font-size: 1.4rem;
+}
+
+.orderInfo .perTip .commentLeft,.orderInfo .perTip .commentRight{
+	min-height: 2rem;
+	word-break: break-word;
+	float: left;
+}
+.orderInfo .perTip .commentLeft{
+	width: 30%;
+	
+}
+.orderInfo .perTip .commentRight{
+	width: 70%;
+	color: #333333;
+}
+.groupBtn{
+	width: 100%;
+	min-height: 5rem;
+	/*background: #EBECED;*/
+	background: #FFFFFF !important;
+	overflow: hidden;
+}
+/*订单详情=================================================================*/
+
+/*功能按钮组===================================================================*/
+.btnList{
+	width: 100%;
+	min-height:4rem;
+	margin: 0 auto;
+	margin-top: 1rem;
+	margin-bottom: 2rem;
+	text-align: center;
+	overflow: hidden;
+	/*background: #EBECED;*/
+	background: #FFFFFF !important;
+	position: relative;
+}
+.btnList li{
+	/*display: inline-block;*/
+	float: left;
+	width: 50%;
+	height: 4rem;
+	border:0.1rem solid #CCCCCC;
+	/*margin-left: 1rem;*/
+	line-height: 4rem;
+	text-align: center;
+	margin-bottom: 1rem;
+	border-radius: 1rem;
+	color: #FFFFFF;
+	font-size: 1.8rem;
+	
+}
+.btnList .navCharging,.btnList .reBespBespoke{
+	background: #FF7D00;
+	border: 0;
+}
+.btnList .navCharging{
+	width: 90%;
+	height: 3rem;
+	/*margin: 0 auto;*/
+	margin-left: 5%;
+	background: #FF7D00 url(../img/btn_map_navigation.png) no-repeat 37% 50%;
+	background-size:10% 60%;
+}
+.btnList .lightOn,.btnList .fallLock{
+	background: #808080;
+	border: 0;
+}
+/*打开LED灯*/
+.btnList .lightOn{
+	border: 0;
+	background: url(../img/led.png) no-repeat 10% center;
+	background-size:22% 60% ;
+	padding-left: 1.4rem;
+	color: #808080;
+}
+/*关闭LED灯*/
+.btnList .lightOff{
+	border: 0;
+	background: #FFFFFF url(../img/bg_lamp_off.png) no-repeat 10% center;
+	background-size:22% 60% ;
+	padding-left: 1.4rem;
+	color: #FF7D00;
+}
+/*不支持时样式======*/
+.btnList .light{
+	border: 0;
+	background: #FFFFFF url(../img/bg_lamp_on.png) no-repeat 10% center;
+	background-size:22% 60% ;
+	padding-left: 1.4rem;
+	color: #808080;
+}
+/*降地锁*/
+.btnList .fallLock{
+	border: 0;
+	background: url(../img/fallLock.png) no-repeat 10% center;
+	background-size:22% 49% ;
+	padding-left: 1.8rem;
+	color: #808080;
+}
+.btnList .fallLock_on{
+	border: 0;
+	background: #FFFFFF url(../img/bg_order_lock02.png) no-repeat 10% center;
+	background-size:22% 54% ;
+	padding-left: 1.8rem;
+	color: #FF7D00;
+}
+.timeDown{
+	position: absolute;
+	top: 11%;
+	right: 0;
+	color: #808080;
+	font-size: 1.4rem;
+}
+
+/*模态框效果=========================================================================*/
+.modal-content{
+	width: 80%;
+	height: 50%;
+	margin: 0 auto;
+}
+
+.modal-content .modal-header {
+  min-height: 16.42857143px;
+  padding: 1.5rem;
+  text-align: center;
+  color: #FF7D00;
+  
+}
+.modal-content .modal-header,.modal-content .modal-footer{
+  padding: 1.5rem;
+  text-align: center;
+  border-top: 0 !important;
+  border-bottom: 0 !important;
+}
+.modal-content .modal-header .modal-title{
+	font-size: 2.4rem;
+}
+
+.modal-content .modal-footer .btn{
+	display: inline-block;
+	margin-left: 4rem;
+	width: 34%;
+	height:3rem ;
+}
+.modal-content .modal-footer .return{
+	background: #808080;
+	color: #FFFFFF;
+	border: 0;
+	outline-style:none ;
+}
+.modal-content .modal-footer .certain{
+	background: #FF7D00;
+	color: #FFFFFF;
+	border: 0;
+	outline-style:none ;
+}
+.modal-content .modal-footer .certain2{
+	background: #FF7D00;
+	color: #FFFFFF;
+	border: 0;
+	outline-style:none;
+	margin-left: 0;
+}
+.modal-body p{
+	width: 100%;
+	height: 3rem;
+	color: #666;
+	text-align: center;
+	font-size: 1.6rem;
+}
+@media only screen and (min-device-width: 320px) and (max-device-width: 480px) and (orientation : portrait) {
+/*iPhone 4 Portrait*/
+	.btnList{
+		width: 80%;
+		min-height:3rem;
+		margin: 0 auto;
+		margin-top: 1rem;
+		margin-bottom: 2rem;
+		text-align: center;
+		overflow: hidden;
+		/*background: #EBECED;*/
+		background: #FFFFFF !important;
+	}
+	.btnList li{
+		display: inline-block;
+		width: 44%;
+		height: 3.4rem;
+		border:0.1rem solid #CCCCCC;
+		margin-left: 2rem;
+		line-height: 3.4rem;
+		text-align: center;
+		margin-bottom: 0.4rem;
+		border-radius: 0.5rem;
+		color: #FFFFFF;
+		font-size: 1.4rem;
+		
+	}
+	
+
+}
+@media only screen and (min-device-width: 375px) and (max-device-width: 667px) and (orientation : portrait) {
+/*iPhone 6 Portrait*/
+	.residualTime .reOrder{
+		width: 4rem;
+		height: 4rem;
+		border: 0.1rem solid #aeaeae;
+		border-radius: 50%;
+		line-height: 4rem;
+		text-align: center;
+		color: #4e4e4e;
+		position: absolute;
+		top: 18%;
+		right: 0;
+		font-size: 1.4rem;
+	}
+	.chorCodeBlock{
+		position: absolute;
+		left: 0;
+		bottom: 0;
+		width: 100%;
+		height: 4rem;
+		/*margin: 1.6rem 0 0;*/
+		/*margin: 2rem auto 0;*/
+		/*background: #FF0000;*/
+		color: #666666;
+		font-size: 1rem;
+		margin: 0 auto;
+		overflow: hidden;
+		color: #8a8a8a;
+	}
+	.chorCodeBlock .baseText,.chorCodeBlock .chorCode{
+		min-width: 10%;
+		float: left;
+	}
+	.chorCodeBlock .baseText{
+		margin-left: 24%;
+	}
+}
+/*订单编号*/
+.chorCodeBlock{
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	/*position: fixed;*/
+	width: 100%;
+	height: 3rem;
+	/*margin: 2rem auto 0;*/
+	color: #666666;
+	font-size: 1rem;
+	color: #8a8a8a;
+	/*overflow: hidden;*/
+}
+.chorCodeBlock .baseText,.chorCodeBlock .chorCode{
+	min-width: 10%;
+	float: left;
+}
+.chorCodeBlock .baseText{
+	margin-left: 24%;
+}

@@ -1,0 +1,30 @@
+package com.wanma.ims.mapper;
+
+import java.util.List;
+
+import com.wanma.ims.common.domain.AppButtonDO;
+
+
+
+public interface AppButtonMapper {
+
+	long selectAppButtonCount(AppButtonDO appButtonDO);
+
+	List<AppButtonDO> selectAppButtonList(AppButtonDO appButtonDO);
+
+	boolean insertAppButton(AppButtonDO appButtonDO);
+
+	AppButtonDO getAppButtonById(AppButtonDO appButtonDO);
+
+	int updateButton(AppButtonDO appButtonDO);
+
+	int deleteAppButton(AppButtonDO appButtonDO);
+
+	boolean downAppButton(AppButtonDO appButtonDO);
+
+	boolean changeButtonSort(AppButtonDO appButtonDO);
+
+	
+	
+	
+}

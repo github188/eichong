@@ -1,0 +1,235 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>爱充-申请购桩表单</title>
+<link href="static/css/style.css" rel="stylesheet" type="text/css" /><!--全局-->
+<link href="static/css/infobox.css" rel="stylesheet" type="text/css"/>
+<link href="static/css/loginBox.css" rel="stylesheet" type="text/css"/>
+<!-- common js aere -->
+<script src="static/js/jquery-1.10.2.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+	var basepath="";
+	var this_tag = "index";		
+</script>
+</head>
+
+<body>
+
+<!--导航-->
+<div id="afterHead" class="clear"></div><div style="clear:both;"></div>
+<!--通栏大图-->
+<div style="clear:both;"></div> 
+
+
+<!--内容-->
+<div class="apply">
+  <div class="applyWarp">
+    <dl>
+      <!--申购开始-->
+      <!---------->
+      <div id = "buyPileForm">
+      <dd>
+        <dl class="liuchengA">
+          <dt>申请购桩流程</dt>
+          <dd class="liuchengBG03">1</dd>
+          <dd class="liuchengBG03">2</dd>
+          <dd class="liuchengBG03">3</dd>
+          <dd class="liuchengBG03">4</dd>
+          <dd class="liuchengBG03">5</dd>
+        </dl><div style="clear:both;"></div>
+      </dd>
+      <dd>
+       <dl class="liuchengB">
+          <dt> </dt>
+          <dd>建桩流程</dd>
+          <dd>提交申请</dd>
+          <dd>勘场施工</dd>
+          <dd>入网爱充</dd>
+          <dd>建站成功</dd>
+        </dl><div style="clear:both;"></div>      
+      </dd>
+      <dd style=" border-bottom:1px #CCCCCC solid; height:60px; line-height:60px; text-align:center; font-size:14px;">
+      <form> 
+        <a href="#">阅读《合作协议》</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		  <label>
+                    <input type="radio" name="apEpAgreement" value="1" id="apEpAgree" checked ='checked' />我同意&nbsp;&nbsp;&nbsp;&nbsp;                    
+                  <label>
+                    <input type="radio" name="apEpAgreement" value="0" id="apEpNoAgree" />我不同意                                      
+          </label>
+        </form>
+      </dd>
+      <form name="applyElecPileForm" id="applyElecPileForm">       
+      <dd class="applyTltle mar_top20"><span class="apply_qq">在线客服 QQ: <input class="ABM-200" type="text" name="apEpServiceQQ" id="textfield" /></span>填写表单<span class="apply_zs">（<span class="Red">*</span>为必须填写项目）</span></dd>
+      <dd>
+        <dl class="appluBox">
+          <dt>基本信息</dt>
+          <dd><span class="applyBoxMu">联系人姓名<span class="Red">*</span></span> <input class="ABM-200" type="text" name="apEpUserName" id="apEpUserName" /></dd>
+          <dd><span class="applyBoxMu">联系电话<span class="Red">*</span></span><input class="ABM-200" type="text"   name="apEpUserPhone" id="apEpUserPhone" /></dd>
+          <dd><span class="applyBoxMu">建桩地址<span class="Red">*</span></span><input class="ABM-100" type="text"   name="apEpProvinceAddress" id="apEpProvinceAddress" />省<input class="ABM-100" type="text" name="apEpCityAddress" id="apEpCityAddress" />市<input class="ABM-100" type="text" name="apEpAreaAddress" id="apEpAreaAddress" />区<input class="ABM-100" type="text" name="apEpStreetAddress" id="apEpStreetAddress" />街道<input class="ABM-200" type="text" name="apEpRoomNumber" id="apEpRoomNumber" /></dd>
+          <input class="ABM-100"  type="hidden"   name="apEpPointAddress" id="apEpPointAddress" />
+          <input class="ABM-100"  type="hidden"   name="apEpParkingOwnerText" id="apEpParkingOwnerText" />
+          <input class="ABM-100"  type="hidden"   name="apEpPowerPositionText" id="apEpPowerPositionText" />
+          <input class="ABM-100"  type="hidden"   name="apEpDistanceText" id="apEpDistanceText" />
+        </dl>
+      </dd>
+      <dd>
+        <dl class="appluBox">
+          <dt>车辆信息</dt>
+          <dd><span class="applyBoxMu">车辆品牌<span class="Red">*</span></span> <select name="apEpCarcompanyId" id="applyQcpp" class="ABM">      
+        </select></dd>
+          <dd><span class="applyBoxMu">车辆型号<span class="Red">*</span></span><select name="apEpCarinfoId" id="applyPpcx" class="ABM">
+        </select></dd>
+        </dl> 
+      </dd>
+      <dd>
+        <dl class="appluBox">
+          <dt>场地信息</dt>
+          <dd><span class="applyBoxMu">建桩物业性质<span class="Red">*</span></span> 
+                  <label>
+                    <input type="radio" name="apEpPropertyNature" value="1" id="RadioGroup1_21" />零售&nbsp;&nbsp;</label>
+                  <label>
+                    <input type="radio" name="apEpPropertyNature" value="2" id="RadioGroup1_22" />酒店&nbsp;&nbsp; </label>             
+                  <label>
+                    <input type="radio" name="apEpPropertyNature" value="3" id="RadioGroup1_23" />度假村&nbsp;&nbsp;  </label>             
+                  <label>
+                    <input type="radio" name="apEpPropertyNature" value="4" id="RadioGroup1_24" />娱乐场所&nbsp;&nbsp;  </label>         
+                  <label>
+                    <input type="radio" name="apEpPropertyNature" value="5" id="RadioGroup1_25" />办公写字楼&nbsp;&nbsp;</label>
+                  <label>
+                    <input type="radio" name="apEpPropertyNature" value="6" id="RadioGroup1_26" />住宅&nbsp;&nbsp;  </label>            
+                  <label>
+                    <input type="radio" name="apEpPropertyNature" value="7" id="RadioGroup1_27" />汽车服务&nbsp;&nbsp;</label>          
+                  <label>
+                    <input type="radio" name="apEpPropertyNature" value="8" id="RadioGroup1_28" />综合体&nbsp;&nbsp; </label>       
+                  <label>
+                    <input type="radio" name="apEpPropertyNature" value="9" id="RadioGroup1_29" />市政&nbsp;&nbsp; </label>         
+                  <label>
+                    <input type="radio" name="apEpPropertyNature" value="10" id="RadioGroup1_30" />收费停车场&nbsp;&nbsp;</label>            
+                  <label>
+                    <input type="radio" name="apEpPropertyNature" value="11" id="RadioGroup1_31" />餐厅                                      
+              </label>
+              </dd>
+          <dd><span class="applyBoxMu">标准车位</span>
+                  <label>
+                    <input type="radio" name="apEpStandardParking" value="1" id="RadioGroup1_32" />是  &nbsp;&nbsp;&nbsp;&nbsp;                  
+                  <label>
+                    <input type="radio" name="apEpStandardParking" value="0" id="RadioGroup1_33" />否                                      
+              </label>（尺寸：长x宽x高）
+          </dd>
+          <dd><span class="applyBoxMu">车位位置<span class="Red">*</span></span>           
+                  <label>
+                    <input type="radio" name="apEpParkingPlace" value="1" id="RadioGroup1_34" />室内 &nbsp;&nbsp;&nbsp;&nbsp;                      
+                  <label>
+                    <input type="radio" name="apEpParkingPlace" value="2" id="RadioGroup1_35" />室外                                      
+              </label>           
+          </dd>
+          <dd><span class="applyBoxMu">对外开放<span class="Red">*</span></span>       
+                  <label>
+                    <input type="radio" name="apEpOpenShare" value="1" id="RadioGroup1_36" />是  &nbsp;&nbsp;&nbsp;&nbsp; </label>                    
+                  <label>
+                    <input type="radio" name="apEpOpenShare" value="2" id="RadioGroup1_37" />部分时段开放  &nbsp;&nbsp;&nbsp;&nbsp;                                     
+              </label>
+                  <label>
+                    <input type="radio" name="apEpOpenShare" value="3" id="RadioGroup1_38" />否                                      
+              </label>                            
+          </dd>
+          <dd><span class="applyBoxMu">车位硬化</span>        
+                  <label>
+                    <input type="radio" name="apEpParkingHard" value="1" id="RadioGroup1_39" />是                                                        
+              </label>&nbsp;&nbsp;&nbsp;&nbsp;
+                  <label>
+                    <input type="radio" name="apEpParkingHard" value="2" id="RadioGroup1_40" />否                                      
+              </label>                                      
+          </dd>
+          <dd><span class="applyBoxMu">车位所属权</span>
+    
+                  <label>
+                    <input type="radio" name="apEpParkingOwner" value="1" id="RadioGroup1_41" />自有 &nbsp;&nbsp;&nbsp;&nbsp;                                                       
+              </label>
+                  <label>
+                    <input type="radio" name="apEpParkingOwner" value="2" id="RadioGroup1_42" />租赁（剩余租期年数：<input class="ABM-100" type="text" name="apEpParkingOwnerYear" id="apEpParkingOwnerYear" />年）                                      
+              </label> &nbsp;&nbsp;&nbsp;&nbsp;  
+			  <label>
+                      <input type="radio" name="apEpParkingOwner" value="3" id="RadioGroup1_43" />其他 <input class="ABM-100" type="text" name="apEpParkingOwnerOther" id="apEpParkingOwnerOther" />                                     
+              </label> 
+                                                      
+ 		 </dd>
+        </dl>          
+      </dd>
+      <dd>
+        <dl class="appluBox">
+          <dt>电力信息 （可选）</dt>
+          <dd><span class="applyBoxMu">可配电容量</span>
+          <input class="ABM-100" type="text" name="apEpCapacitance" id="aaaa" />KVA（住宅用户可询问物业，也可从引电的电源处查看相关数据）</dd>
+          <dd><span class="applyBoxMu">电源位置</span>      
+                  <label>
+                    <input type="radio" name="apEpPowerPosition" value="1" id="RadioGroup1_44" />地面&nbsp;&nbsp;&nbsp;&nbsp;                                                        
+              </label>
+                  <label>
+                    <input type="radio" name="apEpPowerPosition" value="2" id="RadioGroup1_45" /> 地下&nbsp;&nbsp;&nbsp;&nbsp;                                     
+              </label>  
+                    <label>
+                    <input type="radio" name="apEpPowerPosition" value="3" id="RadioGroup1_46" />其他 <input class="ABM-100" type="text" name="apEpPowerPositionOther" id="apEpPowerPositionOther" />                                     
+                    </label>                   
+                     
+			</dd>
+          <dd><span class="applyBoxMu">电源到车位距离</span>
+                  <label>
+                    <input type="radio" name="apEpDistance" value="1" id="RadioGroup1_47" />小于等于30米&nbsp;&nbsp;&nbsp;&nbsp;                                                        
+              </label>
+                  <label>
+                    <input type="radio" name="apEpDistance" value="2" id="RadioGroup1_48" />大于30米 &nbsp;&nbsp;&nbsp;&nbsp;                                     
+              </label>  										
+                    <label>
+                    <input type="radio" name="apEpDistance" value="3" id="RadioGroup1_49" />其他<span> <input class="ABM-100" type="text" name="apEpDistanceOther" id="apEpDistanceOther" /></span>                                     
+                    </label>M
+           </dd>
+        </dl>       
+      </dd>
+      <dd style="border-top:1px solid #CCC; padding-top:20px;"><div class="applyTijiao" > <a id="buyPileApply" >提交申请</a></div></dd>    
+      </form> 
+      </div>
+      <!--申购结束-->
+      
+      <!--提交申请申购成功的提示-->
+       <!-- 提交申请申购成功的提示结束-->
+      <div id = "buyPileRemind" style="display: none;>
+      <dd style=" height:200px; padding-top:100px;">
+        <dl>
+          <dt style=" width:30%; text-align:right; float:left;"><img style="margin-right:20px;" src="static/images/img/OK.png" width="128" height="110" /></dt>
+          <dd style=" width:66%; text-align:left; float:left; font-size:24px; color:#f80;">提交成功！<br />
+          我们的客服人员会尽快与您联系。</dd>
+          <dd style=" width:66%; text-align:left; float:left; ">正常情况下，我们会在1个星期内完成材料审核并与您沟通上门勘场时间。</dd>
+          <dd style=" width:66%; text-align:left; float:left; ">业务繁忙时，我们会在材料审核通过后的10个工作日内与您沟通上门勘场时间。</dd>
+        </dl>
+      </dd>
+     </div>
+    </dl> <div style="clear:both;"></div>
+  </div>
+  <div style="clear:both;"></div>
+</div>
+<div style="clear:both;"></div>
+<!--footer-->
+<div id="footerBefore" class="clear"> </div>
+
+<!-- common js aere -->
+<script src="static/lib/json3/json3.min.js" type="text/javascript"></script>
+<script src="static/lib/template/template.js" type="text/javascript"></script>
+<script src="static/lib/md5/jquery.md5.js" type="text/javascript"></script>
+<script src="static/js/validate.js" type="text/javascript"></script>
+<script src="static/js/DateUtil.js" type="text/javascript"></script>
+<script src="static/js/common/common.js" type="text/javascript"></script>
+<script src="static/js/user-service.js" type="text/javascript"></script>
+<script src="static/js/global.js" type="text/javascript"></script>
+<script src="static/js/config.js" type="text/javascript"></script>
+<script src="static/js/template-other.js" type="text/javascript"></script>
+<script src="static/js/index/regist.js" type="text/javascript"></script>
+<script src="static/js/index/reset.js" type="text/javascript"></script>
+<script src="static/js/initHtml.js" type="text/javascript"></script>
+<script src="static/js/apply/applyPile.js" type="text/javascript"></script>
+
+
+
+</body>
+</html>

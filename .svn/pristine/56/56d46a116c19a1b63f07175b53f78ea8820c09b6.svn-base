@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/style.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/electric/electricPile/electricPile_detail.css"/>
+    <title>电桩详细主页</title>
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="btnLine">
+                <div class="editBtn cursor" id="editBtn" style="display: none;">编辑</div>
+                <div class="goBack cursor" id="toPileList">返回</div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="ibox float-e-margins">
+                    <div class="">
+                        <div class="ibox-content">
+                            <!--电桩基础属性-->
+                            <div class="userBaseInfoList" id="electricPileBaseParm" style="display: none">
+                                <div class="baseInfoShow">
+                                    <div class="baseInfoTitle">
+                                        电桩基础属性
+                                    </div>
+                                </div>
+                                <ul class="baseInfoUl">
+                                    <li>
+                                        <span>桩体编码</span>
+                                        <span><t id="code"></t></span>
+                                    </li>
+                                    <li>
+                                        <span>编号</span>
+                                        <span><t id="num"></t></span>
+                                    </li>
+                                    <li>
+                                        <span>充电方式</span>
+                                        <span id="chChargingMethod"></span>
+                                    </li>
+                                    <li>
+                                        <span>制造厂商</span>
+                                        <span id="pileMaker"></span>
+                                    </li>
+                                    <li>
+                                        <span>功率</span>
+                                        <span id="chPower"></span>
+                                    </li>
+                                    <li>
+                                        <span>类型</span>
+                                        <span id="type"></span>
+                                    </li>
+                                    <li>
+                                        <span>枪头数量</span>
+                                        <span id="muzzleNumber"></span>
+                                    </li>
+                                    <li>
+                                        <span>接口标准</span>
+                                        <span id="interfaceStandard"></span>
+                                    </li>
+                                    <li>
+                                        <span>最大输出电压</span>
+                                        <span id="maxVoltage"></span>
+                                    </li>
+                                    <li>
+                                        <span>最大输出电流</span>
+                                        <span id="maxElectricity"></span>
+                                    </li>
+                                    <li>
+                                        <span>产品型号</span>
+                                        <span id="productModel"></span>
+                                    </li>
+                                    <li>
+                                        <span>备注</span>
+                                        <span id="remark"></span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!--电桩基础属性-->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="ibox float-e-margins">
+                    <div class="">
+                        <div class="ibox-content">
+                            <!--电桩地域属性-->
+                            <div class="userBaseInfoList" id="electricPileAreaBlock" style="display: none">
+                                <div class="baseInfoShow">
+                                    <div class="baseInfoTitle">
+                                        电桩地域属性
+                                    </div>
+                                </div>
+                                <ul class="baseInfoUl">
+                                    <li>
+                                        <span>省份</span>
+                                        <span id="province"></span>
+                                    </li>
+                                    <li>
+                                        <span>城市</span>
+                                        <span id="city"></span>
+                                    </li>
+                                    <li>
+                                        <span>区/县</span>
+                                        <span id="area"></span>
+                                    </li>
+                                    <li>
+                                        <span>具体地址</span>
+                                        <span id="address"></span>
+                                    </li>
+                                    <li>
+                                        <span>经度</span>
+                                        <span id="longitude"></span>
+                                    </li>
+                                    <li>
+                                        <span>纬度</span>
+                                        <span id="latitude"></span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="emptyDiv"></div>
+                            <!--电桩地域属性结束-->
+                            <!--电桩运营属性开始-->
+                            <div class="userBaseInfoList" id="electricYUBlock" style="display: none">
+                                <div class="baseInfoShow">
+                                    <div class="baseInfoTitle">
+                                        电桩运营属性
+                                    </div>
+                                </div>
+                                <ul class="baseInfoUl">
+                                    <li>
+                                        <span>电桩状态</span>
+                                        <span id="chStatus"></span>
+                                    </li>
+                                    <li>
+                                        <span>资产归属</span>
+                                        <span id="ownerShip"></span>
+                                    </li>
+                                    <li>
+                                        <span>渠道</span>
+                                        <span id="company"></span>
+                                    </li>
+                                    <li>
+                                        <span>默认费率</span>
+                                        <span class="rateValue cursor" id="rateInformationId"></span>
+                                    </li>
+                                    <li>
+                                        <span>sim卡运营商</span>
+                                        <span id="simName"></span>
+                                    </li>
+                                    <li>
+                                        <span>sim卡编码</span>
+                                        <span id="simMac"></span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="emptyDiv"></div>
+                            <!--电桩运营属性结束-->
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="../../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="../../../js/contabs.min.js"></script>
+<script src="../../../js/electric/electricPile/electricPile_detail.js" type="text/javascript" charset="utf-8"></script>
+</html>

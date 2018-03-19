@@ -1,0 +1,239 @@
+package com.wanma.util;
+
+import java.util.List;
+
+import org.springframework.data.redis.core.RedisTemplate;
+
+/**
+ * 封装redis 缓存服务器服务接口
+ * 
+ */
+public class RedisUtil {
+	private RedisTemplate<String,Object> redisTemplate;
+
+	/**
+	 * 设值
+	 */
+	@SuppressWarnings({ "rawtypes" })
+	public Long listSet(Class clazz, Object value) {
+		return redisTemplate.opsForList().leftPush(keyListPrefix(clazz), value);
+	}
+
+	/**
+	 * 置值
+	 * 
+	 * @param key
+	 * @param index
+	 * @param value
+	 */
+	@SuppressWarnings({ "rawtypes" })
+	public void listSet(Class clazz, long index, Object value) {
+		redisTemplate.opsForList().set(keyListPrefix(clazz), index, value);
+	}
+
+	/**
+	 * 压栈
+	 */
+	@SuppressWarnings({ "rawtypes" })
+	public Long listStackPush(Class clazz, Object value) {
+		return redisTemplate.opsForList().leftPush(keyListPrefix(clazz), value);
+	}
+
+	/**
+	 * 出栈
+	 */
+	@SuppressWarnings({ "rawtypes" })
+	public Object listStackPop(Class clazz) {
+		return redisTemplate.opsForList().leftPop(keyListPrefix(clazz));
+	}
+
+	/**
+	 * 入队
+	 */
+	@SuppressWarnings({ "rawtypes" })
+	public Long listQueuePush(Class clazz, Object value) {
+		return redisTemplate.opsForList()
+				.rightPush(keyListPrefix(clazz), value);
+	}
+
+	/**
+	 * 出队
+	 */
+	@SuppressWarnings({ "rawtypes" })
+	public Object ListQueuePop(Class clazz) {
+		return redisTemplate.opsForList().leftPop(keyListPrefix(clazz));
+	}
+
+	/**
+	 * 栈/队列长
+	 * 
+	 * @param key
+	 * @return
+	 */
+	@SuppressWarnings({ "rawtypes" })
+	public Long listLength(Class clazz) {
+		return redisTemplate.opsForList().size(keyListPrefix(clazz));
+	}
+
+	@SuppressWarnings({ "rawtypes" })
+	public List<Object> listGetAll(Class clazz) {
+		return listGetByRange(clazz, 0, -1);
+	}
+
+	/**
+	 * 范围检索
+	 */
+	@SuppressWarnings({ "rawtypes" })
+	public List<Object> listGetByRange(Class clazz, int start, int end) {
+		return redisTemplate.opsForList().range(keyListPrefix(clazz), start,
+				end);
+	}
+
+	/**
+	 * 移除
+	 * 
+	 * @param key
+	 * @param i
+	 * @param value
+	 */
+	@SuppressWarnings({ "rawtypes" })
+	public void listRemove(Class clazz, String value) {
+		redisTemplate.opsForList().remove(keyListPrefix(clazz), 10, value);
+	}
+
+	/**
+	 * 检索
+	 * 
+	 * @param key
+	 * @param index
+	 * @return
+	 */
+	@SuppressWarnings({ "rawtypes" })
+	public Object listGetByIndex(Class clazz, long index) {
+		return redisTemplate.opsForList().index(keyListPrefix(clazz), index);
+	}
+
+	/**
+	 * 移除
+	 * 
+	 * @param key
+	 * @param i
+	 * @param value
+	 */
+	@SuppressWarnings({ "rawtypes" })
+	public void listRemove(Class clazz, long i, String value) {
+		redisTemplate.opsForList().remove(keyListPrefix(clazz), i, value);
+	}
+
+	/**
+	 * 裁剪
+	 * 
+	 * @param key
+	 * @param start
+	 * @param end
+	 */
+	@SuppressWarnings({ "rawtypes" })
+	public void listTrim(Class clazz, String key, long start, int end) {
+		redisTemplate.opsForList().trim(keyListPrefix(clazz), start, end);
+	}
+
+	/**
+	 * String Set
+	 * 
+	 * @param key
+	 * @param value
+	 */
+	public void set(String key, Object value) {
+		redisTemplate.opsForValue().set(keyPrefix(value) + key, value);
+	}
+
+	/**
+	 * String Get
+	 * 
+	 * @param key
+	 * @return
+	 */
+	@SuppressWarnings({ "rawtypes" })
+	public Object get(String key, Class clazz) {
+		return redisTemplate.opsForValue().get(keyPrefix(clazz) + key);
+	}
+
+	@SuppressWarnings({ "rawtypes" })
+	public void remove(String key, Class clazz) {
+		redisTemplate.delete(keyPrefix(clazz) + key);
+	}
+
+	/**
+	 * String Set
+	 * 
+	 * @param key
+	 * @param value
+	 */
+	@SuppressWarnings({ })
+	public void strSet(String key, Object value) {
+		redisTemplate.opsForValue().set(keyPrefix(key), value);
+	}
+
+	/**
+	 * String Get
+	 * 
+	 * @param key
+	 * @return
+	 */
+	public String strGet(String key) {
+		return (String) redisTemplate.opsForValue().get(keyPrefix(key));
+	}
+
+	public void strRemove(String key) {
+		redisTemplate.delete(keyPrefix(key));
+	}
+	
+	public void put(String name,String key,Object value) {  
+        redisTemplate.opsForHash().put(name, key, value);  
+    }  
+  
+    public void delete(String name,String key) {  
+        redisTemplate.opsForHash().delete(name, key);  
+    }  
+  
+    public Object get(String name,String key) {  
+        return redisTemplate.opsForHash().get(name, key);  
+    } 
+
+	public String keyPrefix(String key) {
+		return "red:bean:" + key;
+	}
+
+	public String keyPrefix(Object obj) {
+		return keyPrefix(obj.getClass());
+	}
+
+	@SuppressWarnings("rawtypes")
+	public String keyPrefix(Class clazz) {
+		return "red:bean:" + clazz.getSimpleName() + ":";
+	}
+
+	public String keyListPrefix(String key) {
+		return "red:list:" + key;
+	}
+
+	public String keyListPrefix(Object obj) {
+		return keyListPrefix(obj.getClass());
+	}
+
+	@SuppressWarnings("rawtypes")
+	public String keyListPrefix(Class clazz) {
+		return "red:list:" + clazz.getSimpleName() + ":";
+	}
+
+	@SuppressWarnings("rawtypes")
+	public RedisTemplate getRedisTemplate() {
+		return redisTemplate;
+	}
+
+	public void setRedisTemplate(RedisTemplate<String,Object> redisTemplate) {
+		this.redisTemplate = redisTemplate;
+	}
+
+	
+}

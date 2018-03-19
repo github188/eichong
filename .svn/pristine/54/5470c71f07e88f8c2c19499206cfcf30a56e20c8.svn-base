@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+						http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+						http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.1.xsd
+						http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd
+						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd"
+	default-lazy-init="false">
+
+	<dubbo:reference id="configService"
+		interface="com.wanma.dubbox.service.TblConfigService"></dubbo:reference>
+	<!-- 生成远程服务代理 -->
+	<dubbo:reference id="tblElectricPileService"
+		interface="com.wanma.dubbox.service.TblElectricPileService"></dubbo:reference>
+
+	<dubbo:reference id="powerStationService"
+		interface="com.wanma.dubbox.service.TblPowerStationService"></dubbo:reference>
+
+	<dubbo:reference id="bespokeService"
+		interface="com.wanma.dubbox.service.TblBespokeService"></dubbo:reference>
+
+	<dubbo:reference id="chargingOrderService"
+		interface="com.wanma.dubbox.service.TblChargingOrderService"></dubbo:reference>
+
+	<dubbo:reference id="configContentService"
+		interface="com.wanma.dubbox.service.TblConfigContentService"></dubbo:reference>
+
+	<dubbo:reference id="pileHeadService"
+		interface="com.wanma.dubbox.service.TblElectricPileHeadService"></dubbo:reference>
+
+	<dubbo:reference id="rateinFormationService"
+		interface="com.wanma.dubbox.service.TblRateinFormationService"></dubbo:reference>
+
+	<dubbo:reference id="userNormalService"
+		interface="com.wanma.dubbox.service.TblUserNormalService"></dubbo:reference>
+
+	<dubbo:reference id="userService"
+		interface="com.wanma.dubbox.service.TblUserService"></dubbo:reference>
+
+
+	<dubbo:reference id="purchasehistoryService"
+		interface="com.wanma.dubbox.service.TblPurchasehistoryService"></dubbo:reference>
+
+	<dubbo:reference id="publishEpService"
+		interface="com.wanma.dubbox.service.TblPublishEpService"></dubbo:reference>
+
+	<dubbo:reference id="tblProvinceService"
+		interface="com.wanma.dubbox.service.TblProvinceService"></dubbo:reference>
+
+	<dubbo:reference id="productcommentService"
+		interface="com.wanma.dubbox.service.TblProductcommentService"></dubbo:reference>
+
+	<dubbo:reference id="powerstationcommentService"
+		interface="com.wanma.dubbox.service.TblPowerstationcommentService"></dubbo:reference>
+
+	<dubbo:reference id="pilemakerService"
+		interface="com.wanma.dubbox.service.TblPilemakerService"></dubbo:reference>
+
+	<dubbo:reference id="gateserviceService"
+		interface="com.wanma.dubbox.service.TblGateserviceService"></dubbo:reference>
+
+	<dubbo:reference id="feedbackService"
+		interface="com.wanma.dubbox.service.TblFeedbackService"></dubbo:reference>
+
+	<dubbo:reference id="equipmentrepairService"
+		interface="com.wanma.dubbox.service.TblEquipmentrepairService"></dubbo:reference>
+
+	<dubbo:reference id="electricpilecommentService"
+		interface="com.wanma.dubbox.service.TblElectricpilecommentService"></dubbo:reference>
+
+	<dubbo:reference id="configparameterService"
+		interface="com.wanma.dubbox.service.TblConfigparameterService"></dubbo:reference>
+
+	<dubbo:reference id="concentratorService"
+		interface="com.wanma.dubbox.service.TblConcentratorService"></dubbo:reference>
+
+	<dubbo:reference id="companyService"
+		interface="com.wanma.dubbox.service.TblCompanyService"></dubbo:reference>
+
+	<dubbo:reference id="cityService"
+		interface="com.wanma.dubbox.service.TblCityService"></dubbo:reference>
+
+	<dubbo:reference id="carinfoService"
+		interface="com.wanma.dubbox.service.TblCarinfoService"></dubbo:reference>
+
+	<dubbo:reference id="tblRoleService"
+		interface="com.wanma.dubbox.service.TblRoleService"></dubbo:reference>
+
+	<dubbo:reference id="tblInvoiceService"
+		interface="com.wanma.dubbox.service.TblInvoiceService"></dubbo:reference>
+
+	<dubbo:reference id="tblMenuService"
+		interface="com.wanma.dubbox.service.TblMenuService"></dubbo:reference>
+
+	<dubbo:reference id="tblUserBusinessService"
+		interface="com.wanma.dubbox.service.TblUserBusinessService"></dubbo:reference>
+
+	<dubbo:reference id="tblUserAdminService"
+		interface="com.wanma.dubbox.service.TblUserAdminService"></dubbo:reference>
+
+	<dubbo:reference id="tblHomepageService"
+		interface="com.wanma.dubbox.service.TblHomepageService"></dubbo:reference>
+
+	<dubbo:reference id="tblUsermessageService"
+		interface="com.wanma.dubbox.service.TblUsermessageService"></dubbo:reference>
+
+	<dubbo:reference id="tblCommitLogService"
+		interface="com.wanma.dubbox.service.TblCommitLogService"></dubbo:reference>
+
+	<dubbo:reference id="tblUserCardService"
+		interface="com.wanma.dubbox.service.TblUserCardService"></dubbo:reference>
+
+	<dubbo:reference id="tblApplyEpService"
+		interface="com.wanma.dubbox.service.TblApplyEpService"></dubbo:reference>
+
+	<dubbo:reference id="tblTypespanService"
+		interface="com.wanma.dubbox.service.TblTypespanService"></dubbo:reference>
+
+	<dubbo:reference id="tblBomListService"
+		interface="com.wanma.dubbox.service.TblBomListService"></dubbo:reference>
+
+	<dubbo:reference id="tblMultiMediaService"
+		interface="com.wanma.dubbox.service.TblMultiMediaService"></dubbo:reference>
+
+
+	<dubbo:reference id="tblPureBusinessService"
+		interface="com.wanma.dubbox.service.TblPureBusinessService"></dubbo:reference>
+
+
+
+	<dubbo:reference id="tblCarCompanyService"
+		interface="com.wanma.dubbox.service.TblCarCompanyService"></dubbo:reference>
+
+	<dubbo:reference id="tblRateinFormationHistoryService"
+		interface="com.wanma.dubbox.service.TblRateinFormationHistoryService"></dubbo:reference>
+
+
+
+	<dubbo:reference id="tblAreaService"
+		interface="com.wanma.dubbox.service.TblAreaService"></dubbo:reference>
+
+
+
+	<dubbo:reference id="userRoleService"
+		interface="com.wanma.dubbox.service.TblUserRoleService"></dubbo:reference>
+
+	<dubbo:reference id="menuRoleService"
+		interface="com.wanma.dubbox.service.TblMenuRoleService"></dubbo:reference>
+
+	<dubbo:reference id="webReleaseService"
+		interface="com.wanma.dubbox.service.TblWebReleaseService"></dubbo:reference>
+
+
+
+	<dubbo:reference id="cafService"
+		interface="com.wanma.dubbox.service.TblCardapplicationformService"></dubbo:reference>
+
+
+
+	<dubbo:reference id="couponService"
+		interface="com.wanma.dubbox.service.TblCouponService"></dubbo:reference>
+
+	<dubbo:reference id="couponVarietyService"
+		interface="com.wanma.dubbox.service.TblCouponVarietyService"></dubbo:reference>
+
+	<dubbo:reference id="activityService"
+		interface="com.wanma.dubbox.service.TblActivityService"></dubbo:reference>
+
+	<dubbo:reference id="advService"
+		interface="com.wanma.dubbox.service.TblAdvertisementService"></dubbo:reference>
+
+	<dubbo:reference id="advTransactionService"
+		interface="com.wanma.dubbox.transaction.service.AdvTransactionService"></dubbo:reference>
+	<dubbo:reference id="rateTransactionService"
+		interface="com.wanma.dubbox.transaction.service.RateTransactionService"></dubbo:reference>
+	<dubbo:reference id="userTransactionService"
+		interface="com.wanma.dubbox.transaction.service.UserTransactionService"></dubbo:reference>
+	<dubbo:reference id="powerStationTransactionService"
+		interface="com.wanma.dubbox.transaction.service.PowerStationTransactionService"></dubbo:reference>
+	<dubbo:reference id="concentratorTransactionService"
+		interface="com.wanma.dubbox.transaction.service.ConcentratorTransactionService"></dubbo:reference>
+	<dubbo:reference id="invoiceTransactionService"
+		interface="com.wanma.dubbox.transaction.service.InvoiceTransactionService"></dubbo:reference>
+	<dubbo:reference id="roleTransactionService"
+		interface="com.wanma.dubbox.transaction.service.RoleTransactionService"></dubbo:reference>
+	<dubbo:reference id="ucTransactionService"
+		interface="com.wanma.dubbox.transaction.service.UserCardTransactionService"></dubbo:reference>
+	<dubbo:reference id="tsTransactionService"
+		interface="com.wanma.dubbox.transaction.service.TypespanTransactionService"></dubbo:reference>
+	<dubbo:reference id="pileTransactionService"
+		interface="com.wanma.dubbox.transaction.service.PileTransactionService"></dubbo:reference>	
+</beans>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.dao.CmsCommitLogMapper">
+	<resultMap type="CommitLog" id="result_commitLog">
+		<result property="commitLog" column="pk_CommitLog" />
+		<result property="logName" column="coLo_LogName" />
+		<result property="ipAddress" column="coLo_Updatedate" />
+		<result property="logContent" column="coLo_LogContent" />
+		<result property="status" column="coLo_Status" />
+		<result property="Createdate" column="coLo_Createdate" />
+		<result property="Updatedate" column="coLo_Updatedate" />
+	</resultMap>
+	
+		<insert id="insert" parameterType="TblPowerstation" useGeneratedKeys="true" keyProperty="pkPowerstation">
+		insert into tbl_CommitLog (
+		pk_CommitLog,
+		coLo_LogName,
+		coLo_IpAddress,
+		coLo_LogContent,
+		coLo_Createdate,
+		coLo_Updatedate,
+		coLo_Status
+		)values (
+		#{commitLog},
+		#{logName},
+		#{ipAddress},
+		#{logContent},
+		#{Createdate},
+		#{Updatedate},
+		'1'
+		)
+	</insert>
+	
+	<!--条件单个日志-->
+	<select id="findCommitLog" parameterType="map"  resultMap="result_commitLog">
+		select
+			pk_CommitLog,
+			coLo_LogName,
+			coLo_IpAddress,
+			coLo_LogContent,
+			coLo_Status,
+			coLo_Createdate
+		from 
+			tbl_CommitLog
+		where pk_CommitLog=#{commitLog} 
+	</select>
+	
+	<!--条件查询-->
+	<select id="searchCommitLogList" parameterType="CommitLog" resultMap="result_commitLog">
+		select
+			pk_CommitLog,
+			coLo_LogName,
+			coLo_IpAddress,
+			coLo_LogContent,
+			coLo_Status,
+			coLo_Createdate
+		from 
+			tbl_CommitLog
+		<where>
+			<if test="logName!=null and logName !=''">
+				coLo_LogName=#{logName}
+			</if>
+			<if test="ipAddress!=null and ipAddress !=''">
+				coLo_IpAddress=#{ipAddress}
+			</if>
+			<if test="start_create_date !=null and start_create_date !='' ">
+			  <![CDATA[and coLo_Createdate >=#{start_create_date}]]>
+			</if>
+			
+			<if test="end_create_date !=null and end_create_date !=''">
+				 <![CDATA[and coLo_Createdate <=#{end_create_date}]]>
+			</if>
+		</where>
+		ORDER BY coLo_Createdate DESC
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	
+	<!--删除-->
+	<delete id="removeCommitLog" parameterType="map">
+		delete from
+		tbl_CommitLog
+		where
+		pk_CommitLog=#{commitLog} 
+	</delete>
+	
+	<!--查询全部日志-->
+	<select id="getCommitLogList" resultMap="result_commitLog">
+		select
+			pk_CommitLog,
+			coLo_LogName,
+			coLo_IpAddress,
+			coLo_LogContent,
+			coLo_Status,
+			coLo_Createdate
+		from 
+			tbl_CommitLog
+	</select>
+	<!--查询总数-->
+	<select id="searchCommitLogCount" parameterType="CommitLog" resultType="long">
+		SELECT
+			count(pk_CommitLog)
+		FROM 
+			tbl_CommitLog
+		<where>
+			<if test="logName!=null and logName !=''">
+				coLo_LogName=#{logName}
+			</if>
+			<if test="ipAddress!=null and ipAddress !=''">
+				coLo_IpAddress=#{ipAddress}
+			</if>
+			<if test="start_create_date !=null and start_create_date !='' ">
+			  <![CDATA[and coLo_Createdate >=#{start_create_date}]]>
+			</if>
+			
+			<if test="end_create_date !=null and end_create_date !=''">
+				 <![CDATA[and coLo_Createdate <=#{end_create_date}]]>
+			</if>
+		</where>
+	</select>
+	
+</mapper>

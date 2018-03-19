@@ -1,0 +1,218 @@
+
+package com.wanma.ims.util;
+
+import java.io.Writer;
+import java.util.HashMap;
+import java.util.Map;
+
+import net.sf.json.JSON;
+import net.sf.json.JSONObject;
+import net.sf.json.JSONString;
+
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.constants.ResultCodeConstants;
+
+import cn.jiguang.common.resp.APIConnectionException;
+import cn.jiguang.common.resp.APIRequestException;
+import cn.jpush.api.JPushClient;
+import cn.jpush.api.push.PushResult;
+import cn.jpush.api.push.model.Message;
+import cn.jpush.api.push.model.Options;
+import cn.jpush.api.push.model.Platform;
+import cn.jpush.api.push.model.PushPayload;
+import cn.jpush.api.push.model.audience.Audience;
+import cn.jpush.api.push.model.audience.AudienceTarget;
+import cn.jpush.api.push.model.notification.AndroidNotification;
+import cn.jpush.api.push.model.notification.IosNotification;
+import cn.jpush.api.push.model.notification.Notification;
+
+
+
+
+public class JPushUtil
+{
+
+	private static final String masterSecret = "6992bb3fc50f9c3343df1efa";
+    private static final String appKey = "ed4477671a9298e1599cc145";
+//	private static final String masterSecret = "7e8116321ce22b6e2d8a3a44";
+//    private static final String appKey = "c96301c3d41a017047421e3c";
+
+    /**
+     * @Title: point2point
+     * @Description: 点对点推送
+     * @param registrationID 设备标识
+     * @param notification_title 通知内容标题
+     * @param alert 消息内容标题
+     * @param msg 消息内容
+     *         极光推送手机唯一标示
+     * @param deviceType
+     *           设备类型  1 安卓 2 ios
+     * @param type
+     *           消息类型   13意见反馈推送
+     * @return
+     */
+    public static BaseResultDTO jpushNotice( String alert, String msg, String registrationID,String type)
+    {
+        JPushClient jpush = new JPushClient( masterSecret, appKey );
+        PushResult result = null;
+        try
+        {
+//        	Map<String, String> extras = new HashMap<String, String>();
+//            extras.put("title", alert);
+//            extras.put("tm", String.valueOf(System.currentTimeMillis()));
+//            extras.put("msg", msg);
+//            extras.put("type", type);
+         PushPayload pushPayload= buildNotice_android_and_ios(registrationID,alert,alert,msg,type);
+         result = jpush.sendPush(pushPayload);
+         System.out.println(result);
+          
+        } catch ( Exception e )
+        {
+            return new BaseResultDTO( false, ResultCodeConstants.FAILED,"推送失败");
+        }
+        if (result.isResultOK())
+        {
+            return new BaseResultDTO( true,ResultCodeConstants.SUCCESS, "推送成功" );
+        } else {
+            return new BaseResultDTO( false, ResultCodeConstants.FAILED,"推送失败" );
+        }
+
+
+    }
+    /**
+     * 通知推送
+     * @param registrationId 设备标识
+     * @param notification_title 通知内容标题
+     * @param msg_title 消息内容标题
+     * @param msg_content 消息内容
+     * @param extras
+     * @return
+     */
+public static PushPayload buildNotice_android_and_ios(String registrationId,String notification_title, String msg_title, String msg_content, String type) {
+            return PushPayload.newBuilder()
+                    .setPlatform(Platform.android_ios())
+                    .setAudience(Audience.newBuilder()
+                            .addAudienceTarget(AudienceTarget.registrationId(registrationId))
+                            .build())
+                    .setNotification(Notification.newBuilder()
+                    		.setAlert(notification_title)
+                            .addPlatformNotification(AndroidNotification.newBuilder()
+                                    .setAlert(msg_content)
+                                    .setTitle(msg_title)
+                                    //此字段为透传字段，不会显示在通知栏。用户可以通过此字段来做一些定制需求，如特定的key传要指定跳转的页面（value）
+                                    .addExtra("type", type)
+                                    .build()
+                            )
+                            .addPlatformNotification(IosNotification.newBuilder()
+                                    //传一个IosAlert对象，指定apns title、title、subtitle等
+                                    .setAlert(msg_content)
+                                    //此项是指定此推送的badge自动加1
+                                    .incrBadge(1)
+                                    .setSound("sound.caf")
+                                    //此字段为透传字段，不会显示在通知栏。用户可以通过此字段来做一些定制需求，如特定的key传要指定跳转的页面（value）
+                                    .addExtra("type", type)
+                                    .addExtra("msg", msg_content)
+                                    .addExtra("title", notification_title)
+                                    .addExtra("tm", String.valueOf(System.currentTimeMillis()))
+                                    .build()
+                            )
+                            .build()
+                    )
+//                    .setMessage(Message.newBuilder()
+//                            .setMsgContent(msg_content)
+//                            .setTitle(msg_title)
+//                            .addExtra("extras",extras)
+//                            .build())
+                    .setOptions(Options.newBuilder()
+                            //此字段的值是用来指定本推送要推送的apns环境，false表示开发，true表示生产；对android和自定义消息无意义
+                            .setApnsProduction(false)
+                            //此字段是给开发者自己给推送编号，方便推送者分辨推送记录
+//                            .setSendno(100)
+                            //此字段的值是用来指定本推送的离线保存时长，如果不传此字段则默认保存一天，最多指定保留十天，单位为秒
+                            .setTimeToLive(86400)
+                            .build()
+                    )
+                    .build();
+        }
+    /**
+     * @Title: point2point
+     * @Description: 极光推送自定义消息
+     * @param alert
+     *        标题
+     * @param msg
+     *         内容
+     * @param registrationID
+     *         极光推送手机唯一标示
+     * @param type
+     *           消息类型  13：意见反馈推送
+     * @return
+     */
+    public static BaseResultDTO jpushCustom( String alert, String msg, String registrationID, String orderid, String userid, String type)
+    {
+        JPushClient jpush = new JPushClient( masterSecret, appKey );
+        PushResult result = null;
+        try
+        {
+        	Map<String, String> extras = new HashMap<String, String>();
+            extras.put("title", alert );
+            extras.put("tm", String.valueOf(System.currentTimeMillis()));
+            extras.put("msg", msg);
+            extras.put("orderid", orderid);
+            extras.put("userid", userid);
+            PushPayload pp = PushPayload.newBuilder()
+                    .setPlatform(Platform.android_ios())
+                    .setAudience(Audience.newBuilder()
+                            .addAudienceTarget(AudienceTarget.registrationId(registrationID))
+                            .build())
+                    .setMessage(Message.newBuilder()
+                            .setMsgContent(extras.toString())
+                            .addExtra("type", type)
+                            .build())
+                    .build();
+            result = jpush.sendPush(pp);
+        } catch ( Exception e )
+        {
+            return new BaseResultDTO( false, ResultCodeConstants.FAILED,"推送失败");
+        }
+        if (result.isResultOK())
+        {
+            return new BaseResultDTO( true,ResultCodeConstants.SUCCESS, "推送成功" );
+        } else {
+            return new BaseResultDTO( false, ResultCodeConstants.FAILED,"推送失败" );
+        }
+
+
+    }
+    /**
+     *  全推
+     * @param msg 推送内容
+     * @throws APIRequestException
+     * @throws APIConnectionException
+     */
+    public static void pushAll( String alert,String msg) throws APIConnectionException, APIRequestException{
+    	JPushClient jpush = new JPushClient( masterSecret, appKey );
+    	jpush.sendNotificationAll(msg);
+    }
+
+    public static void main( String[] args ) throws APIConnectionException, APIRequestException
+    {
+//       	JSONObject json=new JSONObject();  
+//    	json.put("title", 1);
+//    	json.put("msg", 2);
+//    	json.put("type", 3);	
+//    	System.out.println(json.toString());
+//    	Map<String, String> extras = new HashMap<String, String>();
+//        extras.put("title", "1");
+//        extras.put("msg", "2");
+//        extras.put("type", "3");
+//        System.out.println(extras.toString());
+//    	 jpushNotice( "充充侠回复您啦", "回复您啦", "0608b0b8422","13");
+//    	 jpushCustom("充充侠回复您啦1", "回复您啦1", "0608b0b8422","13");
+//        jpushNotice( "充充侠回复您啦", "回复您啦11111", "100d855909416bd80c7","13");
+//        jpushCustom("充充侠回复您啦", "回复您啦11111", "100d855909416bd80c7","13");
+    	 jpushNotice( "充充侠回复您啦", "回复您啦11111", "121c83f7602282a4324","13");
+//    	 jpushCustom("充充侠回复您啦", "回复您啦11111", "121c83f7602282a4324","13");
+
+
+    }
+}

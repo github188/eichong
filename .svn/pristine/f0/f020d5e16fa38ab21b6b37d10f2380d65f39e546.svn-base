@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/integral/integralActivityList/integralActivity_list.css"/>
+    <title>积分活动</title>
+</head>
+<body>
+<div class="container animated fadeInRight">
+    <div class="row">
+        <div class="formBlock clearfix">
+            <form id="intergralActivityListForm">
+                <input type="text" name="isWhole" hidden="hidden" value="">
+                <div class="col-xs-12 col-sm-10 col-md-10 col-lg-10">
+                    <div class="userListSelect row">
+                        <div class="col-xs-6 col-sm-2 col-md-2 col-lg-2" style="position: relative;">
+                            <div class="isWholeBtn" onclick="integralActivityListWholeCountry();">
+                                全国
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-xs-12">
+                            <div class="col-sm-2 queryParam">
+                                地区
+                            </div>
+                            <div class=" col-sm-4 col-xs-6 model-select-box">
+                                <div class="model-select-text provinceBlock" data-value="" id="provinceCode">请选择</div>
+                                <span class="downRow provinceBlock clickRotateSpan"></span>
+                                <input type="text" name="provinceId" hidden="hidden" value=""/>
+                                <ul class="model-select-option provinceUl">
+
+                                </ul>
+                            </div>
+                            <div class="col-sm-offset-1 col-xs-6 col-sm-4  model-select-box">
+                                <div class="model-select-text cityBlock" data-value="" id="cityCode">请选择</div>
+                                <span class="downRow cityBlock clickRotateSpan"></span>
+                                <input type="text" name="cityId" hidden="hidden" value=""/>
+                                <ul class="model-select-option cityUl">
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-6 col-sm-2 col-md-2 col-lg-2" style="position: relative;">
+                    <div class="queryBtn" onclick="integralActivityListSearch()">
+                        查询
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!--按钮部分开始==========================================================-->
+        <div class="btnBlock">
+            <div class="col-sm-12 col-xs-12">
+                <div class="col-sm-2 queryParam">
+                    新建活动：
+                </div>
+                <a onclick="return false" class="integralActivity_RechargeGift">
+                    <div class="col-sm-1 col-xs-2 btnStyle">
+                        充值赠送
+                    </div>
+                </a>
+                <a onclick="return false" class="integralActivity_RechargeConsumption">
+                    <div class="col-sm-1 col-xs-2 btnStyle">
+                        消费赠送
+                    </div>
+                </a>
+                <a onclick="return false" class="integralActivity_dailyCollection">
+                    <div class="col-sm-1 col-xs-2 btnStyle">
+                        每日领取
+                    </div>
+                </a>
+                <a onclick="return false" class="integralActivity_EditProfile">
+                    <div class="col-sm-1 col-xs-2 btnStyle">
+                        修改资料赠送
+                    </div>
+                </a>
+                <a onclick="return false" class="integralActivity_Share">
+                    <div class="col-sm-1 col-xs-2 btnStyle">
+                        分享赠送
+                    </div>
+                </a>
+                <a onclick="return false" class="integralActivity_Exchange">
+                    <div class="col-sm-1 col-xs-2 btnStyle">
+                        积分兑换
+                    </div>
+                </a>
+                <a onclick="return false" class="integralActivity_festival">
+                    <div class="col-sm-1 col-xs-2 btnStyle">
+                        节假日
+                    </div>
+                </a>
+                <a onclick="return false" class="integralActivity_birthday">
+                    <div class="col-sm-1 col-xs-2 btnStyle">
+                        生日赠送
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!--表格部分开始==========================================================-->
+        <div class="showSet table-responsive">
+            <table class=" table table-bordered text-center" style="border: 1px solid #DCDCDC;">
+                <thead>
+                    <tr>
+                        <th class=""><input type="checkbox" name="" class="selAll" value=""/></th>
+                        <th class="userList_userAccount">活动名称</th>
+                        <th class="userList_cpyName">地区</th>
+                        <th class="userList_levelName">积分方法</th>
+                        <th class="userList_userStatus">状态</th>
+                        <th class="userList_userAddress">开启时间</th>
+                        <th class="userList_userName">关闭时间</th>
+                        <th class="userList_userCar">操作人</th>
+                    </tr>
+                </thead>
+                <tbody id="myTbogy">
+
+                </tbody>
+            </table>
+
+            <div id="integralActivityPage" class="pagination">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="disabledContent" style="display: none;">
+    禁用用户后，用户使用app，绑定的卡都无法充电。用户资金账户会被冻结
+</div>
+</body>
+<script src="../../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/contabs.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/integral/integralActivityList/integralActivity_list.js" type="text/javascript" charset="utf-8"></script>
+</html>

@@ -1,0 +1,104 @@
+//去加载表格的数据
+carCompanyListSearch();
+function carCompanyListSearch() {
+    initTable("carCompanyListForm", "carCompanyListPage", getCarCompanyListUrl, carCompanyListCallback);
+}
+function carCompanyListCallback(req) {
+    var data = req.dataObject;
+    var listTr = "";
+    for (var i = 0; i < data.length; i++) {
+        listTr += '<tr><td><input type="checkbox" name="ids" class="selectedBox" value="' + data[i].id + '"/></td>'
+            + '<td class="id"><a class="modifyCarCompany" data-carCompanyId="' + data[i].id + '" >' + data[i].id + '</a>'
+            + '</td><td class="name">' + data[i].name
+            + '</td><td class="remark">' + data[i].remark
+            + '</td></tr>';
+    }
+    $("#myTbogy").html(listTr);
+}
+
+$("body").off("click", ".modifyCarCompany").on('click', ".modifyCarCompany", function () {
+    window.location.href = "modifyCarCompany.html?carCompanyId=" + $(this).attr('data-carCompanyId');
+});
+
+$('#addCarCompany').on('click', function () {
+    window.location.href = "addCarCompany.html";
+});
+
+//点击删除
+$("body").off("click", "#delCarCompany").on("click", "#delCarCompany", function () {
+    layer.closeAll();
+    layer.open({
+        type: 1,
+        offset: '100px',
+        title: ["提示", "font-size:12px;text-align:center"],
+        shadeClose: false,
+        closeBtn: 2,
+        area: ['310px', '180px'],//宽高
+        content: $('.disabledContent'),
+        btn: ["确定", "取消"],
+        yes: function (index, layero) {
+            layer.closeAll();
+            toSubmitDisAble();
+        },
+        cancel: function (index, layero) {
+            layer.closeAll();
+        }
+    });
+});
+
+function toSubmitDisAble() {
+    var ids = '';
+    $('input[name=ids]').each(function () {
+        var flag = $(this).prop('checked');
+        if (flag == true) {
+            ids += $(this).attr('value') + ',';
+        }
+    });
+    if (!ids) {
+        layer.open({
+            type: 1,
+            offset: '100px',
+            title: ["提示", "font-size:12px;text-align:center"],
+            shadeClose: false,
+            closeBtn: 2,
+            area: ['310px', '160px'],//宽高
+            content: '请指定表单元素',
+            time: 3000,
+            btn: ["确定", "取消"]
+        });
+    } else {
+        $.ajax({
+            type: "post",
+            url: basePath + delCarCompanyUrl,
+            async: true,
+            data: {
+                carCompanyIds: ids
+            },
+            success: function (data) {
+                if (data.success == true) {
+                    layer.closeAll();
+                    window.location.reload();
+                } else {
+                    layer.open({
+                        type: 1,
+                        offset: '100px',
+                        title: ["提示", "font-size:12px;text-align:center"],
+                        shadeClose: false,
+                        closeBtn: 2,
+                        area: ['310px', '160px'],//宽高
+                        content: data.msg,
+                        time: 3000,
+                        btn: ["确定", "取消"]
+                    });
+                }
+            }
+        });
+    }
+}
+
+//监听回车键
+$(document).keyup(function (event) {
+    if (event.keyCode == 13) {
+        carCompanyListSearch();
+    }
+});

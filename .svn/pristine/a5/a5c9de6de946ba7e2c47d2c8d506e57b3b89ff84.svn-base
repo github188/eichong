@@ -1,0 +1,655 @@
+package com.wanma.controller;
+
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.alibaba.fastjson.JSONObject;
+import com.bluemobi.product.model.common.DwzAjaxResult;
+import com.bluemobi.product.model.common.DwzPagerMySQL;
+import com.bluemobi.product.service.TblUserService;
+import com.bluemobi.product.utils.AccessErrorResult;
+import com.bluemobi.product.utils.AccessSuccessResult;
+import com.bluemobi.product.utils.JsonObject;
+import com.wanma.common.SessionMgr;
+import com.wanma.model.TblActivity;
+import com.wanma.model.TblCarVin;
+import com.wanma.model.TblCoupon;
+import com.wanma.model.TblUser;
+import com.wanma.service.CmsActivityService;
+import com.wanma.service.CmsCouponDetailService;
+import com.wanma.web.support.utils.ExcelUtil;
+
+@Controller
+@RequestMapping("/admin/activity")
+public class CmsActivityController {
+
+	// 日志输出对象
+	private static Logger log = Logger.getLogger(CmsActivityController.class);
+
+	@Autowired
+	private CmsActivityService cmsActivityService;
+	@Autowired
+	private TblUserService tblUserService;
+	@Autowired
+	private CmsCouponDetailService cmsCouponDetailService;
+
+	/**
+	 * 加载渠道活动列表
+	 * 
+	 * @param pager
+	 * @param tblActivity
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/listActivity")
+	public String listActivity(@ModelAttribute("pager") DwzPagerMySQL pager,
+			@ModelAttribute TblActivity tblActivity, Model model,
+			HttpServletRequest request) {
+
+		try {
+			// 首次进入页面,活动状态选择进行中
+			if (tblActivity.getFirst() == "1"
+					|| "1".equals(tblActivity.getFirst())) {
+				tblActivity.setActStatus("2");
+			}
+			
+			Date date = new Date();
+			TblUser loginUser = SessionMgr.getWebUser(request);
+			tblActivity.setActType(2);
+			tblActivity.setCurrentDate(date);
+			long total = cmsActivityService.getActivityCount(tblActivity);
+			
+			
+
+			if (total <= pager.getOffset()) {
+				pager.setPageNum(1L);
+			}
+			// 设置查询参数
+			tblActivity.setPager(pager);
+			List<TblActivity> activityList = cmsActivityService
+					.getActivityList(tblActivity);
+			pager.setTotal(total);
+			List<TblActivity> channelType = null;
+			channelType = cmsActivityService.getChannelType();
+
+			for (TblActivity row : activityList) {
+				
+				
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(row.getActEnddate());
+				cal.add(Calendar.DATE, 1);
+				Date dateEnd=cal.getTime();
+				
+				if ("1".equals(row.getActStatus())) {
+					row.setActStatus("1");
+				}
+				// 开始时间在当前时间之后,状态为未开始
+				else if (row.getActBegindate().after(date)) {
+					row.setActStatus("0");
+				}
+				// 当前时间处于开始时间和结束时间之间,状态为进行中
+				else if (row.getActBegindate().before(date)
+						&& dateEnd.after(date)) {
+					row.setActStatus("2");
+				}
+				// 结束时间在当前时间之后,状态为已结束
+				else if (dateEnd.before(date)) {
+					row.setActStatus("3");
+				}
+
+			}
+			model.addAttribute("activityList", activityList);
+			model.addAttribute("pager", pager);
+			model.addAttribute("TblActivity", tblActivity);
+			model.addAttribute("ChannelType", channelType);
+			model.addAttribute("loginUser", loginUser);
+			
+			
+
+		} catch (Exception e) {
+
+			// 返回登录信息错误信息
+			return new AccessErrorResult(1000, "error.msg.invalid.parameter")
+					.toString();
+		}
+		// 跳转至管理员主页面
+		return "backstage/activity/listActivity";
+	}
+
+	/**
+	 * 终止活动
+	 * 
+	 * @param params
+	 * @return
+	 */
+	@RequestMapping(value = "/changeActivityState")
+	@ResponseBody
+	public String changeActivityState(@RequestParam Map<String, Object> params) {
+
+		try {
+			cmsActivityService.modifyActStatus(params);
+
+		} catch (Exception e) {
+			return "0";
+		}
+		// 返回处理结果信息
+		return "1";
+	}
+
+	/**
+	 * 跳转到增加渠道活动页面
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/addChaActivity")
+	public String addChaActivity(Model model, HttpServletRequest request) {
+		// 获取优惠券品种
+		List<TblCoupon> couponType = null;
+		couponType = cmsCouponDetailService.getCouponType();
+		java.text.DateFormat format = new java.text.SimpleDateFormat(
+				"yyyy-MM-dd");
+		String nowday = format.format(new Date());
+		List<TblActivity> channelType = null;
+		channelType = cmsActivityService.getChannelType();
+		model.addAttribute("ChannelType", channelType);
+		model.addAttribute("nowday", nowday);
+		model.addAttribute("couponType", couponType);
+
+		return "backstage/activity/addChaActivity";
+	}
+
+	/**
+	 * 新增渠道活动
+	 * 
+	 * @param tblActivity
+	 * @param session
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/saveActivity")
+	@ResponseBody
+	public String saveActivity(TblActivity tblActivity, HttpSession session,
+			HttpServletRequest request) {
+		// 处理结果信息
+		DwzAjaxResult dwzResult = null;
+
+		try {
+			if (tblActivity.getHeadList()== null) {
+				dwzResult = new DwzAjaxResult("300", "请点击新增奖品！",
+						"listActivity", "closeCurrent", "");
+			} 
+			else{
+			cmsActivityService.addActivity(tblActivity, request);
+
+			dwzResult = new DwzAjaxResult("200", "新增成功", "listActivity",
+					"closeCurrent", "");
+			}
+		} catch (Exception e) {
+			// 出错日志
+			log.error(e.toString() + e.getStackTrace()[0]);
+			// 设置错误信息
+			dwzResult = new DwzAjaxResult("300", "新增失败", "listActivity",
+					"closeCurrent", "");
+		}
+		// 返回处理结果信息
+		return new JsonObject(dwzResult).toString();
+	}
+
+	/**
+	 * 获取用户活动列表
+	 * 
+	 * @param pager
+	 * @param tblActivity
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/listUserActivity")
+	public String listUserActivity(
+			@ModelAttribute("pager") DwzPagerMySQL pager,
+			@ModelAttribute TblActivity tblActivity, Model model,
+			HttpServletRequest request) {
+		if (tblActivity.getFirst() == "1" || "1".equals(tblActivity.getFirst())) {
+			tblActivity.setActStatus("2");
+		}
+		try {
+			TblUser loginUser = SessionMgr.getWebUser(request);
+			Date date = new Date();
+			// 设置活动类型为用户活动
+			tblActivity.setActType(1);
+			tblActivity.setCurrentDate(date);
+			long total = cmsActivityService.getActivityCount(tblActivity);
+
+			if (total <= pager.getOffset()) {
+				pager.setPageNum(1L);
+			}
+			// 设置查询参数
+			tblActivity.setPager(pager);
+			List<TblActivity> activityUserList = cmsActivityService
+					.getActivityList(tblActivity);
+
+			for (TblActivity row : activityUserList) {
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(row.getActEnddate());
+				cal.add(Calendar.DATE, 1);
+				Date dateEnd=cal.getTime();
+				
+				if ("1".equals(row.getActStatus())) {
+					row.setActStatus("1");
+				}
+				// 开始时间在当前时间之后,状态为未开始
+				else if (row.getActBegindate().after(date)) {
+					row.setActStatus("0");
+				}
+				// 当前时间处于开始时间和结束时间之间,状态为进行中
+				else if (row.getActBegindate().before(date)
+						&& dateEnd.after(date)) {
+					row.setActStatus("2");
+				}
+				// 结束时间在当前时间之后,状态为已结束
+				else if (dateEnd.before(date)) {
+					row.setActStatus("3");
+				}
+
+			}
+			pager.setTotal(total);
+
+			model.addAttribute("activityUserList", activityUserList);
+			model.addAttribute("pager", pager);
+			model.addAttribute("TblActivity", tblActivity);
+			model.addAttribute("loginUser", loginUser);
+
+		} catch (Exception e) {
+
+			// 返回登录信息错误信息
+			return new AccessErrorResult(1000, "error.msg.invalid.parameter")
+					.toString();
+		}
+		// 跳转至管理员主页面
+		return "backstage/activity/listUserActivity";
+	}
+
+	/**
+	 * 跳转到增加用户活动页面
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/addUserActivity")
+	public String addUserActivity(Model model, HttpServletRequest request) {
+		// 获取优惠券品种
+		List<TblCoupon> couponType = null;
+		couponType = cmsCouponDetailService.getCouponType();
+		java.text.DateFormat format = new java.text.SimpleDateFormat(
+				"yyyy-MM-dd");
+		String nowday = format.format(new Date());
+		model.addAttribute("nowday", nowday);
+		model.addAttribute("couponType", couponType);
+
+		return "backstage/activity/addUserActivity";
+	}
+
+	/**
+	 * 新增用户活动
+	 * 
+	 * @param tblActivity
+	 * @param session
+	 * @param request
+	 * @return
+	 */
+	@SuppressWarnings("null")
+	@RequestMapping(value = "/saveUserActivity")
+	@ResponseBody
+	public String saveUserActivity(TblActivity tblActivity,
+			@RequestParam(value = "file", required = false) MultipartFile[] file,
+			HttpSession session, HttpServletRequest request) {
+		// 处理结果信息
+		DwzAjaxResult dwzResult = null;
+		ExcelUtil eu = new ExcelUtil();
+		List<String[]> list = null;
+		ArrayList<String> userAccount = new ArrayList<String>();
+		String flag = "";//判断指定送的用户是否正确
+		try {
+			if(tblActivity.getActActivityrule()==7){//指定送活动
+				if (tblActivity.getHeadList()== null) {
+					dwzResult = new DwzAjaxResult("300", "请点击新增奖品！",
+							"listUserActivity", "closeCurrent", "");
+				}else {
+					// 读取EXCEL
+					list = eu.readExcelToList(file[0].getInputStream());
+					int userNum = list.size();//指定用户数
+ 					list = hasSame(list);//去重
+					for(int i=0 ;i<list.size();i++){//循环获取用户账号
+						String userId = cmsActivityService.getUserIdByUseraccount(new BigDecimal(list.get(i)[0]).toString());
+						if(userId==null || userId==""){
+							flag += ","+(i+1)+":"+new BigDecimal(list.get(i)[0]).toString();
+						}
+							userAccount.add(userId);
+					}
+					int successUserNum = userAccount.size();//发送成功用户数	
+					if(flag==""){
+						SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+						tblActivity.setActBegindates(sdf.format(new Date()));
+						tblActivity.setActEnddates(sdf.format(new Date()));
+						cmsActivityService.addUserActivity(tblActivity, request,userAccount);
+						int couponNum = 0;
+						List<TblActivity> headList = tblActivity.getHeadList();
+						for (TblActivity item : headList) {
+							couponNum +=item.getNum()/userAccount.size();
+						}
+						String message ="指定用户"+userNum+"个,发送成功"+successUserNum+"个,共发放"+successUserNum*couponNum+"张劵。"; 
+						dwzResult = new DwzAjaxResult("200",message,
+								"listUserActivity", "closeCurrent", "");
+					}else{
+						flag=flag.substring(1, flag.length()-1);
+						dwzResult = new DwzAjaxResult("300", "新增失败，"+flag+"错误",
+								"listUserActivity", "closeCurrent", "");
+					}
+				}
+			}else{
+				long count = cmsActivityService.checkActUnique(tblActivity);
+				if (count > 0) {
+
+					dwzResult = new DwzAjaxResult("300",
+							"在此活动期间内,已存在同类型的活动,不能重复新增！", "listUserActivity",
+							"closeCurrent", "");
+
+				} else {
+					if (tblActivity.getHeadList()== null) {
+						dwzResult = new DwzAjaxResult("300", "请点击新增奖品！",
+								"listUserActivity", "closeCurrent", "");
+					} else {
+						cmsActivityService.addUserActivity(tblActivity, request,userAccount);
+						dwzResult = new DwzAjaxResult("200", "新增成功",
+								"listUserActivity", "closeCurrent", "");
+					}
+				}
+			}
+		} catch (Exception e) {
+			// 出错日志
+			log.error(e.toString() + e.getStackTrace()[0]);
+			log.error(e.getLocalizedMessage());
+			// 设置错误信息
+			dwzResult = new DwzAjaxResult("300", "新增失败", "listUserActivity",
+					"closeCurrent", "");
+		}
+		// 返回处理结果信息
+		return new JsonObject(dwzResult).toString();
+	}
+	
+	public List<String[]> hasSame( List<String[]> list) {
+		for(int i=0 ;i<list.size();i++){//循环获取用户账号
+			for(int j=i+1;j<list.size();j++){
+				if((new BigDecimal(list.get(i)[0]).toString().equals(new BigDecimal(list.get(j)[0]).toString()))){
+					list.remove(i);
+				}
+			}
+		}
+		return list;
+	}
+	/**
+	 * 唯一性检查
+	 */
+	@RequestMapping(value = "/checkUnique")
+	@ResponseBody
+	public String checkUnique(HttpServletRequest request) {
+		String tName=request.getParameter("tName");
+		String tProperty=request.getParameter("tProperty");
+		String pkTProperty=request.getParameter("pkTProperty");
+		String pkTValue=request.getParameter("pkTValue");
+		String property=request.getParameter("property");
+		String value=request.getParameter(property);
+		Map<String,String> map=new HashMap<String, String>();
+		map.put("tName",tName);
+		map.put("tProperty",tProperty);
+		map.put("pkTProperty",pkTProperty);
+		map.put("pkTValue",pkTValue);
+		map.put("value",value);
+		int count=cmsActivityService.checkCommonUnique(map);
+		// 返回处理结果信息
+		return (count==0)+"";
+	}
+	
+	
+	@RequestMapping("/listCarvin")
+	public String listCarvin(@ModelAttribute("pager") DwzPagerMySQL pager,
+			TblCarVin tblCarVin, Model model, HttpServletRequest request) {
+		log.info("******************获取车辆优惠信息列表-begin************************");
+		// 总数
+		
+		long total = cmsActivityService.getCarvinCount(tblCarVin);
+		if (total <= pager.getOffset()) {
+			pager.setPageNum(1L);
+		}
+		// 设置查询参数
+		tblCarVin.setPager(pager);
+		List<TblCarVin> carvinList = null;
+		if (total > 0)
+			carvinList = cmsActivityService.getCarvinList(tblCarVin);
+		pager.setTotal(total);
+		// 取得登录用户信息
+		TblUser loginUser = SessionMgr.getWebUser(request);
+		// 将查询结果显示到画面
+		model.addAttribute("loginUserLevel", loginUser.getUserLevel());
+		model.addAttribute("carvinList", carvinList);
+		model.addAttribute("pager", pager);
+		model.addAttribute("tblCarVin", tblCarVin);
+		log.info("******************获取车辆优惠信息列表-end************************");
+		// 跳转至广告列表页面
+		return "backstage/activity/listCarvin";
+	}
+	@RequestMapping(value = "/removeCarvin")
+	@ResponseBody
+	public String removeCarvin(@RequestParam("ids") String ids) {
+		// 处理结果信息
+		DwzAjaxResult dwzResult = new DwzAjaxResult("200", "删除成功", "", "", "");
+		try {
+			String[] idArray = ids.split(",");
+
+			
+			// 不出错执行删除操作
+			for (String id : idArray) {
+				cmsActivityService.deteleCarvin(id);
+
+			}
+			return dwzResult.toJSONString();
+		} catch (Exception e) {
+			// 出错日志
+			log.error("操作失败", e);
+			// 设置错误信息
+			dwzResult = new DwzAjaxResult("300", "操作失败:系统出错", "", "", "");
+		}
+		// 返回处理结果信息
+		return new JsonObject(dwzResult).toString();
+	}
+	
+	@RequestMapping(value = "/toImportCarvin")
+	public String toImportCarvin(
+			@RequestParam(value = "file", required = false) MultipartFile[] file) {
+		// 跳转至管理员主页面
+		return "backstage/activity/carvin-import";
+	}
+	
+	@RequestMapping(value = "/importCarvin")
+	@ResponseBody
+	public String importCarvin(
+			@RequestParam(value = "file", required = false) MultipartFile[] file,
+			HttpServletRequest request) {
+		DwzAjaxResult dwzResult = null;
+		ExcelUtil eu = new ExcelUtil();
+		List<String[]> list = null;
+		
+		try {
+			String[] arr = null;
+			list = eu.readExcelToList(file[0].getInputStream());
+			List<TblCarVin> pileList = new ArrayList<TblCarVin>();
+			for (int i = 2; i < list.size(); i++) {
+				arr = list.get(i);
+				if ("".equals(arr[0]) || arr[0] == null) {
+					dwzResult = new DwzAjaxResult("300", "导入失败，请检查您的车辆识别码是否为空", "",
+							"", "");
+					return new JsonObject(dwzResult).toString();
+
+				} else if ("".equals(arr[1]) || arr[1] == null) {
+					dwzResult = new DwzAjaxResult("300", "导入失败，请检查您填写的合作方是否为空", "", "",
+							"");
+					return new JsonObject(dwzResult).toString();
+
+				} else if ("".equals(arr[2]) || arr[2] == null||!arr[2].matches("^[0.0-9.0]+$")) {
+					dwzResult = new DwzAjaxResult("300", "导入失败，请检查您的服务费格式是否有误或是否为空", "", "",
+							"");
+					return new JsonObject(dwzResult).toString();
+
+				}
+				if(isConSpeCharacters(arr[0])){
+					dwzResult = new DwzAjaxResult("300", "导入失败，请检查您的车辆识别码格式是否有误", "",
+							"", "");
+					return new JsonObject(dwzResult).toString();
+					
+				}
+				// vinCode重复导入直接更新
+				long count = cmsActivityService.checkVinCode(arr[0]);
+				TblCarVin tblCarVin  = new TblCarVin();
+				tblCarVin.setCvVinCode(arr[0]);
+				if(count>0){
+					Integer key = cmsActivityService.findOne(tblCarVin).getPkCarVin();
+					tblCarVin.setPkCarVin(key);
+					tblCarVin.setCvName(arr[1]);
+					tblCarVin.setCvServicemoney(new BigDecimal(arr[2]));
+					tblCarVin.setCvLicenseNumber(arr[3]);
+					cmsActivityService.updateRepeatVinCode(tblCarVin);
+				}else{
+					tblCarVin.setCvName(arr[1]);
+					tblCarVin.setCvServicemoney(new BigDecimal(arr[2]));
+					tblCarVin.setCvLicenseNumber(arr[3]);
+					pileList.add(tblCarVin);
+				}
+			}
+			cmsActivityService.addCarVin(pileList);
+			dwzResult = new DwzAjaxResult("200", "导入成功", "listCarvin",
+					"closeCurrent", "");
+		} catch (Exception e) {
+			log.error("导入出错:" + e.getLocalizedMessage());
+			dwzResult = new DwzAjaxResult("300", "导入失败:请检查导入的文件是否是excel文件或导入样式是否满足模板样式！", "", "", "");
+		}
+		return new JsonObject(dwzResult).toString();
+	}
+	public static boolean isConSpeCharacters(String str){ 
+		boolean is=false;
+		
+		is=!str.matches("^[a-zA-Z0-9]+$");
+	   
+	    if(str.indexOf(" ")>=0||str.length()!=17){
+	    	is=true; 
+	    }
+	    return is; 
+	}
+	/**
+	 * 跳转到活动统计页面
+	 * @param activity
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/getEchartActivity")
+	public String getEchartActivity( TblActivity activity,Model model, HttpServletRequest request) {
+		// 获取下拉框活动列表
+		List<TblActivity> activityList =null;
+		 activityList=cmsCouponDetailService.getActivityList(2);
+		// 将查询结果显示到画面
+		model.addAttribute("activityList",activityList);
+		return "echarts/echartsActivityCount";
+	}
+	/**
+	 * 根据活动类型的改变 改变活动列表
+	 * @param activity
+	 * @param coupon
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("getActivityList")
+	@ResponseBody
+	public String getActivityList(@RequestParam String state) {
+		List<TblActivity> list = new ArrayList<TblActivity>();
+		if (StringUtils.isBlank(state)) {
+			return new AccessErrorResult().toString();
+		}
+		try {
+			list = cmsCouponDetailService.getActivityList(new Integer(state));
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			// 返回活动列表错误信息
+			return new AccessErrorResult(2004, "error.msg.invalid.parameter")
+					.toString();
+		}
+		log.info("******************获取活动列表-end************************");
+		return new AccessSuccessResult(list).toString();
+	}
+	/**
+	 * 获取echarts的数据
+	 * @param activity
+	 * @param coupon
+	 * @param request
+	 * @return
+	 * @throws Exception 
+	 */
+	@RequestMapping("/getEchartCount")
+	@ResponseBody
+	public String getEchartCount( TblActivity activity,TblCoupon coupon, HttpServletRequest request) throws Exception {
+		//获取饼图的数据
+		HashMap<String, Object> allCouponMap = cmsActivityService.getAllCouponCount(activity);
+		HashMap<String, Object> usedCouponMap = cmsActivityService.getUsedCouponCount(activity);
+		String allCouponCount =StringUtils.isNotBlank(allCouponMap.get("couponCount").toString())?allCouponMap.get("couponCount").toString():"0";
+		String usedCouponCount =StringUtils.isNotBlank(usedCouponMap.get("couponCount").toString())?usedCouponMap.get("couponCount").toString():"0";
+		String allCouponValue="0";
+		String usedCouponValue="0";
+		if(allCouponMap.get("couponValue")!=null){
+			allCouponValue=allCouponMap.get("couponValue").toString();
+		}
+		if(usedCouponMap.get("couponValue")!=null){
+			usedCouponValue =usedCouponMap.get("couponValue").toString();
+		}
+		Map<String, Object> pie = new HashMap<String, Object>();
+		pie.put("allCouponCount", allCouponCount);
+		pie.put("allCouponValue", allCouponValue);
+		pie.put("usedCouponCount", usedCouponCount);
+		pie.put("usedCouponValue", usedCouponValue);
+		//获取折线图数据
+		HashMap<String, Object> splitDate = cmsActivityService.getActDate(activity);
+		List<Map<String, Object>> dataList0 = cmsCouponDetailService.getCreateCountData(activity);;
+		List<Map<String, Object>> dataList1 = cmsCouponDetailService.getUseCountData(activity);
+		Map<String, Object> line = new HashMap<String, Object>();
+		SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
+		line =cmsActivityService.splitDate((Date)splitDate.get("bgDate"), (Date)splitDate.get("edDate"), Integer.parseInt(splitDate.get("term").toString()) , dataList0, dataList1);
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("pie",pie);
+		params.put("line",line);
+		return JSONObject.toJSONString(params);
+	}
+	
+	
+}

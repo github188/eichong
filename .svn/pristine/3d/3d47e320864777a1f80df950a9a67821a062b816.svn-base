@@ -1,0 +1,81 @@
+@charset "utf-8";
+body,html{
+	width: 100%;
+	height: 100%;
+	font-family: "黑体" !important;
+	background: #EBECED;
+}
+section{
+	width: 100%;
+	min-height: 3rem;
+}
+section .simpleDetail{
+	width: 100%;
+	min-height: 2.2rem;
+	margin: 1.6rem auto;
+	background: #FFFFFF;
+	border-top: 1px solid #dcdcdc;
+	border-bottom: 1px solid #dcdcdc;
+}
+section .simpleDetail .chargePoint{
+	min-height: 3rem;
+	line-height: 3rem;
+	font-size: 1.8rem;
+	color: #333;
+	padding: 1rem 2rem 0;
+}
+section .simpleDetail .chargeTime{
+	min-height: 2.4rem;
+	font-size: 1.4rem;
+	color: #747474;
+	line-height: 2.4rem;
+	padding: 0 2rem;
+}
+section .simpleDetail .chargeAddress{
+	min-height: 2rem;
+	font-size: 1.4rem;
+	color: #747474;
+	line-height: 2rem;
+	padding: 0 2rem 1rem;
+}
+section .detailInfo{
+	width: 100%;
+	min-height: 5rem;
+	border-top: 0.1rem solid #dcdcdc;
+	border-bottom: 0.1rem solid #dcdcdc;
+	margin: 0 auto;
+	background: #FFFFFF;
+}
+
+section .detailInfo .baseHeight{
+	min-height: 3.4rem;
+	line-height: 3.4rem;
+	font-size: 1.6rem;
+	color: #888888;
+	overflow: hidden;
+	margin: 0 2rem;
+	border-bottom: 0.1rem solid #eeeeee;
+}
+section .chorInfo{
+	margin-top: 1.6rem;
+}
+section .detailInfo .baseHeight .baseText{
+	width: 30%;
+	min-height: 3rem;
+	word-break: break-word;
+	float: left;
+}
+section .detailInfo .baseHeight .baseValue{
+	width: 70%;
+	min-height: 3rem;
+	font-size: 1.6rem;
+	color: #888888;
+	word-break: break-word;
+	float: left;
+	text-align: right;
+}
+
+
+section .detailInfo .baseHeight .baseValue .costMoney{	
+	color: #ec6941;
+}

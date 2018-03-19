@@ -1,0 +1,241 @@
+package com.wanma.ims.service.impl;
+
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.wanma.ims.common.domain.ActivityDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.common.dto.BatchResultDTO;
+import com.wanma.ims.mapper.ActivityMapper;
+import com.wanma.ims.service.ActivityService;
+import com.wanma.ims.service.FavCouponService;
+import com.wanma.ims.service.UserService;
+import com.wanma.ims.util.ExcelImportUtil;
+
+@Service("activityService")
+public class ActivityServiceImpl implements ActivityService{
+@Autowired
+private ActivityMapper activityMapper;
+@Autowired
+private FavCouponService favCouponService;
+@Autowired
+private UserService userService;
+
+	@Override
+	public List<ActivityDO> getActivityForList(ActivityDO activity) {
+		return activityMapper.getActivityForList(activity);
+	}
+	
+	@Override
+	public long getActivityCount(ActivityDO activity) {
+		return activityMapper.getActivityCount(activity);
+	}
+	
+	@Override
+	public List<ActivityDO> getActivityList(ActivityDO activity) {
+		return activityMapper.getActivityList(activity);
+	}
+	
+	@Override
+	public void modifyActStatus(ActivityDO activity) {
+		// 修改活动表状态及结束时间
+		activityMapper.changeActStatus(activity);
+		// 修改优惠券表失效时间
+		favCouponService.changeEndDate(activity);
+	}
+
+	@Override
+	public void addActivity(ActivityDO activity) {
+		List<ActivityDO> headList = activity.getHeadList();
+		// 活动主表添加一条记录
+		activityMapper.addMainActivity(activity);
+		// 根据优惠券数量，添加优惠券明细
+		for (ActivityDO item : headList) {
+			List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+			item.setPkActivity(activity.getPkActivity());
+			// 活动附表添加n条数据
+			activityMapper.addScheActivity(item);
+
+			for (int i = 0; i < item.getNum(); i++) {
+				Map<String, Object> obj = new HashMap<String, Object>();
+				String code = getRandomKey(5);
+				obj.put("pkActivity", item.getPkActivity());
+				obj.put("code", code);
+				obj.put("pkCouponVariety", item.getPkCouponVariety());
+				obj.put("actActivityname", activity.getActActivityname());
+				obj.put("cpBeginDate", activity.getActEnddates());
+				obj.put("cpEndDate", activity.getActEnddates());
+				obj.put("userId", 0);
+				list.add(obj);
+
+			}
+			activityMapper.generateCode(list);
+
+		}
+	}
+	public static String getRandomKey(int length) {//兑换码 
+		Random randGen = null;
+		char[] numbersAndLetters = null;
+		if (length < 1) {
+			return null;
+		}
+
+		randGen = new Random();
+		numbersAndLetters = ("123456789abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ")
+				.toCharArray();
+
+		char[] randBuffer = new char[length];
+		for (int i = 0; i < randBuffer.length; i++) {
+			randBuffer[i] = numbersAndLetters[randGen.nextInt(55)];
+		}
+		return new String(randBuffer);
+	}
+
+	@Override
+	public long checkActUnique(ActivityDO activity) {
+		return activityMapper.checkActUnique(activity);
+	}
+
+	@Override
+	public BaseResultDTO addUserActivity(ActivityDO activity, MultipartFile file,
+			UserDO loginUser) {
+		BaseResultDTO resultDTO = new BaseResultDTO();
+		String flag = "";//判断指定送的用户是否正确
+		List<List<String>> data = null;
+		List<String> list = null;
+		ArrayList<String> userAccount = new ArrayList<String>();
+		if(activity.getActActivityrule()==7){//指定送活动
+			if (activity.getHeadList()== null) {
+				resultDTO.setSuccess(false);
+				resultDTO.setErrorDetail("请点击新增奖品!");
+			}else {
+				// 读取EXCEL
+			 BatchResultDTO<List<String>> result = ExcelImportUtil.importListFromExcel(file);
+			  if (result.isFailed()) {
+	                return result;
+	            }	
+			  data = result.getModule();
+			  for (List<String> line : data) {
+				  list.add(line.get(0));
+		       }
+				int userNum = data.size();//指定用户数
+				list = hasSame(list);//去重
+				for(int i=0 ;i<list.size();i++){//循环获取用户账号
+					String userId = userService.findByUserAccount(list.get(i)).getUserId().toString();
+					if(userId==null || userId==""){
+						flag += ","+(i+1)+":"+new BigDecimal(userAccount.get(i)).toString();
+					}
+						userAccount.add(userId);
+				}
+				int successUserNum = userAccount.size();//发送成功用户数	
+				if(flag==""){
+					SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+					activity.setActBegindates(sdf.format(new Date()));
+					activity.setActEnddates(sdf.format(new Date()));
+					if(!addUserActivity(activity, loginUser,userAccount)){
+						resultDTO.setSuccess(false);
+						resultDTO.setErrorDetail("新增失败");
+					}
+					int couponNum = 0;
+					List<ActivityDO> headList = activity.getHeadList();
+					for (ActivityDO item : headList) {
+						couponNum +=item.getNum()/userAccount.size();
+					}
+					String message ="指定用户"+userNum+"个,发送成功"+successUserNum+"个,共发放"+successUserNum*couponNum+"张劵。";
+					resultDTO.setSuccess(true);
+					resultDTO.setErrorDetail(message);
+				}else{
+					flag=flag.substring(1, flag.length()-1);
+					resultDTO.setSuccess(false);
+					resultDTO.setErrorDetail("新增失败，"+flag+"错误");
+				}
+			}
+		}else{
+			long count = checkActUnique(activity);
+			if (count > 0) {
+				resultDTO.setSuccess(false);
+				resultDTO.setErrorDetail("在此活动期间内,已存在同类型的活动,不能重复新增！");
+			} else {
+				if (activity.getHeadList()== null) {
+					resultDTO.setSuccess(false);
+					resultDTO.setErrorDetail("在此活动期间内,已存在同类型的活动,不能重复新增！");
+				} else {
+					if(!addUserActivity(activity, loginUser,userAccount)){
+						resultDTO.setSuccess(false);
+						resultDTO.setErrorDetail("新增失败！");
+					}
+				}
+			}
+		}
+		return resultDTO;
+	}
+	public boolean addUserActivity(ActivityDO activity,
+			UserDO loginUser, ArrayList<String> userAccount) {
+		try {
+			List<ActivityDO> headList = activity.getHeadList();
+			
+			activity.setActCreateuserid(loginUser.getUserAccount());
+			activity.setActUpdateuserid(loginUser.getUserAccount());
+			activity.setActType(1);
+			// 活动主表添加一条记录
+			activityMapper.addMainActivity(activity);
+
+			// 根据优惠券数量，添加优惠券明细
+			for (ActivityDO item : headList) {
+				List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+				int num = 0;
+				if(activity.getActActivityrule()==7){//指定送活动 优惠劵数量要乘以用户人数
+					num=item.getNum();
+				item.setNum(item.getNum()*userAccount.size());	
+				}
+				item.setPkActivity(activity.getPkActivity());
+				// 活动附表添加n条数据
+				activityMapper.addScheActivity(item);
+				//指定送活动 增加优惠劵表
+				if(activity.getActActivityrule()==7){
+					for (int i = 0; i < userAccount.size(); i++) {
+						for(int j=0;j<num;j++){
+							Map<String, Object> obj = new HashMap<String, Object>();
+							obj.put("pkActivity", item.getPkActivity());
+							obj.put("pkCouponVariety", item.getPkCouponVariety());
+							obj.put("actActivityname", activity.getActActivityname());
+							obj.put("cpBeginDate", activity.getActBegindates());
+							obj.put("cpEndDate", activity.getActCouponEndDates());
+							obj.put("code", "");
+							obj.put("userId", userAccount.get(i));
+							list.add(obj);
+						}
+					}
+					activityMapper.generateCode(list);
+				}
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+		return true;
+	}
+	public List<String> hasSame( List<String> list) {
+		for(int i=0 ;i<list.size();i++){//循环获取用户账号
+			for(int j=i+1;j<list.size();j++){
+				if((new BigDecimal(list.get(i)).toString().equals(new BigDecimal(list.get(j)).toString()))){
+					list.remove(i);
+				}
+			}
+		}
+		return list;
+	}
+
+
+}

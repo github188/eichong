@@ -1,0 +1,7 @@
+package com.wanma.ims.controller.user;
+/**
+ * 用戶管理-渠道用戶管理 
+ */
+public class UserCompanyController {
+
+}

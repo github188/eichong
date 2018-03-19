@@ -1,0 +1,247 @@
+{
+	"dataObject": {
+		"370000": [
+			{
+				"cityId": "371700",
+				"cityName": "菏泽市",
+				"provinceId": "370000"
+			}
+		],
+		"620000": [
+			{
+				"cityId": "623000",
+				"cityName": "甘南藏族自治州",
+				"provinceId": "620000"
+			}
+		],
+		"320000": [
+			{
+				"cityId": "321300",
+				"cityName": "宿迁市",
+				"provinceId": "320000"
+			}
+		],
+		"110000": [
+			{
+				"cityId": "110100",
+				"cityName": "北京市",
+				"provinceId": "110000"
+			}
+		],
+		"530000": [
+			{
+				"cityId": "533400",
+				"cityName": "迪庆藏族自治州",
+				"provinceId": "530000"
+			}
+		],
+		"460000": [
+			{
+				"cityId": "460300",
+				"cityName": "三沙市",
+				"provinceId": "460000"
+			}
+		],
+		"330000": [
+			{
+				"cityId": "331100",
+				"cityName": "丽水市",
+				"provinceId": "330000"
+			}
+		],
+		"310000": [
+			{
+				"cityId": "310100",
+				"cityName": "上海市",
+				"provinceId": "310000"
+			}
+		],
+		"120000": [
+			{
+				"cityId": "120100",
+				"cityName": "天津市",
+				"provinceId": "120000"
+			}
+		],
+		"610000": [
+			{
+				"cityId": "611000",
+				"cityName": "商洛市",
+				"provinceId": "610000"
+			}
+		],
+		"650000": [
+			{
+				"cityId": "654300",
+				"cityName": "阿勒泰地区",
+				"provinceId": "650000"
+			}
+		],
+		"520000": [
+			{
+				"cityId": "522700",
+				"cityName": "黔南布依族苗族自治州",
+				"provinceId": "520000"
+			}
+		],
+		"340000": [
+			{
+				"cityId": "341800",
+				"cityName": "宣城市",
+				"provinceId": "340000"
+			}
+		],
+		"820000": [
+			{
+				"cityId": "820300",
+				"cityName": "路环岛",
+				"provinceId": "820000"
+			}
+		],
+		"430000": [
+			{
+				"cityId": "433100",
+				"cityName": "湘西土家族苗族自治州",
+				"provinceId": "430000"
+			}
+		],
+		"130000": [
+			{
+				"cityId": "131100",
+				"cityName": "衡水市",
+				"provinceId": "130000"
+			}
+		],
+		"810000": [
+			{
+				"cityId": "810300",
+				"cityName": "新界",
+				"provinceId": "810000"
+			}
+		],
+		"210000": [
+			{
+				"cityId": "211400",
+				"cityName": "葫芦岛市",
+				"provinceId": "210000"
+			}
+		],
+		"510000": [
+			{
+				"cityId": "513400",
+				"cityName": "凉山彝族自治州",
+				"provinceId": "510000"
+			}
+		],
+		"640000": [
+			{
+				"cityId": "640500",
+				"cityName": "中卫市",
+				"provinceId": "640000"
+			}
+		],
+		"220000": [
+			{
+				"cityId": "222400",
+				"cityName": "延边朝鲜族自治州",
+				"provinceId": "220000"
+			}
+		],
+		"350000": [
+			{
+				"cityId": "350900",
+				"cityName": "宁德市",
+				"provinceId": "350000"
+			}
+		],
+		"420000": [
+			{
+				"cityId": "422800",
+				"cityName": "恩施土家族苗族自治州",
+				"provinceId": "420000"
+			}
+		],
+		"440000": [
+			{
+				"cityId": "445300",
+				"cityName": "云浮市",
+				"provinceId": "440000"
+			}
+		],
+		"500000": [
+			{
+				"cityId": "500100",
+				"cityName": "重庆市",
+				"provinceId": "500000"
+			}
+		],
+		"140000": [
+			{
+				"cityId": "141100",
+				"cityName": "吕梁市",
+				"provinceId": "140000"
+			}
+		],
+		"360000": [
+			{
+				"cityId": "361100",
+				"cityName": "上饶市",
+				"provinceId": "360000"
+			}
+		],
+		"230000": [
+			{
+				"cityId": "232700",
+				"cityName": "大兴安岭地区",
+				"provinceId": "230000"
+			}
+		],
+		"630000": [
+			{
+				"cityId": "632800",
+				"cityName": "海西蒙古族藏族自治州",
+				"provinceId": "630000"
+			}
+		],
+		"410000": [
+			{
+				"cityId": "411700",
+				"cityName": "驻马店市",
+				"provinceId": "410000"
+			}
+		],
+		"710000": [
+			{
+				"cityId": "713800",
+				"cityName": "连江县",
+				"provinceId": "710000"
+			}
+		],
+		"150000": [
+			{
+				"cityId": "152900",
+				"cityName": "阿拉善盟",
+				"provinceId": "150000"
+			}
+		],
+		"540000": [
+			{
+				"cityId": "542600",
+				"cityName": "林芝地区",
+				"provinceId": "540000"
+			}
+		],
+		"450000": [
+			{
+				"cityId": "451400",
+				"cityName": "崇左市",
+				"provinceId": "450000"
+			}
+		]
+	},
+	"failed": false,
+	"msg": "操作成功",
+	"pager": null,
+	"status": "",
+	"success": true
+}

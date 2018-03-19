@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.SGCCInfoMapper">
+    <select id="listStationInfo" parameterType="Map" resultType="SyncStationInfo">
+        SELECT
+        pk_PowerStation StationID,
+        poSt_Name StationName,
+        'CN' CountryCode,
+        poSt_OwnCountyCode AreaCode,
+        poSt_Address Address,
+        '400-085-0006' ServiceTel,
+        '255' StationType,
+        '50' StationStatus,
+        poSt_Longitude StationLng,
+        poSt_Latitude StationLat,
+        '255' Construction,
+        DATE_FORMAT(poSt_Createdate,'%Y-%m-%d') OpenForBusinessDate
+        FROM
+        tbl_powerstation
+        WHERE 1=1
+        <if test="startTime != null">
+            AND poSt_Createdate &gt; #{startTime}
+        </if>
+        <if test="operateId !=null">
+            AND pk_PowerStation IN (SELECT pk_PowerStation FROM tbl_company_rela WHERE pk_cpy_operate_id =#{operateId})
+        </if>
+        AND poSt_Createdate &lt; #{endTime}
+    </select>
+    <select id="getOperateId" parameterType="Integer" resultType="Integer">
+
+    SELECT pk_CompanyId from tbl_company where cpy_CompanyNumber = #{companyNumber}
+</select>
+
+    <select id="listEquipmentInfo" parameterType="Map" resultType="SyncEquipmentInfo">
+        SELECT
+        elPi_RelevancePowerStation StationID,
+        elPi_ElectricPileCode EquipmentID,
+        elPi_Maker ManufacturerID,
+        'null' EquipmentModel,
+        elPi_ChargingMode EquipmentType,
+        elPi_PowerSize Power,
+        elPi_State EquipmentStatus,
+        DATE_FORMAT(elPi_Createdate,'%Y-%m-%d') OpenForBusinessDate
+        FROM
+        tbl_electricpile
+        WHERE 1=1
+        <if test="startTime != null">
+            AND elPi_Createdate &gt; #{startTime}
+        </if>
+        <if test="operateId !=null">
+            AND pk_ElectricPile IN (SELECT pk_ElectricPile FROM tbl_company_rela WHERE pk_cpy_operate_id =#{operateId})
+        </if>
+        AND elPi_Createdate &lt; #{endTime}
+    </select>
+
+
+    <select id="listConnectorInfo" parameterType="Map" resultType="SyncConnectorInfo">
+        SELECT
+        e.elPi_ElectricPileCode EquipmentID,
+        eh.ePHe_ElectricpileHeadId ConnectorID,
+        e.elPi_ChargingMode ConnectorType,
+        e.elPi_OutputVoltage VoltageUpperLimits,
+        e.elPi_InputVoltage VoltageLowerLimits,
+        e.elPi_OutputCurrent `Current`,
+        e.elPi_PowerSize `Power`,
+        '1' NationalStandard
+        FROM tbl_electricpile e,tbl_electricpilehead eh
+        WHERE 1=1
+        AND eh.pk_ElectricPile = e.pk_ElectricPile
+        <if test="startTime != null">
+            AND e.elPi_Createdate &gt; #{startTime}
+        </if>
+        <if test="operateId !=null">
+            AND e.pk_ElectricPile IN (SELECT pk_ElectricPile FROM tbl_company_rela WHERE pk_cpy_operate_id
+            =#{operateId})
+        </if>
+        AND e.elPi_Createdate &lt; #{endTime}
+    </select>
+
+    <select id="listEquipmentStatsInfo" parameterType="Map" resultType="SyncEquipmentStatsInfo">
+        SELECT
+        th.chOr_PileNumber EquipmentID,
+        th.chOr_QuantityElectricity EquipmentElectricity,
+        (UNIX_TIMESTAMP(STR_TO_DATE(th.end_charge_time,'%Y-%m-%d %H:%i:%s')) - UNIX_TIMESTAMP(
+        STR_TO_DATE(th.begin_charge_time,'%Y-%m-%d %H:%i:%s'))) EquipmentChargeTime
+        FROM
+        tbl_chargingorder th, tbl_electricpile e
+        WHERE 1=1 AND
+        th.chOr_PileNumber = e.elPi_ElectricPileCode
+        <if test="startTime != null">
+            AND th.end_charge_time &gt; #{startTime}
+        </if>
+        <if test="operateId !=null">
+            AND e.pk_ElectricPile IN (SELECT pk_ElectricPile FROM tbl_company_rela WHERE pk_cpy_operate_id
+            =#{operateId})
+        </if>
+        AND th.end_charge_time &lt; #{endTime}
+    </select>
+    <select id="listStation" parameterType="Map" resultType="hashMap">
+        SELECT
+        e.elPi_ElectricPileCode EquipmentID,
+        e.elPi_RelevancePowerStation StationID
+        FROM
+        tbl_chargingorder th, tbl_electricpile e
+        WHERE 1=1 AND
+        th.chOr_PileNumber = e.elPi_ElectricPileCode
+        <if test="startTime != null">
+        AND th.end_charge_time &gt; #{startTime}
+        </if>
+        AND e.pk_ElectricPile IN (SELECT pk_ElectricPile FROM tbl_company_rela WHERE pk_cpy_operate_id =#{operateId})
+        AND th.end_charge_time &lt; #{endTime}
+        GROUP BY e.elPi_ElectricPileCode
+    </select>
+</mapper>

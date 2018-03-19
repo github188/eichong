@@ -1,0 +1,41 @@
+@charset "UTF-8";
+
+.content {
+    width: 1160px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.content .nav {
+    background-color: #6b6b6b;
+    width:231px;
+    padding:10px 0;
+    float:left;
+}
+
+.content .nav li:first-child{
+    border:none;
+}
+
+.content .nav li{
+    text-align: center;
+    padding:10px 0;
+    border-top:1px solid white;
+}
+.content .nav li a{color:white;}
+
+.content .nav li.current{
+    background-color:#ff8300;
+}
+
+.content .content-content{
+    float:left;
+    margin-left:30px;
+}
+
+.content .article{
+    width:898px;
+    height:880px;
+    background-color: #ececec;
+    margin-top:40px;
+}

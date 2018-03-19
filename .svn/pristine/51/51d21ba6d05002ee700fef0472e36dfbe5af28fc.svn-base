@@ -1,0 +1,875 @@
+var userId = getUrlParam('userId');
+var cpyType = getUrlParam('cpyType');
+//获取用户主页的menuId
+var getMenuMap=window.localStorage.getItem('menuMap');
+var getCurruntMap=JSON.parse(getMenuMap);
+var homeMenuId=getCurruntMap['用户主页'];
+//alert(userId+"::"+cpyType)
+//设置等级时候使用 传cpyId
+var user_cpyId = getUrlParam('cpyId');
+//alert(user_cpyId);
+$(function(){
+    ctrlMenuBtn();
+    setTimeout("loadUserIndex()", 100);
+    setTimeout('loadFaValue()', 200);
+    setTimeout('loadCardInfo()', 300);
+    setTimeout('getFinAccountUser()', 500);
+    setTimeout('getFinAccountRelation4User()', 400);
+    setTimeout('getUserAccount()', 600);
+})
+
+
+//控制用户主页按钮权限
+//setTimeout("ctrlMenuBtn()",2000);
+function ctrlMenuBtn(){
+    $.ajax({
+        type: "post",
+        url: basePath + getSelfButtonTreeUrl,
+        async: true,
+        data: {
+            menuId:homeMenuId
+        },
+        success: function (data) {
+            console.log(data);
+            var data=data.dataObject;
+            for(var i=0;i<data.length;i++){
+                var contents=data[i].contents;
+                if(contents.indexOf('信息') > -1){
+                    $('#ctrUserBaseInfo').show();
+                }
+                if(contents.indexOf('基本资料') > -1){
+                    $('#detailUserBlock').show();
+                }
+                if(contents.indexOf('优惠券') > -1){
+                    $('#couponBlock').show();
+                }
+
+
+            }
+        }
+    });
+}
+
+
+//用户基础数据填充
+
+function loadUserIndex() {
+    $.ajax({
+        type: "post",
+        url: basePath + userIndexUrl,
+        async: true,
+        data: {
+            userId: userId
+        },
+        success: function (data) {
+            var userAccount = data.userAccount;
+            var userBalance = data.userBalance;
+            var cpyName = data.cpyName;
+            var provinceCode = data.provinceCode;
+            var cityCode = data.cityCode;
+            window.localStorage.setItem('provinceCode', provinceCode);
+            window.localStorage.setItem('cityCode', cityCode);
+            var userStatus = data.userStatus;
+            var levelName = data.levelName;
+            var userStatusText = '';
+            if (userStatus == 1) {
+                userStatusText = '正常';
+            } else if (userStatus == 2) {
+                userStatusText = '冻结';
+                $('#statusDisableBtn').show();
+            } else if (userStatus == 3) {
+                userStatusText = '删除';
+            }
+
+            $('#userAccount').html(userAccount);
+            $('#userBalance').html(userBalance);
+            $('#cpyName').html(cpyName);
+            $('#userStatus').html(userStatusText);
+            $('#levelName').html(levelName);
+
+//			基本名称块
+            var userName = data.userName;
+            $('#userName').html(userName);
+            var userRealName = data.userRealName;
+            $('#userRealName').html(userRealName);
+            var userSex = data.userSex;
+            var userSexText = '';
+            if (userSex == 0) {
+                userSexText = '未知';
+            } else if (userSex == 1) {
+                userSexText = '男';
+            } else {
+                userSexText = '女';
+            }
+            $('#userSex').html(userSexText);
+            var userPhone = data.userPhone;
+            $('#userPhone').html(userPhone);
+            var userIdCard = data.userIdCard;
+            $('#userIdCard').html(userIdCard);
+            var userAddress = data.userAddress;
+            $('#userAddress').html(userAddress);
+            var userCar = data.userCar;
+            $('#userCar').html(userCar);
+            var registeredTime = data.registeredTime;
+            $('#registeredTime').html(registeredTime);
+        }
+    });
+}
+//解禁按钮的操作
+$('#statusDisableBtn').on("click", function () {
+    layer.closeAll();
+    layer.open({
+        type: 1,
+        offset: '100px',
+        title: ["提示", "font-size:12px;text-align:center"],
+        shadeClose: false,
+        closeBtn: 2,
+        area: ['310px', '160px'],//宽高
+        content: '解禁后用户状态恢复正常',
+        btn: ["确定", "取消"],
+        yes: function (index, layero) {
+            layer.closeAll();
+            toUnfreezeUser();
+        },
+        cancel: function (index, layero) {
+            layer.closeAll();
+        }
+    });
+})
+//去解禁用户
+function toUnfreezeUser() {
+    $.ajax({
+        type: "post",
+        url: basePath + unfreezeUserUrl,
+        async: true,
+        data: {
+            userIds: userId
+        },
+        success: function (data) {
+            if (data.success == true) {
+                layer.closeAll();
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:center"],
+                    shadeClose: false,
+                    closeBtn: 2,
+                    area: ['310px', '160px'],//宽高
+                    content: '解禁成功',
+                    time: 2000,
+                    btn: ["确定"]
+                });
+                $('#userStatus').html('正常');
+                $('#statusDisableBtn').hide();
+
+            } else if (data.success == false) {
+                layer.closeAll();
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:center"],
+                    shadeClose: false,
+                    closeBtn: 2,
+                    area: ['310px', '160px'],//宽高
+                    content: data.msg,
+                    time: 2000,
+                    btn: ["确定"]
+                });
+            }
+        }
+    });
+}
+//去加载优惠券的值
+
+function loadFaValue() {
+    $.ajax({
+        type: "post",
+        url: basePath + getCouponInfoByUserIdUrl,
+        async: true,
+        data: {
+            cpUserid: userId
+        },
+        success: function (data) {
+            if (data.success == true) {
+                var data = data.dataObject;
+                var totalDiscountAmount = data.totalDiscountAmount;
+                var availableCoupon = data.availableCoupon;
+                $('#totalDiscountAmount').html(totalDiscountAmount);
+                $('#availableCoupon').html(availableCoupon);
+            }
+        }
+    });
+}
+//设置用户等级
+$('#setLevelBtn_user').on('click', function () {
+    toLoadLevelList();
+    layer.closeAll();
+    layer.open({
+        type: 1,
+        offset: '100px',
+        title: ["设置用户等级", "font-size:12px;text-align:center"],
+        shadeClose: false,
+        closeBtn: 2,
+        area: ['310px', '180px'],//宽高
+        content: $('.setUserLevel_user'),
+        btn: ["确定", "取消"],
+        yes: function (index, layero) {
+            layer.closeAll();
+            toSetLevel();
+        },
+        cancel: function (index, layero) {
+            layer.closeAll();
+        }
+    });
+})
+function toLoadLevelList() {
+    $.ajax({
+        type: "post",
+        url: basePath + getLevelList,
+        async: true,
+        data: {
+            //cpyId: 1
+            cpyId:user_cpyId
+        },
+        success: function (data) {
+            var levelHtml = ' <option value="">请选择</option>';
+            var data = data.dataObject;
+            for (var i = 0; i < data.length; i++) {
+                levelHtml += '<option value="' + data[i].levelId + '">' + data[i].levelName + '</option>';
+            }
+            $('#setUserLevel_user').html(levelHtml);
+        }
+
+    })
+}
+//修改保存等级设置
+function toSetLevel() {
+    //alert($('#setUserLevel_user').val());
+    var levelId = $('#setUserLevel_user').val();
+    if (levelId == "") {
+        layer.closeAll();
+        return;
+    }
+    $.ajax({
+        type: "post",
+        url: basePath + modifyUserUrl,
+        async: true,
+        data: {
+            levelId: levelId,
+            userId: userId
+        },
+        success: function (data) {
+            if (data.success == true) {
+                layer.closeAll();
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:center"],
+                    shadeClose: false,
+                    closeBtn: 2,
+                    area: ['310px', '160px'],//宽高
+                    content: data.msg,
+                    time: 2000,
+                    btn: ["确定"]
+                });
+                loadUserIndex();
+            } else {
+                layer.closeAll();
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:center"],
+                    shadeClose: false,
+                    closeBtn: 2,
+                    area: ['310px', '160px'],//宽高
+                    content: data.msg,
+                    time: 2000,
+                    btn: ["确定"]
+                });
+            }
+        }
+
+    })
+}
+//设置用户等级结束
+//安全密码设置
+$('#setLoginPassWord').on('click', function () {
+    layer.closeAll();
+    layer.open({
+        type: 1,
+        offset: '100px',
+        title: ["重置登陆密码", "font-size:12px;text-align:center"],
+        shadeClose: false,
+        closeBtn: 2,
+        area: ['310px', '200px'],//宽高
+        content: '重置之后，登录密码为123456',
+        btn: ["确定", "取消"],
+        yes: function (index, layero) {
+            layer.closeAll();
+            toSetLoginPassword();
+        },
+        cancel: function (index, layero) {
+            layer.closeAll();
+        }
+    });
+})
+function toSetLoginPassword() {
+    $.ajax({
+        type: "post",
+        url: basePath + resetLoginPasswordUrl,
+        async: true,
+        data: {
+            userId: userId
+        },
+        success: function (data) {
+            if (data.success == true) {
+                layer.closeAll();
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:center"],
+                    shadeClose: false,
+                    closeBtn: 2,
+                    area: ['310px', '160px'],//宽高
+                    content: data.msg,
+                    time: 2000,
+                    btn: ["确定"]
+                });
+            }
+        }
+    });
+}
+//设置支付密码
+$('#setPayPassword').on('click', function () {
+    layer.closeAll();
+    layer.open({
+        type: 1,
+        offset: '100px',
+        title: ["重置支付密码", "font-size:12px;text-align:center"],
+        shadeClose: false,
+        closeBtn: 2,
+        area: ['310px', '200px'],//宽高
+        content: '重置之后，支付密码为123456',
+        btn: ["确定", "取消"],
+        yes: function (index, layero) {
+            layer.closeAll();
+            toSetPayPassword();
+        },
+        cancel: function (index, layero) {
+            layer.closeAll();
+        }
+    });
+});
+function toSetPayPassword() {
+    $.ajax({
+        type: "post",
+        url: basePath + user_resetPayPasswordUrl,
+        async: true,
+        data: {
+            userId: userId
+        },
+        success: function (data) {
+            if (data.success == true) {
+                layer.closeAll();
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:center"],
+                    shadeClose: false,
+                    closeBtn: 2,
+                    area: ['310px', '160px'],//宽高
+                    content: data.msg,
+                    time: 2000,
+                    btn: ["确定"]
+                });
+            } else {
+                layer.closeAll();
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:center"],
+                    shadeClose: false,
+                    closeBtn: 2,
+                    area: ['310px', '160px'],//宽高
+                    content: data.msg,
+                    time: 2000,
+                    btn: ["确定"]
+                });
+            }
+        }
+    });
+}
+//去加载卡的信息===============
+
+function loadCardInfo() {
+    $.ajax({
+        type: "post",
+        url: basePath + getUserCardInfoUrl,
+        data: {
+            ucUserId: userId
+            //ucUserId: 54
+        },
+        async: true,
+        success: function (data) {
+            if (data.success == true) {
+                var data = data.dataObject;
+                //alert(JSON.stringify(data));
+                var userCardLi = '';
+                var ucStatus = '';
+                for (var i = 0; i < data.length; i++) {
+                    if (data[i].ucStatus == 0) {
+                        ucStatus = '正常';
+                    }
+                    if (data[i].ucStatus == 1) {
+                        ucStatus = '已挂失';
+                    }
+                    if (data[i].ucStatus == 2) {
+                        ucStatus = '已冻结';
+                    }
+                    userCardLi += '<li>'
+                    + '<span><a class="cardHome" onclick="return false;" data-index="1" href="'+basePath+'/static/html/cardList/card_home.html?ucId=' + data[i].ucId + '&ucUserId=' + data[i].ucUserId + '">' + data[i].ucExternalCardNumber + '</a></span>'
+                    + '<span>'
+                    + '<span>' + ucStatus + '</span>'
+                    + '<span class="leftBorder cardFrozen" data-ucId="' + data[i].ucId + '">冻结</span>'
+                    + '<span class="leftBorder relieveCardFrozen" data-ucId="' + data[i].ucId + '">解冻</span>'
+                    + '<span class="leftBorder cardLoss" data-ucId="' + data[i].ucId + '">挂失</span>'
+                    + '<span class="leftBorder relieveCardLoss" data-ucId="' + data[i].ucId + '">解挂</span>'
+                    + '<span class="leftBorder cardCancel" data-ucId="' + data[i].ucId + '">注销</span>'
+                    + '</span>'
+                    + '</li>';
+                }
+                $('.userCardList').html(userCardLi);
+            }
+
+        }
+    })
+}
+//点击卡信息，进入卡主页
+newTab('.cardHome','卡主页');
+//去冻结
+$('body').on('click', '.cardFrozen', function () {
+    toShowComfirm(this, cardFrozenUrl);
+})
+//去解冻
+$('body').on('click', '.relieveCardFrozen', function () {
+    toShowComfirm(this, relieveCardFrozenUrl);
+})
+//去挂失
+$('body').on('click', '.cardLoss', function () {
+    toShowComfirm(this, cardLossUrl);
+})
+//去解挂
+$('body').on('click', '.relieveCardLoss', function () {
+    toShowComfirm(this, relieveCardLossUrl);
+})
+//去注销
+$('body').on('click', '.cardCancel', function () {
+    toShowComfirm(this, cardCancelUrl);
+})
+function toShowComfirm(obj, carStatusUrl) {
+    var ucId = $(obj).attr('data-ucId');
+    var spanText = $(obj).text();
+    layer.closeAll();
+    layer.open({
+        type: 1,
+        offset: '100px',
+        title: ["卡" + spanText, "font-size:12px;text-align:center"],
+        shadeClose: false,
+        closeBtn: 2,
+        area: ['310px', '160px'],//宽高
+        content: '确定进行卡' + spanText + '吗？',
+        btn: ["确定", "取消"],
+        yes: function (index, layero) {
+            layer.closeAll();
+            toChangeStatus(ucId, carStatusUrl, spanText);
+        },
+        cancel: function (index, layero) {
+            layer.closeAll();
+        }
+    });
+}
+function toChangeStatus(ucId, carStatusUrl, spanText) {
+    $.ajax({
+        type: "post",
+        url: basePath + carStatusUrl,
+        data: {
+            ucUserId: userId,
+            ucId: ucId
+        },
+        async: true,
+        success: function (data) {
+            if (data.success == true) {
+                layer.closeAll();
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: [spanText, "font-size:12px;text-align:center"],
+                    shadeClose: false,
+                    closeBtn: 2,
+                    area: ['310px', '160px'],//宽高
+                    content: spanText + '成功',
+                    time: 2000,
+                    btn: ["确定"],
+                    yes: function (index, layero) {
+                        layer.closeAll();
+                    }
+                });
+                loadCardInfo();
+
+            } else if (data.success == false) {
+                layer.closeAll();
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:center"],
+                    shadeClose: false,
+                    closeBtn: 2,
+                    area: ['310px', '160px'],//宽高
+                    content: data.msg,
+                    time: 2000,
+                    btn: ["确定"]
+                });
+            }
+        }
+    })
+}
+//新绑卡
+$('#bindCard').on("click", function () {
+    layer.closeAll();
+    layer.open({
+        type: 1,
+        offset: '100px',
+        title: ["新绑卡", "font-size:12px;text-align:center"],
+        shadeClose: false,
+        closeBtn: 2,
+        area: ['310px', '180px'],//宽高
+        content: $('.newBindCard'),
+        btn: ["确定", "取消"],
+        yes: function (index, layero) {
+            layer.closeAll();
+            toBindCard();
+        },
+        cancel: function (index, layero) {
+            layer.closeAll();
+        }
+    });
+})
+function toBindCard() {
+    $.ajax({
+        type: "post",
+        url: basePath + userBindCardUrl,
+        async: true,
+        data: {
+            userId: userId,
+            ucExternalCardNumber: $('input[name=ucExternalCardNumber]').val()
+        },
+        success: function (data) {
+            if (data.success == true) {
+                layer.closeAll();
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ['新绑卡', "font-size:12px;text-align:center"],
+                    shadeClose: false,
+                    closeBtn: 2,
+                    area: ['310px', '160px'],//宽高
+                    content: '新绑卡成功',
+                    time: 2000,
+                    btn: ["确定"],
+                    yes: function (index, layero) {
+                        layer.closeAll();
+                    }
+                });
+                loadCardInfo();
+                $('input[name=ucExternalCardNumber]').val('');
+            } else if (data.success == false) {
+                layer.closeAll();
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:center"],
+                    shadeClose: false,
+                    closeBtn: 2,
+                    area: ['310px', '160px'],//宽高
+                    content: data.msg,
+                    time: 2000,
+                    btn: ["确定"]
+                });
+                $('input[name=ucExternalCardNumber]').val('');
+            }
+        }
+    });
+}
+//基本资料编辑模块
+function removeBindEvent() {
+    $('.sexBlock').unbind();
+    $('.provinceBlock').unbind();
+    $('.cityBlock').unbind();
+    $('.setUserLevelBlock').unbind();
+    selectModel();
+}
+removeBindEvent();
+$('.sexUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+})
+$('#toEditInfo').on("click", function () {
+    toLoadDetailText();
+    $('#editUserBaseBlock').show();
+    $('#detailUserBlock').hide();
+})
+$('#saveUserBtn').on('click', function () {
+    if (testPhoneNumber() && testIdCard()) {
+        toModifyUser();
+    }
+})
+//手机号和身份证件号码校验
+//testPhoneNumber();
+function testPhoneNumber() {
+    var userPhone = $('.userPhoneTest');
+    var userPhoneValue = $('.userPhoneTest').val();
+    var rePhone = /^1[3|4|5|8]{1}[0-9]{9}$/;//手机号验证
+    if (!userPhoneValue) {
+        //userPhone.focus();
+        userPhone.attr("placeholder", "请输入手机号码");
+        $('.userPhoneTest').val('');
+        return true;
+    }
+    if (!rePhone.test(userPhoneValue)) {
+        userPhone.focus();
+        userPhone.attr("placeholder", "您的手机号码格式不对,请重新填写");
+        $('.userPhoneTest').val('');
+        return false;
+    }
+    else if (userPhoneValue.length > 15) {
+
+        userPhone.attr("placeholder", "手机号码不能超过15位");
+        userPhone.focus();
+        $('.userPhoneTest').val('');
+        return false;
+    }
+    return true;
+}
+//身份证号码验证
+//testIdCard();
+function testIdCard() {
+    var userIdcard = $('.userIdcardTest');
+    var userIdcardValue = $('.userIdcardTest').val();
+    var reg = /^[1-9]{1}[0-9]{14}$|^[1-9]{1}[0-9]{16}([0-9]|[xX])$/;
+    if (!userIdcardValue) {
+        //userPhone.focus();
+        userIdcard.attr("placeholder", "请输入身份证号码");
+        $('.userPhoneTest').val('');
+        return true;
+    }
+    if (!reg.test(userIdcardValue)) {
+        userIdcard.focus();
+        userIdcard.attr("placeholder", "请输入正确格式的身份证号码");
+        $('.userIdcardTest').val('');
+        return false;
+    }
+    return true;
+}
+function toModifyUser() {
+    $.ajax({
+        type: "post",
+        url: basePath + modifyUserUrl,
+        async: true,
+        data: {
+            userId: userId,
+            cpyType: cpyType,
+            userName: $('.userName').val(),
+            userRealName: $('.userRealName').val(),
+            userSex: $('#userSexSelect').attr('data-value'),
+            userPhone: $('.userPhoneTest').val(),
+            userIdcard: $('.userIdcardTest').val(),
+            provinceCode: $('#provinceTitle').attr('data-value'),
+            cityCode: $('#cityCodeTitle').attr('data-value')
+        },
+        success: function (data) {
+            if (data.success == true) {
+                layer.closeAll();
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:center"],
+                    shadeClose: false,
+                    closeBtn: 2,
+                    area: ['310px', '160px'],//宽高
+                    content: data.msg,
+                    time: 2000,
+                    btn: ["确定"]
+                });
+                loadUserIndex();
+                $('#editUserBaseBlock').hide();
+                $('#detailUserBlock').show();
+
+            } else {
+                layer.closeAll();
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:center"],
+                    shadeClose: false,
+                    closeBtn: 2,
+                    area: ['310px', '160px'],//宽高
+                    content: data.msg,
+                    time: 2000,
+                    btn: ["确定"]
+                });
+                $('#editUserBaseBlock').hide();
+                $('#detailUserBlock').show();
+            }
+        }
+    });
+}
+
+
+$('.provinceUl').on("click", "li", function () {
+    var provinceCodeId = $(this).attr('data-option');
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+    $('#cityCodeTitle').html('请选择');
+    $('.cityUl').html('');
+    $('input[name=cityCode]').val('');
+    toLoadCity(provinceCodeId, '', '#cityCodeTitle', '.cityUl', 'removeBindEvent');
+})
+$('.cityUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+})
+
+//点击编辑的时候加载默认的信息
+function toLoadDetailText() {
+    var userName = $('#userName').html();
+    $('.userName').val(userName);
+    var userRealName = $('#userRealName').html();
+    $('.userRealName').val(userRealName);
+
+    var userSex = $('#userSex').html();
+    if (userSex == '男') {
+        $('#userSexSelect').attr('data-value', 1);
+        $('#userSexSelect').html('男');
+    }
+    if (userSex == '女') {
+        $('#userSexSelect').attr('data-value', 2);
+        $('#userSexSelect').html('女');
+    }
+    if (userSex == '' || userSex == '未知') {
+        $('#userSexSelect').attr('data-value', 0);
+        $('#userSexSelect').html('未知');
+    }
+
+    var userPhone = $('#userPhone').html();
+    $('.userPhoneTest').val(userPhone);
+    var userIdCard = $('#userIdCard').html();
+    $('.userIdcardTest').val(userIdCard);
+    //去加载省市
+    var provinceCode = window.localStorage.getItem('provinceCode');
+    var cityCode = window.localStorage.getItem('cityCode');
+    //console.log(provinceCode + "::" + cityCode)
+    if (provinceCode == null) {
+        provinceCode = '';
+    }
+    if (cityCode == null) {
+        cityCode = '';
+    }
+    //去加载城市的省
+    toLoadProvince(provinceCode, '#provinceTitle', '.provinceUl', 'removeBindEvent');
+    toLoadCity(provinceCode, cityCode, '#cityCodeTitle', '.cityUl', 'removeBindEvent');
+}
+//资金账户模块开始
+function getFinAccountUser() {
+    $.ajax({
+        type: "post",
+        url: basePath + getFinAccountUserUrl,
+        async: true,
+        data: {
+            //userId:14,
+            userId: userId,
+            cpyType: cpyType
+        },
+        success: function (data) {
+            if (data.success == true) {
+                var data = data.dataObject;
+                for (var i = 0; i < data.length; i++) {
+                    var accountNO = data[0].accountNO;
+                    var accountBalance = data[0].accountBalance;
+                    var tradeType = data[0].tradeType;
+                    var accountStatus = data[0].accountStatus;
+                }
+                $('#accountNO').html(accountNO);
+                $('#accountBalance').html(accountBalance);
+                var tradeTypeHtml = '';
+                if (tradeType == 1) {
+                    tradeTypeHtml = '后付费';
+                }
+                if (tradeType == 2) {
+                    tradeTypeHtml = '预付费';
+                }
+                $('#tradeType').html(tradeTypeHtml);
+                var accountStatusHtml = '';
+                if (accountStatus == 1) {
+                    accountStatusHtml = '正常';
+                }
+                if (accountStatus == 2) {
+                    accountStatusHtml = '冻结';
+                }
+                if (accountStatus == 3) {
+                    accountStatusHtml = '删除';
+                }
+                $('#accountStatus').html(accountStatusHtml);
+            }
+        }
+    });
+}
+//资金关系
+
+function getFinAccountRelation4User() {
+    $.ajax({
+        type: "post",
+        url: basePath + getFinAccountRelation4UserUrl,
+        async: true,
+        data: {
+            userId: userId
+        },
+        success: function (data) {
+            if (data.success == true) {
+                var data = data.dataObject;
+                for (var i = 0; i < data.length; i++) {
+                    var accountNumber = data[0].accountNO;
+                    var billAccountName = data[0].billAccountName;
+                }
+                $('#accountNumber').html(accountNumber);
+                $('#billAccountName').html(billAccountName);
+            }
+        }
+    });
+}
+//用户账单
+function getUserAccount(){
+    $.ajax({
+        type: "post",
+        url: basePath + getUserAccountUrl,
+        async: true,
+        data: {
+            userId: userId
+        },
+        success: function (data) {
+            //alert(JSON.stringify(data));
+            if (data.success == true) {
+                var data = data.dataObject;
+                var chongzhi=data.chongzhi;
+                var dongjie=data.dongjie;
+                var xiaofei=data.xiaofei;
+                var youhui=data.youhui;
+                var yue=data.yue;
+                $('#chongzhi').html(chongzhi);
+                $('#dongjie').html(dongjie);
+                $('#xiaofei').html(xiaofei);
+                $('#youhui').html(youhui);
+                $('#yue').html(yue);
+            }
+        }
+    });
+}

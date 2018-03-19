@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.app.dao.AppElecPileStarMapper">
+
+	<insert id="insert" parameterType="map">
+	   insert into tbl_electricpilestar (
+	     eps_EpId,
+	     eps_UserId,
+	     eps_UserName,
+	     eps_Utatus,
+	     eps_CommentStar,
+	     eps_Createdate
+	   )values (
+	     #{epId},
+	     #{uId},
+	     #{uName},
+	     0,
+	     #{epStar},
+	     #{createdate}
+	   )
+	</insert>
+
+	<select id="getNumByUidEpid" parameterType="map" resultType="int">
+		select count(*) num  from tbl_electricpilestar where eps_EpId =  #{epId} and eps_UserId = #{uId}
+	</select>
+	
+	 <select id="countStarByElecPileId" parameterType="Integer" resultType="HashMap">
+	    select case when epStarCount is null then 0 else epStarCount end epStarCount
+	    FROM
+		( 
+	    SELECT avg(eps_CommentStar) epStarCount
+	    from  tbl_electricpilestar 
+	    where 1=1 and eps_EpId=#{epId}
+	    ) a
+	      
+	  </select>
+	
+	<select id="countAllStarByElecPileId" parameterType="Integer" resultType="HashMap">
+	    select case when epStarCount is null then 0 else epStarCount end epStarCount
+	    FROM
+		( 
+	    SELECT eps_CommentStar epStarCount
+	    from  tbl_electricpilestar 
+	    where 1=1 and eps_EpId=#{epId}
+	    ) a
+	      
+	  </select>
+</mapper> 

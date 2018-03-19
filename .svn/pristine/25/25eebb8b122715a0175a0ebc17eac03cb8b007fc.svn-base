@@ -1,0 +1,108 @@
+package com.wanma.ims.service.impl;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.wanma.ims.common.WanmaConstants;
+import com.wanma.ims.mapper.UserMapper;
+import com.wanma.ims.model.UserDO;
+import com.wanma.ims.service.UserService;
+
+import java.util.List;
+
+
+@Service("userService")
+public class UserServiceImpl implements UserService {
+
+	private static Logger log = Logger.getLogger(UserServiceImpl.class);
+	@Autowired
+	private UserMapper userMapper;
+	
+	@Override
+	public UserDO loginUser(UserDO user) throws Exception {
+		UserDO userDO = new UserDO();
+		try {
+			user = userMapper.loginUser(user);
+			if (null == user){
+				return user;
+			}
+			if (user.getUserLevel() == WanmaConstants.USER_LEVEL_SUPER){
+				return user;
+			}
+			userDO = findUser(user);
+		} catch (Exception e) {
+			log.error("UserServiceImpl called loginUser failed", e);
+		}
+		return userDO;
+
+	}
+
+	@Override
+	public Integer resetPassword(Long userId, String password) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Integer addUser(UserDO userDO) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Integer modifyUser(UserDO userDO) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Integer freezeUser(Long userId) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Integer unfreezeUser(Long userId) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Integer removeUser(Long userId) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<UserDO> getUserListById(Long userId) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+    
+	/** 最好是从子表获取*/
+	private UserDO findUser(UserDO user){
+		UserDO userDO = new UserDO();
+		Integer userLevel = userDO.getUserLevel();
+		if (userLevel == null) userLevel = 0;
+		switch (userLevel) {
+		case 1:
+			userDO = userMapper.findAdminUser(user.getUserId());
+			break;
+		case 3:
+			userDO = userMapper.findBusinessUser(user.getUserId());
+			break;
+		case 5:
+			userDO = userMapper.findNomalUser(user.getUserId());
+			break;
+		case 6:
+			userDO = userMapper.findNomalUser(user.getUserId());
+			break;
+		default:
+			userDO = userMapper.findUser(user.getUserId());
+			break;
+		}
+		return userDO;
+	}
+
+}

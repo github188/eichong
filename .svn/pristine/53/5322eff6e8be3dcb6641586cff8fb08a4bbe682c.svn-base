@@ -1,0 +1,31 @@
+package com.wanma.ims.service.impl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.wanma.ims.common.domain.EquipmentVersionDO;
+import com.wanma.ims.mapper.EquipmentVersionMapper;
+import com.wanma.ims.service.EquipmentVersionService;
+
+@Service("equipmentVersionService")
+public class EquipmentVersionServiceImpl implements EquipmentVersionService{
+	@Autowired
+	private EquipmentVersionMapper equipmentVersionMapper;
+	@Override
+	public EquipmentVersionDO getBomById(String pkBomListId) {
+		return equipmentVersionMapper.getBomById(pkBomListId);
+	}
+
+	@Override
+	public void deleteByProductID(String evProductID) {
+		equipmentVersionMapper.deleteByProductID(evProductID);
+	}
+
+	@Override
+	public void insertEpVersion(EquipmentVersionDO epVersion) {
+		equipmentVersionMapper.insertEpVersion(epVersion);
+	}
+
+	
+	
+	
+}

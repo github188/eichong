@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.web.dao.WebProductcategoryMapper">
+
+	<resultMap id="tblProductcategoryResultMap" type="TblProductcategory">
+		<id property="pkProductcategory" column="pk_ProductCategory" />
+		<result property="prcaName" column="prCa_Name" />
+		<result property="prcaParentid" column="prCa_ParentId" />
+		<result property="prcaCreatedate" column="prCa_Createdate" />
+		<result property="prcaUpdatedate" column="prCa_Updatedate" />
+		<result property="prcaImage" column="prCa_image" />
+	</resultMap>
+
+	<select id="getHotRecommend" parameterType="map" resultMap="tblProductcategoryResultMap">
+	   select 
+	    pk_ProductCategory,
+	    prCa_Name,
+	    prCa_ParentId,
+	    prCa_Createdate,
+	    prCa_Updatedate,
+	    prCa_image
+	   from tbl_ProductCategory
+	   where 
+	    prCa_ParentId=#{prcaParentid} 
+	</select>
+	
+</mapper> 

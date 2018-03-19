@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/style.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/parkingLock/parkingLock_detail.css"/>
+    <title>地锁详细</title>
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="container-fluid">
+        <div class="row">
+        </div>
+        <div class="row">
+            <div class="col-sm-12" style="padding: 0">
+                <div class="ibox float-e-margins">
+                    <div class="">
+                        <div class="ibox-content">
+                            <div class="add_userBlock">
+                                <div class="add_greyBlock">
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">地锁编号<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="code" id="code" class="commonStyle"
+                                                   readonly="readonly"/>
+                                        </div>
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">供应商<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8">
+                                            <div class=" col-sm-3 col-xs-4 model-select-box" style="width: 100%">
+                                                <div class="model-select-text lockScopeBlock" data-value="" id="parkingLockPlatformHtml"></div>
+                                                <span class="downRow lockScopeBlock clickRotateSpan"></span>
+                                                <!--<ul class="model-select-option supplierLockUl">
+                                                    <li data-option="0">电喵</li>
+                                                    <li data-option="1">慧泊金</li>
+                                                </ul>-->
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="supplierLockTip">
+
+                                        </div>
+
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">状态<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8">
+                                            <div class=" col-sm-3 col-xs-4 model-select-box" style="width: 100%">
+                                                <div class="model-select-text lockStutasBlock" data-value="" id="parkingStatusHtml">
+                                                </div>
+                                                <span class="downRow lockStutasBlock clickRotateSpan"></span>
+                                                <!-- <ul class="model-select-option lockStutasUl">
+                                                     <li data-option="" class="seleced">请选择</li>
+                                                     <li data-option="0">正常</li>
+                                                     <li data-option="1">故障</li>
+                                                     <li data-option="2">正在使用</li>
+                                                 </ul>-->
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">充电点名称</div>
+                                        <div class="col-sm-8 comHeight" style="line-height: 32px;">
+                                            <span id="powerStationName" class="powerStationNameStyle" data-powerStationId="" data-powerStationName=""></span>
+                                            <input type="text" name="powerStationId" id="powerStationId" class="commonStyle"
+                                                   hidden="hidden" value=""/>
+                                        </div>
+
+                                    </div>
+                                    <!---->
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">地址<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="address" id="address" class="commonStyle"
+                                                   readonly="readonly"/>
+                                        </div>
+
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">对接key<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="platformLockKey" id="platformLockKey" class="commonStyle"
+                                                   readonly="readonly"/>
+                                        </div>
+
+                                    </div>
+                                    <!--按钮组合-->
+                                    <div class="saveBtn commonBtn" id="saveBtn">编辑</div>
+                                    <div class="quitBtn commonBtn" id="goback">取消</div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/contabs.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/parkingLock/parkingLock_detail.js" type="text/javascript" charset="utf-8"></script>
+</html>

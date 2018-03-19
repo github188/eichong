@@ -1,0 +1,164 @@
+.content{
+	width: 1162px;
+	height: 780px;
+	border-radius: 15px;
+	margin: 0px auto;
+}
+/* 模块 */
+.god-moudel{
+	margin: 20px 0;
+	border: 1px solid #ccc;
+}
+.god-moudel .tit{
+	height: 44px;
+	background-color: #ccc;
+	font-size: 22px;
+	color: #fff;
+	text-indent: 10px;
+	letter-spacing: 1px;
+}
+.con{
+	padding: 20px ;
+	color: #5b5b5b;
+}
+.god-moudel .check{
+	width: 26px;
+	height: 26px;
+	margin:70px 20px 0;
+	display: block;
+}
+.god-moudel .con .pic{
+	width: 240px;
+	height: 168px;
+	margin-right: 20px;
+}
+.god-moudel .tx{
+    text-indent: 40px;
+    line-height: 36px;
+}
+.god-moudel .sort{
+	background: url("../images/icon/sort.png") no-repeat;
+	background-position: 0px 7px;
+}
+.god-moudel h3{
+	font-size: 28px;
+	color: #5B5B5B;
+}
+.god-moudel .sort,.god-moudel .car{
+	font-size: 22px;
+}
+.god-moudel .pay{
+	font-size: 26px;
+}
+/* 全选 */
+.all{
+	padding: 0 20px;
+	height: 110px;
+	background-color: #fadab4;
+	line-height: 110px;
+	color: #5B5B5B;
+}
+.all .fs{
+	font-size: 26px;
+	color: #aaa;
+}
+.all .all-r{
+	font-size: 22px;
+}
+.all .all-btn{
+	width: 212px;
+	height: 60px;
+	background-color: #f08307;
+	color: #fff;
+	line-height: 60px;
+	border-radius: 6px;
+	border: none;
+	font-size: 20px
+}
+/* success */
+.success .pic{
+	height: 152px;
+	margin-top: 40px;
+	background:  url(../images/icon/success.png) center center no-repeat;
+}
+.success .tx{
+	color: #f08307;
+	font-size: 34px;
+	margin-top: 20px;
+}
+.success .btn{
+	width: 500px;
+	height: 60px;
+	line-height: 60px;
+	color: #fff;
+	font-size: 26px;
+	border-radius: 10px;
+	border: none;
+	background-color: #f08307;
+	margin-top: 20px;
+}
+.title{
+	font-size: 22px;
+	color: #F08307;
+	border-bottom: 2px solid #ACA39E;
+	line-height: 40px;
+	position: relative;
+	letter-spacing: 1px;
+}
+/* order-num */
+.order-num{
+	margin-top: 10px;
+	padding: 20px ;
+	border-top: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
+}
+.order-num p{
+	font-size: 20px;
+	color: #5B5B5B;
+}
+/* 流程模块 */
+.process-moudel{
+	padding: 100px 60px;
+}
+.process{
+	margin: 40px auto;
+}
+.process .middle{
+	vertical-align: middle;
+	display: inline-block;
+}
+.process-moudel .ball{
+	width: 38px;
+	height: 38px;
+	background-color: #f08307;
+	border-radius: 50%;
+	position: relative;
+}
+.process-moudel .ball-empty{
+	border:10px solid #f08307;
+	width: 18px;
+	height: 18px;
+	border-radius: 50%;
+	position: relative;
+}
+.process-moudel .top{
+	top: 50px;
+}
+.process-moudel .bottom{
+	bottom: 50px;
+}
+.process-moudel .static{
+	position: absolute;
+	left: -34px
+}
+.process-moudel .left{
+	left: -45px!important;
+}
+.process-moudel .static p{
+	white-space: nowrap;
+	text-align: center;
+}
+.process-moudel .arrow{
+	line-height: 38px;
+	margin:0 20px;
+}

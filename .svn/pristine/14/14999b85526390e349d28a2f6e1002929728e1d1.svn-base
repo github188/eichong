@@ -1,0 +1,25 @@
+### \u8bbe\u7f6e\u65e5\u5fd7\u7b49\u7ea7 ###
+#log4j.rootLogger = debug, RFile,console
+#log4j.rootLogger =error, E
+log4j.rootLogger = info, RFile,console
+
+### \u8f93\u51fa\u5230\u65e5\u5fd7\u6587\u4ef6 ###
+log4j.appender.RFile=org.apache.log4j.RollingFileAppender
+log4j.appender.RFile.File= logs/boo.log
+log4j.appender.RFile.MaxFileSize=10MB
+log4j.appender.RFile.MaxBackupIndex=500
+log4j.appender.RFile.layout=org.apache.log4j.PatternLayout
+log4j.appender.RFile.layout.ConversionPattern=%d %-5p: %c - %m%n
+
+log4j.appender.console=org.apache.log4j.ConsoleAppender
+log4j.appender.console.layout=org.apache.log4j.PatternLayout
+log4j.appender.console.layout.ConversionPattern=%d %-5p: %c - %m%n
+
+#sql
+log4j.logger.com.ibatis=debug 
+log4j.logger.com.ibatis.common.jdbc.SimpleDataSource=debug 
+log4j.logger.com.ibatis.common.jdbc.ScriptRunner=debug 
+log4j.logger.com.ibatis.sqlmap.engine.impl.SqlMapClientDelegate=debug 
+log4j.logger.java.sql.Connection=debug 
+log4j.logger.java.sql.Statement=debug 
+log4j.logger.java.sql.PreparedStatement=debug 

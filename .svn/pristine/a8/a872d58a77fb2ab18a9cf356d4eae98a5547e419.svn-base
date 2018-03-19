@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.app.dao.AppElecPileCommentMapper">
+
+	<insert id="insert" parameterType="map">
+	   insert into tbl_electricpilecomment (
+	     epc_EpId,
+	     epc_UserId,
+	     epc_UserName,
+	     epc_Utatus,
+	     epc_Content,
+	     epc_Createdate,
+	     up_commentId,
+	     epc_type
+	   )values (
+	     #{epId},
+	     #{uId},
+	     #{uName},
+	     0,
+	     #{epContent},
+	     #{createdate},
+	     #{pcId},
+	     #{type}
+	   )
+	</insert>
+
+
+	<delete id="delete" parameterType="int">
+	   delete from 
+	     tbl_electricpilecomment 
+	   where 
+	    pk_EpcComment=#{cId} 
+	</delete>
+	
+	 <select id="countEpCommentsByPowerId" parameterType="Integer" resultType="HashMap">
+	    SELECT count(1) powerCommentCount
+	    from  tbl_electricpilecomment 
+	    where 1=1 and epc_EpId=#{epc_EpId} and epc_type = 1
+	      
+	  </select>
+
+	
+	 <select id="getEpCommentsPageList" parameterType="map" resultType="hashmap">
+		select		
+		pk_EpcComment,
+		epc_EpId,
+		norm_name as epc_UserName,
+		<!-- getFullPath('proImage',pk_EpcComment) as epc_CommentPic, -->
+		getFullPath('userAvatar',epc_UserId) as userImage,
+		date_format(epc_Createdate,'%Y-%m-%d %H:%i:%s') epc_Createdate,
+		epc_Content,eps_CommentStar
+		from tbl_electricpilecomment epc LEFT JOIN tbl_user_normal ui on epc.epc_UserId = ui.user_id
+		LEFT JOIN tbl_electricpilestar eps on epc_EpId = eps_EpId and epc_UserId = eps_UserId
+		where 
+		epc_EpId = #{prCoProductId} and epc_Utatus=0 and epc_type = #{type}
+		<![CDATA[
+			and abs((UNIX_TIMESTAMP(epc_Createdate)-UNIX_TIMESTAMP(NOW()))-(UNIX_TIMESTAMP(eps_Createdate)-UNIX_TIMESTAMP(NOW()))) < 10
+		]]>
+		order by epc_Createdate desc
+		limit #{pageNumber},#{pageNum}
+	</select> 
+	
+</mapper> 

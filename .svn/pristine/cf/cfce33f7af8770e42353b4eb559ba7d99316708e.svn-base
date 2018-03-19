@@ -1,0 +1,257 @@
+package com.wanma.app.controller;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSONArray;
+import com.bluemobi.product.common.CommonConsts;
+import com.bluemobi.product.utils.AccessErrorResult;
+import com.bluemobi.product.utils.AccessSuccessResult;
+import com.bluemobi.product.utils.JPushUtil;
+import com.bluemobi.product.utils.ObjectUtil;
+import com.bluemobi.product.utils.SpringContextHolder;
+import com.bluemobi.product.utils.StringUtil;
+import com.bluemobi.product.web.WebFilter;
+import com.wanma.app.service.AppBespokeService;
+import com.wanma.app.service.AppUserinfoService;
+import com.wanma.app.service.ApplyEpService;
+import com.wanma.app.service.ChargeCardService;
+import com.wanma.app.service.TblEquipmentrepairService;
+import com.wanma.app.service.TblFeedbackService;
+import com.wanma.app.service.TblVersionService;
+import com.wanma.app.service.impl.AppUserinfoServiceImpl;
+import com.wanma.app.service.impl.ChargeCardServiceImpl;
+import com.wanma.app.service.impl.RedisService;
+import com.wanma.app.util.Base64Coder;
+import com.wanma.app.util.DateUtil;
+import com.wanma.common.ApplicationCommon;
+import com.wanma.common.JudgeNullUtils;
+import com.wanma.model.TblEquipmentrepair;
+import com.wanma.model.TblFeedback;
+import com.wanma.model.TblJpush;
+import com.wanma.model.TblUserinfo;
+import com.wanma.model.TblVersion;
+
+/**
+ * 充电卡本地application相关接口
+ * @author hFei
+ *
+ */
+@Controller
+@RequestMapping("/app/chargeCard")
+public class AppChargeCardController {
+	
+	@Autowired
+	private AppUserinfoService userinfoService;
+	@Autowired
+	private ChargeCardService chargeCardService;
+	
+	private static Logger log = Logger.getLogger(AppChargeCardController.class);
+	
+	
+	
+	
+	
+	
+	/**
+	 * 我的电卡
+	 * @param params
+	 * @return
+	 */
+	@RequestMapping("/mycard")
+	@ResponseBody
+	public String mycard(@RequestParam Map<String, String> params)
+	{
+		
+		if(StringUtils.isEmpty(params.get("userId"))){
+			return new AccessErrorResult(1050, "error.msg.miss.parameter").toString();
+		}
+		try
+		{
+			
+			
+			log.error(params.get("userId"));
+			
+			long UID = Long.valueOf(params.get("userId")).longValue();
+			
+			
+			Map<String,Object>mycard = chargeCardService.getcardByUid(UID);
+			
+			
+		
+			log.info("MYCARD"+mycard);
+			if(mycard!=null)
+			{
+				return new AccessSuccessResult(mycard).toString();
+			}else
+			{
+				
+				log.info("我的电卡为空");
+				Map<String,Object>applyInfo = chargeCardService.myApplyInfo(UID);
+				if(applyInfo!=null)
+				{
+					
+					return new AccessSuccessResult(applyInfo).toString();
+				}
+				
+			}
+			
+			
+			
+			
+		}catch (Exception e){
+			log.error(e.getMessage());
+			return new AccessErrorResult(2002, "数据处理失败，请稍后再试").toString();
+		}
+		
+		Map<String,String> noCard = new HashMap<String, String>();
+		noCard.put("type", "2");
+		
+		return new AccessSuccessResult(noCard).toString();
+	}
+	
+	
+	
+	/**
+	 * 申请充电卡
+	 * @param params
+	 * 			name 联系人，phone 联系电话， addr 邮寄地址 ，uId 用户id
+	 * @return
+	 */
+	@RequestMapping("/applyCard")
+	@ResponseBody
+	public String applyCard(@RequestParam Map<String, String> params){
+		if(StringUtils.isEmpty(params.get("name")) || StringUtils.isEmpty(params.get("phone"))
+				|| StringUtils.isEmpty(params.get("addr")) || StringUtils.isEmpty(params.get("uId"))){
+			return new AccessErrorResult(1050, "error.msg.miss.parameter").toString();
+		}
+		
+		try{
+			
+			
+			
+			long UID = Long.valueOf(params.get("uId")).longValue();
+			Map<String,Object>applyInfo = chargeCardService.myApplyInfo(UID);
+			if(applyInfo!=null)
+			{
+				
+				return new AccessErrorResult(2002, "您已经申请充点卡,请勿重复申请").toString();
+			}
+			
+			
+			userinfoService.applyCard(params);
+			
+			params.put("status", "1");
+			userinfoService.updateUserApplyCardStatus(params);
+		}catch(Exception e){
+			
+			log.error(e.getMessage());
+			return new AccessErrorResult(2002, "申请失败，请稍后再试").toString();
+		}
+		
+		return new AccessSuccessResult().toString();
+	}
+	
+	/**
+	 * 卡申请列表
+	 * @param uId
+	 * @return
+	 */
+	@RequestMapping("/applyList")
+	@ResponseBody
+	public String applyList(long uId){
+		if(StringUtils.isEmpty(uId)){
+			return new AccessErrorResult(1050, "error.msg.miss.parameter").toString();
+		}
+		
+		List<Map<String, String>> list = new ArrayList<Map<String,String>>();
+		try{
+			list = userinfoService.applyListByUid(uId);
+		}catch(Exception e){
+			return new AccessErrorResult(2004, "error.msg.invalid.sql").toString();
+		}
+		
+		return new AccessSuccessResult(list).toString();
+	}
+	
+	/**
+	 * 根据用户id获取绑定的充电卡
+	 * @param uId
+	 * @return
+	 */
+	@RequestMapping("/cardList")
+	@ResponseBody
+	public String cardListByUid(long uId){
+		if(StringUtils.isEmpty(uId)){
+			return new AccessErrorResult(1050, "error.msg.miss.parameter").toString();
+		}
+		
+		List<Map<String, String>> list = new ArrayList<Map<String,String>>();
+		try{
+			list = chargeCardService.cardListByUid(uId);
+		}catch(Exception e){
+			return new AccessErrorResult(2004, "error.msg.invalid.sql").toString();
+		}
+		
+		return new AccessSuccessResult(list).toString();
+	}
+
+	/**
+	 * 根据用户id和外卡号修改卡状态
+	 * @param params
+	 * @return
+	 */
+	@RequestMapping("/reportLoss")
+	@ResponseBody
+	@Transactional
+	public String reportLoss(@RequestParam Map<String, String> params){
+		if(StringUtils.isEmpty(params.get("uId")) || StringUtils.isEmpty(params.get("outNum"))|| StringUtils.isEmpty(params.get("ucPayMode"))){
+			return new AccessErrorResult(1050, "error.msg.miss.parameter").toString();
+		}
+		
+		params.put("status", "1");
+		try{
+			chargeCardService.updateStatusByUidAndOutNum(params);
+			params.put("status", "0");
+			if(!"11".equals(params.get("ucPayMode"))&&!"12".equals(params.get("ucPayMode"))){
+			
+			userinfoService.updateUserApplyCardStatus(params);
+			}
+		}catch(Exception e){
+			return new AccessErrorResult(2002, "error.msg.invalid.sql").toString();
+		}
+		
+		return new AccessSuccessResult().toString();
+	}
+	
+	
+
+	
+	
+
+	
+	
+	
+	
+	
+	public static void main(String[] args) throws Exception{
+		//c.addPurchaseHis("10", "13333333333", "w123456", "caiwu", 1044);
+	}
+}

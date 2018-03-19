@@ -1,0 +1,101 @@
+@r:50rem;
+a,
+input,
+button {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+input,
+button {
+  -webkit-appearance: none;
+  border-radius: 0;
+}
+body {
+  margin:0;
+  -webkit-user-select:auto;
+  background-color: #ebebeb;
+}
+body * {
+  -webkit-user-select:auto;
+  font-family:  "微软雅黑";
+}
+body {
+  -webkit-text-size-adjust: 100%;
+  font-family:  "微软雅黑";
+}
+*{
+  padding: 0;
+  margin: 0;
+}
+.chargeStatus{
+  width: 750/@r;
+  min-height: 100/@r;
+  background: #ebebeb;
+  .pic{
+    width: 750/@r;
+    min-height:138/@r;
+    text-align: center;
+    overflow: hidden;
+    img{
+      display: block;
+      width: 136/@r;
+      height: 136/@r;
+      margin: 46/@r auto 0;
+    }
+    .statusValue{
+      font-size: 28/@r;
+      color: #666666;
+      line-height: 28/@r;
+    }
+  }
+  .title{
+    width: 670/@r;
+    height: 96/@r;
+    line-height: 96/@r;
+    padding: 0 40/@r;
+    font-size: 32/@r;
+    color: #333333;
+  }
+}
+.chargeList{
+  width: 670/@r;
+  min-height: 100/@r;
+  padding: 0 40/@r;
+  background-color: #FFFFFF;
+  list-style: none;
+  li{
+    width: 670/@r;
+    height: 83/@r;
+    line-height: 83/@r;
+    border-top:1px solid #c2c2c2;
+    font-size: 32/@r;
+    color: #666666;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  li:first-child{
+    border:0;
+  }
+}
+.smallTip{
+  width: 670/@r;
+  height: 80/@r;
+  line-height: 80/@r;
+  padding: 0 40/@r;
+  font-size: 26/@r;
+  color: #888888;
+  text-align: right;
+}
+.doneBtn{
+  width: 670/@r;
+  position: absolute;
+  bottom: 120/@r;
+  left: 40/@r;
+  height: 90/@r;
+  background: #ff7d00;
+  color: #FFFFFF;
+  line-height: 90/@r;
+  text-align: center;
+  font-size: 36/@r;
+  border-radius: 8/@r;
+}

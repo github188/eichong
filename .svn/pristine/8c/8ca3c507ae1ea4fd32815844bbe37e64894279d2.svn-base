@@ -1,0 +1,206 @@
+@charset "utf-8";
+.userBaseInfo{
+    background-color: #ffffff;
+    border-top: 4px solid #E5E5E5;
+    margin-top: 20px;
+    padding: 14px;
+    background-color: #ffffff;
+}
+.goBack{
+    width: 80px;
+    height: 30px;
+    line-height: 30px;
+    color: #ffffff;
+    border-radius: 4px;
+    text-align: center;
+    background-color: #bfbfbf;
+    position: absolute;
+    right: 0;
+    top: 8px;
+}
+.cursor{
+    cursor: pointer;
+}
+.baseBlock{
+    padding: 10px 10px 10px 0;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.baseBlock .perblock{
+    display: inline-block;
+    padding: 6px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+.baseBlock .perblock .titleTip{
+    font-size: 14px;
+    color: #888888;
+    margin-right: 20px;
+}
+.baseBlock .perblock .parmValue{
+    color: #333333;
+    font-size: 14px;
+    margin-right: 20px;
+}
+.baseBlock .perblock .tipBtn{
+    font-size: 14px;
+    color: #ff7d00;
+    text-decoration: underline;
+}
+.baseBlock .perblock .tipBtn:hover{
+    cursor: pointer;
+}
+.adminDateAreaTip{
+    padding: 8px;
+    font-size: 15px;
+    font-weight: 900;
+    border-bottom: 1px solid #DDDDDD;
+
+}
+.queryTradition{
+    padding: 20px 0 15px 8px;
+    display: flex;
+    flex-direction: row;
+}
+.queryTradition .titleTip{
+    font-size: 14px;
+    color: #888888;
+    margin-right: 10px;
+    line-height: 36px;
+}
+.inputBlock input{
+    outline: none;
+    border: 0;
+    width: 220px;
+    height: 36px;
+    border: 1px solid #DDDDDD;
+    border-radius: 4px;
+}
+.queryBtn{
+    width: 70px;
+    height: 36px;
+    background-color: #ff7d00;
+    color: #ffffff;
+    text-align: center;
+    line-height: 36px;
+    margin-left: -4px;
+    border-radius: 0 4px 4px 0;
+}
+.queryBtn:hover{
+    cursor: pointer;
+}
+.btnGroup{
+    padding: 10px 0 20px 8px;
+    display: flex;
+    flex-direction: row;
+}
+.btnGroup .commonBtn{
+    width: 140px;
+    height: 28px;
+    line-height: 28px;
+    text-align: center;
+    background-color: #ff7d00;
+    color: #ffffff;
+    border-radius: 4px;
+}
+.btnGroup .commonBtn:hover{
+    cursor: pointer;
+}
+.btnGroup .commonBtn:first-child{
+    margin-right: 30px;
+}
+table thead th{
+    text-align: center;
+    font-size: 14px;
+    font-family: "微软雅黑";
+    background-color: #ffffff !important;
+}
+/*分页样式*/
+.pagination {
+    width: 100%;
+    height: 50px;
+    margin: 0;
+    padding: 0;
+    background: #FFFFFF;
+    padding-top:16px ;
+}
+.pagination ul{
+    list-style: none;
+}
+.pagination ul li{
+    float: left;
+    margin-right: 10px;
+}
+.pagination ul li:last-Child{
+    list-style: none;
+    float: left;
+    margin-left: 0;
+}
+.pagination ul li:nth-last-child(2){
+    margin-right: 0;
+    font-size: 12px;
+    color: #333333 !important;
+    text-decoration: none !important;
+}
+.pagination ul li:last-Child a{
+    pointer-events: none;
+    font-size: 12px;
+    color: #333333 !important;
+    text-decoration: none !important;
+    cursor: pointer;
+}
+.pagination ul li:nth-last-child(2) a{
+    pointer-events: none;
+    font-size: 12px;
+    color: #333333 !important;
+    text-decoration: none !important;
+    cursor: pointer;
+}
+.pagination ul li:last-Child a:hover{
+    color: #666666;
+    text-decoration: none;
+}
+.pagination ul li:nth-last-child(2) a:hover{
+    color: #666666;
+    text-decoration: none;
+}
+.pagination ul .jump{
+    margin-top: -4px;
+}
+.pagination ul li a{
+    font-size: 12px;
+    color: #333333;
+    text-decoration: underline;
+    cursor: pointer;
+}
+.pagination ul li a:hover{
+    font-size: 12px;
+    color: #FF9900 !important;
+    text-decoration: none;
+}
+.pagination ul li a:active{
+    font-size: 12px;
+    color: #ff6600 !important;
+    text-decoration: none;
+}
+.newactive a{
+    font-size: 12px;
+    color: #ff7d00 !important;
+    text-decoration: none !important;
+}
+/*添加电桩样式*/
+.ucCardNumber {
+    width: 100%;
+    border: 1px solid #e1edf7;
+    margin-top: 10px;
+}
+.ucCardNumber input {
+    width: 100%;
+    height: 28px;
+    outline: none;
+    border: 0;
+    line-height: 28px;
+}

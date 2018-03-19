@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dubbox.dao.TblConcentratorMapper">
+
+	<resultMap id="tblConcentratorResultMap" type="TblConcentrator">
+		<id property="id" column="pk_concentratorID" />
+		<result property="name" column="coct_concentratorName" />
+		<result property="simMac" column="coct_SIM_MAC" />
+		<result property="simCd" column="coct_SIM_CODE" />
+		<result property="simTp" column="coct_SIM_TYPE" />
+		<result property="ste" column="coct_state" />
+		<result property="uid" column="coct_user_Id" />
+		<result property="uname" column="coct_user_name" />
+		<result property="cdate" column="coct_Createdate" />
+		<result property="udate" column="coct_Updatedate" />
+	</resultMap>
+
+	<!-- 新增集中器 -->
+	<insert id="insert" parameterType="TblConcentrator"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into tbl_concentrator (
+		coct_concentratorName,
+		coct_SIM_MAC,
+		coct_SIM_CODE,
+		coct_SIM_TYPE,
+		coct_state,
+		coct_user_Id,
+		coct_user_name,
+		coct_Createdate,
+		coct_Updatedate
+		)values (
+		#{name},
+		#{simMac},
+		#{simCd},
+		#{simTp},
+		#{ste},
+		#{uid},
+		#{uname},
+		sysdate(),
+		sysdate()
+		)
+	</insert>
+
+	<!-- 修改集中器 -->
+	<update id="update" parameterType="TblConcentrator">
+		update tbl_concentrator
+		set
+		<if test="name !=null">
+			coct_concentratorName = #{name},
+		</if>
+		<if test="simMac !=null">
+			coct_SIM_MAC = #{simMac},
+		</if>
+		<if test="simCd !=null">
+			coct_SIM_CODE = #{simCd},
+		</if>
+		<if test="simTp !=null">
+			coct_SIM_TYPE = #{simTp},
+		</if>
+		<if test="ste !=null">
+			coct_state = #{ste},
+		</if>
+		coct_Updatedate = sysdate()
+		where pk_concentratorID = #{id}
+	</update>
+
+	<!-- 修改集中器 -->
+	<update id="updateMore" parameterType="TblConcentrator">
+		update tbl_concentrator
+		set
+		coct_state = #{ste},
+		coct_Updatedate = sysdate()
+		where pk_concentratorID in
+		<foreach item="item" index="index" collection="pkIds" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</update>
+
+	<!-- 删除集中器 -->
+	<update id="delete" parameterType="TblConcentrator">
+		update tbl_concentrator set coct_state = 2 where 1=1
+		<if test="id != null">
+			and pk_concentratorID = #{id}
+		</if>
+		<if test="pkIds != null">
+			and pk_concentratorID in
+			<foreach item="item" index="index" collection="pkIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+	</update>
+
+	<!-- 获取集中器列表 -->
+	<select id="getCount" parameterType="TblConcentrator"
+		resultType="int">
+		select count(1)
+		from tbl_concentrator
+		<where>
+			coct_state !='2'
+			<if test="simTp!=null">
+				and coct_SIM_TYPE = #{simTp}
+			</if>
+			<if test="name!=null">
+				and coct_concentratorName like concat('%',#{name},'%')
+			</if>
+			<if test="simMac!=null">
+				and coct_SIM_MAC like concat('%',#{simMac},'%')
+			</if>
+			<if test="simCd!=null">
+				and coct_SIM_CODE like concat('%',#{simCd},'%')
+			</if>
+		</where>
+	</select>
+
+	<!-- 获取集中器列表 -->
+	<select id="getList" parameterType="TblConcentrator" resultMap="tblConcentratorResultMap">
+		select ${rtColumns}
+		from tbl_concentrator
+		<where>
+			coct_state !='2'
+			<if test="simTp!=null">
+				and coct_SIM_TYPE = #{simTp}
+			</if>
+			<if test="name!=null">
+				and coct_concentratorName like concat('%',#{name},'%')
+			</if>
+			<if test="simMac!=null">
+				and coct_SIM_MAC like concat('%',#{simMac},'%')
+			</if>
+			<if test="simCd!=null">
+				and coct_SIM_CODE like concat('%',#{simCd},'%')
+			</if>
+		</where>
+		order by coct_Updatedate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<!-- 获取集中器信息 -->
+	<select id="selectOne" parameterType="TblConcentrator"
+		resultMap="tblConcentratorResultMap">
+		select ${rtColumns}
+		from tbl_concentrator
+		where
+		pk_concentratorID = #{id}
+	</select>
+</mapper> 

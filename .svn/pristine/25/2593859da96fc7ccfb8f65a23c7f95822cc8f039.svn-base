@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/style.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/electric/electricPile/electricPile_edit.css"/>
+    <title>电桩编辑</title>
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="btnLine">
+                <div class="editBtn cursor" id="saveBtn" onclick="toModifyElectricPile()">保存</div>
+                <div class="goBack cursor" id="toPileDetail">返回</div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="ibox float-e-margins">
+                    <div class="">
+                        <div class="ibox-content">
+                            <!--电桩基础属性-->
+                            <div class="userBaseInfoList" id="dingdanBlock">
+                                <div class="baseInfoShow">
+                                    <div class="baseInfoTitle">
+                                        电桩基础属性
+                                    </div>
+                                </div>
+                                <ul class="baseInfoUl editUserInfo">
+                                    <li>
+                                        <span class="col-sm-6 col-xs-12">桩体编码</span>
+                                        <span class="col-sm-6 col-xs-12 text-right" id="code"></span>
+                                    </li>
+                                    <li>
+                                        <span class="col-sm-6 col-xs-12">编号</span>
+                                        <input type="" name="" id="num" value=""
+                                               class="col-sm-6 col-xs-12"/>
+                                    </li>
+                                    <li>
+                                        <span class="col-sm-6 col-xs-12">充电方式</span>
+                                        <span class="col-sm-6 col-xs-12 text-right" id="chargingMethod"></span>
+                                    </li>
+
+                                    <li>
+                                        <span class="col-sm-6 col-xs-12">制造厂商</span>
+                                        <span class="col-sm-6 col-xs-12 text-right" id="pileMaker"></span>
+                                    </li>
+
+                                    <li>
+                                        <span class="col-sm-6 col-xs-6">功率</span>
+                                        <div class="col-sm-6 col-xs-6 model-select-box" style="padding: 0;">
+                                            <div class="model-select-text electricPowerBlock" data-value="" id="chPower">
+                                                请选择
+                                            </div>
+                                            <span class="downRow electricPowerBlock"></span>
+                                            <ul class="model-select-option" id="electricPower">
+                                                <li data-option="0" class="seleced">请选择</li>
+
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <span class="col-sm-6 col-xs-6">类型</span>
+                                        <div class="col-sm-6 col-xs-6 model-select-box" style="padding: 0;">
+                                            <div class="model-select-text typeBlock" data-value="" id="type">
+                                                请选择
+                                            </div>
+                                            <span class="downRow typeBlock"></span>
+                                            <ul class="model-select-option" id="electricPileType">
+                                                <li data-option="0" class="seleced">请选择</li>
+
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <span class="col-sm-6 col-xs-12">产品型号</span>
+                                        <span class="col-sm-6 col-xs-12 text-right" id="productModel"></span>
+                                    </li>
+                                    <li>
+                                        <span class="col-sm-6 col-xs-12">枪头数量</span>
+                                        <input type="" name="" value="" id="muzzleNumber"
+                                               class="col-sm-6 col-xs-12 "/>
+                                    </li>
+                                    <li>
+                                        <span class="col-sm-6 col-xs-12">最大输出电压</span>
+                                        <input type="" name="" value="" id="maxVoltage"
+                                               class="col-sm-6 col-xs-12"/>
+                                    </li>
+                                    <li>
+                                        <span class="col-sm-6 col-xs-12">最大输出电流</span>
+                                        <input type="" name="" value="" id="maxElectricity"
+                                               class="col-sm-6 col-xs-12"/>
+                                    </li>
+                                    <li>
+                                        <span class="col-sm-6 col-xs-12">接口标准</span>
+                                        <input type="" name="" value="" id="interfaceStandard"
+                                               class="col-sm-6 col-xs-12"/>
+                                    </li>
+                                    <li>
+                                        <span class="col-sm-6 col-xs-12">备注</span>
+                                        <input type="" name="" value="" id="remark"
+                                               class="col-sm-6 col-xs-12"/>
+                                    </li>
+
+                                </ul>
+                            </div>
+                            <!--电桩基础属性-->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="ibox float-e-margins">
+                    <div class="">
+                        <div class="ibox-content">
+                            <!--电桩地域属性-->
+                            <div class="userBaseInfoList" id="safetyBlock">
+                                <div class="baseInfoShow">
+                                    <div class="baseInfoTitle">
+                                        电桩地域属性
+                                    </div>
+                                </div>
+                                <ul class="baseInfoUl editUserInfo">
+                                    <li>
+                                        <span class="col-sm-6 col-xs-6">省份</span>
+                                        <div class="col-sm-6 col-xs-6 model-select-box" style="padding: 0;">
+                                            <div class="model-select-text provinceBlock" data-value="" id="province">
+                                                请选择
+                                            </div>
+                                            <span class="downRow provinceBlock"></span>
+                                            <ul class="model-select-option provinceUl">
+                                                <li data-option="0" class="seleced">请选择</li>
+
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <span class="col-sm-6 col-xs-6">城市</span>
+                                        <div class="col-sm-6 col-xs-6 model-select-box" style="padding: 0;">
+                                            <div class="model-select-text cityBlock" data-value="" id="city">
+                                                请选择
+                                            </div>
+                                            <span class="downRow cityBlock"></span>
+                                            <ul class="model-select-option cityUl">
+                                                <!--<li data-option="0" class="seleced">请选择</li>-->
+
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <span class="col-sm-6 col-xs-6">区/县</span>
+                                        <div class="col-sm-6 col-xs-6 model-select-box" style="padding: 0;">
+                                            <div class="model-select-text areaBlock" data-value="" id="areaHtml">
+                                                请选择
+                                            </div>
+                                            <span class="downRow areaBlock"></span>
+                                            <ul class="model-select-option areaUl">
+                                                <!--<li data-option="0" class="seleced">请选择</li>-->
+
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <span class="col-sm-6 col-xs-12">具体地址</span>
+                                        <input type="" name="" value="" id="address"
+                                               class="col-sm-6 col-xs-12 "/>
+                                    </li>
+                                    <li>
+                                        <span class="col-sm-6 col-xs-12">经度</span>
+                                        <input type="" name="" value="" id="longitude"
+                                               class="col-sm-6 col-xs-12"/>
+                                    </li>
+                                    <li>
+                                        <span class="col-sm-6 col-xs-12">纬度</span>
+                                        <input type="" name="" value="" id="latitude"
+                                               class="col-sm-6 col-xs-12"/>
+                                    </li>
+
+                                </ul>
+                            </div>
+                            <div class="emptyDiv"></div>
+                            <!--电桩地域属性结束-->
+                            <!--电桩运营属性开始-->
+                            <div class="userBaseInfoList" id="cardBill">
+                                <div class="baseInfoShow">
+                                    <div class="baseInfoTitle">
+                                        电桩运营属性
+                                    </div>
+                                </div>
+                                <ul class="baseInfoUl editUserInfo">
+                                    <li>
+                                        <span class="col-sm-6 col-xs-6">电桩状态</span>
+                                        <span class="col-sm-6 col-xs-6" id="chStatus"></span>
+                                    </li>
+                                    <li>
+                                        <span class="col-sm-6 col-xs-6">资产归属</span>
+                                        <span class="col-sm-6 col-xs-6" id="ownerShip"></span>
+                                    </li>
+                                    <li>
+                                        <span class="col-sm-6 col-xs-6">渠道</span>
+                                        <span class="col-sm-6 col-xs-6" id="company"></span>
+                                    </li>
+                                    <li>
+                                        <span class="col-sm-6 col-xs-6">默认费率</span>
+                                        <input type="" name="" id="rateInformationId" value=""
+                                               class="col-sm-6 col-xs-12" placeholder="请输入费率"/>
+                                    </li>
+                                    <li>
+                                        <span class="col-sm-6 col-xs-6">sim卡运营商</span>
+                                        <span class="col-sm-6 col-xs-12 text-right" id="simName"></span>
+                                    </li>
+                                    <li>
+                                        <span class="col-sm-6 col-xs-6">sim卡编码</span>
+                                        <input type="" name="" value="" id="simMac"
+                                               class="col-sm-6 col-xs-12"/>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="emptyDiv"></div>
+                            <!--电桩运营属性结束-->
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="../../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="../../../js/contabs.min.js"></script>
+<script src="../../../js/electric/electricPile/electricPile_edit.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/checkBox.js" type="text/javascript" charset="utf-8"></script>
+</html>

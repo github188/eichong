@@ -1,0 +1,96 @@
+package com.wanma.ims.service.impl;
+
+import com.wanma.ims.common.domain.LevelDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.constants.ResultCodeConstants;
+import com.wanma.ims.constants.WanmaConstants;
+import com.wanma.ims.mapper.LevelMapper;
+import com.wanma.ims.mapper.UserMapper;
+import com.wanma.ims.service.LevelService;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
+public class LevelServiceImpl implements LevelService {
+
+    @Autowired
+    private LevelMapper levelMapper;
+    @Autowired
+    private UserMapper userMapper;
+
+    @Override
+    public List<LevelDO> getLevelListByIds(List<Long> ids) {
+        return levelMapper.selectLevelListByIds(ids);
+    }
+
+    @Override
+    public List<LevelDO> getLevelListByCpyId(Long cpyId) {
+        return levelMapper.selectLevelListByCpyId(cpyId);
+    }
+
+    @Override
+    public long getLevelCount(LevelDO level) {
+        return levelMapper.getLevelCount(level);
+    }
+
+    @Override
+    public List<LevelDO> getLevelList(LevelDO level) {
+        return levelMapper.getLevelList(level);
+    }
+
+    @Override
+    public BaseResultDTO removeLevel(LevelDO levelDO, UserDO loginUser) {
+    	BaseResultDTO result = new BaseResultDTO();
+		List<Long> idList= new ArrayList<Long>();
+		idList.add(levelDO.getLevelId());
+		List<LevelDO> levelList = levelMapper.selectLevelListByIds(idList);
+		for (LevelDO level:levelList) {
+			if(level.getIsDefault()==WanmaConstants.DEFAULT_LEVEL){
+				 return new BaseResultDTO(false, ResultCodeConstants.FAILED, "默认等级不能删除!");
+			}
+			UserDO searchModel = new UserDO();
+			searchModel.setLevelId(level.getLevelId());
+			if(userMapper.countUser(searchModel)>0){
+				 return new BaseResultDTO(false, ResultCodeConstants.FAILED, "该等级下有用户不能删除!");
+			}
+			level.setModifier(loginUser.getUserAccount());
+			levelMapper.removeLevel(level);
+		}
+		return result;
+    }
+
+    @Override
+    public boolean setLevelDefault(LevelDO level) {
+        return levelMapper.setLevelDefault(level) > 0;
+    }
+
+    @Override
+    public boolean checkLevelCode(LevelDO level) {
+        return levelMapper.checkLevelCode(level) <= 0;
+    }
+
+    @Override
+    public boolean checkLevelName(LevelDO level) {
+        return levelMapper.checkLevelName(level) <= 0;
+    }
+
+    @Override
+    public boolean addLevel(LevelDO level) {
+        if ("1".equals(String.valueOf(level.getIsDefault()))) {//如果是设为默认等级 则先修改之前的默认等级为普通
+            levelMapper.setLevelNormal(level);
+        }
+        return levelMapper.addLevel(level) > 0;
+    }
+
+    @Override
+    public List<LevelDO> getLevelByCpyId(Long cpyId) {
+        return levelMapper.getLevelByCpyId(cpyId);
+    }
+
+
+}

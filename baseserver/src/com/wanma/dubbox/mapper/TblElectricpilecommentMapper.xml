@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dubbox.dao.TblElectricpilecommentMapper">
+	<resultMap id="result_product" type="TblElectricpilecomment">
+		<id property="id" column="pk_EpcComment" />
+		<result property="eid" column="epc_EpId" />
+		<result property="uid" column="epc_UserId" />
+		<result property="uname" column="epc_UserName" />
+		<result property="prsCt" column="praise_count" />
+		<result property="rpyCt" column="reply_count" />
+		<result property="pic" column="epc_CommentPic" />
+		<result property="upId" column="up_commentId" />
+		<result property="type" column="epc_type" />
+		<result property="cdate" column="epc_Createdate" />
+		<result property="udate" column="epc_Updatedate" />
+		<result property="sts" column="epc_Utatus" />
+		<result property="txt" column="epc_Content" />
+	</resultMap>
+
+	<!-- 添加评论 -->
+	<insert id="insert" parameterType="TblElectricpilecomment">
+		insert into tbl_electricpilecomment
+		(
+		epc_EpId,
+		epc_UserId,
+		epc_UserName,
+		praise_count,
+		reply_count,
+		epc_CommentPic,
+		up_commentId,
+		epc_type,
+		epc_Createdate,
+		epc_Updatedate,
+		epc_Utatus,
+		epc_Content
+		)values (
+		#{eid},
+		#{uid},
+		#{uname},
+		#{prsCt},
+		#{rpyCt},
+		#{pic},
+		#{upId},
+		#{type},
+		sysdate(),
+		sysdate(),
+		#{sts},
+		#{txt}
+		)
+	</insert>
+
+	<!-- 删除评论列表 -->
+	<update id="update" parameterType="TblElectricpilecomment">
+		update
+		tbl_electricpilecomment
+		set
+		<if test="eid != null">
+			epc_EpId=#{eid},
+		</if>
+		<if test="uid != null">
+			epc_UserId=#{uid},
+		</if>
+		<if test="uname != null">
+			epc_UserName=#{uname},
+		</if>
+		<if test="prsCt != null">
+			praise_count=#{prsCt},
+		</if>
+		<if test="rpyCt != null">
+			reply_count=#{rpyCt},
+		</if>
+		<if test="pic != null">
+			epc_CommentPic=#{pic},
+		</if>
+		<if test="upId != null">
+			up_commentId=#{upId},
+		</if>
+		<if test="type != null">
+			epc_type=#{type},
+		</if>
+		<if test="sts != null">
+			epc_Utatus=#{sts},
+		</if>
+		<if test="txt != null">
+			epc_Content=#{txt},
+		</if>
+		epc_Updatedate=sysdate()
+		where
+		pk_EpcComment=#{id}
+	</update>
+
+
+	<!-- 取得评论条数 -->
+	<select id="getCount" parameterType="TblElectricpilecomment"
+		resultType="int">
+		select
+		count(1)
+		from
+		tbl_electricpilecomment
+	</select>
+
+	<!-- 取得评论列表 -->
+	<select id="getList" parameterType="TblElectricpilecomment"
+		resultMap="result_product">
+		select
+		${rtColumns}
+		from
+		tbl_electricpilecomment
+	</select>
+
+	<!-- 删除评论列表 -->
+	<update id="delete" parameterType="TblElectricpilecomment">
+		update
+		tbl_electricpilecomment
+		set
+		epc_Utatus = 1
+		WHERE pk_EpcComment = #{id}
+	</update>
+
+</mapper>

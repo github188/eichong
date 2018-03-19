@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.web.dao.WebListMapper">
+
+	<resultMap id="listResultMap" type="WebList">
+		<id property="pkRelease" column="pk_release" />
+		<result property="releTitle" column="rele_title" />
+		<result property="releContent" column="rele_content" />
+		<result property="releCreatedate" column="rele_createdate" />
+		<result property="releUpdatedate" column="rele_updatedate" />
+		<result property="releUsepk" column="rele_usepk" />
+		<result property="releType" column="rele_type" />
+		<result property="releImg" column="rele_img" />
+		<result property="releOrder" column="rele_order" />
+		<result property="validFlag" column="valid_flag" />
+	</resultMap>
+	
+	<!--  获取所有的WebList-->
+	<select id="findAll" parameterType="map" resultMap="listResultMap">
+	   select 
+	    pk_release,
+	    rele_title,
+	    rele_content,
+	    rele_createdate,
+	    rele_updatedate,
+	    rele_usepk,
+	    rele_type	    
+	   from tbl_web_release
+
+	</select>
+		<!--  根据类型获取WebList-->
+	<select id="findByType" parameterType="String" resultMap="listResultMap">
+	    select 
+	    pk_release,
+	    rele_title,
+	    rele_content,
+	    rele_createdate,
+	    rele_updatedate,
+	    rele_usepk,
+	    rele_type	    
+	   from tbl_web_release
+	   where 
+	    rele_type=#{releType} and valid_flag=1 order by rele_createdate desc limit 0,5;
+	</select>
+	<!--  根据ID获取WebList-->
+	<select id="findByPk" parameterType="int" resultMap="listResultMap">
+	   select 
+	    pk_release,
+	    rele_title,
+	    rele_content,
+	    rele_createdate,
+	    rele_updatedate,
+	    rele_usepk,
+	    rele_type	    
+	   from tbl_web_release
+	   where 
+	    pk_release=#{pkRelease} 
+	</select>
+	
+	<!-- 根据类型获取他的全部消息及分页 -->
+	<select id="getAllByType" parameterType="map"   resultMap="listResultMap" >
+		select 
+		pk_release,
+		rele_title,
+		rele_content,
+		rele_createdate,
+		rele_updatedate,
+		rele_usepk,
+		rele_type,
+		getFullPath('dynamic',pk_release) imageUrl,
+		rele_img,
+	    rele_order,
+	    valid_flag
+		 from tbl_web_release
+		 where rele_type in
+		 <foreach item="releTypeArray" index="index" collection="releTypes" open="(" separator="," close=")">
+		      #{releTypeArray}               
+		 </foreach> and valid_flag=1  order by  rele_img desc,rele_order asc,rele_createdate desc
+		 limit #{pageNumber},#{pageNum}
+	</select>
+	
+	<select id="countWebList" parameterType="map" resultType="long">
+		select count(*)
+		from tbl_web_release
+		where 
+		rele_type in
+		 <foreach item="releTypeArray" index="index" collection="releTypes" open="(" separator="," close=")">
+		      #{releTypeArray}               
+		 </foreach> and valid_flag=1
+	</select>
+</mapper> 

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/finAccount/finAccount_list.css"/>
+    <title>资金账户管理</title>
+</head>
+<body>
+<div class="container animated fadeInRight">
+    <div class="row">
+        <div class="formBlock clearfix">
+            <form id="finAccountForm">
+                <div class="col-xs-12 col-sm-11 col-md-11 col-lg-11">
+                    <div class="userListSelect row">
+                        <div class="col-sm-3 col-xs-12">
+                            <div class="col-sm-4 queryParam">
+                                资金账户号
+                            </div>
+                            <div class="col-sm-8 userAccount">
+                                <input type="text" name="accountNO" value="" class="userAccountInput"/>
+                                <input type="text" name="accountId" hidden="hidden" style="display: none;" value="" class="userAccountInput"/>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-2 col-xs-12">
+                            <div class="col-sm-4 queryParam">
+                                类型
+                            </div>
+                            <div class="col-sm-8 col-xs-12 model-select-box">
+                                <div class="model-select-text tradeTypeBlock" data-value="" id="tradeTypeHtml">请选择</div>
+                                <span class="downRow tradeTypeBlock"></span>
+                                <input type="text" name="tradeType" value="" hidden="hidden"/>
+                                <ul class="model-select-option tradeTypeUl">
+                                    <li data-option="" class="seleced">请选择</li>
+                                    <li data-option="1">信用账号</li>
+                                    <li data-option="2">储值账号</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-sm-2 col-xs-12">
+                            <div class="col-sm-4 queryParam">
+                                状态
+                            </div>
+                            <div class="col-sm-8  col-xs-12 model-select-box">
+                                <div class="model-select-text accountStatusBlock" data-value="" id="accountStatus">请选择</div>
+                                <span class="downRow accountStatusBlock"></span>
+                                <input type="text" name="accountStatus" value="" hidden="hidden"/>
+                                <ul class="model-select-option accountStatusUl">
+                                    <li data-option="" class="seleced">请选择</li>
+                                    <li data-option="1">正常</li>
+                                    <li data-option="2">冻结</li>
+                                    <li data-option="3">删除</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-sm-12" style="background: #FFFFFF;height: 20px;"></div>
+                </div>
+                <div class="col-xs-12 col-sm-1 col-md-1 col-lg-1" style="position: relative;">
+                    <div class="queryBtn" onclick="finAccountListSearch()">
+                        查询
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!--按钮部分开始==========================================================-->
+        <div class="btnBlock">
+            <div class="col-sm-10 col-xs-12 col-md-10" style="">
+                <div class="col-sm-2 col-xs-2 btnStyle showBtn" id="showBtn" style="display: none;">
+                    显示
+                </div>
+                <ul class="checkList animated fadeInDown col-sm-3 col-xs-3" style="display: none;">
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name="" data-state="0" value="" disabled="disabled"
+                                   checked="checked" data-flag="finAccount_accountNO"/>
+                        </div>
+                        <label>资金账户号</label>
+                    </li>
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name="" data-state="0" value="" disabled="disabled"
+                                   checked="checked" data-flag="finAccount_accountBalance"/>
+                        </div>
+                        <label>余额</label>
+
+                    </li>
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name="" data-state="0" value="" disabled="disabled"
+                                   checked="checked" data-flag="finAccount_accountStatus"/>
+                        </div>
+                        <label>状态</label>
+
+                    </li>
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name="" data-state="0" value="" disabled="disabled"
+                                   checked="checked" data-flag="finAccount_tradeType"/>
+                        </div>
+                        <label>类型</label>
+                    </li>
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name="" data-state="0" value=""
+                                   data-flag="finAccount_accountWarn"/>
+                        </div>
+                        <label>额度</label>
+                    </li>
+
+
+                </ul>
+                <div class="col-sm-2 col-xs-2 col-sm-offset-1 col-xs-offset-1 btnStyle" id="dataExport" style="display: none;">
+                    导出
+                </div>
+            </div>
+            <div class="col-sm-2 col-md-2"></div>
+        </div>
+        <!--表格部分开始==========================================================-->
+        <div class="showSet table-responsive">
+            <table class=" table table-bordered text-center" style="border: 1px solid #DCDCDC;">
+                <thead>
+                <tr>
+                    <th class="">选择</th>
+                    <th class="finAccount_accountNO">资金账户号</th>
+                    <th class="finAccount_accountBalance">余额/可用额度</th>
+                    <th class="finAccount_accountStatus">状态</th>
+                    <th class="finAccount_tradeType">类型</th>
+                    <th class="finAccount_accountWarn">额度</th>
+                </tr>
+                </thead>
+                <tbody id="myTbogy">
+
+                </tbody>
+            </table>
+
+            <div id="finAccountListPage" class="pagination">
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="../../js/contabs.min.js"></script>
+<script src="../../js/finAccount/finAccount_list.js" type="text/javascript" charset="utf-8"></script>
+</html>

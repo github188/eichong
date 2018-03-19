@@ -1,0 +1,738 @@
+/**
+ * Created by Administrator on 2017/10/26 0026.
+ */
+//-------------------------------------编辑初始赋值-----------------------------------
+$(document).ready(function() {
+    var data = {
+        pkId: 1,
+        integralRulesId: getUrlParam('integralRulesId')
+    };
+    $.ajax({
+        url: basePath + getIntegralActivityAndRulesListUrl,
+        type: "post",
+        dataType: 'json',
+        data: data,
+        success: function(data) {
+            var checkedData = data.dataObject[0];
+            //状态
+            if (checkedData.activityStatus == 0) {
+                $('input[name="state"]:eq(0)').attr("checked", 'checked');
+            } else if (checkedData.activityStatus == 1) {
+                $('input[name="state"]:eq(1)').attr("checked", 'checked');
+                $('#datePicker,input[name="weight"],input[name="RechargeChoice"],' +
+                    'input[name="fixed-score"],input[name="proportion"],input[name="money"],' +
+                    '#textareaid,input[name="rechargeAmount"]').attr("disabled", true);
+            }
+            //全国
+            if(checkedData.isWhole == 1){
+                $('.wholeCountry').attr('data-value',1).parent().css('border','1px solid #ff7d00');
+                $('#provinceCode').parent().hide();
+                $('#cityCode').parent().hide();
+            }
+            //省市
+            toLoadProvince(checkedData.provinceId, '#provinceCode', '.provinceUl', 'toUnbindEvent');
+            toLoadCity(checkedData.provinceId, checkedData.cityId, '#cityCode', '.cityUl', 'toUnbindEvent');
+            $('#provinceCode').attr('data-value', checkedData.provinceId);
+            $('#cityCode').attr('data-value', checkedData.cityId);
+            //规则权重
+            if (checkedData.highestPriority == 1) {
+                $('input[name="weight"]').attr("checked", 'checked');
+                $('input[name="weight"]').val(1);
+            } else {
+                $('input[name="weight"]').val(0);
+            }
+            //时间选择
+            var startday = new Date(checkedData.startDate.time).format("yyyy-MM-dd"),
+                endday = new Date(checkedData.endDate.time).format("yyyy-MM-dd");
+            $('#datePicker').val(startday + ' - ' + endday);
+            //固定分值和按比例判断
+            if (checkedData.fixedIntegralValue != 0) {
+                $('input[name="RechargeChoice"]:eq(0)').attr("checked", 'checked');
+                $('input[name="RechargeChoice"]:eq(1)').attr("checked", false);
+                $('input[name="fixed-score"]').val(checkedData.fixedIntegralValue);
+            } else {
+                $('input[name="RechargeChoice"]:eq(1)').attr("checked", 'checked');
+                $('input[name="RechargeChoice"]:eq(0)').attr("checked", false);
+                $('input[name="proportion"]').val(checkedData.ratioIntegralValue);
+            }
+            //抽奖机会
+            if (checkedData.isChoice == 0) {
+                $('input[name="rechargeAmount"]').attr("checked", 'checked').val(0);
+            } else if (checkedData.isChoice == 1) {
+                $('input[name="rechargeAmount"]').attr("checked", false).val(1);
+            }
+            if ($('input[name="rechargeAmount"]').is(":checked") == true) {
+                $('input[name="money"]').attr('disabled', false);
+                $('input[name="rechargeAmount"]').val('0');
+            } else {
+                $('input[name="money"]').attr('disabled', true);
+                $('input[name="rechargeAmount"]').val('1');
+            }
+            //金额
+            if (checkedData.choiceMoney != '') {
+                $('input[name="money"]').val(checkedData.choiceMoney);
+            } else {
+                $('input[name="money"]').val('');
+            }
+            //textarea框换行
+            document.getElementById('textareaid').value = data.dataObject[0].contents;
+        }
+    });
+
+    $('#saveBtn').bind("click", foo);
+});
+//--------------------------------------
+
+//日期选择
+laydate.render({
+    elem: '#datePicker',
+    range: true,
+    theme: '#ff7d00'
+    /* ,min: -90,
+     max:0//0 代表今天 -1代表昨天，-2代表前天，以此类推*/
+});
+
+//返回按钮
+$('body').off('click', '#toPowerStationList').on('click', '#toPowerStationList', function() {
+    window.history.back();
+});
+
+//限制数字和两位小数
+function num(obj) {
+    obj.value = obj.value.replace(/[^\d.]/g, ""); //清除"数字"和"."以外的字符
+    obj.value = obj.value.replace(/^\./g, ""); //验证第一个字符是数字
+    obj.value = obj.value.replace(/\.{2,}/g, "."); //只保留第一个, 清除多余的
+    obj.value = obj.value.replace(".", "$#$").replace(/\./g, "").replace("$#$", ".");
+    obj.value = obj.value.replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3'); //只能输入两个小数
+}
+
+//按比例提示
+function advice(obj) {
+    if (obj.value != 1) {
+        layer.open({
+            type: 1,
+            offset: '100px',
+            title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+            shadeClose: false,
+            closeBtn: 1,
+            area: ['310px', '160px'],
+            //宽高
+            content: '比例变化会导致积分贬值或增值，请谨慎操作。推荐为1：1',
+            btn: ["确定"],
+            yes: function(index, layero) {
+                layer.closeAll();
+            },
+            cancel: function(index, layero) {
+                layer.closeAll();
+            }
+        });
+    }
+}
+
+//关闭选项
+$('input[name="state"]').on('click', function() {
+    var target = $(this).val();
+    if (target == '1') {
+        $('#datePicker,input[name="weight"],input[name="RechargeChoice"],' +
+            'input[name="fixed-score"],input[name="proportion"],input[name="money"],' +
+            '#textareaid,input[name="rechargeAmount"]').attr("disabled", true);
+    } else {
+        $('#datePicker,input[name="weight"],input[name="RechargeChoice"],' +
+            'input[name="fixed-score"],input[name="proportion"],input[name="rechargeAmount"],' +
+            '#textareaid').attr("disabled", false);
+        $('#saveBtn').bind("click", foo);
+        if ($('input[name="rechargeAmount"]').is(":checked") == true) {
+            $('input[name="money"]').attr('disabled', false);
+        } else {
+            $('input[name="money"]').attr('disabled', true);
+        }
+    }
+});
+
+//规则权重
+$('input[name="weight"]').click(function() {
+    $(this).val('1');
+});
+
+//充值赠送
+$('.rechargeAmount').click(function() {
+    if ($('input[name="rechargeAmount"]').is(":checked") == true) {
+        $('input[name="money"]').attr('disabled', false);
+        $('input[name="rechargeAmount"]').val('0');
+    } else {
+        $('input[name="money"]').attr('disabled', true);
+        $('input[name="rechargeAmount"]').val('1');
+    }
+});
+
+//全国、地区选择
+$('.wholeCountry').on('click',function(){
+    if($(this).attr('data-value') == 0){
+        $(this).attr('data-value',1).parent().css('border','1px solid #ff7d00');
+        $('#provinceCode').val('').text('请选择').parent().hide();
+        $('#cityCode').val('').text('请选择').parent().hide();
+        $('.cityUl li').remove();
+    }else if($(this).attr('data-value') == 1){
+        $(this).attr('data-value',0).parent().css('border','1px solid rgb(231, 234, 236)');
+        $('#provinceCode').parent().show();
+        $('#cityCode').parent().show();
+    }
+});
+
+//---------------------地区查询------------------------------
+toLoadProvince('', '#provinceCode', '.provinceUl', 'toUnbindEvent'); //key
+
+function toUnbindEvent() {
+    $('.provinceBlock').unbind();
+    $('.cityBlock').unbind();
+    $('.userStatusBlock').unbind();
+    $('.cpyProvinceBlock').unbind();
+    $('.cypCityBlock').unbind();
+    $('.userStatusBlock').unbind();
+    $('.cpyCompanyBlock').unbind();
+    $('.levelBlock').unbind();
+    $('.tagBlock').unbind();
+    selectModel();
+}
+
+//抓取省
+$('.provinceUl').on("click", "li", function() {
+    $('#cityCode').html('请选择');
+    $('#cityCode').attr('data-value', '');
+    $('.cityUl').html('');
+    $('input[name=cityCode]').val('');
+    var provinceCodeId = $(this).attr('data-option');
+    $(this).parent().siblings('div.model-select-text').text($(this).text()).attr('data-value', $(this).attr('data-option'));
+    var flag = $(this).attr('data-option');
+    if (flag == "") {
+        $('#cityCode').html('请选择');
+        $('#cityCode').attr('data-value', '');
+        $('.cityUl').html('');
+        $('input[name=cityCode]').val('');
+    } else {
+        toLoadCity(provinceCodeId, '', '#cityCode', '.cityUl', 'toUnbindEvent');
+    }
+});
+
+//抓取市
+$('.cityUl').on("click", "li", function() {
+    $(this).parent().siblings('div.model-select-text').text($(this).text()).attr('data-value', $(this).attr('data-option'));
+});
+//-----------------------------------------------------------------------
+
+//input分值取整提醒
+$(document).on({
+    keyup: function() {
+        if (this.value.length == 1) {
+            this.value = this.value.replace(/[^1-9]/g, '')
+        } else {
+            this.value = this.value.replace(/\D/g, '')
+        }
+    },
+    afterpaste: function() {
+        if (this.value.length == 1) {
+            this.value = this.value.replace(/[^1-9]/g, '0')
+        } else {
+            this.value = this.value.replace(/\D/g, '')
+        }
+    },
+    blur: function() {
+        switch (this.name) {
+            case 'fixed-score':
+                if (this.value >= 100 && this.value < 500) {
+                    layer.open({
+                        type: 1,
+                        offset: '100px',
+                        title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+                        shadeClose: false,
+                        closeBtn: 1,
+                        area: ['310px', '160px'],
+                        //宽高
+                        content: '过高的设置分值会导致损失，请慎重填写。',
+                        time: 0,
+                        btn: ["确定", "取消"],
+                        btn1: function(index, layero) {
+                            layer.closeAll();
+                        },
+                        btn2: function(index, layero) {
+                            $('input[name="fixed-score"]').val('');
+                            layer.closeAll();
+                        },
+                        cancel: function(index, layero) {
+                            $('input[name="fixed-score"]').val('');
+                            layer.closeAll();
+                        }
+                    })
+                } else if (this.value > 500) {
+                    layer.open({
+                        type: 1,
+                        offset: '100px',
+                        title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+                        shadeClose: false,
+                        closeBtn: 1,
+                        area: ['310px', '160px'],
+                        //宽高
+                        content: '超过500的分值会导致损失，请重新填写。',
+                        time: 0,
+                        btn: ["确定"],
+                        yes: function(index, layero) {
+                            layer.closeAll();
+                        },
+                        cancel: function(index, layero) {
+                            $('input[name="fixed-score"]').val('');
+                            layer.closeAll();
+                        }
+                    })
+                } else if (this.value == '') {
+                    return true;
+                }
+                break;
+            case 'money':
+                if (this.value < 200) {
+                    layer.open({
+                        type: 1,
+                        offset: '100px',
+                        title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+                        shadeClose: false,
+                        closeBtn: 1,
+                        area: ['310px', '160px'],
+                        //宽高
+                        content: '<200，用户会有更多的抽奖机会，可能导致损失，请慎重。',
+                        time: 0,
+                        btn: ["确定", "取消"],
+                        btn1: function(index, layero) {
+                            layer.closeAll();
+                        },
+                        btn2: function(index, layero) {
+                            $('input[name="money"]').val('200');
+                            layer.closeAll();
+                        },
+                        cancel: function(index, layero) {
+                            $('input[name="money"]').val('200');
+                            layer.closeAll();
+                        }
+                    })
+                } else if (this.value > 200) {
+                    layer.open({
+                        type: 1,
+                        offset: '100px',
+                        title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+                        shadeClose: false,
+                        closeBtn: 1,
+                        area: ['310px', '160px'],
+                        //宽高
+                        content: '>200，用户抽奖机会可能变少，影响用户体验，请慎重。',
+                        time: 0,
+                        btn: ["确定", "取消"],
+                        btn1: function(index, layero) {
+                            layer.closeAll();
+                        },
+                        btn2: function(index, layero) {
+                            $('input[name="money"]').val('200');
+                            layer.closeAll();
+                        },
+                        cancel: function(index, layero) {
+                            $('input[name="money"]').val('200');
+                            layer.closeAll();
+                        }
+                    })
+                }
+        }
+    }
+}, 'input[name="fixed-score"],input[name="money"]');
+
+//错误提示
+function layerCase(msg){
+    layer.open({
+        type: 1,
+        offset: '100px',
+        title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+        shadeClose: false,
+        closeBtn: 1,
+        area: ['310px', '160px'],
+        //宽高
+        content: msg,
+        time: 0,
+        btn: ["确定"],
+        btn1: function(index, layero) {
+            layer.closeAll();
+        },
+        cancel: function(index, layero) {
+            layer.closeAll();
+        }
+    });
+}
+
+//数据提交
+var foo = function() {
+    var day = $('#datePicker').val(),
+        recharge_choice = $('input[name="RechargeChoice"]:radio:checked').val(), //判断固定分值和按比例的条件
+        isWhole = $('.wholeCountry').attr('data-value');//全国判断
+    var data_one = 1,
+    //活动名称Id
+        data_two = $('input[name="state"]:radio:checked').val(),
+    //活动状态
+        data_three = '充值赠送',
+    //活动名称
+        data_four = $('#provinceCode').attr('data-value'),
+    //省ID
+        data_five = $('#cityCode').attr('data-value'),
+    //市ID
+        data_six = $('input[name="weight"]').val(),
+    //最高优先级
+        data_seven = getUrlParam('integralRulesId'),
+    //活动规则Id
+        data_eight = 0,
+    //积分变化方向
+        data_nine = $('input[name="fixed-score"]').val(),
+    //固定分值
+        data_ten = $('input[name="proportion"]').val(),
+    //比例分值
+        data_eleven = $('input[name="rechargeAmount"]').val(),
+    //按照充值金额赠送抽奖机会
+        data_twelve = $('input[name="money"]').val(),
+    //每充值多少金额赠送一次抽奖机会
+        data_thirteen = $('#textareaid').val(),
+    //解释
+        data_forteen = slice_date(day)[0],
+    //活动开始日期
+        data_fifiteen = slice_date(day)[1];
+    //活动结束日期
+
+    //判断固定分值和按比例
+    if (recharge_choice == 1) {
+        //固定分值
+        if(isWhole == 0){
+            if (data_four == '') {
+                layerCase('地区选择——省不能为空');
+                return false;
+            }else if(data_five == ''){
+                layerCase('地区选择——市不能为空');
+                return false;
+            }else if(day == ''){
+                layerCase('活动时间不能为空');
+                return false;
+            }else if(data_nine == ''){
+                layerCase('固定分值不能为空');
+                return false;
+            }
+
+            var data = {
+                'pkId': data_one,
+                'activityStatus': data_two,
+                'activityName': data_three,
+                'provinceId': data_four,
+                'cityId': data_five,
+                'highestPriority': data_six,
+                'integralRulesId': data_seven,
+                'direction': data_eight,
+                'fixedIntegralValue': data_nine,
+                'isChoice': data_eleven,
+                'choiceMoney': data_twelve,
+                'contents': data_thirteen,
+                'strStartDate': data_forteen,
+                'strEndDate': data_fifiteen,
+                'isWhole': isWhole
+            };
+        }else{
+            if (day == '') {
+                layerCase('活动时间不能为空');
+                return false;
+            }else if(data_nine == ''){
+                layerCase('固定分值不能为空');
+                return false;
+            }
+
+            var data = {
+                'pkId': data_one,
+                'activityStatus': data_two,
+                'activityName': data_three,
+                'highestPriority': data_six,
+                'integralRulesId': data_seven,
+                'direction': data_eight,
+                'fixedIntegralValue': data_nine,
+                'isChoice': data_eleven,
+                'choiceMoney': data_twelve,
+                'contents': data_thirteen,
+                'strStartDate': data_forteen,
+                'strEndDate': data_fifiteen,
+                'isWhole': isWhole
+            };
+        }
+        $.ajax({
+            url: basePath + modifyIntegralActivityUrl,
+            type: "post",
+            dataType: 'json',
+            data: data,
+            success: function(data) {
+                if (data.status == 1000) {
+                    layer.open({
+                        type: 1,
+                        offset: '100px',
+                        title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+                        shadeClose: false,
+                        closeBtn: 1,
+                        area: ['310px', '160px'],
+                        //宽高
+                        content: '提交成功',
+                        btn: ["确定"],
+                        yes: function(index, layero) {
+                            layer.closeAll();
+                            window.history.back();
+                        },
+                        cancel: function(index, layero) {
+                            layer.closeAll();
+                            window.history.back();
+                        }
+                    });
+                } else if (data.status == 9001) {
+                    layer.closeAll();
+                    layer.open({
+                        type: 1,
+                        offset: '100px',
+                        title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+                        shadeClose: false,
+                        closeBtn: 1,
+                        area: ['310px', '160px'],
+                        //宽高
+                        content: '会话超时，请重新登陆！',
+                        btn: ["确定"],
+                        yes: function(index, layero) {
+                            layer.closeAll();
+                            window.top.location.href = basePath + toLoginUrl;
+                        },
+                        cancel: function(index, layero) {
+                            layer.closeAll();
+                            window.top.location.href = basePath + toLoginUrl;
+                        }
+                    });
+
+                } else if (data.status == 2001) {
+                    layer.closeAll();
+                    layer.open({
+                        type: 1,
+                        offset: '100px',
+                        title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+                        shadeClose: false,
+                        closeBtn: 1,
+                        area: ['310px', '160px'],
+                        //宽高
+                        content: data.msg,
+                        btn: ["确定"],
+                        yes: function(index, layero) {
+                            layer.closeAll();
+                        },
+                        cancel: function(index, layero) {
+                            layer.closeAll();
+                        }
+                    });
+                    return false;
+                } else {
+                    layer.closeAll();
+                    layer.open({
+                        type: 1,
+                        offset: '100px',
+                        title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+                        shadeClose: false,
+                        closeBtn: 1,
+                        area: ['310px', '160px'],
+                        //宽高
+                        content: '系统出错',
+                        btn: ["确定"],
+                        yes: function(index, layero) {
+                            layer.closeAll();
+                            window.top.location.href = basePath + toLoginUrl;
+                        },
+                        cancel: function(index, layero) {
+                            layer.closeAll();
+                            window.top.location.href = basePath + toLoginUrl;
+                        }
+                    });
+                }
+            }
+        })
+    } else if (recharge_choice == 2) {
+        //按比例
+        if (data_ten == 0) {
+            layer.open({
+                type: 1,
+                offset: '100px',
+                title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+                shadeClose: false,
+                closeBtn: 1,
+                area: ['310px', '160px'],
+                //宽高
+                content: '比例不可为0',
+                time: 0,
+                btn: ["确定"],
+                btn1: function(index, layero) {
+                    $('input[name="proportion"]').val('1');
+                    layer.closeAll();
+                },
+                cancel: function(index, layero) {
+                    $('input[name="proportion"]').val('1');
+                    layer.closeAll();
+                }
+            });
+            return false;
+        }
+        if(isWhole == 0){
+            if (data_four == '') {
+                layerCase('地区选择——省不能为空');
+                return false;
+            }else if(data_five == ''){
+                layerCase('地区选择——市不能为空');
+                return false;
+            }else if(day == ''){
+                layerCase('活动时间不能为空');
+                return false;
+            }else if(data_ten == ''){
+                layerCase('比例分值不能为空');
+                return false;
+            }
+
+            var data = {
+                'pkId': data_one,
+                'activityStatus': data_two,
+                'activityName': data_three,
+                'provinceId': data_four,
+                'cityId': data_five,
+                'highestPriority': data_six,
+                'integralRulesId': data_seven,
+                'direction': data_eight,
+                'fixedIntegralValue': data_nine,
+                'isChoice': data_eleven,
+                'choiceMoney': data_twelve,
+                'contents': data_thirteen,
+                'strStartDate': data_forteen,
+                'strEndDate': data_fifiteen,
+                'isWhole': isWhole
+            };
+        }else{
+            if (day == '') {
+                layerCase('活动时间不能为空');
+                return false;
+            }else if(data_ten == ''){
+                layerCase('比例分值不能为空');
+                return false;
+            }
+
+            var data = {
+                'pkId': data_one,
+                'activityStatus': data_two,
+                'activityName': data_three,
+                'highestPriority': data_six,
+                'integralRulesId': data_seven,
+                'direction': data_eight,
+                'fixedIntegralValue': data_nine,
+                'isChoice': data_eleven,
+                'choiceMoney': data_twelve,
+                'contents': data_thirteen,
+                'strStartDate': data_forteen,
+                'strEndDate': data_fifiteen,
+                'isWhole': isWhole
+            };
+        }
+        var data = {
+            'pkId': data_one,
+            'activityStatus': data_two,
+            'activityName': data_three,
+            'provinceId': data_four,
+            'cityId': data_five,
+            'highestPriority': data_six,
+            'integralRulesId': data_seven,
+            'direction': data_eight,
+            'ratioIntegralValue': data_ten,
+            'isChoice': data_eleven,
+            'choiceMoney': data_twelve,
+            'contents': data_thirteen,
+            'strStartDate': data_forteen,
+            'strEndDate': data_fifiteen,
+            'isWhole':isWhole
+        };
+
+        $.ajax({
+            url: basePath + addIntegralActivityUrl,
+            type: "post",
+            dataType: 'json',
+            data: data,
+            success: function(data) {
+                if (data.success) {
+                    layer.open({
+                        type: 1,
+                        offset: '100px',
+                        title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+                        shadeClose: false,
+                        closeBtn: 1,
+                        area: ['310px', '160px'],
+                        //宽高
+                        content: '提交成功',
+                        btn: ["确定"],
+                        yes: function(index, layero) {
+                            layer.closeAll();
+                            window.history.back();
+                        },
+                        cancel: function(index, layero) {
+                            layer.closeAll();
+                            window.history.back();
+                        }
+                    });
+                } else if (data.status == 9001) {
+                    layer.closeAll();
+                    layer.open({
+                        type: 1,
+                        offset: '100px',
+                        title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+                        shadeClose: false,
+                        closeBtn: 1,
+                        area: ['310px', '160px'],
+                        //宽高
+                        content: '会话超时，请重新登陆！',
+                        btn: ["确定"],
+                        yes: function(index, layero) {
+                            layer.closeAll();
+                            window.top.location.href = basePath + toLoginUrl;
+                        },
+                        cancel: function(index, layero) {
+                            layer.closeAll();
+                            window.top.location.href = basePath + toLoginUrl;
+                        }
+                    });
+
+                } else {
+                    layer.closeAll();
+                    layer.open({
+                        type: 1,
+                        offset: '100px',
+                        title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+                        shadeClose: false,
+                        closeBtn: 1,
+                        area: ['310px', '160px'],
+                        //宽高
+                        content: '系统出错',
+                        btn: ["确定"],
+                        yes: function(index, layero) {
+                            layer.closeAll();
+                            window.top.location.href = basePath + toLoginUrl;
+                        },
+                        cancel: function(index, layero) {
+                            layer.closeAll();
+                            window.top.location.href = basePath + toLoginUrl;
+                        }
+                    });
+                }
+            }
+        })
+    }
+
+};
+
+//监听回车键
+$(document).keyup(function(event) {
+    if (event.keyCode == 13) {
+        foo();
+    }
+});
+
+
+

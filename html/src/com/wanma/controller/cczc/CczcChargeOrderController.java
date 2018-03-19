@@ -1,0 +1,164 @@
+package com.wanma.controller.cczc;
+
+import com.wanma.controller.cczc.dto.CCZCChargeOrder;
+import com.wanma.controller.cczc.util.ControllerUtil;
+import com.wanma.model.TblChargingOrder;
+import com.wanma.model.TblElectricpile;
+import com.wanma.service.TblChargingOrderService;
+import com.wanma.service.TblElectricpileService;
+import com.wanma.support.common.FailedResponse;
+import com.wanma.support.common.ResultResponse;
+import com.wanma.support.common.WanmaConstants;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+/**
+ * @author lhy
+ */
+@SuppressWarnings({"rawtypes", "unchecked"})
+@Controller
+@RequestMapping("/cczc")
+public class CczcChargeOrderController {
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(CczcChargeOrderController.class);
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+    @Autowired
+    private TblChargingOrderService ordService;
+    @Autowired
+    TblElectricpileService eService;
+
+    /**
+     * @Description: 根据订单号查询订单详情（实时信息）
+     * @return
+     * @throws InterruptedException
+     */
+    @RequestMapping("/getOrderInfo")
+    @ResponseBody
+    public String getOrderInfo(HttpServletRequest request) throws Exception {
+        String org = request.getParameter("org");
+        String orderId = request.getParameter("orderId");
+        if (StringUtils.isBlank(org)
+                || StringUtils.isBlank(orderId))
+            return new FailedResponse(1001, "params error").toString();
+        TblChargingOrder model = new TblChargingOrder();
+        model.setChorCode(orderId);
+        model = ordService.selectOne(model);
+        if (model == null) {
+            ResultResponse resultRespone = new ResultResponse();
+            resultRespone.setStatus(2004);
+            resultRespone.setMsg("查询数据库失败，不存在该条订单！");
+            return resultRespone.toString();
+        }
+        LOGGER.info("TblChargingOrder：", model.toString());
+        int chorSts = Integer.parseInt(model.getChorChargingstatus());
+        if (chorSts == 2 || chorSts == 3) {
+            LOGGER.info("订单已完成，获取历史订单详情！");
+            HashMap<String, Object> data = new HashMap<String, Object>();
+            data.put("orderId", model.getChorCode());
+            data.put("stubId", model.getChorPilenumber());
+            data.put("outOrderId", model.getChorParterExtradata());
+            data.put("driverId", model.getChorParterUserLogo());
+            data.put("timeStart", model.getBeginChargetime());
+            data.put("timeEnd", model.getEndChargetime());
+            data.put("timeCharge", (sdf.parse(model.getEndChargetime()).getTime() - sdf.parse(model.getBeginChargetime()).getTime()) / 1000);
+
+            data.put("feeTotal", new BigDecimal(model.getChorMoeny()).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+            
+            data.put("cuspElect", model.getChOr_tipPower());
+            data.put("peakElect",model.getChOr_peakPower());
+            data.put("flatElect", model.getChOr_usualPower());
+            data.put("valleyElect",model.getChOr_valleyPower());
+
+            TblElectricpile eModel = new TblElectricpile();
+            eModel.setElpiElectricpilecode(model.getChorPilenumber());
+            eModel = eService.selectOne(eModel);
+            if ("5".equals(eModel.getChargingMode()))
+                data.put("chargeType", 1);
+            else
+                data.put("chargeType", 0);
+            data.put("power", Double.valueOf(model.getChorQuantityelectricity()));
+            data.put("soc", 0.00);
+            int rtSts;
+            String endInfo;
+            rtSts = 2;
+            endInfo = "正常结束";
+            data.put("status", rtSts);
+            data.put("endInfo", endInfo);
+            data.put("feeService", model.getChorServicemoney().setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+            data.put("feeElectric", model.getChorChargemoney().setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+            data.put("cityCode", eModel.getElpiOwncitycode());
+            //如果订单已完成，删除缓存数据
+            WanmaConstants.chargingOrderEvt.remove(model.getChorParterUserLogo());
+            
+            return new ResultResponse(data).toString();
+        }
+        String driverId = model.getChorParterUserLogo();
+        if (StringUtils.isBlank(orderId))
+            return new FailedResponse(1001, "params error").toString();
+        LOGGER.info("获取充电实时订单信息开始，司机编号：" + driverId + ";第三方标识：" + org);
+        WanmaConstants.cs.queryOrderInfo(model.getChorPilenumber(),
+                model.getChorMuzzle(), Integer.parseInt(org), driverId, "");// 获取实时充电数据
+        LOGGER.info("获取充电实时订单信息结束！");
+        /*return ControllerUtil.doReturn(WanmaConstants.chargingOrderEvt,
+                driverId);*/
+        return ControllerUtil.doReturnCCZC(WanmaConstants.chargingOrderEvt,
+                driverId,model.getChorParterExtradata());
+    }
+
+    /**
+     * @Description: 查询时间间隔内的订单汇总信息
+     * @return
+     */
+    @RequestMapping("/checkChargeOrders")
+    @ResponseBody
+    public String checkChargeOrders(HttpServletRequest request) {
+        String org = request.getParameter("org");
+        String startTim = request.getParameter("startTime");
+        String endTim = request.getParameter("endTime");
+        if (StringUtils.isBlank(startTim) || StringUtils.isBlank(endTim))
+            return new FailedResponse(1001, "params error").toString();
+        TblChargingOrder model = new TblChargingOrder();
+        model.setBeginChargetime(startTim);
+        model.setEndChargetime(endTim);
+        model.setChOrOrgNo(org);
+        List<TblChargingOrder> list = ordService.getList(model);
+        int count = list.size();
+        List<CCZCChargeOrder> chargeOrders = new ArrayList<>();
+        BigDecimal allEle = new BigDecimal(0.00);
+        BigDecimal allMoney = new BigDecimal(0.00);
+        for (int i = 0; i < count; i++) {
+            CCZCChargeOrder chargeOrder = new CCZCChargeOrder();
+            TblChargingOrder order = list.get(i);
+            chargeOrder.setInOrderId(order.getChorCode());
+            chargeOrder.setBeginTime(order.getBeginChargetime());
+            chargeOrder.setEndTime(order.getEndChargetime());
+            chargeOrder.setPower(Double.valueOf(order.getChorQuantityelectricity()));
+            // chargeOrder.setFee(order.getChorChargemoney().doubleValue());
+            chargeOrder.setFee(order.getChorChargemoney().setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+
+            // chargeOrder.setOutOrderId(order.getChorParterExtradata());
+            chargeOrders.add(chargeOrder);
+            allEle = allEle.add(new BigDecimal(order.getChorQuantityelectricity()));
+            allMoney = allMoney.add(new BigDecimal(order.getChorMoeny()));
+        }
+        Map<String, Object> data = new HashMap<String, Object>();
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+        data.put("checkOrderNo", format.format(new Date()) + "00001");
+        data.put("orderCount", count);
+        data.put("totalOrderPower", allEle.doubleValue());
+        data.put("totalOrderFee", allMoney.doubleValue());
+        data.put("orderList", chargeOrders);
+        return new ResultResponse(data).toString();
+    }
+
+}

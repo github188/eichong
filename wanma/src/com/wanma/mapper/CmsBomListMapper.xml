@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+					
+<!-- 产品型号查询xml -->
+<mapper namespace="com.wanma.dao.CmsBomListMapper">
+	<resultMap type="TblBomList" id="tblBomList">
+		<id property="pkBomListId" column="pk_BomListId" />
+		<result property="pkTypeSpanId" column="pk_TypeSpanId" />
+		<result property="blHardwareNumber" column="bl_HardwareNumber" />
+		<result property="blHardwareVersion" column="bl_HardwareVersion" />
+		<result property="blFirmwareNumber" column="bl_FirmwareNumber" />
+		<result property="blFirmwareVersion" column="bl_FirmwareVersion" />
+		<result property="blForceUpdate" column="bl_ForceUpdate" />
+		<result property="blFileMd5" column="bl_FileMd5" />
+		<result property="blCreatedate" column="bl_Createdate" />
+		<result property="blUpdatedate" column="bl_Updatedate" />
+	</resultMap>
+	
+	<select id="getTblBomList" parameterType="TblTypespan"
+		resultMap="tblBomList">
+		SELECT * 
+		FROM tbl_bomlist t
+		where pk_TypeSpanId = #{pkTypeSpanId}
+	</select>
+	
+	<!-- 新增产品BOM信息 -->
+	<insert id="tblBomListInsert" parameterType="TblBomList">
+		insert into tbl_bomlist
+		(
+			pk_TypeSpanId,
+			bl_HardwareNumber,
+			bl_HardwareVersion,
+			bl_FirmwareNumber,
+			bl_FirmwareVersion,
+			bl_ForceUpdate,
+			bl_FileMd5,
+			bl_Createdate,
+			bl_Updatedate
+		)
+		values
+		(
+			#{pkTypeSpanId},
+			#{blHardwareNumber},
+			#{blHardwareVersion},
+			#{blFirmwareNumber},
+			#{blFirmwareVersion},
+			#{blForceUpdate},
+			#{blFileMd5},
+			sysdate(),
+			sysdate()
+		)
+	</insert>
+	
+	<!-- 修改产品BOM信息 -->
+	<update id="tblBomListUpdate" parameterType="TblBomList">
+		update tbl_bomlist set
+			pk_TypeSpanId = #{pkTypeSpanId},
+			bl_HardwareNumber = #{blHardwareNumber},
+			bl_HardwareVersion = #{blHardwareVersion},
+			bl_FirmwareNumber = #{blFirmwareNumber},
+			bl_FirmwareVersion = #{blFirmwareVersion},
+			bl_ForceUpdate = #{blForceUpdate},
+			bl_FileMd5 = #{blFileMd5},
+			bl_Updatedate = sysdate()
+		where pk_BomListId = #{pkBomListId}
+	</update>
+</mapper>

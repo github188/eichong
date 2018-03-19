@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+						http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+						http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.1.xsd
+						http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd
+						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd"
+	default-lazy-init="false">
+	<dubbo:application name="html_provider"></dubbo:application>
+	<dubbo:monitor protocol="registry" />
+	<dubbo:registry address="zookeeper://10.9.2.212:2181"></dubbo:registry>
+	<!-- <bean id="commonService" class="com.cn.wanma.service.impl.CommonServiceImpl"/> 
+		<dubbo:service interface="com.cn.wanma.service.CommonService" ref="commonService" 
+		timeout="1200000" /> -->
+	<bean id="startChargeService" class="com.wanma.service.impl.StartChargeServiceImpl" />
+	<dubbo:service interface="com.wanma.service.StartChargeService"
+		ref="startChargeService" timeout="1200000" />
+	<bean id="stopChargeService" class="com.wanma.service.impl.StopChargeServiceImpl" />
+	<dubbo:service interface="com.wanma.service.StopChargeService"
+		ref="stopChargeService" timeout="1200000" />
+
+	<bean id="amapChargeService" class="com.wanma.service.impl.ChargePowerstationServiceImpl" />
+	<dubbo:service interface="com.wanma.service.ChargePowerstainService"
+		ref="amapChargeService" timeout="1200000" />
+
+</beans>

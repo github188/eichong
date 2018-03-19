@@ -1,0 +1,21 @@
+package com.wanma.ims.mapper;
+
+import java.util.List;
+
+import com.wanma.ims.common.domain.UserRelaDO;
+
+public interface UserRelaMapper {
+
+	void insertRealInfo(UserRelaDO userRela);
+
+	int checkCardRela(Long userDefaultId);
+
+	List<UserRelaDO> getRelaByUserId(Long userId);
+
+	UserRelaDO getRelaByCardId(Long userDefaultId);
+
+	
+
+
+
+}

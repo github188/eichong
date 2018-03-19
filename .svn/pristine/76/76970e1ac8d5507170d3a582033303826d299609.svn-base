@@ -1,0 +1,20 @@
+package com.wanma.ims.mapper;
+
+import com.wanma.ims.common.domain.CompanyChargeRelaDO;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+
+public interface CompanyChargeRelaMapper {
+    List<CompanyChargeRelaDO> getCompanyChargeRelaList(CompanyChargeRelaDO searchModel);
+
+    int deleteCompanyChargeRelaById(Long id);
+
+    int deleteByCpyIdAndPowerStationIds(@Param("cpyId") Long cpyId, @Param("powerStationIds") List<Long> powerStationIds);
+
+    int insertCompanyChargeRela(CompanyChargeRelaDO companyChargeRela);
+
+    CompanyChargeRelaDO selectCompanyChargeRelaById(Long id);
+
+    int updateCompanyChargeRelaSelective(CompanyChargeRelaDO companyChargeRela);
+}

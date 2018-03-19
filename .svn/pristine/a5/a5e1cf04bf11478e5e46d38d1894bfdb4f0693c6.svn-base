@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.TblPowerstationMapper">
+
+	<resultMap id="tblPowerstationResultMap" type="TblPowerstation">
+		<id property="pkPowerstation" column="pk_PowerStation" />
+		<result property="postName" column="poSt_Name" />
+		<result property="postAddress" column="poSt_Address" />
+		<result property="postLongitude" column="poSt_Longitude" />
+		<result property="postLatitude" column="poSt_Latitude" />
+		<result property="postPhone" column="poSt_Phone" />
+		<result property="postEleids" column="poSt_Eleids" />
+		<result property="postStatus" column="poSt_Status" />
+		<result property="postCreatedate" column="poSt_Createdate" />
+		<result property="postUpdatedate" column="poSt_Updatedate" />
+		<result property="postRemark" column="poSt_Remark" />
+		<result property="postPoweruser" column="poSt_PowerUser" />
+		<result property="postIsappoint" column="poSt_IsAppoint" />
+		<result property="rejectionReason" column="poSt_RejectionReason" />
+		<result property="poStOnlineTime" column="poSt_OnlineTime" />
+		<result property="poStUserName" column="poSt_UserName" />
+		<result property="postOwnProvinceCode" column="poSt_OwnProvinceCode" />
+		<result property="postOwnCityCode" column="poSt_OwnCityCode" />
+		<result property="postOwnCountyCode" column="poSt_OwnCountyCode" />
+	</resultMap>
+
+
+	<select id="getCount" parameterType="TblPowerStation"
+		resultType="int">
+		select count(1) from tbl_powerstation
+		where 1=1
+		<if test="postOwnProvinceCode !=null  ">
+			and poSt_OwnProvinceCode = #{postOwnProvinceCode}
+		</if>
+	</select>
+
+	<select id="getList" parameterType="TblPowerstation" resultMap="tblPowerstationResultMap">
+		select
+		pk_PowerStation,
+		getFullPath('powerListImage',pk_PowerStation) as
+		postPic,
+		poSt_Name,
+		poSt_Address,
+		poSt_Longitude,
+		poSt_Latitude,
+		poSt_Phone,
+		poSt_Eleids,
+		poSt_Status,
+		poSt_Createdate,
+		poSt_Updatedate,
+		poSt_Remark,
+		poSt_PowerUser,
+		poSt_IsAppoint,
+		poSt_OnlineTime,
+		poSt_OwnProvinceCode,
+		poSt_OwnCityCode,
+		poSt_OwnCountyCode
+		from
+		tbl_PowerStation
+		where 1=1
+		<if test="postOwnProvinceCode !=null  ">
+			and poSt_OwnProvinceCode = #{postOwnProvinceCode}
+		</if>
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<select id="getNewlyUpdatedCount" parameterType="hashMap"
+		resultType="int">
+		select count(1) from
+		(select * from tbl_powerstation t where
+		t.poSt_Updatedate >= #{queryTime}
+		union
+		select * from tbl_powerstation t
+		where exists (select 1 from tbl_electricpile e where e.elPi_Updatedate
+		>= #{queryTime})) a
+		where 1=1
+		<if test="poSt_OwnProvinceCode !=null  ">
+			and poSt_OwnProvinceCode = #{poSt_OwnProvinceCode}
+		</if>
+	</select>
+
+	<select id="getNewlyUpdatedList" parameterType="hashMap"
+		resultMap="tblPowerstationResultMap">
+		select * from
+		(select * from tbl_powerstation t where t.poSt_Updatedate
+		>= #{queryTime}
+		union
+		select * from tbl_powerstation t where exists
+		(select 1 from tbl_electricpile e where e.elPi_Updatedate >=
+		#{queryTime}))a
+		where 1=1
+		<if test="poSt_OwnProvinceCode !=null  ">
+			and poSt_OwnProvinceCode = #{poSt_OwnProvinceCode}
+		</if>
+		<if test="pageNo !=null">limit #{pageNo},#{pageSize}</if>
+	</select>
+
+
+	<select id="getPointsInfoByCityCode" parameterType="TblPowerstation"
+		resultType="hashMap">
+
+		select
+		a.pk_PowerStation id,
+		a.poSt_Name stubGroupName,
+		0
+		stubGroupType,
+		ifnull(getFullPath('powerListImage',a.pk_PowerStation),' ') as imgUrl,
+		sum(if (c.elPi_ChargingMode =14 , 1,0)) as stubAcCnt,
+		sum(if (c.elPi_ChargingMode =5 , 1,0)) as stubDcCnt,
+		a.poSt_Address address,
+		a.poSt_Longitude lng,
+		a.poSt_Latitude
+		lat,
+		a.poSt_OnlineTime
+		serviceTime,
+		a.poSt_OwnCityCode cityCode,
+		a.poSt_OwnCountyCode
+		districtCode,
+		(select
+		b.area_name from tb_m_area b
+		where b.area_id =
+		a.poSt_OwnCountyCode)
+		district,
+		"" parkingFeeInfo
+		from tbl_PowerStation
+		a,
+		tbl_company_rela b,
+		tbl_electricpile c
+		where
+		a.poSt_OwnCityCode=#{postOwnCityCode}
+		AND a.pk_PowerStation =
+		b.pk_PowerStation
+		AND b.pk_cpy_operate_id = (select
+		pk_CompanyId from
+		tbl_company where
+		cpy_CompanyNumber=#{org})
+		AND c.pk_ElectricPile = b.pk_ElectricPile
+		GROUP BY
+		b.pk_PowerStation
+
+	</select>
+	<select id="selectDetail" parameterType="map" resultType="hashMap">
+		select
+		a.pk_PowerStation stubGroupId,
+		sum(if(c.elPi_ChargingMode=5,1,0)) as stubDcIdleCnt,
+		sum(if(c.elPi_ChargingMode=14,1,0)) as stubAcIdleCnt
+		from tbl_PowerStation a,
+		tbl_company_rela b,
+		tbl_electricpile c
+		where
+		a.pk_PowerStation=#{pkPowerstation}
+		and
+		a.pk_PowerStation=b.pk_PowerStation
+		and b.pk_cpy_operate_id= (select
+		pk_CompanyId from
+		tbl_company where
+		cpy_CompanyNumber=#{org})
+		and b.pk_ElectricPile=c.pk_ElectricPile
+		and EXISTS (
+		SELECT
+		1
+		FROM
+		tbl_electricpilehead d
+		WHERE
+		d.pk_ElectricPile = c.pk_ElectricPile
+		AND d.delete_flag = '0'
+		AND d.ePHe_ElectricpileHeadState = '0'
+		)
+
+	</select>
+
+	<select id="selectOne" parameterType="map" resultMap="tblPowerstationResultMap">
+		select
+		pk_PowerStation,
+		poSt_Name,
+		poSt_Address,
+		poSt_Longitude,
+		poSt_Latitude,
+		poSt_Phone,
+		poSt_Eleids,
+		poSt_Status,
+		poSt_Createdate,
+		poSt_Updatedate,
+		poSt_Remark,
+		poSt_PowerUser,
+		poSt_IsAppoint
+		from tbl_PowerStation
+		where
+		pk_PowerStation=#{pkPowerstation}
+	</select>
+</mapper> 

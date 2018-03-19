@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/style.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/APPissue/add_AppBtn.css"/>
+    <title>首页功能按钮</title>
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12" style="padding: 0">
+                <div class="ibox float-e-margins">
+                    <div class="">
+                        <div class="ibox-content">
+                            <div class="add_companyBlock">
+                                <div class="add_greyBlock">
+                                    <!--图片-->
+                                    <div class="container-fluid" id="picture">
+                                        <div class="col-sm-12 comTitle">图片<span class="errorStyle">*</span></div>
+                                        <div class="paddingLeft">
+                                            <div class="col-sm-4 ">
+                                                <div id="picBox" class="picBox">
+                                                    <img src="" alt="" class="pic" />
+                                                </div>
+                                                <a href="javascript:;" class="filea">选择文件
+                                                    <input type="file" name="file" id="file" value="" class="aaaStyle" multiple="multiple" />
+                                                </a>
+                                            </div>
+                                            <div class="col-sm-4 userHeight">
+                                                <div class="fileList" id="fileListUl">
+
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4 errorStyle" id="fileNameTip"></div>
+                                        </div>
+                                    </div>
+                                    <!--名称-->
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">名称<span class="errorStyle">*</span></div>
+                                        <div class="paddingLeft">
+                                            <div class="col-sm-8">
+                                                <input type="text" name="buttonName" maxlength="10" id="buttonName" value="" class="buttonName" />
+                                            </div>
+                                            <div class="col-sm-4 nameTip" id="buttonNameTip"></div>
+                                        </div>
+                                    </div>
+                                    <!--操作-->
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">操作<span class="errorStyle">*</span></div>
+                                        <div class="paddingLeft">
+                                            <div class="col-sm-8 row buttonType" style="margin: 0">
+                                                <div class="col-sm-3" style="padding: 0">
+                                                    <input type="radio" name="buttonType" id="inOperation" value="1" class="commonStyle" />内部动作
+                                                </div>
+                                                <div class=" col-sm-3 col-xs-4 model-select-box">
+                                                    <div class="model-select-text buttonActionBlock" data-value="0" id="buttonAction">请选择</div>
+                                                    <span class="downRow buttonActionBlock clickRotateSpan"></span>
+                                                    <input type="text" name="buttonAction" hidden="hidden" id="" value="" />
+                                                    <ul class="model-select-option buttonActionUl">
+
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4 errorStyle" id="buttonTypeTip"></div>
+                                            <div class="col-sm-8 buttonType">
+                                                <div class="col-sm-3" style="padding: 0;">
+                                                    <input type="radio" name="buttonType" id="outOperation" value="2" class="commonStyle" />外部链接
+                                                </div>
+                                                <input type="text" id="buttonUrl" name="buttonUrl" placeholder="请输入外部链接" class="outOperation col-sm-3"  />
+                                            </div>
+                                            <div class="col-sm-4 errorStyle" id=""></div>
+                                        </div>
+                                    </div>
+                                    <!--状态-->
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">状态<span class="errorStyle">*</span></div>
+                                        <div class="paddingLeft">
+                                            <div class="col-sm-8">
+                                                <input type="radio" name="buttonStatus" value="1" id="openStatus" checked="checked" class="commonStyle" />开启
+                                                <input type="radio" name="buttonStatus" value="2" id="closeStatus" class="commonStyle" />关闭
+                                                <input type="radio" name="buttonStatus" value="3" id="downStatus" class="commonStyle" />下架
+                                            </div>
+                                            <div class="col-sm-4 errorStyle" id="buttonStatusTip">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--备注-->
+                                    <div class="container-fluid" id="payRuleDiv">
+                                        <div class="col-sm-12 comTitle">备注<span class="errorStyle">*</span></div>
+                                        <div class="paddingLeft">
+                                            <div class="col-sm-8">
+                                                <textarea id="buttonDesc" class="messageCon" cols="" rows="" ></textarea>
+                                            </div>
+                                            <div class="col-sm-4 errorStyle" id="buttonDescTip">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--按钮组合-->
+                                    <div class="saveBtn commonBtn" id="saveBtn" onclick="saveInfo()">保存</div>
+                                    <div class="quitBtn commonBtn" id="goCancel">取消</div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<!--<script src="../js/apiAddress.js" type="text/javascript" charset="utf-8"></script>-->
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/APPissue/AppBtn_edit.js" type="text/javascript" charset="utf-8"></script>
+</html>

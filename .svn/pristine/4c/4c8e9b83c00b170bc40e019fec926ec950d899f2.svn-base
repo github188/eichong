@@ -1,0 +1,98 @@
+package com.wanma.ims.task;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Maps;
+import com.wanma.ims.common.domain.IntegralActivityDO;
+import com.wanma.ims.common.domain.OrderDO;
+import com.wanma.ims.common.domain.bo.IntegralActivityAndRulesBO;
+import com.wanma.ims.common.domain.bo.IntegralBO;
+import com.wanma.ims.mapper.IntegralActivityMapper;
+import com.wanma.ims.mapper.OrderMapper;
+import com.wanma.ims.service.IntegralDetailsService;
+import com.wanma.ims.util.DateUtil;
+
+@Component
+public class IntegralDetailsTask {
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	@Autowired
+	private IntegralDetailsService integralDetailsService;
+	
+	@Autowired
+	private IntegralActivityMapper integralActivityMapper;
+	
+	@Autowired
+	private OrderMapper orderMapper;
+
+//	@Scheduled(cron = "0 */10 * * * ?")
+	public void doIntegralsBatch(){
+		//获取包含当前日期的积分活动规则(消费赠送活动)
+		List<IntegralActivityAndRulesBO> activityList = integralActivityMapper.getIntegralActivityForBatch(new IntegralActivityDO());
+		if (activityList == null || activityList.size() == 0) {
+			log.info(this.getClass() + ".doIntegralsBatch() info : " + new Date() + "没有消费赠送积分活动！");
+		}else {
+			Long electricPileId;
+			IntegralBO integralBO;
+			List<OrderDO> orderDOList = orderMapper.getOrdersForIntegral(new OrderDO());
+			for (OrderDO orderDO : orderDOList) {
+				for(IntegralActivityAndRulesBO activity : activityList){
+					if(activity.getHighestPriority() != null && activity.getHighestPriority().intValue() == 1){
+						choiceIntegralActivity(orderDO, activity);
+					}else{
+						if(activity.getIsWhole() != null && activity.getIsWhole().intValue() == 1){
+							editIntegralDetailsData(orderDO, activity);
+						}else{
+							choiceIntegralActivity(orderDO, activity);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	private void choiceIntegralActivity(OrderDO orderDO, IntegralActivityAndRulesBO activity){
+		if(activity.getElectricPileId() != null){
+			if(orderDO.getElectricPileId() != null
+					&& activity.getElectricPileId().equals(orderDO.getElectricPileId())) {
+				editIntegralDetailsData(orderDO, activity);
+			}
+		}else if(activity.getPowerStationId() != null){
+			if(orderDO.getPowerStationId().equals(activity.getPowerStationId())){
+				editIntegralDetailsData(orderDO, activity);
+			}
+		}else if(activity.getCityId() != null){
+			if(orderDO.getCityId().equals(activity.getCityId())) {
+				editIntegralDetailsData(orderDO, activity);
+			}
+		}else if(activity.getProvinceId() != null){
+			if(orderDO.getProvinceId().equals(activity.getProvinceId())) {
+				editIntegralDetailsData(orderDO, activity);
+			}
+		}else{
+			log.info(this.getClass() + ".doIntegralsBatch() info : " + orderDO.getOrderCode() + "无消费赠送积分活动！");
+		}
+	}
+
+	private void editIntegralDetailsData(OrderDO orderDO, IntegralActivityAndRulesBO activity){
+		IntegralBO integralBO = new IntegralBO();
+		integralBO.setIntegralActivityId(2L);
+		integralBO.setMoneyInvolved(orderDO.getChOrMoeny());
+		integralBO.setDirection(0);
+		integralBO.setUserId(orderDO.getUserId());
+		integralBO.setElectricPileId(orderDO.getElectricPileId());
+		integralBO.setCompleteDate(DateUtil.parse(orderDO.getEndChargeTime()));
+		try {
+			integralDetailsService.addIntegralDetails(integralBO, activity);
+		} catch (Exception e) {
+			log.error(this.getClass() + ".doIntegralsBatch() error : " + orderDO.getOrderCode() + "消费赠送积分出错！" + e);
+		}
+	}
+}

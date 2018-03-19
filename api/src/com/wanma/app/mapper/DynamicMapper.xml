@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.app.dao.DynamicMapper">
+	
+	<select id="getDynamicList" parameterType="hashmap" resultType="hashmap">
+		SELECT pk_release,rele_title,brief_introduction,rele_usepk,rele_createdate FROM tbl_web_release where valid_flag = 1   
+		ORDER BY rele_createdate DESC LIMIT #{pageNumber},#{pageNum};
+	</select>
+</mapper> 

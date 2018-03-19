@@ -1,0 +1,152 @@
+
+*, html, body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, button, textarea, p, blockquote, th, td {
+    margin: 0;
+    padding: 0;
+}
+fieldset, img {
+    border: 0 none;
+}
+address, caption, cite, code, dfn, em, th, var, optgroup {
+    font-style: inherit;
+    font-weight: inherit;
+}
+del, ins {
+    text-decoration: none;
+}
+li {
+    list-style: outside none none;
+}
+h1, h2, h3, h4, h5, h6 {
+    font-size: 100%;
+    font-weight: normal;
+}
+q::before, q::after {
+    content: "";
+}
+abbr, acronym {
+    border: 0 none;
+    font-variant: normal;
+}
+em, cite {
+    font-style: normal;
+}
+legend {
+    color: #000;
+}
+input, button, textarea, select, optgroup, option {
+    outline: medium none;
+}
+input, button, textarea, select {
+    font-family: "Microsoft YaHei";
+}
+img {
+    border: 0 none;
+    vertical-align: top;
+}
+html, body {
+    background-color: #fff;
+    color: #333;
+    font: 14px/24px "Microsoft YaHei" !important;
+}
+a {
+    color: #333;
+    outline: medium none;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+.cursor {
+    cursor: pointer;
+}
+.hide {
+    display: none !important;
+}
+.show {
+    display: inline !important;
+}
+.block {
+    display: block !important;
+}
+.in_block {
+    display: inline-block !important;
+}
+.marginAuto {
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+.m0 {
+    margin: 0 !important;
+}
+.oh {
+    overflow: hidden !important;
+}
+.pos-a {
+    position: absolute;
+}
+.pos-r {
+    position: relative;
+}
+.pos-f {
+    position: fixed;
+}
+.tl {
+    text-align: left;
+}
+.tc {
+    text-align: center;
+}
+.tr {
+    text-align: right;
+}
+.vm {
+    vertical-align: middle;
+}
+.vt {
+    vertical-align: top;
+}
+.vb {
+    vertical-align: text-bottom;
+}
+.text-d {
+    text-decoration: underline;
+}
+.fr {
+    float: right !important;
+}
+.fl {
+    float: left !important;
+}
+.cb {
+    clear: both;
+}
+.cl {
+    clear: left;
+}
+.cr {
+    clear: right;
+}
+.clearFix, .clearfix {
+    clear: both;
+}
+.clearFix::after, .clearfix::after {
+    clear: both;
+    content: ".";
+    display: block;
+    height: 0;
+    visibility: hidden;
+}
+.borderNone {
+    border: medium none !important;
+}
+.bgNone {
+    background: rgba(0, 0, 0, 0) none repeat scroll 0 0 !important;
+}
+.publicWidth {
+    margin: 0 auto;
+    width: 1200px;
+}
+.loading {
+    background: rgba(0, 0, 0, 0) url("../../images/public/loading/loading.gif") no-repeat scroll center center;
+}
+

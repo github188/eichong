@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/userInvoice/userInvoice_list.css"/>
+    <link rel="stylesheet" type="text/css" href="../../js/lib/My97DatePicer/skin/WdatePicker.css"/>
+    <title>个人开票管理</title>
+</head>
+<body>
+<div class="container animated fadeInRight">
+    <div class="row">
+        <div class="formBlock clearfix">
+            <form id="userInvoiceListForm">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <div class="userListSelect row" style="padding:0 15px;">
+                        <div class="col-sm-3 col-xs-12">
+                            <div class="col-sm-11 userAccount timeBlock">
+                                <input type="text" name="" value="" class="userAccountInput" placeholder="申请时间" id="datePicker"/>
+                                <input type="text" name="ivCreatedateBegin" value="" class="userAccountInput"
+                                       hidden="hidden" style="display: none;"/>
+                                <input type="text" name="ivCreatedateEnd" value="" class="userAccountInput" hidden="hidden"
+                                       style="display: none;"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-xs-12">
+                            <div class="col-sm-11 userAccount timeBlock">
+                                <input type="text" name="" value="" class="userAccountInput" placeholder="开票时间" id="timePicker"/>
+                                <input type="text" name="ivUpdatedateBegin" value="" class="userAccountInput"
+                                       hidden="hidden" style="display: none;"/>
+                                <input type="text" name="ivUpdatedateEnd" value="" class="userAccountInput" hidden="hidden"
+                                       style="display: none;"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-xs-12">
+                            <div class="col-sm-11 userAccount">
+                                <input type="text" name="userAccount" value="" placeholder="申请人" class="userAccountInput" id="userAccount"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-xs-12">
+                            <div class="col-sm-11 col-xs-12 model-select-box">
+                                <div class="model-select-text ivInvoiceStatusBlock" data-value="" id="ivInvoiceStatus">处理状态</div>
+                                <span class="downRow ivInvoiceStatusBlock clickRotateSpan"></span>
+                                <input type="text" name="ivInvoiceStatus" value="" hidden="hidden"/>
+                                <ul class="model-select-option ivInvoiceStatusUl">
+                                    <li data-option="" class="seleced">请选择</li>
+                                    <li data-option="0">已申请</li>
+                                    <li data-option="1">已开票</li>
+                                    <li data-option="2">已申请，未支付邮费</li>
+                                    <li data-option="3">已拒绝</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12" style="background: #FFFFFF;height: 25px;"></div>
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="position: relative;">
+                        <div class="queryBtn" onclick="userInvoiceListSearch()">
+                            查询
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!--表格部分开始==========================================================-->
+        <div class="showSet table-responsive">
+            <table class=" table table-bordered text-center" style="border: 1px solid #DCDCDC;">
+                <thead>
+                <tr>
+                    <th class="">选择</th>
+                    <th class="invoiceList_number">序号</th>
+                    <th class="invoiceList_userAccount">申请人</th>
+                    <th class="invoiceList_ivCreatedate">申请时间</th>
+                    <th class="invoiceList_DiscountChangMoney">优惠后电费（元）</th>
+                    <th class="invoiceList_DiscountServiceMoney">优惠后服务费（元）</th>
+                    <th class="invoiceList_ivFreightAmount">邮费（元）</th>
+                    <th class="invoiceList_ivPayFreight">寄付方式</th>
+                    <th class="invoiceList_actStatus">处理状态</th>
+                    <th class="invoiceList_ivReceipType">发票类型</th>
+                    <th class="invoiceList_ivUpdatedate">开票时间</th>
+                </tr>
+                </thead>
+                <tbody id="myTbogy">
+
+                </tbody>
+            </table>
+
+            <div id="userInvoiceListPage" class="pagination">
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layDate-v5.0.4/laydate/laydate.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="../../js/contabs.min.js"></script>
+<script src="../../js/userInvoice/userInvoice_list.js" type="text/javascript" charset="utf-8"></script>
+</html>

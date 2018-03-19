@@ -1,0 +1,543 @@
+@charset "utf-8";
+body,html{
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	margin: 0;
+	font-size: 62.5%;
+	background: #FFFFFF;
+	font-family: "微软雅黑";
+}
+body{
+	background: #EBECED;
+}
+
+.headRight{
+	position: relative;
+}
+.headRight span{
+	display: inline-block;
+	width: 2.4rem;
+	height: 50%;
+	-background: #0062CC;
+	position: absolute;
+}
+.headRight .share{
+	top: 20%;
+	left: 0;
+}
+.headRight .share img{
+	display: block;
+	margin: 0;
+	width: 100%;
+	height: 100%;
+}
+.headRight .noCollect{
+	top: 20%;
+	left: 36%;
+	background: url(../img/nav_btn_collect.png) no-repeat left top;
+	background-size:100% 100%;
+}
+.headRight .isCollect{
+	top: 20%;
+	left: 36%;
+	background: url(../img/nav_btn_collect_p.png) no-repeat left top;
+	background-size:100% 100%;
+}
+/*第三块=============================*/
+.threeFloor{
+	width: 100%;
+	height: 90%;
+	overflow: auto;
+	margin-top: 5rem;
+}
+section{
+	width: 100%;
+	min-height: 10rem;
+	background: #FFFFFF;
+	padding:1rem;
+	/*padding-bottom: 0;*/
+}
+.container{
+	padding: 0;
+	margin: 0;
+	width: 100%;
+	min-height: 1rem;
+	background: #FFFFFF;
+	margin-top: 1rem;
+}
+#distance1{
+	width: 100%;
+	height: auto;
+	display: block;
+	word-break: break-word;
+	font-size: 1.6rem;
+}
+.headRight{
+	text-align: center;
+}
+.headRight img{
+	width: 40%;
+	height: 65%;
+	float: left;
+	margin-top: 10%;
+}
+section .container .powerStationImage{
+	min-height: 13rem;
+	
+	border: 0.1rem solid #CCCCCC;
+	text-align: center;
+	font-size: 1rem;
+}
+section .container .powerStationImage img{
+	width: 100%;
+	min-height: 7rem;
+}
+section .container .distance{
+	text-align: center;
+	height: 100%;
+	color: #808080;
+	font-size: 1.4rem;
+	display: inline-block;
+}
+section .container .powerStationName{
+	width: 100%;
+	min-height: 2rem;
+	color: #666666;
+	font-size: 1.8rem;
+	margin-bottom: 1rem;
+	/*padding: 0 1rem;*/
+	/*margin-bottom: 1rem; 此处是兼容处理细节*/
+	
+}
+section .container .intrCenter{
+	padding: 0 0.6rem;
+	color: #666666;
+	
+}
+section .container1 .intrCenter{
+	padding: 0;
+	color: #666666;
+}
+
+section .container .navImg{
+	text-align: center;
+	border-left: 0.1rem solid #C0C0C0;
+	padding-left: 0.3rem;
+}
+section .container .question{
+	width: 3rem;
+	height: 3rem;
+}
+section .container .navImg img{
+	width:40%;
+	height:40%;
+}
+section .container .num-btn{
+	border-radius: 3rem;
+	width: 48%;
+	min-height: 3rem;
+	padding: 0;
+	color: #666666;
+	padding-right: 0.4rem;
+	padding-top: 0.2rem;
+	font-size: 1rem;
+}
+section .container .num-btn .mui-badge{
+	background: #666666;
+	color: #FFFFFF;
+	margin-left: 0;
+}
+section .container .num-btn .mui-badge1{
+	background: #009933;
+	color: #FFFFFF;
+}
+section .container .powerStationAddress{
+	width: 100%;
+	min-height: 0.5rem;
+	font-size: 1.4rem;
+	color: #666666;
+	-border-right: 0.1rem solid #C0C0C0;
+	padding: 0 0.6rem;
+}
+section .container .unitPrice{
+	width: 100%;
+	min-height: 0.4rem;
+	/*background: #0062CC;*/
+	padding: 0 0.6rem;
+	font-size: 1.4rem;
+}
+/*第二块========================================================================================*/
+.openTime{
+	width: 100%;
+	min-height: 6rem;
+	background: #FFFFFF;
+	border-top:0.1rem solid #DCDCDC ;
+	border-bottom:0.1rem solid #DCDCDC ;
+	padding: 0 1rem;
+}
+.openTime .openTip{
+	margin-top: 0.5rem;
+	
+}
+.openTime .openTip p{
+	
+	margin: 0;
+	padding: 0;
+	color: #666666;
+}
+.openTime .checkError{
+	width: 3rem;
+	height: 3rem;
+	border:0.1rem solid #C0C0C0;
+	border-radius: 3rem;
+	text-align: center;
+	color: #666666;
+	line-height: 3rem;
+	margin-top: 0.8rem;
+	font-size: 1.4rem;
+}
+/*第三块========================================================================================*/
+.pile{
+	width: 100%;
+	min-height: 1rem;
+	background: #FFFFFF;
+	padding: 1rem 1rem;
+}
+.pile .pileGroup{
+	width: 100%;
+	min-height: 4rem;
+	background: #FFF;
+	margin-bottom: 2%;
+}
+.pile .pileGroup li{
+	width: 30%;
+	height: 3.6rem;
+	border: 0.1rem solid #C0C0C0;
+	border-radius: 3rem;
+	text-align: center;
+	line-height: 3.6rem;
+	color: #808080;
+	font-size: 1.4rem;
+	margin-left: 2%;
+	margin-bottom: 2%;
+	display: inline-block;
+}
+/*点击之后的样式======================*/
+.pile .pileGroup .active{
+	color: #FFFFFF;
+	background: #FF7D00;
+	border: 0.1rem solid #FF7D00;
+}
+/*第四块=========================================================================================*/
+.pileTable{
+	width: 100%;
+	min-height: 0.4rem;
+	
+}
+.pileTable img{
+	width: 100%;
+	margin-top: 1rem;
+}
+/*表格模块===============================================================================*/
+.tableHead{
+	width: 100%;
+	min-height: 4rem;
+	background: #FFFFFF;
+}
+.tableHead .parameter{
+	height: 100%;
+	text-align: center;
+	line-height: 4rem;
+	font-size: 1.6rem;
+	color: #959595;
+}
+.tableHead .ownerCompany{
+	color: #EA0E0E;
+}
+.tableHead .elpiPowerinterface,.tableHead .elpiPowersize{
+	color: #FF7D00;
+}
+/*三种标准背景切换==
+ * 默认是特斯拉======================================================*/
+.tableHead .ownerCompanyImg{
+	background: url(../img/bg_map_tesla.png) no-repeat 10% center;
+	background-size:20% 60% ;
+}
+.tableHead .ownerCompanyColor{
+	color: #EB3030;
+}
+/*国标背景============*/
+.tableHead .ownerCompanyState{
+	background: url(../img/bg_map_state.png) no-repeat 10% center;
+	background-size:20% 60% ;
+}
+
+.tableHead .ownerCompanyAiChong{
+	background: url(../img/bg_map_eichong.png) no-repeat 10% center;
+	background-size:20% 60% ;
+}
+.tableHead .ownerCompanyOther{
+	background: url(../img/bg_map_other.png) no-repeat 10% center;
+	background-size:20% 60% ;
+}
+/*动态列表部分===============================*/
+.dynamicList{
+	width: 100%;
+	min-height: 12rem;
+	overflow: auto;
+	/*background: #0062CC;*/
+}
+.dynamicList .dynamicRow:nth-child(odd){
+	width: 100%;
+	height: 4rem;
+	background:#EBECED;
+	font-size: 1.6rem;
+}
+.dynamicList .dynamicRow:nth-child(even){
+	width: 100%;
+	height: 4rem;
+	background:#FFFFFF;
+	font-size: 1.6rem;
+}
+.dynamicList .dynamicRow .gunpoint{
+	height: 100%;
+	line-height: 4rem;
+	text-align: center;
+	font-size: 1.4rem;
+	color: #808080;
+}
+/*空闲时文字颜色样式===================================================*/
+.dynamicList .dynamicRow .pileHeadState1{
+	height: 100%;
+	line-height: 4rem;
+	text-align: center;
+	font-size: 1.4rem;
+	color: #189A3F;
+}
+.dynamicList .dynamicRow .pileHeadStateGray{
+	height: 100%;
+	line-height: 4rem;
+	text-align: center;
+	font-size: 1.4rem;
+	color: #8A8A8A;
+}
+.dynamicList .dynamicRow .isAppoint a{
+	text-decoration: none;
+	color: #FF7D00;
+}
+.dynamicList .dynamicRow .noAppoint a{
+	text-decoration: none;
+	color: #808080;
+}
+.dynamicList .dynamicRow .isAppoint{
+	color: #FF7D00;
+	background: url(../img/bg_map_appointment1.png) no-repeat 10% center;
+	background-size:26% 50% ;
+}
+.dynamicList .dynamicRow .noAppoint{
+	color: #808080;
+	background: url(../img/bg_map_appointment2.png) no-repeat 10% center;
+	background-size:26% 50% ;
+}
+
+/*适配部分===苹果4、4s、5c、5s=================================================================*/
+@media only screen and (min-width:319px ) {
+	section .container .num-btn{
+		border-radius: 3rem;
+		min-width:48.5%;
+		min-height: 3.6rem;
+		padding: 0;
+		color: #666666;
+		padding-right: 0.9rem;
+		padding-top: 0.2rem;
+		font-size: 1.2rem;
+		
+		
+	}
+	section .container .freeCount{
+		padding-left: 0.6rem;
+	}
+	section .container .num-btn .mui-badge{
+		/*width: 1.6rem;
+		min-height: 1.4rem;*/
+		background: #666666;
+		color: #FFFFFF;
+		margin-left: 0;
+		padding: 0;
+		line-height: 1.4rem;
+		font-size: 1.4rem;
+		width: 24%;
+		-height: 55%;
+	}
+	section .container .num-btn .mui-badge1{
+		/*width: 1.5rem;
+		min-height: 1.4rem;*/
+		background: #009933;
+		color: #FFFFFF;
+		padding: 0;
+		line-height: 1.4rem;
+		font-size: 1.4rem;
+		width: 24%;
+		-height: 55%;
+	}
+	#distance1{
+		width: 100%;
+		height: auto;
+		display: inline-block;
+		word-break: break-word;
+		font-size: 1.4rem;
+	}
+	section .container .navImg img{
+		width:55%;
+		height:55%;
+	}
+}
+@media only screen and (min-width: 359px) {
+	 .headRight img{
+		width: 40%;
+		height: 75%;
+		float: left;
+		margin-top: 10%;
+	}
+	section .container .navImg img{
+		width:50%;
+		height:50%;
+	}
+	section .container .num-btn{
+		border-radius: 3rem;
+		width:48%;
+		min-height: 3.6rem;
+		padding: 0;
+		color: #666666;
+		padding-right: 0.9rem;
+		padding-top: 0.2rem;
+		font-size: 1.2rem;
+		
+		
+	}
+	section .container .freeCount{
+		padding-left: 0.6rem;
+	}
+	section .container .num-btn .mui-badge{
+		/*width:2rem;*/
+		width:24%;
+		min-height: 2rem;
+		background: #666666;
+		color: #FFFFFF;
+		margin-left: 0;
+		padding: 0;
+		line-height: 2rem;
+		font-size: 1.4rem;
+		/*width: 26%;
+		-height: 55%;*/
+	}
+	section .container .num-btn .mui-badge1{
+		/*width: 2rem;*/
+		width:24%;
+		min-height: 2rem;
+		background: #009933;
+		color: #FFFFFF;
+		padding: 0;
+		line-height: 2rem;
+		font-size: 1.4rem;
+		/*width: 26%;
+		-height: 55%;*/
+	}
+}
+@media only screen and (min-width:479px ) {
+	.headRight img{
+		width: 35%;
+		height: 85%;
+		float: left;
+		margin-top: 10%;
+	}
+	section .container .navImg img{
+		width:50%;
+		height:50%;
+	}
+	section .container .powerStationName{
+		width: 100%;
+		min-height: 3rem;
+		color: #666666;
+		font-size: 1.8rem;
+		margin-bottom: 1rem;
+		/*padding: 0 1rem;*/
+		/*margin-bottom: 1rem; 此处是兼容处理细节*/
+		
+	}
+	section .container .powerStationAddress{
+		width: 100%;
+		min-height: 1rem;
+		font-size: 1.4rem;
+		color: #666666;
+		-border-right: 0.1rem solid #C0C0C0;
+		padding: 0 0.6rem;
+		margin-top: 1.2rem;
+	}
+	.headRight img{
+		width: 30%;
+		height: 65%;
+		float: left;
+		-margin-top: 10%;
+	}
+}
+
+/*模态框效果=========================================================================*/
+.modal-content{
+	width: 80%;
+	height: 50%;
+	margin: 0 auto;
+}
+
+.modal-content .modal-header {
+  min-height: 16.42857143px;
+  padding: 1.5rem;
+  text-align: center;
+  color: #FF7D00;
+  
+}
+.modal-content .modal-header,.modal-content .modal-footer{
+  padding: 1.5rem;
+  text-align: center;
+  border-top: 0 !important;
+  border-bottom: 0 !important;
+}
+.modal-content .modal-header .modal-title{
+	font-size: 2.4rem;
+}
+
+.modal-content .modal-footer .btn{
+	display: inline-block;
+	margin-left: 4rem;
+	width: 34%;
+	height:3rem ;
+}
+.modal-content .modal-footer .return{
+	background: #808080;
+	color: #FFFFFF;
+	border: 0;
+	outline-style:none ;
+}
+.modal-content .modal-footer .certain{
+	background: #FF7D00;
+	color: #FFFFFF;
+	border: 0;
+	outline-style:none ;
+}
+.modal-content .modal-footer .certain2{
+	background: #FF7D00;
+	color: #FFFFFF;
+	border: 0;
+	outline-style:none;
+	margin-left: 0;
+}
+.modal-body p{
+	width: 100%;
+	height: 3rem;
+	color: #666;
+	text-align: center;
+	font-size: 1.6rem;
+}
+
+

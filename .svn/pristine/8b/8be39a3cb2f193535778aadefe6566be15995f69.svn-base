@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wanma.dubbox.dao.TblRateinFormationMapper">
+	<resultMap id="BaseResultMap" type="com.wanma.dubbox.model.TblRateinFormation">
+		<id column="pk_RateInformation" property="id" jdbcType="INTEGER" />
+		<result column="raIn_ModelId" property="mdId" jdbcType="INTEGER" />
+		<result column="raIn_EffectiveDates" property="effDate"
+			jdbcType="TIMESTAMP" />
+		<result column="raIn_ExpiryDate" property="expDate" jdbcType="TIMESTAMP" />
+		<result column="raIn_FreezingMoney" property="freeMny"
+			jdbcType="DECIMAL" />
+		<result column="raIn_MinFreezingMoney" property="minFreeMny"
+			jdbcType="DECIMAL" />
+		<result column="raIn_QuantumDate" property="qunDate" jdbcType="VARCHAR" />
+		<result column="raIn_StartQuantumDate" property="squnDate"
+			jdbcType="TIMESTAMP" />
+		<result column="raIn_EndQuantumDate" property="endQunDate"
+			jdbcType="TIMESTAMP" />
+		<result column="raIn_TimeMarker" property="timMker" jdbcType="INTEGER" />
+		<result column="raIn_TipTimeTariff" property="tptimTrff"
+			jdbcType="DECIMAL" />
+		<result column="raIn_PeakElectricityPrice" property="pekEctyPrc"
+			jdbcType="DECIMAL" />
+		<result column="raIn_UsualPrice" property="uslPrc" jdbcType="DECIMAL" />
+		<result column="raIn_ValleyTimePrice" property="vlyTimPrc"
+			jdbcType="DECIMAL" />
+		<result column="raIn_ReservationRate" property="rvtRat"
+			jdbcType="DECIMAL" />
+		<result column="raIn_ServiceCharge" property="sviCg" jdbcType="DECIMAL" />
+		<result column="raIn_WarnMoney" property="wrnMny" jdbcType="DECIMAL" />
+		<result column="userId" property="uid" jdbcType="VARCHAR" />
+		<result column="raIn_area_id" property="areaCd" jdbcType="VARCHAR" />
+		<result column="raIn_city_id" property="cityCd" jdbcType="VARCHAR" />
+		<result column="raIn_province_id" property="proCd" jdbcType="VARCHAR" />
+		<result column="raIn_Createdate" property="cdate" jdbcType="TIMESTAMP" />
+		<result column="raIn_Updatedate" property="udate" jdbcType="TIMESTAMP" />
+		<result column="raIn_remarks" property="remark" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from
+		tbl_rateinformation
+		where pk_RateInformation = #{id,jdbcType=INTEGER}
+	</delete>
+
+	<insert id="insert" parameterType="com.wanma.dubbox.model.TblRateinFormation">
+		insert into tbl_rateinformation
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				pk_RateInformation,
+			</if>
+			<if test="mdId != null">
+				raIn_ModelId,
+			</if>
+			raIn_EffectiveDates,
+			raIn_ExpiryDate,
+			<if test="freeMny != null">
+				raIn_FreezingMoney,
+			</if>
+			<if test="minFreeMny != null">
+				raIn_MinFreezingMoney,
+			</if>
+			<if test="qunDate != null">
+				raIn_QuantumDate,
+			</if>
+			<if test="squnDate != null">
+				raIn_StartQuantumDate,
+			</if>
+			<if test="endQunDate != null">
+				raIn_EndQuantumDate,
+			</if>
+			<if test="timMker != null">
+				raIn_TimeMarker,
+			</if>
+			<if test="tptimTrff != null">
+				raIn_TipTimeTariff,
+			</if>
+			<if test="pekEctyPrc != null">
+				raIn_PeakElectricityPrice,
+			</if>
+			<if test="uslPrc != null">
+				raIn_UsualPrice,
+			</if>
+			<if test="vlyTimPrc != null">
+				raIn_ValleyTimePrice,
+			</if>
+			<if test="rvtRat != null">
+				raIn_ReservationRate,
+			</if>
+			<if test="sviCg != null">
+				raIn_ServiceCharge,
+			</if>
+			<if test="wrnMny != null">
+				raIn_WarnMoney,
+			</if>
+			<if test="uid != null">
+				userId,
+			</if>
+			<if test="areaCd != null">
+				raIn_area_id,
+			</if>
+			<if test="cityCd != null">
+				raIn_city_id,
+			</if>
+			<if test="proCd != null">
+				raIn_province_id,
+			</if>
+			<if test="cdate != null">
+				raIn_Createdate,
+			</if>
+			<if test="udate != null">
+				raIn_Updatedate,
+			</if>
+			<if test="remark != null">
+				raIn_remarks,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="mdId != null">
+				#{mdId,jdbcType=INTEGER},
+			</if>
+			sysdate(),
+			sysdate(),
+			<if test="freeMny != null">
+				#{freeMny,jdbcType=DECIMAL},
+			</if>
+			<if test="minFreeMny != null">
+				#{minFreeMny,jdbcType=DECIMAL},
+			</if>
+			<if test="qunDate != null">
+				#{qunDate,jdbcType=VARCHAR},
+			</if>
+			<if test="squnDate != null">
+				#{squnDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="endQunDate != null">
+				#{endQunDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="timMker != null">
+				#{timMker,jdbcType=INTEGER},
+			</if>
+			<if test="tptimTrff != null">
+				#{tptimTrff,jdbcType=DECIMAL},
+			</if>
+			<if test="pekEctyPrc != null">
+				#{pekEctyPrc,jdbcType=DECIMAL},
+			</if>
+			<if test="uslPrc != null">
+				#{uslPrc,jdbcType=DECIMAL},
+			</if>
+			<if test="vlyTimPrc != null">
+				#{vlyTimPrc,jdbcType=DECIMAL},
+			</if>
+			<if test="rvtRat != null">
+				#{rvtRat,jdbcType=DECIMAL},
+			</if>
+			<if test="sviCg != null">
+				#{sviCg,jdbcType=DECIMAL},
+			</if>
+			<if test="wrnMny != null">
+				#{wrnMny,jdbcType=DECIMAL},
+			</if>
+			<if test="uid != null">
+				#{uid,jdbcType=VARCHAR},
+			</if>
+			<if test="areaCd != null">
+				#{areaCd,jdbcType=VARCHAR},
+			</if>
+			<if test="cityCd != null">
+				#{cityCd,jdbcType=VARCHAR},
+			</if>
+			<if test="proCd != null">
+				#{proCd,jdbcType=VARCHAR},
+			</if>
+			<if test="cdate != null">
+				#{cdate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="udate != null">
+				#{udate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="remark != null">
+				#{remark,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="update" parameterType="com.wanma.dubbox.model.TblRateinFormation">
+		update tbl_rateinformation
+		<set>
+			<if test="mdId != null">
+				raIn_ModelId = #{mdId,jdbcType=INTEGER},
+			</if>
+			<if test="effDate != null">
+				raIn_EffectiveDates = #{effDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="expDate != null">
+				raIn_ExpiryDate = #{expDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="freeMny != null">
+				raIn_FreezingMoney = #{freeMny,jdbcType=DECIMAL},
+			</if>
+			<if test="minFreeMny != null">
+				raIn_MinFreezingMoney = #{minFreeMny,jdbcType=DECIMAL},
+			</if>
+			<if test="qunDate != null">
+				raIn_QuantumDate = #{qunDate,jdbcType=VARCHAR},
+			</if>
+			<if test="squnDate != null">
+				raIn_StartQuantumDate = #{squnDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="endQunDate != null">
+				raIn_EndQuantumDate = #{endQunDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="timMker != null">
+				raIn_TimeMarker = #{timMker,jdbcType=INTEGER},
+			</if>
+			<if test="tptimTrff != null">
+				raIn_TipTimeTariff = #{tptimTrff,jdbcType=DECIMAL},
+			</if>
+			<if test="pekEctyPrc != null">
+				raIn_PeakElectricityPrice =
+				#{pekEctyPrc,jdbcType=DECIMAL},
+			</if>
+			<if test="uslPrc != null">
+				raIn_UsualPrice = #{uslPrc,jdbcType=DECIMAL},
+			</if>
+			<if test="vlyTimPrc != null">
+				raIn_ValleyTimePrice = #{vlyTimPrc,jdbcType=DECIMAL},
+			</if>
+			<if test="rvtRat != null">
+				raIn_ReservationRate = #{rvtRat,jdbcType=DECIMAL},
+			</if>
+			<if test="sviCg != null">
+				raIn_ServiceCharge = #{sviCg,jdbcType=DECIMAL},
+			</if>
+			<if test="wrnMny != null">
+				raIn_WarnMoney = #{wrnMny,jdbcType=DECIMAL},
+			</if>
+			<if test="uid != null">
+				userId = #{uid,jdbcType=VARCHAR},
+			</if>
+			<if test="areaCd != null">
+				raIn_area_id = #{areaCd,jdbcType=VARCHAR},
+			</if>
+			<if test="cityCd != null">
+				raIn_city_id = #{cityCd,jdbcType=VARCHAR},
+			</if>
+			<if test="proCd != null">
+				raIn_province_id = #{proCd,jdbcType=VARCHAR},
+			</if>
+			<if test="cdate != null">
+				raIn_Createdate = #{cdate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="remark != null">
+				raIn_remarks = #{remark,jdbcType=VARCHAR},
+			</if>
+			raIn_Updatedate = sysdate()
+		</set>
+		where pk_RateInformation = #{id,jdbcType=INTEGER}
+	</update>
+
+	<delete id="delete" parameterType="TblRateinFormation">
+		delete from
+		tbl_rateinformation
+		where
+		pk_RateInformation=#{id}
+	</delete>
+
+	<select id="selectOne" resultMap="BaseResultMap" parameterType="TblRateinFormation">
+		select ${rtColumns}
+		from tbl_rateinformation
+		<where>
+			<if test="id != null">
+				and pk_RateInformation = #{id}
+			</if>
+		</where>
+	</select>
+
+	<select id="getCount" resultType="int" parameterType="TblRateinFormation">
+		select
+		count(1)
+		from tbl_rateinformation
+		where raIn_city_id is not null
+		<if test="uid != null">
+			and userId = #{uid}
+		</if>
+		<if test="cityCd != null">
+			and raIn_city_id = #{cityCd}
+		</if>
+		<if test="areaCd != null">
+			and raIn_area_id = #{areaCd}
+		</if>
+		<if test="userIds != null">
+			and userId in
+			<foreach item="item" index="index" collection="userIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="pkIds != null">
+			and pk_RateInformation in
+			<foreach item="item0" index="index" collection="pkIds" open="("
+				separator="," close=")">
+				#{item0}
+			</foreach>
+		</if>
+	</select>
+
+	<select id="getList" resultMap="BaseResultMap" parameterType="TblRateinFormation">
+		select ${rtColumns}
+		from tbl_rateinformation
+		where raIn_city_id is not
+		null
+		<if test="uid != null">
+			and userId = #{uid}
+		</if>
+		<if test="cityCd != null">
+			and raIn_city_id = #{cityCd}
+		</if>
+		<if test="areaCd != null">
+			and raIn_area_id = #{areaCd}
+		</if>
+		<if test="userIds != null">
+			and userId in
+			<foreach item="item" index="index" collection="userIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="pkIds != null">
+			and pk_RateInformation in
+			<foreach item="item0" index="index" collection="pkIds" open="("
+				separator="," close=")">
+				#{item0}
+			</foreach>
+		</if>
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+</mapper>

@@ -1,0 +1,151 @@
+//获取电动车车型的menuId
+var getMenuMap = window.localStorage.getItem('menuMap');
+var getCurruntMap = JSON.parse(getMenuMap);
+var menuId = getCurruntMap['电动车车型列表'];
+$(function () {
+    ctrlMenu(menuId);
+    //去加载表格的数据
+    setTimeout("carInfoListSearch()", 100);
+})
+function ctrlMenu(menuId) {
+    $.ajax({
+        type: "post",
+        url: basePath + getSelfButtonTreeUrl,
+        async: true,
+        data: {
+            menuId: menuId
+        },
+        success: function (req) {
+            var data = req.dataObject;
+            if (data.length == 0) {
+                return;
+            } else {
+                for (var i = 0; i < data.length; i++) {
+                    var contents = data[i].contents;
+                    if (contents.indexOf('新建') > -1) {
+                        $('#addCarInfo').show();
+                    }
+                    if (contents.indexOf('删除') > -1) {
+                        $('#delCarInfo').show();
+                    }
+                }
+            }
+
+
+        }
+    });
+}
+
+
+function carInfoListSearch() {
+    initTable("carInfoListForm", "carInfoListPage", getCarInfoListUrl, carInfoListCallback);
+}
+function carInfoListCallback(req) {
+    var data = req.dataObject;
+    var chargingModeMap = {'14': '交流', '5': '直流', '1': '交流直流'};
+    var powerInterfaceMap = {'7': '国标', '20': '欧标', '19': '美标'};
+    var listTr = "";
+    for (var i = 0; i < data.length; i++) {
+        var chargingMode = chargingModeMap[data[i].chargingMode] == undefined ? '' : chargingModeMap[data[i].chargingMode];
+        var powerInterface = powerInterfaceMap[data[i].powerInterface] == undefined ? '' : powerInterfaceMap[data[i].powerInterface];
+
+        listTr += '<tr><td><input type="checkbox" name="ids" class="selectedBox" value="' + data[i].id + '"/></td>'
+        + '<td class="id"><a class="modifyCarInfo" data-carInfoId="' + data[i].id + '" >' + data[i].id + '</a>'
+        + '</td><td class="styleName">' + data[i].styleName
+        + '</td><td class="brandName">' + data[i].brandName
+        + '</td><td class="batteryType">' + data[i].batteryType
+        + '</td><td class="batteryCapacity">' + data[i].batteryCapacity
+        + '</td><td class="chargingMode">' + chargingMode
+        + '</td><td class="powerInterface">' + powerInterface
+        + '</td><td class="gmtCreate">' + new Date(data[i].gmtCreate.time).format("yyyy-MM-dd")
+        + '</td></tr>';
+    }
+    $("#myTbogy").html(listTr);
+}
+
+$("body").off("click", ".modifyCarInfo").on('click', ".modifyCarInfo", function () {
+    window.location.href = "modifyCarInfo.html?carInfoId=" + $(this).attr('data-carInfoId');
+});
+
+$('#addCarInfo').on('click', function () {
+    window.location.href = "addCarInfo.html";
+});
+
+//点击删除
+$("body").off("click", "#delCarInfo").on("click", "#delCarInfo", function () {
+    layer.closeAll();
+    layer.open({
+        type: 1,
+        offset: '100px',
+        title: ["提示", "font-size:12px;text-align:center"],
+        shadeClose: false,
+        closeBtn: 2,
+        area: ['310px', '180px'],//宽高
+        content: $('.disabledContent'),
+        btn: ["确定", "取消"],
+        yes: function (index, layero) {
+            layer.closeAll();
+            toSubmitDisAble();
+        },
+        cancel: function (index, layero) {
+            layer.closeAll();
+        }
+    });
+});
+
+function toSubmitDisAble() {
+    var ids = '';
+    $('input[name=ids]').each(function () {
+        var flag = $(this).prop('checked');
+        if (flag == true) {
+            ids += $(this).attr('value') + ',';
+        }
+    });
+    if (!ids) {
+        layer.open({
+            type: 1,
+            offset: '100px',
+            title: ["提示", "font-size:12px;text-align:center"],
+            shadeClose: false,
+            closeBtn: 2,
+            area: ['310px', '160px'],//宽高
+            content: '请指定表单元素',
+            time: 3000,
+            btn: ["确定", "取消"]
+        });
+    } else {
+        $.ajax({
+            type: "post",
+            url: basePath + delCarInfoUrl,
+            async: true,
+            data: {
+                carInfoIds: ids
+            },
+            success: function (data) {
+                if (data.success == true) {
+                    layer.closeAll();
+                    window.location.reload();
+                } else {
+                    layer.open({
+                        type: 1,
+                        offset: '100px',
+                        title: ["提示", "font-size:12px;text-align:center"],
+                        shadeClose: false,
+                        closeBtn: 2,
+                        area: ['310px', '160px'],//宽高
+                        content: data.msg,
+                        time: 3000,
+                        btn: ["确定", "取消"]
+                    });
+                }
+            }
+        });
+    }
+}
+
+//监听回车键
+$(document).keyup(function (event) {
+    if (event.keyCode == 13) {
+        carInfoListSearch();
+    }
+});

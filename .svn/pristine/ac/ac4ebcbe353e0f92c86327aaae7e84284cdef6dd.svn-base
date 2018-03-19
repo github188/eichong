@@ -1,0 +1,89 @@
+@charset "utf-8";
+
+a{
+	text-decoration: none;
+}
+.parentPage{
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	z-index: 9999;
+	top:0;
+	left:0;
+	background: rgba(.5,.5,.5,#000);
+}
+.loginPage{
+	width: 100%;
+	min-height: 20%;
+	position: absolute;
+	background: #F3F3F3;
+	z-index: 9999;
+	bottom:0;
+	left:0;
+	position: fixed;
+}
+.headerHide{
+	width: 100%;
+	height: 5rem;
+	background: #F3F3F3;
+	font-size: 1.8rem;
+}
+.headerHide .headLeft{
+	height: 5rem;
+	line-height: 5rem;
+	text-align: center;
+	padding-left: 2.4rem;
+	color: #666666;
+}
+.headerHide .headLeft img{
+	width: 2.4rem;
+	height: 2.4rem;
+}
+.headerHide .headRight{
+	height: 5rem;
+	line-height: 5rem;
+	/*padding-left: 2rem;*/
+	color: #FF7D00;
+	text-align: center;
+}
+.passBlock{
+	width: 80%;
+	height: 5rem;
+	/*background: #efeff4;*/
+	background: #F3F3F3;
+	margin: 0 auto;
+	margin-top: 2rem;
+	border-radius: 0.5rem;
+	border: 0.1rem solid #666666;
+}
+.passBlock .userInfo{
+	width: 96%;
+	height: 4rem;
+	margin-left: 2%;
+	margin-top: 2%;
+	border: 0;
+	outline: none;
+	/*background: #FF7D00;*/
+	font-size: 1.6rem;
+	/*background: #efeff4;*/
+	background: #F3F3F3;
+}
+/*登录按钮============================*/
+.loginBtn{
+	display: block;
+	width: 80%;
+	height: 4rem;
+	text-decoration: none;
+	color: #FFFFFF;
+	background: #FF7D00;
+	line-height: 4rem;
+	margin: 0 auto;
+	margin-top: 1rem;
+	border-radius: 0.5rem;
+	text-align: center;
+	font-size: 1.6rem;
+}
+.loginBtn:visited, .loginBtn:hover, .loginBtn:active{
+	text-decoration: none;
+	color: #FFFFFF;
+}

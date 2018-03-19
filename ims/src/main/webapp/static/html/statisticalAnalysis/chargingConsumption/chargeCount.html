@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/statisticalAnalysis/chargingConsumption/chargeCount.css"/>
+    <title>充电数据对比</title>
+</head>
+<body>
+<div class="container animated fadeInRight">
+    <div class="row">
+        <div class="formBlock clearfix">
+            <form id="chargeCountForm">
+                <div class="col-xs-12 col-sm-11 col-md-11 col-lg-11">
+                    <div class="userListSelect row">
+                        <div class="col-sm-3 col-xs-12">
+                            <div class="col-sm-4 queryParam">
+                                时间选择
+                            </div>
+                            <div class="col-sm-8 userAccount">
+                                <input type="text" name="" value="" class="userAccountInput" id="datePicker"/>
+                                <input type="text" name="startGmtCreate" value="" class="userAccountInput"
+                                       hidden="hidden" style="display: none;"/>
+                                <input type="text" name="endGmtCreate" value="" class="userAccountInput" hidden="hidden"
+                                       style="display: none;"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-xs-12">
+                            <div class="col-sm-4 queryParam">
+                                对比项
+                            </div>
+                            <div class="col-sm-8 userAccount">
+                                <span id="cpyCharge" class="spanBtn activeBtn">充电渠道</span>
+                                <span id="powerStation" class="spanBtn">充电点</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-1 col-md-1 col-lg-1" style="position: relative;">
+                    <div class="queryBtn" onclick="toLoadAllSearch()">
+                        查询
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!--表格部分开始==========================================================-->
+        <div class="showSet table-responsive" id="cpyBlock">
+            <div class="mainTab" id="cpyTab">
+                <span class="active" id="cpyFirstTag">充电电量</span>
+                <span>充电次数</span>
+                <span>充电金额</span>
+            </div>
+            <div class="mainTabContent">
+                <div class="mainTabBlock cpyChart" id="cpyChargeValueData" style="">
+
+                </div>
+                <div class="mainTabBlock cpyChart" id="cpyChargeTimesData" style="display: none;">
+
+                </div>
+                <div class="mainTabBlock cpyChart" id="cpyChargeMoneyData" style="display: none;">
+
+                </div>
+            </div>
+            <div class="mainTabContent">
+                <div class="detaiData">
+                    <div class="detailDateTitle">
+                        详细数据
+                    </div>
+                    <table class=" table table-bordered text-center" style="border: 1px solid #DCDCDC;">
+                        <thead>
+                        <tr>
+                            <th>排名</th>
+                            <th>渠道名称</th>
+                            <th>充电电量</th>
+                            <th>充电次数</th>
+                            <th>充电金额</th>
+                        </tr>
+                        </thead>
+                        <tbody id="myTbogy">
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="chargeCpyPage" class="pagination">
+            </div>
+        </div>
+        <div class="showSet table-responsive" id="stationBlock" style="display: none;">
+            <div class="mainTab" id="stationTab">
+                <span class="active" id="stationFirstTag">充电电量</span>
+                <span>充电次数</span>
+                <span>充电金额</span>
+            </div>
+            <div class="mainTabContent">
+                <div class="mainTabBlock stationChart" id="stationChargeValueData" style="">
+
+                </div>
+                <div class="mainTabBlock stationChart" id="stationChargeTimesData" style="display: none;">
+
+                </div>
+                <div class="mainTabBlock stationChart" id="stationChargeMoneyData" style="display: none;">
+
+                </div>
+            </div>
+            <div class="mainTabContent">
+                <div class="detaiData">
+                    <div class="detailDateTitle">
+                        详细数据
+                    </div>
+                    <table class=" table table-bordered text-center" style="border: 1px solid #DCDCDC;">
+                        <thead>
+                        <tr>
+                            <th>排名</th>
+                            <th>充电点</th>
+                            <th>充电电量</th>
+                            <th>充电次数</th>
+                            <th>充电金额</th>
+                        </tr>
+                        </thead>
+                        <tbody id="myTbody">
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="chargeStationPage" class="pagination">
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="../../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/layDate-v5.0.4/laydate/laydate.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="../../../js/contabs.min.js"></script>
+<script src="../../../js/lib/Echarts/echarts.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/statisticalAnalysis/chargingConsumption/chargeCount.js" type="text/javascript"
+        charset="utf-8"></script>
+</html>

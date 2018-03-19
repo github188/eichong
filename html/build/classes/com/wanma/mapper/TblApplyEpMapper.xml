@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.TblApplyEpMapper">
+
+	<resultMap type="TblApplyEp" id="result_apply_ep">
+		<result property="aepId" column="aep_id" />
+		<result property="aepAType" column="aep_a_type" />
+		<result property="aepCType" column="aep_c_type" />
+		<result property="aepName" column="aep_name" />
+		<result property="aepPhone" column="aep_phone" />
+		<result property="aepPCode" column="aep_p_code" />
+		<result property="aepCCode" column="aep_c_code" />
+		<result property="aepACode" column="aep_a_code" />
+		<result property="aepAddr" column="aep_addr" />
+		<result property="aepHPark" column="aep_h_park" />
+		<result property="aepParkNum" column="aep_park_num" />
+		<result property="aepEpType" column="aep_ep_type" />
+		<result property="aepIAgree" column="aep_i_agree" />
+		<result property="aepIReport" column="aep_i_report" />
+		<result property="aepIGround" column="aep_i_ground" />
+		<result property="aepUserId" column="aep_user_id" />
+		<result property="aepStatus" column="aep_status" />
+		<result property="createDate" column="createdate" />
+		<result property="aepOrigin" column="aep_origin" />
+		<!-- <result property="updateDate" column="updatedate" /> -->
+	</resultMap>
+	<resultMap type="Long" id="aepId" />
+
+	<insert id="insert" parameterType="TblApplyEp" useGeneratedKeys="true" keyProperty="aepId">
+		insert into tbl_apply_ep (
+			aep_a_type,
+			aep_c_type,
+			aep_name,
+			aep_phone,
+			aep_p_code,
+			aep_c_code,
+			aep_a_code,
+			aep_addr,
+			aep_h_park,
+			aep_park_num,
+			aep_ep_type,
+			aep_i_agree,
+			aep_i_report,
+			aep_i_ground,
+			aep_user_id,
+			aep_status,
+			createdate,
+			aep_origin
+		) values (
+			#{aepAType},
+			#{aepCType},
+			#{aepName},
+			#{aepPhone},
+			#{aepPCode},
+			#{aepCCode},
+			#{aepACode},
+			#{aepAddr},
+			#{aepHPark},
+			#{aepParkNum},
+			#{aepEpType},
+			#{aepIAgree},
+			#{aepIReport},
+			#{aepIGround},
+			#{aepUserId},
+			#{aepStatus},
+			#{createDate},
+			#{aepOrigin}
+		)
+	</insert>
+	
+	<select id="getByAepUserId" parameterType="TblApplyEp" resultMap="result_apply_ep">
+		select * from tbl_apply_ep
+		where aep_user_id=#{aepUserId}
+		order by createdate desc
+	</select>
+
+</mapper>

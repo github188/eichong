@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bluemobi.product.dao.AuthorizedMapper">
+
+	<select id="getActionRoleCount" parameterType="map" resultType="int">
+		select 
+		    count(p_m_action.action_id) as data_count
+		from p_m_action,
+		    p_m_role_inclusion,
+		    p_m_action_role,
+		    p_m_user_role
+		where p_m_action.action_id = p_m_action_role.action_id
+		and p_m_action.action_id = #{actionId}
+		and 
+				(
+					p_m_user_role.role_id = p_m_action_role.role_id
+					and p_m_user_role.user_id = #{userId}
+				) 
+	</select>
+</mapper>

@@ -1,0 +1,96 @@
+/**     
+ * @Title:  CmsFinanceService.java   
+ * @Package com.wanma.service   
+ * @Description:    TODO  
+ * @author: Android_Robot     
+ * @date:   2016年1月9日 上午10:43:20   
+ * @version V1.0     
+ */
+package com.wanma.service;
+
+import java.util.List;
+import java.util.Map;
+
+import com.wanma.model.TblChargingOrder;
+import com.wanma.model.TblInvoice;
+import com.wanma.model.TblPurchasehistory;
+
+/**
+ * @author bc
+ *
+ */
+public interface CmsFinanceService {
+
+	public List<Map<String, Object>> personConsumeDetail(
+			Map<String, Object> params);
+
+	public long personConsumeDetailCount(Map<String, Object> params);
+
+	public List<Map<String, Object>> personConsumeStatistic(
+			Map<String, Object> params);
+
+	public long personConsumeStatisticCount(Map<String, Object> params);
+
+	public List<Map<String, Object>> personChargeDetail(
+			Map<String, Object> params);
+
+	public long personChargeDetailCount(Map<String, Object> params);
+
+	public List<Map<String, Object>> personBespokeDetail(
+			Map<String, Object> params);
+
+	public long personBespokeDetailCount(Map<String, Object> params);
+
+	public List<Map<String, Object>> personChargeStatistic(
+			Map<String, Object> params);
+
+	public long personChargeStatisticCount(Map<String, Object> params);
+
+	public List<Map<String, Object>> personBespokeStatistic(
+			Map<String, Object> params);
+
+	public long personBespokeStatisticCount(Map<String, Object> params);
+
+	public List<Map<String, Object>> businessChargeDetail(
+			Map<String, Object> params);
+
+	public long businessChargeDetailCount(Map<String, Object> params);
+
+	public List<Map<String, Object>> businessBespokeDetail(
+			Map<String, Object> params);
+
+	public long businessBespokeDetailCount(Map<String, Object> params);
+
+	public List<Map<String, Object>> businessChargeStatistic(
+			Map<String, Object> params);
+
+	public long businessChargeStatisticCount(Map<String, Object> params);
+
+	public List<Map<String, Object>> businessBespokeStatistic(
+			Map<String, Object> params);
+
+	public long businessBespokeStatisticCount(Map<String, Object> params);
+
+	public long getInvoiceManageCount(TblInvoice tblInvoice);
+
+	public List<TblInvoice> getInvoiceManageList(TblInvoice tblInvoice);
+	public List<TblInvoice> getInvoiceManageList_export(TblInvoice tblInvoice);
+
+
+	public TblInvoice getInvoiceById(int pkInvoice);
+	
+	public void changeIvNumberById(Map<String, Object> params);
+	
+	public TblChargingOrder getChargingOrderById(int pkChargingOrder);
+	public void updateChargingSate(Map<String, Object> params);
+
+	List<Map<String, Object>> businessChargeDetail_ept(
+			Map<String, Object> params);
+
+	List<Map<String, Object>> personChargeDetail_ept(Map<String, Object> params);
+	
+	int insert(TblPurchasehistory record);
+
+	public void changePurHistoryById(Map<String, Object> params);
+
+}

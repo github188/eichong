@@ -1,0 +1,23 @@
+{
+	"dataObject": [
+		{
+			"cpyId": 0,
+			"creator": "",
+			"creatorId": 0,
+			"gmtCreate": null,
+			"gmtModified": null,
+			"isDel": 0,
+			"levelCode": "1",
+			"levelId": 1,
+			"levelName": "测试",
+			"levelType": "",
+			"modifier": "",
+			"pager": null
+		}
+	],
+	"failed": false,
+	"msg": "操作成功",
+	"pager": null,
+	"status": "",
+	"success": true
+}

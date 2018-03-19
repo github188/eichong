@@ -1,0 +1,289 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ include file="../../base.jsp" %>
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>产品型号</title>
+		<link rel="stylesheet" type="text/css" href="${ctx}/static/css/config/typeSpanList.css"/>
+	</head>
+	<body>
+		<div id="container1">
+			<div class="box">
+				<div class="btnGroup">
+					<span style="margin-left: 0;" id="typeSpanAdd">新增</span>
+					<a target="selectedTodo" rel="ids" href="/admin/typespan/typespanUpgrade.do"  posttype="string" title="确定升级吗？"><span>升级</span></a>
+				</div>
+			</div>
+			<div class="box2 col-md-10 col-sm-8">
+				<div class="padding30">
+						<table class="myTable">
+							<thead>
+								<tr class="active">
+									<th class="smallWidth"><input type="checkbox" name="" class="selAll" value=""/></th>
+									<th class="smallWidth">序号</th>
+									<th>产品型号</th>
+									<th>产品名称</th>
+									<th>说明</th>
+									<th>文件ID和名称</th>
+									<th>外部产品型号</th>
+									<th>备注</th>
+									<th>操作</th>
+								</tr>
+							</thead>
+							<tbody id="typeSpanListTbody">
+							</tbody>
+						</table>
+						<div id="" class="" style="height: 40px; width: auto;">
+							&nbsp;&nbsp;&nbsp;&nbsp;
+						</div>
+				</div>
+			</div>
+			<div id="typeSpanListPage" class="pagination col-md-10 col-sm-10">
+			</div>
+		</div>
+		<!--产品型号新增-->
+		<div class="typeSpanStyle" id="typeSpanAddContent" style="display: none;">
+			<form id="typespanAddForm" method="post"
+				action="/admin/typespan/typespanSave.do" callback="refreshCurrent()">
+			<div class="validateBlock_typeSpanAdd">
+				<div class="lineBlock">
+					<div class="line">
+						<span>产品型号</span>
+						<input type="text" name="tsTypeSpan"  value="" class="marginLeft40" id="ts_TypeSpan_add"/>
+					</div>
+					<div class="line">
+						<span>产品名称</span>
+						<input type="text" name="tsModelName"  value="" class="marginLeft40" id="ts_ModelName_add"/>
+					</div>
+				</div>
+				<div class="lineBlock">
+					<div class="line">
+						<span>说明</span>
+						<input type="text" name="tsFactTag"  value="" class="marginLeft64" id="ts_FactTag_add"/>
+					</div>
+					<div class="line">
+						<span>文件ID和名称</span>
+						<input type="text" name="tsFileName"  value="" class="marginLeft10" id="ts_FileName_add"/>
+					</div>
+				</div>
+				<div class="lineBlock">
+					<div class="line">
+						<span>外部产品型号</span>
+						<input type="text" name="tsProductNumber"  value="" class="marginLeft10" id="ts_ProductNumber_add"/>
+					</div>
+					<div class="line">
+						<span>备注</span>
+						<input type="text" name="tsRemarks"  value="" class="marginLeft64" id="ts_Remarks_add"/>
+					</div>
+				</div>
+			</div>
+			
+			<div class="bomList">
+				<div class="bomListTitle">
+					<span id="" class="boom">
+						BOM清单
+					</span>
+					<span id="bomListAddBtn">
+						新增
+					</span>
+					<span id="bomListDeleteBtn">
+						删除
+					</span>
+				</div>
+				<div class="">
+					<table class="table table-bordered typeSpanTable" id="typeSpanTable">
+						<thead>
+							<tr class="active">
+								<th class="smallWidth"><input type="checkbox" name="" class="selAll1" value="" disabled="disabled"/></th>
+								<th>硬件型号</th>
+								<th>版本硬件号</th>
+								<th>固件编号</th>
+								<th>固件版本号</th>
+								<th>应用程序MD5值</th>
+								<th>强制更新</th>
+							</tr>
+						</thead>
+						<tbody id="typeSpanAddTbody">
+							<!-- <tr>
+								<td class="smallWidth"><input type="checkbox" name="" class="selAll1" value="" disabled="disabled"/></td>
+								<td><input type="text" name="" id="" value="" /></td>
+								<td><input type="text" name="" id="" value="" /></td>
+								<td><input type="text" name="" id="" value="" /></td>
+								<td><input type="text" name="" id="" value="" /></td>
+								<td><input type="text" name="" id="" value="" /></td>
+								<td>
+									<input type="radio" name="blForceUpdateAdd" id="" value="" checked="checked"/>是<input type="radio" name="blForceUpdateAdd" id="" value="" style="margin-left: 6px;"/>否
+								</td>
+							</tr> -->
+							
+						</tbody>
+					</table>
+				</div>
+				<div class="typeSpanAddTipText" style="display: none; margin-top: 6px; color: #FF0000;">
+					
+				</div>
+			</div>
+			</form>
+		</div>
+		<!--产品型号详细-->
+		<div class="typeSpanStyle" id="typeSpanDetailContent" style="display: none;">
+			<div class="lineBlock">
+				<div class="line">
+					<span>产品型号</span>
+					<input  name="" id="tsTypeSpan_detail"  value="" class="marginLeft40" readonly="readonly"/>
+				</div>
+				<div class="line">
+					<span>产品名称</span>
+					<input  name="" id="tsModelName_detail"  value="" class="marginLeft40" readonly="readonly"/>
+				</div>
+			</div>
+			<div class="lineBlock">
+				<div class="line">
+					<span>说明</span>
+					<input  name="" id="tsFactTag_detail" value="" class="marginLeft64" readonly="readonly"/>
+				</div>
+				<div class="line">
+					<span>文件ID和名称</span>
+					<input  name="" id="tsFileName_detail" value="" class="marginLeft10" readonly="readonly"/>
+				</div>
+			</div>
+			<div class="lineBlock">
+				<div class="line">
+					<span>外部产品型号</span>
+					<input  name="" id="tsProductNumber_detail" value="" class="marginLeft10" readonly="readonly"/>
+				</div>
+				<div class="line">
+					<span>备注</span>
+					<input  name="" id="tsRemarks_detail"  value="" class="marginLeft64" readonly="readonly"/>
+				</div>
+			</div>
+			
+			<div class="bomList">
+				<div class="bomListTitle">
+					<span id="" class="boom">
+						BOM清单
+					</span>
+					
+				</div>
+				<div class="">
+					<table class="table table-bordered typeSpanTable">
+						<thead>
+							<tr class="active">
+								<th class="smallWidth"><input type="checkbox" name="" class="selAll1" value="" disabled="disabled"/></th>
+								<th>硬件型号</th>
+								<th>版本硬件号</th>
+								<th>固件编号</th>
+								<th>固件版本号</th>
+								<th>应用程序MD5值</th>
+								<th>强制更新</th>
+							</tr>
+						</thead>
+						<tbody id="typeSpanDetailTbody" >
+							<!-- <tr>
+								<td class="smallWidth"><input type="checkbox" name="" class="selAll1" value="" disabled="disabled"/></td>
+								<td><input  name="" id="" value="ICHMC-101" readonly="readonly"/></td>
+								<td><input  name="" id="" value="1.6" readonly="readonly" /></td>
+								<td><input  name="" id="" value="MC11BA" readonly="readonly"/></td>
+								<td><input  name="" id="" value="2.3.18" readonly="readonly"/></td>
+								<td><input  name="" id="" value="1b6e25b0e4d060cc553bc264b5cd32fb" readonly="readonly"/></td>
+								<td>
+									<input type="radio" name="" id="" value="" disabled="disabled"/>是<input type="radio" name="" id="" value="" style="margin-left: 8px;" disabled="disabled"/>否
+								</td>
+							</tr> -->
+							
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<!--产品型号编辑-->
+		<div class="typeSpanStyle" id="typeSpanEditContent" style="display: none;">
+			<form id="typespanEditForm" method="post"
+				action="/admin/typespan/typespanModify.do" callback="refreshCurrent()">
+			<input type="hidden" name="pkTypeSpanId" id="pkTypeSpanId_edit"  />
+			<div class="validateBlock_typeSpanEdit">
+				<div class="lineBlock">
+					<div class="line">
+						<span>产品型号</span>
+						<input type="text" name="tsTypeSpan"   class="marginLeft40" id="tsTypeSpan_edit"/>
+					</div>
+					<div class="line">
+						<span>产品名称</span>
+						<input type="text" name="tsModelName"  value="" class="marginLeft40" id="tsModelName_edit"/>
+					</div>
+				</div>
+				<div class="lineBlock">
+					<div class="line">
+						<span>说明</span>
+						<input type="text" name="tsFactTag"  value="" class="marginLeft64" id="tsFactTag_edit"/>
+					</div>
+					<div class="line">
+						<span>文件ID和名称</span>
+						<input type="text" name="tsFileName"  value="" class="marginLeft10" id="tsFileName_edit"/>
+					</div>
+				</div>
+				<div class="lineBlock">
+					<div class="line">
+						<span>外部产品型号</span>
+						<input type="text" name="tsProductNumber"  value="" class="marginLeft10" id="tsProductNumber_edit"/>
+					</div>
+					<div class="line">
+						<span>备注</span>
+						<input type="text" name="tsRemarks"  value="" class="marginLeft64" id="tsRemarks_edit"/>
+					</div>
+				</div>
+			</div>
+			
+			<div class="bomList">
+				<div class="bomListTitle">
+					<span id="" class="boom">
+						BOM清单
+					</span>
+					<span id="bomListEditBtn">
+						新增
+					</span>
+					<span id="bomListEditDeleteBtn">
+						删除
+					</span>
+				</div>
+				<div class="">
+					<table class="table table-bordered typeSpanTable" id="typeSpanEditTable">
+						<thead>
+							<tr class="active">
+								<th class="smallWidth"><input type="checkbox" name="" class="selAll1" value="" disabled="disabled"/></th>
+								<th>硬件型号</th>
+								<th>版本硬件号</th>
+								<th>固件编号</th>
+								<th>固件版本号</th>
+								<th>应用程序MD5值</th>
+								<th>强制更新</th>
+							</tr>
+						</thead>
+						<tbody id="typeSpanEditTbody">
+							<!--编辑 加载循环的数据-->
+							<!-- <tr>
+								<td class="smallWidth"><input type="checkbox" name="test" class="selAll1" value="" disabled="disabled"/></td>
+								<td><input type="text" name="" id="" value="ICHMC-101" /></td>
+								<td><input type="text" name="" id="" value="1.6" /></td>
+								<td><input type="text" name="" id="" value="MC11BA" /></td>
+								<td><input type="text" name="" id="" value="2.3.18" /></td>
+								<td><input type="text" name="" id="" value="1b6e25b0e4d060cc553bc264b5cd32fb" /></td>
+								<td>
+									<input type="radio" name="blForceUpdateEdit" id="" value="" checked="checked"/>是<input type="radio" name="blForceUpdateEdit" id="" value="" style="margin-left: 6px;"/>否
+								</td>
+							</tr> -->
+							
+						</tbody>
+					</table>
+				</div>
+				<div class="typeSpanEditTipText" style="display: none; margin-top: 6px; color: #FF0000;">
+					
+				</div>
+			</div>
+			</form>
+		</div>
+	</body>
+<script src="${ctx}/static/js/config/typeSpanList.js" type="text/javascript" charset="utf-8"></script>
+</html>

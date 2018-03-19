@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.app.dao.AppProductcommentMapper">
+
+	<resultMap id="tblProductcommentResultMap" type="TblProductcomment">
+		<id property="pkProductcomment" column="pk_ProductComment" />
+		<result property="prcoProductid" column="prCo_ProductId" />
+		<result property="prcoUserid" column="prCo_UserId" />
+		<result property="prcoUsername" column="prCo_UserName" />
+		<result property="prcoCreatetime" column="prCo_CreateTime" />
+		<result property="prcoCommentstart" column="prCo_CommentStart" />
+		<result property="prcoCommentpic" column="prCo_CommentPic" />
+		<result property="prcoOrderid" column="prCo_OrderID" />
+		<result property="prcoCommentType" column="prCo_Comment_type" />
+		<result property="prcoCreatedate" column="prCo_Createdate" />
+		<result property="prcoUpdatedate" column="prCo_Updatedate" />
+		<result property="prcoUtatus" column="prCo_Utatus" />
+		<result property="prcoContent" column="prCo_Content" />
+	</resultMap>
+	<resultMap id="pageResultMap" type="java.util.HashMap"
+		extends="tblProductcommentResultMap"></resultMap>
+	<resultMap id="findResultMap" type="java.util.HashMap"
+		extends="tblProductcommentResultMap"></resultMap>
+		
+		
+	<!--查询最大星级-->
+	<select id="getMaxStar" parameterType="TblProductcomment" resultType="Double">
+		select 
+			max(prCo_CommentStart) 
+		from
+			tbl_ProductComment
+		<where>
+			<if test="prcoProductid!=null and prcoProductid!=''">
+				prCo_ProductId=#{prcoProductid}
+			</if>
+			<if test="prcoCommentType!=null and prcoCommentType!=''">
+				and prCo_Comment_type=#{prcoCommentType}
+			</if>
+		</where>
+	</select>
+	
+	<!-- 查询单个id的总评论数 -->
+	<select id="searchIdCount" parameterType="TblProductComment" resultType="long">
+		select
+			count(pk_ProductComment)
+		from 
+			tbl_ProductComment
+		<where>
+			<if test="prcoProductid!=null and prcoProductid!=''">
+				prCo_ProductId=#{prcoProductid}
+			</if>
+			<if test="prcoCommentType!=null and prcoCommentType!=''">
+				and prCo_Comment_type=#{prcoCommentType}
+			</if>
+		</where>
+	</select>
+
+	<!-- 新增产品评论 -->
+	<insert id="insert" parameterType="TblProductcomment"
+	useGeneratedKeys="true" keyProperty="pkProductcomment">
+		insert into tbl_ProductComment (
+		prCo_ProductId,
+		prCo_UserId,
+		prCo_UserName,
+		prCo_CreateTime,
+		prCo_CommentStart,
+		prCo_OrderID,
+		prCo_Comment_type,
+		prCo_Createdate,
+		prCo_Updatedate,
+		prCo_Utatus,
+		prCo_Content
+		)values (
+		#{prcoProductid},
+		#{prcoUserid},
+		#{prcoUsername},
+		#{prcoCreatetime},
+		#{prcoCommentstart},
+		#{prcoOrderid},
+		#{prcoCommentType},
+		#{prcoCreatedate},
+		#{prcoUpdatedate},
+		#{prcoUtatus},
+		#{prcoContent}
+		)
+	</insert>
+
+	<update id="update" parameterType="TblProductcomment">
+		update tbl_ProductComment set
+		prCo_ProductId=#{prcoProductid},
+		prCo_UserId=#{prcoUserid},
+		prCo_UserName=#{prcoUsername},
+		prCo_CreateTime=#{prcoCreatetime},
+		prCo_CommentStart=#{prcoCommentstart},
+		prCo_CommentPic=#{prcoCommentpic},
+		prCo_OrderID=#{prcoOrderid},
+		prCo_Comment_type=#{prcoCommentType},
+		prCo_Createdate=#{prcoCreatedate},
+		prCo_Updatedate=#{prcoUpdatedate},
+		prCo_Utatus=#{prcoUtatus},
+		prCo_Content=#{prcoContent}
+		where
+		pk_ProductComment=#{pkProductcomment} 
+	</update>
+
+	<delete id="delete" parameterType="map">
+		delete from
+		tbl_ProductComment
+		where
+		pk_ProductComment=#{pkProductcomment} 
+	</delete>
+
+	<select id="get" parameterType="map" resultMap="tblProductcommentResultMap">
+		select
+		pk_ProductComment,
+		prCo_ProductId,
+		prCo_UserId,
+		prCo_UserName,
+		prCo_CreateTime,
+		prCo_CommentStart,
+		prCo_CommentPic,
+		prCo_OrderID,
+		prCo_Comment_type,
+		prCo_Createdate,
+		prCo_Updatedate,
+		prCo_Utatus,
+		prCo_Content
+		from tbl_ProductComment
+		where
+		pk_ProductComment=#{pkProductcomment} 
+	</select>
+
+	<select id="findOne" parameterType="map" resultMap="findResultMap">
+		select
+		pk_ProductComment,
+		prCo_ProductId,
+		prCo_UserId,
+		prCo_UserName,
+		prCo_CreateTime,
+		prCo_CommentStart,
+		prCo_CommentPic,
+		prCo_OrderID,
+		prCo_Comment_type,
+		prCo_Createdate,
+		prCo_Updatedate,
+		prCo_Utatus,
+		prCo_Content
+		from tbl_ProductComment
+		where
+		pk_ProductComment=#{pkProductcomment} 
+	</select>
+  <select id="findProCommentsByPowerId" parameterType="map" resultMap="findResultMap">
+    SELECT count(1) powerCommentCount,prCo_Content,prCo_CommentStart,prCo_UserName 
+    from  tbl_ProductComment 
+    where 1=1
+    <if test="prcoProductid != null">
+				and prCo_ProductId=#{prcoProductid}
+	     </if>
+        <if test="prcoCommentType != null">
+			and prCo_Comment_type=#{prcoCommentType}
+     </if>
+      
+  </select>
+	<select id="find" parameterType="map" resultMap="findResultMap">
+		select
+		pk_ProductComment,
+		prCo_ProductId,
+		prCo_UserId,
+		prCo_UserName,
+		prCo_CreateTime,
+		prCo_CommentStart,
+		prCo_CommentPic,
+		prCo_OrderID,
+		prCo_Comment_type,
+		prCo_Createdate,
+		prCo_Updatedate,
+		prCo_Utatus,
+		prCo_Content
+		from tbl_ProductComment
+		<where>
+			<if test="pkProductcomment != null">
+				pk_ProductComment=#{pkProductcomment}
+	     </if>
+			<if test="prcoProductid != null">
+				and prCo_ProductId=#{prcoProductid}
+	     </if>
+			<if test="prcoUserid != null">
+				and prCo_UserId=#{prcoUserid}
+	     </if>
+			<if test="prcoUsername != null">
+				and prCo_UserName=#{prcoUsername}
+	     </if>
+			<if test="prcoCreatetime != null">
+				and prCo_CreateTime=#{prcoCreatetime}
+	     </if>
+			<if test="prcoCommentstart != null">
+				and prCo_CommentStart=#{prcoCommentstart}
+	     </if>
+			<if test="prcoCommentpic != null">
+				and prCo_CommentPic=#{prcoCommentpic}
+	     </if>
+			<if test="prcoOrderid != null">
+				and prCo_OrderID=#{prcoOrderid}
+	     </if>
+			<if test="prcoCommentType != null">
+				and prCo_Comment_type=#{prcoCommentType}
+	     </if>
+			<if test="prcoCreatedate != null">
+				and prCo_Createdate=#{prcoCreatedate}
+	     </if>
+			<if test="prcoUpdatedate != null">
+				and prCo_Updatedate=#{prcoUpdatedate}
+	     </if>
+			<if test="prcoUtatus != null">
+				and prCo_Utatus=#{prcoUtatus}
+	     </if>
+			<if test="prcoContent != null">
+				and prCo_Content=#{prcoContent}
+	     </if>
+		</where>
+	</select>
+	<!-- 产品评论 -->
+	<select id="findProComments" parameterType="map" resultMap="tblProductcommentResultMap">
+		select
+		pk_ProductComment,
+		prCo_UserName,
+		prCo_CommentStart,
+		prCo_Content,
+		getFullPath('proImage',pk_ProductComment) as
+		prcoCommentpic,
+		getFullPath('userAvatar',prCo_UserId) as userImage,
+		prCo_Createdate
+		from tbl_ProductComment
+		where 
+		prCo_ProductId = #{prCoProductId} and prCo_Comment_type = #{prcoCommentType} and prCo_Utatus=0
+		order by prCo_Createdate desc
+		limit #{pageNumber},#{pageNum}
+	</select>
+	
+	<!-- 获取用户评论 -->
+	<select id="findProCommentsByUser" parameterType="map" resultMap="tblProductcommentResultMap">
+		select
+		pk_ProductComment,
+		prCo_Content,
+		prCo_Createdate
+		from tbl_ProductComment
+		<where>
+		  <if test="prcoUserid != null">
+			  prCo_UserId=#{prcoUserid}
+	     </if>
+		</where>
+	</select>
+	
+	<select id="findProCommentsByUserId" parameterType="int" resultType="HashMap">
+		select pk_EpcComment id,epc_epId ,1 type,epc_Content,epc_Createdate 
+		from tbl_electricpilecomment where epc_UserId=#{userId}
+		UNION ALL
+		select pk_PsComment id,psc_PsId,2 type,psc_Content,psc_Createdate 
+		from tbl_powerstationcomment where psc_UserId=#{userId}
+	</select>
+</mapper> 

@@ -1,0 +1,133 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>爱充-行业动态_爱充充电,新能源行业动态业动态</title>
+<meta name="description" content="爱充充电周边新能源行业,会议成果、产业调研及集团动态播报">
+<meta name="keywords" content="行业动态">
+<link href="static/css/style.css" rel="stylesheet" type="text/css" /><!--全局-->
+<link href="static/css/page.css" rel="stylesheet" type="text/css"/>
+<link href="static/css/reset.css" rel="stylesheet" type="text/css"/>
+<link href="static/css/loginBox.css" rel="stylesheet" type="text/css"/>
+<link href="static/css/infobox.css" rel="stylesheet" type="text/css"/>
+<!-- common js aere -->
+<script src="static/js/jquery-1.10.2.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="static/js/company/company.js"></script>
+<script type="text/javascript">
+	var basepath="";
+	var this_tag = "hangyeMenu";	
+</script>
+</head>
+
+<body style="background:#fff">
+<!--导航-->
+<div id="afterHead" class="clear"></div><div style="clear:both;"></div>
+<!--通栏大图-->
+<div class="huodongBanner" style=" background:url(static/images/zixun/banner-01.jpg) center center no-repeat;"></div>
+<div style="clear:both;"></div> 
+<!--内容-->
+<div class="detail">
+		
+  <div class="ChannelContent" style="height:530px">
+    <ul class="Channel">
+      <li id="eichongL" class="ChannelNav"><a class="show" >爱充动态</a></li>
+      <li id="hangyeL" class="ChannelNav"><a class="unshow">行业资讯</a></li>
+    </ul>
+    <div style="clear:both;"></div> 
+    <ul id='eichongLContent' style="height:77%" class="content"> 
+    </ul> 
+    <ul id='hangyeLContent' style='display:none;height:77%' class="content">
+    </ul>
+
+<div class="floatL fanye" id="page_eichongL"></div>
+<div class="floatL fanye" id="page_hangyeL"></div>
+<div style="clear:both;"></div> 
+  </div>
+ 
+</div>
+<div style="clear:both;"></div> 
+
+<!--footer-->
+<div style="text-align:center; line-height:60px; color:#888; font-size:14px;width:100%;height:60px;background:#eee;bottom:0;margin:0 auto; " >浙江爱充网络科技有限公司 Copyright ©2017爱充网版权所有.浙ICP备15005865号-1</div>
+<div style="text-align:center; line-height:10px; color:#888; font-size:14px;width:100%;height:20px;background:#eee; ">
+<a href="/" target="_blank" style="color:#3C3C3C">首 页</a> | <a href="/case.html" target="_blank" style="color:#3C3C3C">方案案例</a> | <a href="/activity.html" target="_blank" style="color:#3C3C3C">活动中心</a> | <a href="/company.html" target="_blank" style="color:#3C3C3C">行业动态</a> | <a href="/app/app.html" target="_blank" style="color:#3C3C3C">App下载</a>
+</div>
+<div class="LogBox" id="loginBox" style="display: none;">
+<form class="validForm" name="loginForm" id="loginForm">
+    <dl class="LogMain">
+      <dt>
+      <a class="Close" id="closeLogin">×</a>用户登录
+      <a class="shangjiaLink" href="/wanma/">企业商家入口</a>
+      </dt>
+      <dd class="ddTop"><span class="W80">用户名:</span><input class="D250" id="loginPhone"  name="usinPhone" type="text" value=""></dd>
+      <dd><span class="W80">密码:</span><input class="D250" name="usinPassword" type="password" value=""></dd>
+      <dd><span class="W80">验证码:</span><input class="D80" class="yanzheng" name="code" type="text">
+		<a href="#" class="huoqu" id="validateCodeLogin">获取验证码</a>
+		<a style="font-size:14px;" class="changeCode" data-id="validateCodeLogin">换一张</a>	
+	  </dd>
+	  <dd><input type="checkbox" name="rememberMe" >记住密码</dd>
+      <dd><input class="sub" type="button" name="type" value="登录" id="loginSubmit"></dd>
+      <dd class="ddfooter forget">
+       <a style="margin-left:10px;" id="reset">忘记密码？</a>
+	   <a style="margin-left:100px;" id="regist2">没有账号？现在去注册</a>
+	  </dd>
+    </dl><div class="clear"> </div>
+</form>    
+</div>
+<div  class="LogBox" id="registBox" style="display: none;">
+<form id="registForm">
+	<input class="D200"  name="usinRegistetype" type="hidden" value="2">
+    <dl class="LogMain">
+      <dt><a class="Close" id="closeRegist">×</a>新用户注册</dt>
+      <dd class="ddTop"><span>输入手机号码</span><input class="D200" id="registPhone" name="usinPhone" type="text"></dd>
+      <dd><span >输入手机验证码</span><input id="registPhoneYz"  class="D80" name="msgCode" type="text">
+	  <a  class="huoquyanzheng" id="btn-message">获取验证码</a></dd>
+	  <dd><span>输入图片验证码</span><input id="registYz"  class="D80" name="code" type="text">
+		<a  class="huoqu" id="validateCodeRegist">获取验证码</a>
+		<a style="font-size:14px;" class="changeCode" data-id="validateCodeRegist">换一张</a>
+		</dd>
+      <dd><span>设置密码</span><input class="D200" id="registPassword" name="usinPassword" type="password"></dd>
+      <dd><span>再次确认密码</span><input class="D200" id="registRePassword" name="rePassword" type="password"></dd>
+            <dd><span>请输入昵称</span><input class="D200" id="registName" name="usinUsername" type="text"></dd>
+      <dd class="ddfooter"><input class="sub" type="button" name="type" value="提交" id="registSubmit"></dd>
+    </dl>
+</form>    
+</div>
+<div class="LogBox" id="resetBox" style="display: none;">
+<form class="validForm" name="resetForm" id="resetForm">
+	<input type="hidden" id="usinPhoneHidden" value="${user.userTel}" />	
+    <dl class="LogMain">
+      <dt><a class="Close" id="closeReset">×</a><t id="resetTitle">密码找回</t></dt>
+      <dd class="ddTop">
+	      <span class="W130">输入手机号码</span>
+	      <input class="D200" id="resetPhone" name="usinPhone" type="text" value="">
+	  </dd>
+      <dd><span class="W130">输入手机验证码</span>
+      	  <input class="D80" name="msgCode" type="text">
+		<a class="huoquyanzheng"  id="btn-message2">获取验证码</a>
+	  </dd>
+      <dd><span class="W130" >设置新密码</span><input class="D200" name="usinPassword" type="password" value=""></dd>
+      <dd><span class="W130" >再次确认新密码</span><input class="D200" name="rePassword" type="password" value=""></dd>
+      <dd class="ddfooter"><input id="resetSubmit" class="sub" type="button" name="type" value="提交"></dd>
+    </dl>
+</form>    
+</div>
+		
+<div class="information label infohide" ></div> 
+<!-- common js aere -->
+<script src="static/lib/json3/json3.min.js" type="text/javascript"></script>
+<script src="static/lib/template/template.js" type="text/javascript"></script>
+<script src="static/lib/md5/jquery.md5.js" type="text/javascript"></script>
+<script src="static/js/validate.js" type="text/javascript"></script>
+<script src="static/js/DateUtil.js" type="text/javascript"></script>
+<script src="static/js/common/common.js" type="text/javascript"></script>
+<script src="static/js/common/page.js" type="text/javascript"></script>
+<script src="static/js/user-service.js" type="text/javascript"></script>
+<script src="static/js/global.js" type="text/javascript"></script>
+<script src="static/js/config.js" type="text/javascript"></script>
+<script src="static/js/template-other.js" type="text/javascript"></script>
+<script src="static/js/index/regist.js" type="text/javascript"></script>
+<script src="static/js/index/reset.js" type="text/javascript"></script>
+<script src="static/js/initHtml.js" type="text/javascript"></script>
+</body>
+</html>

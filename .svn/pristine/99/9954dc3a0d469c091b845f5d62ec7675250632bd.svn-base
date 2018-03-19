@@ -1,0 +1,490 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.ActivityMapper">
+	<resultMap type="ActivityDO" id="resultActivity">
+		<result property="pkActivity" column="pk_Activity" />
+		<result property="actActivityname" column="act_ActivityName" />
+		<result property="actType" column="act_Type" />
+		<result property="actStatus" column="act_Status" />
+		<result property="actChanneltype" column="act_ChannelType" />
+		<result property="actActivityrule" column="act_ActivityRule" />
+		<result property="actRemark" column="act_Remark" />
+		<result property="actBegindate" column="act_BeginDate" />
+		<result property="actEnddate" column="act_EndDate" />
+		<result property="actCreatedate" column="act_Createdate" />
+		<result property="actUpdatedate" column="act_EndDate" />
+		<result property="actTopMoney" column="act_top_money" />
+		<result property="singelMoney" column="act_single_money" />
+		<result property="actCouponEndDate" column="act_CouponEndDate" />
+		<result property="actScope" column="act_Scope" />
+		<result property="provinceCode" column="province_code" />
+		<result property="cityCode" column="city_code" />
+		<result property="areaCode" column="area_code" />	
+		<result property="pkPowerstation" column="pk_Powerstation" />
+	</resultMap>
+
+	<resultMap type="ActivityDO" id="activity" extends="resultActivity">
+		<result property="pkCouponVariety" column="pk_CouponVariety"/>
+		<result property="num" column="acsc_num"/>
+		<result property="singelMoney" column="act_single_money"/>
+		<result property="couponValue" column="cova_CouponValue"/>
+		<result property="cpCouponcondition" column="cova_CouponCondition"/>
+	</resultMap>
+
+   <select id="getActivityForList" parameterType="ActivityDO" resultMap="resultActivity">
+   select pk_Activity,act_ActivityName
+   from tbl_activity
+   <where>
+   act_Status != 1
+   	<if test="actType !=null and actType!='' ">
+   	and act_Type = #{actType}
+   	</if>
+   </where>
+    order by act_Createdate desc
+   </select>
+   <select id="getActivityList" parameterType="ActivityDO" resultMap="resultActivity">
+   SELECT
+		c.pk_Activity,
+		act_ActivityName,
+		act_Type,
+		(select cpy_name
+		from tbl_company x where x.cpy_id=act_ChannelType )
+		cpyCompanyName,
+		act_Status,
+		act_ActivityRule,
+		act_CreateUserId,
+		act_UpdateUserId,
+		act_Remark,
+		act_BeginDate,
+		act_EndDate,
+		act_Createdate,
+		act_Scope,
+		city_code,
+		act_Updatedate,
+		CASE act_ActivityRule
+		WHEN 5 THEN
+		(
+		SELECT
+		group_concat(
+		"单笔充值满",
+		d.act_single_money,
+		"就送",
+		col1 SEPARATOR ';'
+		)
+		FROM
+		(
+		SELECT
+		group_concat(
+		b.cova_ActivityName,
+		"*",
+		a.acsc_num SEPARATOR ','
+		) AS col1,
+		a.act_single_money,
+		a.pk_Activity
+		FROM
+		tbl_activityschedule a,
+		tbl_couponvariety b
+		WHERE
+		a.pk_CouponVariety = b.pk_CouponVariety
+		AND a.act_single_money != ''
+		GROUP BY
+		a.act_single_money,
+		a.pk_Activity
+		) d
+		WHERE
+		c.pk_Activity = d.pk_Activity
+		)
+		WHEN 6 THEN
+	(
+		SELECT
+			group_concat(
+				"消费满",
+				d.act_single_money,
+				"就送",
+				col1 SEPARATOR ';'
+			)
+		FROM
+			(
+				SELECT
+					group_concat(
+						b.cova_ActivityName,
+						"*",
+						a.acsc_num SEPARATOR ','
+					) AS col1,
+					a.act_single_money,
+					a.pk_Activity
+				FROM
+					tbl_activityschedule a,
+					tbl_couponvariety b
+				WHERE
+					a.pk_CouponVariety = b.pk_CouponVariety
+				AND a.act_single_money != ''
+				GROUP BY
+					a.act_single_money,
+					a.pk_Activity
+			) d
+		WHERE
+			c.pk_Activity = d.pk_Activity
+	)
+		ELSE
+		(
+		SELECT
+		GROUP_CONCAT(
+		CONCAT(
+		b.cova_ActivityName,
+		"*",
+		a.acsc_num
+		) SEPARATOR '；'
+		)
+		FROM
+		tbl_activityschedule a,
+		tbl_couponvariety b
+		WHERE
+		a.pk_CouponVariety = b.pk_CouponVariety
+		AND a.pk_Activity = c.pk_Activity
+		AND
+		b.cova_Stutas = 0
+		)
+		END AS prizeName
+		FROM
+		tbl_activity c
+		WHERE
+		1 = 1
+		<if test="actStatus ==1 ">
+			and act_Status=1
+		</if>
+		<if test="actStatus ==0 ">
+			and act_BeginDate>#{currentDate} and act_Status!=1
+		</if>
+		<if test="actStatus ==2 ">
+			and #{currentDate}>=act_BeginDate  and
+			date_add(act_EndDate, INTERVAL 1 day)>#{currentDate}
+		</if>
+		<if test="actStatus ==3 ">
+			and #{currentDate}>date_add(act_EndDate, INTERVAL 1 day)
+			and act_Status!=1
+		</if>
+		<if test="pkActivity != null and pkActivity!=''">
+			and pk_Activity = #{pkActivity}
+		</if>
+		<if test="actActivityname != null and actActivityname!=''">
+			and act_ActivityName = #{actActivityname}
+		</if>
+		<if test="actType != null and actType!=''">
+			and act_Type= #{actType}
+		</if>
+		<if test="actChanneltype != null and actChanneltype!=''">
+			and act_ChannelType= #{actChanneltype}
+		</if>
+		<if test="actActivityrule != null and actActivityrule!=''">
+			and act_ActivityRule= #{actActivityrule}
+		</if>
+		<if test="actScope != null ">
+			and act_Scope= #{actScope}
+		</if>
+		<if test="cityCode != null and cityCode!=''">
+			and city_code= #{cityCode}
+		</if>
+		order by act_Createdate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.pageSize}</if>
+   </select>
+	<select id="getActivityCount" parameterType="ActivityDO" resultType="long">
+	select count(1) from (
+		select * from tbl_activity where 1=1
+		<if test="actStatus ==1 ">
+			and act_Status=1
+		</if>
+		<if test="actStatus ==0 ">
+			and act_BeginDate>#{currentDate} and act_Status!=1
+		</if>
+		<if test="actStatus ==2 ">
+			and #{currentDate}>=act_BeginDate  and
+			date_add(act_EndDate, INTERVAL 1 day)>#{currentDate}
+		</if>
+		<if test="actStatus ==3 ">
+			and #{currentDate}>date_add(act_EndDate, INTERVAL 1 day) and act_Status!=1
+		</if>
+		
+		<if test="pkActivity != null and pkActivity!=''">
+			and pk_Activity = #{pkActivity}
+		</if>
+		<if test="actActivityname != null and actActivityname!=''">
+			and act_ActivityName = #{actActivityname}
+		</if>
+		<if test="actType != null and actType!=''">
+			and act_Type= #{actType}
+		</if>
+		<if test="actChanneltype != null and actChanneltype!=''">
+			and act_ChannelType= #{actChanneltype}
+		</if>
+		<if test="actActivityrule != null and actActivityrule!=''">
+			and act_ActivityRule= #{actActivityrule}
+		</if>
+		<if test="actScope != null ">
+			and act_Scope= #{actScope}
+		</if>
+		<if test="cityCode != null and cityCode!=''">
+			and city_code= #{cityCode}
+		</if>
+		order by act_Createdate desc
+		) aa
+	</select>
+    <update id="changeActStatus" parameterType="ActivityDO" >
+    	update tbl_activity
+		set act_Status=#{actStatus},act_EndDate=date_sub(CURDATE(),INTERVAL 1 DAY)
+		where
+		pk_Activity=#{pkActivity}
+    </update>
+    <insert id="addMainActivity" parameterType="ActivityDO"
+		useGeneratedKeys="true" keyProperty="pkActivity">
+		insert into
+		tbl_activity
+		(act_ActivityName,act_Type,
+		<if test="actActivityrule != null and actActivityrule!=''">
+			act_ActivityRule,
+		</if>
+		<if test="actChanneltype != null and actChanneltype!=''">
+			act_ChannelType,
+		</if>
+		<if test="actBegindates != null and actBegindates!=''">
+			act_BeginDate,
+		</if>
+		<if test="actEnddates != null and actEnddates!=''">
+			act_EndDate,
+		</if>
+		<if test="actTopMoney != null and actTopMoney!=''">
+			act_top_money,
+		</if>
+		<if test="actScope != null and actScope!=''">
+			act_Scope,
+		</if>
+		<if test="provinceCode != null and provinceCode!=''">
+			province_code,
+		</if>
+		<if test="cityCode != null and cityCode!=''">
+			city_code,
+		</if>
+		<if test="areaCode != null and areaCode!=''">
+			area_code,
+		</if>
+		<if test="pkPowerstation != null and pkPowerstation!=''">
+			pk_Powerstation,
+		</if>
+		act_CreateUserId,act_UpdateUserId,act_Remark,act_CouponEndDate)
+		values
+		(#{actActivityname},#{actType},
+		<if test="actActivityrule != null and actActivityrule!=''">
+			#{actActivityrule},
+		</if>
+		<if test="actChanneltype != null and actChanneltype!=''">
+			#{actChanneltype},
+		</if>
+		<if test="actBegindates != null and actBegindates!=''">
+			#{actBegindates},
+		</if>
+		<if test="actEnddates != null and actEnddates!=''">
+			#{actEnddates},
+		</if>
+		<if test="actTopMoney != null and actTopMoney!=''">
+			#{actTopMoney},
+		</if>
+		<if test="actScope != null and actScope!=''">
+			#{actScope},
+		</if>
+		<if test="provinceCode != null and provinceCode!=''">
+			#{provinceCode},
+		</if>
+		<if test="cityCode != null and cityCode!=''">
+			#{cityCode},
+		</if>
+		<if test="areaCode != null and areaCode!=''">
+			#{areaCode},
+		</if>
+		<if test="pkPowerstation != null and pkPowerstation!=''">
+			#{pkPowerstation},
+		</if>
+		#{actCreateuserid},#{actUpdateuserid},#{actRemark},#{actCouponEndDates})
+
+	</insert>
+	<insert id="addScheActivity" parameterType="ActivityDO">
+		insert into
+		tbl_activityschedule
+		(pk_Activity,pk_CouponVariety,acsc_num
+		<if test="singelMoney != null and singelMoney!=''">
+			,act_single_money
+		</if>
+		)
+		values
+		(#{pkActivity},#{pkCouponVariety},#{num}
+		<if test="singelMoney != null and singelMoney!=''">
+			,#{singelMoney}
+		</if>
+		)
+
+	</insert>
+	<insert id="generateCode" parameterType="list">
+		INSERT INTO tbl_coupon (
+		pk_Activity,
+		pk_CouponVariety,
+		cp_Limitation,
+		cp_CouponValue,
+		cp_CouponCondition,
+		cp_CouponCode,
+		cp_BeginDate,
+		cp_EndDate,
+		cp_UserId
+		)
+		values
+		<foreach collection="list" item="item" separator=",">
+			(
+			#{item.pkActivity},
+			#{item.pkCouponVariety},
+			(select cova_Limitation
+			FROM
+			tbl_couponvariety
+			WHERE
+			pk_CouponVariety =
+			#{item.pkCouponVariety}
+			), 
+			(select cova_CouponValue
+			FROM
+			tbl_couponvariety
+			WHERE
+			pk_CouponVariety = #{item.pkCouponVariety}
+			), 
+			(select
+			cova_CouponCondition FROM
+			tbl_couponvariety
+			WHERE
+			pk_CouponVariety =
+			#{item.pkCouponVariety}
+			),#{item.code},#{item.cpBeginDate},#{item.cpEndDate}
+			,#{item.userId}
+			)
+		</foreach>
+	</insert>
+	<select id="checkActUnique" parameterType="ActivityDO" resultType="long">
+		select count(1) from (
+		SELECT
+		*
+		FROM
+		tbl_activity t
+		WHERE
+		1 = 1 and
+		t.act_Type= 1
+		AND t.act_ActivityRule = #{actActivityrule}
+		AND (
+		(
+		t.act_BeginDate>=#{actBegindates}
+		AND #{actEnddates} >= t.act_BeginDate
+		)
+		OR (
+		#{actBegindates} >= t.act_BeginDate
+		AND t.act_EndDate
+		>=#{actBegindates}
+		)
+		)
+		AND t.act_Status != 1
+		AND t.act_Scope = #{actScope}
+		<if test="actScope == 1">
+		AND t.city_code = #{cityCode}
+		</if>
+		<if test="actScope == 2">
+		AND t.pk_Powerstation = #{pkPowerstation}
+		</if>
+		) aa
+
+	</select>
+	<select id="getCityScope" resultType="hashMap">
+		select DISTINCT(c.city_code) cityCode from tbl_activity c  where c.act_Scope = 1
+	</select>
+	<select id="getCpyForList" parameterType="ActivityDO" resultType="hashMap">
+	SELECT DISTINCT
+		(a.act_ChannelType) pkCompanyId,
+		 c.cpy_name	cpyCompanyName
+	FROM
+		tbl_activity a,
+		tbl_company c
+	WHERE
+		a.act_ChannelType = c.cpy_id
+		<if test="actType != null and actType!=''">
+			and a.act_Type= #{actType}
+		</if>
+	</select>
+
+	<select id="getDataForCouponBatch" parameterType="ActivityDO" resultMap="activity">
+		SELECT t.pk_Activity,
+			t.act_BeginDate,
+			t.act_EndDate,
+			t.act_CouponEndDate,
+			t.pk_CouponVariety,
+			t.acsc_num,
+			t.act_single_money,
+			t.cova_CouponValue,
+			t.cova_CouponCondition
+		FROM (SELECT
+				a.pk_Activity,
+				a.act_BeginDate,
+				a.act_EndDate,
+				a.act_CouponEndDate,
+				asch.pk_CouponVariety,
+				asch.acsc_num,
+				asch.act_single_money,
+				cv.cova_CouponValue,
+				cv.cova_CouponCondition
+			FROM
+				tbl_activity a
+			LEFT JOIN tbl_activityschedule asch ON a.pk_Activity = asch.pk_Activity
+			INNER JOIN tbl_couponvariety cv ON cv.pk_CouponVariety = asch.pk_CouponVariety
+			WHERE
+				a.act_ActivityRule = 6
+			AND a.act_Status = 0
+			AND a.act_Scope = 0
+			<if test="cityCode != null and cityCode != ''">
+				UNION
+				SELECT
+					a.pk_Activity,
+					a.act_BeginDate,
+					a.act_EndDate,
+					a.act_CouponEndDate,
+					asch.pk_CouponVariety,
+					asch.acsc_num,
+					asch.act_single_money,
+					cv.cova_CouponValue,
+					cv.cova_CouponCondition
+				FROM
+					tbl_activity a
+				LEFT JOIN tbl_activityschedule asch ON a.pk_Activity = asch.pk_Activity
+				INNER JOIN tbl_couponvariety cv ON cv.pk_CouponVariety = asch.pk_CouponVariety
+				WHERE
+					a.act_ActivityRule = 6
+				AND a.act_Status = 0
+				AND a.act_Scope = 1
+				AND a.city_code = #{cityCode}
+			</if>
+			<if test="pkPowerstation != null and pkPowerstation != ''">
+				UNION
+				SELECT
+					a.pk_Activity,
+					a.act_BeginDate,
+					a.act_EndDate,
+					a.act_CouponEndDate,
+					asch.pk_CouponVariety,
+					asch.acsc_num,
+					asch.act_single_money,
+					cv.cova_CouponValue,
+					cv.cova_CouponCondition
+				FROM
+					tbl_activity a
+				LEFT JOIN tbl_activityschedule asch ON a.pk_Activity = asch.pk_Activity
+				INNER JOIN tbl_couponvariety cv ON cv.pk_CouponVariety = asch.pk_CouponVariety
+				WHERE
+					a.act_ActivityRule = 6
+				AND a.act_Status = 0
+				AND a.act_Scope = 2
+				AND a.pk_Powerstation = #{pkPowerstation}
+			</if>) t
+		ORDER BY t.pk_Activity, CONVERT(t.act_single_money, SIGNED) DESC
+	</select>
+</mapper>

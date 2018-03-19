@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.web.dao.WebShoppingcartMapper">
+
+	<resultMap id="tblShoppingcartResultMap" type="TblShoppingcart">
+		<id property="pkShoppingcart" column="pk_ShoppingCart" />
+		<result property="shcaUserid" column="shCa_UserId" />
+		<result property="shcaProductid" column="shCa_ProductId" />
+		<result property="shcaCount" column="shCa_Count" />
+		<result property="shcaCreatedate" column="shCa_Createdate" />
+		<result property="shcaUpdatedate" column="shCa_Updatedate" />
+	</resultMap>
+	<resultMap id="pageResultMap" type="java.util.HashMap"
+		extends="tblShoppingcartResultMap"></resultMap>
+	<resultMap id="findResultMap" type="java.util.HashMap"
+		extends="tblShoppingcartResultMap"></resultMap>
+
+	<resultMap id="shoppingcartResultMap" type="TblShoppingcart"
+		extends="tblShoppingcartResultMap">
+		<id property="prodBrand" column="prodBrand" />
+		<result property="pkShoppingcart" column="pk_ShoppingCart" />
+		<result property="shcaUserid" column="shCa_UserId" />
+		<result property="shcaProductid" column="shCa_ProductId" />
+		<result property="shcaCount" column="shCa_Count" />
+		<result property="prodBrandName" column="prodBrandName" />
+
+		<collection property="productList" ofType="map">
+			<id property="pkShoppingcart" column="pk_ShoppingCart" />
+			<result property="prodBrand" column="prodBrand" />
+			<result property="shcaProductid" column="shcaProductid" />
+			<result property="prodProductName" column="prodProductName" />
+			<result property="prodMarketprice" column="prodMarketprice" />
+			<result property="prodDiscountprice" column="prodDiscountprice" />
+			<result property="prodProductimage" column="prodProductimage" />
+			<result property="prCaName" column="prCaName" />
+			<result property="prodBrandName" column="prodBrandName" />
+			<result property="shcaCount" column="shCa_Count" />
+			<result property="stockQuantity" column="stockQuantity" />
+			<result property="shcaProductid" column="shCa_ProductId" />
+		</collection>
+	</resultMap>
+
+	<!-- 商品加入购物车 -->
+	<insert id="insert" parameterType="TblShoppingcart">
+		insert into tbl_ShoppingCart (
+		pk_ShoppingCart,
+		shCa_UserId,
+		shCa_ProductId,
+		shCa_Count,
+		shCa_Createdate,
+		shCa_Updatedate
+		)values (
+		#{pkShoppingcart},
+		#{shcaUserid},
+		#{shcaProductid},
+		#{shcaCount},
+		#{shcaCreatedate},
+		#{shcaUpdatedate}
+		)
+	</insert>
+	<!-- 更新购物车 -->
+	<update id="update" parameterType="TblShoppingcart">
+		update tbl_ShoppingCart set
+		pk_ShoppingCart=#{pkShoppingcart},
+		shCa_UserId=#{shcaUserid},
+		shCa_ProductId=#{shcaProductid},
+		shCa_Count=#{shcaCount},
+		shCa_Createdate=#{shcaCreatedate},
+		shCa_Updatedate=#{shcaUpdatedate}
+		where
+		pk_ShoppingCart=#{pkShoppingcart} 
+	</update>
+	<!-- 根据主键删除购物车 -->
+	<delete id="delete" parameterType="map">
+		delete from
+		tbl_ShoppingCart
+		where
+		pk_ShoppingCart=#{pkShoppingcart} 
+	</delete>
+	<!-- 根据用户id和产品id删除购物车 -->
+	<delete id="deleteCart" parameterType="map">
+		delete from
+		tbl_ShoppingCart
+		where
+		shCa_UserId=#{shcaUserid}
+		and
+		shCa_ProductId=#{shcaProductid}
+	</delete>
+
+	<select id="get" parameterType="map" resultMap="tblShoppingcartResultMap">
+		select
+		pk_ShoppingCart,
+		shCa_UserId,
+		shCa_ProductId,
+		shCa_Count,
+		shCa_Createdate,
+		shCa_Updatedate
+		from tbl_ShoppingCart
+		where
+		pk_ShoppingCart=#{pkShoppingcart} 
+	</select>
+
+	<select id="findOne" parameterType="map" resultMap="findResultMap">
+		select
+		pk_ShoppingCart,
+		shCa_UserId,
+		shCa_ProductId,
+		shCa_Count,
+		shCa_Createdate,
+		shCa_Updatedate
+		from tbl_ShoppingCart
+		where
+		pk_ShoppingCart=#{pkShoppingcart} 
+	</select>
+
+	<select id="find" parameterType="map" resultMap="findResultMap">
+		select
+		pk_ShoppingCart,
+		shCa_UserId,
+		shCa_ProductId,
+		shCa_Count,
+		shCa_Createdate,
+		shCa_Updatedate
+		from tbl_ShoppingCart
+		<where>
+			<if test="pkShoppingcart != null">
+				pk_ShoppingCart=#{pkShoppingcart}
+	     </if>
+			<if test="shcaUserid != null">
+				and shCa_UserId=#{shcaUserid}
+	     </if>
+			<if test="shcaProductid != null">
+				and shCa_ProductId=#{shcaProductid}
+	     </if>
+			<if test="shcaCount != null">
+				and shCa_Count=#{shcaCount}
+	     </if>
+			<if test="shcaCreatedate != null">
+				and shCa_Createdate=#{shcaCreatedate}
+	     </if>
+			<if test="shcaUpdatedate != null">
+				and shCa_Updatedate=#{shcaUpdatedate}
+	     </if>
+		</where>
+	</select>
+	<!-- 根据商品id获取购物车信息 -->
+	<select id="selectByshCaProductid" parameterType="map"
+		resultMap="tblShoppingcartResultMap">
+		select
+		c.pk_ShoppingCart,
+		c.shCa_UserId,
+		c.shCa_ProductId,
+		c.shCa_Count,
+		c.shCa_Createdate,
+		c.shCa_Updatedate,
+		p.prod_ProductName prodProductName,
+		p.prod_DiscountPrice prodDiscountprice,
+		p.prod_MarketPrice prodMarketprice,
+		p.prod_StockQuantity prodStockquantity
+		from tbl_ShoppingCart c left join tbl_Product p
+		on
+		c.shCa_ProductId = p.pk_Product
+		where
+		shCa_ProductId=#{shcaProductid}
+		and shCa_UserId = #{shcaUserid}
+	</select>
+	<!-- 我的购物车 -->
+	<select id="findMyCart" parameterType="int" resultMap="shoppingcartResultMap">
+		select
+		s.pk_ShoppingCart,
+		s.shCa_ProductId,
+		p.prod_ProductName prodProductName,
+		p.prod_MarketPrice prodMarketPrice,
+		p.prod_DiscountPrice
+		prodDiscountPrice,
+		p.prod_Brand prodBrand,
+		(CASE WHEN
+		p.prod_ProductName
+		is not NULL THEN '万马品牌' END) prodBrandName,
+		getFullPath('ListImage',s.shCa_ProductId) as
+		prodProductimage,
+		s.shCa_Count,
+		pc.prCa_Name prCaName,
+		p.prod_StockQuantity stockQuantity
+		from
+		tbl_ShoppingCart s left join
+		tbl_Product p
+		on s.shCa_ProductId =
+		p.pk_Product
+		left join
+		tbl_ProductCategory pc on
+		p.prod_CategoryId = pc.pk_ProductCategory
+		where
+		s.shCa_UserId = #{pkUserInfo}
+	</select>
+	
+	<!-- 根据商品id获取购物车信息 -->
+	<select id="selectByshCaProductidNew" parameterType="map"
+		resultMap="tblShoppingcartResultMap">
+		select
+		c.pk_ShoppingCart,
+		c.shCa_UserId,
+		c.shCa_ProductId,
+		c.shCa_Count,
+		c.shCa_Createdate,
+		c.shCa_Updatedate,
+		p.prod_ProductName prodProductName,
+		p.prod_DiscountPrice prodDiscountprice,
+		p.prod_MarketPrice prodMarketprice,
+		p.prod_StockQuantity prodStockquantity
+		from tbl_ShoppingCart c left join tbl_Product p
+		on
+		c.shCa_ProductId = p.pk_Product
+		where
+		shCa_ProductId=#{shcaProductid}
+		and shCa_UserId = #{shcaUserid}
+	</select>
+
+</mapper> 

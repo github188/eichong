@@ -1,0 +1,70 @@
+//新建电桩制造商名称校验
+$('body').off('blur', '#name').on('blur', '#name', function () {
+    checkName($('#name').val());
+});
+
+$('body').off('blur', '#remark').on('blur', '#remark', function () {
+    checkRemark($('#remark').val());
+});
+
+function checkName(name) {
+    if (!name) {
+        $('#nameTip').html('电桩制造商名称不能为空');
+        return false;
+    }
+
+    $('#nameTip').html('');
+    return true;
+}
+
+function checkRemark(remark) {
+    if (!remark) {
+        $('#remarkTip').html('制造商标识不能为空');
+        return false;
+    }
+
+    $('#remarkTip').html('');
+    return true;
+}
+
+//将数据提交到后台处理
+function saveCarCompany() {
+    var name = $('#name').val();
+    var remark = $('#remark').val();
+
+    if (!checkName(name) || !checkRemark(remark)) {
+        return;
+    }
+
+    var obj = {
+        name: name,
+        remark: remark
+    };
+    $.ajax({
+        type: "post",
+        url: basePath + addCarCompanyUrl,
+        async: true,
+        data: obj,
+        success: function (data) {
+            if (data.success == true) {
+                window.location.href = 'carCompany.html';
+            } else {
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:center"],
+                    shadeClose: false,
+                    closeBtn: 2,
+                    area: ['310px', '160px'],//宽高
+                    content: data.msg,
+                    time: 3000,
+                    btn: ["确定", "取消"]
+                });
+            }
+        }
+    });
+}
+
+$('#goback').on('click', function () {
+    window.location.href = 'carCompany.html';
+});

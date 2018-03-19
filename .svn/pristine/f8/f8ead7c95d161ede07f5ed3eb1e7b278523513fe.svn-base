@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.app.dao.ChargeCardMapper">
+
+	<insert id="initCard" parameterType="map">
+		insert into tbl_usercard(
+			uc_InternalCardNumber,
+			uc_ExternalCardNumber,
+			uc_CompanyNumber,
+			uc_pay_mode
+		)
+		values(
+			#{inNum},
+			#{outNum},
+			#{compNum},
+			#{payMode}
+		)
+	</insert>	
+	
+	<select id="countCardByOutNum" parameterType="string" resultType="int">
+		select count(*) cardNum from tbl_usercard where uc_ExternalCardNumber = #{outNum}
+	</select>
+	
+	<select id="countCardByOutAndInNum" parameterType="map" resultType="int">
+		select count(*) cardNum from tbl_usercard where uc_ExternalCardNumber = #{outNum} and uc_InternalCardNumber = #{inNum}
+	</select>
+	
+	<select id="getCompMarkList" resultType="hashmap">
+		select pk_CompanyId compId, cpy_CompanyName compName,cpy_CompanyNumber compMark from tbl_company where cpy_CompanyNumber > 0
+	</select>
+	
+	<select id="getCardInfoByInNum" parameterType="string" resultType="hashmap">
+		select pk_UserCard,uc_InternalCardNumber inNum,uc_ExternalCardNumber outNum,uc_CompanyNumber compNum,
+			uc_UserId uId,cpy_CompanyName compName 
+			from tbl_usercard LEFT JOIN tbl_company on uc_CompanyNumber = cpy_CompanyNumber
+			where uc_Status = 0 and uc_UserId > 0 
+			<!-- and cpy_CompanyNumber > 0  -->
+			and uc_InternalCardNumber = #{inNum}
+			GROUP BY pk_UserCard
+	</select>
+	
+	<!-- 根据用户id获取绑定的卡列表 -->
+	<select id="cardListByUid" parameterType="long" resultType="hashmap">
+		select uc_Updatedate updatedate, uc_ExternalCardNumber outNum,uc_pay_mode payMode, uc_Status status from tbl_usercard
+        where uc_UserId = #{uId} and uc_pay_mode!=0 and uc_Updatedate in 
+        (select max(uc_Updatedate) from tbl_usercard where uc_UserId = #{uId} group by uc_pay_mode)
+        order by uc_Updatedate DESC
+	</select>
+	
+	<!-- 根据用户id和外卡号修改卡状态 -->
+	<update id="updateStatusByUidAndOutNum" parameterType="map">
+		update tbl_usercard set uc_Status = #{status} where uc_UserId = #{uId} and uc_ExternalCardNumber = #{outNum}
+	</update>
+</mapper> 

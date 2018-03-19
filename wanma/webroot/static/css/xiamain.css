@@ -1,0 +1,405 @@
+@charset "utf-8";
+/* CSS Document */
+*{
+    margin: 0;
+    padding: 0;
+}
+.clr{
+    clear: both;
+}
+/*****查找电桩内容样式*******/
+.search-electric {
+    width: 1160px;
+    padding-bottom: 20px;
+    margin: 10px auto;
+    overflow: hidden;
+}
+
+.search-electric ul.search-title {
+    overflow: hidden;
+}
+
+.search-electric ul.search-title li {
+    width: 185px;
+    height: 35px;
+    font-family: "微软雅黑";
+    float: left;
+    color: #3f3a39;
+    font-size: 18px;
+    text-align: center;
+    line-height: 35px;
+    border: 1px solid #dddddd;
+    cursor: pointer;
+}
+
+.search-electric ul.search-title li.current {
+    background-color: #fabf1b;
+    color: #fff;
+    border: none;
+    height: 37px;
+    line-height: 37px;
+}
+
+.search-electric ul.search-title li img {
+    width: 21px;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+
+.search-electric .search-con {
+    margin-top: 20px;
+    font-family: "微软雅黑";
+}
+
+/***第一个内容样式******/
+.search-electric .search-con .list-con {
+    border: 1px solid #dddddd;
+    overflow: hidden;
+}
+
+.search-electric .search-con .list-con .list-tit {
+    font-size: 14px;
+    line-height: 40px;
+    text-indent: 10px;
+    border-bottom: 1px dashed #dddddd;
+    position: relative;
+
+}
+
+.search-electric .search-con .list-con .list-tit img {
+    vertical-align: middle;
+    margin-right: 10px;
+
+}
+
+.search-electric .search-con .list-con ul {
+    padding-left: 40px;
+    overflow: hidden;
+
+}
+
+.search-electric .search-con .list-con .area-tit ul {
+    display: inline-block;
+    overflow: hidden;
+    position: absolute;
+    top: 5px;
+    left: 80px;
+
+}
+
+.search-electric .search-con .list-con .area-tit ul li {
+    float: left;
+    width: 80px;
+    line-height: 30px;
+    height: 30px;
+    padding: 0 !important;
+    border-radius: 8px;
+    text-align: left;
+    cursor: pointer;
+    margin: 0 15px;
+
+}
+
+.search-electric .search-con .list-con .area-tit ul li.area-current {
+    background-color: #f37814;
+    color: #fff;
+    text-align: center;
+}
+
+.search-electric .search-con .list-con ul li {
+    overflow: hidden;
+    font-size: 14px;
+    color: #666666;
+    padding: 10px 0;
+}
+
+.search-electric .search-con .list-con ul li span {
+    display: block;
+    float: left;
+    width: 80px;
+    line-height: 30px;
+    height: 30px;
+    text-align: center;
+}
+
+.search-electric .search-con .list-con ul li ul {
+    overflow: hidden;
+    padding-left: 0;
+}
+
+.search-electric .search-con .list-con ul li ul li {
+    float: left;
+    width: 80px;
+    line-height: 30px;
+    height: 30px;
+    padding: 0;
+    border-radius: 8px;
+    text-align: left;
+    cursor: pointer;
+    margin: 0 15px;
+}
+
+.search-electric .search-con .list-con ul li ul li.current {
+    background-color: #f37814;
+    color: #fff;
+    text-align: center;
+}
+.search-electric .search-con .map-con{
+    overflow: hidden;
+}
+/***第二部分内容样式********/
+.search-electric .electric-num {
+    border: 1px solid #dddddd;
+    overflow: hidden;
+    margin-top:30px;
+    padding-bottom: 20px;
+}
+
+.search-electric .electric-num .num-title {
+    overflow: hidden;
+    background-color: #efece8;
+
+}
+.search-electric .electric-num .num-title li{
+    width: 110px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    font-family: "微软雅黑";
+    font-size: 18px;
+    float: left;
+    color: #111111;
+    cursor: pointer;
+    border-left: 1px solid #dddddd;
+    border-right: 1px solid #dddddd;
+}
+.search-electric .electric-num .num-title li.num-current{
+    background-color: #ff8800;
+    border: none;
+}
+.search-electric .electric-num .electric-con{
+    overflow: hidden;
+}
+.search-electric .electric-num .electric-con li{
+    font-family: "微软雅黑";
+    float: left;
+    width: 360px;
+    overflow: hidden;
+    margin-top:20px;
+    margin-left: 18px;
+    border: 1px solid #dddddd;
+    padding-bottom: 10px;
+}
+.search-electric .electric-num .electric-con li img{
+    width: 360px;
+}
+.search-electric .electric-num .electric-con li h4{
+    font-size: 18px;
+    font-weight: normal;
+    color: #111111;
+    text-indent: 13px;
+}
+.search-electric .electric-num .electric-con li p{
+    text-indent: 20px;
+    color:#696969;
+    font-size: 14px;
+}
+.search-electric .electric-num .electric-con li p img{
+    width:12px;
+}
+/*****查找电桩内容样式结束*******/
+
+
+
+/*****电桩内容详情样式*******/
+.electric-infortame {
+    width: 1160px;
+    padding-bottom: 20px;
+    margin: 10px auto;
+    overflow: hidden;
+}
+.electric-infortame .electri-inf{
+    width: 1160px;
+    overflow: hidden;
+    padding-bottom: 50px;
+    border-bottom: 1px solid #dddddd;
+}
+.electric-infortame .electri-inf a{
+    display: block;
+    background-color: #fabf13;
+    width:156px ;
+    height: 50px;
+    line-height:50px ;
+    color: #fff;
+    text-align: center;
+    text-decoration: none;
+    font-family: "微软雅黑";
+    font-size: 18px;
+
+}
+.electric-infortame .electri-inf .left-con{
+    float: left;
+    width: 580px;
+}
+.electric-infortame .electri-inf .left-con p{
+    color: #5b5b5b;
+    font-family: 18px;
+    text-indent: 10px;
+    line-height: 30px;
+
+}
+.electric-infortame .electri-inf .left-con h3{
+    font-size: 28px;
+    color: #5b5b5b;
+}
+.electric-infortame .electri-inf .left-con h3 img{
+    vertical-align: middle;
+}
+.electric-infortame .electri-inf .left-con h3 span{
+    color: #8ac457;
+    font-size: 24px;
+}
+.electric-infortame .electri-inf .right-con{
+    width: 600px;
+    float: right;
+}
+.electric-infortame .electric-main{
+    padding: 20px 0;
+}
+.electric-infortame .electric-main .left-main{
+    width:880px ;
+    float: left;
+    overflow: hidden;
+}
+.electric-infortame .electric-main .left-main h4{
+    border-bottom: 2px solid #aca39e;
+    line-height: 40px;
+}
+.electric-infortame .electric-main .left-main img{
+    width:430px ;
+    display: block;
+    float: left;
+}
+.electric-infortame .electric-main .left-main .electric-text{
+    float: left;
+    overflow: hidden;
+    width: 430px;
+    margin-left: 15px;
+}
+.electric-infortame .electric-main .left-main .electric-text .cheng_p{
+    color: #f08300;
+    font-size: 20px;
+    line-height: 50px;
+
+}
+.electric-infortame .electric-main .left-main .electric-text p{
+    line-height: 50px;
+    font-size: 20px;
+}
+.electric-infortame .electric-main .left-main .electric-text p span{
+    color: #aca39e;
+    font-size: 18px;
+}
+.electric-infortame .electric-main .left-main .electric-text p img{
+    width:112px ;
+    float: none;
+    display: inline;
+}
+.electric-infortame .electric-main .left-main .electric-text a{
+    color: #f08300;
+    margin: 0 30px;
+    text-decoration: none;
+}
+.electric-infortame .electric-main .left-main .ping-con{
+    overflow: hidden;
+}
+.electric-infortame .electric-main .left-main .ping-con li{
+    padding: 20px 0;
+    border-bottom: 1px solid #dddddd;
+    overflow: hidden;
+}
+.electric-infortame .electric-main .left-main .ping-con li img{
+    float: left;
+    width:80px;
+    height:80px;
+}
+.electric-infortame .electric-main .left-main .ping-con li .ping-main,.user_info{
+    float:left;
+    width:780px;
+    overflow: hidden;
+    position: relative;
+    margin-left: 18px;
+}
+.electric-infortame .electric-main .left-main .ping-con li .ping-main p,.user_info p{
+    font-size:16px ;
+    color: #221815;
+    line-height: 24px;
+}
+.electric-infortame .electric-main .left-main .ping-con li .ping-main p span,.user_info p span{
+    color: #989696;
+    font-size: 16px;
+    margin-left:15px;
+}
+.electric-infortame .electric-main .left-main .ping-con li .ping-main img{
+    width: 120px;
+    position: absolute;
+    right: 10px;
+    height: 30px;
+    top: 0;
+}
+.electric-infortame .electric-main .right-main{
+    float: right;
+    width: 230px;
+    overflow: hidden;
+    padding: 10px 20px;
+    border: 1px solid #dddddd;
+}
+.electric-infortame .electric-main .right-main h4{
+    line-height: 40px;
+}
+.electric-infortame .electric-main .right-main ul li img{
+    width: 230px;
+}
+.electric-infortame .electric-main .right-main ul li .star_icon{
+    width: 120px;
+}
+.electric-infortame .electric-main .right-main ul li p{
+    font-size: 16px;
+    color: #343434;
+}
+.electric-infortame .electric-main .right-main ul li p span{
+    color: #999999;
+    font-size:12px;
+    margin-left: 10px;
+}
+.electric-infortame .electric-main h4{
+    font-size: 22px;
+    color: #221815;
+
+}
+
+/*网站建设中*/
+.web_cont{margin:50px auto;}
+.web_p{margin-top: 20px;}
+.web_p p{text-align: center;line-height: 30px;}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

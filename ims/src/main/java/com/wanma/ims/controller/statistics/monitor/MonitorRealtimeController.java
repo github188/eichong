@@ -1,0 +1,223 @@
+package com.wanma.ims.controller.statistics.monitor;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import net.sf.json.JSONObject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.wanma.ims.common.domain.ElectricPileDO;
+import com.wanma.ims.common.domain.ElectricPileHeadDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.controller.BaseController;
+import com.wanma.ims.controller.result.JsonException;
+import com.wanma.ims.controller.result.JsonResult;
+import com.wanma.ims.core.GlobalSystem;
+import com.wanma.ims.service.ElectricPileService;
+import com.wanma.ims.util.HttpRequestUtil;
+
+/**
+ *  实时监控-实时数据
+ */
+@Controller
+@RequestMapping("/manage/monitor")
+public class MonitorRealtimeController extends BaseController{
+	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+	@Autowired
+	private ElectricPileService electricPileService;
+	/**
+     * 实时信息 -运行数据
+     */
+    @RequestMapping("/getRunTimeData")
+    public void getRunTimeData(String pkHeadId) {
+        JsonResult result = new JsonResult();
+        UserDO loginUser = getCurrentLoginUser();
+        Map<String, String> params = new HashMap<String, String>();
+        try {
+        	Long pkElectricpileHead = Long.parseLong(pkHeadId);
+        	ElectricPileHeadDO electricPileHead = electricPileService.selectPileHeadById(pkElectricpileHead);  
+        	Long electricPileId = electricPileHead.getElectricPileId();
+        	ElectricPileDO electricPile = electricPileService.getElectricPileById(electricPileId, loginUser);
+        	params.put("headId", electricPileHead.getCode().toString());//枪头
+        	params.put("epCode", electricPile.getCode());//桩体编号
+        	params.put("epType", electricPile.getChargingMethod().toString());//5-直流充电桩，14-交流充电桩
+        	String httpResult =HttpRequestUtil.post(GlobalSystem.getConfig("hbaseUrl") + "/getRealtimeData", params);
+			LOGGER.error("getRunTimeData="+httpResult+"::"+GlobalSystem.getConfig("hbaseUrl") + "/getRealtimeData"+"::"+params);
+        	JSONObject myJsonObject = JSONObject.fromObject(httpResult);
+        	params.put("chPower", electricPile.getChPower());//额定功率
+        	if(myJsonObject.get("chargeStatus")==null){
+        		params.put("chargeStatus", "空闲");
+        	}else if("3".equals(myJsonObject.get("chargeStatus"))){
+    			params.put("chargeStatus", "充电");
+    		}else if("10".equals(myJsonObject.get("chargeStatus"))||"17".equals(myJsonObject.get("chargeStatus"))){
+    			params.put("chargeStatus", "等待充电");
+			}else if("2".equals(myJsonObject.get("chargeStatus"))||
+					"11".equals(myJsonObject.get("chargeStatus"))||
+					"12".equals(myJsonObject.get("chargeStatus"))||
+					"30".equals(myJsonObject.get("chargeStatus"))){
+				params.put("chargeStatus", "空闲");
+			}else if("0".equals(myJsonObject.get("chargeStatus"))||"9".equals(myJsonObject.get("chargeStatus"))){
+    			params.put("chargeStatus", "断开");
+			}else if(Integer.parseInt(myJsonObject.get("chargeStatus").toString())>30){
+				params.put("chargeStatus", "故障");
+			}else{
+				params.put("chargeStatus", "未知");
+			}
+        	params.put("chargeTime", myJsonObject.get("chargedTime")==null?0+"小时":myJsonObject.get("chargedTime")+"小时");
+        	if(myJsonObject.get("errorList")==null){
+        		params.put("isError", "无");
+        		params.put("errorType", "无");
+        	}else{
+        		String errorType = null;
+        		List<String> list = Arrays.asList(myJsonObject.get("errorList").toString());
+        		for(int i=0;i<list.size();i++){
+        			switch (list.get(i)) {
+					case "9":errorType+="急停";
+					break;
+					case "5":errorType+="防雷器故障";
+					break;
+					case "2":errorType+="输入欠压";
+					break;
+					case "3":errorType+="输入过压";
+					break;
+					case "10":errorType+="读卡器故障";
+					break;
+					case "8":errorType+="绝缘检查故障";
+					break;
+					case "4":errorType+="过流";
+					break;
+					case "6":errorType+="电度表故障";
+					break;
+					case "11":errorType+="过温";
+					break;
+					case "7":errorType+="接触器故障";
+					break;
+					case "12":errorType+="输出过流";
+					break;
+					case "13":errorType+="输出过压";
+					break;
+					case "15":errorType+="BMS欠压";
+					break;
+					case "14":errorType+="BMS过压";
+					break;
+					case "16":errorType+="BMS通信异常";
+					break;
+					case "17":errorType+="蓄电池过温告警";
+					break;
+					case "18":errorType+="蓄电池过流告警";
+					break;
+					default:
+						break;
+					}
+        		}
+        		params.put("isError","有");
+        		params.put("errorType",errorType);
+			}
+        	if("5".equals(electricPile.getChargingMethod().toString())){
+        		if ("0".equals(myJsonObject.get("chargeType"))) {
+        			params.put("chargeModel", "不可信");
+        		}
+        		if ("1".equals(myJsonObject.get("chargeType"))) {
+        			params.put("chargeModel", "恒压");
+        		}
+        		if ("2".equals(myJsonObject.get("chargeType"))) {
+        			params.put("chargeModel", "恒流");
+        		} else if (myJsonObject.get("chargeType")==null) {
+        			params.put("chargeModel", "未知");
+        		}
+        		params.put("powerHighestTemperature", myJsonObject.get("powerHighestTemperature")==null?0+"°C":myJsonObject.get("powerHighestTemperature")+"°C");
+        		if(myJsonObject.get("batteryType")==null){
+            		params.put("batteryType", "未知");
+            	}else if("1".equals(myJsonObject.get("batteryType"))){
+            		params.put("batteryType", "铅酸电池");
+            	}else if("2".equals(myJsonObject.get("batteryType"))){
+            		params.put("batteryType", "皋氢电池");
+            	}else if("3".equals(myJsonObject.get("batteryType"))){
+            		params.put("batteryType", "磷酸铁锂电池");
+            	}else if("4".equals(myJsonObject.get("batteryType"))){
+            		params.put("batteryType", "锰酸锂电池");
+            	}else if("6".equals(myJsonObject.get("batteryType"))){
+            		params.put("batteryType", "三元材料电池");
+            	}else if("7".equals(myJsonObject.get("batteryType"))){
+            		params.put("batteryType", "聚合物锂离子电池");
+            	}else if("8".equals(myJsonObject.get("batteryType"))){
+            		params.put("batteryType", "钛酸锂电池");
+            	}
+        		params.put("soc", myJsonObject.get("soc")==null?0+"%":myJsonObject.get("soc")+"%");
+        		params.put("carTotalVoltage", myJsonObject.get("carTotalVoltage")==null?0+"V":myJsonObject.get("carTotalVoltage")+"V");
+        		params.put("bpHighestVoltage", myJsonObject.get("bpHighestVoltage")==null?0+"V":myJsonObject.get("bpHighestVoltage")+"V");
+        		params.put("bpHighestTemperature", myJsonObject.get("bpHighestTemperature")==null?0+"°C":myJsonObject.get("bpHighestTemperature")+"°C");
+        		params.put("bpLowestTemperature", myJsonObject.get("bpLowestTemperature")==null?0+"°C":myJsonObject.get("bpLowestTemperature")+"°C");
+        		params.put("carIdentification", myJsonObject.get("carIdentification")==null?"":myJsonObject.get("carIdentification")+"");
+        	}
+        	params.put("voltageValue", myJsonObject.get("voltageValue")==null?"0":myJsonObject.get("voltageValue")+"");//电压表
+        	params.put("currentValue", myJsonObject.get("currentValue")==null?"0":myJsonObject.get("currentValue")+"");//电流表
+        	params.put("presentChargeValue", myJsonObject.get("presentChargeValue")==null?"0":myJsonObject.get("presentChargeValue")+"");//电量表
+        	result.setDataObject(params);
+        	responseJson(result);
+        } catch (Exception e) {
+            LOGGER.error(this.getClass() + "-getRunTimeData is error",params, e);
+            responseJson(new JsonException("获取实时信息-运行数据失败，请刷新页面后重试！"));
+        }
+    }
+    /**
+     * 历史信息
+     */
+    @RequestMapping("/getHeadHistoryList")
+    public void getHeadHistoryList(@RequestParam Map<String, String> params) {
+        JsonResult result = new JsonResult();
+        try {
+        	String httpResult =HttpRequestUtil.post(GlobalSystem.getConfig("hbaseUrl")+"/getOperationData", params);
+			LOGGER.error("getHeadHistoryList="+httpResult+"::"+GlobalSystem.getConfig("hbaseUrl") + "/getOperationData"+"::"+params);
+        	result.setDataObject(httpResult);
+        	responseJson(result);
+        } catch (Exception e) {
+            LOGGER.error(this.getClass() + "-getHeadHistoryList is error",params, e);
+            responseJson(new JsonException("获取历史信息失败，请刷新页面后重试！"));
+        }
+    }
+    /**
+     * 充电数据采样
+     */
+    @RequestMapping("/getChargingData")
+    public void getChargingData(@RequestParam Map<String, String> params) {
+        JsonResult result = new JsonResult();
+        try {
+        	String httpResult =HttpRequestUtil.post(GlobalSystem.getConfig("hbaseUrl")+"/getChargingData", params);
+			LOGGER.error("getChargingData="+httpResult+"::"+GlobalSystem.getConfig("hbaseUrl") + "/getChargingData"+"::"+params);
+        	result.setDataObject(httpResult);
+        	responseJson(result);
+        } catch (Exception e) {
+            LOGGER.error(this.getClass() + "-getHeadHistoryList is error",params, e);
+            responseJson(new JsonException("获取充电数据采样失败，请刷新页面后重试！"));
+        }
+    }
+    /**
+     * 故障统计
+     */
+    @RequestMapping("/getErrorData")
+    public void getErrorData(Map<String, String> params) {
+        JsonResult result = new JsonResult();
+        try {
+			params.put("code","1101050039996968");
+			params.put("gunno","1");
+			params.put("user","admin");
+			params.put("sign", "e135254137b0ec3cd25a7af741c3e909");
+        	String httpResult =HttpRequestUtil.post("http://106.14.97.169:7777"+"/getReal", params);
+        	result.setDataObject(httpResult);
+        	responseJson(result);
+        } catch (Exception e) {
+            LOGGER.error(this.getClass() + "-getErrorData is error",params, e);
+            responseJson(new JsonException("获取故障统计失败，请刷新页面后重试！"));
+        }
+    }
+	
+}

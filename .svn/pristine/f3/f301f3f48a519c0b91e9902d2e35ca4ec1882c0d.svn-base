@@ -1,0 +1,20 @@
+getFinBillAccount();
+function getFinBillAccount() {
+    $.ajax({
+        type: "post",
+        url: basePath + getFinBillAccountUrl,
+        async: true,
+        success: function (data) {
+            if (data.success == true) {
+                var data = data.dataObject;
+                var listTr = "";
+                for (var i = 0; i < data.length; i++) {
+                    listTr += '<tr><td>' + data[i].billAccountCode
+                    + '</td><td>' + data[i].billAccountName
+                    + '</td></tr>';
+                }
+                $("#myTbody").html(listTr);
+            }
+        }
+    });
+}

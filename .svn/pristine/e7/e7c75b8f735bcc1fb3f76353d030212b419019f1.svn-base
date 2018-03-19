@@ -1,0 +1,314 @@
+package com.wanma.ims.controller.sys;
+
+import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.wanma.ims.common.GlobalSystem;
+import com.wanma.ims.common.SessionMgr;
+import com.wanma.ims.common.WanmaConstants;
+import com.wanma.ims.model.MenuDO;
+import com.wanma.ims.model.UserDO;
+import com.wanma.ims.redis.RedisUtil;
+import com.wanma.ims.result.BaseResult;
+import com.wanma.ims.service.InitialService;
+import com.wanma.ims.service.MenuService;
+import com.wanma.ims.service.RoleService;
+import com.wanma.ims.service.UserService;
+import com.wanma.ims.util.CaptchaUtil;
+import com.wanma.ims.util.DateUtil;
+import com.wanma.ims.util.MD5Util;
+
+/**
+ * 登录
+ */
+@Controller
+public class LoginController {
+
+	private static Logger log = Logger.getLogger(LoginController.class);
+	@Autowired
+	private UserService userService;
+	@Autowired
+	private MenuService menuService;
+	@Autowired
+	private RoleService roleService;
+	@Autowired
+	private RedisUtil redisService;
+	@Autowired
+	private InitialService initialService;
+
+	/**
+	 * 登录跳转
+	 */
+	@RequestMapping(value = "/tologin")
+	public String toLogin() {
+		return "login";
+	}
+
+	/**
+	 * 验证码图形生成
+	 * 
+	 * @param： get
+	 */
+	@RequestMapping(value = "/common/getValidCode", method = RequestMethod.GET)
+	@ResponseBody
+	public void captcha(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		try {
+			int width = 0, height = 0;
+			if (null != request.getParameter("width")) {
+				width = Integer.parseInt(request.getParameter("width"));
+			}
+			if (null != request.getParameter("height")) {
+				height = Integer.parseInt(request.getParameter("height"));
+			}
+			CaptchaUtil vCode = new CaptchaUtil(width, height);
+			SessionMgr.addWebCode(request, vCode.getCode());
+			vCode.write(response.getOutputStream());
+		} catch (Exception e) {
+			log.error(this.getClass() + ".captcha() error:" + e.getLocalizedMessage());
+		}
+	}
+
+	/**
+	 * 用户登录 校验用户名、密码 、验证码,当天连续登录不能超过5次
+	 * 
+	 * @param username 用户名
+	 * @param passwd 密码
+	 * @return String URI
+	 */
+	@RequestMapping(value = "/login", method = RequestMethod.POST)
+	public String login(@RequestParam("username") String username, @RequestParam("passwd") String passwd, HttpSession session, HttpServletRequest request, Model model) {
+		try {
+			// 校验用户名
+			if (StringUtils.isBlank(username)) {
+				model.addAttribute("erMessage", GlobalSystem.getConfig("error.msg.empty.user"));
+				return "login";
+			}
+			// 校验密码
+			if (StringUtils.isBlank(passwd)) {
+				model.addAttribute("erMessage", GlobalSystem.getConfig("error.msg.empty.password"));
+				return "login";
+			}
+			// 校验验证码
+			model.addAttribute("username", username);
+			// 检查是否需要输入验证码 0.需要 1.不需要
+			if (!"1".equals(GlobalSystem.getConfig("notCheckAuthCode"))) {
+				String webCode = request.getParameter("code");
+				if (StringUtils.isEmpty(webCode) || !webCode.equalsIgnoreCase(SessionMgr.getWebCode(request))) {
+					model.addAttribute("passwd", passwd);
+					model.addAttribute("erMessage", GlobalSystem.getConfig("error.msg.invalid.auth_code"));
+					return "login";
+				}
+			}
+
+			UserDO tempUser = new UserDO();
+			tempUser.setUserAccount(username);
+			tempUser.setUserPassword(passwd);
+			// 验证当天登录出错次数
+			int loginErrorCount = getLoginErrorCount(tempUser);
+			if (loginErrorCount == 5) {
+				model.addAttribute("erMessage", GlobalSystem.getConfig("error.msg.login_max_five"));
+				return "login";
+			}
+			// 校验账号
+			UserDO loginUser = userService.loginUser(tempUser);
+			if (loginUser == null) {
+				model.addAttribute("erMessage", GlobalSystem.getConfig("error.msg.invalid.login"));
+				return "login";
+			}
+			if (!tempUser.getUserAccount().equals(loginUser.getUserAccount())) {
+				model.addAttribute("erMessage", GlobalSystem.getConfig("error.msg.invalid.user"));
+				return "login";
+			}
+			// 数据库获取的密码进行二次加密md5（数据库密码 + 账户）
+			String loginPassword = loginUser.getUserPassword();
+			String loginAccount = loginUser.getUserAccount();
+			loginUser.setUserPassword(MD5Util.Md5(loginPassword + loginAccount));
+			if (!loginUser.getUserPassword().equals(tempUser.getUserPassword().substring(0, tempUser.getUserPassword().length() - 1))) {
+				model.addAttribute("erMessage", GlobalSystem.getConfig("error.msg.invalid.password"));
+				setLoginErrorCount(tempUser);
+				return "login";
+			}
+			// 将用户信息、角色信息、菜单信息放入会话
+			SessionMgr.addWebUser(request, loginUser);
+			roleService.initRolesAndMenus(request);
+
+			/******* 以下操作为实现唯一登录-begin *********/
+			// 保存用户登录
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("sessionId", session.getId());
+			map.put("ip", getIpAddr(request));
+			map.put("date", new Date());
+			// 将用户信息添加到application对象中
+			ServletContext application = session.getServletContext();
+			application.setAttribute(loginUser.getUserId() + "", map);
+
+		} catch (Exception e) {
+			log.error(this.getClass() + ".login() error:" + e.getLocalizedMessage());
+			return "login";
+		}
+		// 跳转至管理员主页面
+		return "redirect:/admin/index.do";
+	}
+
+	/**
+	 * 加载主页面 根据用户菜单权限进行页面加载
+	 * 
+	 * @param userId
+	 */
+	@RequestMapping("/admin/index")
+	public String mainPage(Model model, HttpServletRequest request) {
+		try{
+			UserDO user = SessionMgr.getWebUser(request);
+			if (null == user) {
+				return "login";
+			}
+			if (WanmaConstants.USER_STATUS_DELETE == user.getUserStatus()) {
+				return "login";
+			}
+			roleService.initRolesAndMenus(request);
+			List<MenuDO> menuList = SessionMgr.getUserMenus(request);
+			String strHtml = menuService.getMenuTree(menuList, false);
+			model.addAttribute("menuTreeModel", strHtml);
+			model.addAttribute("loginUser", user);
+		}catch(Exception e){
+			log.error(this.getClass() + ".mainPage() error:" + e.getLocalizedMessage());
+			return "login";
+		}
+		return "index";
+	}
+
+	/**
+	 * 用户简单登录
+	 * 
+	 * @param username 用户名
+	 * @param passwd 密码
+	 * @param session 会话
+	 * @return String URI
+	 * @throws 无
+	 */
+	@RequestMapping(value = "/toSimplelogin", method = RequestMethod.POST)
+	@ResponseBody
+	public String toSimplelogin(@RequestParam("username") String username, @RequestParam("passwd") String passwd, HttpServletRequest request, Model model) {
+		String erMessage = "";
+		BaseResult result = new BaseResult();
+		try {
+			// 校验用户名
+			if (StringUtils.isBlank(username)) {
+				erMessage = GlobalSystem.getConfig("error.msg.empty.user");
+				result.setStatus(GlobalSystem.getConfig("failed"));
+				result.setMsg(erMessage);
+				return result.toString();
+			}
+			// 校验密码
+			if (StringUtils.isBlank(passwd)) {
+				erMessage = GlobalSystem.getConfig("error.msg.empty.password");
+				result.setStatus(GlobalSystem.getConfig("failed"));
+				result.setMsg(erMessage);
+				return result.toString();
+			}
+			UserDO tempUser = new UserDO();
+			tempUser.setUserAccount(username);
+			tempUser.setUserPassword(passwd);
+			// 验证当天登录出错次数
+			int loginErrorCount = getLoginErrorCount(tempUser);
+			if (loginErrorCount == 5) {
+				model.addAttribute("erMessage", GlobalSystem.getConfig("error.msg.login_max_five"));
+				return "login";
+			}
+
+			// 校验账号
+			UserDO loginUser = userService.loginUser(tempUser);
+			if (loginUser == null) {
+				model.addAttribute("erMessage", GlobalSystem.getConfig("error.msg.invalid.login"));
+				return "login";
+			}
+			if (!tempUser.getUserAccount().equals(loginUser.getUserAccount())) {
+				model.addAttribute("erMessage", GlobalSystem.getConfig("error.msg.invalid.user"));
+				return "login";
+			}
+			// 数据库获取的密码进行二次加密md5（数据库密码 + 账户）
+			String loginPassword = loginUser.getUserPassword();
+			String loginAccount = loginUser.getUserAccount();
+			loginUser.setUserPassword(MD5Util.Md5(loginPassword + loginAccount));
+			if (!loginUser.getUserPassword().equals(tempUser.getUserPassword().substring(0, tempUser.getUserPassword().length() - 1))) {
+				model.addAttribute("erMessage", GlobalSystem.getConfig("error.msg.invalid.password"));
+				setLoginErrorCount(tempUser);
+				return "login";
+			}
+			// 将用户信息、角色信息、菜单信息放入会话
+			SessionMgr.addWebUser(request, loginUser);
+			roleService.initRolesAndMenus(request);
+		} catch (Exception e) {
+			log.error(this.getClass() + ".toSimplelogin() error:" + e.getLocalizedMessage());
+			return "login";
+		}
+		return result.toString();
+	}
+
+	/**
+	 * 用户登出处理
+	 * 
+	 * @param get
+	 * @return URI
+	 */
+	@RequestMapping(value = "/logout", method = RequestMethod.GET)
+	public String logout(HttpServletRequest request) {
+		SessionMgr.removeWebUser(request);
+		return "redirect:/tologin.do";
+	}
+
+	private String getIpAddr(HttpServletRequest request) {
+		String ip = request.getHeader("x-forwarded-for");
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getHeader("Proxy-Client-IP");
+		}
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getHeader("WL-Proxy-Client-IP");
+		}
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getRemoteAddr();
+		}
+		return ip;
+	}
+
+	private int getLoginErrorCount(UserDO user) {
+		try {
+			String currentDate = DateUtil.getNow(DateUtil.TYPE_COM_YMD);
+			String failNum = redisService.strGet("app:lpw:" + user.getUserAccount() + ":" + currentDate);
+			return StringUtils.isNotBlank(failNum) ? new Integer(failNum) : 0;
+		} catch (Exception e) {
+			log.error(e.getLocalizedMessage());
+		}
+		return 0;
+	}
+
+	private void setLoginErrorCount(UserDO user) {
+		try {
+			if ("admin".equals(user.getUserAccount())) return;
+			int failNum = getLoginErrorCount(user);
+			String currentDate = DateUtil.getNow(DateUtil.TYPE_COM_YMD);
+			redisService.strSet("app:lpw:" + user.getUserAccount() + ":" + currentDate, failNum + 1 + "");
+		} catch (Exception e) {
+			log.error(e.getLocalizedMessage());
+		}
+	}
+}

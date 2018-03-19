@@ -1,0 +1,235 @@
+package com.wanma.ims.controller.user.tag;
+
+import com.wanma.ims.common.domain.TagDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.domain.UserTagDO;
+import com.wanma.ims.common.domain.base.Pager;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.constants.ResultCodeConstants;
+import com.wanma.ims.controller.BaseController;
+import com.wanma.ims.controller.result.JsonException;
+import com.wanma.ims.controller.result.JsonResult;
+import com.wanma.ims.service.TagService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
+
+/**
+ * Created by xyc on 2017/7/21.
+ * 标签controller
+ */
+@RequestMapping("/user/tag")
+@Controller
+public class TagController extends BaseController {
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+
+    @Autowired
+    private TagService tagService;
+
+    /**
+     * 获取用户所有标签
+     */
+    @RequestMapping(value = "/getUserTagList", method = RequestMethod.POST)
+    @ResponseBody
+    public void getUserTagList(Long userId) {
+        JsonResult result = new JsonResult();
+        UserDO loginUser = getCurrentLoginUser();
+
+        try {
+            if (userId != null) {
+                UserTagDO searchModel = new UserTagDO();
+                searchModel.setUserId(userId);
+                List<UserTagDO> userTagList = tagService.getUserTagList(searchModel);
+                result.setDataObject(userTagList);
+            } else {
+                result = new JsonResult(false, ResultCodeConstants.FAILED, "查询标签的用户不能为空！");
+            }
+            responseJson(result);
+        } catch (Exception e) {
+            LOGGER.error(this.getClass() + "-getUserTag is error|userId={}|loginUser={}", userId, loginUser, e);
+            responseJson(new JsonException("查询标签列表失败，请刷新页面后重试！"));
+        }
+    }
+
+    /**
+     * 查询标签列表
+     */
+    @RequestMapping(value = "/getTagList", method = RequestMethod.POST)
+    @ResponseBody
+    public void getTagList(TagDO searchModel, Pager pager) {
+        JsonResult result = new JsonResult();
+        UserDO loginUser = getCurrentLoginUser();
+
+        try {
+            long total = tagService.countTag(searchModel);
+            if (total <= pager.getOffset()) {
+                pager.setPageNo(1L);
+            }
+            pager.setTotal(total);
+            searchModel.setPager(pager);
+            List<TagDO> tagList = tagService.getTagList(searchModel);
+            result.setPager(pager);
+            result.setDataObject(tagList);
+
+            responseJson(result);
+        } catch (Exception e) {
+            LOGGER.error(this.getClass() + "-getTagList is error|searchModel={}|loginUser={}", searchModel, loginUser, e);
+            responseJson(new JsonException("查询标签列表失败，请刷新页面后重试！"));
+        }
+    }
+
+    /**
+     * 查询所有标签
+     */
+    @RequestMapping(value = "/getAllTag", method = RequestMethod.POST)
+    @ResponseBody
+    public void getAllTag() {
+        JsonResult result = new JsonResult();
+        UserDO loginUser = getCurrentLoginUser();
+
+        try {
+            List<TagDO> tagList = tagService.getTagList(new TagDO());
+            result.setDataObject(tagList);
+
+            responseJson(result);
+        } catch (Exception e) {
+            LOGGER.error(this.getClass() + "-getAllTag is error|loginUser={}", loginUser, e);
+            responseJson(new JsonException("查询所有标签失败，请刷新页面后重试！"));
+        }
+    }
+
+    /**
+     * 查询单个标签
+     */
+    @RequestMapping(value = "/get", method = RequestMethod.POST)
+    @ResponseBody
+    public void getTag(Long tagId) {
+        JsonResult result = new JsonResult();
+        UserDO loginUser = getCurrentLoginUser();
+
+        try {
+            result.setDataObject(tagService.getTag(tagId));
+
+            responseJson(result);
+        } catch (Exception e) {
+            LOGGER.error(this.getClass() + "-getTag is error|tagId={}|loginUser={}", tagId, loginUser, e);
+            responseJson(new JsonException("查询标签列表失败，请刷新页面后重试！"));
+        }
+    }
+
+    /**
+     * 新增标签
+     */
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    @ResponseBody
+    public void addTag(TagDO tag) {
+        JsonResult result = new JsonResult();
+        UserDO loginUser = getCurrentLoginUser();
+
+        try {
+            BaseResultDTO resultDTO = tagService.addTag(tag, loginUser);
+            if (resultDTO.isFailed()) {
+                result = new JsonResult(false, resultDTO.getResultCode(), resultDTO.getErrorDetail());
+            }
+
+            responseJson(result);
+        } catch (Exception e) {
+            LOGGER.error(this.getClass() + "-addTag is error|addTag={}|loginUser={}", tag, loginUser, e);
+            responseJson(new JsonException("添加失败，请刷新页面后重试！"));
+        }
+    }
+
+    /**
+     * 新增用户标签
+     */
+    @RequestMapping(value = "/addUserTag", method = RequestMethod.POST)
+    @ResponseBody
+    public void addUserTag(UserTagDO userTag) {
+        JsonResult result = new JsonResult();
+        UserDO loginUser = getCurrentLoginUser();
+
+        try {
+            BaseResultDTO resultDTO = tagService.addUserTag(userTag, loginUser);
+            if (resultDTO.isFailed()) {
+                result = new JsonResult(false, resultDTO.getResultCode(), resultDTO.getErrorDetail());
+            }
+
+            responseJson(result);
+        } catch (Exception e) {
+            LOGGER.error(this.getClass() + "-addUserTag is error|addUserTag={}|loginUser={}", userTag, loginUser, e);
+            responseJson(new JsonException("添加失败，请刷新页面后重试！"));
+        }
+    }
+
+    /**
+     * 修改标签
+     */
+    @RequestMapping(value = "/modify", method = RequestMethod.POST)
+    @ResponseBody
+    public void modifyTag(TagDO tag) {
+        JsonResult result = new JsonResult();
+        UserDO loginUser = getCurrentLoginUser();
+
+        try {
+            BaseResultDTO resultDTO = tagService.modifyTag(tag, loginUser);
+            if (resultDTO.isFailed()) {
+                result = new JsonResult(false, resultDTO.getResultCode(), resultDTO.getErrorDetail());
+            }
+
+            responseJson(result);
+        } catch (Exception e) {
+            LOGGER.error(this.getClass() + "-modifyTag is error|modifyTag={}|loginUser={}", tag, loginUser, e);
+            responseJson(new JsonException("修改失败，请刷新页面后重试！"));
+        }
+    }
+
+    /**
+     * 删除标签
+     */
+    @RequestMapping(value = "/del", method = RequestMethod.POST)
+    @ResponseBody
+    public void delTag(String tagIds) {
+        JsonResult result = new JsonResult();
+        UserDO loginUser = getCurrentLoginUser();
+
+        try {
+            BaseResultDTO resultDTO = tagService.delTag(tagIds, loginUser);
+            if (resultDTO.isFailed()) {
+                result = new JsonResult(false, resultDTO.getResultCode(), resultDTO.getErrorDetail());
+            }
+
+            responseJson(result);
+        } catch (Exception e) {
+            LOGGER.error(this.getClass() + "-delTag is error|delTagIds={}|loginUser={}", tagIds, loginUser, e);
+            responseJson(new JsonException("删除失败，请刷新页面后重试！"));
+        }
+    }
+    
+    /**
+     * 删除用户标签
+     */
+    @RequestMapping(value = "/delUserTag", method = RequestMethod.POST)
+    @ResponseBody
+    public void delUserTag(String userTagIds) {
+        JsonResult result = new JsonResult();
+        UserDO loginUser = getCurrentLoginUser();
+
+        try {
+            BaseResultDTO resultDTO = tagService.delUserTag(userTagIds, loginUser);
+            if (resultDTO.isFailed()) {
+                result = new JsonResult(false, resultDTO.getResultCode(), resultDTO.getErrorDetail());
+            }
+
+            responseJson(result);
+        } catch (Exception e) {
+            LOGGER.error(this.getClass() + "-delUserTag is error|delUserTagIds={}|loginUser={}", userTagIds, loginUser, e);
+            responseJson(new JsonException("删除失败，请刷新页面后重试！"));
+        }
+    }
+}

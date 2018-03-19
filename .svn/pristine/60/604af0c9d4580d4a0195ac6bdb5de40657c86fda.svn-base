@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/style.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/productModel/productModel_detail.css"/>
+    <title>产品型号详细</title>
+</head>
+<body>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="container-fluid">
+        <div class="row btnBlock">
+            <!--按钮组合-->
+            <div class="editBtn cursor" id="editBtn">编辑</div>
+            <div class="saveBtn cursor" id="saveBtn" style="display: none;">保存</div>
+            <div class="goBack cursor" id="toProductModelList">返回</div>
+            <div class="goBack cursor" id="backBtn" style="display: none;">返回</div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12" id="detailBlock">
+                <div class="ibox float-e-margins" style="margin: 0">
+                    <div class="">
+                        <div class="ibox-content clearfix">
+                            <div class="userBaseInfo col-sm-12 ">
+                                <div class="col-sm-12 modelTitle">产品型号属性</div>
+                                <div class="col-sm-6" style="padding: 0">
+                                    <ul class="baseInfoLeft">
+                                        <li>
+                                            <span class="infoTip">内部产品型号</span>
+                                            <span class="infoValue" id="tsTypeSpan"></span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">产品型号名称</span>
+                                            <span class="infoValue" id="tsModelName"></span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-sm-6" style="padding: 0">
+                                    <ul class="baseInfoRight">
+                                        <li>
+                                            <span class="infoTip">外部产品型号</span>
+                                            <span class="infoValue" id="tsProductNumber"></span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">备注</span>
+                                            <span class="infoValue" id="tsRemarks"></span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-sm-12 modelTitle">适配电桩</div>
+                                <div class="col-sm-6" style="padding: 0">
+                                    <ul class="baseInfoLeft">
+                                        <li>
+                                            <span class="infoTip">制造商</span>
+                                            <span class="infoValue" id="elPiMaker"></span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">功率</span>
+                                            <span class="infoValue" id="elPiPowerSize"></span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">枪头数量</span>
+                                            <span class="infoValue" id="elPiPowerNumber"></span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-sm-6" style="padding: 0">
+                                    <ul class="baseInfoRight">
+                                        <li>
+                                            <span class="infoTip">充电方式</span>
+                                            <span class="infoValue" id="elPiChargingMode"></span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">电桩类型</span>
+                                            <span class="infoValue" id="elPiType"></span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-12" id="editBlock" style="display: none;">
+                <div class="ibox float-e-margins" style="margin: 0">
+                    <div class="">
+                        <div class="ibox-content clearfix">
+                            <div class="userBaseInfo col-sm-12 ">
+                                <div class="col-sm-12 modelTitle">产品型号属性</div>
+                                <div class="col-sm-6" style="padding: 0">
+                                    <ul class="baseInfoLeft">
+                                        <li>
+                                            <span class="infoTip">内部产品型号</span>
+                                            <span class="infoValue" id="tsTypeSpanEdit"></span>
+                                        </li>
+                                        <li style="padding-right: 0;">
+                                            <span class="infoTip">产品型号名称</span>
+                                            <input type="text" id="tsModelNameEdit" value="" />
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-sm-6" style="padding: 0">
+                                    <ul class="baseInfoRight" style="padding-right: 0;">
+                                        <li style="padding-right: 0;">
+                                            <span class="infoTip">外部产品型号</span>
+                                            <input type="text" id="tsProductNumberEdit" value="" />
+                                        </li>
+                                        <li style="padding-right: 0;">
+                                            <span class="infoTip">备注</span>
+                                            <input type="text" id="tsRemarksEdit" value="" />
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-sm-12 modelTitle">适配电桩</div>
+                                <div class="col-sm-6" style="padding: 0">
+                                    <ul class="baseInfoLeft">
+                                        <li>
+                                            <span class="infoTip">制造商</span>
+                                            <span class="infoValue" id="elPiMakerEdit"></span>
+                                            <input type="text" value="" id="elPiMakerEditInput" style="display: none;"/>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">功率</span>
+                                            <span class="infoValue" id="elPiPowerSizeEdit"></span>
+                                            <input type="text" value="" id="elPiPowerSizeEditInput" style="display: none;"/>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">枪头数量</span>
+                                            <span class="infoValue" id="elPiPowerNumberEdit"></span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-sm-6" style="padding: 0">
+                                    <ul class="baseInfoRight">
+                                        <li>
+                                            <span class="infoTip">充电方式</span>
+                                            <span class="infoValue" id="elPiChargingModeEdit"></span>
+                                            <input type="text" value="" id="elPiChargingModeEditInput" style="display: none;"/>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">电桩类型</span>
+                                            <span class="infoValue" id="elPiTypeEdit"></span>
+                                            <input type="text" value="" id="elPiTypeEditInput" style="display: none;"/>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-12 ">
+                <div class="ibox float-e-margins" style="margin: 0">
+                    <div class="">
+                        <div class="ibox-content clearfix">
+                            <div class="userBaseInfo col-sm-12 table-responsive">
+                                <div class="col-sm-12 titleTip">
+                                    <span>软硬件清单</span>
+                                    <span class="addBtn" id="addBtn">新增</span>
+                                </div>
+                                <table class=" table table-bordered text-center" style="border: 1px solid #DCDCDC;">
+                                    <thead>
+                                    <tr>
+                                        <th class="tab-num">序号</th>
+                                        <th class="tab-type">硬件类型</th>
+                                        <th class="tab-blHardwareNumber">硬件型号</th>
+                                        <th class="tab-blHardwareVersion">硬件版本号</th>
+                                        <th class="tab-blFirmwareNumber">固件编号</th>
+                                        <th class="tab-blFirmwareVersion">固件版本号</th>
+                                        <th class="tab-blFileMd5">MD5值</th>
+                                        <th class="tab-blForceUpdate">强制更新标识</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="addList">
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="addBomList" style="display: none;">
+    <div class="row typeB">
+        <div class="col-sm-3 queryParam">
+            硬件类型
+        </div>
+        <div class="col-sm-6 col-xs-12 model-select-box">
+            <div class="model-select-text blTypeBlock" data-value="1" id="blType">计费单元</div>
+            <span class="downRow blTypeBlock clickRotateSpan"></span>
+            <input type="text" name="cpyType" id="" value="" hidden="hidden"/>
+            <ul class="model-select-option typeUl">
+                <li data-option="1" class="seleced">计费单元</li>
+                <li data-option="2">主控单元</li>
+                <li data-option="3">显示屏</li>
+                <li data-option="4">通讯模块</li>
+            </ul>
+        </div>
+    </div>
+    <ul class="addBomUl" style="padding:0;">
+        <li>
+            <span>硬件型号</span>
+            <input type="text" name="" id="blHardwareNumberInput" value="" />
+        </li>
+        <li>
+            <span>硬件版本号</span>
+            <input type="text" name="" id="blHardwareVersionInput" value="" />
+        </li>
+        <li>
+            <span>固件型号</span>
+            <input type="text" name="" id="blFirmwareNumberInput" value="" />
+        </li>
+        <li>
+            <span>固件版本号</span>
+            <input type="text" name="" id="blFirmwareVersionInput" value="" />
+        </li>
+        <li>
+            <span>MD5值</span>
+            <input type="text" name="" id="blFileMd5Input" value="" />
+        </li>
+    </ul>
+    <div>
+        <span>强制更新标识</span>
+        <span>
+            <input type="radio" name="blForceUpdateSpan" value="1"/>强制
+            <input type="radio" name="blForceUpdateSpan" checked="checked" value="0"/>非强制
+        </span>
+    </div>
+</div>
+
+</body>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="../../js/contabs.min.js"></script>
+<script src="../../js/productModel/productModel_detail.js" type="text/javascript" charset="utf-8"></script>
+</html>

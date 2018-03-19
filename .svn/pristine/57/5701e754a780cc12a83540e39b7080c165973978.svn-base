@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.UserRoleMapper">
+    <resultMap type="UserRoleDO" id="resultUserRoleDO">
+		<result property="roleId" column="role_id" />
+		<result property="userId" column="role_id" />
+		<result property="gmtCreate" column="create_date" />
+		<result property="creator" column="create_user" />
+		<result property="gmtModified" column="last_update_date" />
+		<result property="modifier" column="last_update_user" />
+	</resultMap>
+    
+	<insert id="insertUserRole" parameterType="UserRoleDO">
+		insert into p_m_user_role
+		(user_id,role_id,create_user,last_update_user) 
+		 values
+		(#{userId},#{roleId},#{creator},#{modifier})
+	</insert>
+ 
+	<delete id="deleteUserRole" parameterType="UserRoleDO">
+		delete from p_m_user_role
+		<where>
+			<if test="userId!=null"> and user_id=#{userId} </if>
+			<if test="roleId!=null"> and role_id=#{roleId}</if>
+		</where>
+	</delete>
+	
+	<update id="updateUserRole" parameterType="UserRoleDO">
+	    update p_m_user_role set 
+		  role_id=#{roleId},
+		  LAST_UPDATE_USER = #{modifier}
+	    where user_id = #{userId}
+	</update>
+	
+	<select id="selectUserListByRoleId" parameterType="string" resultType="int">
+	   SELECT count(1) FROM p_m_role role,p_m_user_role us,tbl_user tuser 
+		where role.ROLE_ID = us.ROLE_ID 
+		and tuser.user_id = us.CREATE_USER
+		and tuser.user_status = 1
+		and role.ROLE_ID = #{roleId}
+	</select>
+</mapper>

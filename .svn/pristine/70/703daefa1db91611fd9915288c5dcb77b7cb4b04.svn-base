@@ -1,0 +1,154 @@
+package com.wanma.ims.controller.sys;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.wanma.ims.common.domain.RoleDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.domain.base.Pager;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.constants.ResultCodeConstants;
+import com.wanma.ims.controller.BaseController;
+import com.wanma.ims.controller.result.JsonException;
+import com.wanma.ims.controller.result.JsonResult;
+import com.wanma.ims.service.MenuService;
+import com.wanma.ims.service.RoleService;
+import com.wanma.ims.service.UserService;
+import com.wanma.ims.util.PKUtil;
+ 
+/**
+ * 系统菜单-角色管理
+ */
+
+@Controller
+@RequestMapping("/sys/role")
+public class RoleController extends BaseController{
+	private final org.slf4j.Logger LOGGER =  LoggerFactory.getLogger(this.getClass());  
+	@Autowired
+	private RoleService roleService;
+	@Autowired
+	private MenuService menuService;
+	@Autowired
+	private UserService userService;
+
+	/**
+	 * 角色-列表
+	 */
+	@RequestMapping(value = "/getRoleListPage")
+	public void getRoleListPage(RoleDO roleDO,@ModelAttribute("pager") Pager pager) {
+		JsonResult result = new JsonResult();
+		try{
+			UserDO loginUser = getCurrentLoginUser();
+			long total = roleService.countRoleList(loginUser,roleDO);
+			if(total <= pager.getOffset()){
+				pager.setPageNo(1L);
+			}
+			pager.setTotal(total);
+			loginUser.setPager(pager);
+			List<RoleDO> roleList = roleService.getRoleList(loginUser,roleDO);
+			result.setPager(pager);
+			result.setDataObject(roleList);
+		}catch(Exception e){
+			LOGGER.error(this.getClass() + ".getRoleListPage() error:" ,e);
+			responseJson(new JsonException());
+			return;
+		}
+		responseJson(result);
+	}
+
+	/**
+	 * 角色-添加
+	 */
+	@RequestMapping(value = "/addRole")
+	@ResponseBody
+	public void addRole(RoleDO roleDO,Model model){
+		JsonResult result = new JsonResult();
+		try {
+			String menuIds = request.getParameter("ids");
+			roleDO.setRoleId(PKUtil.generatePkRoleId());
+			roleDO.setCreator(getCurrentUserId()+"");
+			roleDO.setModifier(getCurrentUserName());
+			if(!roleService.addRole(roleDO, menuIds)){
+				responseJson(new JsonResult(false,ResultCodeConstants.FAILED,ResultCodeConstants.ERROR_MSG_ADD_ROLE));
+				return;
+			}
+		} catch (Exception e) {
+			LOGGER.error(this.getClass() + ".addRole() error:",e);
+			responseJson(new JsonException());
+			return;
+		}
+		responseJson(result);
+	}
+
+	/**
+	 * 角色-根据ID查询
+	 */
+	@RequestMapping(value = "/getRoleById")
+	public void getRoleById(@RequestParam("roleId") String roleId, Model model) {
+		JsonResult result = new JsonResult();
+		try {
+			RoleDO roleDO = roleService.getRoleById(roleId);
+			result.setDataObject(roleDO);
+		} catch (Exception e) {
+			LOGGER.error(this.getClass() + ".getRoleById() error:",e);
+			responseJson(new JsonException());
+			return;
+		}
+		responseJson(result);
+	}
+
+	/**
+	 * 角色编辑处理
+	 * 
+	 */
+	@RequestMapping(value = "/modifyRole")
+	@ResponseBody
+	public void modifyRole(RoleDO roleDO){
+		JsonResult result = new JsonResult();
+		try {
+			String menuIds = request.getParameter("menuIds");
+			roleDO.setModifier(getCurrentUserName());
+			if(!roleService.modifyRole(roleDO, menuIds)){
+				responseJson(new JsonResult(false, ResultCodeConstants.FAILED, "角色编辑失败"));
+				return;
+			}
+		} catch (Exception e) {
+			LOGGER.error(this.getClass() + ".modifyRole() error:",e);
+			responseJson(new JsonException());
+			return;
+		}
+		responseJson(result);
+	}
+
+	/**
+	 * 角色删除处理
+	 */
+	@RequestMapping(value = "/removeRole")
+	@ResponseBody
+	public void removeRole(@ModelAttribute("roleModel") RoleDO roleDO,
+			HttpServletRequest request) {
+		JsonResult result = new JsonResult();
+		try {
+			BaseResultDTO dto = roleService.removeRoleById(roleDO.getRoleId());
+			if(!dto.isSuccess()){
+				responseJson(new JsonResult(false, ResultCodeConstants.FAILED, dto.getErrorDetail()));
+				return;
+			}
+		} catch (Exception e) {
+			LOGGER.error(this.getClass() + ".removeRole() error:",e);
+			responseJson(new JsonException());
+			return;
+		}
+		responseJson(result);
+	}
+}

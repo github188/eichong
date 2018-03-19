@@ -1,0 +1,13 @@
+package com.wanma.ims.controller.account;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+/**
+ * 用戶管理-资金账户
+ */
+@RequestMapping("/account")
+@Controller
+public class AccountController {
+
+}

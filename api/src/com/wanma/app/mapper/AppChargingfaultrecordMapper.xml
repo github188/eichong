@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.app.dao.AppChargingfaultrecordMapper">
+
+	<resultMap id="tblChargingfaultrecordResultMap" type="TblChargingfaultrecord">
+		<id property="pkChargingfaultrecord" column="pk_ChargingFaultRecord" />
+		<result property="cfreUsingmachinecode" column="cFRe_UsingMachineCode" />
+		<result property="cfreElectricpileid" column="cFRe_ElectricPileID" />
+		<result property="cfreElectricpilename" column="cFRe_ElectricPileName" />
+		<result property="cfreChargingsarttime" column="cFRe_ChargingSarttime" />
+		<result property="cfreFaultcause" column="cFRe_FaultCause" />
+		<result property="cfreCreatedate" column="cFRe_Createdate" />
+		<result property="cfreUpdatedate" column="cFRe_Updatedate" />
+		<result property="cfreTransactionnumber" column="cFRe_TransactionNumber" />
+		<result property="cFRe_EphNo" column="cFRe_EphNo"/>
+	</resultMap>
+	<resultMap id="findResultMap"  type="java.util.HashMap" extends="tblChargingfaultrecordResultMap"></resultMap>
+	<!-- 新增充电故障记录 -->
+	<insert id="insertFaultRecord" parameterType="TblChargingfaultrecord">
+	   insert into tbl_ChargingFaultRecord (
+	     cFRe_UsingMachineCode,
+	     cFRe_EphNo,
+	     cFRe_ElectricPileID,
+	     cFRe_ElectricPileName,
+	     cFRe_ChargingSarttime,
+	     cFRe_FaultCause,
+	     cFRe_Createdate,
+	     cFRe_Updatedate,
+	     cFRe_TransactionNumber
+	   )values (
+	     #{cfreUsingmachinecode},
+	     #{cFRe_EphNo},
+	     #{cfreElectricpileid},
+	     #{cfreElectricpilename},
+	     #{cfreChargingsarttime},
+	     #{cfreFaultcause},
+	     #{cfreCreatedate},
+	     #{cfreUpdatedate},
+	     #{cfreTransactionnumber}
+	   )
+	</insert>
+
+	<update id="update" parameterType="TblChargingfaultrecord">
+	   update tbl_ChargingFaultRecord set
+	     cFRe_UsingMachineCode=#{cfreUsingmachinecode},
+	     cFRe_ElectricPileID=#{cfreElectricpileid},
+	     cFRe_ElectricPileName=#{cfreElectricpilename},
+	     cFRe_ChargingSarttime=#{cfreChargingsarttime},
+	     cFRe_FaultCause=#{cfreFaultcause},
+	     cFRe_Createdate=#{cfreCreatedate},
+	     cFRe_Updatedate=#{cfreUpdatedate},
+	     cFRe_TransactionNumber=#{cfreTransactionnumber}
+	   where 
+	    pk_ChargingFaultRecord=#{pkChargingfaultrecord} 
+	</update>
+
+	<delete id="delete" parameterType="map">
+	   delete from 
+	     tbl_ChargingFaultRecord 
+	   where 
+	    pk_ChargingFaultRecord=#{pkChargingfaultrecord} 
+	</delete>
+	
+	<select id="get" parameterType="map" resultMap="tblChargingfaultrecordResultMap">
+	   select 
+	    pk_ChargingFaultRecord,
+	    cFRe_UsingMachineCode,
+	    cFRe_ElectricPileID,
+	    cFRe_ElectricPileName,
+	    cFRe_ChargingSarttime,
+	    cFRe_FaultCause,
+	    cFRe_Createdate,
+	    cFRe_Updatedate,
+	    cFRe_TransactionNumber
+	   from tbl_ChargingFaultRecord
+	   where 
+	    pk_ChargingFaultRecord=#{pkChargingfaultrecord} 
+	</select>
+
+	<select id="findOne" parameterType="map" resultMap="findResultMap">
+	   select 
+	    pk_ChargingFaultRecord,
+	    cFRe_UsingMachineCode,
+	    cFRe_ElectricPileID,
+	    cFRe_ElectricPileName,
+	    cFRe_ChargingSarttime,
+	    cFRe_FaultCause,
+	    cFRe_Createdate,
+	    cFRe_Updatedate,
+	    cFRe_TransactionNumber
+	   from tbl_ChargingFaultRecord
+	   where 
+	    pk_ChargingFaultRecord=#{pkChargingfaultrecord} 
+	</select>
+
+	<select id="find" parameterType="map" resultMap="findResultMap">
+	   select 
+	     pk_ChargingFaultRecord,
+	     cFRe_UsingMachineCode,
+	     cFRe_ElectricPileID,
+	     cFRe_ElectricPileName,
+	     cFRe_ChargingSarttime,
+	     cFRe_FaultCause,
+	     cFRe_Createdate,
+	     cFRe_Updatedate,
+	     cFRe_TransactionNumber
+	   from tbl_ChargingFaultRecord
+	   <where>
+	     <if test="pkChargingfaultrecord != null">
+	        pk_ChargingFaultRecord=#{pkChargingfaultrecord}
+	     </if>
+	     <if test="cfreUsingmachinecode != null">
+	        and cFRe_UsingMachineCode=#{cfreUsingmachinecode}
+	     </if>
+	     <if test="cfreElectricpileid != null">
+	        and cFRe_ElectricPileID=#{cfreElectricpileid}
+	     </if>
+	     <if test="cfreElectricpilename != null">
+	        and cFRe_ElectricPileName=#{cfreElectricpilename}
+	     </if>
+	     <if test="cfreChargingsarttime != null">
+	        and cFRe_ChargingSarttime=#{cfreChargingsarttime}
+	     </if>
+	     <if test="cfreFaultcause != null">
+	        and cFRe_FaultCause=#{cfreFaultcause}
+	     </if>
+	     <if test="cfreCreatedate != null">
+	        and cFRe_Createdate=#{cfreCreatedate}
+	     </if>
+	     <if test="cfreUpdatedate != null">
+	        and cFRe_Updatedate=#{cfreUpdatedate}
+	     </if>
+	     <if test="cfreTransactionnumber != null">
+	        and cFRe_TransactionNumber=#{cfreTransactionnumber}
+	     </if>
+	   </where>
+	</select>
+	<!-- 根据流水号获取故障数量 ,判断是否故障停止 -->
+	<select id="findCountByTranum" parameterType="map" resultType="int">
+		select count(pk_ChargingFaultRecord)
+		from
+		tbl_ChargingFaultRecord
+		where
+		cFRe_TransactionNumber=#{cfreTransactionnumber}
+	</select>
+	
+</mapper> 

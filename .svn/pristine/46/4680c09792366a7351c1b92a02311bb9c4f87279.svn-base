@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.BannerMapper">
+	<resultMap type="BannerDO" id="resultBanner">
+		<result property="pkBannerId" column="pk_bl_id" />
+		<result property="bannerDesc" column="bl_desc" />
+		<result property="bannerUrl" column="bl_url" />
+		<result property="bannerStatus" column="bl_status" />
+		<result property="bannerSort" column="bl_sort" />
+		<result property="bannerCreatedate" column="bl_createdate" />
+		<result property="bannerUpdatedate" column="bl_updatedate" />
+		<result property="bannerBeginTime" column="bl_begin_time" />
+		<result property="bannerEndTime" column="bl_end_time" />
+		<result property="bannerProvinceCode" column="bl_provincecode" />
+		<result property="bannerCityCode" column="bl_citycode" />
+		<result property="bannerCountyCode" column="bl_countycode" />
+	</resultMap>
+  <select id="selectBannerList" parameterType="BannerDO" resultMap="resultBanner">
+  	SELECT 
+			pk_bl_id,
+			bl_desc,
+			bl_url,
+			bl_status,
+			bl_sort,
+		 	date_format(bl_createdate,'%Y-%m-%d %T') bl_createdate,
+			date_format(bl_begin_time,'%Y-%m-%d %T') bl_begin_time,
+			date_format(bl_end_time,'%Y-%m-%d %T') bl_end_time,
+			bl_provincecode,
+			bl_citycode,
+			'开启' as bannerStatusType,
+			getFullPath ('bannerPic', pk_bl_id) AS bannerPicUrl
+ 		FROM tbl_banner_list 
+ 		<![CDATA[ 
+					  where bl_begin_time <= now() and bl_end_time >=now()  and  bl_status= 0 
+					       ]]>
+		 union all
+		 SELECT 
+			pk_bl_id,
+			bl_desc,
+			bl_url,
+			bl_status,
+			bl_sort,
+		 		date_format(bl_createdate,'%Y-%m-%d %T') bl_createdate,
+			date_format(bl_begin_time,'%Y-%m-%d %T') bl_begin_time,
+			date_format(bl_end_time,'%Y-%m-%d %T') bl_end_time,
+			bl_provincecode,
+			bl_citycode,
+			'已结束' as bannerStatusType,
+			getFullPath ('bannerPic', pk_bl_id) AS bannerPicUrl
+ 		FROM tbl_banner_list 
+ 		<![CDATA[ 
+			where	 (bl_end_time <=now() and   bl_status!=1) or bl_status=2
+					       ]]>
+			union all
+			SELECT 
+			pk_bl_id,
+			bl_desc,
+			bl_url,
+			bl_status,
+			bl_sort,
+		 		date_format(bl_createdate,'%Y-%m-%d %T') bl_createdate,
+			date_format(bl_begin_time,'%Y-%m-%d %T') bl_begin_time,
+			date_format(bl_end_time,'%Y-%m-%d %T') bl_end_time,
+			bl_provincecode,
+			bl_citycode,
+			'未开始' as bannerStatusType,
+			getFullPath ('bannerPic', pk_bl_id) AS bannerPicUrl
+ 		FROM tbl_banner_list 
+ 		<![CDATA[ 
+			where	 bl_begin_time >=now()  and   bl_status!=1 and bl_status !=2
+					       ]]>
+ 		ORDER BY 		
+ 			convert(bannerStatusType USING gbk) ASC,
+			bl_sort ASC
+		<if test="pager!=null">limit #{pager.offset},#{pager.pageSize}</if>
+  </select>
+  
+  <select id="selectBannerCount" parameterType="BannerDO" resultType="long">
+ 	 SELECT 
+			count(*)
+ 		FROM tbl_banner_list 
+ 		where bl_status != 1
+  </select>
+  
+  <insert id="insertBanner" parameterType="BannerDO" useGeneratedKeys="true" keyProperty="pkBannerId">
+  	insert into tbl_banner_list(
+		bl_desc,
+		bl_url,
+		bl_status,
+		bl_begin_time,
+		bl_end_time,
+		bl_provincecode,
+		bl_citycode
+		)values(
+		#{bannerDesc},
+		#{bannerUrl},
+		0,
+		#{bannerBeginTime},
+		#{bannerEndTime},
+		#{bannerProvinceCode},
+		#{bannerCityCode}
+		)
+  
+  </insert>
+  <update id="updateBanner" parameterType="BannerDO">
+  		update tbl_banner_list
+		set
+		bl_desc = #{bannerDesc},
+		bl_url = #{bannerUrl},
+		bl_begin_time = #{bannerBeginTime},
+		bl_end_time = #{bannerEndTime},
+		bl_status = #{bannerStatus},
+		bl_provincecode = #{bannerProvinceCode},
+		bl_citycode = #{bannerCityCode},
+		bl_sort = #{bannerSort},
+		bl_updatedate = now()
+		where
+		pk_bl_id = #{pkBannerId}
+  </update>
+  
+  <select id="getBannerById" parameterType="BannerDO" resultMap="resultBanner">
+  	SELECT 
+			pk_bl_id,
+			bl_desc,
+			bl_url,
+			bl_begin_time,
+			bl_end_time,
+			bl_provincecode,
+			bl_sort,
+			bl_status,
+			bl_citycode,
+			getFullPath ('bannerPic', pk_bl_id) AS bannerPicUrl
+ 		FROM tbl_banner_list
+ 		where  pk_bl_id = #{bannerId}
+  </select>
+  <!-- 删除banner -->
+	<update id="deleteBannerById" parameterType="BannerDO" > 
+		update tbl_banner_list
+		set
+		bl_status = 1
+		where 
+		pk_bl_id = #{pkBannerId}
+	</update>
+	<!-- 下架banner -->
+  <update id="offShelfBannerById" parameterType="BannerDO"  >
+ 		update tbl_banner_list
+		set
+		bl_status = 2,
+		bl_end_time = #{bannerEndTime}
+		where 
+		pk_bl_id = #{pkBannerId}
+  </update>
+  <!-- 修改banner播放顺序 -->
+	<update id="changeBannerSort" parameterType="BannerDO" > 
+		update tbl_banner_list
+		set
+		bl_sort = #{bannerSort}
+		where 
+		pk_bl_id = #{pkBannerId}
+	</update>
+</mapper>

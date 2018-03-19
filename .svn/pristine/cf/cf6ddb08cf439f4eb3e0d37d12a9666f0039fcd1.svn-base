@@ -1,0 +1,5 @@
+package com.wanma.service;
+
+public interface TcbPartnerService {
+	public String getKey(int comNum);
+}

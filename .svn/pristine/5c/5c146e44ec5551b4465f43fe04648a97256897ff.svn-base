@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.MultiMediaMapper">
+    <resultMap id="resultMultiMedia" type="MultiMediaDO">
+        <id column="FILE_ID" jdbcType="VARCHAR" property="fileId"/>
+        <result column="BUSSINESS_TYPE" jdbcType="VARCHAR" property="businessType"/>
+        <result column="FILE_TYPE" jdbcType="VARCHAR" property="fileType"/>
+        <result column="reference_id" jdbcType="VARCHAR" property="referenceId"/>
+        <result column="RELATIVE_PATH" jdbcType="VARCHAR" property="relativePath"/>
+        <result column="FILE_NAME" jdbcType="VARCHAR" property="fileName"/>
+        <result column="TITLE_FLG" jdbcType="VARCHAR" property="titleFlg"/>
+        <result column="CREATE_DATE" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser"/>
+        <result column="LAST_UPDATE_DATE" jdbcType="TIMESTAMP" property="lastUpdateDate"/>
+        <result column="LAST_UPDATE_USER" jdbcType="VARCHAR" property="lastUpdateUser"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        FILE_ID, BUSSINESS_TYPE, FILE_TYPE, reference_id, RELATIVE_PATH, FILE_NAME, TITLE_FLG,
+        CREATE_DATE, CREATE_USER, LAST_UPDATE_DATE, LAST_UPDATE_USER
+    </sql>
+
+    <select id="selectByFileId" parameterType="String" resultMap="resultMultiMedia">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_multi_media
+        where FILE_ID = #{fileId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectByReferenceId" parameterType="map" resultMap="resultMultiMedia">
+        SELECT
+            relative_path,
+            right(left(reverse(file_name), instr(reverse(file_name), '.') + 1), 1) AS sort_number,
+            file_name
+        FROM tb_multi_media
+        WHERE BUSSINESS_TYPE = #{bussinessType}
+              AND reference_id = #{referenceId}
+    </select>
+
+    <delete id="deleteByFileId" parameterType="String">
+        DELETE FROM tb_multi_media
+        WHERE FILE_ID = #{fileId,jdbcType=VARCHAR}
+    </delete>
+
+    <delete id="deleteByReferenceId" parameterType="map">
+        DELETE FROM tb_multi_media
+        WHERE BUSSINESS_TYPE = #{bussinessType}
+              AND reference_id = #{referenceId}
+              AND FILE_NAME = #{fileName}
+    </delete>
+
+    <insert id="insertMultiMedia" parameterType="MultiMediaDO">
+        INSERT INTO tb_multi_media (FILE_ID, BUSSINESS_TYPE, FILE_TYPE,
+                                    reference_id, RELATIVE_PATH, FILE_NAME,
+                                    TITLE_FLG, CREATE_DATE, CREATE_USER,
+                                    LAST_UPDATE_DATE, LAST_UPDATE_USER)
+        VALUES (#{fileId,jdbcType=VARCHAR}, #{bussinessType,jdbcType=VARCHAR}, #{fileType,jdbcType=VARCHAR},
+                #{referenceId,jdbcType=VARCHAR}, #{relativePath,jdbcType=VARCHAR}, #{fileName,jdbcType=VARCHAR},
+                #{titleFlg,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR},
+                #{now,jdbcType=TIMESTAMP}, #{now,jdbcType=VARCHAR})
+    </insert>
+
+    <update id="updateByFileId" parameterType="MultiMediaDO">
+        UPDATE tb_multi_media
+        SET BUSSINESS_TYPE   = #{bussinessType,jdbcType=VARCHAR},
+            FILE_TYPE        = #{fileType,jdbcType=VARCHAR},
+            reference_id     = #{referenceId,jdbcType=VARCHAR},
+            RELATIVE_PATH    = #{relativePath,jdbcType=VARCHAR},
+            FILE_NAME        = #{fileName,jdbcType=VARCHAR},
+            TITLE_FLG        = #{titleFlg,jdbcType=VARCHAR},
+            LAST_UPDATE_DATE = #{now,jdbcType=TIMESTAMP},
+            LAST_UPDATE_USER = #{lastUpdateUser,jdbcType=VARCHAR}
+        WHERE FILE_ID = #{fileId,jdbcType=VARCHAR}
+    </update>
+</mapper>

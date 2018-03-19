@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsApplyPartnerMapper">
+	<resultMap id="listResultMap" type="TblApplyPartner">
+		<id property="pkApplyPartner" column="id" />
+		<result property="apPaServiceQQ" column="service_qq" />
+		<result property="apPaUserPhone" column="user_phone" />
+		<result property="apPaPointName" column="point_name" />
+		<result property="apPaCreatedate" column="create_time" />
+		<result property="apPaUpdatedate" column="update_time" />
+		<result property="apPaDealReason" column="partner_reason" />
+		<result property="apPaProcessState" column="status" />
+		<result property="apPaUserName" column="user_name" />
+		<result property="apPaStationAddr" column="station_addr" />
+		<result property="apPaStationType" column="station_type" />
+		<result property="apPaInstallation" column="installation" />
+		<result property="apPaPileNum" column="pile_num" />
+		<result property="apPaOpenTime" column="open_time" />
+		<result property="apPaChargingCost" column="charging_cost" />
+		<result property="apPaCarTypeMatch" column="car_type_match" />
+		<result property="apPaUserEmail" column="user_email" />
+		<result property="apPaCooperationMode" column="cooperation_mode" />
+		<result property="apPaPartnerType" column="partner_type" />
+		<result property="apPaStationTypeText" column="station_type_text" />	
+		<result property="apPaAcPileNum" column="pile_num_ac" />	
+		<result property="apPaDcPileNum" column="pile_num_dc" />	
+		<result property="apPaOpenTimeWorkDay" column="open_time_work" />	
+		<result property="apPaOpenTimeHoliday" column="open_time_holiday" />	
+		<result property="apPaChargingFee" column="charging_fee" />	
+		<result property="apPaServiceFee" column="service_fee" />	
+		<result property="apPaParkingFee" column="parking_fee" />
+		<result property="apPaCompanyName" column="company_name" />
+	</resultMap>
+
+	<select id="getCmsApplyPartnerCount" parameterType="TblApplyPartner"
+		resultType="long">
+		select
+		count(id)
+		from
+		tbl_partner_access 
+		where
+		partner_type = #{apPaPartnerType}
+		<if test="pkApplyPartner != null and pkApplyPartner !=''">
+			and id=#{pkApplyPartner}
+		</if>
+		<if test="apPaUserPhone != null and apPaUserPhone !=''">
+			and user_phone like CONCAT('%','${apPaUserPhone}','%' )
+		</if>
+		<if test="apPaProcessState != null and apPaProcessState !=''">
+			and status=#{apPaProcessState}
+		</if>
+		<if test="createDateStarte !=null and createDateStarte !='' ">
+			  <![CDATA[and create_time >=#{createDateStarte}]]>
+		</if>
+		<if test="createDateEnd !=null and createDateEnd !=''">
+				 <![CDATA[and create_time <=#{createDateEnd}]]>
+		</if>
+		<if test="updateDateStart !=null and updateDateStart !='' ">
+			  <![CDATA[and update_time >=#{updateDateStart}]]>
+		</if>
+		<if test="updateDateEnd !=null and updateDateEnd !=''">
+				 <![CDATA[and update_time <=#{updateDateEnd}]]>
+		</if>
+	</select>
+	<select id="getCmsApplyPartnerList" parameterType="TblApplyPartner"
+		resultMap="listResultMap">
+		select
+		id,
+		service_qq,
+		user_phone,
+		point_name,		
+		create_time,
+		update_time,	
+		partner_reason,
+		status,
+		user_name,
+		station_addr,
+		station_type,
+		installation,
+		pile_num,
+		open_time,
+		charging_cost,
+		car_type_match,
+		user_email,
+		cooperation_mode,
+		partner_type,
+		station_type_text,
+		pile_num_ac,
+		pile_num_dc,
+		open_time_work,
+		open_time_holiday,
+		charging_fee,
+		service_fee,
+		parking_fee,
+		company_name,
+		getFullPath('partnerApplyImage',#{pkApplyPartner}) apPaPersonImage
+		from
+		tbl_partner_access 
+		where
+		partner_type = #{apPaPartnerType}
+		<if test="pkApplyPartner != null and pkApplyPartner !=''">
+			and id=#{pkApplyPartner}
+		</if>
+		<if test="apPaUserPhone != null and apPaUserPhone !=''">
+			and user_phone like CONCAT('%','${apPaUserPhone}','%' )
+		</if>
+		<if test="apPaProcessState != null and apPaProcessState !=''">
+			and status=#{apPaProcessState}
+		</if>
+		<if test="createDateStarte !=null and createDateStarte !='' ">
+			  <![CDATA[and create_time >=#{createDateStarte}]]>
+		</if>
+		<if test="createDateEnd !=null and createDateEnd !=''">
+				 <![CDATA[and create_time <=#{createDateEnd}]]>
+		</if>
+		<if test="updateDateStart !=null and updateDateStart !='' ">
+			  <![CDATA[and update_time >=#{updateDateStart}]]>
+		</if>
+		<if test="updateDateEnd !=null and updateDateEnd !=''">
+				 <![CDATA[and update_time <=#{updateDateEnd}]]>
+		</if>
+		order by update_time desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<select id="getCmsApplyPartnerById" parameterType="Integer"
+		resultMap="listResultMap">
+		select
+		id,
+		service_qq,
+		user_phone,
+		point_name,		
+		create_time,
+		update_time,	
+		partner_reason,
+		status,
+		user_name,
+		station_addr,
+		station_type,
+		installation,
+		pile_num,
+		open_time,
+		charging_cost,
+		car_type_match,
+		user_email,
+		cooperation_mode,
+		partner_type,
+		station_type_text,
+		pile_num_ac,
+		pile_num_dc,
+		open_time_work,
+		open_time_holiday,
+		charging_fee,
+		service_fee,
+		parking_fee,
+		company_name,
+		getFullPath('partnerApplyImage',#{pkApplyPartner}) apPaPersonImage		
+		from
+		tbl_partner_access 
+		where
+		id=#{pkApplyPartner}
+	</select>
+
+	<!-- 更新申请状态 -->
+	<update id="updateApplyPartnerState" parameterType="map">
+		update
+		tbl_partner_access set status = #{apPaProcessState} where
+		id = #{pkApplyPartner}
+	</update>
+	<!-- 插入处理原因 -->
+	<update id="updateApplyPartnerReason" parameterType="map">
+		update
+		tbl_partner_access set
+		partner_reason = #{apPaDealReason},
+		status = 10
+		where
+		id = #{pkApplyPartner}
+	</update>
+
+
+	<delete id="deleteApplyPartnerById" parameterType="Integer">
+		delete from
+		tbl_partner_access
+		where
+		id = #{pkApplyPartner}
+	</delete>
+</mapper> 

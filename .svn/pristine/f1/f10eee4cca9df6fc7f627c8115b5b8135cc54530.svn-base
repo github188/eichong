@@ -1,0 +1,38 @@
+{
+    "title" : {
+        "text": "爱充用户访问来源",
+        "subtext": "纯属虚构",
+        "x":"center"
+    },
+    "tooltip" : {
+        "trigger": "item",
+        "formatter": "{a} <br/>{b} : {c} ({d}%)"
+    },
+    "legend": {
+        "orient" : "vertical",
+        "x" : "left",
+        "data":["直接访问","邮件营销","联盟广告","视频广告","搜索引擎"]
+    },
+    "toolbox": {
+        "show" : true,
+        "feature" : {
+            "mark" : {"show": true},
+            "dataView" : {"show": true, "readOnly": false},
+            "magicType" : {
+                "show": true, 
+                "type": ["pie", "funnel"],
+                "option": {
+                    "funnel": {
+                        "x": "25%",
+                        "width": "50%",
+                        "funnelAlign": "left",
+                        "max": 1548
+                    }
+                }
+            },
+            "restore" : {"show": true},
+            "saveAsImage" : {"show": true}
+        }
+    },
+    "calculable" : true
+}

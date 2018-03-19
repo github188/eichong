@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.IntegralDetailsMapper">
+	<resultMap type="IntegralDetailsDO" id="integralDetails">
+		<result property="pkId" column="pk_id" />
+		<result property="integralId" column="integral_id" />
+		<result property="integralActivityId" column="integral_activity_id" />
+		<result property="moneyInvolved" column="money_involved" />
+		<result property="chargingOrderId" column="charging_order_id" />
+		<result property="direction" column="direction" />
+		<result property="integralValue" column="integral_value" />
+		<result property="integralDate" column="integral_date" />		
+		<result property="creator" column="creator" />
+	</resultMap>
+	
+	<select id="getIntegralDetailsCount" parameterType="IntegralDetailsDO" resultType="long">
+		SELECT
+			 COUNT(1)
+		FROM 
+			 tbl_integral_details b
+		where 1=1
+		<if test="pkId != null">
+		  and b.pk_id = #{pkId}
+		</if>
+		<if test="integralId != null">
+		  and b.integral_id = #{integralId}
+		</if>
+		<if test="integralActivityId != null">
+		  and b.integral_activity_id = #{integralActivityId}
+		</if>
+		<if test="moneyInvolved != null">
+		  and b.money_involved = #{moneyInvolved}
+		</if>
+		<if test="chargingOrderId != null">
+		  and b.charging_order_id = #{chargingOrderId}
+		</if>
+		<if test="direction != null">
+		  and b.direction = #{direction}
+		</if>
+		<if test="integralValue != null">
+		  and b.integral_value = #{integralValue}
+		</if>
+		<if test="integralDate != null and integralDate !=''">
+		  and b.integral_date = #{integralDate}
+		</if>
+	</select>
+	
+	<select id="getIntegralDetailsList" parameterType="IntegralDetailsDO" resultMap="integralDetails">
+		SELECT
+			 pk_id,
+			 integral_id,
+			 integral_activity_id,
+			 money_involved,
+			 charging_order_id,
+			 direction,
+			 integral_value,
+			 integral_date,
+			 creator
+		FROM 
+			 tbl_integral_details b
+		where 1=1
+		<if test="pkId != null">
+		  and b.pk_id = #{pkId}
+		</if>
+		<if test="integralId != null">
+		  and b.integral_id = #{integralId}
+		</if>
+		<if test="integralActivityId != null">
+		  and b.integral_activity_id = #{integralActivityId}
+		</if>
+		<if test="moneyInvolved != null">
+		  and b.money_involved = #{moneyInvolved}
+		</if>
+		<if test="chargingOrderId != null">
+		  and b.charging_order_id = #{chargingOrderId}
+		</if>
+		<if test="direction != null">
+		  and b.direction = #{direction}
+		</if>
+		<if test="integralValue != null">
+		  and b.integral_value = #{integralValue}
+		</if>
+		<if test="integralDate != null and integralDate !=''">
+		  and b.integral_date = #{integralDate}
+		</if>
+		order by integral_date desc
+        <if test="pager!=null">limit #{pager.offset},#{pager.pageSize}</if>
+	</select>
+
+	<!-- 添加积分明细表 -->
+	<insert id="addIntegralDetails" useGeneratedKeys="true" parameterType="IntegralDetailsDO" keyProperty="pkId">
+		INSERT INTO tbl_integral_details
+		(pk_id,integral_id,integral_activity_id,money_involved,charging_order_id,direction,integral_value,integral_date,creator)
+		VALUES
+		(null,#{integralId},#{integralActivityId},#{moneyInvolved},#{chargingOrderId},#{direction},#{integralValue},#{integralDate},#{creator})
+	</insert>
+	
+	<!-- 修改积分明细表 -->
+	<update id="modifyIntegralDetails" parameterType="IntegralDetailsDO" >
+		UPDATE tbl_integral_details
+		SET integral_id = #{integralId},
+		integral_activity_id = #{integralActivityId},
+		money_involved = #{moneyInvolved},
+		direction = #{direction},
+		integral_value = #{integralValue},
+		integral_date = #{integralDate}
+		WHERE pk_id = #{pkId}
+	</update>
+</mapper>

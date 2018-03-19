@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/blackWhiteList/blackWhite_list.css"/>
+    <title>黑白名单列表</title>
+</head>
+<body>
+<div class="container animated fadeInRight">
+    <div class="row">
+        <div class="formBlock clearfix">
+            <form id="blackWhiteListForm">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" >
+                    <div class="blackWhiteListSelect row blackWhiteContent" style="padding:0 15px;">
+                        <div class="col-sm-3 col-xs-12">
+                            <div class=" col-sm-11 userAccount">
+                                <input type="text" name="userAccount" id="userAccount" value="" placeholder="用户账号" class="userAccountInput"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-xs-12">
+                            <div class="col-sm-11 electricPileCode">
+                                <input type="text" name="electricPileCode" id="electricPileCode" value="" placeholder="桩编号" class="electricPileCodeInput"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-xs-12">
+                            <div class="col-sm-11 col-xs-12 model-select-box">
+                                <div class="model-select-text TypeBlock" data-value="" id="listType">类型</div>
+                                <span class="downRow TypeBlock clickRotateSpan"></span>
+                                <input type="text" name="type" id="" value="" hidden="hidden"/>
+                                <ul class="model-select-option typeUl">
+                                    <li data-option="" class="seleced">全部</li>
+                                    <li data-option="1">黑名单</li>
+                                    <li data-option="0">白名单</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12" style="height: 25px;"></div>
+                    <div class="row" style="padding:0 15px;">
+                        <div class="col-sm-3 col-xs-12">
+                            <div class=" col-sm-11 col-xs-12 model-select-box">
+                                <div class="model-select-text provinceBlock" data-value="" id="provinceCode">渠道(请选择省)</div>
+                                <span class="downRow provinceBlock clickRotateSpan"></span>
+                                <!--<input type="text" name="cpyProvince" hidden="hidden" id="" value="" />-->
+                                <ul class="model-select-option provinceUl">
+                                    <li>111111</li>
+                                    <li>2222222</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-xs-12">
+                            <div class="col-xs-12 col-sm-11  model-select-box">
+                                <div class="model-select-text cityBlock" data-value="" id="cityCode">请选择市</div>
+                                <span class="downRow cityBlock clickRotateSpan"></span>
+                                <!--<input type="text" name="cpyCity" hidden="hidden" id="" value="" />-->
+                                <ul class="model-select-option cityUl">
+
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-xs-12">
+                            <div class="col-xs-12 col-sm-11  model-select-box">
+                                <div class="model-select-text cpyNameBlock" data-value="" id="companyCode">请选择公司</div>
+                                <span class="downRow cpyNameBlock clickRotateSpan"></span>
+                                <input type="text" name="cpyId" hidden="hidden" id="cpyId" value="" />
+                                <ul class="model-select-option cpyIdUl">
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12" style="height: 25px;"></div>
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="position: relative;">
+                    <div class="queryBtn" onclick="blackWhiteListSearch()">
+                        查询
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!--按钮部分开始==========================================================-->
+        <div class="btnBlock">
+            <div class="row">
+                <div class="col-sm-2" style="">
+                    <div class="col-sm-10 col-xs-2  btnStyle" id="addBlackWhite" style="display: none;">
+                        新建
+                    </div>
+                </div>
+                <div class="col-sm-2" style="">
+                    <div class="col-sm-10 col-xs-2 btnStyle" id="deleteListBtn" style="display: none;margin-left:5px;">
+                        删除
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--表格部分开始==========================================================-->
+        <div class="showSet table-responsive">
+            <table class=" table table-bordered text-center" style="border: 1px solid #DCDCDC;">
+                <thead>
+                <tr>
+                    <th class="">选择</th>
+                    <th class="bwList_userAccount">用户账号</th>
+                    <th class="bwList_electricPileCode">桩编号</th>
+                    <th class="bwList_cpyName">公司</th>
+                    <th class="bwList_typeName">黑白名单</th>
+                </tr>
+                </thead>
+                <tbody id="myCompanyTb">
+
+                </tbody>
+            </table>
+
+            <div id="blackWhiteListPage" class="pagination">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="toAddBlackWhiteList" style="display: none;">
+    <div class="addType model-select-box">
+        <div class="model-select-text addTypeBlock" data-value="1" id="addType">黑名单</div>
+        <span class="downRow addTypeBlock clickRotateSpan" style="height:32px;"></span>
+        <input type="text" name="" hidden="hidden" id="" value="" />
+        <ul class="model-select-option addTypeUl">
+            <li data-option="1">黑名单</li>
+            <li data-option="0">白名单</li>
+        </ul>
+    </div>
+    <input type="text" id="userAccountInput" value="" class="addInput" placeholder="请输入用户账号" />
+    <div class="errorStyle" id="userAccountInputTip"></div>
+    <!--<div id="addFlag">
+        <input type="radio" name="type" value="0"  checked="checked" />单个桩生效
+        <input type="radio" name="type" value="1" />该渠道所有可用桩生效
+    </div>-->
+    <div class="addFlag model-select-box">
+        <div class="model-select-text addFlagBlock" data-value="0" id="addFlag">单个桩生效</div>
+        <span class="downRow addFlagBlock clickRotateSpan" style="height:32px;"></span>
+        <input type="text" name="" hidden="hidden" id="" value="" />
+        <ul class="model-select-option addFlagUl">
+            <li data-option="0">单个桩生效</li>
+            <li data-option="1">该渠道所有可用桩生效</li>
+        </ul>
+    </div>
+    <div id="pileInput" style="display: block;">
+        <input type="text" id="electricPileCodeInput" value="" class="addInput" placeholder="请输入桩编号" />
+        <div class="errorStyle" id="electricPileCodeInputTip"></div>
+    </div>
+</div>
+</body>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<!--<script src="../js/apiAddress.js" type="text/javascript" charset="utf-8"></script>-->
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/contabs.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/blackWhiteList/blackWhite_list.js" type="text/javascript" charset="utf-8"></script>
+</html>

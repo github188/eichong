@@ -1,0 +1,723 @@
+*{
+	margin: 0;
+	padding: 0;
+}
+body,html{
+	font-size: 62.5%;
+	background: #FFFFFF;
+}
+.col-xs-2,.col-xs-8,.col-xs-4{
+	padding: 0;
+}
+/*加载中======================================================*/
+.waitLoad{
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	background: #FFFFFF;
+	z-index: 10001;
+	opacity: 0.3;
+	display: block;
+}
+.waitLoad img{
+	
+	width: 55%;
+	height: 30%;
+	opacity: 1;
+	margin-left: 25%;
+	margin-top: 45%;
+}
+/*第一块===================================================*/
+.header{
+	width: 100%;
+	height: 5rem;
+	background-color: #FF7D00;
+}
+.header .dcontent{
+	position: relative;
+	padding: 0;
+}
+.header .dcontent .sao{
+	width: 2.6rem;
+	height: 2.6rem;
+	background: url(../img/sao.png) no-repeat center;
+	background-size: 90% 90%;
+	border: 0;
+	position: absolute;
+	top: 0;
+	left: 1rem;
+}
+/*搜索========================*/
+.search{
+	position: relative;
+	width: 100%;
+	height: 2.8rem;
+	border: #FFFFFF 0.1rem solid;
+	border-radius: 3rem;
+	margin-top: 1.2rem;
+	overflow: hidden;
+}
+.search img{
+	display: block;
+	width: 1.8rem;
+	height: 1.8rem;
+	position: absolute;
+	right: 0.4rem;
+	top: 0.4rem;
+	-margin:0.5rem 0 0.5rem 0.8rem;
+}
+.search .sea_addr{
+	/*position: absolute;
+	top: 0.3rem;
+	left: 0.5rem;*/
+	margin: 0;
+	padding: 0;
+	margin-left: 0.6rem;
+	/*margin-top: 0.3rem;*/
+	width: 89%;
+	height: 2.4rem;
+	line-height: 2.4rem;
+	outline-style: none;
+	background: #FF7D00;
+	border: 0.1rem solid #FF7D00;
+	color: #FFFFFF;
+}
+.header .change{
+	width: 2.6rem;
+	height: 2.6rem;
+	background: url(../img/change.png) no-repeat center;
+	background-size: 90% 90%;
+	border: 0;
+	
+}
+#container{
+	padding: 0;
+	width: 100%;
+    height: 100%;
+    margin: 0px;
+    font: 12px Helvetica, 'Hiragino Sans GB', 'Microsoft Yahei', '微软雅黑', Arial;
+    
+}
+ 
+.info-title{
+  color: white;
+  font-size: 14px;
+  background-color: rgba(0,155,255,0.8);
+  line-height: 26px;
+  padding: 0px 0 0 6px;
+  font-weight: lighter;
+  letter-spacing: 1px
+}
+.info-content{
+  padding: 4px;
+  color: #666666;
+  line-height: 23px;
+ }
+.info-content img{
+  float: left;
+  margin: 3px;
+}
+/*底部固定栅格系统========================================================================*/
+.bottom_fix{
+	width: 100%;
+	height: 6rem;
+	background: #FFFFFF;
+	border-top: 0.1rem solid #CCCCCC;
+	
+}
+.bottom_fix img{
+	padding-left: 0.5rem;
+	width: 2.5rem;
+	height: 2rem;
+}
+.menu_xx{
+	/*padding-left: 4rem;*/
+	padding-top: 1rem;
+	text-align: center;
+}
+.bottom_fix .menu_xx img{
+	width: 2.8rem;
+	height: 2.4rem;
+}
+.bottom_fix .menu_xx div{
+	font-size: 1.6rem;
+	color: #666;
+	width: 100%;
+	margin-left: 0.3rem;
+}
+/*筛选======================================================================================*/
+.filter{
+	width: 5rem;
+	height: 5rem;
+	/*background: #000000;
+	opacity: 0.5;*/
+	background-color:rgba(0,0,0,0.5);
+	position: absolute;
+	top: 6rem;
+	right: 1rem;
+	border-radius: 50%;
+	text-align: center;
+	
+}
+.filter2{
+	width: 5rem;
+	height: 5rem;
+	/*background: #000000;
+	opacity: 0.5;*/
+	background-color:rgba(0,0,0,0.5);
+	position: absolute;
+	top: 13rem;
+	right: 1rem;
+	border-radius: 50%;
+	text-align: center;
+}
+.filter .filter_text{
+	color: #FFFFFF;
+	=margin-left: 1rem;
+	line-height: 5rem;
+}
+.filter2 .filter_text{
+	color: #FFFFFF;
+	=margin-left: 1rem;
+	line-height: 5rem;
+	
+}
+.filter2 .red{
+	display: block;
+	width: 1rem;
+	height: 1rem;
+	background: #f74c31;
+	position: absolute;
+	top: 0.5rem;
+	right: 0;
+	border-radius: 1rem;
+}
+.filter_container{
+	width: 100%;
+	height: 20rem;
+	border: 0.1rem solid #CCCCCC;
+	background: #FFFFFF;
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	z-index: 10000;
+	display: none;
+}
+.filter_container .introClass{
+	width: 100%;
+	height: 4rem;
+	line-height: 4rem;
+	border-bottom: 0.1rem solid #CCCCCC;
+}
+.filter_container .introClass li{
+	list-style: none;
+	float: left;
+	height: 3rem;
+	line-height: 3rem;
+	margin-left: 1rem;
+}
+.filter_container .introClass li img{
+	width: 2rem;
+	height: 2rem;
+}
+.filter_container .introClass li span{
+	font-size: 1.4rem;
+	
+}
+.filter_container .speed{
+	width: 100%;
+	height: 4rem;
+	
+}
+.filter_container .standard{
+	width: 100%;
+	height: 4rem;
+	
+}
+.filter_container .speed li{
+	width: 10rem;
+	height: 3rem;
+	border: 0.1rem solid #CCCCCC;
+	list-style: none;
+	float: left;
+	border-radius: 5rem;
+	text-align: center;
+	line-height: 3rem;
+	padding-left: 0.6rem;
+	margin-left: 1rem;
+	position: relative;
+}
+.filter_container .standard li{
+	width: 10rem;
+	height: 3rem;
+	border: 0.1rem solid #CCCCCC;
+	list-style: none;
+	float: left;
+	border-radius: 5rem;
+	text-align: center;
+	line-height: 3rem;
+	padding-left: 0.6rem;
+	margin-left: 1rem;
+	position: relative;
+}
+.filter_container .speed li img{
+	width: 2rem;
+	height: 2rem;
+	position: absolute;
+	top: 0.5rem;
+	right: 0.4rem;
+	
+}
+.filter_container .standard li img{
+	width: 2rem;
+	height: 2rem;
+	position: absolute;
+	top: 0.5rem;
+	right: 0.4rem;
+	
+}
+.filter_container .speed .active{
+	border: 0.1rem solid #FF7D00;
+	color: #FF7D00;
+}
+.filter_container .standard .active1{
+	border: 0.1rem solid #FF7D00;
+	color: #FF7D00;
+}
+/*空闲充点电按钮===============================================================================*/
+.freeDot{
+	width: 100%;
+	height: 4rem;
+	list-style: none;
+}
+#freeDot #freeChangingDot{
+	width: 21rem;
+	height: 3rem;
+	border: 0.1rem solid #CCCCCC;
+	border-radius: 21rem;
+	margin-left: 1rem;
+	text-align: center;
+	line-height: 3rem;
+	position: relative;
+}
+#freeDot #freeChangingDot img{
+	width: 2rem;
+	height: 2rem;
+	position: absolute;
+	top: 0.5rem;
+	right: 1rem;
+}
+/*底部确定按钮==================================================================================*/
+.filter_container .sure{
+	position: absolute;
+	bottom: 1rem;
+	right: 0.6rem;
+	background: #FF7D00;
+	color: #FFFFFF;
+	width: 3.5rem;
+	height: 3.5rem;
+	line-height: 3.5rem;
+	padding: 0;
+}
+/*地图描点=======================================================================================*/
+
+/*智能点=======================================================================*/
+.capacity{
+	position: absolute;
+	top: 30rem;
+	right: 5rem;
+	width: 5rem;
+	height: 5rem;
+}
+.capacity1{
+	position: absolute;
+	top: 10rem;
+	right: 7rem;
+	width: 5rem;
+	height: 5rem;
+}
+
+/*点击庄的简单详情框============================================================*/
+.capacityTip{
+	width: 100%;
+	min-height: 8rem;
+	border: 0.1rem solid #CCCCCC;
+	background: #FFFFFF;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	z-index: 10000;
+	position: fixed;
+}
+.capacityTip .powerMsg{
+	width: 100%;
+	min-height: 4rem;
+	border-bottom: 0.1rem solid #CCCCCC;
+	
+}
+.capacityTip .powerMsg .generalAddr{
+	display: block;
+	float: left;
+	padding-left: 3rem;
+	width: 65%;
+	min-height: 2rem;
+	
+
+}
+.capacityTip .powerMsg .distance{
+	display: block;
+	float: right;
+	padding-right: 3rem;
+	
+	width: 30%;
+	height: 4rem;
+
+}
+.capacityTip .collectMsg{
+	width: 100%;
+	/*min-height: 7rem;*/
+	-border-bottom: 0.1rem solid #CCCCCC;
+}
+.capacityTip .collectMsg .simpleIntr{
+	position: relative;
+	width: 100%;
+	min-height: 3rem;
+	padding-top: 0.5rem;
+	overflow: hidden;
+	display: -webkit-flex;
+	display: -moz-flex;
+	display: -ms-flex;
+	-webkit-flex-flow:center;
+	-moz-flex-flow:center;
+	-ms-flex-flow:center;
+	-webkit-justify-content: space-around;
+	-moz-justify-content: space-around;
+	-ms-justify-content: space-around;
+}
+.capacityTip .collectMsg .simpleIntr .num-btn{
+	border-radius: 10rem;
+	width: 14rem;
+	height: 3rem;
+	border:0.1rem solid #CCCCCC;
+	/*margin-top: 1rem;
+	margin-left: 1rem;*/
+	/*float: left;*/
+}
+.capacityTip .collectMsg .simpleIntr .num-btn .mui-badge{
+	background: #666666;
+	color: #FFFFFF;
+	font-size: 1rem;
+}
+.capacityTip .collectMsg .simpleIntr .num-btn .mui-badge1{
+	background: #00A438;
+	color: #FFFFFF;
+	font-size: 1rem;
+}
+.capacityTip .collectMsg .simpleIntr .enter{
+	width: 2.5rem;
+	height: 3rem;
+	margin-top: 1rem;
+	position: absolute;
+	top: 0.2rem;
+	right: 1rem;
+}
+.capacityTip .collectMsg .simpleIntr .detailAddr{
+	margin: 0;
+	padding: 0;
+	margin-left: 1.5rem;
+	margin-top: 1rem;
+}
+.capacityTip .orderBtn{
+	width: 100%;
+	min-height:4rem;
+	margin-bottom: 0;
+	border-top: 0.1rem solid #C0C0C0;
+	=margin-top: 3rem;
+}
+.capacityTip .orderBtn li{
+	list-style: none;
+	width: 50%;
+	float: left;
+	height: 4rem;
+	margin: 0 auto;
+	line-height: 5rem;
+	position: relative;
+}
+.capacityTip .orderBtn li a{
+	display: block;
+	width: 100%;
+	float: left;
+	height: 5rem;
+	text-align: center;
+	color: #000000;
+	text-decoration: none;
+	line-height: 5rem;
+	
+}
+.capacityTip .orderBtn li img{
+	width: 3rem;
+	height: 3rem;
+	position: absolute;
+	top: 1rem;
+	left: 2rem;
+}
+
+.capacityTip .orderBtn .navigator{
+	border-right: 0.1rem solid #CCCCCC;
+}
+.capacityTip .orderBtn .navigator a{
+	color: #FF7D00;
+}
+#capacityTip .orderBtn .makeOrder a{
+	color: #FF7D00;
+}
+.capacityTip .orderBtn .navigator .yellowDot{
+	width: 3rem;
+	height: 3rem;
+	position: absolute;
+	top: 1rem;
+	left: 2rem;
+}
+/*以下负责兼容写法===========================================================================================*/
+@media only screen and (min-width: 320px) and (max-width: 640px) {
+	/*智能提示简版兼容*/
+	 .capacityTip .collectMsg .simpleIntr .num-btn{
+			border-radius: 10rem;
+			width: 15rem;
+			height: 3rem;
+			border:0.1rem solid #CCCCCC;
+			/*margin-top: 1rem;*/
+			/*margin-left: 1rem;*/
+			padding: 0;
+			/*float: left;*/
+		}
+		.capacityTip .collectMsg .simpleIntr .enter{
+			width: 1.8rem;
+			height: 2.6rem;
+			margin-top: 1rem;
+			position: absolute;
+			top: 0.2rem;
+			right: 0.5rem;
+		}
+		.capacityTip .powerMsg{
+			width: 100%;
+			min-height: 4.4rem;
+			border-bottom: 0.1rem solid #CCCCCC;
+			padding-top: 1rem;
+			
+		}
+		.capacityTip .powerMsg .generalAddr{
+			display: block;
+			float: left;
+			padding-left: 1rem;
+			width: 65%;
+			min-height: 3rem;
+			/*margin-top: 1.2rem;*/
+		}
+		.capacityTip .powerMsg .distance{
+			display: block;
+			float: right;
+			padding-right: 1rem;
+			width: 30%;
+			height: 4rem;
+			/*line-height: 4rem;*/
+			padding: 0;
+			text-align: center;
+			
+			
+		}
+		/*搜索框兼容===============================================*/
+		.col-xs-8 .search{
+			position: relative;
+			
+			width: 100%;
+			height: 2.8rem;
+			border: #FFFFFF 0.1rem solid;
+			border-radius: 3rem;
+			/*margin-top: 0.8rem;
+			margin-left: 1.5rem;*/
+		}
+		.filter_container .sure{
+			position: absolute;
+			bottom: 1rem;
+			right: 0.3rem;
+			background: #FF7D00;
+			color: #FFFFFF;
+			width: 4rem;
+			height: 2.5rem;
+			line-height: 2.5rem;
+			padding: 0;
+		}
+}
+@media only screen and (min-width: 414px) and (max-width: 736px) {
+	 .capacityTip .collectMsg .simpleIntr .num-btn{
+			border-radius: 10rem;
+			width: 15rem;
+			height: 3rem;
+			border:0.1rem solid #CCCCCC;
+			/*margin-top: 1rem;*/
+			/*margin-left: 1rem;*/
+			padding: 0;
+			/*float: left;*/
+		}
+		.filter_container .sure{
+			position: absolute;
+			bottom: 1rem;
+			right: 0.6rem;
+			background: #FF7D00;
+			color: #FFFFFF;
+			width: 5.5rem;
+			height: 3.5rem;
+			line-height: 3.5rem;
+			padding: 0;
+		}
+}
+@media only screen and (min-width: 600px) and (max-width: 1024px) {
+	 .capacityTip .collectMsg .simpleIntr .num-btn{
+			border-radius: 10rem;
+			width: 15rem;
+			height: 3rem;
+			border:0.1rem solid #CCCCCC;
+			/*margin-top: 1rem;*/
+			/*margin-left: 1rem;*/
+			padding: 0;
+			/*float: left;*/
+		}
+		.filter_container .sure{
+			position: absolute;
+			bottom: 1rem;
+			right: 0.6rem;
+			background: #FF7D00;
+			color: #FFFFFF;
+			width: 6.5rem;
+			height: 4.5rem;
+			line-height: 4.5rem;
+			padding: 0;
+		}
+}
+@media only screen and (min-width: 549px) and (max-width: 640px) {
+	.capacityTip .collectMsg .simpleIntr .num-btn{
+			border-radius: 10rem;
+			width: 19rem;
+			height: 3rem;
+			border:0.1rem solid #CCCCCC;
+			/*margin-top: 1rem;*/
+			/*margin-left: 1rem;*/
+			padding: 0;
+			/*float: left;*/
+		}
+		.filter_container .sure{
+			position: absolute;
+			bottom: 1rem;
+			right: 0.6rem;
+			background: #FF7D00;
+			color: #FFFFFF;
+			width: 10.5rem;
+			height: 3.5rem;
+			line-height: 3.5rem;
+			padding: 0;
+		}
+}
+@media only screen and (min-width: 720px) and (max-width: 1281px) {
+	.capacityTip .collectMsg .simpleIntr .num-btn{
+			border-radius: 10rem;
+			width: 18rem;
+			height: 3rem;
+			border:0.1rem solid #CCCCCC;
+			/*margin-top: 1rem;*/
+			/*margin-left: 1rem;*/
+			padding: 0;
+			/*float: left;*/
+		}
+		.filter_container .sure{
+			position: absolute;
+			bottom: 1rem;
+			right: 0.6rem;
+			background: #FF7D00;
+			color: #FFFFFF;
+			width: 15.5rem;
+			height: 5.5rem;
+			line-height: 5.5rem;
+			padding: 0;
+		}
+}
+/* iPhone 6  */
+@media only screen and (min-width: 1080px) and (max-width: 1920px) {
+	.capacityTip .collectMsg .simpleIntr .num-btn{
+			border-radius: 10rem;
+			width: 40rem;
+			height: 3rem;
+			border:0.1rem solid #CCCCCC;
+			/*margin-top: 1rem;*/
+			/*margin-left: 1rem;*/
+			padding: 0;
+			/*float: left;*/
+		}
+}
+
+
+/*扫一扫=========================*/
+.dcontent{
+	height: 5rem;
+	text-align: center;
+	line-height: 5rem;
+}
+.dcontent img{
+	width: 60%;
+	height: 70%;
+	
+}
+.menuBtn a:link,
+.menuBtn a:visited,
+.menuBtn a:hover,
+.menuBtn a:visited{
+	text-decoration: none;
+}
+.mui-bar-tab .mui-tab-item .mui-icon ~ .mui-tab-label{
+	font-size:1.6rem;
+}
+/*去掉高德地图的logo*/
+.amap-logo {
+    right: 0 !important;
+    left: auto !important;
+    display: none;
+}
+.amap-copyright {
+    right: 70px !important;
+    left: auto !important;
+    display: none;
+} 
+/*地图图标=============================================*/
+.zoomin{
+	width: 4.6rem;
+	height: 4.6rem;
+	border-radius: 3rem;
+	/*background: #FF0000;*/
+	position: absolute;
+	right: 1rem;
+	bottom: 12rem;
+	background: url(../img/btn_map_add.png) no-repeat center;
+	background-size:100% 100% ;
+}
+.zoomout{
+	width: 4.6rem;
+	height: 4.6rem;
+	border-radius: 3rem;
+	/*background: #FF0000;*/
+	position: absolute;
+	right: 1rem;
+	bottom: 6rem;
+	background: url(../img/btn_map_narrow.png) no-repeat center;
+	background-size:100% 100% ;
+}
+.geolocation{
+	width: 4.6rem;
+	height: 4.6rem;
+	border-radius: 3rem;
+	/*background: #FF0000;*/
+	position: absolute;
+	left: 1rem;
+	bottom: 6rem;
+	background: url(../img/bth_map_positioning.png) no-repeat center;
+	background-size:100% 100% ;
+}

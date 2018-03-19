@@ -1,0 +1,515 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.web.dao.WebProductMapper">
+
+	<resultMap id="tblProductResultMap" type="TblProduct">
+		<id property="pkProduct" column="pk_Product" />
+		<result property="prodProductcode" column="prod_ProductCode" />
+		<result property="prodProductname" column="prod_ProductName" />
+		<result property="prodCategoryid" column="prod_CategoryId" />
+		<result property="prodProductprice" column="prod_ProductPrice" />
+		<result property="prodProductdiscount" column="prod_ProductDiscount" />
+		<result property="prodDiscountprice" column="prod_DiscountPrice" />
+		<result property="prodMarketprice" column="prod_MarketPrice" />
+		<result property="prodStockquantity" column="prod_StockQuantity" />
+		<result property="prodProductlsadd" column="prod_ProductlsAdd" />
+		<result property="prodSoldquantity" column="prod_SoldQuantity" />
+		<result property="prodBrowsenum" column="prod_BrowseNum" />
+		<result property="prodProducttag" column="prod_ProductTag" />
+		<result property="prodQrcodepic" column="prod_QrCodePic" />
+		<result property="prodDetailimage" column="prod_DetailImage" />
+		<result property="prodProductimage" column="prod_ProductImage" />
+		<result property="prodRemark" column="prod_Remark" />
+		<result property="prodArtificialservice" column="prod_ArtificialService" />
+		<result property="prodCreatedate" column="prod_Createdate" />
+		<result property="prodUpdatedate" column="prod_Updatedate" />
+		<result property="prodStatus" column="prod_status" />
+		<result property="prodParameters" column="prod_Parameters" />
+		<result property="prodChargingMode" column="prod_ChargingMode" />
+		<result property="prodFeature" column="prod_Feature" />
+	</resultMap>
+	<resultMap id="pageResultMap" type="java.util.HashMap"
+		extends="tblProductResultMap"></resultMap>
+	<resultMap id="findResultMap" type="java.util.HashMap"
+		extends="tblProductResultMap"></resultMap>
+
+	<insert id="insert" parameterType="TblProduct" useGeneratedKeys="true"
+		keyProperty="pkProduct">
+		insert into tbl_Product (
+		pk_Product,
+		prod_ProductCode,
+		prod_ProductName,
+		prod_CategoryId,
+		prod_ProductPrice,
+		prod_ProductDiscount,
+		prod_DiscountPrice,
+		prod_MarketPrice,
+		prod_StockQuantity,
+		prod_ProductlsAdd,
+		prod_SoldQuantity,
+		prod_BrowseNum,
+		prod_ProductTag,
+		prod_QrCodePic,
+		prod_DetailImage,
+		prod_ProductImage,
+		prod_Remark,
+		prod_ArtificialService,
+		prod_Createdate,
+		prod_Updatedate
+		)values (
+		#{pkProduct},
+		#{prodProductcode},
+		#{prodProductname},
+		#{prodCategoryid},
+		#{prodProductprice},
+		#{prodProductdiscount},
+		#{prodDiscountprice},
+		#{prodMarketprice},
+		#{prodStockquantity},
+		#{prodProductlsadd},
+		#{prodSoldquantity},
+		#{prodBrowsenum},
+		#{prodProducttag},
+		#{prodQrcodepic},
+		#{prodDetailimage},
+		#{prodProductimage},
+		#{prodRemark},
+		#{prodArtificialservice},
+		#{prodCreatedate},
+		#{prodUpdatedate}
+		)
+	</insert>
+
+	<update id="update" parameterType="TblProduct">
+		update tbl_Product set
+		pk_Product=#{pkProduct},
+		prod_ProductCode=#{prodProductcode},
+		prod_ProductName=#{prodProductname},
+		prod_CategoryId=#{prodCategoryid},
+		prod_ProductPrice=#{prodProductprice},
+		prod_ProductDiscount=#{prodProductdiscount},
+		prod_DiscountPrice=#{prodDiscountprice},
+		prod_MarketPrice=#{prodMarketprice},
+		prod_StockQuantity=#{prodStockquantity},
+		prod_ProductlsAdd=#{prodProductlsadd},
+		prod_SoldQuantity=#{prodSoldquantity},
+		prod_BrowseNum=#{prodBrowsenum},
+		prod_ProductTag=#{prodProducttag},
+		prod_QrCodePic=#{prodQrcodepic},
+		prod_DetailImage=#{prodDetailimage},
+		prod_ProductImage=#{prodProductimage},
+		prod_Remark=#{prodRemark},
+		prod_ArtificialService=#{prodArtificialservice},
+		prod_Createdate=#{prodCreatedate},
+		prod_Updatedate=#{prodUpdatedate}
+		where
+		pk_Product=#{pkProduct} 
+	</update>
+
+	<delete id="delete" parameterType="map">
+		delete from
+		tbl_Product
+		where
+		pk_Product=#{pkProduct} 
+	</delete>
+
+	<select id="get" parameterType="map" resultMap="tblProductResultMap">
+		select
+		pk_Product,
+		prod_ProductCode,
+		prod_ProductName,
+		prod_CategoryId,
+		prod_ProductPrice,
+		prod_ProductDiscount,
+		prod_DiscountPrice,
+		prod_MarketPrice,
+		prod_StockQuantity,
+		prod_ProductlsAdd,
+		prod_SoldQuantity,
+		prod_BrowseNum,
+		prod_ProductTag,
+		prod_QrCodePic,
+		prod_DetailImage,
+		prod_ProductImage,
+		prod_Remark,
+		prod_ArtificialService,
+		prod_Createdate,
+		prod_Updatedate
+		from tbl_Product
+		where
+		pk_Product=#{pkProduct} 
+	</select>
+
+	<select id="findOne" parameterType="map" resultMap="findResultMap">
+		select
+		pk_Product,
+		prod_ProductCode,
+		prod_ProductName,
+		prod_CategoryId,
+		prod_ProductPrice,
+		prod_ProductDiscount,
+		prod_DiscountPrice,
+		prod_MarketPrice,
+		prod_StockQuantity,
+		prod_ProductlsAdd,
+		prod_SoldQuantity,
+		prod_BrowseNum,
+		prod_ProductTag,
+		prod_QrCodePic,
+		prod_DetailImage,
+		prod_ProductImage,
+		prod_Remark,
+		prod_ArtificialService,
+		prod_Createdate,
+		prod_Updatedate
+		from tbl_Product
+		where
+		pk_Product=#{pkProduct} 
+	</select>
+
+	<select id="getHotRecommendDetail" parameterType="map" resultMap="tblProductResultMap">
+		select
+		pk_Product,
+		prod_ProductCode,
+		prod_ProductName,
+		prod_CategoryId,
+		prod_ProductPrice,
+		prod_ProductDiscount,
+		prod_DiscountPrice,
+		prod_MarketPrice,
+		prod_StockQuantity,
+		prod_ProductlsAdd,
+		prod_SoldQuantity,
+		prod_BrowseNum,
+		prod_ProductTag,
+		prod_QrCodePic,
+		getFullPath('DetailImage',pk_Product) prod_DetailImage,
+		getFullPath('ListImage',pk_Product) prod_ProductImage,
+		prod_Remark,
+		prod_ArtificialService,
+		prod_Createdate,
+		prod_Updatedate,
+		prod_ChargingMode
+		from tbl_Product
+		where 1=1
+		<if test="prodCategoryid != null">
+				and prod_CategoryId=#{prodCategoryid} 
+	     </if>
+		 <if test="prodChargingMode != null">
+				and prod_ChargingMode=#{prodChargingMode} 
+	     </if>
+	     and prod_ProductlsAdd = '2'
+	       <choose>
+                 <when test="priceSort == 2"> ORDER BY prod_ProductPrice desc</when>
+                 <when test="soldQuantity == 2"> ORDER BY prod_SoldQuantity desc</when>
+             </choose>
+       limit #{offset},#{numPerPage}
+	</select>
+	<select id="find" parameterType="map" resultMap="findResultMap">
+		select
+		pk_Product,
+		prod_ProductCode,
+		prod_ProductName,
+		prod_CategoryId,
+		prod_ProductPrice,
+		prod_ProductDiscount,
+		prod_DiscountPrice,
+		prod_MarketPrice,
+		prod_StockQuantity,
+		prod_ProductlsAdd,
+		prod_SoldQuantity,
+		prod_BrowseNum,
+		prod_ProductTag,
+		prod_QrCodePic,
+		prod_DetailImage,
+		prod_ProductImage,
+		prod_Remark,
+		prod_ArtificialService,
+		prod_Createdate,
+		prod_Updatedate
+		from tbl_Product
+		<where>
+			<if test="pkProduct != null">
+				pk_Product=#{pkProduct}
+	     </if>
+			<if test="prodProductcode != null">
+				and prod_ProductCode=#{prodProductcode}
+	     </if>
+			<if test="prodProductname != null">
+				and prod_ProductName=#{prodProductname}
+	     </if>
+			<if test="prodCategoryid != null">
+				and prod_CategoryId=#{prodCategoryid}
+	     </if>
+			<if test="prodProductprice != null">
+				and prod_ProductPrice=#{prodProductprice}
+	     </if>
+			<if test="prodProductdiscount != null">
+				and prod_ProductDiscount=#{prodProductdiscount}
+	     </if>
+			<if test="prodDiscountprice != null">
+				and prod_DiscountPrice=#{prodDiscountprice}
+	     </if>
+			<if test="prodMarketprice != null">
+				and prod_MarketPrice=#{prodMarketprice}
+	     </if>
+			<if test="prodStockquantity != null">
+				and prod_StockQuantity=#{prodStockquantity}
+	     </if>
+			<if test="prodProductlsadd != null">
+				and prod_ProductlsAdd=#{prodProductlsadd}
+	     </if>
+			<if test="prodSoldquantity != null">
+				and prod_SoldQuantity=#{prodSoldquantity}
+	     </if>
+			<if test="prodBrowsenum != null">
+				and prod_BrowseNum=#{prodBrowsenum}
+	     </if>
+			<if test="prodProducttag != null">
+				and prod_ProductTag=#{prodProducttag}
+	     </if>
+			<if test="prodQrcodepic != null">
+				and prod_QrCodePic=#{prodQrcodepic}
+	     </if>
+			<if test="prodDetailimage != null">
+				and prod_DetailImage=#{prodDetailimage}
+	     </if>
+			<if test="prodProductimage != null">
+				and prod_ProductImage=#{prodProductimage}
+	     </if>
+			<if test="prodRemark != null">
+				and prod_Remark=#{prodRemark}
+	     </if>
+			<if test="prodArtificialservice != null">
+				and prod_ArtificialService=#{prodArtificialservice}
+	     </if>
+			<if test="prodCreatedate != null">
+				and prod_Createdate=#{prodCreatedate}
+	     </if>
+			<if test="prodUpdatedate != null">
+				and prod_Updatedate=#{prodUpdatedate}
+	     </if>
+		</where>
+	</select>
+
+	<select id="page" parameterType="map" resultMap="pageResultMap">
+		select
+		pk_Product,
+		prod_ProductCode,
+		prod_ProductName,
+		prod_CategoryId,
+		prod_ProductPrice,
+		prod_ProductDiscount,
+		prod_DiscountPrice,
+		prod_MarketPrice,
+		prod_StockQuantity,
+		prod_ProductlsAdd,
+		prod_SoldQuantity,
+		prod_BrowseNum,
+		prod_ProductTag,
+		prod_QrCodePic,
+		prod_DetailImage,
+		prod_ProductImage,
+		prod_Remark,
+		prod_ArtificialService,
+		prod_Createdate,
+		prod_Updatedate
+		from tbl_Product
+		<where>
+			<if test="pkProduct != null">
+				pk_Product=#{pkProduct}
+	     </if>
+			<if test="prodProductcode != null">
+				and prod_ProductCode=#{prodProductcode}
+	     </if>
+			<if test="prodProductname != null">
+				and prod_ProductName=#{prodProductname}
+	     </if>
+			<if test="prodCategoryid != null">
+				and prod_CategoryId=#{prodCategoryid}
+	     </if>
+			<if test="prodProductprice != null">
+				and prod_ProductPrice=#{prodProductprice}
+	     </if>
+			<if test="prodProductdiscount != null">
+				and prod_ProductDiscount=#{prodProductdiscount}
+	     </if>
+			<if test="prodDiscountprice != null">
+				and prod_DiscountPrice=#{prodDiscountprice}
+	     </if>
+			<if test="prodMarketprice != null">
+				and prod_MarketPrice=#{prodMarketprice}
+	     </if>
+			<if test="prodStockquantity != null">
+				and prod_StockQuantity=#{prodStockquantity}
+	     </if>
+			<if test="prodProductlsadd != null">
+				and prod_ProductlsAdd=#{prodProductlsadd}
+	     </if>
+			<if test="prodSoldquantity != null">
+				and prod_SoldQuantity=#{prodSoldquantity}
+	     </if>
+			<if test="prodBrowsenum != null">
+				and prod_BrowseNum=#{prodBrowsenum}
+	     </if>
+			<if test="prodProducttag != null">
+				and prod_ProductTag=#{prodProducttag}
+	     </if>
+			<if test="prodQrcodepic != null">
+				and prod_QrCodePic=#{prodQrcodepic}
+	     </if>
+			<if test="prodDetailimage != null">
+				and prod_DetailImage=#{prodDetailimage}
+	     </if>
+			<if test="prodProductimage != null">
+				and prod_ProductImage=#{prodProductimage}
+	     </if>
+			<if test="prodRemark != null">
+				and prod_Remark=#{prodRemark}
+	     </if>
+			<if test="prodArtificialservice != null">
+				and prod_ArtificialService=#{prodArtificialservice}
+	     </if>
+			<if test="prodCreatedate != null">
+				and prod_Createdate=#{prodCreatedate}
+	     </if>
+			<if test="prodUpdatedate != null">
+				and prod_Updatedate=#{prodUpdatedate}
+	     </if>
+		</where>
+	</select>
+
+	<!-- 根据不同条件获取商品 type:1未打折商品 2 打折商品 -->
+	<select id="findProducts" parameterType="map" resultMap="tblProductResultMap">
+		SELECT pk_Product,
+		prod_ProductName,
+		prod_MarketPrice,
+		prod_StockQuantity,
+		prod_DiscountPrice,
+		prodProductimage from (select
+		pk_Product,
+		prod_ProductName,
+		prod_MarketPrice,
+		prod_StockQuantity,
+		prod_DiscountPrice,
+		getFullPath('proImage',pk_Product) as prodProductimage
+		from tbl_Product
+		<where>
+			<if test="type ==1">
+				prod_DiscountPrice = 0
+	   		</if>
+			<if test="type ==2">
+				prod_DiscountPrice !=0
+	   		</if>
+			and prod_status = '1'
+			and prod_ProductlsAdd='2'
+			and pk_Product >= (SELECT t.pk_Product FROM tbl_Product t ORDER BY pk_Product LIMIT #{begin}, 1)
+		</where>
+		order by prod_Updatedate desc) t limit #{pageSize}
+	</select>
+
+	<!-- count -->
+	<select id="countProducts" parameterType="map" resultType="long">
+		select count(*) from tbl_Product
+		<where>
+			<if test="type ==1">
+				prod_DiscountPrice = 0
+			</if>
+			<if test="type ==2">
+				prod_DiscountPrice !=0
+			</if>
+			and prod_status = '1'
+			and prod_ProductlsAdd='2'
+		</where>
+	</select>
+		
+	<select id="findProductListByShopSearch" parameterType="map" resultMap="tblProductResultMap">
+		select
+		pk_Product,
+		prod_ProductName,
+		prod_MarketPrice,
+		prod_StockQuantity,
+		prod_DiscountPrice,
+		getFullPath('proImage',pk_Product) as prodProductimage,
+		prod_Feature
+		from tbl_Product  
+		<where>
+			<if test="prodProductname!=null">
+			  prod_ProductName like concat('%',#{prodProductname},'%')
+	   		</if>
+		</where>
+	</select>
+	<!-- 产品#{prodProductname}详情 -->
+	<select id="findProductDetail" parameterType="String"
+		resultMap="findResultMap">
+		select
+		prod_DiscountPrice,
+		prod_MarketPrice,
+		prod_ProductPrice,
+		pk_Product pkProduct,
+		prod_ProductName prodProductname,
+		prod_ArtificialService prodArtificialservice,
+		prod_Parameters prodParameters,
+		getFullPath('DetailImage',pk_Product) as prod_DetailImage,
+		(select count(pk_ProductComment) from tbl_ProductComment where prCo_ProductId
+		= pk_Product and prCo_Utatus=0) commCount,
+		(select avg(prCo_CommentStart) from tbl_ProductComment where prCo_ProductId =
+		pk_Product and prCo_Utatus=0 ) avgStart,
+		(select count(pk_Favorite) from tbl_Favorite where favo_UserId = #{pkUserInfo} and favo_ProductId = #{pkProduct}) isCollect 
+		from tbl_Product
+		where
+		pk_Product = #{pkProduct} <!-- and prod_status = 1 -->
+	</select>
+	
+	<select id="selectById" parameterType="int" resultMap="findResultMap">
+		select
+		pk_Product,
+		prod_ProductName,
+		(CASE WHEN
+		prod_ProductName is not NULL THEN '万马品牌' END) prodBrandName,
+		prod_MarketPrice,
+		prod_DiscountPrice,
+		shCa_Count,
+		getFullPath('proImage',pk_Product) as
+		prodProductimage,
+		prod_Brand
+		from
+		tbl_Product
+		where
+		pk_Product = #{pkProduct}
+	</select>
+
+	<select id="getHotRecommendDetailCount" parameterType="map" resultType="int">
+		select
+		count(1)
+		from tbl_Product
+		where 1=1
+		
+		<if test="prodCategoryid != null">
+				and prod_CategoryId=#{prodCategoryid} 
+	     </if>
+		 <if test="prodChargingMode != null">
+				and prod_ChargingMode=#{prodChargingMode} 
+	     </if>
+	      and prod_ProductlsAdd = '2'
+	       <choose>
+                 <when test="priceSort != null"> ORDER BY prod_ProductPrice asc, prod_SoldQuantity desc </when>
+                 <otherwise>ORDER BY prod_SoldQuantity desc</otherwise>
+             </choose>
+	</select>
+
+	
+	<!-- 更新库存数量,已售数量 -->
+	<update id="updateQuantity" parameterType="map">
+		update tbl_Product
+		set
+		prod_StockQuantity = (prod_StockQuantity-#{prodStockquantity}),
+		prod_SoldQuantity = (prod_SoldQuantity+#{prodSoldquantity})
+		where 
+		pk_Product = #{pkProduct}
+	</update>
+
+
+</mapper> 

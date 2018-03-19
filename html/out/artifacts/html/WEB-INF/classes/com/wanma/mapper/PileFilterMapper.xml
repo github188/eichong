@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.PileFilterMapper">
+	
+	
+	
+	<select id="checkPileIsOk" parameterType="map" resultType="long">
+		
+		select count(pk_id) from tbl_company_rela t where t.pk_cpy_operate_id=(select pk_CompanyId from 
+		tbl_company where cpy_CompanyNumber=#{companyId})
+		 and t.pk_ElectricPile= (select  pk_ElectricPile from tbl_electricpile  where elPi_ElectricPileCode =#{pileId} LIMIT 1)
+		
+
+	</select>
+</mapper>

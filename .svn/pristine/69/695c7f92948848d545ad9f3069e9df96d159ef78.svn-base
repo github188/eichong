@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/style.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/electric/powerStation/powerStation_edit.css"/>
+    <title>充电点编辑</title>
+</head>
+<body>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="container-fluid">
+        <div class="row btnBlock">
+            <!--按钮组合-->
+            <div class="saveBtn cursor" id="saveBtn">保存</div>
+            <div class="goBack cursor" id="toPowerStationDetail">返回</div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 ">
+                <div class="ibox float-e-margins" style="margin: 0">
+                    <div class="">
+                        <div class="ibox-content clearfix">
+                            <div class="userBaseInfo col-sm-12 ">
+                                <!--<div class="col-sm-12 titleTip">电桩编辑</div>-->
+                                <div class="col-sm-6" style="padding: 0">
+                                    <ul class="baseInfoLeft commonUl">
+                                        <li>
+                                            <span class="col-sm-6 col-xs-12">充电点名称</span>
+                                            <input type="" name="" id="powerstationName" value="" autofocus="autofocus"
+                                                   class="col-sm-6 col-xs-12" placeholder="请输入充电点名称"/>
+                                        </li>
+
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">省份</span>
+                                            <div class="col-sm-6 col-xs-6 model-select-box" style="padding: 0;">
+                                                <div class="model-select-text cpyProvinceBlock" data-value="" id="province">
+                                                    请选择
+                                                </div>
+                                                <span class="downRow cpyProvinceBlock"></span>
+                                                <ul class="model-select-option provinceUl" id="">
+                                                    <li data-option="" class="seleced">请选择</li>
+
+                                                </ul>
+                                            </div>
+                                        </li>
+
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">区／县</span>
+                                            <div class="col-sm-6 col-xs-6 model-select-box" style="padding: 0;">
+                                                <div class="model-select-text cpyAreaBlock" data-value="" id="areaHtml">
+                                                    请选择
+                                                </div>
+                                                <span class="downRow cpyAreaBlock"></span>
+                                                <ul class="model-select-option areaUl" id="">
+                                                    <li data-option="" class="seleced">请选择</li>
+
+                                                </ul>
+                                            </div>
+                                        </li>
+
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">纬度</span>
+                                            <input type="" name="" id="latitude" value=""
+                                                   class="col-sm-6 col-xs-12" placeholder="请输入纬度"/>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">联系电话</span>
+                                            <input type="" name="" id="phone" value=""
+                                                   class="col-sm-6 col-xs-12" placeholder="请输入联系电话"/>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">停车费</span>
+                                            <input type="" name="" id="parkingFee" value=""
+                                                   class="col-sm-6 col-xs-12" placeholder="元/小时"/>
+                                        </li>
+
+                                    </ul>
+                                </div>
+                                <div class="col-sm-6" style="padding: 0">
+                                    <ul class="baseInfoRight commonUl">
+
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">默认费率</span>
+                                            <!--<div class="col-sm-6 col-xs-6 model-select-box" style="padding: 0;">-->
+                                                <!--<div class="model-select-text rateInfoBlock" data-value="" id="rateInfoId">-->
+                                                    <!--请选择-->
+                                                <!--</div>-->
+                                                <!--<span class="downRow rateInfoBlock"></span>-->
+                                                <!--<ul class="model-select-option" id="rateInfoIdUl">-->
+                                                    <!--<li>1</li>-->
+                                                    <!--<li>1</li>-->
+                                                    <!--<li>1</li>-->
+
+                                                <!--</ul>-->
+                                            <!--</div>-->
+                                            <input type="" name="" id="rateInfoId" value=""
+                                                   class="col-sm-6 col-xs-12" placeholder="默认费率"/>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">城市</span>
+                                            <div class="col-sm-6 col-xs-6 model-select-box" style="padding: 0;">
+                                                <div class="model-select-text cypCityBlock" data-value="" id="city">
+                                                    请选择
+                                                </div>
+                                                <span class="downRow cypCityBlock"></span>
+                                                <ul class="model-select-option cityUl" id="">
+                                                    <li data-option="" class="seleced">请选择</li>
+
+                                                </ul>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">具体地址</span>
+                                            <input type="" name="" id="address" value=""
+                                                   class="col-sm-6 col-xs-12" placeholder="请输入具体地址"/>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">经度</span>
+                                            <input type="" name="" id="longitude" value=""
+                                                   class="col-sm-6 col-xs-12" placeholder="请输入经度"/>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">开放时间</span>
+                                            <input type="" name="" id="onlineTime" value=""
+                                                   class="col-sm-6 col-xs-12" placeholder="请输入开放时间"/>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-sm-12 ">
+                <div class="ibox float-e-margins" style="margin: 0">
+                    <div class="">
+                        <div class="ibox-content clearfix">
+
+                            <div class="userBaseInfo col-sm-12 table-responsive">
+                                <div class="col-sm-12 showBtn">
+                                    <div class="tableTip">所属电桩列表</div>
+                                    <div class="rightBtn">
+                                        <div class="bindBtn cursor" id="selectPileBtn">绑定</div>
+                                        <div class="unBindBtn cursor" id="unBindBtn">解绑</div>
+                                    </div>
+                                </div>
+                                <table class="table table-bordered text-center" style="border: 1px solid #DCDCDC;">
+                                    <thead>
+                                    <tr>
+                                        <th class=""><input type="checkbox" name="" class="selAll" value=""/></th>
+                                        <th>序号</th>
+                                        <th>桩体编码</th>
+                                        <th>编号</th>
+                                        <th>电桩状态</th>
+                                        <th>充电方式</th>
+                                        <th>功率</th>
+                                        <th>类型</th>
+                                        <th>默认费率</th>
+                                        <th>产品型号</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="electricPile">
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--绑定电桩部分=======================-->
+<div class="bindPile" id="bindPile" style="display: none;">
+    <form id="BindElectricForm">
+        <div class="bindPileSelect">
+            <input type="hidden" name="status" value="0"/>
+            <input type="hidden" name="isBindPowerStationSearch" value="1"/>
+            <input type="text" name="code" placeholder="桩体编码" />
+            <!--功率-->
+            <div class="model-select-box">
+                <div class="model-select-text electricPowerBlock" data-value="" id="powerHtml">功率</div>
+                <span class="downRow electricPowerBlock"></span>
+                <input type="text" name="power" hidden="hidden" id="" value="" />
+                <ul class="model-select-option" id="electricPower">
+                    <li data-option="" class="seleced">功率</li>
+                </ul>
+            </div>
+            <!--充电方式-->
+            <div class=" model-select-box">
+                <div class="model-select-text electricChargeModeBlock" data-value="" id="chargingMethodHtml">充电方式</div>
+                <span class="downRow electricChargeModeBlock"></span>
+                <input type="text" name="chargingMethod" id="" value="" hidden="hidden"/>
+                <ul class="model-select-option " id="electricChargeMode">
+                    <li data-option="" class="seleced">充电方式</li>
+
+                </ul>
+            </div>
+            <!--制造商-->
+            <div class="model-select-box">
+                <div class="model-select-text pileMakerBlock" data-value="" id="pileMakerIdHtml">制造商</div>
+                <span class="downRow pileMakerBlock"></span>
+                <input type="text" name="pileMakerId" id="" value="" hidden="hidden"/>
+                <ul class="model-select-option pileMarkerUl">
+                    <li data-option="" class="seleced">制造商</li>
+
+                </ul>
+            </div>
+            <!--类型-->
+            <div class=" model-select-box">
+                <div class="model-select-text electricPileTypeBlock" data-value="" id="typeIdHtml">电桩类型</div>
+                <span class="downRow electricPileTypeBlock"></span>
+                <input type="text" name="typeId" id="" value="" hidden="hidden"/>
+                <ul class="model-select-option " id="electricPileType">
+                    <li data-option="" class="seleced">电桩类型</li>
+
+                </ul>
+            </div>
+
+            <span class="selectBtn" onclick="getElectricPileList()">查询</span>
+        </div>
+    </form>
+
+    <div class="bindPileBlock table-responsive">
+        <table class="bindPileTable table">
+            <thead>
+                <tr class="active">
+                    <th><input type="checkbox" name="" class="selAllElectric" value="" /></th>
+                    <th>桩体编码</th>
+                    <th>编号</th>
+                    <th>充电方式</th>
+                    <th>功率</th>
+                    <th>枪头数量</th>
+                    <th>类型</th>
+                    <th>制造商</th>
+                    <th>地址</th>
+                    <th>创建时间</th>
+                </tr>
+            </thead>
+            <tbody id="bindPileTbody">
+
+            </tbody>
+        </table>
+    </div>
+    <div id="BindElectricPage" class="pagination myPagination">
+    </div>
+</div>
+
+</body>
+<script src="../../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="../../../js/contabs.min.js"></script>
+<script src="../../../js/electric/powerStation/powerStation_edit.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/checkBox.js" type="text/javascript" charset="utf-8"></script>
+</html>

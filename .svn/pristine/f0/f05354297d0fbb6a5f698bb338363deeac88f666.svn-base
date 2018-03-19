@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/style.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/integral/integralStatistics/integral_statistics.css"/>
+    <title>积分统计</title>
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="ibox float-e-margins" style="margin: 0">
+                    <div class="">
+                        <div class="ibox-content">
+                            <div class="userBaseInfo col-sm-12 clearfix" id="scanManageMent">
+                                <div class="col-sm-9">
+                                    <div class="baseBlock">
+                                        <div class="perblock">
+                                            <span class="titleTip">用户获取</span>
+                                            <span class="parmValue" id="totalIntegrals"></span>
+                                        </div>
+                                        <div class="perblock">
+                                            <span class="titleTip">用户消耗</span>
+                                            <span class="parmValue" id="usedIntegrals"></span>
+                                        </div>
+                                        <div class="perblock">
+                                            <span class="titleTip">用户留存</span>
+                                            <span class="parmValue" id="availableIntegrals"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3" style="position: relative">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class="ibox float-e-margins" style="margin: 0">
+                    <div class="">
+                        <div class="ibox-content">
+                            <div class="userBaseInfo" id="adminManagementBlock">
+                                <div class="queryTable table-responsive">
+                                    <table class=" table table-bordered text-center" style="border: 1px solid #DCDCDC;">
+                                        <thead>
+                                        <tr>
+                                            <th>类型</th>
+                                            <th>积分</th>
+                                            <th>参加人数</th>
+                                            <th>参加次数</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="myTbody">
+                                            <tr>
+                                                <td>充值</td>
+                                                <td id="zzjf"></td>
+                                                <td id="zzrs"></td>
+                                                <td id="czcs"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>消费送出</td>
+                                                <td id="xfjf"></td>
+                                                <td id="xfrs"></td>
+                                                <td id="xfcs"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>每日领取</td>
+                                                <td id="lqjf"></td>
+                                                <td id="lqrs"></td>
+                                                <td id="lqcs"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>资料修改</td>
+                                                <td id="xgjljf"></td>
+                                                <td id="xgjlrs"></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>分享</td>
+                                                <td id="fxjf"></td>
+                                                <td id="fxrs"></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>积分兑换</td>
+                                                <td id="jfdhjf"></td>
+                                                <td id="jfdhrs"></td>
+                                                <td id="jfdhcs"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>积分抽奖</td>
+                                                <td id="jfcjjf"></td>
+                                                <td id="jfcjrs"></td>
+                                                <td id="jfcjcs"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>节假日</td>
+                                                <td id="jjrjf"></td>
+                                                <td id="jjrrs"></td>
+                                                <td id="jjrcs"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>生日</td>
+                                                <td id="srjf"></td>
+                                                <td id="sjrs"></td>
+                                                <td id="sjcs"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="../../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="../../../js/contabs.min.js"></script>
+<script src="../../../js/integral/integralStatistics/integral_statistics.js" type="text/javascript" charset="utf-8"></script>
+</html>

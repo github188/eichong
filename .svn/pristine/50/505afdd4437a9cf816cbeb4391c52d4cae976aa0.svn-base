@@ -1,0 +1,213 @@
+//去加载表格的数据
+getPowerStationListSearch();
+function getPowerStationListSearch() {
+    toGiveHiddenInput();
+    initTable("powerStationForm", "powerStationPage", getPowerStationListPageUrl, getPowerStationListCallback);
+}
+function getPowerStationListCallback(req) {
+    var data = req.dataObject;
+    var pageNum = req.pager.pageNo;
+    var listTr = "";
+    for (var i = 0; i < data.length; i++) {
+        listTr += '<tr><td><input type="checkbox" name="ids" class="selectedBox" value="' + data[i].powerstationId + '"/></td><td><span data-id="'+data[i].powerstationId+'"  onclick="toPowerStationDetail(this)">' + data[i].powerstationName + '</span>'
+        + '</td><td>' + data[i].electricPileNum
+        + '</td><td>' + data[i].address
+        + '</td><td>' + data[i].parkingFee
+        + '</td><td>' + data[i].onlineTime
+        + '</td></tr>';
+    }
+    //console.log(listTr);
+    $("#myTbogy").html(listTr);
+}
+//点击桩编号，进去桩详情
+function toPowerStationDetail(obj) {
+    var powerstationId = $(obj).attr('data-id');
+    window.location.href = 'powerStation_detail.html?powerstationId=' + powerstationId;
+}
+function toUnbindEvent() {
+    $('.cpyProvinceBlock').unbind();
+    $('.cypCityBlock').unbind();
+    $('.cpyAreaBlock').unbind();
+    selectModel();
+}
+function toGiveHiddenInput(){
+    var provinceCodeHtmlValue = $('#provinceCodeHtml').attr('data-value');
+    var cityCodeHtmlValue = $('#cityCodeHtml').attr('data-value');
+    var areaCodeHtmlValue = $('#areaCodeHtml').attr('data-value');
+    var powerstationNameValue = $('input[name=powerstationName]').val();
+    if (powerstationNameValue == "") {
+        powerstationNameValue = $('input[name=powerstationName]').val('');
+    } else {
+        $('input[name=powerstationName]').val();
+    }
+    if (provinceCodeHtmlValue == '') {
+        $('input[name=provinceCode]').val('');
+    } else {
+        $('input[name=provinceCode]').val(provinceCodeHtmlValue);
+    }
+    if (cityCodeHtmlValue == '') {
+        $('input[name=cityCode]').val('');
+    } else {
+        $('input[name=cityCode]').val(cityCodeHtmlValue);
+    }
+    if (areaCodeHtmlValue == '') {
+        $('input[name=areaCode]').val('');
+    } else {
+        $('input[name=areaCode]').val(areaCodeHtmlValue);
+    }
+
+}
+//加载省市
+setTimeout("toLoadProvince('', '#provinceCodeHtml', '.cpyProvinceUl', 'toUnbindEvent')", 100);
+
+//点击省加载市
+$('.cpyProvinceUl').on("click", "li", function () {
+    var provinceCodeId = $(this).attr('data-option');
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+    var flag = $(this).attr('data-option');
+    if (flag == "") {
+        $('#cityCodeHtml').html('请选择');
+        $('.cypCityUl').html('');
+        $('#cityCodeHtml').attr('data-value', '');
+        $('#areaCodeHtml').html('请选择');
+        $('.areaUl').html('');
+        $('#areaCodeHtml').attr('data-value', '');
+    } else {
+        toLoadCity(provinceCodeId, '', '#cityCodeHtml', '.cypCityUl', 'toUnbindEvent');
+    }
+})
+//点击市加载区
+$('.cypCityUl').on("click", "li", function () {
+    var cityCodeId = $(this).attr('data-option');
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+    var flag = $(this).attr('data-option');
+
+    if (flag == "") {
+        $('#areaCodeHtml').html('请选择');
+        $('.areaUl').html('');
+        $('#areaCodeHtml').attr('data-value', '');
+    } else {
+        $('.areaUl').html('');
+        toLoadArea(cityCodeId, '', '#areaCodeHtml', '.areaUl', 'toUnbindEvent');
+    }
+})
+
+//点击区获取值
+$('.areaUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+})
+//新增按钮
+$('body').on('click', '#addpowerstation', function () {
+    window.location.href = 'add_powerStation.html';
+})
+
+//删除按钮
+$("body").off("click", "#deleteBtn").on("click", "#deleteBtn", function () {
+    layer.closeAll();
+    layer.open({
+        type: 1,
+        offset: '100px',
+        title: ["提示", "font-size:12px;text-align:center"],
+        shadeClose: false,
+        closeBtn: 2,
+        area: ['310px', '180px'],//宽高
+        content: '确定删除吗？',
+        btn: ["确定", "取消"],
+        yes: function (index, layero) {
+            layer.closeAll();
+            toDeletePowerStation();
+        },
+        cancel: function (index, layero) {
+            layer.closeAll();
+        }
+    });
+});
+function toDeletePowerStation() {
+    var ids = '';
+    $('input[name=ids]').each(function () {
+        var flag = $(this).prop('checked');
+        if (flag == true) {
+            ids += $(this).attr('value') + ',';
+        }
+
+    });
+    ids=ids.substring(0,ids.length-1);
+    if (!ids) {
+        layer.open({
+            type: 1,
+            offset: '100px',
+            title: ["提示", "font-size:12px;text-align:center"],
+            shadeClose: false,
+            closeBtn: 2,
+            area: ['310px', '160px'],//宽高
+            content: '请指定表单元素',
+            time: 3000,
+            btn: ["确定", "取消"]
+        });
+    } else {
+        $.ajax({
+            type: "post",
+            url: basePath + removePowerStationUrl,
+            async: true,
+            data: {
+                ids: ids
+            },
+            success: function (data) {
+                if (data.success == true) {
+                    layer.closeAll();
+                    layer.open({
+                        type: 1,
+                        offset: '100px',
+                        title: ["提示", "font-size:12px;text-align:center"],
+                        shadeClose: false,
+                        closeBtn: 2,
+                        area: ['310px', '160px'],//宽高
+                        content: '删除成功',
+                        btn: ["确定", "取消"],
+                        yes: function (index, layero) {
+                            layer.closeAll();
+                            window.location.reload();
+                        },
+                        cancel: function (index, layero) {
+                            layer.closeAll();
+                        }
+                    });
+
+                } else {
+                    layer.open({
+                        type: 1,
+                        offset: '100px',
+                        title: ["提示", "font-size:12px;text-align:center"],
+                        shadeClose: false,
+                        closeBtn: 2,
+                        area: ['310px', '160px'],//宽高
+                        content: data.msg,
+                        time: 3000,
+                        btn: ["确定", "取消"]
+                    });
+                }
+            }
+        });
+    }
+}
+
+
+//导出
+$('body').on('click', '#exportPowerStationBtn', function () {
+    toGiveHiddenInput();
+    var obj = {
+        powerstationName: $('input[name=powerstationName]').val(),
+        provinceCode: $('#provinceCodeHtml').attr('data-value'),
+        cityCode: $('#cityCodeHtml').attr('data-value'),
+        areaCode: $('#areaCodeHtml').attr('data-value')
+    };
+    window.location.href = basePath + exportPowerStationUrl + '?powerstationName='
+    + obj.powerstationName + '&provinceCode='
+    + obj.provinceCode + '&cityCode='
+    + obj.cityCode + '&areaCode='
+    + obj.areaCode;
+
+});

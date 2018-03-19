@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.ChargePileMapper">
+	<resultMap type="TblChargePile" id="result_ChargePile">
+		<id property="pkElectricpile" column="pk_ElectricPile" />
+		<result property="pkPowerStation" column="pk_PowerStation" />
+		<result property="postName" column="poSt_Name" />
+		<result property="elpiElectricpilename" column="elPi_ElectricPileName" />
+		<result property="elpiElectricpilecode" column="elPi_ElectricPileCode" />
+		<result property="elPiOwnProvinceCode" column="elPi_OwnProvinceCode" />
+		<result property="provinceName" column="PROVINCE_NAME" />
+		<result property="elPiOwnCityCode" column="elpi_Owncitycode" />
+		<result property="cityName" column="CITY_NAME" />
+		<result property="elPiOwnCountyCode" column="elpi_Owncountycode" />
+		<result property="areaName" column="area_name" />
+		<result property="elpiElectricpileaddress" column="elPi_ElectricPileAddress" />
+		<result property="commStatus" column="comm_status" />
+		<result property="status" column="ePHe_ElectricpileHeadState" />
+		<result property="epNum" column="ep_num" />
+		<result property="epHeadId" column="ePHe_ElectricpileHeadId" />
+		<result property="elpiChargingmode" column="elPi_ChargingMode" />
+		<result property="elPiOnlineTime" column="elPi_OnlineTime" />
+		<result property="elpiOfflinetime" column="elpi_Offlinetime" />
+		<result property="tsModelName" column="ts_ModelName" />
+		<result property="elpiLongitude" column="elPi_Longitude" />
+		<result property="elpiLatitude" column="elPi_Latitude" />
+	</resultMap>
+	<select id="getPkElectricPiles" parameterType="TblChargePile"
+		resultType="hashMap">
+		SELECT DISTINCT
+		t.pk_ElectricPile pkElectricPile
+		FROM
+		tbl_company_rela t
+		LEFT JOIN tbl_company c ON c.cpy_id = t.pk_cpy_operate_id
+		WHERE c.cpy_number =
+		#{org}
+	</select>
+
+	<select id="getChargePileList" parameterType="TblChargePile"
+		resultMap="result_ChargePile">
+		SELECT
+		e.pk_ElectricPile,
+		p.powerStation_id pk_PowerStation,
+		p.powerStation_name poSt_Name,
+		e.elPi_ElectricPileName,
+		e.elPi_ElectricPileCode,
+		e.elPi_OwnProvinceCode,
+		a.PROVINCE_NAME,
+		e.elpi_Owncitycode,
+		c.CITY_NAME,
+		e.elpi_Owncountycode,
+		d.area_name,
+		e.elPi_ElectricPileAddress,
+		e.comm_status,
+		e.elPi_ChargingMode,
+		e.elPi_OnlineTime,
+		e.elPi_offlineTime,
+		e.elPi_Longitude,
+		e.elPi_Latitude,
+		t.ts_ModelName,
+		getFullPath('electricListImage', pk_ElectricPile) elpiImage
+		FROM
+		tbl_electricpile e
+		LEFT JOIN tb_m_province a ON a.PROVINCE_ID=e.elPi_OwnProvinceCode
+		LEFT JOIN tb_m_city c ON c.CITY_ID=e.elPi_OwnCityCode
+		LEFT JOIN
+		tb_m_area d ON d.area_id=e.elPi_OwnCountyCode
+		LEFT JOIN
+		tbl_powerstation p ON p.powerStation_id = e.elPi_RelevancePowerStation
+		LEFT JOIN tbl_typespan t ON t.pk_TypeSpanId = e.elpi_TypeSpanId
+		WHERE
+		e.pk_ElectricPile=#{pkElectricpile}
+	</select>
+
+	<select id="getBingGunList" parameterType="TblChargePile"
+		resultMap="result_ChargePile">
+		SELECT
+		e.pk_ElectricPile,
+		p.powerStation_id pk_PowerStation,
+		p.powerStation_name poSt_Name,
+		e.elPi_ElectricPileName,
+		e.elPi_ElectricPileCode,
+		c.CITY_NAME,
+		d.area_name,
+		h.ePHe_ElectricpileHeadState,
+		e.ep_num,
+		h.ePHe_ElectricpileHeadId
+		FROM
+		tbl_electricpile e
+		LEFT JOIN tb_m_city c ON c.CITY_ID=e.elPi_OwnCityCode
+		LEFT JOIN
+		tb_m_area d ON d.area_id=e.elPi_OwnCountyCode
+		LEFT JOIN
+		tbl_powerstation p ON p.powerStation_id = e.elPi_RelevancePowerStation
+		LEFT JOIN tbl_electricpilehead h ON
+		h.pk_ElectricPile=e.pk_ElectricPile
+		WHERE
+		e.pk_ElectricPile=#{pkElectricpile}
+	</select>
+</mapper> 

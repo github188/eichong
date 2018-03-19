@@ -1,0 +1,86 @@
+package com.wanma.ims.controller.user;
+/**
+ * 用戶管理-管理员管理 
+ */
+public class UserAdminController {
+	/** 
+	 * 普通用戶列表
+	 * @param
+	 * @param
+	 * */
+	public String getUserAdminListPage(){
+		return null;
+	}
+	/** 
+	 * 新增View
+	 * @param
+	 * @param
+	 * */
+	public String addUserAdminView(){
+		return null;
+	}
+	/** 
+	 * 新增
+	 * @param
+	 * @param
+	 * */
+	public String addUserAdmin(){
+	    return null;	
+	}
+	/** 
+	 * 编辑View
+	 * @param
+	 * @param
+	 * */
+	public String modifyUserAdminView(){
+	    return null;	
+	}
+	/** 
+	 * 编辑
+	 * @param
+	 * @param
+	 * */
+	public String modifyUserAdmin(){
+	    return null;	
+	}
+	/** 
+	 * 删除（批量删除）
+	 * @param
+	 * @param
+	 * */
+	public String removeUserAdmin(){
+	    return null;	
+	}
+	/** 
+	 * 密码重置
+	 * @param
+	 * @param
+	 * */
+	public String resetPassowrd(){
+	    return null;	
+	}
+	/** 
+	 * 查看
+	 * @param
+	 * @param
+	 * */
+	public String ViewUserAdmin(){
+	    return null;	
+	}
+	/** 
+	 * 冻结（批量冻结）
+	 * @param
+	 * @param
+	 * */
+	public String freezeUserAdmin(){
+	    return null;	
+	}
+	/** 
+	 * 冻结（批量冻结）
+	 * @param
+	 * @param
+	 * */
+	public String unfreezeUserAdmin(){
+	    return null;	
+	}
+}

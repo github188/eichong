@@ -1,0 +1,256 @@
+package com.wanma.controller;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.bluemobi.product.controller.BaseController;
+import com.bluemobi.product.model.common.DwzPagerMySQL;
+import com.wanma.common.SessionMgr;
+import com.wanma.common.WanmaConstants;
+import com.wanma.model.TblChargingOrder;
+import com.wanma.model.TblUser;
+import com.wanma.service.CmsChargOrderService;
+
+/**
+ * 充电处理控制器
+ * 
+ * @author xiay
+ *
+ */
+@Controller
+@RequestMapping("/admin/order")
+public class CmsChargeOrderController extends BaseController{
+
+	// 日志输出对象
+	private static Logger log = Logger.getLogger(CmsChargeOrderController.class);
+	
+	/** 充电处理器  */
+	@Autowired
+	private CmsChargOrderService tblChargOrderService;
+	
+	/**
+	 * 取得充电消费列表处理
+	 * 
+	 * @author xiay
+	 * @return
+	 * @throws ParseException 
+	 * @throws 无
+	 */
+	@RequestMapping(value = "/elecOrder")
+	public String getChargeList(@ModelAttribute("pager") DwzPagerMySQL pager,
+			@ModelAttribute TblChargingOrder tblChargingOrder, Model model,HttpServletRequest request) throws ParseException {
+
+		// 登陆用户
+		TblUser loginUser = SessionMgr.getWebUser(request);
+		if (loginUser.getUserLevel()==WanmaConstants.USER_LEVEL_BUSINESS_NORMAL) {// 个体商家
+			tblChargingOrder.setChorUser(loginUser.getUserId()+"");
+		} else if (loginUser.getUserLevel()==WanmaConstants.USER_LEVEL_BUSINESS) {// 纯商家
+			tblChargingOrder.setChorUser(loginUser.getUserAccount());
+		}
+		
+		// 登录充电消费信息
+		List<TblChargingOrder> ChargeList = null;
+		// 充电消费总数
+		long total = 0;
+
+		if (tblChargingOrder == null) {
+			// 取得充电消费列表
+			ChargeList = tblChargOrderService.getChargeList();
+		} else {
+			// 充电消费总数
+			total =tblChargOrderService.searchChargeCount(tblChargingOrder);
+			if (total <= pager.getOffset()) {
+				pager.setPageNum(1L);
+			}
+			// 设置分页对象
+			tblChargingOrder.setPager(pager);
+			// 取得充电消费列表
+			ChargeList = tblChargOrderService.searchChargeList(tblChargingOrder);
+			pager.setTotal(total);
+		}
+		//计算充电时长
+		for(int i=0;i<ChargeList.size();i++){
+			String beginChargetime = ChargeList.get(i).getBeginChargetime();
+			String endChargetime = ChargeList.get(i).getEndChargetime();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
+			 Date beginDate = sdf.parse(beginChargetime); 
+			 Date endDate = sdf.parse(endChargetime); 
+			 double c =(endDate.getTime()-beginDate.getTime())/3600000d;
+			 String hour = String.format("%.4f", c);
+			 ChargeList.get(i).setChargeTimeHour(hour);
+		}
+		// 将充电消费信息放到会话中
+		model.addAttribute("proviceMap", WanmaConstants.provinceMap);
+		model.addAttribute("tblChargingOrder", tblChargingOrder);
+		model.addAttribute("ChargeList", ChargeList);
+		model.addAttribute("pager", pager);
+
+		// 跳转至充电消费主页面
+		return "backstage/order/listCharge";
+	}	
+	
+	
+	/**
+	 * 取得充电消费列表处理  -- 个体商家充电消费
+	 * 
+	 * @author xiay
+	 * @return
+	 * @throws 无
+	 */
+	@RequestMapping(value = "/elecUnitOrder")
+	public String getUnitChargeList(@ModelAttribute("pager") DwzPagerMySQL pager,
+			@ModelAttribute TblChargingOrder tblChargingOrder, Model model,HttpServletRequest request) {
+		
+		// 登陆用户
+//		if (loginUser.getUserLevel().toString().equals(WanmaConstants.USER_LEVER_personl3)) {// 个体商家
+//			tblChargingOrder.setChorUser(loginUser.getUserId()+"");
+//		} else if (loginUser.getUserLevel().toString().equals(
+//				WanmaConstants.USER_LEVER_merchant2)) {// 纯商家
+//			tblChargingOrder.setChorUser(loginUser.getUserAccount());
+//		}
+		
+		// 登录充电消费信息
+		List<TblChargingOrder> ChargeUnitList = null;
+		// 充电消费总数
+		long total = 0;
+
+		if (tblChargingOrder == null) {
+			// 取得充电消费列表
+			ChargeUnitList = tblChargOrderService.getUnitChargeList();
+		} else {
+			TblUser loginUser = SessionMgr.getWebUser(request);
+			tblChargingOrder.setLoginUserId(loginUser.getUserId().toString());
+			tblChargingOrder.setUserLevel(loginUser.getUserLevel().toString());
+			// 充电消费总数
+			total =tblChargOrderService.searchUnitChargeCount(tblChargingOrder);
+			if (total <= pager.getOffset()) {
+				pager.setPageNum(1L);
+			}
+			// 设置分页对象
+			tblChargingOrder.setPager(pager);
+			// 取得充电消费列表
+			ChargeUnitList = tblChargOrderService.searchUnitChargeList(tblChargingOrder);
+			pager.setTotal(total);
+		}
+
+		// 将充电消费信息放到会话中
+		model.addAttribute("tblChargingOrder", tblChargingOrder);
+		model.addAttribute("ChargeUnitList", ChargeUnitList);
+		model.addAttribute("pager", pager);
+
+		// 跳转至充电消费主页面
+		return "backstage/UnitOrder/listUnitCharge";
+	}	
+	
+	/**
+	 * 取得充电消费列表处理  -- 个体商家充电消费
+	 * 
+	 * @author xiay
+	 * @return
+	 * @throws ParseException 
+	 * @throws 无
+	 */
+	@RequestMapping(value = "/elecFirmOrder")
+	public String getFirmChargeList(@ModelAttribute("pager") DwzPagerMySQL pager,
+			@ModelAttribute TblChargingOrder tblChargingOrder, Model model,HttpServletRequest request) throws ParseException {
+
+		// 登陆用户
+		TblUser loginUser = SessionMgr.getWebUser(request);
+//		if (loginUser.getUserLevel()==WanmaConstants.USER_LEVEL_BUSINESS_NORMAL) {// 个体商家
+//			tblChargingOrder.setChorUser(loginUser.getUserId()+"");
+//		} else if (loginUser.getUserLevel()==WanmaConstants.USER_LEVEL_BUSINESS) {// 纯商家
+//			tblChargingOrder.setChorUser(loginUser.getUserAccount());
+//		}
+//		
+		// 登录充电消费信息
+		List<TblChargingOrder> ChargeFirmList = null;
+		// 充电消费总数
+		long total = 0;
+
+		if (tblChargingOrder == null) {
+			// 取得充电消费列表
+			ChargeFirmList = tblChargOrderService.getFirmChargeList();
+		} else {
+			tblChargingOrder.setLoginUserId(loginUser.getUserId().toString());
+			tblChargingOrder.setUserLevel(loginUser.getUserLevel().toString());
+			// 充电消费总数
+			total =tblChargOrderService.searchFirmChargeCount(tblChargingOrder);
+			if (total <= pager.getOffset()) {
+				pager.setPageNum(1L);
+			}
+			// 设置分页对象
+			tblChargingOrder.setPager(pager);
+			// 取得充电消费列表
+			ChargeFirmList = tblChargOrderService.searchFirmChargeList(tblChargingOrder);
+			pager.setTotal(total);
+		}
+		//计算充电时长
+			for(int i=0;i<ChargeFirmList.size();i++){
+				String beginChargetime = ChargeFirmList.get(i).getBeginChargetime();
+				String endChargetime = ChargeFirmList.get(i).getEndChargetime();
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
+				 Date beginDate = sdf.parse(beginChargetime); 
+				 Date endDate = sdf.parse(endChargetime); 
+				 double c =(endDate.getTime()-beginDate.getTime())/3600000d;
+				 String hour = String.format("%.4f", c);
+				 ChargeFirmList.get(i).setChargeTimeHour(hour);
+			}
+		// 将充电消费信息放到会话中
+		model.addAttribute("proviceMap", WanmaConstants.provinceMap);
+		model.addAttribute("tblChargingOrder", tblChargingOrder);
+		model.addAttribute("ChargeFirmList", ChargeFirmList);
+		model.addAttribute("pager", pager);
+
+		// 跳转至充电消费主页面
+		return "backstage/pureBusiness/listBusCharge";
+	}
+	/**
+	 * 取得充电消费列表处理  -- 合作商充电消费
+	 * 
+	 * @author xiay
+	 * @return
+	 * @throws 无
+	 */
+	@RequestMapping(value = "/elecPartnerOrder")
+	public String elecPartnerOrder(@ModelAttribute("pager") DwzPagerMySQL pager,
+			@ModelAttribute TblChargingOrder tblChargingOrder, Model model,HttpServletRequest request) {
+
+		// 登陆用户
+		TblUser loginUser = SessionMgr.getWebUser(request);
+		// 登录充电消费信息
+		List<TblChargingOrder> ChargePartnerList = null;
+		// 充电消费总数
+		long total = 0;
+			tblChargingOrder.setLoginUserId(loginUser.getUserId().toString());
+			tblChargingOrder.setUserLevel(loginUser.getUserLevel().toString());
+			// 充电消费总数
+			total =tblChargOrderService.searchPartnerChargeCount(tblChargingOrder);
+			if (total <= pager.getOffset()) {
+				pager.setPageNum(1L);
+			}
+			// 设置分页对象
+			tblChargingOrder.setPager(pager);
+			// 取得充电消费列表
+			ChargePartnerList = tblChargOrderService.searchPartnerChargeList(tblChargingOrder);
+			pager.setTotal(total);
+
+		// 将充电消费信息放到会话中
+		model.addAttribute("tblChargingOrder", tblChargingOrder);
+		model.addAttribute("ChargePartnerList", ChargePartnerList);
+		model.addAttribute("pager", pager);
+
+		// 跳转至充电消费主页面
+		return "backstage/partnerBussiness/listPartnerBusCharge";
+	}
+}

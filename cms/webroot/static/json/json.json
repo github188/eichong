@@ -1,0 +1,186 @@
+{
+    "data": {
+        "children": [
+            {
+                "children": [
+                    {
+                        "id": "XJPI9YbrqCDz7oPFzPS",
+                        "name": "电桩信息",
+                        "target": "/static/html/electric/electricList.html"
+                        
+                    },
+                    {
+                        "id": "XFvK75Di5d2B055LPJQ",
+                        "name": "充电点信息",
+                        "target": "/static/html/station/stationList.html"
+                    },
+                    {
+                        "id": "I1vEWHykv6Ndy1YK8pk",
+                        "name": "集中器信息",
+                        "target": "/static/html/electric/concentratorList.html"
+                    }
+                ],
+                "id": "vw09dhvGeegfkk8ton2",
+                "name": "电桩充电点集中器",
+                "target": ""
+            },
+            {
+                "children": [
+                    {
+                        "id": "D4YoXjnUTNt1RJjzuAP",
+                        "name": "充值订单",
+                        "target": "/static/html/order/listPayOrder.html"
+                    },
+                    {
+                        "id": "eKT8JaavphwP4vB3xsW",
+                        "name": "充电订单",
+                        "target": "/static/html/order/listCharge.html"
+                    },
+                    {
+                        "id": "7EWBOnJKS7wUOXYiN0d",
+                        "name": "预约订单",
+                        "target": "/static/html/order/listBespoke.html"
+                    },
+                    {
+                        "id": "KWO0zsGZnMwn50Z8Ja8",
+                        "name": "预约收益",
+                        "target": "/static/html/order/listBusBespoke.html"
+                    },
+                    {
+                        "id": "ddRghpolkBMCzgQraVn",
+                        "name": "充电收益",
+                        "target": "/static/html/order/listBusCharge.html"
+                    }
+                ],
+                "id": "bfxeoUheg9w12XggvQs",
+                "name": "订单管理2",
+                "target": ""
+            },
+            {
+                "children": [
+                    {
+                        "id": "HlGhKfrqrmQNgKObzlS",
+                        "name": "普通用户",
+                        "target": "/static/html/userManagement/listUserInfo.html"
+                    },
+                    {
+                        "id": "PmTsxy3pcvhziTdivpj",
+                        "name": "纯商家2",
+                        "target": "/admin/userManager/ShopList.do"
+                    }
+                ],
+                "id": "5gIu24l7U6kAL6U2H3y",
+                "name": "用户管理2",
+                "target": ""
+            },
+            {
+                "children": [
+                    {
+                        "id": "h5fIP8ca1Q",
+                        "name": "电动车品牌/车型设置",
+                        "target":"/static/html/config/carCompanyList.html"
+                    },
+                    {
+                        "id": "Pi24FCmVpV",
+                        "name": "省份电费管理",
+                        "target": "/static/html/config/electricChargeList.html"
+                    },
+                    {
+                        "id": "4Ey9xGVn9D",
+                        "name": "产品型号",
+                        "target":"/static/html/config/typeSpanList.html"
+                    },
+                    {
+                        "id": "Uqsvo73hv0",
+                        "name": "服务费率上限维护",
+                        "target": "/static/html/config/serviceLimitList.html"
+                        
+                    },
+                    {
+                        "id": "dMSK2hm1Lx",
+                        "name": "电桩制造厂商",
+                        "target": "/static/html/config/carMakerList.html"
+                    },
+                    {
+                        "id": "zJe5f5zvQS",
+                        "name": "费率设置",
+                        "target": "/static/html/config/rateinfoList.html"
+                    },
+                    {
+                        "id": "O6R5Yq5H38",
+                        "name": "商城配置参数设置",
+                        "target": "/admin/configParameter/findConParaList.do?copaType=2"
+                    },
+                    {
+                        "id": "w6x33fGfya",
+                        "name": "桩体配置参数设置",
+                        "target": "/admin/configParameter/findConParaList.do?copaType=1"
+                    },
+                    {
+                        "id": "rdC4Tk5quO",
+                        "name": "其他配置参数设置",
+                        "target": "/admin/configParameter/findConParaList.do?copaType=3"
+                    },
+                    {
+                        "id": "iY54ol05xK",
+                        "name": "所属Gate服务器",
+                        "target": "/admin/gate/getGateList.do"
+                    },
+                    {
+                        "id": "RUPsFLlQsvukcnr6hqo",
+                        "name": "发票参数配置",
+                        "target": "/admin/invoiceParameter/findConParaList.do?copaType=4"
+                    },
+                    {
+                        "id": "i3Ucdpj7JglH0RZxHyW",
+                        "name": "电动车品牌设置新",
+                        "target": "/admin/carCompanyBs/findCarCompanyList.do"
+                    },
+                    {
+                        "id": "4grccYTM0IuqxMNHORV",
+                        "name": "电动车车型设置新",
+                        "target": "/admin/carinfoBs/findCarList.do"
+                    },
+                    {
+                        "id": "Hr5ZaNzJWlJ5WdsJk38",
+                        "name": "省份电费设置新",
+                        "target": "/admin/electricChargeBs/getElectricChargeList.do"
+                    },
+                    {
+                        "id": "u0WsqQVS3wrVKECtdPv",
+                        "name": "服务费率上限维护新",
+                        "target": "/admin/feelimitBs/searchServiceLimitList.do"
+                    },
+                    {
+                        "id": "IgAYOBpG9pyo0qVsdBf",
+                        "name": "电桩制造厂商新",
+                        "target": "/static/html/config/carMakerList.html"
+                    },
+                    {
+                        "id": "JY3Y7ybkHOEH1OCmJfJ",
+                        "name": "费率设置新",
+                        "target": "/admin/rateinfoBs/getRateInfoList.do"
+                    },
+                    {
+                        "id": "sfwKJlKOpKeYKnb0TpY",
+                        "name": "桩体配置参数设置新",
+                        "target": "/admin/configParameterBs/findConParaList.do?type=1"
+                    },
+                    {
+                        "id": "nvPIZ8YUZorDRiFtxy9",
+                        "name": "发票参数设置新",
+                        "target": "/admin/configParameterBs/findConParaList.do?type=4"
+                    }
+                ],
+                "id": "gX1ihA6Py0",
+                "name": "配置管理",
+                "target": ""
+            }
+        ],
+        "id": "PEIO10uBCSkCIR2iG2n",
+        "name": "运营管理",
+        "target": ""
+    },
+    "msg": "操作成功!",
+    "status": 100
+}

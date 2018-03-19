@@ -1,0 +1,24 @@
+package com.wanma.ims.mapper;
+
+
+import java.util.List;
+
+import com.wanma.ims.common.domain.IntegralRulesDO;
+
+/**
+ * 积分规则表 
+ * @author bingo
+ * @date 2017-08-11
+ */
+public interface IntegralRulesMapper {
+	
+	public Long getIntegralRulesCount(IntegralRulesDO integralRules);
+	
+	public List<IntegralRulesDO> getIntegralRulesList(IntegralRulesDO integralRules);
+	
+	public int addIntegralRules(IntegralRulesDO integralRules);
+	
+	public int modifyIntegralRules(IntegralRulesDO integralRules);
+	
+	public int deleteIntegralRules(IntegralRulesDO integralRules);
+}

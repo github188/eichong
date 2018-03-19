@@ -1,0 +1,359 @@
+package com.wanma.ims.service.impl;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Maps;
+import com.wanma.ims.common.domain.CityDO;
+import com.wanma.ims.common.domain.CompanyDO;
+import com.wanma.ims.common.domain.FinAccountConfigRelaDO;
+import com.wanma.ims.common.domain.FinAccountDO;
+import com.wanma.ims.common.domain.ProvinceDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.common.dto.BatchResultDTO;
+import com.wanma.ims.common.dto.ResultDTO;
+import com.wanma.ims.constants.ResultCodeConstants;
+import com.wanma.ims.constants.WanmaConstants;
+import com.wanma.ims.mapper.CompanyMapper;
+import com.wanma.ims.mapper.FinAccountConfigRelaMapper;
+import com.wanma.ims.mapper.FinAccountMapper;
+import com.wanma.ims.mapper.InitialMapper;
+import com.wanma.ims.service.CommonRedisService;
+import com.wanma.ims.service.CompanyService;
+import com.wanma.ims.service.FinAccountService;
+import com.wanma.ims.util.MD5Util;
+import com.wanma.ims.util.ObjectUtil;
+import com.wanma.ims.util.PKUtil;
+
+@Service
+public class CompanyServiceImpl implements CompanyService {
+
+	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+	@Autowired
+	private CompanyMapper companyMapper;
+	@Autowired
+	private InitialMapper initialMapper;
+	@Autowired
+	private FinAccountMapper finAccountMapper;
+	@Autowired
+	private FinAccountService finAccountService;
+	@Autowired
+	private CommonRedisService commonRedisService;
+	@Autowired
+	private FinAccountConfigRelaMapper finAccountConfigRelaMapper;
+
+	@Override
+	public BatchResultDTO<CompanyDO> getCpyListByUserLevel(UserDO loginUser, String provinceCode, String cityCode) {
+		BatchResultDTO<CompanyDO> result = new BatchResultDTO<CompanyDO>();
+		try {
+			if (loginUser.getUserLevel() == WanmaConstants.USER_LEVEL_WORK && ObjectUtil.isEmpty(loginUser.getCpyId())) {
+				result.setResultCode(ResultCodeConstants.ERROR_PARAM);
+				result.setErrorDetail("渠道ID不能为空");
+				result.setSuccess(false);
+				return result;
+			}
+			Map<String, String> paramMap = new HashMap<String, String>();
+			paramMap.put("provinceCode", provinceCode);
+			paramMap.put("cityCode", cityCode);
+			paramMap.put("cpyId", String.valueOf(loginUser.getCpyId()));
+
+			List<CompanyDO> list = null;
+			switch (loginUser.getUserLevel()) {
+				case WanmaConstants.USER_LEVEL_SUPER:
+				case WanmaConstants.USER_LEVEL_ADMIN:
+					list = companyMapper.selectCpyListBySystem(paramMap);
+					break;
+				case WanmaConstants.USER_LEVEL_WORK:
+					list = companyMapper.selectCpyListByWork(paramMap);
+					break;
+				default:
+					list = companyMapper.selectCpyListByOwner(paramMap);
+					break;
+			}
+			result.setModule(list);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setErrorDetail("系统异常!");
+			LOGGER.error("CompanyServiceImpl called getCpyListByProvinces failed", e);
+		}
+		return result;
+	}
+
+	@Override
+	public List<CompanyDO> getCompanyListByIds(List<Long> ids) {
+		return companyMapper.selectCpyListByIds(ids);
+	}
+
+	@Override
+	public CompanyDO getCompanyListById(Long cpyId) {
+		CompanyDO company = companyMapper.selectCpyListById(cpyId);
+		Map<Long, CompanyDO> companyMap = getCompanyMap(null);
+		if (CollectionUtils.isNotEmpty(companyMap.keySet())) {
+			List<CompanyDO> list = new ArrayList<CompanyDO>();
+			list.add(company);
+			generalCompany(list,companyMap);
+		}
+		return company;
+	}
+
+	@Override
+	public Long countCompanyList(CompanyDO companyDO) {
+		return companyMapper.countCompanyList(companyDO);
+	}
+
+	@Override
+	public List<CompanyDO> getCompanyList(CompanyDO companyDO) {
+		List<CompanyDO> list = companyMapper.selectCompanyList(companyDO);
+		if (CollectionUtils.isEmpty(list)) {
+			return new ArrayList<CompanyDO>();
+		}
+		Map<Long, CompanyDO> companyMap = getCompanyMap(null);
+		if(CollectionUtils.isNotEmpty(companyMap.keySet())){
+			generalCompany(list,companyMap);
+		}
+		return list;
+	}
+
+	@Override
+	@Transactional
+	public BaseResultDTO addCompany(CompanyDO companyDO,UserDO loginUser) throws Exception{
+		BaseResultDTO result = new BaseResultDTO();
+			if (companyMapper.insertCompany(companyDO) <= 0) {
+				result.setSuccess(false);
+				result.setErrorDetail(ResultCodeConstants.ERROR_MSG_ADD_COMPANY);
+				return result;
+			}
+			//资金账号
+			companyDO.setSysType(WanmaConstants.SYS_TYPE_COMPANY);
+			Long accountId = finAccountService.addFinAccount(companyDO);
+			if (ObjectUtil.isEmpty(accountId) || accountId < 0) {
+				result.setSuccess(false);
+				result.setErrorDetail(ResultCodeConstants.ERROR_MSG_EMPTY_ADD_ACCOUNT);
+				return result;
+			}
+			
+			//收款账户
+			FinAccountDO finAccount = new FinAccountDO();
+			finAccount.setAccountNO(PKUtil.generateAccountNo(Long.valueOf(companyDO.getCpyNumber()), WanmaConstants.SYS_TYPE_SAVING_COMPANY));
+			finAccount.setAccountPwd(MD5Util.Md5(WanmaConstants.DEFAULT_LOGIN_PASSWORD));
+			finAccount.setAccountBalance(0d);
+			finAccount.setAccountPresent(0d);
+			finAccount.setTradeType(2);
+			finAccount.setAccountWarn(0d);
+			finAccount.setAccountStatus(1);
+			finAccount.setIsDel(0);
+			finAccount.setCreator(companyDO.getCreator());
+			finAccount.setModifier(companyDO.getCreator());
+			finAccount.setGmtCreate(new Date());
+			finAccount.setGmtModified(new Date());
+			if(finAccountMapper.addFinAccount(finAccount)<= 0){
+				result.setSuccess(false);
+				result.setErrorDetail(ResultCodeConstants.ERROR_MSG_MODIFY_COMPANY_SAVING_ACCOUNT);
+				return result;
+			}
+//			//付费策略
+//			FinAccountConfigRelaDO finAccountConfigRelaDO =  new FinAccountConfigRelaDO();
+//			finAccountConfigRelaDO.setCpyId(companyDO.getCpyId());
+//			finAccountConfigRelaDO.setBillAccountId(new Long(1));
+//			finAccountConfigRelaDO.setPaymentRule(companyDO.getPayRule());
+//			finAccountConfigRelaDO.setIsDel(0);
+//			finAccountConfigRelaDO.setCreator(companyDO.getCreator());
+//			finAccountConfigRelaDO.setModifier(companyDO.getCreator());
+//			finAccountConfigRelaDO.setGmtCreate(new Date());
+//			finAccountConfigRelaDO.setGmtModified(new Date());
+//			if (finAccountConfigRelaMapper.addFinAccountConfigRela(finAccountConfigRelaDO) <= 0) {
+//				result.setSuccess(false);
+//				result.setErrorDetail(ResultCodeConstants.ERROR_MSG_MODIFY_COMPANY_FIN_ACCOUNT);
+//				return result;
+//			}
+			
+			CompanyDO update = new CompanyDO();
+			update.setSavingAccountId(finAccount.getAccountId());
+			update.setAccountId(accountId);
+			update.setCpyId(companyDO.getCpyId());
+			update.setModifier(companyDO.getCreator());
+			if (companyMapper.updateCompany(update) <= 0) {
+				result.setSuccess(false);
+				result.setErrorDetail(ResultCodeConstants.ERROR_MSG_MODIFY_COMPANY_ACCOUNT);
+				return result;
+			}
+		commonRedisService.initCurrentLogin(loginUser);
+		result.setSuccess(true);
+		return result;
+	}
+
+	@Override
+	@Transactional
+	public boolean modifyCompany(CompanyDO companyDO) {
+		return companyMapper.updateCompany(companyDO) > 0;
+	}
+
+	@Override
+	@Transactional
+	public boolean disableCompany(CompanyDO companyDO) {
+		if(companyMapper.updateCompany(companyDO) >= 0){
+			if(companyDO.getCpyStatus() == 1){ //解禁
+				companyMapper.updateUserStatusByCpyId(companyDO.getCpyId(),1);
+			}else{
+				companyMapper.updateUserStatusByCpyId(companyDO.getCpyId(),2);
+			}
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public Map<Long, CompanyDO> getCompanyMap(CompanyDO companyDO) {
+		Map<Long, CompanyDO> companyMap = new HashMap<Long, CompanyDO>();
+		try {
+			List<CompanyDO> companyList = companyMapper.selectCompanyList(companyDO);
+			if (CollectionUtils.isNotEmpty(companyList)) {
+				companyMap = Maps.uniqueIndex(companyList, new Function<CompanyDO, Long>() {
+
+					@Override
+					public Long apply(CompanyDO company) {
+						return company.getCpyId();
+					}
+				});
+			}
+		} catch (Exception e) {
+			LOGGER.error("CompanyServiceImpl called getCompanyMap failed", e);
+		}
+		return companyMap;
+	}
+
+	@Override
+	public boolean checkCompanyUnique(Map<String, String> param) {
+		return companyMapper.checkCompanyUnique(param) > 0 ? true : false;
+	}
+
+	@Override
+	public List<CompanyDO> getOperateCompanyList() {
+		return companyMapper.selectOperateCompanyList();
+	}
+	
+	private List<CompanyDO> generalCompany(List<CompanyDO> list, Map<Long, CompanyDO> companyMap) {
+		Set<String> provinceSet = new HashSet<String>();
+		Set<String> citySet = new HashSet<String>();
+		for (CompanyDO companyDO : list) {
+			provinceSet.add(companyDO.getCpyProvince());
+			citySet.add(companyDO.getCpyCity());
+		}
+		List<String> provinceIdList = new ArrayList<String>();
+		List<String> cityIdList = new ArrayList<String>();
+		provinceIdList.addAll(provinceSet);
+		cityIdList.addAll(citySet);
+		List<ProvinceDO> provinceList = initialMapper.selectProvinceList(provinceIdList);
+		List<CityDO> cityList = initialMapper.selectCityList(cityIdList,null);
+		Map<String,String> provinceMap = new HashMap<String,String>();
+		Map<String,String> cityMap = new HashMap<String,String>();
+		for (ProvinceDO provinceDO : provinceList) {
+			provinceMap.put(provinceDO.getProvinceId(), provinceDO.getProvinceName());
+		}
+		for (CityDO cityDO : cityList) {
+			cityMap.put(cityDO.getCityId(),cityDO.getCityName());
+		}
+		for (CompanyDO companyDO : list) {
+			CompanyDO parentCompany = companyMap.get(companyDO.getCpyParentId());
+			if (null != parentCompany) {
+				companyDO.setCpyParentName(parentCompany.getCpyName());
+			}
+			CompanyDO slaveCompany = companyMap.get(companyDO.getSlaveCpyId());
+			if (null != slaveCompany) {
+				companyDO.setSlaveCpyName(slaveCompany.getCpyName());
+			}
+			companyDO.setCpyProvinceName(provinceMap.get(companyDO.getCpyProvince()));
+			companyDO.setCpyCityName(cityMap.get(companyDO.getCpyCity()));
+		}
+		return list;
+	}
+
+	@Override
+	public List<CompanyDO> getCompanyByMaster(Long cpyId) {
+		return companyMapper.selectCpyListByMaster(cpyId);
+	}
+
+	@Override
+	public CompanyDO getCompanyByCpyInfo(CompanyDO companyDO) {
+		return companyMapper.selectCompanyByCpyInfo(companyDO);
+	}
+
+	@Override
+	public ResultDTO<Map<String,Object>> getCpyPayRule(Integer cpyNumber) {
+		ResultDTO<Map<String,Object>> result = new ResultDTO<Map<String,Object>>();
+		Map<String,Object> map = new HashMap<String,Object>();
+		CompanyDO companyDO = new CompanyDO();
+		companyDO.setCpyNumber(cpyNumber);
+		CompanyDO cpyDO = companyMapper.selectCompanyByCpyInfo(companyDO);
+		if(null == cpyDO){
+			result.setSuccess(false);
+			result.setErrorDetail("没有对应的公司信息");
+			return result;
+		}
+		FinAccountConfigRelaDO finAccount = finAccountConfigRelaMapper.selectFinAccountConfigRela(cpyDO.getCpyId()).get(0);
+		if(null == finAccount || finAccount.getPaymentRule() == 0){
+			result.setSuccess(false);
+			result.setErrorDetail("该公司没有付费策略，不能进行绑定");
+			return result;
+		}
+		Map<String,Object> payMap = new HashMap<String,Object>();
+		Map<String,Object> accountMap = new HashMap<String,Object>();
+		if(finAccount.getPaymentRule() == 1){
+			payMap.put("1", "公司付费");
+			if(cpyDO.getTradeType() == 0){
+				result.setSuccess(false);
+				result.setErrorDetail("该公司没有资金账户类型");
+				return result;
+			}
+			if(cpyDO.getTradeType() == 1){
+				accountMap.put("1","信用账户");
+			}
+			if(cpyDO.getTradeType() == 2){
+				accountMap.put("2", "储值账户");
+			}
+		}
+		if(finAccount.getPaymentRule() == 2){
+			payMap.put("2", "个人付费");
+			accountMap.put("1", "信用账户");
+			accountMap.put("2", "储值账户");
+		}
+		if(finAccount.getPaymentRule() == 3){
+			payMap.put("3", "大账户为个人配资");
+			if(cpyDO.getTradeType() == 1){
+				accountMap.put("1","信用账户");
+			}
+			if(cpyDO.getTradeType() == 2){
+				accountMap.put("2", "储值账户");
+			}
+		}
+		map.put("A", payMap);
+		map.put("B", accountMap);
+		result.setSuccess(true);
+		result.setModule(map);
+		return result;
+	}
+
+	/**
+	 * 根据公司名称获取公司列表
+	 * @param companyDO
+	 * @return
+	 */
+	public List<CompanyDO> getCompanyListByCpyName(CompanyDO companyDO)
+	{
+		return companyMapper.getCompanyListByCpyName(companyDO);
+	}
+}

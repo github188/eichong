@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.ElectricPileMapper">
+
+    <resultMap id="resultElectricPile" type="ElectricPileDO">
+        <id column="pk_ElectricPile" property="id"/>
+        <result column="elPi_ElectricPileName" property="name"/>
+        <result column="elPi_ElectricPileCode" property="code"/>
+        <result column="ep_num" property="num"/>
+        <result column="elPi_PowerSize" property="power"/>
+        <result column="elPi_ChargingMode" property="chargingMethod"/>
+        <result column="elPi_State" property="status"/>
+        <result column="elPi_Type" property="typeId"/>
+        <result column="owner_ship" property="ownerShip"/>
+        <result column="elPi_Maker" property="pileMakerId"/>
+        <result column="elpi_TypeSpanId" property="productModelId"/>
+        <result column="cpy_id" property="companyId"/>
+        <result column="company_number" property="companyNumber"/>
+        <result column="elPi_RateInformationId" property="rateInformationId"/>
+        <result column="elPi_OwnProvinceCode" property="provinceCode"/>
+        <result column="elPi_OwnCityCode" property="cityCode"/>
+        <result column="elPi_OwnCountyCode" property="areaCode"/>
+        <result column="elPi_ElectricPileAddress" property="address"/>
+        <result column="elPi_Longitude" property="longitude"/>
+        <result column="elPi_Latitude" property="latitude"/>
+        <result column="elPi_PowerNumber" property="muzzleNumber"/>
+        <result column="elPi_PowerInterfaceName" property="interfaceStandard"/>
+        <result column="sim_name" property="simName"/>
+        <result column="sim_mac" property="simMac"/>
+        <result column="elPi_OutputVoltage" property="maxVoltage"/>
+        <result column="elPi_OutputCurrent" property="maxElectricity"/>
+        <result column="elPi_Remark" property="remark"/>
+        <result column="pk_concentratorID" property="concentratorId"/>
+        <result column="elPi_RelevancePowerStation" property="powerStationId"/>
+        <result column="delete_flag" property="isDel"/>
+        <result column="elPi_Createdate" property="gmtCreate"/>
+        <result column="elPi_Updatedate" property="gmtModified"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        pk_ElectricPile, elPi_ElectricPileName, elPi_ElectricPileCode, elPi_ElectricPileAddress,
+        elPi_Longitude, elPi_Latitude, elPi_PowerNumber, elPi_State, elPi_Type, elPi_ChargingMode, elPi_PowerSize,
+        elPi_Maker, elPi_OutputVoltage, elPi_OutputCurrent, elPi_Createdate, elPi_Updatedate, elPi_Remark,
+        elPi_PowerInterfaceName, elPi_RateInformationId, ep_num, elPi_OwnProvinceCode, elPi_OwnCityCode,
+        elPi_OwnCountyCode, delete_flag, sim_mac, sim_name, pk_concentratorID, cpy_id, company_number, elpi_TypeSpanId,
+        owner_ship, elPi_RelevancePowerStation
+    </sql>
+
+    <select id="selectByElectricPileId" parameterType="Long" resultMap="resultElectricPile">
+        select
+        <include refid="Base_Column_List"/>
+        from tbl_electricpile
+        where pk_ElectricPile = #{electricId}
+    </select>
+
+    <select id="selectByElectricPileIds" parameterType="Long" resultMap="resultElectricPile">
+        select
+        <include refid="Base_Column_List"/>
+        from tbl_electricpile
+        where 1 = 1
+        <if test="ids != null and ids.size() > 0">
+            and pk_ElectricPile in
+            <foreach collection="ids" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="selectByCpyIdAndPowerStationIds" parameterType="Long" resultMap="resultElectricPile">
+        select
+        <include refid="Base_Column_List"/>
+        from tbl_electricpile
+        where cpy_id = #{cpyId}
+        <if test="ids != null and ids.size() > 0">
+            and elPi_RelevancePowerStation in
+            <foreach collection="ids" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </if>
+    </select>
+
+    <sql id="condition">
+        <where>
+            <if test="id != null">
+                AND pk_ElectricPile = #{id}
+            </if>
+            <if test="code != null and code !=''">
+                AND elPi_ElectricPileCode LIKE "%"#{code}"%"
+            </if>
+            <if test="status != null">
+                AND elPi_State = #{status}
+            </if>
+            <if test="power != null">
+                AND elPi_PowerSize = #{power}
+            </if>
+            <if test="chargingMethod != null">
+                AND elPi_ChargingMode = #{chargingMethod}
+            </if>
+            <if test="pileMakerId != null">
+                AND elPi_Maker = #{pileMakerId}
+            </if>
+            <if test="typeId != null">
+                AND elPi_Type = #{typeId}
+            </if>
+            <if test="provinceCode != null and provinceCode!=''">
+                AND elPi_OwnProvinceCode = #{provinceCode}
+            </if>
+            <if test="cityCode != null and cityCode!=''">
+                AND elPi_OwnCityCode = #{cityCode}
+            </if>
+            <if test="areaCode != null and areaCode!=''">
+                AND elPi_OwnCountyCode = #{areaCode}
+            </if>
+            <if test="companyId != null">
+                AND cpy_id = #{companyId}
+            </if>
+            <if test="ownerShip != null">
+                AND owner_ship = #{ownerShip}
+            </if>
+            <if test="concentratorId != null">
+                AND pk_concentratorID = #{concentratorId}
+            </if>
+            <if test="powerStationId != null">
+                AND elPi_RelevancePowerStation = #{powerStationId}
+            </if>
+            <if test="rateInformationId != null">
+                AND elPi_RateInformationId = #{rateInformationId}
+            </if>
+            <if test="isBindPowerStationSearch != null">
+                AND (elPi_RelevancePowerStation is null or elPi_RelevancePowerStation = 0)
+            </if>
+            <if test="isBindConcentratorSearch != null">
+                AND (pk_concentratorID is null or pk_concentratorID = 0)
+            </if>
+            <if test="ids != null">
+                AND pk_ElectricPile in
+                <foreach collection="ids" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+            <if test="powerStationIdList != null and powerStationIdList.size() > 0">
+                AND elPi_RelevancePowerStation in
+                <foreach collection="powerStationIdList" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+            AND delete_flag != 1
+        </where>
+    </sql>
+
+    <select id="selectElectricPileList" parameterType="ElectricPileDO" resultMap="resultElectricPile">
+        select
+        <include refid="Base_Column_List"/>
+        from tbl_electricpile
+        <include refid="condition"/>
+        <if test="pager!=null">
+            limit #{pager.offset},#{pager.pageSize}
+        </if>
+    </select>
+
+    <select id="countElectricPile" parameterType="ElectricPileDO" resultType="long">
+        select count(1)
+        from tbl_electricpile
+        <include refid="condition"/>
+    </select>
+
+    <delete id="deleteByElectricId" parameterType="Long">
+        UPDATE tbl_electricpile
+        SET delete_flag = 1
+        WHERE pk_ElectricPile = #{electricId}
+    </delete>
+
+    <insert id="insertElectricPile" parameterType="ElectricPileDO" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tbl_electricpile (pk_ElectricPile, elPi_ElectricPileName,
+                                      elPi_ElectricPileCode, elPi_ElectricPileAddress,
+                                      elPi_Longitude, elPi_Latitude, elPi_PowerNumber,
+                                      elPi_State, elPi_Type, elPi_ChargingMode, elPi_PowerSize,
+                                      elPi_Maker, elPi_OutputVoltage, elPi_OutputCurrent, elPi_Createdate,
+                                      elPi_Updatedate, elPi_Remark, elPi_PowerInterfaceName, elPi_RateInformationId,
+                                      ep_num, elPi_OwnProvinceCode, elPi_OwnCityCode, elPi_OwnCountyCode, delete_flag,
+                                      sim_mac, sim_name, pk_concentratorID, cpy_id, company_number, elpi_TypeSpanId, owner_ship, elPi_RelevancePowerStation)
+        VALUES (#{id}, #{name},
+                #{code}, #{address},
+                #{longitude}, #{latitude}, #{muzzleNumber},
+                #{status}, #{typeId}, #{chargingMethod}, #{power},
+                #{pileMakerId}, #{maxVoltage}, #{maxElectricity}, now(),
+                #{gmtModified}, #{remark}, #{interfaceStandard}, #{rateInformationId},
+                #{num}, #{provinceCode}, #{cityCode}, #{areaCode}, 0,
+                #{simMac}, #{simName}, #{concentratorId}, #{companyId}, #{companyNumber}, #{productModelId},
+                #{ownerShip},
+                #{powerStationId})
+    </insert>
+
+    <update id="updateByElectricIdSelective" parameterType="ElectricPileDO">
+        update tbl_electricpile
+        <set>
+            <if test="name != null">
+                elPi_ElectricPileName = #{name},
+            </if>
+            <if test="code != null">
+                elPi_ElectricPileCode = #{code},
+            </if>
+            <if test="address != null">
+                elPi_ElectricPileAddress = #{address},
+            </if>
+            <if test="longitude != null">
+                elPi_Longitude = #{longitude},
+            </if>
+            <if test="latitude != null">
+                elPi_Latitude = #{latitude},
+            </if>
+            <if test="muzzleNumber != null">
+                elPi_PowerNumber = #{muzzleNumber},
+            </if>
+            <if test="status != null">
+                elPi_State = #{status},
+            </if>
+            <if test="type != null">
+                elPi_Type = #{type},
+            </if>
+            <if test="chargingMethod != null">
+                elPi_ChargingMode = #{chargingMethod},
+            </if>
+            <if test="power != null">
+                elPi_PowerSize = #{power},
+            </if>
+            <if test="pileMakerId != null">
+                elPi_Maker = #{pileMakerId},
+            </if>
+            <if test="maxVoltage != null">
+                elPi_OutputVoltage = #{maxVoltage},
+            </if>
+            <if test="maxElectricity != null">
+                elPi_OutputCurrent = #{maxElectricity},
+            </if>
+            <if test="remark != null">
+                elPi_Remark = #{remark},
+            </if>
+            <if test="interfaceStandard != null">
+                elPi_PowerInterfaceName = #{interfaceStandard},
+            </if>
+            <if test="rateInformationId != null">
+                elPi_RateInformationId = #{rateInformationId},
+            </if>
+            <if test="num != null">
+                ep_num = #{num},
+            </if>
+            <if test="provinceCode != null">
+                elPi_OwnProvinceCode = #{provinceCode},
+            </if>
+            <if test="cityCode != null">
+                elPi_OwnCityCode = #{cityCode},
+            </if>
+            <if test="areaCode != null">
+                elPi_OwnCountyCode = #{areaCode},
+            </if>
+            <if test="isDel != null">
+                delete_flag = #{isDel},
+            </if>
+            <if test="simMac != null">
+                sim_mac = #{simMac},
+            </if>
+            <if test="simName != null">
+                sim_name = #{simName},
+            </if>
+            <if test="concentratorId != null">
+                pk_concentratorID = #{concentratorId},
+            </if>
+            <if test="powerStationId != null">
+                elPi_RelevancePowerStation = #{powerStationId},
+            </if>
+            <if test="companyNumber != null">
+                company_number = #{companyNumber},
+            </if>
+            <if test="companyId != null">
+                cpy_id = #{companyId},
+            </if>
+            <if test="productModelId != null">
+                elpi_TypeSpanId = #{productModelId},
+            </if>
+            <if test="ownerShip != null">
+                owner_ship = #{ownerShip},
+            </if>
+            elPi_Updatedate = now(),
+        </set>
+        where pk_ElectricPile = #{id}
+    </update>
+
+    <update id="updateElectricByForeignKey" parameterType="map">
+        update tbl_electricpile set elPi_State = 0,
+        <if test="powerStationId != null and powerStationId !=0">
+            elPi_RelevancePowerStation = 0
+            where elPi_RelevancePowerStation = #{powerStationId}
+        </if>
+        <if test="concentratorId != null and concentratorId !=0">
+            pk_concentratorID = 0
+            where pk_concentratorID = #{concentratorId}
+        </if>
+    </update>
+
+    <update id="updatePowerStationId" parameterType="ElectricPileDO">
+        UPDATE tbl_electricpile
+        SET elPi_RelevancePowerStation = #{powerStationId}
+        WHERE pk_ElectricPile = #{id}
+    </update>
+
+    <update id="updateConcentratorId" parameterType="ElectricPileDO">
+        UPDATE tbl_electricpile
+        SET pk_concentratorID = #{concentratorId}
+        WHERE pk_ElectricPile = #{id}
+    </update>
+
+    <select id="countByPowerStationIds" parameterType="ElectricPileDO" resultType="PowerStationDO">
+        select elPi_RelevancePowerStation powerstation_id,count(1) electric_pile_num
+        from tbl_electricpile
+        <if test="powerStationIds != null">
+            where elPi_RelevancePowerStation in
+            <foreach collection="powerStationIds" item="powerStationId" open="(" close=")" separator=",">
+                #{powerStationId}
+            </foreach>
+        </if>
+        GROUP BY elPi_RelevancePowerStation
+    </select>
+</mapper>

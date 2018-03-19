@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/electric/simCard/simCard_list.css"/>
+    <title>sim卡列表</title>
+</head>
+<body>
+<div class="container animated fadeInRight">
+    <div class="row">
+        <div class="formBlock clearfix">
+            <form id="simCardListForm">
+                <div class="col-xs-12 col-sm-10 col-md-10 col-lg-10" >
+                    <div class="userListSelect">
+                        <input type="text" name="simCode"  value="" class="col-sm-2 col-xs-6 pileCode" placeholder="sim卡编码"/>
+                        <input type="text" name="elpiElectricpilecode"  value="" class="col-sm-offset-1 col-sm-2 col-xs-6 pileCode" placeholder="桩体编码"/>
+                        <input type="text" name="postName"  value="" class="col-sm-offset-1 col-sm-2 col-xs-6 pileCode" placeholder="充电点名称"/>
+                        <div class="col-sm-offset-1 col-sm-2 col-xs-6 model-select-box">
+                            <div class="model-select-text simOperatorBlock" data-value="" id="simOperatorHtml">SIM卡运营商</div>
+                            <span class="downRow simOperatorBlock"></span>
+                            <input type="text" name="simOperator" hidden="hidden" id="" value="" />
+                            <ul class="model-select-option simOperatorUl">
+                                <li data-option="" class="seleced">SIM卡运营商</li>
+                                <li data-option="11">联通</li>
+                                <li data-option="12">电信</li>
+                                <li data-option="10">移动</li>
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-2 col-md-2 col-lg-2" style="position: relative;">
+                    <div class="queryBtn" onclick="simCardListSearch()">
+                        查询
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!--按钮部分开始==========================================================-->
+        <div class="btnBlock">
+            <div class="col-sm-12 col-xs-12 col-md-12" style="">
+                <div class="col-sm-1 col-xs-1 btnStyle" id="updateBtn" style="display: none">
+                    更新
+                </div>
+            </div>
+        </div>
+        <!--表格部分开始==========================================================-->
+        <div class="showSet table-responsive">
+
+            <table class=" table table-bordered text-center" style="border: 1px solid #DCDCDC;">
+                <thead>
+                <tr>
+                    <th class=""><input type="checkbox" name="" class="selAll" value=""/></th>
+                    <th>序号</th>
+                    <th>SIM卡编码</th>
+                    <th>SIM卡运营商</th>
+                    <th>充电点名称</th>
+                    <th>桩体编码</th>
+                    <th>编号</th>
+                    <th>连接状态</th>
+                    <th>更新时间</th>
+                </tr>
+                </thead>
+                <tbody id="myTbogy">
+
+                </tbody>
+            </table>
+
+            <div id="simCardListPage" class="pagination">
+            </div>
+
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="../../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="../../../js/contabs.min.js"></script>
+<script src="../../../js/electric/simCard/simCard_list.js" type="text/javascript" charset="utf-8"></script>
+</html>

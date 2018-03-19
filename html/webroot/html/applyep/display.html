@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>内容详情</title>
+<style>
+@media screen and (max-width: 1024px) {
+body{ padding:20px;}
+h1{ color:#333333; font-size:18px; text-align:left;}
+h2{ color:#333333; font-size:14px;}
+hr{ color:#dcdcdc; margin-bottom:12px;}
+span{ font-size:12px; color:#666666; margin-right:14px;}
+p{ color:#666666; font-size:14px; line-height:22px;}
+img{MAX-WIDTH: 100%!important;HEIGHT: auto!important;}
+}
+@media screen and (min-width:1024px) {
+body{ padding:40px;}
+h1{ color:#333333; font-size:36px; text-align:left;}
+h2{ color:#333333; font-size:28px;}
+hr{ color:#dcdcdc; margin-bottom:24px;}
+span{ font-size:24px; color:#666666; margin-right:28px;}
+p{ color:#666666; font-size:28px; line-height:40px;}
+img{MAX-WIDTH: 100%!important;HEIGHT: auto!important;}
+}
+</style>
+</head>
+<body>
+<form name="form" method="post" action="/ec_html/itf/applyep/display.do">
+<input id="aepUserId" name="aepUserId" type="hidden" value="123"/>
+	<table>
+		<tr>
+			<td>申请类型</td>
+			<td>
+				<select id="aepAType" name="aepAType" >
+					<option value="1">免费建桩</option>
+					<option value="2">自费建桩</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>分类</td>
+			<td>
+				<select id="aepCType" name="aepCType" >
+					<option value="1">个人</option>
+					<option value="2">企业</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>联系人姓名</td>
+			<td><input id="aepName" name="aepName" type="text" /></td>
+		</tr>
+		<tr>
+			<td>联系人电话</td>
+			<td><input id="aepPhone" name="aepPhone" type="text" /></td>
+		</tr>
+		<tr>
+			<td>省份代码</td>
+			<td><input id="aepPCode" name="aepPCode" type="text" /></td>
+		</tr>
+		<tr>
+			<td>城市代码</td>
+			<td><input id="aepCCode" name="aepCCode" type="text" /></td>
+		</tr>
+		<tr>
+			<td>区县代码</td>
+			<td><input id="aepACode" name="aepACode" type="text" /></td>
+		</tr>
+		<tr>
+			<td>具体地址</td>
+			<td><input id="aepAddr" name="aepAddr" type="text" /></td>
+		</tr>
+		<tr>
+			<td>是否自有车位</td>
+			<td>
+				<select id="aepHPark" name="aepHPark">
+					<option value="1">否</option>
+					<option value="2">是</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>车位数量</td>
+			<td>
+				<select id="aepParkNum" name="aepParkNum">
+					<option value="1">少于等于10个</option>
+					<option value="2">大于10个</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>设备需求</td>
+			<td>
+				<select id="aepEpType" name="aepEpType">
+					<option value="1">直流</option>
+					<option value="2">交流</option>
+					<option value="3">交直流都有</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>物业是否同意安装</td>
+			<td>
+				<select id="aepIAgree" name="aepIAgree">
+					<option value="1">同意</option>
+					<option value="2">交流</option>
+					<option value="3">交直流都有</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>电力是否通过报备</td>
+			<td>
+				<select id="aepIReport" name="aepIReport">
+					<option value="1">通过</option>
+					<option value="2">未通过</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>安装地点</td>
+			<td>
+				<select id="aepIGround" name="aepIGround">
+					<option value="1">通过</option>
+					<option value="2">未通过</option>
+				</select>
+			</td>
+		</tr>
+	</table>
+	<!-- <input type="submit" value="html提交"/> -->
+	<input type="submit" value="提交" />
+
+</form>
+</body>
+</html>

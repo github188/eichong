@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsParaconfigMapper">
+
+	<resultMap id="tblParaconfigResultMap" type="TblParaconfig">
+		<id property="pkParaconfig" column="pk_paraConfig" />
+		<result property="paraName" column="para_Name" />
+		<result property="paraType" column="para_Type" />
+		<result property="paraCreatedate" column="para_Createdate" />
+		<result property="paraUpdatedate" column="para_Updatedate" />
+	</resultMap>
+	<resultMap id="pageResultMap"  type="java.util.HashMap" extends="tblParaconfigResultMap"></resultMap>
+	<resultMap id="findResultMap"  type="java.util.HashMap" extends="tblParaconfigResultMap"></resultMap>
+	<!-- 新增其他配置参数,配置名称信息 -->
+	<insert id="insertParaconfig" parameterType="TblParaconfig">
+	   insert into tbl_ParaConfig (
+	     para_Name,
+	     para_Type,
+	     para_Createdate,
+	     para_Updatedate
+	   )values (
+	     #{paraName},
+	     #{paraType},
+	     #{paraCreatedate},
+	     #{paraUpdatedate}
+	   )
+	</insert>
+	<!-- 更新其他配置参数,配置名称 -->
+	<update id="updateById" parameterType="TblParaconfig">
+	   update tbl_ParaConfig set
+	     para_Name=#{paraName},
+	     para_Updatedate=#{paraUpdatedate}
+	   where 
+	    pk_paraConfig=#{pkParaconfig} 
+	</update>
+	<!-- 根据id删除他配置参数,配置名称 -->
+	<delete id="deleteById" parameterType="map">
+	   delete from 
+	     tbl_ParaConfig 
+	   where 
+	    pk_paraConfig=#{pkParaconfig} 
+	</delete>
+	<!-- 根据id获取其他配置参数，配置名称信息-->
+	<select id="findParaconfig" parameterType="map" resultMap="tblParaconfigResultMap">
+	   select 
+	    pk_paraConfig,
+	    para_Name,
+	    para_Type,
+	    para_Createdate,
+	    para_Updatedate
+	   from tbl_ParaConfig
+	   where 
+	    pk_paraConfig=#{pkParaconfig} 
+	</select>
+	<!-- 根据配置类型，获取其他配置参数中配置名称列表 -->
+	<select id="findParaconfigList" parameterType="map" resultMap="findResultMap">
+	   select 
+	     pk_paraConfig,
+	     para_Name,
+	     para_Type,
+	     para_Createdate,
+	     para_Updatedate
+	   from tbl_ParaConfig
+	   where
+	   para_Type=#{paraType}
+	   order by para_Createdate desc
+	   <if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	<!-- 根据配置类型，获取其他配置参数中配置名称数量 -->
+	<select id="findCount" parameterType="map" resultType="long">
+		select count(pk_paraConfig)
+		from
+		tbl_ParaConfig
+		where
+		para_Type=#{paraType}
+	</select>
+	
+</mapper> 

@@ -1,0 +1,1 @@
+DROP TRIGGER IF EXISTS `t_afterdelete_on_p_m_menu_role` 

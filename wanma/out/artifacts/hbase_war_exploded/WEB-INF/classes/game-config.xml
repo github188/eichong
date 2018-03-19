@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<server>
+    <description>网关服1</description>
+	<server-name>GateServer1</server-name>
+	<server-id>100011</server-id>   <!-- 网关服唯一id, 由六位数字组成，2位平台号 + 3位区号 + 1位当前区网关号 -->
+	<pf-id>10</pf-id> <!-- 平台id，范围 10 - 99  -->
+	<zone-id>1</zone-id> <!-- 区号，范围 1 - 999 -->
+	<shutdown-port>50011</shutdown-port>  <!-- 服务器关闭端口, 2位（平台号+40） + 2位区号 + 1位当前区网关号 -->
+</server>
+
+

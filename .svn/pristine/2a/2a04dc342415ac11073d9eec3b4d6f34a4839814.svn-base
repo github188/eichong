@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.AppButtonMapper">
+	<resultMap type="AppButtonDO" id="result_button">
+		<result property="pkButtonId" column="pk_abl_id" />
+		<result property="buttonDesc" column="abl_desc" />
+		<result property="buttonName" column="abl_name" />
+		<result property="buttonStatus" column="abl_status" />
+		<result property="buttonSort" column="abl_sort" />
+		<result property="buttonType" column="abl_type" />
+		<result property="buttonAction" column="abl_action" />
+		<result property="buttonUrl" column="abl_url" />
+		<result property="buttonCreatedate" column="abl_createdate" />
+		<result property="buttonUpdatedate" column="abl_updatedate" />
+	</resultMap>
+ 
+ <!-- 查询button数量 -->
+	<select id="selectAppButtonCount"  resultType="long">
+		SELECT 
+			count(*)
+ 		FROM tbl_app_button_list
+ 		where abl_status != 2
+		ORDER BY abl_status ,abl_sort ASC 
+	</select>
+	<!-- 查询button列表 -->
+	<select id="selectAppButtonList"  parameterType="AppButtonDO" resultMap="result_button">
+		SELECT 
+			pk_abl_id,
+			abl_desc,
+			abl_name,
+			abl_status,
+			abl_sort,
+		 	abl_type,
+			abl_action,
+			abl_url,
+			abl_createdate,
+			abl_updatedate,
+			getFullPath ('appButtonPic', pk_abl_id) AS buttonPicUrl
+ 		FROM tbl_app_button_list 
+ 		where abl_status != 2
+ 		ORDER BY abl_status ,abl_sort ASC 
+ 		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+ 	<select id="getAppButtonById" parameterType="AppButtonDO" resultMap="result_button">
+		SELECT 
+			pk_abl_id,
+			abl_desc,
+			abl_name,
+			abl_sort,
+			abl_status,
+		 	abl_type,
+			abl_action,
+			abl_url,
+			getFullPath ('appButtonPic', pk_abl_id) AS buttonPicUrl
+ 		FROM tbl_app_button_list 
+ 		where  pk_abl_id = #{pkButtonId}
+	</select>
+ 	<!-- 新增button -->
+	<insert id="insertButton" parameterType="AppButtonDO" 
+	useGeneratedKeys="true" keyProperty="pkButtonId">
+		insert into tbl_app_button_list(
+		abl_desc,
+		abl_name,
+		abl_status,
+		abl_type,
+		abl_action,
+		abl_url
+		)values(
+		#{buttonDesc},
+		#{buttonName},
+		#{buttonStatus},
+		#{buttonType},
+		#{buttonAction},
+		#{buttonUrl}
+		)
+	</insert>
+ 	<update id="updateButton" parameterType="AppButtonDO" >
+		update tbl_app_button_list
+		set
+		abl_desc=#{buttonDesc},
+		abl_name=#{buttonName},
+		abl_status=#{buttonStatus},
+		abl_type=#{buttonType},
+		abl_action=#{buttonAction},
+		abl_url=#{buttonUrl},
+		abl_sort =#{buttonSort},
+		abl_updatedate = now()
+		where
+		pk_abl_id = #{pkButtonId}
+	</update>
+	<update id="deleteButtonById" parameterType="AppButtonDO" >
+		update tbl_app_button_list
+		set
+		abl_status='2'
+		where
+		pk_abl_id = #{pkButtonId}
+	</update>
+	<update id="downButtonById" parameterType="AppButtonDO" >
+		update tbl_app_button_list
+		set
+		abl_status='3'
+		where
+		pk_abl_id = #{pkButtonId}
+	</update>
+	<!-- 修改banner播放顺序 -->
+	<update id="changeButtonSort" parameterType="AppButtonDO" > 
+		update tbl_app_button_list
+		set
+		abl_sort = #{buttonSort}
+		where 
+		pk_abl_id = #{pkButtonId}
+	</update>
+</mapper>

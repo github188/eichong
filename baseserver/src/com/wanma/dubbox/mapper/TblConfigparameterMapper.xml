@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dubbox.dao.TblConfigparameterMapper">
+
+	<resultMap id="tblConfigparameterResultMap" type="TblConfigparameter">
+		<id property="id" column="pk_ConfigParameter" />
+		<result property="name" column="coPa_Name" />
+		<result property="memo" column="coCo_memo" />
+		<result property="type" column="coPa_Type" />
+		<result property="sts" column="coPa_Status" />
+		<result property="cdate" column="coPa_Createdate" />
+		<result property="udate" column="coPa_Updatedate" />
+	</resultMap>
+
+	<!-- 新增配置参数名称 -->
+	<insert id="insert" parameterType="TblConfigparameter">
+		insert into tbl_ConfigParameter (
+		coPa_Name,
+		coCo_memo,
+		coPa_Type,
+		coPa_Status,
+		coPa_Createdate,
+		coPa_Updatedate
+		)values (
+		#{name},
+		#{memo},
+		#{type},
+		0,
+		sysdate(),
+		sysdate()
+		)
+	</insert>
+
+	<!-- 更新配置参数名称 -->
+	<update id="update" parameterType="TblConfigparameter">
+		update tbl_ConfigParameter set
+		<if test="name != null">
+			coPa_Name=#{name},
+		</if>
+		<if test="memo != null">
+			coCo_memo=#{memo},
+		</if>
+		coPa_Updatedate=sysdate()
+		where
+		pk_ConfigParameter=#{id}
+	</update>
+	<!-- 删除配置参数名称 -->
+	<delete id="delete" parameterType="TblConfigparameter">
+		update
+		tbl_ConfigParameter
+		set
+		coPa_Status = 1
+		where
+		pk_ConfigParameter=#{id}
+	</delete>
+
+	<!-- 获取配置参数 -->
+	<select id="selectOne" parameterType="TblConfigparameter"
+		resultMap="tblConfigparameterResultMap">
+		select
+		${rtColumns}
+		from tbl_ConfigParameter
+		where
+		pk_ConfigParameter=#{id}
+	</select>
+
+	<!-- 获取配置参数数量 -->
+	<select id="getCount" parameterType="TblConfigparameter"
+		resultType="int">
+		select count(1)
+		from
+		tbl_ConfigParameter
+		<where>
+			<if test="id != null">
+				pk_ConfigParameter=#{id}
+			</if>
+			<if test="name != null">
+				and coPa_Name=#{name}
+			</if>
+			<if test="type != null">
+				and coPa_Type=#{type}
+			</if>
+			<if test="sts != null">
+				and coPa_Status=#{sts}
+			</if>
+			<if test="cdate != null">
+				and coPa_Createdate=#{cdate}
+			</if>
+			<if test="udate != null">
+				and coPa_Updatedate=#{udate}
+			</if>
+		</where>
+	</select>
+
+	<!-- 获取配置参数列表 -->
+	<select id="getList" parameterType="TblConfigparameter"
+		resultMap="tblConfigparameterResultMap">
+		select
+		${rtColumns}
+		from tbl_ConfigParameter
+		<where>
+			<if test="id != null">
+				pk_ConfigParameter=#{id}
+			</if>
+			<if test="name != null">
+				and coPa_Name=#{name}
+			</if>
+			<if test="type != null">
+				and coPa_Type=#{type}
+			</if>
+			<if test="sts != null">
+				and coPa_Status=#{sts}
+			</if>
+			<if test="cdate != null">
+				and coPa_Createdate=#{cdate}
+			</if>
+			<if test="udate != null">
+				and coPa_Updatedate=#{udate}
+			</if>
+		</where>
+		order by coPa_Createdate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+</mapper> 

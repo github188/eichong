@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>电费管理</title>
+		<link rel="stylesheet" type="text/css" href="static/css/config/powerRateList.css"/>
+	</head>
+	<body>
+		<div id="container1">
+			<div class="box">
+				<div class="formList">
+					<form id="powerRateListForm">
+						<select class="marginLeft10" name="provinceId" id="powerRateListProvince">
+							<option disabled selected>请选择省份</option>
+						</select>
+						
+						<span class="check marginLeft10" onclick="powerRateListSearch()">查询</span>
+						<!-- <span class="exportTable marginLeft10">导出EXCEL</span> -->
+					</form>
+				</div>
+			</div>
+			<div class="box2 col-md-10 col-sm-8">
+				<div class="padding30">
+					<table class="myTable listPayOrderTable">
+						<thead>
+							<tr class="active">
+								<th class="smallWidth"><input type="checkbox" name="" class="selAll" value=""/></th>
+								<th class="smallWidth">序号</th>
+								<th>省份名称</th>
+								<th>尖段电费</th>
+								<th>峰段电费</th>
+								<th>平段电费</th>
+								<th>谷段电费</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody id="powerRateListTbody">
+						</tbody>
+					</table>
+					
+				</div>
+			</div>
+			
+		</div>
+		<!--省份电费编辑-->
+		<div id="powerRateEdit" class="powerRateStyle" style="display: none;">
+			<form id="powerRateEditForm" method="post"
+				action="/admin/powerrate/powerRateModify.do" callback="refreshCurrent()">
+			<input id="provinceId" type="hidden" name="provinceId"  value="" />
+			<div class="lineBlock">
+				<div class="line">
+					<span>省份名称</span>
+					<span id="PROVINCE_NAME" class="cityName marginLeft30">杭州市</span>
+				</div>
+			</div>
+			<div class="lineBlock">
+				<div class="line">
+					<span>尖段电费</span>
+					<input id="Tip_Electricity" type="" name="Tip_Electricity"  value="" class="marginLeft30" />
+				</div>
+				<div class="line">
+					<span>峰段电费</span>
+					<input id="Peak_Electricity" type="" name="Peak_Electricity"  value="" class="marginLeft30" />
+				</div>
+			</div>
+			<div class="lineBlock">
+				<div class="line">
+					<span>平段电费</span>
+					<input id="Flat_Electricity" type="" name="Flat_Electricity"  value="" class="marginLeft30" />
+				</div>
+				<div class="line">
+					<span>谷段电费</span>
+					<input id="Valley_Electricity" type="" name="Valley_Electricity"  value="" class="marginLeft30" />
+				</div>
+			</div>
+			<div class="powerRateEditTipText" style="display: none; color: #FF0000; margin-top: 6px;">
+				
+			</div>
+			</form>
+		</div>
+	</body>
+<script src="static/js/config/powerRateList.js" type="text/javascript" charset="utf-8"></script>
+</html>

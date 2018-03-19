@@ -1,0 +1,718 @@
+//获取订单列表的menuId
+var getMenuMap = window.localStorage.getItem('menuMap');
+var getCurruntMap = JSON.parse(getMenuMap);
+var menuId = getCurruntMap['订单列表'];
+$(function () {
+    //initInputSearch();
+    ctrlMenu(menuId);
+    setTimeout('getPerInfo()', 190);
+    setTimeout("getBaseInfo()", 300);
+    setTimeout("initInvestCompanyList()", 800);
+})
+function getPerInfo(){
+    var userAccount=getUrlParam('userAccount');
+    var cpyNumber=getUrlParam('cpyNumber');
+    var cpyName=getUrlParam('cpyName');
+    //去加载表格的数据
+    if(userAccount){
+        $('input[name=userAccount]').val(userAccount);
+        orderListSearch();
+    }
+    if(cpyNumber){
+        $('#cpyCompanyName').html(cpyName);
+        $('#cpyCompanyName').attr('data-value',cpyNumber);
+        orderListSearch();
+    }else{
+        $('#cpyCompanyName').html('请选择');
+        $('#cpyCompanyName').attr('data-value','');
+        //orderListSearch();
+    }
+}
+function ctrlMenu(menuId) {
+    $.ajax({
+        type: "post",
+        url: basePath + getSelfButtonTreeUrl,
+        async: true,
+        data: {
+            menuId: menuId
+        },
+        success: function (data) {
+            var data = data.dataObject;
+            if(data==null){
+                return;
+            }
+            if (data.length == 0) {
+                return;
+            } else {
+                for (var i = 0; i < data.length; i++) {
+                    var contents = data[i].contents;
+                    if (contents.indexOf('显示') > -1) {
+                        $('#showSet').show();
+                    }
+                    if (contents.indexOf('导出') > -1) {
+                        $('#dataExport').show();
+                    }
+                    if (contents.indexOf('结算') > -1) {
+                        $('#manualClearing').show();
+                    }
+
+                }
+            }
+        }
+    });
+}
+
+function toUnbindEvent() {
+    $('.cpyProvinceBlock').unbind();
+    $('.cypCityBlock').unbind();
+    $('.cpyCompanyBlock').unbind();
+    $('.orderStatusBlock').unbind();
+    $('.slaveCpyBlock').unbind();
+    $('.tagBlock').unbind();
+    $('.stationProvinceBlock').unbind();
+    $('.stationCityBlock').unbind();
+    $('.stationAreaBlock').unbind();
+    $('.powerStationIdBlock').unbind();
+    selectModel();
+}
+
+//去加载表格的数据
+
+function orderListSearch() {
+    toGiveHiddenInput();
+    initTable("orderListForm", "orderListPage", getOrderListPageUrl, orderListCallback);
+}
+function orderListCallback(req) {
+    var data = req.dataObject;
+    var pageNum = req.pager.pageNo;
+    var listTr = "";
+    for (var i = 0; i < data.length; i++) {
+        var startChargeTime = data[i].startChargeTime;
+        var endChargeTime = data[i].endChargeTime;
+        endtime = Date.parse(endChargeTime);
+        starttime = Date.parse(startChargeTime);
+        var s = endtime / 1000 - starttime / 1000;
+        var time = sec_to_time(s);
+        var orderStatusHtml = '';
+        if (data[i].orderStatus == 1) {
+            orderStatusHtml = '未结算';
+        }
+        if (data[i].orderStatus == 2) {
+            orderStatusHtml = '结算已到账';
+        }
+        if (data[i].orderStatus == 3) {
+            orderStatusHtml = '结算未到账';
+        }
+        if (data[i].orderStatus == 4) {
+            orderStatusHtml = '异常未处理';
+        }
+        if (data[i].orderStatus == 5) {
+            orderStatusHtml = '异常已处理';
+        }
+        var invoiceStatusHtml = '';
+        if (data[i].invoiceStatus == 0) {
+            invoiceStatusHtml = '否';
+        }
+        if (data[i].invoiceStatus >0) {
+            invoiceStatusHtml = '是';
+        }
+
+        listTr += '<tr><td><input type="checkbox" name="ids" class="selectedBox" value="' + data[i].orderId + '"/></td>'
+        + '<td class="orderList_orderCode">' + data[i].orderCode
+        + '<td class="orderList_electricPileCode">' + data[i].electricPileCode
+        + '</td><td class="orderList_totalElectricMoney">' + data[i].totalElectricMoney
+        + '</td><td class="orderList_totalServiceMoney">' + data[i].totalServiceMoney
+        + '</td><td class="orderList_totalfavMoney">' + data[i].totalfavMoney
+        + '</td><td class="orderList_totalElectricCharge">' + data[i].totalElectricCharge
+        + '</td><td class="orderList_orderStatus">' + orderStatusHtml
+        + '</td><td class="orderList_powerstationName">' + data[i].powerstationName
+        + '</td><td class="orderList_userAccount">' + data[i].userAccount
+        + '</td><td class="orderList_invoiceStatus">' + invoiceStatusHtml
+        + '</td><td class="orderList_soc">' + data[i].startSoc
+        + '</td><td class="orderList_soc">' + data[i].endSoc
+        + '</td><td class="orderList_carNum">' + data[i].carNo
+        + '</td><td class="orderList_TIME">' + data[i].chargeTime
+        + '</td><td class="orderList_accountNO">' + data[i].accountNo
+        + '</td><td class="orderList_VIN">' + data[i].vinCode
+        + '</td><td class="orderList_timeQuantum">' + data[i].timeQuantum
+        + '</td><td class="orderList_cardNum">' + data[i].cardNum
+        + '</td><td class="orderList_pileHeadNum">' + data[i].pileHeadNum
+        + '</td><td class="orderList_eMoney">' + data[i].JMoney
+        + '</td><td class="orderList_eMoney">' + data[i].FMoney
+        + '</td><td class="orderList_eMoney">' + data[i].PMoney
+        + '</td><td class="orderList_eMoney">' + data[i].GMoney
+        + '</td><td class="orderList_sMoney">' + data[i].JServiceMoney
+        + '</td><td class="orderList_sMoney">' + data[i].FServiceMoney
+        + '</td><td class="orderList_sMoney">' + data[i].PServiceMoney
+        + '</td><td class="orderList_sMoney">' + data[i].GServiceMoney
+        + '</td><td class="orderList_ePower">' + data[i].JPower
+        + '</td><td class="orderList_ePower">' + data[i].FPower
+        + '</td><td class="orderList_ePower">' + data[i].PPower
+        + '</td><td class="orderList_ePower">' + data[i].GPower
+        + '</td></tr>';
+
+    }
+    $("#myTbogy").html(listTr);
+    var arr = ['orderList_orderCode', 'orderList_electricPileCode', 'orderList_totalElectricMoney', 'orderList_totalServiceMoney',
+        'orderList_totalfavMoney', 'orderList_totalElectricCharge', 'orderList_orderStatus', 'orderList_powerstationName','orderList_userAccount',
+        'orderList_invoiceStatus', 'orderList_soc', 'orderList_carNum', 'orderList_TIME', 'orderList_accountNO', 'orderList_VIN',
+        'orderList_timeQuantum', 'orderList_cardNum','orderList_pileHeadNum', 'orderList_eMoney', 'orderList_sMoney','orderList_ePower'];
+    toGetLocalStorageInfo(arr);
+}
+
+function toGiveHiddenInput() {
+    var orderStatusValue = $('#orderStatus').attr('data-value');
+    var cpyCompanyValue = $('#cpyCompanyName').attr('data-value');
+    var userAccountValue = $('#userAccount').val();
+    var slaveCpyHtmlValue = $('#slaveCpyHtml').attr('data-value');
+    var tagIdValue = $('#tagHtml').attr('data-value');
+    var stationProvinceCode = $('#stationProvinceCode').attr('data-value');
+    var stationCityCode = $('#stationCityCode').attr('data-value');
+    var stationAreaCode = $('#stationAreaCode').attr('data-value');
+
+    if (orderStatusValue == "") {
+        $('input[name=orderStatus]').val('');
+    } else {
+        $('input[name=orderStatus]').val(orderStatusValue);
+    }
+    if (cpyCompanyValue == "") {
+        $('input[name=cpyNumber]').val('');
+    } else {
+        $('input[name=cpyNumber]').val(cpyCompanyValue);
+    }
+    if (userAccountValue == "") {
+        $('input[name=userAccount]').val('');
+    } else {
+        $('input[name=userAccount]').val(userAccountValue);
+    }
+    if (slaveCpyHtmlValue == "") {
+        $('input[name=slaveCpyId]').val('');
+    } else {
+        $('input[name=slaveCpyId]').val(slaveCpyHtmlValue);
+    }
+    if (tagIdValue == '') {
+        $('input[name=tagId]').val('');
+    } else {
+        $('input[name=tagId]').val(tagIdValue);
+    }
+    if (stationProvinceCode == '') {
+        $('input[name=provinceCode]').val('');
+    } else {
+        $('input[name=provinceCode]').val(stationProvinceCode);
+    }
+    if (stationCityCode == '') {
+        $('input[name=cityCode]').val('');
+    } else {
+        $('input[name=cityCode]').val(stationCityCode);
+    }
+    if (stationAreaCode == '') {
+        $('input[name=areaCode]').val('');
+    } else {
+        $('input[name=areaCode]').val(stationAreaCode);
+    }
+    getDateValue();
+
+}
+//卡状态
+$('.orderStatusUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+});
+
+//获取渠道公司卡cpyProvinceUl=================================================
+$('.cpyProvinceUl').on("click", "li", function () {
+    $('#cypCityCode').html('请选择');
+    $('#cypCityCode').attr('data-value', '');
+    $('.cypCityUl').html('');
+    $('#cpyCompanyName').html('请选择');
+    $('.cpyCompanyUl').html('');
+    $('#cpyCompanyName').attr("data-value", '');
+
+    var provinceCodeId = $(this).attr('data-option');
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+    var flag = $(this).attr('data-option');
+    if (flag == "") {
+        $('#cypCityCode').html('请选择');
+        $('#cypCityCode').attr('data-value', '');
+        $('.cypCityUl').html('');
+        $('#cpyCompanyName').html('请选择');
+        $('.cpyCompanyUl').html('');
+        $('#cpyCompanyName').attr("data-value", '');
+
+    } else {
+        toLoadCity(provinceCodeId, '', '#cypCityCode', '.cypCityUl', 'toUnbindEvent');
+    }
+});
+$('.cypCityUl').on("click", "li", function () {
+    $('#cpyCompanyName').html('请选择');
+    $('.cpyCompanyUl').html('');
+    $('#levelId').html("请选择");
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+    var flag = $(this).attr('data-option');
+    var cypCityCodeValue = $('#cypCityCode').attr('data-value');
+    var cpyProvinceCodeValue = $('#cpyProvinceCode').attr('data-value');
+    if (flag == "") {
+        $('#cpyCompanyName').html('请选择');
+        $('.cpyCompanyUl').html('');
+        $('#levelId').html("请选择");
+    } else {
+        toLoadComponyName(cypCityCodeValue, cpyProvinceCodeValue);
+    }
+});
+function toLoadComponyName(cypCityCodeValue, cpyProvinceCodeValue) {
+    var cpyObject = {
+        provinceCode: cpyProvinceCodeValue,
+        cityCode: cypCityCodeValue
+    };
+    if (JSON.stringify(cpyObject) == "{}") {
+        $('#cpyCompanyName').html("请选择");
+    } else {
+        toAjaxCompany(cpyObject);
+    }
+}
+function toAjaxCompany(cpyObject) {
+    $.ajax({
+        type: "post",
+        url: basePath + getCompanyListUrl,
+        async: true,
+        data: cpyObject,
+        success: function (data) {
+            if (data.success == true) {
+                var dataModule = data.dataObject;
+                var cypCompanyLi = '<li data-option="">请选择</li>';
+                for (var i = 0; i < dataModule.length; i++) {
+                    cypCompanyLi += '<li data-option="' + dataModule[i].cpyNumber + '">' + dataModule[i].cpyName + '</li>';
+                }
+                $('.cpyCompanyUl').html(cypCompanyLi);
+                toUnbindEvent();
+            }
+        }
+    });
+}
+$('.cpyCompanyUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+})
+
+//获取充电点=================================================
+$('.stationProvinceUl').on("click", "li", function () {
+    $('#stationCityCode').html('请选择市');
+    $('#stationCityCode').attr('data-value', '');
+    $('.stationCityUl').html('');
+    $('#stationAreaCode').html('请选择区');
+    $('#stationAreaCode').attr('data-value', '');
+    $('.stationAreaUl').html('');
+    $('#powerStationName').val('');
+    $('#powerStationId').val('');
+    $('.powerStationNameUl').css('display','none');
+    $('.powerStationNameUl').html('');
+    var provinceCodeId = $(this).attr('data-option');
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+    var flag = $(this).attr('data-option');
+    if (flag == "") {
+        $('#stationCityCode').html('请选择市');
+        $('#stationCityCode').attr('data-value', '');
+        $('.stationCityUl').html('');
+        $('#stationAreaCode').html('请选择区');
+        $('#stationAreaCode').attr('data-value', '');
+        $('.stationAreaUl').html('');
+        $('#powerStationName').val('');
+        $('#powerStationId').val('');
+        $('.powerStationNameUl').css('display','none');
+        $('.powerStationNameUl').html('');
+    } else {
+        toLoadCity(provinceCodeId, '', '#stationCityCode', '.stationCityUl', 'toUnbindEvent');
+    }
+});
+$('.stationCityUl').on("click", "li", function () {
+    $('#stationAreaCode').html('请选择区');
+    $('#stationAreaCode').attr('data-value', '');
+    $('.stationAreaUl').html('');
+    $('#powerStationName').val('');
+    $('#powerStationId').val('');
+    $('.powerStationNameUl').css('display','none');
+    $('.powerStationNameUl').html('');
+    var cityCodeId = $(this).attr('data-option');
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+    var flag = $(this).attr('data-option');
+    if (flag == "") {
+        $('#stationAreaCode').html('请选择区');
+        $('#stationAreaCode').attr('data-value', '');
+        $('.stationAreaUl').html('');
+        $('#powerStationName').val('');
+        $('#powerStationId').val('');
+        $('.powerStationNameUl').css('display','none');
+        $('.powerStationNameUl').html('');
+    }else {
+        toLoadArea(cityCodeId, '', '#stationAreaCode', '.stationAreaUl', 'toUnbindEvent');
+    }
+});
+$('.stationAreaUl').on("click", "li", function () {
+    $('#powerStationName').val('');
+    $('#powerStationId').val('');
+    $('.powerStationNameUl').css('display','none');
+    $('.powerStationNameUl').html('');
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+    var flag = $(this).attr('data-option');
+    if (flag == "") {
+        $('#powerStationName').val('');
+        $('#powerStationId').val('');
+        $('.powerStationNameUl').css('display','none');
+        $('.powerStationNameUl').html('');
+    }
+});
+
+var last;
+$("#powerStationName").keyup(function(event){
+    last = event.timeStamp;
+    setTimeout(function(){
+        if(last-event.timeStamp==0){
+            var stationProvinceCodeValue = $('#stationProvinceCode').attr('data-value');
+            var stationCityCodeValue = $('#stationCityCode').attr('data-value');
+            var powerStationName=$('#powerStationName').val();
+            if(stationCityCodeValue==''){
+                $('#powerStationName').val('');
+                $('#powerStationId').val('');
+            }else{
+                if(powerStationName==''){
+                    $('.powerStationNameUl').css('display','none');
+                    $('.powerStationNameUl').html('');
+                    $('#powerStationId').val('');
+                    return;
+                }else{
+                    $('.powerStationNameUl').css('display','block');
+                    var cpyObject = {
+                        provinceCode: stationProvinceCodeValue,
+                        cityCode: stationCityCodeValue,
+                        powerstationName:powerStationName
+                    };
+                    if (JSON.stringify(cpyObject) == "{}") {
+                        $('#powerStationName').val("");
+                        $('#powerStationId').val("");
+                    } else {
+                        toAjaxPowserStation(cpyObject);
+                    }
+                }
+            }
+        }
+    },1000)
+});
+$('#powerStationName').on('onpropertychange input',function(){
+    var length=$(this).val().length;
+    if(length==0){
+        $('#powerStationId').val('');
+    }
+})
+function toAjaxPowserStation(cpyObject) {
+    $.ajax({
+        type: "post",
+        url: basePath + getPowerStationListUrl,
+        async: true,
+        data: cpyObject,
+        success: function (data) {
+            if (data.success == true) {
+                var dataModule = data.dataObject;
+                var powerStationLi = '<li data-option="">请选择</li>';
+                for (var i = 0; i < dataModule.length; i++) {
+                    powerStationLi += '<li data-option="' + dataModule[i].id + '">' + dataModule[i].name + '</li>';
+                }
+                $('.powerStationNameUl').html(powerStationLi);
+            }
+        }
+    });
+}
+$('body').off('click','.powerStationNameUl li').on('click','.powerStationNameUl li',function(){
+    $('#powerStationName').val('');
+    $('#powerStationId').val('');
+    var id=$(this).attr('data-option');
+    var name=$(this).html();
+    $('#powerStationName').val(name);
+    $('#powerStationId').val(id);
+    $('.powerStationNameUl').css('display','none');
+    $('.powerStationNameUl').html('');
+})
+
+//控制权限
+function getBaseInfo() {
+    var loginUser = window.localStorage.getItem('loginUser');
+    var getLoginUser = JSON.parse(loginUser);
+    var userLevel = getLoginUser.userLevel;
+    isLoadCompany(userLevel);
+}
+
+function isLoadCompany(userLevel) {
+    if (userLevel == 1) {
+        toLoadProvince('', '#cpyProvinceCode', '.cpyProvinceUl', 'toUnbindEvent');
+        toLoadProvince('', '#stationProvinceCode', '.stationProvinceUl', 'toUnbindEvent');
+    }
+    if (userLevel == 2) {
+        toLoadProvince('', '#cpyProvinceCode', '.cpyProvinceUl', 'toUnbindEvent');
+        toLoadProvince('', '#stationProvinceCode', '.stationProvinceUl', 'toUnbindEvent');
+    } else if (userLevel == 8) {
+        toLoadCpy();
+    }
+}
+
+function toLoadCpy() {
+    $.ajax({
+        type: "post",
+        url: basePath + getCompanyListUrl,
+        async: true,
+        data: {
+            provinceCode: '',
+            cityCode: ''
+        },
+        success: function (data) {
+            if (data.success == true) {
+                var dataModule = data.dataObject;
+                var cypCompanyLi = '<li data-option="">请选择</li>';
+                for (var i = 0; i < dataModule.length; i++) {
+                    cypCompanyLi += '<li data-option="' + dataModule[i].cpyNumber + '">' + dataModule[i].cpyName + '</li>';
+                }
+                $('.cpyCompanyUl').html(cypCompanyLi);
+                toUnbindEvent();
+            }
+        }
+    });
+}
+//日期选择
+laydate.render({
+    elem: '#datePicker'
+    , range: true,
+    theme: '#ff7d00'
+   /* ,min: -90,
+    max:0//0 代表今天 -1代表昨天，-2代表前天，以此类推*/
+});
+//时间的默认值
+function initInputSearch(){
+    var nowTime =new Date().getTime();
+    var etTime = nowTime-3600*24*1000;
+    var stTime = nowTime-3600*24*1000*7;
+    var et =new Date(etTime).format("yyyy-MM-dd");
+    var st =new Date(stTime).format("yyyy-MM-dd");
+    $('#datePicker').val(st+' - '+et);
+}
+function getDateValue() {
+    var dateValue = $('#datePicker').val();
+    if (dateValue == "") {
+        $('input[name=startGmtCreate]').val('');
+        $('input[name=endGmtCreate]').val('');
+    } else {
+        var dateValue = $('#datePicker').val();
+        var startGmtCreate = dateValue.substring(0, 10);
+        var endGmtCreate = dateValue.substring(13, 23);
+        $('input[name=startGmtCreate]').val(startGmtCreate);
+        $('input[name=endGmtCreate]').val(endGmtCreate);
+    }
+}
+//监听回车键
+$(document).keyup(function (event) {
+    if (event.keyCode == 13) {
+        orderListSearch();
+    }
+});
+//数据导出	=====================
+$('#dataExport').on("click", function () {
+    toGiveHiddenInput();
+    var obj = {
+        orderCode: $('input[name=orderCode]').val(),
+        electricPileCode: $('input[name=electricPileCode]').val(),
+        userAccount: $('input[name=userAccount]').val(),
+        cardNum: $('input[name=cardNum]').val(),
+        startGmtCreate: $('input[name=startGmtCreate]').val(),
+        endGmtCreate: $('input[name=endGmtCreate]').val(),
+        tagId: $('input[name=tagId]').val(),
+        slaveCpyId: $('input[name=slaveCpyId]').val(),
+        carNo: $('input[name=carNo]').val(),
+        cpyNumber: $('input[name=cpyNumber]').val(),
+        orderStatus: $('input[name=orderStatus]').val(),
+        provinceCode: $('input[name=provinceCode]').val(),
+        cityCode: $('input[name=cityCode]').val(),
+        areaCode: $('input[name=areaCode]').val(),
+        powerStationId:$('input[name=powerStationId]').val()
+    };
+     window.location.href = basePath + exportOrderUrl + '?orderCode='
+     + obj.orderCode + '&electricPileCode='
+     + obj.electricPileCode + '&userAccount='
+     + obj.userAccount + '&cardNum='
+     + obj.cardNum + '&startGmtCreate='
+     + obj.startGmtCreate + '&endGmtCreate='
+     + obj.endGmtCreate + '&tagId='
+     + obj.tagId + '&slaveCpyId='
+     + obj.slaveCpyId + '&carNo='
+     + obj.carNo + '&cpyNumber='
+     + obj.cpyNumber + '&orderStatus='
+     + obj.orderStatus + '&provinceCode='
+     + obj.provinceCode + '&cityCode='
+     + obj.cityCode + '&areaCode='
+     + obj.areaCode + '&powerStationId='
+     + obj.powerStationId;
+})
+//手工结算
+$("body").off("click", ".selectedBox").on("click", ".selectedBox", function () {
+    var orderStatusName = $(this).parent().siblings('.orderList_orderStatus').html();
+    if(orderStatusName!='结算未到账'){
+        this.checked = !this.checked;
+    }else{
+        this.checked = this.checked;
+    }
+});
+$(".selAll").on("click",function () {
+    var orderStatusName = $('#orderStatus').attr('data-value');
+    if(orderStatusName!=3){
+        this.checked = !this.checked;
+    }else{
+        this.checked = this.checked;
+    }
+});
+$("body").off("click", "#manualClearing").on("click", "#manualClearing", function(){
+    var ids = '';
+    $('input[name=ids]').each(function () {
+        var flag = $(this).prop('checked');
+        if (flag == true) {
+            ids += $(this).attr('value')+',';
+        }
+    });
+    var orderIds=ids.substring(0,ids.length-1);
+    if (!ids){
+        layer.open({
+            type: 1,
+            offset: '100px',
+            title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+            shadeClose: false,
+            closeBtn: 1,
+            area: ['310px', '160px'],//宽高
+            content: '请指定表单元素',
+            time: 3000,
+            btn: ["确定"]
+        });
+    } else {
+        var num=ids.length/7;
+        layer.closeAll();
+        layer.open({
+            type: 1,
+            offset: '100px',
+            title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+            shadeClose: false,
+            closeBtn: 1,
+            area: ['310px', '180px'],//宽高
+            content: '您已选择'+ num +'条订单，是否结算？',
+            btn: ["确定结算", "取消"],
+            yes: function (index, layero) {
+                layer.closeAll();
+                toManualClearing(orderIds);
+            },
+            cancel: function (index, layero) {
+                layer.closeAll();
+            }
+        });
+    }
+});
+function toManualClearing(a){
+    $.ajax({
+        type: "post",
+        url: basePath + manualAccountOrderUrl,
+        async: true,
+        data: {
+            orderIds: a
+        },
+        success: function (data) {
+            if (data.success == true) {
+                layer.closeAll();
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+                    shadeClose: false,
+                    closeBtn: 1,
+                    area: ['310px', '160px'],//宽高
+                    content: '结算成功',
+                    btn: ["确定"],
+                    yes: function (index, layero){
+                        layer.closeAll();
+                        orderListSearch();
+                    },
+                    cancel: function (index, layero) {
+                        layer.closeAll();
+                        orderListSearch;
+                    }
+                });
+            } else {
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+                    shadeClose: false,
+                    closeBtn: 1,
+                    area: ['310px', '160px'],//宽高
+                    content: data.msg,
+                    time: 3000,
+                    btn: ["确定"]
+                });
+            }
+        }
+    });
+}
+function initInvestCompanyList(){
+    $.ajax({
+        type: "post",
+        url: basePath + initInvestCompanyListUrl,
+        async: true,
+        success: function (data) {
+            if (data.success == true) {
+                var dataModule = data.dataObject;
+                var  initInvestCompanyLi = '<li data-option="">请选择</li>';
+                for (var i = 0; i < dataModule.length; i++) {
+                    initInvestCompanyLi += '<li data-option="' + dataModule[i].cpyId + '">' + dataModule[i].cpyName + '</li>';
+                }
+                $('.slaveCpyUl').html(initInvestCompanyLi);
+                toUnbindEvent();
+            }
+        }
+    });
+    loadUserTag();
+}
+//投资公司筛选部分
+$('.slaveCpyUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+})
+//加载用户标签
+$('.tagUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+});
+
+function loadUserTag() {
+    $.ajax({
+        type: "post",
+        url: basePath + getAllTagUrl,
+        async: true,
+        success: function (data) {
+            var tagHtml = '<li data-option="" >请选择</li>';
+            var data = data.dataObject;
+            for (var i = 0; i < data.length; i++) {
+                tagHtml += '<li data-option="'+data[i].id+'">'+ data[i].name+'</li>';
+            }
+            $('.tagUl').html(tagHtml);
+        }
+
+    })
+}
+$('.showSet').scroll(function(){
+    if($('.showSet').scrollTop() >= 30){
+        $('thead').css({
+            'position':'fixed',
+            'background-color':'#ffffff',
+            'border':'1px solid #ddd',
+            'visibility':'hidden'
+        });
+    }else if($('.showSet').scrollTop() == 0){
+        $('thead').css({'position':'inherit','visibility':'visible'});
+    }
+})

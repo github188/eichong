@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.FinAccountSplitConfigMapper">
+	<resultMap type="FinAccountSplitConfigDO" id="finAccountSplitConfig">
+		<result property="pkId" column="pk_id" />
+		<result property="splitMode" column="split_mode" />
+		<result property="cpyId" column="cpy_id" />
+		<result property="electricPileId" column="electricPile_id" />
+		<result property="splitRules" column="split_rules" />
+		<result property="creator" column="creator" />
+		<result property="modifier" column="modifier" />
+		<result property="gmtCreate" column="gmt_create" />
+		<result property="gmtModified" column="gmt_modified" />
+	</resultMap>
+	
+	<select id="getFinAccountSplitConfigCount" parameterType="FinAccountSplitConfigDO" resultType="long">
+		SELECT COUNT(1)
+		FROM (SELECT b.pk_id
+		FROM fin_account_split_config b
+		where 1=1
+		<if test="pkId != null">
+			and b.pk_id = #{pkId}
+		</if>
+		<if test="splitMode != null">
+			and b.split_mode = #{splitMode}
+		</if>
+		<if test="cpyId != null">
+			and (b.cpy_id = #{cpyId} or b.split_rules like concat('%',#{cpyId},'%'))
+		</if>
+		<if test="electricPileId != null">
+			and b.electricPile_id = #{electricPileId}
+		</if>
+		<if test="splitRules != null">
+			and b.split_rules like concat('%',#{splitRules},'%')
+		</if>
+		<if test="forListFlag == 0">
+			GROUP BY b.split_rules
+		</if>) s
+	</select>
+	
+	<select id="getFinAccountSplitConfigList" parameterType="FinAccountSplitConfigDO" resultMap="finAccountSplitConfig">
+		SELECT
+			b.pk_id,
+			b.split_mode,
+			b.cpy_id,
+			b.electricPile_id,
+			b.split_rules,
+			b.creator,
+			b.modifier,
+			b.gmt_create,
+			b.gmt_modified
+		FROM fin_account_split_config b
+		where 1=1
+		<if test="pkId != null">
+		  and b.pk_id = #{pkId}
+		</if>
+		<if test="splitMode != null">
+		  and b.split_mode = #{splitMode}
+		</if>
+		<if test="cpyId != null">
+			and (b.cpy_id = #{cpyId} or b.split_rules like concat('%',#{cpyId},'%'))
+		</if>
+		<if test="electricPileId != null">
+		  and b.electricPile_id = #{electricPileId}
+		</if>
+		<if test="splitRules != null">
+		  and b.split_rules like concat('%',#{splitRules},'%')
+		</if>
+		<if test="forListFlag == 0">
+			GROUP BY b.split_rules
+		</if>
+        <if test="pager!=null">limit #{pager.offset},#{pager.pageSize}</if>
+	</select>
+
+	<!-- 添加分账配置 -->
+	<insert id="addFinAccountSplitConfig" useGeneratedKeys="true" parameterType="FinAccountSplitConfigDO" keyProperty="pkId">
+		INSERT INTO fin_account_split_config
+		(pk_id, split_mode, cpy_id, electricPile_id, split_rules, creator, modifier, gmt_create, gmt_modified)
+		VALUES
+		(null,#{splitMode},#{cpyId},#{electricPileId},#{splitRules},#{creator},#{modifier},#{gmtCreate},#{gmtModified})
+	</insert>
+
+	<!-- 批量添加分账配置 -->
+	<insert id="batchAddFinAccountSplitConfig" useGeneratedKeys="true" parameterType="java.util.List">
+		insert into fin_account_split_config
+		(pk_id, split_mode, cpy_id, electricPile_id, split_rules, creator, modifier, gmt_create, gmt_modified)
+		values
+		<foreach collection="list" item="item" index="index" separator="," >
+			(null,#{item.splitMode},#{item.cpyId},#{item.electricPileId},#{item.splitRules},#{item.creator},#{item.modifier},#{item.gmtCreate},#{item.gmtModified})
+		</foreach>
+	</insert>
+	
+	<!-- 删除分账配置 -->
+	<delete id="removeFinAccountSplitConfig" parameterType="Long">
+		DELETE FROM fin_account_split_config WHERE pk_id=#{pkId}
+	</delete>
+
+	<!-- 批量删除分账配置 -->
+	<delete id="batchRemoveFinAccountSplitConfig" parameterType="java.util.List">
+		DELETE FROM fin_account_split_config WHERE pk_id in
+		<foreach collection="list" item="item" index="index" open="(" close=")" separator="," >
+			#{item.pkId}
+		</foreach>
+	</delete>
+
+	<!-- 更新分账配置 -->
+	<update id="modifyFinAccountSplitConfig" parameterType="FinAccountSplitConfigDO">
+		UPDATE fin_account_split_config
+		SET split_mode = #{splitMode}, cpy_id =#{cpyId}, electricPile_id = #{electricPileId},
+		split_rules = #{splitRules}, modifier = #{modifier}, gmt_modified = #{gmtModified}
+		WHERE pk_id = #{pkId}
+	</update>
+
+	<!-- 批量更新分账配置 -->
+	<update id="batchModifyFinAccountSplitConfig" parameterType="java.util.List">
+		<foreach collection="list" item="item" index="index" open="" close="" separator=";" >
+			UPDATE fin_account_split_config
+			SET split_mode = #{item.splitMode}, cpy_id =#{item.cpyId}, electricPile_id = #{item.electricPileId},
+			split_rules = #{item.splitRules}, modifier = #{item.modifier}, gmt_modified = #{item.gmtModified}
+			WHERE pk_id = #{item.pkId}
+		</foreach>
+	</update>
+
+	<select id="getProvince" parameterType="FinAccountSplitConfigDO" resultType="integralAreaBO">
+		select p.province_code, mp.PROVINCE_NAME
+		from tbl_electricpile e
+		inner join tbl_powerstation p
+		on e.elPi_RelevancePowerStation = p.powerStation_id
+		inner join tb_m_province mp
+		on p.province_code = mp.PROVINCE_ID
+		<if test="cpyId != null">
+			inner join tbl_company cpy on cpy.cpy_id = e.cpy_id
+			where e.cpy_id = #{cpyId}
+		</if>
+		GROUP BY p.province_code
+		order by p.province_code
+	</select>
+
+	<select id="getCity" parameterType="FinAccountSplitConfigDO" resultType="integralAreaBO">
+		select p.province_code, p.city_code, c.CITY_NAME
+		from tbl_electricpile e
+		inner join tbl_powerstation p
+		on e.elPi_RelevancePowerStation = p.powerStation_id
+		inner join tb_m_city c
+		on p.city_code = c.CITY_ID
+		<if test="cpyId != null">
+			inner join tbl_company cpy on cpy.cpy_id = e.cpy_id
+			where e.cpy_id = #{cpyId}
+		</if>
+		GROUP BY p.city_code
+		ORDER BY p.city_code
+	</select>
+
+	<select id="getPowerStation" parameterType="FinAccountSplitConfigDO" resultType="integralAreaBO">
+		select p.powerStation_id, p.powerStation_name, p.city_code
+		from tbl_electricpile e
+		inner join tbl_powerstation p
+		on e.elPi_RelevancePowerStation = p.powerStation_id
+		<if test="cpyId != null">
+			inner join tbl_company cpy on cpy.cpy_id = e.cpy_id
+			where e.cpy_id = #{cpyId}
+		</if>
+		GROUP BY p.powerStation_id
+		ORDER BY p.city_code, p.powerStation_id
+	</select>
+
+	<select id="getElectricPile" parameterType="FinAccountSplitConfigDO" resultType="integralAreaBO">
+		select p.powerStation_id, e.pk_ElectricPile electricPile_id, e.elPi_ElectricPileName electricPile_Name
+		from tbl_electricpile e
+		inner join tbl_powerstation p
+		on e.elPi_RelevancePowerStation = p.powerStation_id
+		<if test="cpyId != null">
+			inner join tbl_company cpy on cpy.cpy_id = e.cpy_id
+			where e.cpy_id = #{cpyId}
+		</if>
+		ORDER BY p.city_code, p.powerStation_id
+	</select>
+</mapper>

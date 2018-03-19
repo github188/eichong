@@ -1,0 +1,126 @@
+package com.wanma.controller.cczc;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.wanma.controller.cczc.util.ControllerUtil;
+import com.wanma.model.TblChargingOrder;
+import com.wanma.service.PileFilterService;
+import com.wanma.service.TblChargingOrderService;
+import com.wanma.service.TblElectricpileService;
+import com.wanma.support.common.FailedResponse;
+import com.wanma.support.common.ResultResponse;
+import com.wanma.support.common.WanmaConstants;
+
+/**
+ * @Description: 充电管理控制层
+ * @author lhy
+ * @createTime：2015-11-19 16:25:05
+ * @updateTime：
+ * @version：V1.0
+ */
+@Controller
+@RequestMapping("/cczc")
+public class CczcChargeController {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CczcChargeController.class);
+	@Autowired
+	private TblChargingOrderService ordService;
+	@Autowired
+	TblElectricpileService pService;
+	
+	@Autowired
+	private PileFilterService pileFilterService;
+	/**
+	 * @Description: 开始充电
+	 * @return
+	 * @throws Exception 
+	 */
+	@SuppressWarnings("rawtypes")
+	@RequestMapping("/chargeStart")
+	@ResponseBody
+	public String chargeStart(HttpServletRequest request) throws Exception {
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+		LOGGER.info("chargeStart signal begin time:"+df.format(new Date()));
+		
+		String org = request.getParameter("org");
+		String outOrderId = request.getParameter("outOrderId");
+		String driverId = request.getParameter("driverId");
+		String stubId = request.getParameter("stubId");
+		String gunId = request.getParameter("gunId");
+		if (StringUtils.isBlank(outOrderId) 
+				|| StringUtils.isBlank(driverId) 
+				|| StringUtils.isBlank(stubId) 
+				|| StringUtils.isBlank(gunId))
+			return new FailedResponse(1001, "params error").toString();
+		//对充电桩进行过滤--begin
+		 LOGGER.info("开始校验该第三方能否对此充电桩进行充电");
+		 boolean ok=pileFilterService.checkPileIsOk(org,stubId);
+		 if(ok==false){
+			return new FailedResponse(6804, "no right").toString();
+		 }
+		 LOGGER.info("结束校验该第三方能否对此充电桩进行充电");
+		//对充电桩进行过滤-end
+        LOGGER.info("下发充电命令开始，司机编号："+driverId+";第三方标识："+org);
+		int rtCode = WanmaConstants.cs.startChange(Integer.parseInt(org), driverId, stubId, Integer.parseInt(gunId), new Short("1"),20000, 2, "", "", 0,outOrderId);//下发充电命令
+        LOGGER.info("下发充电命令结束！");
+		if(rtCode > 0){
+			ResultResponse resultRespone = new ResultResponse();
+			resultRespone.setStatus(rtCode);
+			resultRespone.setMsg("操作失败！");
+			return resultRespone.toString();
+		}
+		return ControllerUtil.doReturn(WanmaConstants.startCgEvt, driverId);
+	}
+
+	/**
+	 * @Description: 结束充电
+	 * @return
+	 * @throws Exception 
+	 */
+	@SuppressWarnings("rawtypes")
+	@RequestMapping("/chargeStop")
+	@ResponseBody
+	
+	public String chargeStop(HttpServletRequest request) throws Exception {
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+		LOGGER.info("chargeStop signal begin time:"+df.format(new Date()));
+		
+		String org = request.getParameter("org");
+		String orderId = request.getParameter("orderId");
+		if (StringUtils.isBlank(orderId))
+			return new FailedResponse(1001, "params error").toString();
+		TblChargingOrder model = new TblChargingOrder();
+		model.setChorCode(orderId);
+		model = ordService.selectOne(model);
+		if(model == null){
+			ResultResponse resultRespone = new ResultResponse();
+			resultRespone.setStatus(2004);
+			resultRespone.setMsg("查询数据库失败，不存在该条订单！");
+			return resultRespone.toString();
+		}
+		String driverId = model.getChorParterUserLogo();
+		//删除结束充电缓存
+		WanmaConstants.stopCgEvt.remove(driverId);
+        LOGGER.info("下发停止充电命令开始，司机编号："+driverId+";第三方标识："+org);
+		int rtCode = WanmaConstants.cs.stopChange(model.getChorPilenumber(), model.getChorMuzzle(), Integer.parseInt(org), driverId, "");//下发结束充电命令
+        LOGGER.info("下发停止充电命令结束！");
+		if(rtCode > 0){
+			ResultResponse resultRespone = new ResultResponse();
+			resultRespone.setStatus(rtCode);
+			resultRespone.setMsg("操作失败！");
+			return resultRespone.toString();
+		}
+		return ControllerUtil.doReturn(WanmaConstants.stopCgEvt, driverId);
+	}
+
+}

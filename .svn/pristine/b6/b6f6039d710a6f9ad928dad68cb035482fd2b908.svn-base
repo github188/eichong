@@ -1,0 +1,14 @@
+package com.wanma.ims.mapper;
+
+
+import com.wanma.ims.common.domain.BomListDO;
+
+public interface BomListMapper {
+
+	int addBomList(BomListDO bomListInfo);
+
+	
+	
+
+
+}

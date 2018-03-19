@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsEquipmentrepairMapper">
+	<resultMap type="TblEquipmentrepair" id="result_equip">
+		<id property="pkEquipmentrepair" column="pk_EquipmentRepair" />
+		<result property="eqreWarrantytypeid" column="eqRe_WarrantyTypeId" />
+		<result property="eqreContent" column="eqRe_Content" />
+		<result property="eqreUserid" column="eqRe_UserId" />
+		<result property="eqreWarrantystatus" column="eqRe_WarrantyStatus" />
+		<result property="eqreCreatedate" column="eqRe_Createdate" />
+		<result property="eqreUpdatedate" column="eqRe_Updatedate" />
+		<result property="eqreStatus" column="eqRe_Status" />
+		<result property="eqreWarrantytypeName" column="para_Name" />	
+	</resultMap>
+	
+	<!-- 取得设备报修列表 -->
+	<select id="getEquipList" resultMap="result_equip">
+		SELECT
+			pk_EquipmentRepair,
+			ui.pk_UserInfo,
+			ui.usIn_UserName,
+			ui.usIn_Phone,
+			eqRe_Createdate,
+			eqRe_WarrantyTypeId,
+			eqRe_Content,
+			eqRe_WarrantyStatus
+		FROM 
+			tbl_EquipmentRepair
+	</select>
+	
+	<!-- 查询设备报修数量 -->
+	<select id="searchEquipCount" parameterType="TblEquipmentrepair" resultType="long">
+		select count(temp.pk_EquipmentRepair) from (SELECT
+			er.pk_EquipmentRepair,
+			(ui.user_id) as userId,
+			(ui.norm_real_name) as userName,
+			(ui.user_account) as phone,
+			er.eqRe_Createdate,
+			er.eqRe_WarrantyTypeId,
+			er.eqRe_Content,
+			er.eqRe_WarrantyStatus,
+			ep.elPi_ElectricPileAddress,
+			ep.elPi_ElectricPileName,
+            co.coCo_Content           
+		FROM 
+			tbl_EquipmentRepair AS er LEFT JOIN (select a.user_account,b.user_id,b.norm_real_name from tbl_user a,tbl_user_normal b where a.user_id=b.user_id) AS ui ON ui.user_id = er.eqRe_UserId 
+			LEFT JOIN tbl_configcontent co on eqRe_WarrantyTypeId=pk_ConfigContent
+			left join tbl_electricpile ep on ep.pk_ElectricPile = er.epid
+		<where>
+			er.device_type = 1
+			<if test="start_create_date !=null and start_create_date !=''">
+			  <![CDATA[and er.eqRe_Createdate >=#{start_create_date}]]>
+			</if>
+			<if test="end_create_date !=null and end_create_date !=''">
+				 <![CDATA[and er.eqRe_Createdate <=#{end_create_date}]]>
+			</if>
+			<if test="eqreWarrantytypeid !=null and eqreWarrantytypeid !=''">
+				and er.eqRe_WarrantyTypeId=#{eqreWarrantytypeid}
+			</if>
+			<if test="phone !=null and phone !=''">
+				and ui.user_account like CONCAT('%','${phone}','%' )
+			</if>
+			<if test="userName !=null and userName !=''">
+				and ep.elPi_UserName = #{userName}
+			</if>
+		</where>
+		union
+		SELECT
+			er.pk_EquipmentRepair,
+			(ui.user_id) as userId,
+			(ui.norm_real_name) as userName,
+			(ui.user_account) as phone,
+			er.eqRe_Createdate,		
+			er.eqRe_WarrantyTypeId,
+			er.eqRe_Content,
+			er.eqRe_WarrantyStatus,
+            co.coCo_Content,
+            ps.poSt_Address,
+            ps.poSt_Name
+		FROM 
+			tbl_EquipmentRepair AS er LEFT JOIN (select a.user_account,b.user_id,b.norm_real_name from tbl_user a,tbl_user_normal b where a.user_id=b.user_id) AS ui ON ui.user_id = er.eqRe_UserId 
+			LEFT JOIN tbl_configcontent co on eqRe_WarrantyTypeId=pk_ConfigContent
+			left join tbl_powerstation ps on ps.pk_PowerStation = er.epid
+		<where>
+			er.device_type = 2
+			<if test="start_create_date !=null and start_create_date !=''">
+			  <![CDATA[and er.eqRe_Createdate >=#{start_create_date}]]>
+			</if>
+			<if test="end_create_date !=null and end_create_date !=''">
+				 <![CDATA[and er.eqRe_Createdate <=#{end_create_date}]]>
+			</if>
+			<if test="eqreWarrantytypeid !=null and eqreWarrantytypeid !=''">
+				and er.eqRe_WarrantyTypeId=#{eqreWarrantytypeid}
+			</if>
+			<if test="phone !=null and phone !=''">
+				and ui.user_account like CONCAT('%','${phone}','%' )
+			</if>
+			<if test="userName !=null and userName !=''">
+				and ps.poSt_userName = #{userName}
+			</if>
+		</where>)temp
+		
+		
+	</select>
+	
+	<!-- 查询全部设备报修 -->
+	<select id="searchEquipList" parameterType="TblEquipmentrepair" resultType="hashMap">
+		select * from (SELECT
+			er.pk_EquipmentRepair,
+			(ui.user_id) as userId,
+			(ui.norm_real_name) as userName,
+			(ui.user_account) as phone,
+			er.eqRe_Createdate,
+			er.eqRe_Updatedate,
+			er.eqRe_WarrantyTypeId,
+			er.eqRe_Content,
+			er.eqRe_WarrantyStatus,
+			ep.elPi_ElectricPileAddress,
+			ep.elPi_ElectricPileName,
+			ep.elPi_ElectricPileCode,
+			ep.elPi_UserName,
+			er.device_type deviceType,
+            co.coCo_Content,
+            er.deal_result
+		FROM 
+			tbl_EquipmentRepair AS er LEFT JOIN (select a.user_account,b.user_id,b.norm_real_name from tbl_user a,tbl_user_normal b where a.user_id=b.user_id) AS ui ON ui.user_id = er.eqRe_UserId 
+			LEFT JOIN tbl_configcontent co on eqRe_WarrantyTypeId=pk_ConfigContent
+			left join tbl_electricpile ep on ep.pk_ElectricPile = er.epid
+		<where>
+			er.device_type = 1
+			<if test="start_create_date !=null and start_create_date !=''">
+			  <![CDATA[and er.eqRe_Createdate >=#{start_create_date}]]>
+			</if>
+			<if test="end_create_date !=null and end_create_date !=''">
+				 <![CDATA[and er.eqRe_Createdate <=#{end_create_date}]]>
+			</if>
+			<if test="eqreWarrantytypeid !=null and eqreWarrantytypeid !=''">
+				and er.eqRe_WarrantyTypeId=#{eqreWarrantytypeid}
+			</if>
+			<if test="phone !=null and phone !=''">
+				and ui.user_account like CONCAT('%','${phone}','%' )
+			</if>
+			<if test="userName !=null and userName !=''">
+				and ep.elPi_UserName = #{userName}
+			</if>
+		</where>
+		union all
+		SELECT
+			er.pk_EquipmentRepair,
+			(ui.user_id) as userId,
+			(ui.norm_real_name) as userName,
+			(ui.user_account) as phone,
+			er.eqRe_Createdate,
+			er.eqRe_Updatedate,
+			er.eqRe_WarrantyTypeId,
+			er.eqRe_Content,
+			er.eqRe_WarrantyStatus,
+			ps.poSt_Address,
+			ps.poSt_Name,
+			'' as poSt_code,
+			ps.poSt_UserName,
+			er.device_type deviceType,
+            co.coCo_Content,
+            er.deal_result
+		FROM 
+			tbl_EquipmentRepair AS er LEFT JOIN (select a.user_account,b.user_id,b.norm_real_name from tbl_user a,tbl_user_normal b where a.user_id=b.user_id) AS ui ON ui.user_id = er.eqRe_UserId 
+			LEFT JOIN tbl_configcontent co on eqRe_WarrantyTypeId=pk_ConfigContent
+			left join tbl_powerstation ps on ps.pk_PowerStation = er.epid
+		<where>
+			er.device_type = 2
+			<if test="start_create_date !=null and start_create_date !=''">
+			  <![CDATA[and er.eqRe_Createdate >=#{start_create_date}]]>
+			</if>
+			<if test="end_create_date !=null and end_create_date !=''">
+				 <![CDATA[and er.eqRe_Createdate <=#{end_create_date}]]>
+			</if>
+			<if test="eqreWarrantytypeid !=null and eqreWarrantytypeid !=''">
+				and er.eqRe_WarrantyTypeId=#{eqreWarrantytypeid}
+			</if>
+			<if test="phone !=null and phone !=''">
+				and ui.user_account like CONCAT('%','${phone}','%' )
+			</if>
+			<if test="userName !=null and userName !=''">
+				and ps.poSt_userName = #{userName}
+			</if>
+		</where>) temp
+		ORDER BY eqRe_WarrantyStatus,temp.eqRe_Updatedate DESC
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+		
+	<!-- 查询全部设备报修 -->
+	<select id="searchLeadOutEquipList" parameterType="TblEquipmentrepair" resultType="hashMap">
+		select * from (SELECT
+			concat(ui.norm_real_name,ui.user_account) '提交人',
+			er.eqRe_Createdate '提交时间',
+			er.eqRe_Updatedate,
+			er.eqRe_WarrantyStatus '处理状态',
+			ep.elPi_ElectricPileAddress '充电点地址',
+			ep.elPi_ElectricPileName '充电点名称',
+			ep.elPi_ElectricPileCode '充电点编号',
+			ep.elPi_UserName '充电点所属公司',
+			co.coCo_Content '报修类型',
+            er.eqRe_Content '问题描述',
+            er.deal_result '处理结果'
+		FROM 
+			tbl_EquipmentRepair AS er LEFT JOIN (select a.user_account,b.user_id,b.norm_real_name from tbl_user a,tbl_user_normal b where a.user_id=b.user_id) AS ui ON ui.user_id = er.eqRe_UserId 
+			LEFT JOIN tbl_configcontent co on eqRe_WarrantyTypeId=pk_ConfigContent
+			left join tbl_electricpile ep on ep.pk_ElectricPile = er.epid
+		<where>
+			er.device_type = 1
+			<if test="start_create_date !=null and start_create_date !=''">
+			  <![CDATA[and er.eqRe_Createdate >=#{start_create_date}]]>
+			</if>
+			<if test="end_create_date !=null and end_create_date !=''">
+				 <![CDATA[and er.eqRe_Createdate <=#{end_create_date}]]>
+			</if>
+			<if test="eqreWarrantytypeid !=null and eqreWarrantytypeid !=''">
+				and er.eqRe_WarrantyTypeId=#{eqreWarrantytypeid}
+			</if>
+			<if test="phone !=null and phone !=''">
+				and ui.user_account like CONCAT('%','${phone}','%' )
+			</if>
+			<if test="userName !=null and userName !=''">
+				and ep.elPi_UserName = #{userName}
+			</if>
+		</where>
+		union all
+		SELECT
+			concat(ui.norm_real_name,ui.user_account) '提交人',
+			er.eqRe_Createdate '提交时间',
+			er.eqRe_Updatedate,
+			er.eqRe_WarrantyStatus '处理状态',
+			ps.poSt_Address '充电点地址',
+			ps.poSt_Name '充电点名称',
+			'' '充电点编号',
+			ps.poSt_UserName '充电点所属公司',
+			co.coCo_Content '报修类型',
+            er.eqRe_Content '问题描述',
+            er.deal_result '处理结果'
+		FROM 
+			tbl_EquipmentRepair AS er LEFT JOIN (select a.user_account,b.user_id,b.norm_real_name from tbl_user a,tbl_user_normal b where a.user_id=b.user_id) AS ui ON ui.user_id = er.eqRe_UserId 
+			LEFT JOIN tbl_configcontent co on eqRe_WarrantyTypeId=pk_ConfigContent
+			left join tbl_powerstation ps on ps.pk_PowerStation = er.epid
+		<where>
+			er.device_type = 2
+			<if test="start_create_date !=null and start_create_date !=''">
+			  <![CDATA[and er.eqRe_Createdate >=#{start_create_date}]]>
+			</if>
+			<if test="end_create_date !=null and end_create_date !=''">
+				 <![CDATA[and er.eqRe_Createdate <=#{end_create_date}]]>
+			</if>
+			<if test="eqreWarrantytypeid !=null and eqreWarrantytypeid !=''">
+				and er.eqRe_WarrantyTypeId=#{eqreWarrantytypeid}
+			</if>
+			<if test="phone !=null and phone !=''">
+				and ui.user_account like CONCAT('%','${phone}','%' )
+			</if>
+			<if test="userName !=null and userName !=''">
+				and ps.poSt_userName = #{userName}
+			</if>
+		</where>) temp
+		ORDER BY temp.eqRe_Updatedate DESC
+	</select>
+	
+	<!-- 添加设备报修 -->
+	<insert id="insertEquip" parameterType="TblEquipmentrepair" keyProperty="pk_EquipmentRepair">
+		INSERT INTO tbl_EquipmentRepair 
+		(
+			eqreUserid,
+			eqRe_Createdate,
+			eqRe_WarrantyTypeId,
+			eqRe_Content,
+			eqRe_WarrantyStatus
+		) 
+		VALUES
+		(
+			#{eqreUserid},
+			#{eqreCreatedate},
+			#{eqreWarrantytypeid},
+			#{eqreContent},
+			#{eqreWarrantystatus}
+		)
+	</insert>
+	
+	<!-- 更新设备状态 -->
+	<update id="updateEquipStage" parameterType="map">
+		update tbl_EquipmentRepair set eqRe_WarrantyStatus = #{eqreWarrantystatus},deal_result=#{dealResult} where pk_EquipmentRepair = #{pkEquipmentrepair}
+	</update>
+</mapper>

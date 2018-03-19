@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wanma.dao.TblRateInformationMapper">
+
+    <resultMap id="tblRateInformationResultMap" type="TblRateInformation">
+        <result property="pkRateInformation" column="pk_RateInformation"/>
+        <result property="raInModelId" column="raIn_ModelId"/>
+        <result property="raInEffectiveDates" column="raIn_EffectiveDates"/>
+        <result property="raInExpiryDate" column="raIn_ExpiryDate"/>
+        <result property="raInFreezingMoney" column="raIn_FreezingMoney"/>
+        <result property="raInMinFreezingMoney" column="raIn_MinFreezingMoney"/>
+        <result property="raInQuantumDate" column="raIn_QuantumDate"/>
+        <result property="raInStartQuantumDate" column="raIn_StartQuantumDate"/>
+        <result property="raInEndQuantumDate" column="raIn_EndQuantumDate"/>
+        <result property="raInTimeMarker" column="raIn_TimeMarker"/>
+        <result property="raInTipTimeTariff" column="raIn_TipTimeTariffPrice"/>
+        <result property="raInPeakElectricityPrice" column="raIn_PeakElectricityPrice"/>
+        <result property="raInUsualPrice" column="raIn_UsualPrice"/>
+        <result property="raInValleyTimePrice" column="raIn_ValleyTimePrice"/>
+        <result property="raInReservationRate" column="raIn_ReservationRate"/>
+        <result property="raInServiceCharge" column="raIn_ServiceCharge"/>
+        <result property="raInWarnMoney" column="raIn_WarnMoney"/>
+        <result property="raInTipTimeTariffMoney" column="raIn_TipTimeTariffMoney"/>
+        <result property="raInPeakElectricityMoney" column="raIn_PeakElectricityMoney"/>
+        <result property="raInUsualMoney" column="raIn_UsualMoney"/>
+        <result property="raInValleyTimeMoney" column="raIn_ValleyTimeMoney"/>
+		<result property="raInType" column="raIn_type"/>
+	</resultMap>
+
+    <!-- 根据Id获取结果 -->
+    <select id="getById" parameterType="java.lang.Long" resultMap="tblRateInformationResultMap">
+		SELECT * FROM tbl_rateinformation WHERE pk_RateInformation=#{pkRateInformation}
+	</select>
+
+    <select id="selectOne" parameterType="TblRateInformation" resultMap="tblRateInformationResultMap">
+        SELECT * FROM tbl_rateinformation t WHERE 1=1
+        <if test="elcId != null or elcId != ''">
+            and exists (select 1 from tbl_electricpile e where e.elPi_RateInformationId = t.pk_RateInformation and
+            e.pk_ElectricPile = #{elcId})
+        </if>
+
+    </select>
+
+    <select id="selectMinPriceByPsId" parameterType="int" resultType="Double">
+		SELECT min(t.raIn_ValleyTimePrice) FROM tbl_rateinformation t WHERE 1=1
+			and exists (select 1 from tbl_electricpile e where e.elPi_RateInformationId = t.pk_RateInformation and e.elPi_RelevancePowerStation = #{value})
+		
+	</select>
+
+    <!-- 根据电桩的费率id查询充电费以及服务费信息 -->
+    <select id="getPriceById" parameterType="map" resultMap="tblRateInformationResultMap">
+	  SELECT
+	    pk_RateInformation,
+		raIn_ModelId ,
+		raIn_ServiceCharge,
+		raIn_QuantumDate ,
+		raIn_StartQuantumDate ,
+		raIn_EndQuantumDate ,
+		raIn_TimeMarker,
+		raIn_TipTimeTariffPrice ,
+		raIn_PeakElectricityPrice ,
+		raIn_UsualPrice ,
+		raIn_ValleyTimePrice ,
+		raIn_TipTimeTariffMoney ,
+		raIn_PeakElectricityMoney ,
+		raIn_UsualMoney ,
+		raIn_ValleyTimeMoney 
+	 FROM
+	   tbl_RateInformation
+	 WHERE 
+	       pk_RateInformation=#{pkRateinformation}
+	   </select>
+
+    <!--查询电桩个性化费率-->
+    <select id="queryByRateInfo"  parameterType="map" resultMap="tblRateInformationResultMap">
+	SELECT
+		a.pk_RateInformation,
+		a.raIn_ModelId,
+		a.raIn_ServiceCharge,
+		a.raIn_QuantumDate,
+		a.raIn_StartQuantumDate,
+		a.raIn_EndQuantumDate,
+		a.raIn_TimeMarker,
+		a.raIn_TipTimeTariffPrice,
+		a.raIn_PeakElectricityPrice,
+		a.raIn_UsualPrice,
+		a.raIn_ValleyTimePrice,
+		a.raIn_TipTimeTariffMoney,
+		a.raIn_PeakElectricityMoney,
+		a.raIn_UsualMoney,
+		a.raIn_ValleyTimeMoney,
+		a.raIn_type
+	FROM
+		tbl_rateinformation a,
+		tbl_rate_unique_rela b
+	WHERE
+		a.pk_RateInformation = b.rateinfo_id
+	AND b.cpy_id = (
+		SELECT
+			p.cpy_id
+		FROM
+			tbl_partner p
+		WHERE
+			partnerKey = #{OperatorID}
+	)
+	AND b.electricpile_id = (
+		SELECT
+			e.pk_ElectricPile
+		FROM
+			tbl_electricpile e
+		WHERE
+			e.elPi_ElectricPileCode = #{epCode}
+	)
+	AND b.level_id = (
+		SELECT
+			u.level_id
+		FROM
+			tbl_partner p,
+			tbl_company d,
+			tbl_user u,
+			tbl_user_company f
+		WHERE
+			p.partnerKey = #{OperatorID}
+		AND p.cpy_id = d.cpy_id
+		AND d.cpy_id = f.cpy_id
+		AND f.user_id = u.user_id
+	)
+	</select>
+
+	<!-- 根据电桩的编号查询充电费以及服务费信息 -->
+	<select id="queryByPriceId" parameterType="map" resultMap="tblRateInformationResultMap">
+		SELECT
+			pk_RateInformation,
+			raIn_ModelId ,
+			raIn_ServiceCharge,
+			raIn_QuantumDate ,
+			raIn_StartQuantumDate ,
+			raIn_EndQuantumDate ,
+			raIn_TimeMarker,
+			raIn_TipTimeTariffPrice ,
+			raIn_PeakElectricityPrice ,
+			raIn_UsualPrice ,
+			raIn_ValleyTimePrice ,
+			raIn_TipTimeTariffMoney ,
+			raIn_PeakElectricityMoney ,
+			raIn_UsualMoney ,
+			raIn_ValleyTimeMoney,
+			raIn_type
+		FROM
+		tbl_RateInformation a,
+	    tbl_electricpile e
+		WHERE
+			e.elPi_ElectricPileCode = #{epCode}
+		AND a.pk_RateInformation = e.elPi_RateInformationId
+	</select>
+
+
+
+
+
+</mapper>

@@ -1,0 +1,427 @@
+package com.wanma.ims.common.domain;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import com.wanma.ims.common.domain.base.BasicModel;
+
+/**
+ * User实体类 （基表）
+ */
+public class UserDO extends BasicModel {
+
+	private static final long serialVersionUID = -974398451786148136L;
+
+	private Long userId;// 用户ID
+
+	private String userAccount;// 用户帐号
+
+	private String userPassword;// 用户密码
+
+	private Integer userLevel;// 用户等级1：超级管理员 2：系统管理员 3:渠道用户 6:普通用户
+
+	private Integer userStatus;// 用户状态 1:正常 2:冻结 3:删除
+
+	private String userIdcard;// 身份证号
+
+	private Integer userHeadImg;// 用户头像，默认0 0.充充侠 1.用户自定义
+
+	private String provinceCode;// 活动区域：省
+
+	private String cityCode;// 活动区域：市
+
+	private String areaCode;// 活动区域：区域
+
+	private Long levelId;// 等级ID
+
+	// 以下为非持久化字段
+	private Integer cpyType;// 渠道类型 0 爱充 1 其他渠道
+
+	private Long cpyId; // 用户所属渠道
+
+	private String cpyName;// 渠道名
+
+	private Integer cpyNumber;// 公司标识
+
+	private String levelName;// 等级名
+
+	private String userAddress;// 用户地址
+
+	private Integer normCarCompanyId;// 普通用户汽车品牌ID
+
+	private Integer normCarTypeId;// 普通用户汽车车型ID
+
+	private String userName; // 用户昵称
+
+	private String userCar;// 用户的车辆，暂时没有
+
+	private String userRealName;// 用户真实姓名
+
+	private Integer userSex;// 用户性别 (0:未知 1:男 2：女)
+
+	private String userPhone;// 用户手机号
+
+	private Long accountId; // 用户资金账户
+
+	private String userCpyNo;// 用户账号
+
+	private String userCpyName;// 用户名称
+
+	private String userCpyPhone;// 用户渠道手机号
+
+	private String chUserStatus;// 用户状态，中文，导出使用
+
+	private String chUserSex;// 用户性别，中文，导出使用
+
+	private String userBalance;// 用户余额
+
+	private String userHeadImgUrl;// 用户头像图片链接
+
+	private Date registeredTime;// 用户注册时间
+
+	private Integer tradeType;// 资金账户类型 1后付费 2先付费
+
+	private Long tagId;// 标签Id
+
+	private List<Long> userIds = new ArrayList<Long>();// 用户集合
+
+	private List<Long> cpyIdList = new ArrayList<Long>();// 公司集合
+
+	private List<Integer> cpyNumberList = new ArrayList<Integer>(); // 公司标识集合 特用于订单
+
+	private Long carCompanyId;
+
+	private Long carInfoId;
+
+	private String normPlateNum; // 车牌号
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public String getUserAccount() {
+		return userAccount;
+	}
+
+	public void setUserAccount(String userAccount) {
+		this.userAccount = userAccount;
+	}
+
+	public String getUserPassword() {
+		return userPassword;
+	}
+
+	public void setUserPassword(String userPassword) {
+		this.userPassword = userPassword;
+	}
+
+	public Integer getUserLevel() {
+		return userLevel;
+	}
+
+	public void setUserLevel(Integer userLevel) {
+		this.userLevel = userLevel;
+	}
+
+	public Integer getUserStatus() {
+		return userStatus;
+	}
+
+	public void setUserStatus(Integer userStatus) {
+		this.userStatus = userStatus;
+	}
+
+	public String getUserIdcard() {
+		return userIdcard;
+	}
+
+	public void setUserIdcard(String userIdcard) {
+		this.userIdcard = userIdcard;
+	}
+
+	public Integer getUserHeadImg() {
+		return userHeadImg;
+	}
+
+	public void setUserHeadImg(Integer userHeadImg) {
+		this.userHeadImg = userHeadImg;
+	}
+
+	public String getProvinceCode() {
+		return provinceCode;
+	}
+
+	public void setProvinceCode(String provinceCode) {
+		this.provinceCode = provinceCode;
+	}
+
+	public String getCityCode() {
+		return cityCode;
+	}
+
+	public void setCityCode(String cityCode) {
+		this.cityCode = cityCode;
+	}
+
+	public String getAreaCode() {
+		return areaCode;
+	}
+
+	public void setAreaCode(String areaCode) {
+		this.areaCode = areaCode;
+	}
+
+	public Long getLevelId() {
+		return levelId;
+	}
+
+	public void setLevelId(Long levelId) {
+		this.levelId = levelId;
+	}
+
+	public Integer getCpyType() {
+		return cpyType;
+	}
+
+	public void setCpyType(Integer cpyType) {
+		this.cpyType = cpyType;
+	}
+
+	public Long getCpyId() {
+		return cpyId;
+	}
+
+	public void setCpyId(Long cpyId) {
+		this.cpyId = cpyId;
+	}
+
+	public String getCpyName() {
+		return cpyName;
+	}
+
+	public void setCpyName(String cpyName) {
+		this.cpyName = cpyName;
+	}
+
+	public Integer getCpyNumber() {
+		return cpyNumber;
+	}
+
+	public void setCpyNumber(Integer cpyNumber) {
+		this.cpyNumber = cpyNumber;
+	}
+
+	public String getLevelName() {
+		return levelName;
+	}
+
+	public void setLevelName(String levelName) {
+		this.levelName = levelName;
+	}
+
+	public String getUserAddress() {
+		return userAddress;
+	}
+
+	public void setUserAddress(String userAddress) {
+		this.userAddress = userAddress;
+	}
+
+	public Integer getNormCarCompanyId() {
+		return normCarCompanyId;
+	}
+
+	public void setNormCarCompanyId(Integer normCarCompanyId) {
+		this.normCarCompanyId = normCarCompanyId;
+	}
+
+	public Integer getNormCarTypeId() {
+		return normCarTypeId;
+	}
+
+	public void setNormCarTypeId(Integer normCarTypeId) {
+		this.normCarTypeId = normCarTypeId;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getUserCar() {
+		return userCar;
+	}
+
+	public void setUserCar(String userCar) {
+		this.userCar = userCar;
+	}
+
+	public String getUserRealName() {
+		return userRealName;
+	}
+
+	public void setUserRealName(String userRealName) {
+		this.userRealName = userRealName;
+	}
+
+	public Integer getUserSex() {
+		return userSex;
+	}
+
+	public void setUserSex(Integer userSex) {
+		this.userSex = userSex;
+	}
+
+	public String getUserPhone() {
+		return userPhone;
+	}
+
+	public void setUserPhone(String userPhone) {
+		this.userPhone = userPhone;
+	}
+
+	public Long getAccountId() {
+		return accountId;
+	}
+
+	public void setAccountId(Long accountId) {
+		this.accountId = accountId;
+	}
+
+	public String getUserCpyNo() {
+		return userCpyNo;
+	}
+
+	public void setUserCpyNo(String userCpyNo) {
+		this.userCpyNo = userCpyNo;
+	}
+
+	public String getUserCpyName() {
+		return userCpyName;
+	}
+
+	public void setUserCpyName(String userCpyName) {
+		this.userCpyName = userCpyName;
+	}
+
+	public String getUserCpyPhone() {
+		return userCpyPhone;
+	}
+
+	public void setUserCpyPhone(String userCpyPhone) {
+		this.userCpyPhone = userCpyPhone;
+	}
+
+	public String getChUserStatus() {
+		return chUserStatus;
+	}
+
+	public void setChUserStatus(String chUserStatus) {
+		this.chUserStatus = chUserStatus;
+	}
+
+	public String getChUserSex() {
+		return chUserSex;
+	}
+
+	public void setChUserSex(String chUserSex) {
+		this.chUserSex = chUserSex;
+	}
+
+	public String getUserBalance() {
+		return userBalance;
+	}
+
+	public void setUserBalance(String userBalance) {
+		this.userBalance = userBalance;
+	}
+
+	public String getUserHeadImgUrl() {
+		return userHeadImgUrl;
+	}
+
+	public void setUserHeadImgUrl(String userHeadImgUrl) {
+		this.userHeadImgUrl = userHeadImgUrl;
+	}
+
+	public Date getRegisteredTime() {
+		return registeredTime;
+	}
+
+	public void setRegisteredTime(Date registeredTime) {
+		this.registeredTime = registeredTime;
+	}
+
+	public Integer getTradeType() {
+		return tradeType;
+	}
+
+	public void setTradeType(Integer tradeType) {
+		this.tradeType = tradeType;
+	}
+
+	public Long getTagId() {
+		return tagId;
+	}
+
+	public void setTagId(Long tagId) {
+		this.tagId = tagId;
+	}
+
+	public List<Long> getUserIds() {
+		return userIds;
+	}
+
+	public void setUserIds(List<Long> userIds) {
+		this.userIds = userIds;
+	}
+
+	public Long getCarCompanyId() {
+		return carCompanyId;
+	}
+
+	public void setCarCompanyId(Long carCompanyId) {
+		this.carCompanyId = carCompanyId;
+	}
+
+	public Long getCarInfoId() {
+		return carInfoId;
+	}
+
+	public void setCarInfoId(Long carInfoId) {
+		this.carInfoId = carInfoId;
+	}
+
+	public List<Long> getCpyIdList() {
+		return cpyIdList;
+	}
+
+	public void setCpyIdList(List<Long> cpyIdList) {
+		this.cpyIdList = cpyIdList;
+	}
+
+	public List<Integer> getCpyNumberList() {
+		return cpyNumberList;
+	}
+
+	public void setCpyNumberList(List<Integer> cpyNumberList) {
+		this.cpyNumberList = cpyNumberList;
+	}
+
+	public String getNormPlateNum() {
+		return normPlateNum;
+	}
+
+	public void setNormPlateNum(String normPlateNum) {
+		this.normPlateNum = normPlateNum;
+	}
+
+}

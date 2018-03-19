@@ -1,0 +1,29 @@
+package com.wanma.ims.mapper;
+
+import java.util.List;
+import java.util.Map;
+
+import com.wanma.ims.model.base.AreaDO;
+import com.wanma.ims.model.base.CityDO;
+import com.wanma.ims.model.base.ProvinceDO;
+
+
+public interface InitialMapper {
+	
+	/**
+	 * 省下拉框
+	 * @param
+	 * */
+    public List<ProvinceDO> selectProvinceList(Map<String,String> provinceMap);
+    
+    /**
+	 * 市下拉框
+	 * @param
+	 * */
+    public List<CityDO> selectCityList(Map<String,String> cityMap);
+    /**
+	 * 区下拉框
+	 * @param
+	 * */
+    public List<AreaDO> selectAreaList(Map<String,String> areaMap);
+}

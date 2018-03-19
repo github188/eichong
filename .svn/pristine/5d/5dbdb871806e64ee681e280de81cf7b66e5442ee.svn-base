@@ -1,0 +1,731 @@
+package com.wanma.controller.cec;
+
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import net.sf.json.JSONArray;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.wanma.model.TblChargingOrder;
+import com.wanma.model.TblElectricpilehead;
+import com.wanma.model.TblPowerstation;
+import com.wanma.model.TcbElectric;
+import com.wanma.service.PileFilterService;
+import com.wanma.service.TblChargingOrderService;
+import com.wanma.service.TblElectricpileHeadService;
+import com.wanma.service.TblElectricpileService;
+import com.wanma.service.TblPowerstationService;
+import com.wanma.service.TblRateInformationService;
+import com.wanma.support.common.RedisService;
+import com.wanma.support.common.ResultResponse;
+import com.wanma.support.common.WanmaConstants;
+import com.wanma.support.utils.AesCBC;
+import com.wanma.support.utils.JsonResult;
+import com.wanma.support.utils.RandomUtil;
+import com.wanma.support.utils.TokenUtil;
+
+@Controller
+@RequestMapping("/v1.0.0")
+public class CecControllerV1 {
+	private static final SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+	private static final Logger LOGGER = LoggerFactory.getLogger(CecControllerV1.class);
+	private static final java.text.DecimalFormat df = new java.text.DecimalFormat("#.0");
+	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	@Autowired
+	private RedisService redisService;
+	@Autowired
+	private TblElectricpileHeadService hService;
+	@Autowired
+	private TblRateInformationService rateService;
+	@Autowired
+	private TblPowerstationService psService;
+	@Autowired
+	private TblElectricpileService elcService;
+	@Autowired
+	private PileFilterService pileFilterService;
+	@Autowired
+	private TblElectricpileHeadService headService;
+	@Autowired
+	private TblChargingOrderService ordService;
+
+	/**
+	 * 1:获取Token
+	 * 
+	 * @param params
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/query_token",produces="application/json;charset=utf-8")
+	@ResponseBody
+	public String query_token(@RequestBody Map<String, String> params)
+			throws Exception {
+		String dataStr = params.get("Data");
+		String OperatorID = params.get("OperatorID");
+		LOGGER.info("==========================请求Data：" + dataStr
+				+ "==================================");
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("OperatorID", OperatorID);
+		Map<String, String> KeyList = psService.getPartnerKeyList(map);
+		String keyt = KeyList.get("Secret").split("\\|")[0];
+		String vector = KeyList.get("Secret").split("\\|")[1];
+		String sig = KeyList.get("Secret").split("\\|")[2];
+		String partnerToken = KeyList.get("partnerToken");
+		JSONObject reqData = JSON.parseObject(AesCBC.getInstance().decrypt(
+				dataStr, "utf-8", keyt, vector));
+		if (reqData == null) {
+			return JsonResult.handleResult(JsonResult.RESULT_Post, JsonResult.MSG_Null, "","","").toString();
+		}
+		String org = reqData.get("OperatorID").toString();
+		String secret = reqData.get("OperatorSecret").toString();
+		if (StringUtils.isBlank(org) || StringUtils.isBlank(secret)) {
+			return JsonResult.handleResult(JsonResult.RESULT_Null, JsonResult.MSG_Null, "","","").toString();
+		}	
+		Map<String, Object> data = new HashMap<String, Object>();
+		if (!partnerToken.equals(secret)) {
+			data.put("operatorID", org);
+			data.put("succStat", 1);
+			data.put("accessToken", "");
+			data.put("tokenAvailableTime", 0);
+			data.put("failReason", 2);
+			data.put("accessToken", "");
+			String date = AesCBC.getInstance().encrypt(
+					new JSONObject(data).toString(), "utf-8", keyt, vector);
+			String key = JsonResult.RESULT_OK+JsonResult.MSG_Ok+ date;
+			return JsonResult.handleResult(JsonResult.RESULT_Key, JsonResult.MSG_Key, date,sig,key).toString();
+		}
+		String tkVal = redisService.strGet(WanmaConstants.PREFIX_TOKWEN + org);
+		String t = "";
+		if (tkVal != null) {
+			long termT = System.currentTimeMillis()
+					- Long.valueOf(tkVal.split(",")[0]);
+			if (termT > WanmaConstants.PREFIX_TOKWEN_TERM) {
+				t = TokenUtil.makeToken(org, secret);
+				redisService.strSet(WanmaConstants.PREFIX_TOKWEN + org,
+						System.currentTimeMillis() + "," + t);
+			} else {
+				t = tkVal.split(",")[1];
+			}
+		} else {
+			t = TokenUtil.makeToken(org, secret);
+			redisService.strSet(WanmaConstants.PREFIX_TOKWEN + org,
+					System.currentTimeMillis() + "," + t);
+		}
+		data.put("OperatorID", org);
+		data.put("SuccStat", 0);
+		data.put("AccessToken", t);
+		data.put("TokenAvailableTime", WanmaConstants.PREFIX_TOKWEN_TERM);
+		data.put("FailReason", 0);
+		String date = AesCBC.getInstance().encrypt(
+				new JSONObject(data).toString(), "utf-8", keyt, vector);
+		String key = JsonResult.RESULT_OK+JsonResult.MSG_Ok+ date;
+		return JsonResult.handleResult(JsonResult.RESULT_OK, JsonResult.MSG_Ok, date,key,sig);
+	
+	}
+
+	/**
+	 * @Description: 查询设备状态
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes", "deprecation" })
+	@RequestMapping(value="/query_station_status",produces="application/json;charset=utf-8")
+	@ResponseBody
+	public String stationStatus(@RequestBody Map<String, String> params)
+			throws Exception {
+		LOGGER.info("================查询设备状态begin==================");
+		String OperatorID = params.get("OperatorID");
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("OperatorID", OperatorID);
+		Map<String, String> KeyList = psService.getPartnerKeyList(map);
+		String keyt = KeyList.get("Secret").split("\\|")[0];
+		String vector = KeyList.get("Secret").split("\\|")[1];
+		String sig = KeyList.get("Secret").split("\\|")[2];
+		JSONObject jsonData = JSON.parseObject(AesCBC.getInstance().decrypt(
+				params.get("Data"), "utf-8", keyt, vector));
+		String ids = jsonData.get("StationIDs").toString();
+		List<String> stationIDs = JSONArray.toList(JSONArray.fromObject(ids));
+		int count = stationIDs.size();
+		if (count > 50) {
+			ResultResponse resultRespone = new ResultResponse();
+			resultRespone.setStatus(500);
+			resultRespone.setMsg("数组长度超长！");
+			return resultRespone.toString();
+		}
+		List<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
+		Map<String, Object> psData = null;
+		for (String psId : stationIDs) {
+			psData = new HashMap<String, Object>();
+			psData.put("StationID", psId);
+			TblElectricpilehead hModel = new TblElectricpilehead();
+			hModel.setPsId(Integer.parseInt(psId));
+			List<Map<String, Object>> mapList = hService
+					.echongGetHeadStsByPsId(hModel);
+			for (Map<String, Object> stringObjectMap : mapList) {
+				if ("0".equals(stringObjectMap.get("Status").toString())) {
+					stringObjectMap.put("Status", 1);
+				} else if ("6".equals(stringObjectMap.get("Status").toString())) {
+					stringObjectMap.put("Status", 3);
+				} else if ("17"
+						.equals(stringObjectMap.get("Status").toString())) {
+					stringObjectMap.put("Status", 2);
+				} else if ("3".equals(stringObjectMap.get("Status").toString())) {
+					stringObjectMap.put("Status", 4);
+				} else {
+					stringObjectMap.put("Status", 255);
+				}
+			}
+			psData.put("ConnectorStatusInfos", mapList);
+			data.add(psData);
+		}
+		Map<String, Object> returnMap = new HashMap<String, Object>();
+		returnMap.put("Total", stationIDs.size());
+		returnMap.put("StationStatusInfos", data);
+		LOGGER.info("================查询设备状态end==================");
+		String date = AesCBC.getInstance().encrypt(
+				new JSONObject(returnMap).toString(), "utf-8", keyt, vector);
+		String key = JsonResult.RESULT_OK+JsonResult.MSG_Ok+ date;
+		return  JsonResult.handleResult(JsonResult.RESULT_OK, JsonResult.MSG_Ok, date,key,sig).toString();
+	}
+
+	/**
+	 * @Description: 查询站信息
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/query_stations_info",produces="application/json;charset=utf-8")
+	@ResponseBody
+	public String stationsInfo(@RequestBody Map<String, String> params)
+			throws Exception {
+		LOGGER.info("================查询电站信息begin==================");
+		String OperatorID = params.get("OperatorID");
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("OperatorID", OperatorID);
+		Map<String, String> KeyList = psService.getPartnerKeyList(map);
+		String cpyId = String.valueOf(KeyList.get("cpyId"));
+		String keyt = KeyList.get("Secret").split("\\|")[0];
+		String vector = KeyList.get("Secret").split("\\|")[1];
+		String sig = KeyList.get("Secret").split("\\|")[2];
+		JSONObject jsonData = JSON.parseObject(AesCBC.getInstance().decrypt(
+				params.get("Data"), "utf-8", keyt, vector));
+		String lastQueryTime = jsonData.getString("LastQueryTime");
+		String pageNo = jsonData.get("PageNo").toString();
+		String pageSize = jsonData.get("PageSize").toString();
+		if (StringUtils.isBlank(pageNo))
+			pageNo = "1";
+		if (StringUtils.isBlank(pageSize))
+			pageSize = "10";
+		List<TblPowerstation> psList = null;
+		Map<String, Object> data = new HashMap<String, Object>();
+		int count = 0;
+		if (lastQueryTime != null && !lastQueryTime.isEmpty()) {
+			LOGGER.info("获取最近更新站点信息开始，上次查询时间：" + lastQueryTime + "开始页" + pageNo
+					+ "；每页显示数量：" + pageSize);
+			Date queryTime = fmt.parse(lastQueryTime);
+			Map<String, Object> dataMap = new HashMap<String, Object>();
+			dataMap.put("queryTime", queryTime);
+			dataMap.put("pageNo", Integer.parseInt(pageNo) - 1);
+			dataMap.put("pageSize", Integer.parseInt(pageSize));
+			dataMap.put("cpyId", cpyId);
+			count = psService.getUpdatedCount(dataMap);
+			psList = psService.getUpdatedList(dataMap);
+			LOGGER.info("获取最近更	新站点信息结束");
+		} else {
+			LOGGER.info("获取全部站点信息开始");
+			TblPowerstation powerstation = new TblPowerstation();
+			powerstation.setCpyId(cpyId);
+			count = psService.getPowerStationCount(powerstation);
+			psList = psService.getPowerStationList(powerstation);
+			LOGGER.info("获取全部站点信息结束");
+		}
+		data.put("ItemSize", count);
+		data.put("PageCount", count / Integer.parseInt(pageSize) + 1);
+		data.put("PageNo", pageNo);
+		List<Map<String, Object>> psDataList = new ArrayList<Map<String, Object>>();
+		Map<String, Object> psData = null;
+		Map<String, Object> elcData = null;
+		Map<String, Object> hData = null;
+		for (TblPowerstation psModel : psList) {
+			psData = new HashMap<String, Object>();
+			psData.put("StationID", String.valueOf(psModel.getPkPowerstation()));
+			psData.put("OperatorID", "321895837");
+			psData.put("EquipmentOwnerID", "321895837");
+			psData.put("StationName", psModel.getPostName());
+			psData.put("CountryCode", "CN");
+			psData.put("AreaCode", psModel.getPostOwnCountyCode());
+			psData.put("Address", psModel.getPostAddress());
+			psData.put("StationTel", psModel.getPostPhone());
+			psData.put("ServiceTel", psModel.getPostPhone());
+			psData.put("StationType", 255);
+			if (psModel.getPostStatus() == 10)
+				psData.put("StationStatus", 5);
+			if (psModel.getPostStatus() == 15)
+				psData.put("StationStatus", 50);
+			else
+				psData.put("StationStatus", 0);
+			psData.put("ParkNums", 0);
+			psData.put("StationLng", psModel.getPostLongitude());
+			psData.put("StationLat", psModel.getPostLatitude());
+			psData.put("SiteGuide", "");
+			psData.put("Construction", 255);
+			String postPic = psModel.getPostPic();
+			postPic = postPic == null ? "" : postPic;
+			psData.put("Pictures", postPic.split(","));
+			psData.put("MatchCars", "");
+			psData.put("ParkInfo", "");
+			psData.put("BusineHours", psModel.getPoStOnlineTime());
+			psData.put("ElectricityFee", "");
+			psData.put("ServiceFee", "");
+			psData.put("ParkFee", "");
+			psData.put("Payment", "");
+			psData.put("SupportOrder", 0);
+			psData.put("Remark", "");
+			List<TcbElectric> elcList = elcService.getElectricpileListByPsId(psModel.getPkPowerstation());
+			List<Map<String, Object>> elcDataList = new ArrayList<Map<String, Object>>();
+			for (TcbElectric e : elcList) {
+				elcData = new HashMap<String, Object>();
+				elcData.put("EquipmentID", e.getEquipNo());
+				elcData.put("ManufacturerID", "");
+				elcData.put("ManufacturerName", "");
+				elcData.put("EquipmentModel", e.getEquipNo());
+				elcData.put("EquipmentName", e.getEquipName());
+				elcData.put("ProductionDate", "");
+				if ("14".equals(e.getEquipType()))
+					elcData.put("EquipmentType", 2);
+				if ("5".equals(e.getEquipType()))
+					elcData.put("EquipmentType", 1);
+				else
+					elcData.put("EquipmentType", 3);
+				elcData.put("Power",
+						df.format(Double.parseDouble(e.getPowerRating())));
+				elcData.put("EquipmentLng", e.getElcLng());
+				elcData.put("EquipmentLat", e.getElcLat());
+				TblElectricpilehead hModel = new TblElectricpilehead();
+				hModel.setPkElectricpile(e.getPkElc());
+				List<TblElectricpilehead> headList = hService.getList(hModel);
+				List<Map<String, Object>> headDataList = new ArrayList<Map<String, Object>>();
+				for (TblElectricpilehead h : headList) {
+					hData = new HashMap<String, Object>();
+					hData.put("ConnectorID",String.format("%s%02d", e.getEquipNo(),h.getEpheElectricpileHeadId()));
+					hData.put("ConnectorName", h.getEpheElectricpileheadname());
+					if ("14".equals(e.getEquipType()))
+						hData.put("ConnectorType", 3);
+					if ("5".equals(e.getEquipType()))
+						hData.put("ConnectorType", 4);
+					hData.put("VoltageUpperLimits",Integer.parseInt(e.getVoltageRated().split("\\.")[0]));
+					hData.put("VoltageLowerLimits",Integer.parseInt(e.getVoltageRated().split("\\.")[0]) );
+					hData.put("Current", Integer.parseInt(e.getCurrentRated().split("\\.")[0]));
+					hData.put("Power",df.format(Double.parseDouble(e.getPowerRating())));
+					hData.put("ParkNo", "");
+					hData.put("NationalStandard", 2);
+					headDataList.add(hData);
+				}
+				elcData.put("ConnectorInfos", headDataList);
+				elcDataList.add(elcData);
+			}
+			psData.put("EquipmentInfos", elcDataList);
+			psDataList.add(psData);
+		}
+		data.put("StationInfos", psDataList);
+		LOGGER.info("================查询电站信息end==================");
+		String date = AesCBC.getInstance().encrypt(
+				new JSONObject(data).toString(), "utf-8", keyt, vector);
+		String key = JsonResult.RESULT_OK+JsonResult.MSG_Ok+ date;
+		return  JsonResult.handleResult(JsonResult.RESULT_OK, JsonResult.MSG_Ok, date,key,sig).toString();
+	}
+
+	/**
+	 * 请求开始充电
+	 * 
+	 * @param params
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/query_start_charge")
+	@ResponseBody
+	public String startCharge(@RequestBody Map<String, String> params)
+			throws Exception {
+		LOGGER.info("================请求充电begin==================");
+		String OperatorID = params.get("OperatorID");
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("OperatorID", OperatorID);
+		Map<String, String> KeyList = psService.getPartnerKeyList(map);
+		String keyt = KeyList.get("Secret").split("\\|")[0];
+		String vector = KeyList.get("Secret").split("\\|")[1];
+		String sig = KeyList.get("Secret").split("\\|")[2];
+		JSONObject jsonData = JSON.parseObject(AesCBC.getInstance().decrypt(
+				params.get("Data"), "utf-8", keyt, vector));
+		String StartChargeSeq = jsonData.get("StartChargeSeq").toString();
+		String ConnectorID = jsonData.get("ConnectorID").toString();
+		String QRCode = jsonData.get("QRCode").toString();
+		if (StringUtils.isBlank(StartChargeSeq)
+				|| StringUtils.isBlank(ConnectorID)
+				|| StringUtils.isBlank(QRCode)) {
+			return JsonResult.handleResult(JsonResult.RESULT_Null, JsonResult.MSG_Null, "","", "").toString();
+		}
+		LOGGER.info("================校验是能否充电begin==================");
+		TblElectricpilehead hModel = new TblElectricpilehead();
+		hModel.setPkElectricpilehead(Integer.parseInt(ConnectorID));
+		TblElectricpilehead electricpilehead = headService
+				.getHeadByPkhead(hModel); 
+		boolean ok = pileFilterService.checkOk(OperatorID,
+				String.valueOf(electricpilehead.getPkElectricpile()));
+		if (ok == false) {
+			return JsonResult.handleResult(JsonResult.RESULT_OK,JsonResult.MSG_NoStart,"","","").toString();
+		}
+		LOGGER.info("结束校验该第三方能否对此充电桩进行充电");
+		int rtCode = WanmaConstants.cs.startChange(
+				Integer.parseInt(OperatorID),
+				OperatorID + RandomUtil.createData(3),
+				String.valueOf(electricpilehead.getPkElectricpile()),
+				electricpilehead.getEpheElectricpileHeadId(), new Short("1"),
+				20000, 2, "", "", 0, StartChargeSeq);
+		LOGGER.info("下发充电命令结束！");
+		Map<String, Object> data = new HashMap<String, Object>();
+		if (rtCode > 0) {
+			data.put("StartChargeSeq", StartChargeSeq);
+			data.put("StartChargeSeqStat", rtCode);
+			data.put("ConnectorID", ConnectorID);
+			data.put("SuccStat", 1);
+			data.put("FailReason", 3);
+		} else {
+			data.put("StartChargeSeq", StartChargeSeq);
+			data.put("StartChargeSeqStat", rtCode);
+			data.put("ConnectorID", ConnectorID);
+			data.put("SuccStat", 0);
+			data.put("FailReason", 0);
+		}
+		String date = AesCBC.getInstance().encrypt(
+				new JSONObject(data).toString(), "utf-8", keyt, vector);
+		String key = JsonResult.RESULT_OK+JsonResult.MSG_Ok+ date;
+		return  JsonResult.handleResult(JsonResult.RESULT_OK, JsonResult.MSG_Ok, date,key,sig).toString();
+	}
+
+	/**
+	 * 请求结束充电
+	 * 
+	 * @param params
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/query_stop_charge")
+	@ResponseBody
+	public String query_stop_charge(@RequestBody Map<String, String> params)
+			throws Exception {
+		LOGGER.info("================请求结束充电begin==================");
+		String OperatorID = params.get("OperatorID");
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("OperatorID", OperatorID);
+		Map<String, String> KeyList = psService.getPartnerKeyList(map);
+		String keyt = KeyList.get("Secret").split("\\|")[0];
+		String vector = KeyList.get("Secret").split("\\|")[1];
+		String sig = KeyList.get("Secret").split("\\|")[2];
+		JSONObject jsonData = JSON.parseObject(AesCBC.getInstance().decrypt(
+				params.get("Data"), "utf-8", keyt, vector));
+		String StartChargeSeq = jsonData.get("StartChargeSeq").toString();
+		String ConnectorID = jsonData.get("ConnectorID").toString();
+		if (StringUtils.isBlank(StartChargeSeq)	|| StringUtils.isBlank(ConnectorID)) {
+			return JsonResult.handleResult(JsonResult.RESULT_OK,JsonResult.MSG_NoStart,"","","").toString();
+		}
+		LOGGER.info("================校验订单是否存在==================");
+		TblChargingOrder model = new TblChargingOrder();
+		model.setChorCode(StartChargeSeq);
+		model = ordService.selectOne(model);
+		if (model == null) {
+			return JsonResult.handleResult(JsonResult.RESULT_Data_Error,JsonResult.MSG_No_ChargeOrder,"","","").toString();
+		}
+		String driverId = model.getChorParterUserLogo();
+		LOGGER.info("下发停止充电命令开始，第三方用户编号：" + driverId + ";第三方标识：" + OperatorID);
+		int rtCode = WanmaConstants.cs.stopChange(model.getChorPilenumber(),
+				model.getChorMuzzle(), Integer.parseInt(OperatorID), driverId, "");
+	     LOGGER.info("下发停止充电命令结束！");
+		Map<String, Object> data = new HashMap<String, Object>();
+	 	if (rtCode > 0) {
+			data.put("StartChargeSeq", StartChargeSeq);
+			data.put("StartChargeSeqStat", rtCode);
+			data.put("ConnectorID", ConnectorID);
+			data.put("SuccStat", 1);
+			data.put("FailReason", 3);
+		} else {
+			data.put("StartChargeSeq", StartChargeSeq);
+			data.put("StartChargeSeqStat", rtCode);
+			data.put("ConnectorID", ConnectorID);
+			data.put("SuccStat", 0);
+			data.put("FailReason", 0);
+		}
+		String date = AesCBC.getInstance().encrypt(
+				new JSONObject(data).toString(), "utf-8", keyt, vector);
+		String key = JsonResult.RESULT_OK+JsonResult.MSG_Ok+ date;
+		return  JsonResult.handleResult(JsonResult.RESULT_OK, JsonResult.MSG_Ok, date,key,sig).toString();
+	}
+	
+	/**
+     * 查询统计信息
+     * @param params
+     * @return
+     * @throws Exception
+     */
+	@SuppressWarnings( "rawtypes")
+	@ResponseBody
+    @RequestMapping("/query_station_stats")
+    public String getStationStats(@RequestBody Map<String, String> params)throws Exception {
+    	LOGGER.info("................查询统计信息-begin..................");
+		String OperatorID = params.get("OperatorID");
+		Map<String, Object> map=new HashMap<String, Object>();
+		map.put("OperatorID", OperatorID);
+		Map<String, String> KeyList = psService.getPartnerKeyList(map);
+		String keyt = KeyList.get("Secret").split("\\|")[0];
+		String vector = KeyList.get("Secret").split("\\|")[1];
+		String sig = KeyList.get("Secret").split("\\|")[2];
+		JSONObject jsonData = JSON.parseObject(AesCBC.getInstance().decrypt(params.get("Data"),"utf-8",keyt,vector));
+		String stationId = jsonData.getString("StationID");
+    	String startTime = jsonData.getString("StartTime");
+    	String endTime = jsonData.getString("EndTime");
+    	if(StringUtils.isBlank(stationId) || StringUtils.isBlank(startTime) 
+    			|| StringUtils.isBlank(endTime) ){
+    		return JsonResult.handleResult(JsonResult.RESULT_Null, JsonResult.MSG_Null, "","", "").toString();
+    	}    	
+    	//把endTime增加1天
+    	Date date=sdf.parse(endTime);
+    	Calendar cld=Calendar.getInstance();
+    	cld.setTime(date);
+    	cld.add(Calendar.DATE, 1);
+    	String endTimes= sdf.format(cld.getTime());
+    	//获取充电站统计信息
+    	Map<String,Object> model = new HashMap<String,Object>();
+    	model.put("stationId", stationId);
+    	model.put("startTime", startTime);
+    	model.put("endTime", endTimes);
+    	//电站累计电量
+    	String stationEle ;
+    	List<Map<String,Object>> eleList = new ArrayList<Map<String,Object>>();
+    	try {
+    		stationEle = elcService.getStationMeterNum(model);
+    		eleList = elcService.getEleMeterNum(model);
+		} catch (Exception e) {
+			return JsonResult.handleResult(JsonResult.RESULT_Data_Error,JsonResult.MSG_No_StationID,"","","").toString();
+		}
+    	BigDecimal stationElectricity = new BigDecimal(stationEle);
+    	//充电站统计信息
+    	Map<String,Object> stationInfo = new HashMap<String,Object>();
+    	stationInfo.put("StationID", stationId);
+    	stationInfo.put("StartTime", startTime);
+    	stationInfo.put("EndTime", endTime);
+    	stationInfo.put("StationElectricity", stationElectricity);  	
+    	//充电设备统计信息
+    	List<Map<String, Object>> eleInfo = new ArrayList<Map<String,Object>>();
+    	
+    	for(int i=0;i<eleList.size();i++){
+    		Map<String,Object>  eleMap = eleList.get(i);
+    		String epCode = eleMap.get("epCode").toString();
+    		String eleMeter = eleMap.get("eleMeter").toString();
+    		String gunMeter1 = eleMap.get("gunMeter1").toString();
+    		String gunMeter2 = eleMap.get("gunMeter2").toString();
+    		String gunMeter3 = eleMap.get("gunMeter3").toString();
+    		String gunMeter4 = eleMap.get("gunMeter4").toString();    		
+    		//查询接口编码
+        	Map<String,Object> ehMap = new HashMap<String,Object>();
+        	Map<String,Object> ehData = new HashMap<String,Object>();
+        	ehMap.put("epCode",epCode);
+        	//充电设备接口统计信息
+    		List<Map<String, Object>> ehInfo = new ArrayList<Map<String,Object>>();
+        	if(gunMeter1 != null && gunMeter1 != "" && !("0.0").equals(gunMeter1) ){
+        		ehMap.put("num", 1);
+        		String headId = elcService.getElectricpileHeadId(ehMap);
+        		ehData.put("ConnectorID", headId);
+        		BigDecimal gm = new BigDecimal(gunMeter1);
+        		ehData.put("ConnectorElectricity", gm);
+        		ehInfo.add(ehData);
+        	}
+        	if(gunMeter2 != null && gunMeter2 != "" && !("0.0").equals(gunMeter2)){
+        		ehMap.put("num", 2);
+        		String headId = elcService.getElectricpileHeadId(ehMap);
+        		ehData.put("ConnectorID", headId);
+        		BigDecimal gm = new BigDecimal(gunMeter2);
+        		ehData.put("ConnectorElectricity", gm);
+        		ehInfo.add(ehData);
+        	}
+        	if(gunMeter3 != null && gunMeter3 != "" && !("0.0").equals(gunMeter3)){
+        		ehMap.put("num", 3);
+        		String headId = elcService.getElectricpileHeadId(ehMap);
+        		ehData.put("ConnectorID", headId);
+        		BigDecimal gm = new BigDecimal(gunMeter3);
+        		ehData.put("ConnectorElectricity", gm);
+        		ehInfo.add(ehData);
+        	}
+        	if(gunMeter4 != null && gunMeter4 != "" && !("0.0").equals(gunMeter4)){
+        		ehMap.put("num", 4);
+        		String headId = elcService.getElectricpileHeadId(ehMap);
+        		ehData.put("ConnectorID", headId);
+        		BigDecimal gm = new BigDecimal(gunMeter4);
+        		ehData.put("ConnectorElectricity", gm);
+        		ehInfo.add(ehData);
+        	}
+        	BigDecimal eqElectricity = new BigDecimal(eleMeter);
+        	Map<String,Object> eleData = new HashMap<String,Object>();
+        	eleData.put("EquipmentID", epCode);
+    		eleData.put("EquipmentElectricity", eqElectricity);
+        	eleData.put("ConnectorStatsInfos",ehInfo);
+        	eleInfo.add(eleData);
+    	}
+    	stationInfo.put("EquipmentStatsInfos", eleInfo);
+    	Map<String, Object> data = new HashMap<String,Object>();
+    	data.put("StationStats", stationInfo);
+    	LOGGER.info(".................查询统计信息-end....................");
+    	//数据加密
+    	String datas = AesCBC.getInstance().encrypt(new JSONObject(data).toString(), "utf-8", keyt, vector);
+    	String key = JsonResult.RESULT_OK+JsonResult.MSG_Ok+ datas;
+    	return  JsonResult.handleResult(JsonResult.RESULT_OK, JsonResult.MSG_Ok, datas,key,sig).toString();			
+	}
+	
+	/**
+	 * 查询充电状态
+	 @param params
+     * @return
+     * @throws Exception
+	 */
+	@SuppressWarnings("rawtypes")
+	@ResponseBody
+	@RequestMapping("/query_equip_charge_status")
+	public String getChargeStats(@RequestBody Map<String, String> params)throws Exception {
+		String OperatorID = params.get("OperatorID");
+		Map<String, Object> mapr=new HashMap<String, Object>();
+		mapr.put("OperatorID", OperatorID);
+		Map<String, String> KeyList = psService.getPartnerKeyList(mapr);
+		String keyt = KeyList.get("Secret").split("\\|")[0];
+		String vector = KeyList.get("Secret").split("\\|")[1];
+		String sig = KeyList.get("Secret").split("\\|")[2];
+		JSONObject jsonData = JSON.parseObject(AesCBC.getInstance().decrypt(params.get("Data"),"utf-8",keyt,vector));
+		String scs = jsonData.getString("StartChargeSeq");
+		if(StringUtils.isBlank(scs)){
+			return JsonResult.handleResult(JsonResult.RESULT_Null, JsonResult.MSG_Null, "","", "").toString();
+		}
+		String chReCode = scs.substring(9,scs.length());
+		LOGGER.info("................查询充电状态-begin..................");
+		Map<String, Object> map;
+		try {
+    		 map =  elcService.getStatusByChReCode(chReCode);
+		} catch (Exception e) {
+			return JsonResult.handleResult(JsonResult.RESULT_Data_Error,JsonResult.MSG_No_ChargeOrder,"","","").toString();
+		}
+		String chReStatus = map.get("chReStatus").toString();
+		/*int startChargeSeqStat = 0;
+		if(chReStatus == ""){
+			
+		}*/
+		String ehCode = map.get("ehCode").toString();
+		String ehState = map.get("ehState").toString();
+		int conStatus = 0;
+		if(ehState == "0"){
+			conStatus = 1;
+		}
+		if(ehState == "17"){
+			conStatus = 2;
+		}
+		if(ehState == "6"){
+			conStatus = 3;
+		}
+		if(ehState == "3"){
+			conStatus = 4;
+		}
+		if(ehState == "9"){
+			conStatus = 255;
+		}
+		String endSoc = map.get("endSoc").toString();
+		BigDecimal soc = new BigDecimal(endSoc);
+		String st = map.get("startTime").toString();
+		String startTime = st.substring(0,19);
+		String et = map.get("endTime").toString();
+		String endTime = et.substring(0,19);
+		String tp = map.get("totalPower").toString();
+		BigDecimal totalPower = new BigDecimal(tp);
+		String em = map.get("elecMoney").toString();
+		BigDecimal elecMoney = new BigDecimal(em);
+		String sm = map.get("serviceMoney").toString();
+		BigDecimal serviceMoney = new BigDecimal(sm);
+		String tm = map.get("totalMoney").toString();
+		BigDecimal totalMoney = new BigDecimal(tm);
+		Map<String,Object> data = new HashMap<String,Object>();
+		data.put("StartChargeSeq", scs);
+		
+		//data.put("StartChargeSeqStat", startChargeSeqStat);
+		data.put("StartChargeSeqStat", chReStatus);
+		
+		data.put("ConnectorID", ehCode);
+		data.put("ConnectorStatus", conStatus);
+		data.put("CurrentA", 0);
+		data.put("VoltageA", 0);
+		data.put("Soc", soc);
+		data.put("StartTime", startTime);
+		data.put("EndTime", endTime);
+		data.put("TotalPower", totalPower);
+		data.put("ElecMoney", elecMoney);
+		data.put("ServiceMoney", serviceMoney);
+		data.put("TotalMoney",totalMoney);
+		data.put("SumPeriod", 0);
+		LOGGER.info("................查询充电状态-begin..................");
+		//数据加密
+    	String datas = AesCBC.getInstance().encrypt(new JSONObject(data).toString(), "utf-8", keyt, vector);
+    	String key = JsonResult.RESULT_OK+JsonResult.MSG_Ok+ datas;
+    	return  JsonResult.handleResult(JsonResult.RESULT_OK, JsonResult.MSG_Ok, datas,key,sig).toString();			
+		
+	}
+	/**
+	 * 请求设备认证
+	 * @param params
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping("/query_equip_auth")
+	public String getEquipAuth(@RequestBody Map<String, String> params)throws Exception {
+		String OperatorID = params.get("OperatorID");
+		Map<String, Object> map=new HashMap<String, Object>();
+		map.put("OperatorID", OperatorID);
+		Map<String, String> KeyList = psService.getPartnerKeyList(map);
+		String keyt = KeyList.get("Secret").split("\\|")[0];
+		String vector = KeyList.get("Secret").split("\\|")[1];
+		String sig = KeyList.get("Secret").split("\\|")[2];
+		JSONObject jsonData = JSON.parseObject(AesCBC.getInstance().decrypt(params.get("Data"),"utf-8",keyt,vector));
+		String equipAuthSeq = jsonData.getString("EquipAuthSeq");
+		String eleHead = jsonData.getString("ConnectorID");
+		if(StringUtils.isBlank(equipAuthSeq) || StringUtils.isBlank(eleHead)){
+			return JsonResult.handleResult(JsonResult.RESULT_Null, JsonResult.MSG_Null, "","", "").toString();
+		}
+		LOGGER.info("................请求设备认证-begin..................");
+		LOGGER.info("请求设备认证的流水号EquipAuthSeq："+equipAuthSeq+",充电设备接口编码ConnectorID："+eleHead);
+		int count  = hService.getEquipAuthByEleHead(eleHead);
+		Map<String,Object> data = new HashMap<String,Object>();
+		data.put("EquipAuthSeq", equipAuthSeq);
+		data.put("ConnectorID", eleHead);
+		if(count == 1){
+			data.put("SuccSttat", 0);
+			data.put("FailReason", 0);
+		}else{
+			data.put("SuccSttat", 1);
+			data.put("FailReason", 2);
+		}
+		LOGGER.info("................请求设备认证-end..................");
+		//数据加密
+    	String datas = AesCBC.getInstance().encrypt(new JSONObject(data).toString(), "utf-8", keyt, vector);
+    	String key = JsonResult.RESULT_OK+JsonResult.MSG_Ok+ datas;
+    	return  JsonResult.handleResult(JsonResult.RESULT_OK, JsonResult.MSG_Ok, datas,key,sig).toString();			
+	}
+
+}

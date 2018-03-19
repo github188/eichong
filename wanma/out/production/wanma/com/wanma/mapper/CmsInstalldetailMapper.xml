@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsInstalldetailMapper">
+
+	<resultMap id="tblInstalldetailResultMap" type="TblInstalldetail">
+		<id property="pkInstalldetail" column="pk_InstallDetail" />
+		<result property="indeParentid" column="inDe_ParentId" />
+		<result property="indeProductid" column="inDe_ProductId" />
+		<result property="indeProductname" column="inDe_ProductName" />
+		<result property="indePrice" column="inDe_Price" />
+		<result property="indeQuantity" column="inDe_Quantity" />
+		<result property="indeTotalamount" column="inDe_TotalAmount" />
+		<result property="indeCreatedate" column="inDe_Createdate" />
+		<result property="indeUpdatedate" column="inDe_Updatedate" />
+		<result property="indeProductcode" column="inDe_ProductCode" />
+		<result property="indeInstallationaddress" column="inDe_InstallationAddress" />
+		<result property="indeInstallationperson" column="inDe_InstallationPerson" />
+		<result property="indeLnstallationtel" column="inDe_LnstallationTel" />
+	</resultMap>
+	<resultMap id="findResultMap"  type="java.util.HashMap" extends="tblInstalldetailResultMap"></resultMap>
+
+	<update id="update" parameterType="TblInstalldetail">
+	   update tbl_installdetail set
+	     pk_InstallDetail=#{pkInstalldetail},
+	     inDe_ParentId=#{indeParentid},
+	     inDe_ProductId=#{indeProductid},
+	     inDe_ProductName=#{indeProductname},
+	     inDe_Price=#{indePrice},
+	     inDe_Quantity=#{indeQuantity},
+	     inDe_TotalAmount=#{indeTotalamount},
+	     inDe_Createdate=#{indeCreatedate},
+	     inDe_Updatedate=#{indeUpdatedate},
+	     inDe_ProductCode=#{indeProductcode},
+	     inDe_InstallationAddress=#{indeInstallationaddress},
+	     inDe_InstallationPerson=#{indeInstallationperson},
+	     inDe_LnstallationTel=#{indeLnstallationtel}
+	   where 
+	    pk_InstallDetail=#{pkInstalldetail} 
+	</update>
+
+	<delete id="delete" parameterType="map">
+	   delete from 
+	     tbl_installdetail 
+	   where 
+	    pk_InstallDetail=#{pkInstalldetail} 
+	</delete>
+	<!-- 根据主键获取预约安装订单详情 -->
+	<select id="getInstalldetail" parameterType="map" resultMap="tblInstalldetailResultMap">
+	   select 
+	    pk_InstallDetail,
+	    inDe_ParentId,
+	    inDe_ProductId,
+	    inDe_ProductName,
+	    inDe_Price,
+	    inDe_Quantity,
+	    inDe_TotalAmount,
+	    inDe_Createdate,
+	    inDe_Updatedate,
+	    inDe_ProductCode,
+	    inDe_InstallationAddress,
+	    inDe_InstallationPerson,
+	    inDe_LnstallationTel
+	   from tbl_installdetail
+	   where 
+	    pk_InstallDetail=#{pkInstalldetail} 
+	</select>
+	<!-- 获取预约安装订单详情列表 -->
+	<select id="findInstalldetailList" parameterType="map" resultMap="tblInstalldetailResultMap">
+	   select 
+	     pk_InstallDetail,
+	     inDe_ParentId,
+	     inDe_ProductId,
+	     inDe_ProductName,
+	     inDe_Price,
+	     inDe_Quantity,
+	     inDe_TotalAmount,
+	     inDe_Createdate,
+	     inDe_Updatedate,
+	     inDe_ProductCode,
+	     inDe_InstallationAddress,
+	     inDe_InstallationPerson,
+	     inDe_LnstallationTel
+	   from tbl_installdetail
+	   <where>
+	     <if test="pkInstalldetail != null">
+	        pk_InstallDetail=#{pkInstalldetail}
+	     </if>
+	     <if test="indeParentid != null">
+	        and inDe_ParentId=#{indeParentid}
+	     </if>
+	     <if test="indeProductid != null">
+	        and inDe_ProductId=#{indeProductid}
+	     </if>
+	     <if test="indeProductname != null">
+	        and inDe_ProductName=#{indeProductname}
+	     </if>
+	     <if test="indePrice != null">
+	        and inDe_Price=#{indePrice}
+	     </if>
+	     <if test="indeQuantity != null">
+	        and inDe_Quantity=#{indeQuantity}
+	     </if>
+	     <if test="indeTotalamount != null">
+	        and inDe_TotalAmount=#{indeTotalamount}
+	     </if>
+	     <if test="indeCreatedate != null">
+	        and inDe_Createdate=#{indeCreatedate}
+	     </if>
+	     <if test="indeUpdatedate != null">
+	        and inDe_Updatedate=#{indeUpdatedate}
+	     </if>
+	     <if test="indeProductcode != null">
+	        and inDe_ProductCode=#{indeProductcode}
+	     </if>
+	     <if test="indeInstallationaddress != null">
+	        and inDe_InstallationAddress=#{indeInstallationaddress}
+	     </if>
+	     <if test="indeInstallationperson != null">
+	        and inDe_InstallationPerson=#{indeInstallationperson}
+	     </if>
+	     <if test="indeLnstallationtel != null">
+	        and inDe_LnstallationTel=#{indeLnstallationtel}
+	     </if>
+	   </where>
+	   <if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	<!-- 获取预约安装订单详情总数 -->
+	<select id="findInstalldetailCount" parameterType="map" resultType="long">
+		select count(pk_InstallDetail)
+		from
+		tbl_installdetail
+		<where>
+	     <if test="pkInstalldetail != null">
+	        pk_InstallDetail=#{pkInstalldetail}
+	     </if>
+	     <if test="indeParentid != null">
+	        and inDe_ParentId=#{indeParentid}
+	     </if>
+	     <if test="indeProductid != null">
+	        and inDe_ProductId=#{indeProductid}
+	     </if>
+	     <if test="indeProductname != null">
+	        and inDe_ProductName=#{indeProductname}
+	     </if>
+	     <if test="indePrice != null">
+	        and inDe_Price=#{indePrice}
+	     </if>
+	     <if test="indeQuantity != null">
+	        and inDe_Quantity=#{indeQuantity}
+	     </if>
+	     <if test="indeTotalamount != null">
+	        and inDe_TotalAmount=#{indeTotalamount}
+	     </if>
+	     <if test="indeCreatedate != null">
+	        and inDe_Createdate=#{indeCreatedate}
+	     </if>
+	     <if test="indeUpdatedate != null">
+	        and inDe_Updatedate=#{indeUpdatedate}
+	     </if>
+	     <if test="indeProductcode != null">
+	        and inDe_ProductCode=#{indeProductcode}
+	     </if>
+	     <if test="indeInstallationaddress != null">
+	        and inDe_InstallationAddress=#{indeInstallationaddress}
+	     </if>
+	     <if test="indeInstallationperson != null">
+	        and inDe_InstallationPerson=#{indeInstallationperson}
+	     </if>
+	     <if test="indeLnstallationtel != null">
+	        and inDe_LnstallationTel=#{indeLnstallationtel}
+	     </if>
+	   </where>
+	</select>
+	
+</mapper> 

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<server>
+	
+	<analyze-server>
+		<description>数据分析中心服务端</description>
+		<server-name>AnalyzeServer</server-name>
+		<server-ip>10.8.3.216</server-ip>
+		<server-port>8002</server-port>
+	</analyze-server>
+
+</server>

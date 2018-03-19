@@ -1,0 +1,190 @@
+package com.wanma.ims.service;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import com.wanma.ims.model.RoleDO;
+import com.wanma.ims.model.UserDO;
+import com.wanma.ims.model.UserRoleDO;
+ 
+/**
+ * 角色业务处理接口
+ * 
+ * @version V1.0
+ * @author Administrator
+ * @date 2014年6月26日
+ */
+public interface RoleService {
+	
+	/**
+	 * 根据user_id获取Role
+	 * @param userId 用户ID
+	 * @return RoleDO
+	 */
+	public List<RoleDO> getRoleListByUserId(Long userId);
+	
+	/**
+	 * 统计-当前用户角色的信息
+	 * @param userDO 
+	 * @return long
+	 */
+	public Long countRoleList(UserDO userDO);
+	
+	/**
+	 * 查询-当前用户角色的信息
+	 * @param userDO
+	 * @return RoleDO
+	 */
+	public List<RoleDO> getRoleListPage(UserDO userDO);
+	
+	/**
+	 * 刷新session缓存中用户角色菜单信息
+	 * @param userId 用户ID
+	 * @return
+	 */
+	public void initRolesAndMenus(HttpServletRequest request);
+	
+	/**
+	 * 根据role_id查询角色信息
+	 * @param roleId
+	 * @return RoleDO
+	 * @throws
+	 */
+	public RoleDO getRoleById(String roleId);
+	
+	/**
+	 * 角色-添加
+	 * @param roleId
+	 * @return RoleDO
+	 * @throws
+	 */
+	public boolean addRole(RoleDO roleDO, String menuIds);
+	/*************************以下暂时不可用***************************/
+	/**
+	 * 取得角色信息
+	 * 
+	 * @author yangweir
+	 * @since Version 1.0
+	 * @param roleId
+	 *            角色ID
+	 * @return RoleModel 角色信息
+	 * @throws 无
+	 */
+
+
+	/**
+	 * 取得角色一览
+	 * 
+	 * @author yangweir
+	 * @since Version 1.0
+	 * @return List<Role> 角色一览
+	 * @throws 无
+	 */
+	public List<RoleDO> getRoleList();
+
+	/**
+	 * 查询角色一览
+	 * 
+	 * @author yangweir
+	 * @since Version 1.0
+	 * @param roleModel
+	 *            查询用角色对象
+	 * @return List<RoleModel> 角色一览
+	 * @throws 无
+	 */
+	public List<RoleDO> searchRoleList(RoleDO roleModel);
+
+	/**
+	 * 查询角色数据条数
+	 * 
+	 * @author yangweir
+	 * @since Version 1.0
+	 * @param roleModel
+	 *            查询用角色对象
+	 * @return long 角色数据条数
+	 * @throws 无
+	 */
+	public long searchRoleCount(RoleDO roleModel);
+
+
+	/**
+	 * 编辑角色
+	 * 
+	 * @author yangweir
+	 * @since Version 1.0
+	 * @param RoleDO
+	 *            角色信息
+	 * @param userRoleList
+	 *            角色用户列表
+	 * @return String 处理结果标识
+	 * @throws 无
+	 */
+	public String modifyRole(RoleDO roleModel,
+			List<UserRoleDO> userRoleList);
+
+	/**
+	 * 删除角色
+	 * 
+	 * @author yangweir
+	 * @since Version 1.0
+	 * @param roleId
+	 *            角色ID
+	 * @return 无
+	 * @throws 无
+	 */
+	public void removeRole(String roleId);
+
+	/**
+	 * 角色唯一性检查
+	 * 
+	 * @author yangweir
+	 * @since Version 1.0
+	 * @param roleId
+	 *            角色信息
+	 * @return String 角色唯一性检查结果 "true":通过 "false":不通过
+	 * @throws 无
+	 */
+	public String checkRoleUnique(String roleId);
+	
+	
+
+
+	public List<RoleDO> getParentRoleListByCurrentUser(UserDO user);
+
+	public Long getParentRoleListCountByCurrentUser(UserDO user);
+
+	public List<RoleDO> getRoleListByCompanyId(Integer companyId);
+	
+	public String updateUserRoleRelation(Long userId,String roleIds);
+
+	/**
+	 * @Title: initRolesAndMenus 
+	 * @Description: TODO 	
+	 * @author wbc	
+	 * 2015年11月4日 	
+	 * @return: void 
+	 */
+//	public void initRolesAndMenus(HttpServletRequest request);
+
+	/**
+	 * @Title: getBusinessNormalRole 
+	 * @Description: TODO 	
+	 * @author wbc	
+	 * 2015年11月12日 	
+	 * @return: RoleModel 
+	 */
+	public RoleDO getBusinessNormalRole();
+
+	/**
+	 * @Description: TODO 	
+	 * @author wbc	
+	 * 2015年12月1日 	
+	 * @return: int 
+	 */
+	public int checkCommonUnique(Map<String, String> map);
+
+
+
+}

@@ -1,0 +1,134 @@
+package com.wanma.ims.service.impl;
+
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.wanma.ims.common.domain.CityDO;
+import com.wanma.ims.common.domain.MessageInfoDO;
+import com.wanma.ims.mapper.InitialMapper;
+import com.wanma.ims.mapper.MessageInfoMapper;
+import com.wanma.ims.service.MessageInfoService;
+
+
+@Service("messageInfoService")
+public class MessageInfoServiceImpl implements MessageInfoService{
+	@Autowired
+	private InitialMapper initialMapper;
+	@Autowired
+	private MessageInfoMapper messageInfoMapper;
+	
+	@Override
+	public long selectMessageInfoCount(MessageInfoDO messageInfoDO) {
+		return messageInfoMapper.selectMessageInfoCount(messageInfoDO);
+	}
+
+	@Override
+	public List<MessageInfoDO> selectMessageInfoList(MessageInfoDO messageInfoDO) {
+		List<MessageInfoDO> MessageInfoDOList = messageInfoMapper.selectMessageInfoList(messageInfoDO);
+		List<CityDO>  cityList  =  initialMapper.selectCityList(null,null);
+		for(int j=0;j<MessageInfoDOList.size();j++){
+			if(MessageInfoDOList.get(j).getMessageInfoCityCode().isEmpty()){
+				MessageInfoDOList.get(j).setMessageInfoRegion("全国");;
+			}else{
+				for(int i=0;i<cityList.size();i++){
+					if(cityList.get(i).getCityId().equals(MessageInfoDOList.get(j).getMessageInfoCityCode())){
+						MessageInfoDOList.get(j).setMessageInfoRegion(cityList.get(i).getCityName().toString());
+					}	
+				}
+			}
+		}
+		return MessageInfoDOList;
+	}
+
+	@Override
+	@Transactional
+	public void insertMessageInfo(MessageInfoDO messageInfo,
+			String[] pkPowerstation) {
+		if(messageInfo.getMessageInfoType()==2){//新建消息，结束时间为发布日的00:00之后 7天
+			Calendar c = Calendar.getInstance();
+			c.add(Calendar.DAY_OF_MONTH,7);
+			SimpleDateFormat   sdf   =   new   SimpleDateFormat( "yyyy-MM-dd 00:00:00"); 
+			String time = sdf.format(c.getTime());
+			messageInfo.setMessageInfoEndtime(time);
+		}else{
+			SimpleDateFormat   sdf   =   new   SimpleDateFormat( "yyyy-MM-dd 00:00:00"); 
+			messageInfo.setMessageInfoEndtime("2030-01-01 00:00:00");
+		}
+		messageInfoMapper.insertMessageInfo(messageInfo);
+		if(pkPowerstation!=null){
+			for(int i=0;i<pkPowerstation.length;i++){
+				int powerstationId = Integer.parseInt(pkPowerstation[i]);
+				messageInfo.setPkPowerstation(powerstationId);
+				messageInfo.setMprName(messageInfoMapper.getMprName(powerstationId));
+				messageInfoMapper.relationPowerStation(messageInfo);
+			}
+		}
+			
+	}
+
+	@Override
+	public List<Object> getpowerstation(Map<String, String> params) {
+		return messageInfoMapper.getpowerstation(params);
+	}
+
+	@Override
+	public MessageInfoDO getMessageInfoById(String pkMessageInfoId) {
+		return messageInfoMapper.getMessageInfoById(pkMessageInfoId);
+	}
+
+	@Override
+	public List<Map<String, Object>> getPowerstationById(Integer pkMessageInfoId) {
+		return messageInfoMapper.getPowerstationById(pkMessageInfoId);
+	}
+
+	@Override
+	@Transactional
+	public void updateMessageInfo(MessageInfoDO messageInfo) {
+		messageInfoMapper.updateMessageInfo(messageInfo);
+		
+	}
+
+	@Override
+	public String getMprNameByPkPowerstation(String id) {
+		return messageInfoMapper.getMprNameByPkPowerstation(id);
+	}
+
+	@Override
+	public void relationPowerStation(MessageInfoDO messageInfo) {
+		messageInfoMapper.relationPowerStation(messageInfo);
+	}
+
+	@Override
+	@Transactional
+	public void removeRelationPowerStation(MessageInfoDO messageInfo) {
+		messageInfoMapper.removeRelationPowerStation(messageInfo);
+	}
+
+	@Override
+	@Transactional
+	public boolean closeMessageInfoById(String pkMessageInfoId) {
+		return messageInfoMapper.closeMessageInfoById(pkMessageInfoId)>0;
+	}
+
+	@Override
+	@Transactional
+	public boolean deleteMessageInfoById(String pkMessageInfoId) {
+		return messageInfoMapper.deleteMessageInfoById(pkMessageInfoId);
+	}
+
+	@Override
+	@Transactional
+	public boolean deleteMessageInfoPointById(String pkMessageInfoId) {
+		return messageInfoMapper.deleteMessageInfoPointById(pkMessageInfoId);
+	}
+
+	
+
+}

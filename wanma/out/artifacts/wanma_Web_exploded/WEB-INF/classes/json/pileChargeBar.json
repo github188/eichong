@@ -1,0 +1,43 @@
+{
+    "title" : {
+        "text": "电桩充电统计"
+    },
+    "tooltip" : {
+        "trigger": "axis"
+    },
+    "legend": {
+    	"y": 20,
+        "data":["充电次数","充电度数"]
+    },
+    "toolbox": {
+        "show" : true,
+        "feature" : {
+        	"outView":{"show": false,color: '#8b3a3a'},
+        	"innerView":{"show": true,color: '#8b3a3a'},
+            "mark" : {"show": false},
+            "dataView" : {"show": false, "readOnly": false},
+            "magicType" : {"show": false, "type": ["line", "bar"]},
+            "restore" : {"show": false},
+            "saveAsImage" : {"show": false}
+        }
+    },
+    "calculable" : true,
+    "xAxis" : [],
+    "yAxis" : [
+			    {
+			            "type" : 'value',
+			            "name" : '充电次数',
+			            "axisLabel" : {
+			                "formatter": '{value} 次'
+			            }
+			        },
+			       {
+			            "type" : 'value',
+			            "name" : '充电总度数',
+			            "axisLabel" : {
+			                "formatter": '{value} (度)'
+			            }
+			        }
+        ],
+    "series" : []
+}

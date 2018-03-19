@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.app.dao.AppPublishEpMapper">
+	<resultMap type="HashMap" id="tblPublishEp">
+		<id property="id" column="id"></id>
+		<result property="address" column="address"/>
+		<result property="longitude" column="longitude"/>
+		<result property="latitude" column="latitude"/>
+		<result property="parameter_note" column="parameter_note"/>
+		<result property="note" column="note"/>
+		<result property="status" column="status"/>
+		<result property="edittime" column="edittime"/>
+		<result property="createtime" column="createtime"/>
+	</resultMap>
+	<insert id="addPublishEp" parameterType="TblPublishEp" useGeneratedKeys="true" keyProperty="id">
+		insert tbl_publish_ep(
+		address,
+		longitude,
+		latitude,
+		parameter_note
+		) 
+		values (
+		#{address},
+		#{longitude},
+		#{latitude},
+		#{parameter_note}
+		)
+	</insert>
+</mapper> 

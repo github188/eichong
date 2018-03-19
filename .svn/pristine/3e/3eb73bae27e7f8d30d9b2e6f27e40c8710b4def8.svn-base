@@ -1,0 +1,99 @@
+@charset "utf-8";
+* {
+    padding: 0;
+    margin: 0;
+}
+
+.col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12 {
+    padding: 0;
+}
+
+body {
+    background: #F3F3F4;
+    font-family: "微软雅黑";
+    font-size: 12px;
+}
+
+.container {
+    width: 98%;
+    padding: 24px 24px 20px 20px;
+}
+.cursor{
+    cursor: pointer;
+}
+.formBlock {
+    width: 100%;
+    min-height: 98px;
+    height: auto !important;
+    /*overflow: hidden;*/
+    background: #FFFFFF;
+    border-top: 3px solid #E5E5E5;
+    padding: 26px 18px 20px 20px;
+}
+
+.clearfix {
+    　　zoom: 1;
+}
+
+.clearfix:after {
+    content: "";
+    display: block;
+    clear: both;
+}
+
+.btnBlock {
+    width: 100%;
+    /*min-height: 54px;*/
+    padding: 10px 0 10px 20px;
+    background: #F3F3F4;
+    /*overflow: hidden;*/
+    position: relative;
+    margin-top: 4px;
+}
+
+
+
+.userAccount {
+    /*border: 1px solid #DCDCDC;*/
+    height: 32px;
+}
+
+.userAccount .userAccountInput {
+    display: inline;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #DCDCDC;
+    outline: none;
+    color: #666666;
+}
+
+.userAccount .userAccountInput:focus {
+    display: inline;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #ff7d00;
+    color: #666666;
+}
+
+.queryParam {
+    line-height: 32px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.queryBtn {
+    width: 100px;
+    height: 26px;
+    text-align: center;
+    line-height: 26px;
+    background: #FF7D00;
+    border: 1px solid #FF7D00;
+    border-radius: 4px;
+    color: #FFFFFF;
+    cursor: pointer;
+}
+
+
+
+
+

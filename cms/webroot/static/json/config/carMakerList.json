@@ -1,0 +1,47 @@
+{
+    "data": [
+        {
+            "bindCount": "3",
+            "makerCreatedate": 1472032359000,
+            "makerName": "123456",
+            "makerRemark": "98",
+            "makerUpdatedate": 1472032359000,
+            "pkCarmaker": 5
+        },
+        {
+            "bindCount": "3",
+            "makerCreatedate": 1462503094000,
+            "makerName": "IES",
+            "makerRemark": "03",
+            "makerUpdatedate": 1462503094000,
+            "pkCarmaker": 3
+        },
+        {
+            "bindCount": "22",
+            "makerCreatedate": 1442476249000,
+            "makerName": "TESLA",
+            "makerRemark": "02",
+            "makerUpdatedate": 1442476249000,
+            "pkCarmaker": 2
+        },
+        {
+            "bindCount": "934",
+            "makerCreatedate": 1442473371000,
+            "makerName": "浙江万马新能源",
+            "makerRemark": "01",
+            "makerUpdatedate": 1442473371000,
+            "pkCarmaker": 1
+        }
+    ],
+    "msg": "操作成功!",
+    "pager": {
+        "keywords": "",
+        "numPerPage": 20,
+        "offset": 0,
+        "pageNum": 1,
+        "pageTotal": 1,
+        "status": "",
+        "total": 4
+    },
+    "status": 100
+}

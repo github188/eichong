@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.web.dao.WebMyOrderMapper">
+	<resultMap id="findResultMap" type="java.util.HashMap"></resultMap>
+
+	<select id="getShopOrde" parameterType="map" resultMap="findResultMap">
+		select 
+		pk_Order,
+		orde_Code,
+		orde_CommodityShops,
+		orde_Status,
+		orde_CommodityTotal,
+		orde_TotalAmount,
+		orde_Createdate
+		from tbl_Order
+		<where>
+			<if test="orderState !=null">
+				orde_Status=#{orderState}
+		 </if>
+			<if test="userId !=null">
+				and orde_UserId=#{userId}
+		 </if>
+		</where>
+		order by
+		orde_Createdate desc
+		limit #{pageNumber},#{pageNum}
+	</select>
+	<select id="countShopOrde" parameterType="map" resultType="long">
+		select count(*)
+		from tbl_Order
+		<where>
+			<if test="orderState !=null">
+				orde_Status=#{orderState}
+		 </if>
+			<if test="userId !=null">
+				and orde_UserId=#{userId}
+		 </if>
+		</where>
+	</select>
+
+	<select id="getShopOrdeDetail" parameterType="map" resultMap="findResultMap">
+		select
+		pk_OrderDetail,
+		orDe_ProductName,
+		orDe_Price,
+		orDe_Quantity,
+		prod_ProductImage,
+		prod_ProductTag
+		from tbl_OrderDetail, tbl_Product
+		<where>
+			orDe_ProductId=pk_Product
+			<if test="orderId != null">
+				and orDe_ParentId=#{orderId}
+	     </if>
+		</where>
+	</select>
+
+	<select id="getInstallOrde" parameterType="map" resultMap="findResultMap">
+		select 
+		pk_AppointmentInstallationOrder,
+		aLOr_InstallationOrderCode,
+		aLOr_CommodityShops,
+		aLOr_InstallationOrderStatus,
+		aLOr_CommodityTotal,
+		aLOr_Money,
+		aLOr_BuyingTime
+		from tbl_AppointmentInstallationOrder
+		<where>
+			<if test="orderState !=null">
+				aLOr_InstallationOrderStatus=#{orderState}
+		 </if>
+			<if test="userId !=null">
+				and aLOr_UserID=#{userId}
+		 </if>
+		</where>
+		order by
+		aLOr_BuyingTime desc
+		limit #{pageNumber},#{pageNum}
+	</select>
+	<select id="countInstallOrde" parameterType="map" resultType="long">
+		select count(*)
+		from tbl_AppointmentInstallationOrder
+		<where>
+			<if test="orderState !=null">
+				aLOr_InstallationOrderStatus=#{orderState}
+		 </if>
+			<if test="userId !=null">
+				and aLOr_UserID=#{userId}
+		 </if>
+		</where>
+	</select>
+	<select id="getInstallOrdeDetail" parameterType="map" resultMap="findResultMap">
+		select
+		pk_InstallDetail,
+		inDe_ProductName,
+		inDe_Price,
+		inDe_Quantity,
+		prod_ProductImage,
+		prod_ProductTag
+		from tbl_InstallDetail, tbl_Product
+		<where>
+			inDe_ProductId=pk_Product
+			<if test="orderId != null">
+				and inde_parentId=#{orderId}
+	     </if>
+		</where>
+	</select>
+	
+	<select id="getMyOrder" parameterType="map" resultMap="findResultMap">
+		select * from (
+			select 
+				pk_Order orderId,
+				orde_Code orderCode,
+				orde_CommodityShops orderShopName,
+				orde_Status orderState,
+				orde_CommodityTotal orderTotal,
+				orde_TotalAmount orderPrice,
+				orde_Createdate orderTime,
+		    	1 orderType
+			from 
+				tbl_Order
+			<where>
+				<if test="orderState !=null">
+					orde_Status=#{orderState}
+			 </if>
+				<if test="userId !=null">
+					and orde_UserId=#{userId}
+			 </if>
+			</where>
+			union all
+			select 
+				pk_AppointmentInstallationOrder orderId,
+				aLOr_InstallationOrderCode orderCode,
+				aLOr_CommodityShops orderShopName,
+				aLOr_InstallationOrderStatus orderState,
+				aLOr_CommodityTotal orderTotal,
+				aLOr_Money orderPrice,
+				aLOr_BuyingTime orderTime,
+				2 orderType
+			from 
+				tbl_AppointmentInstallationOrder
+			<where>
+				<if test="orderState !=null">
+					aLOr_InstallationOrderStatus=#{orderState}
+			 </if>
+				<if test="userId !=null">
+					and aLOr_UserID=#{userId}
+			 </if>
+			</where>
+		) as myOrder
+		order by orderTime desc
+		limit #{pageNumber},#{pageNum}
+	</select>
+	<select id="countMyOrder" parameterType="map" resultType="long">
+		select count(*) from (
+			select 
+				pk_Order orderId
+			from tbl_Order
+			<where>
+				<if test="orderState !=null">
+					orde_Status=#{orderState}
+			 </if>
+				<if test="userId !=null">
+					and orde_UserId=#{userId}
+			 </if>
+			</where>
+			union all
+			select 
+				pk_AppointmentInstallationOrder orderId
+			from tbl_AppointmentInstallationOrder
+			<where>
+				<if test="orderState !=null">
+					aLOr_InstallationOrderStatus=#{orderState}
+			 </if>
+				<if test="userId !=null">
+					and aLOr_UserID=#{userId}
+			 </if>
+			</where>
+		) as myOrder
+	</select>
+</mapper> 

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="blank" />
+		<meta name="format-detection" content="telephone=no" />
+		<title>纠错</title>
+		<!--<link rel="stylesheet" type="text/css" href="dist/css/bootstrap.min.css"/>-->
+		<link rel="stylesheet" type="text/css" href="dist/css/bootstrap.css"/>
+		<link rel="stylesheet" type="text/css" href="css/mui.css"/>
+		<link rel="stylesheet" type="text/css" href="css/base.css"/>
+		<link rel="stylesheet" type="text/css" href="css/checkError.css"/>
+		<!--[if lt IE 9]>
+			<script src="dist/js/html5shiv.min.js"></script>
+			<script src="dist/js/respond.min.js"></script>
+		<![endif]-->
+	</head>
+	<body>
+	<!--头部=============================================================================================-->
+	<header>
+		<div class="col-xs-2 headLeft" onclick="toHistory()">
+			<img src="img/nav_btn_back.png"/>
+		</div>
+		<div class="col-xs-8 col-xs-offset-2 headCenter">
+			纠错
+		</div>
+	</header>
+	<!--主体部分===========================================================================================-->
+	<section>
+		<ul class="errorList" id="errorList">
+			<!--<li data-val="163">电桩故障</li>
+			<li data-val="164">充电异常</li>
+			<li data-val="165">结构损坏</li>
+			<li data-val="166">键盘失灵</li>
+			<li data-val="167">显示模糊</li>
+			<li data-val="168" id="other">
+				其他
+			</li>-->
+		</ul>
+		
+	</section>
+	<!--提示框==================================================================================================-->
+	<div class="detailTip" style="display: none;" id="detailTip">
+		<textarea name="" rows="" cols="" class="textDetail" placeholder="请输入详细描述"></textarea>
+	</div>
+	
+<!--预约按钮===============================================================================================-->
+	<a class="btn btn-block appointmentBtn" id="submitBtn">提交</a>
+	<!--模态框==============================================================================================-->	
+<div class="modal" id="myModal" tabindex="-1" role="dialog"  aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+		      <div class="modal-content">
+		         <div class="modal-header">
+		            <h4 class="modal-title" id="myModalLabel">
+		               		提交成功！
+		            </h4>
+		         </div>
+		         <!--<div class="modal-body">
+		         </div>-->
+		         <div class="modal-footer">
+		            <a class="btn btn-primary certain" id="certain" 
+   data-target="#myModal2" data-backdrop="static" data-dismiss="modal">
+		              	 确定
+		            </a>
+		         </div>
+		      </div><!-- /.modal-content -->
+		</div><!-- /.modal -->
+	</div>
+	</body>
+	<script type="text/javascript" src="dist/js/jquery-1.11.0.js" ></script>
+	<script type="text/javascript">
+//		if ('addEventListener' in document) {
+//		    document.addEventListener('DOMContentLoaded', function() {
+//		        FastClick.attach(document.body);
+//		    }, false);
+//		}
+		$(function() {
+		    FastClick.attach(document.body);
+		});
+
+	</script>
+	<script src="dist/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/userinfo.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript" src="dist/js/bootstrap.js" ></script>
+	<script src="js/url.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/checkError.js" type="text/javascript" charset="utf-8"></script>
+</html>

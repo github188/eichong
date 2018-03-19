@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/style.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/APPissue/AppNews_edit.css"/>
+    <title>首页资讯列表</title>
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="container-fluid">
+        <div class="row">
+
+        </div>
+        <div class="row">
+            <div class="col-sm-12" style="padding: 0">
+                <div class="ibox float-e-margins">
+                    <div class="">
+                        <div class="ibox-content">
+                            <div class="add_companyBlock">
+                                <div class="add_greyBlock">
+                                    <!--图片-->
+                                    <div class="container-fluid">
+                                        <div class="col-sm-2 userTitle">图片<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-2 userTitle" id="picUrl">
+                                            <!--<input type="button" id="picBtn" class="lookPic" value="查看原图片 "/>-->
+                                            <!--<a title="预览" onclick="pictureShow('+"'"+data[i].newsInfoPicUrl+"'"+')">缩略图</a>-->
+                                        </div>
+                                        <div class="col-sm-2 userHeight">
+                                            <a href="javascript:;" class="filea">选择文件
+                                                <input type="file" name="file" id="file" value="" class="aaaStyle" multiple="multiple" />
+                                            </a>
+                                        </div>
+                                        <div class="col-sm-2 userHeight">
+                                            <div class="fileList" id="fileListUl">
+
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="fileNameTip">
+
+                                        </div>
+                                    </div>
+                                    <!--标题-->
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">标题<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="newsInfoName" id="newsInfoName" class="commonStyle" placeholder="请输入标题"/>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="newsInfoNameTip">
+
+                                        </div>
+                                    </div>
+                                    <!--正文-->
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">链接<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="newsInfoUrl" id="newsInfoUrl" class="commonStyle" placeholder="请输入链接"/>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="newsInfoUrlTip">
+
+                                        </div>
+                                    </div>
+
+                                    <!--按钮组合-->
+                                    <div class="saveBtn commonBtn" id="saveBtn">保存</div>
+                                    <div class="quitBtn commonBtn" id="goCancel">取消</div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="pictureShow" style="display: none;">
+    <img src="" alt="" class="pic" />
+</div>
+</body>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<!--<script src="../js/apiAddress.js" type="text/javascript" charset="utf-8"></script>-->
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/APPissue/AppNews_edit.js" type="text/javascript" charset="utf-8"></script>
+</html>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dubbox.dao.TblActivityMapper">
+	<resultMap id="BaseResultMap" type="com.wanma.dubbox.model.TblActivity">
+		<id column="pk_Activity" property="id" jdbcType="INTEGER" />
+		<result column="act_ActivityName" property="name" jdbcType="VARCHAR" />
+		<result column="act_Type" property="tp" jdbcType="INTEGER" />
+		<result column="act_ChannelType" property="chTp" jdbcType="INTEGER" />
+		<result column="act_Status" property="sts" jdbcType="SMALLINT" />
+		<result column="act_ActivityRule" property="rule" jdbcType="INTEGER" />
+		<result column="act_CreateUserId" property="cuid" jdbcType="VARCHAR" />
+		<result column="act_UpdateUserId" property="upUid" jdbcType="VARCHAR" />
+		<result column="act_Remark" property="remark" jdbcType="VARCHAR" />
+		<result column="act_BeginDate" property="bgDate" jdbcType="DATE" />
+		<result column="act_EndDate" property="edDate" jdbcType="DATE" />
+		<result column="act_Createdate" property="cdate" jdbcType="TIMESTAMP" />
+		<result column="act_Updatedate" property="udate" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<select id="getCount" parameterType="TblActivity" resultType="long">
+		select count(1)
+		from
+		tbl_activity t
+		WHERE
+		1=1
+		<if test="tp != null">
+			and act_Type=#{tp}
+		</if>
+		<if test="pkIds != null">
+			and pk_Activity in
+			<foreach item="item" index="index" collection="pkIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+	</select>
+
+	<select id="getList" parameterType="TblActivity" resultMap="BaseResultMap">
+		select
+		${rtColumns}
+		from
+		tbl_activity
+		WHERE
+		1=1
+		<if test="tp != null">
+			and act_Type=#{tp}
+		</if>
+		<if test="pkIds != null">
+			and pk_Activity in
+			<foreach item="item" index="index" collection="pkIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		order by t.act_Createdate
+		desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<select id="selectOne" parameterType="TblActivity" resultMap="BaseResultMap">
+		select
+		${rtColumns}
+		from
+		tbl_activity t
+		where pk_Activity = #{id}
+	</select>
+
+	<delete id="delete" parameterType="TblActivity">
+		delete
+		from
+		tbl_activity where
+		pk_Activity=#{id}
+	</delete>
+
+</mapper>

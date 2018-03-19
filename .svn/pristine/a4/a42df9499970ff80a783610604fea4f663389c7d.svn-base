@@ -1,0 +1,30 @@
+package com.wanma.ims.model.base;
+
+import java.io.Serializable;
+
+
+public class Entity implements Serializable {
+	private static final long serialVersionUID = 1L;
+	private Pager pager;
+	private String createUser;
+	private String lastUpdateUser;
+	public Pager getPager() {
+		return pager;
+	}
+	public void setPager(Pager pager) {
+		this.pager = pager;
+	}
+	public String getCreateUser() {
+		return createUser;
+	}
+	public void setCreateUser(String createUser) {
+		this.createUser = createUser;
+	}
+	public String getLastUpdateUser() {
+		return lastUpdateUser;
+	}
+	public void setLastUpdateUser(String lastUpdateUser) {
+		this.lastUpdateUser = lastUpdateUser;
+	}
+	
+}

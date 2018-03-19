@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsActivityMapper">
+	<resultMap id="BaseResultMap" type="com.wanma.model.TblActivity">
+		<id column="pk_Activity" property="pkActivity" jdbcType="INTEGER" />
+		<result column="act_ActivityName" property="actActivityname"
+			jdbcType="VARCHAR" />
+		<result column="act_Type" property="actType" jdbcType="INTEGER" />
+		<result column="act_ChannelType" property="actChanneltype"
+			jdbcType="INTEGER" />
+		<result column="act_Status" property="actStatus" jdbcType="SMALLINT" />
+		<result column="act_ActivityRule" property="actActivityrule"
+			jdbcType="INTEGER" />
+		<result column="act_CreateUserId" property="actCreateuserid"
+			jdbcType="VARCHAR" />
+		<result column="act_UpdateUserId" property="actUpdateuserid"
+			jdbcType="VARCHAR" />
+		<result column="act_Remark" property="actRemark" jdbcType="VARCHAR" />
+		<result column="act_BeginDate" property="actBegindate"
+			jdbcType="DATE" />
+		<result column="act_EndDate" property="actEnddate" jdbcType="DATE" />
+		<result column="act_Createdate" property="actCreatedate"
+			jdbcType="TIMESTAMP" />
+		<result column="act_Updatedate" property="actUpdatedate"
+			jdbcType="TIMESTAMP" />
+       <result column="pk_CompanyId" property="pkCompanyId"
+			jdbcType="INTEGER" />
+		<result column="cpy_CompanyName" property="cpyCompanyName"
+			jdbcType="VARCHAR" />
+
+	</resultMap>
+
+	<select id="getActivityCount" parameterType="map" resultType="long">
+		select count(1) from (
+		select * from tbl_activity where 1=1
+		<if test=" actStatus != null and actStatus!=''and actStatus ==1 ">
+			and act_Status=1
+		</if>
+		<if test=" actStatus != null and actStatus!=''and actStatus ==0 ">
+			and act_BeginDate>#{currentDate}
+		</if>
+		<if test=" actStatus != null and actStatus!=''and actStatus ==2 ">
+			and #{currentDate}>act_BeginDate and
+			act_EndDate>#{currentDate}
+		</if>
+		<if test=" actStatus != null and actStatus!=''and actStatus ==3 ">
+			and #{currentDate}>act_EndDate and act_Status!=1
+		</if>
+		<if test="pkActivity != null and pkActivity!=''">
+			and pk_Activity = #{pkActivity}
+		</if>
+		<if test="actActivityname != null and actActivityname!=''">
+			and act_ActivityName = #{actActivityname}
+		</if>
+		<if test="actType != null and actType!=''">
+			and act_Type= #{actType}
+		</if>
+		<if test="actChanneltype != null and actChanneltype!=''">
+			and act_ChannelType= #{actChanneltype}
+		</if>
+		<!-- <if test="actStatus != null and actStatus!=''"> and act_Status= #{actStatus} 
+			</if> -->
+		<if test="actActivityrule != null and actActivityrule!=''">
+			and act_ActivityRule= #{actActivityrule}
+		</if>
+		order by act_Createdate desc
+		) aa
+
+	</select>
+
+	<select id="getActivityList" resultMap="BaseResultMap">
+		SELECT
+		c.pk_Activity,
+		act_ActivityName,
+		act_Type,
+		(select cpy_CompanyName from  tbl_company x where x.pk_CompanyId=act_ChannelType ) cpyCompanyName,
+		act_Status,
+		act_ActivityRule,
+		act_CreateUserId,
+		act_UpdateUserId,
+		act_Remark,
+		act_BeginDate,
+		act_EndDate,
+		act_Createdate,
+		act_Updatedate,
+		(SELECT
+		GROUP_CONCAT(
+		CONCAT(
+		b.cova_ActivityName,
+		"*",
+		a.acsc_num
+		)
+		)
+		FROM
+		tbl_activityschedule a,
+		tbl_couponvariety b
+		WHERE
+		a.pk_CouponVariety =
+		b.pk_CouponVariety and a.pk_Activity= c.pk_Activity and b.cova_Stutas=
+		0) prizeName
+		FROM
+		tbl_activity c
+		WHERE
+		1 = 1
+		<if test=" actStatus != null and actStatus!=''and actStatus ==1 ">
+			and act_Status=1
+		</if>
+		<if test=" actStatus != null and actStatus!=''and actStatus ==0 ">
+			and act_BeginDate>#{currentDate}
+		</if>
+		<if test=" actStatus != null and actStatus!=''and actStatus ==2 ">
+			and #{currentDate}>act_BeginDate and
+			act_EndDate>#{currentDate}
+		</if>
+		<if test=" actStatus != null and actStatus!=''and actStatus ==3 ">
+			and #{currentDate}>act_EndDate and act_Status!=1
+		</if>
+		<if test="pkActivity != null and pkActivity!=''">
+			and pk_Activity = #{pkActivity}
+		</if>
+		<if test="actActivityname != null and actActivityname!=''">
+			and act_ActivityName = #{actActivityname}
+		</if>
+		<if test="actType != null and actType!=''">
+			and act_Type= #{actType}
+		</if>
+		<if test="actChanneltype != null and actChanneltype!=''">
+			and act_ChannelType= #{actChanneltype}
+		</if>
+		<!-- <if test="actStatus != null and actStatus!=''"> and act_Status= #{actStatus} 
+			</if> -->
+		<if test="actActivityrule != null and actActivityrule!=''">
+			and act_ActivityRule= #{actActivityrule}
+		</if>
+		order by act_Createdate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	<update id="changeActStatus" parameterType="map">
+		update tbl_activity
+		set act_Status=1,act_EndDate=date_sub(CURDATE(),INTERVAL 1 DAY)
+		where
+		pk_Activity=#{pkActivity}
+	</update>
+
+	<insert id="addMainActivity" parameterType="com.wanma.model.TblActivity"
+		useGeneratedKeys="true" keyProperty="pkActivity">
+		insert into
+		tbl_activity
+		(act_ActivityName,act_Type,
+		<if test="actActivityrule != null and actActivityrule!=''">
+			act_ActivityRule,
+		</if>
+		<if test="actChanneltype != null and actChanneltype!=''">
+			act_ChannelType,
+		</if>
+		<if test="actBegindates != null and actBegindates!=''">
+			act_BeginDate,
+		</if>
+		<if test="actEnddates != null and actEnddates!=''">
+			act_EndDate,
+		</if>
+		act_CreateUserId,act_UpdateUserId,act_Remark)
+		values
+		(#{actActivityname},#{actType},
+		<if test="actActivityrule != null and actActivityrule!=''">
+			#{actActivityrule},
+		</if>
+		<if test="actChanneltype != null and actChanneltype!=''">
+			#{actChanneltype},
+		</if>
+		<if test="actBegindates != null and actBegindates!=''">
+			#{actBegindates},
+		</if>
+		<if test="actEnddates != null and actEnddates!=''">
+			#{actEnddates},
+		</if>
+		#{actCreateuserid},#{actUpdateuserid},#{actRemark})
+
+	</insert>
+
+	<insert id="addScheActivity" parameterType="com.wanma.model.TblActivity">
+		insert into
+		tbl_activityschedule
+		(pk_Activity,pk_CouponVariety,acsc_num)
+		values
+		(#{pkActivity},#{pkCouponVariety},#{num}
+		)
+
+	</insert>
+	<insert id="generateCode" parameterType="list">
+		INSERT INTO tbl_coupon (
+		pk_Activity,
+		pk_CouponVariety,
+		cp_Limitation,
+		cp_CouponValue,
+		cp_CouponCondition,
+		cp_CouponCode
+		)
+		values
+		<foreach collection="list" item="item" separator=",">
+			(
+			#{item.pkActivity},
+			#{item.pkCouponVariety},
+			(select cova_Limitation
+			FROM
+			tbl_couponvariety
+			WHERE
+			pk_CouponVariety =
+			#{item.pkCouponVariety}
+			), (select cova_CouponValue
+			FROM
+			tbl_couponvariety
+			WHERE
+			pk_CouponVariety = #{item.pkCouponVariety}
+			), (select
+			cova_CouponCondition FROM
+			tbl_couponvariety
+			WHERE
+			pk_CouponVariety =
+			#{item.pkCouponVariety}
+			),#{item.code})
+		</foreach>
+	</insert>
+	<select id="checkActUnique" parameterType="map" resultType="long">
+		select count(1) from (
+		SELECT
+		*
+		FROM
+		tbl_activity t
+		WHERE
+		1 = 1 and
+		t.act_Type= 1
+		AND t.act_ActivityRule = #{actActivityrule}
+		AND (
+		(
+		t.act_BeginDate>=#{actBegindates}
+		AND #{actEnddates} >= t.act_BeginDate
+		)
+		OR (
+		#{actBegindates} >= t.act_BeginDate
+		AND t.act_EndDate
+		>=#{actBegindates}
+		)
+		)
+		AND t.act_Status != 1
+		) aa
+
+	</select>
+	<select id="getChannelType" parameterType="com.wanma.model.TblActivity"
+		resultMap="BaseResultMap">
+		SELECT
+		t.pk_CompanyId,t.cpy_CompanyName
+		FROM
+		tbl_company t
+		ORDER BY
+		t.pk_CompanyId asc
+	</select>
+</mapper>

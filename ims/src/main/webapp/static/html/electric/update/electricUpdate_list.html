@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/electric/update/electricUpdate_list.css"/>
+    <title>电桩升级列表</title>
+</head>
+<body>
+<div class="container animated fadeInRight">
+    <div class="row">
+        <div class="formBlock clearfix">
+            <form id="electricUpdateListForm">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" >
+                    <div class="row" style="padding:0 15px;">
+                        <div class="userListSelect col-sm-3 col-xs-12">
+                            <div class="col-sm-11 col-xs-12">
+                                <input type="text" name="code" id="" value="" class="pileCode" placeholder="桩体编码"/>
+                            </div>
+                        </div>
+                        <div class="userListSelect col-sm-3 col-xs-12">
+                            <div class="col-sm-11 col-xs-12">
+                                <input type="text" name="powerStationName" id="" value="" class="pileCode" placeholder="充电点名称"/>
+                            </div>
+                        </div>
+                        <div class="userListSelect col-sm-3 col-xs-12">
+                            <div class="col-sm-11 col-xs-12">
+                                <input type="text" name="productModel" id="" value="" class="pileCode" placeholder="产品型号"/>
+                            </div>
+                        </div>
+                        <div class="userListSelect col-sm-3 col-xs-12">
+                            <div class="col-sm-11 col-xs-12 model-select-box">
+                                <div class="model-select-text commStatusBlock" data-value="" id="commStatusHtml">连接状态</div>
+                                <span class="downRow commStatusBlock clickRotateSpan"></span>
+                                <input type="text" name="commStatus" hidden="hidden" id="" value="" />
+                                <ul class="model-select-option commStatusUl">
+                                    <li data-option="" class="seleced">连接状态</li>
+                                    <li data-option="1">已连接</li>
+                                    <li data-option="0">未连接</li>
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12" style="background: #FFFFFF;height: 25px;"></div>
+                    <div class="row" style="padding:0 15px;">
+                        <div class="userListSelect col-sm-3 col-xs-12">
+                            <div class="col-sm-11 col-xs-12 model-select-box">
+                                <div class="model-select-text cpyProvinceBlock" data-value="" id="provinceCodeHtml">选择省份</div>
+                                <span class="downRow cpyProvinceBlock clickRotateSpan"></span>
+                                <input type="text" name="provinceCode" hidden="hidden" id="" value="" />
+                                <ul class="model-select-option cpyProvinceUl">
+                                    <li data-option="" class="seleced">选择省份</li>
+
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="userListSelect col-sm-3 col-xs-12">
+                            <!--==============-->
+                            <div class="col-xs-12 col-sm-11  model-select-box">
+                                <div class="model-select-text cypCityBlock" data-value="" id="cityCodeHtml">选择城市</div>
+                                <span class="downRow cypCityBlock clickRotateSpan"></span>
+                                <input type="text" name="cityCode" hidden="hidden" id="" value="" />
+                                <ul class="model-select-option cypCityUl">
+                                    <li data-option="" class="seleced">选择城市</li>
+
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="userListSelect col-sm-3 col-xs-12">
+                            <!--============-->
+                            <div class="col-sm-11 col-xs-12 model-select-box">
+                                <div class="model-select-text cpyAreaBlock" data-value="" id="areaCodeHtml">选择区/县</div>
+                                <span class="downRow cpyAreaBlock clickRotateSpan"></span>
+                                <input type="text" name="areaCode" id="" value="" hidden="hidden"/>
+                                <ul class="model-select-option areaUl">
+                                    <li data-option="" class="seleced">选择区/县</li>
+
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="position: relative;">
+                        <div class="queryBtn" onclick="getElectricUpdateList()">
+                            查询
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!--按钮部分开始==========================================================-->
+        <div class="btnBlock">
+            <div class="row">
+                <div class="col-sm-2 " style="">
+                    <div class="col-sm-10 col-xs-2 btnStyle showBtn" id="upDateBtn" style="display: none">
+                        升级
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--表格部分开始==========================================================-->
+        <div class="showSet table-responsive">
+
+            <table class=" table table-bordered text-center" style="border: 1px solid #DCDCDC;">
+                <thead>
+                <tr>
+                    <th style="width: 80px;"><input type="checkbox" name="" class="selAll" value=""/></th>
+                    <th style="width: 120px;">桩体编码</th>
+                    <th style="width: 80px;">编号</th>
+                    <th style="width: 120px;">产品型号</th>
+                    <th style="width: 120px;">连接状态</th>
+                    <th style="width: 140px;">充电点名称</th>
+                    <th style="width: 140px;">升级固件编号</th>
+                    <th style="width: 140px;">升级固件版本号</th>
+                    <th style="width: 140px;">数据库固件编号</th>
+                    <th style="width: 170px;">数据库固件版本号</th>
+                    <th style="width: 120px;">升级时间</th>
+                </tr>
+                </thead>
+                <tbody id="myTbogy">
+
+                </tbody>
+            </table>
+
+            <div id="electricUpdatePage" class="pagination">
+            </div>
+
+        </div>
+    </div>
+</div>
+<!--软硬件bom清单-->
+<!--绑定电桩部分=======================-->
+<div class="bindPile" id="bindPile" style="display: none;">
+    <div class="bindPileBlock table-responsive">
+        <table class="bindPileTable table">
+            <thead>
+            <tr class="active">
+                <th>选择</th>
+                <!--<th><input type="checkbox" name="" class="selAllElectric" value="" /></th>-->
+                <th>序号</th>
+                <th>硬件类型</th>
+                <th>硬件型号</th>
+                <th>硬件版本号</th>
+                <th>固件编号</th>
+                <th>固件版本号</th>
+                <th>强制更新标识</th>
+            </tr>
+            </thead>
+            <tbody id="BomTbody">
+
+            </tbody>
+        </table>
+        <div class="errorTip" style="color: #FF0000;"></div>
+    </div>
+</div>
+</body>
+<script src="../../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="../../../js/contabs.min.js"></script>
+<script src="../../../js/electric/update/electricUpdate_list.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/checkBox.js" type="text/javascript" charset="utf-8"></script>
+</html>

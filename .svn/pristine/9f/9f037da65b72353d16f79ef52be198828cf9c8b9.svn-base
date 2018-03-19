@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.web.dao.WebUsercollectMapper">
+
+	<resultMap id="tblUsercollectResultMap" type="TblUsercollect">
+		<id property="pkUsercollect" column="pk_UserCollect" />
+		<result property="uscoUserid" column="usCo_Userid" />
+		<result property="uscoType" column="usCo_Type" />
+		<result property="uscoObjectid" column="usCo_Objectid" />
+		<result property="uscoAddtime" column="usCo_AddTime" />
+	</resultMap>
+	<resultMap id="pageResultMap"  type="java.util.HashMap" extends="tblUsercollectResultMap"></resultMap>
+	<resultMap id="findResultMap"  type="java.util.HashMap" extends="tblUsercollectResultMap"></resultMap>
+	<resultMap id="findMap" type="java.util.HashMap"></resultMap>
+	<insert id="insert" parameterType="TblUsercollect">
+	   insert into tbl_UserCollect (
+	     pk_UserCollect,
+	     usCo_Userid,
+	     usCo_Type,
+	     usCo_Objectid,
+	     usCo_AddTime
+	   )values (
+	     #{pkUsercollect},
+	     #{uscoUserid},
+	     #{uscoType},
+	     #{uscoObjectid},
+	     #{uscoAddtime}
+	   )
+	</insert>
+
+	<update id="update" parameterType="TblUsercollect">
+	   update tbl_UserCollect set
+	     pk_UserCollect=#{pkUsercollect},
+	     usCo_Userid=#{uscoUserid},
+	     usCo_Type=#{uscoType},
+	     usCo_Objectid=#{uscoObjectid},
+	     usCo_AddTime=#{uscoAddtime}
+	   where 
+	    pk_UserCollect=#{pkUsercollect} 
+	</update>
+
+	<delete id="delete" parameterType="map">
+	   delete from 
+	     tbl_UserCollect 
+	   where 
+	    pk_UserCollect=#{pkUsercollect} 
+	</delete>
+
+	<select id="get" parameterType="map" resultMap="tblUsercollectResultMap">
+	   select 
+	    pk_UserCollect,
+	    usCo_Userid,
+	    usCo_Type,
+	    usCo_Objectid,
+	    usCo_AddTime
+	   from tbl_UserCollect
+	   where 
+	    pk_UserCollect=#{pkUsercollect} 
+	</select>
+
+	<select id="findOne" parameterType="map" resultMap="findResultMap">
+	   select 
+	    pk_UserCollect,
+	    usCo_Userid,
+	    usCo_Type,
+	    usCo_Objectid,
+	    usCo_AddTime
+	   from tbl_UserCollect
+	   where 
+	    pk_UserCollect=#{pkUsercollect} 
+	</select>
+
+	<select id="find" parameterType="TblUsercollect" resultMap="tblUsercollectResultMap">
+	   select 
+	     pk_UserCollect,
+	     usCo_Userid,
+	     usCo_Type,
+	     usCo_Objectid,
+	     usCo_AddTime
+	   from tbl_UserCollect
+	   <where>
+	     <if test="pkUsercollect != null">
+	        pk_UserCollect=#{pkUsercollect}
+	     </if>
+	     <if test="uscoUserid != null">
+	        and usCo_Userid=#{uscoUserid}
+	     </if>
+	     <if test="uscoType != null">
+	        and usCo_Type=#{uscoType}
+	     </if>
+	     <if test="uscoObjectid != null">
+	        and usCo_Objectid=#{uscoObjectid}
+	     </if>
+	     <if test="uscoAddtime != null">
+	        and usCo_AddTime=#{uscoAddtime}
+	     </if>
+	   </where>
+	</select>
+	<select id="getUserCollectDetail" parameterType="TblUsercollect" resultMap="findMap">
+	   select 
+	     user.pk_UserCollect,
+	     user.usCo_Userid,
+	     user.usCo_AddTime,
+	     pile.elPi_PowerUser usCo_Type,
+	     user.usCo_Objectid,
+	     pile.elPi_ElectricPileName objName,
+	     pile.elPi_ElectricPileAddress objAddress
+	   from tbl_UserCollect user,tbl_ElectricPile pile
+	   <where>
+	   	 user.usCo_Type=1 and user.usCo_Objectid=pile.pk_ElectricPile
+	     <if test="uscoUserid != null">
+	        and user.usCo_Userid=#{uscoUserid}
+	     </if>
+	   </where>
+	   union
+	   select 
+	     user.pk_UserCollect,
+	     user.usCo_Userid,
+	     user.usCo_AddTime,
+	     user.usCo_Type,
+	     user.usCo_Objectid,
+	     st.poSt_Name objName,
+	     st.poSt_Address objAddress
+	   from tbl_UserCollect user,tbl_PowerStation st
+	   <where>
+	   	 user.usCo_Type=2 and user.usCo_Objectid=st.pk_PowerStation
+	     <if test="uscoUserid != null">
+	        and user.usCo_Userid=#{uscoUserid}
+	     </if>
+	   </where>
+	</select>
+	
+	<select id="page" parameterType="map" resultMap="pageResultMap">
+	   select 
+	     pk_UserCollect,
+	     usCo_Userid,
+	     usCo_Type,
+	     usCo_Objectid,
+	     usCo_AddTime
+	   from tbl_UserCollect
+	   <where>
+	     <if test="pkUsercollect != null">
+	        pk_UserCollect=#{pkUsercollect}
+	     </if>
+	     <if test="uscoUserid != null">
+	        and usCo_Userid=#{uscoUserid}
+	     </if>
+	     <if test="uscoType != null">
+	        and usCo_Type=#{uscoType}
+	     </if>
+	     <if test="uscoObjectid != null">
+	        and usCo_Objectid=#{uscoObjectid}
+	     </if>
+	     <if test="uscoAddtime != null">
+	        and usCo_AddTime=#{uscoAddtime}
+	     </if>
+	   </where>
+	</select>
+</mapper> 

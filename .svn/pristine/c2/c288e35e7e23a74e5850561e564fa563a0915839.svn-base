@@ -1,0 +1,132 @@
+/**     
+ * @Title:  DataConversionTask.java   
+ * @Package com.wanma.task   
+ * @Description:    TODO  
+ * @author: Android_Robot     
+ * @date:   2015年11月26日 上午9:44:23   
+ * @version V1.0     
+ */
+package com.wanma.task;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.RandomStringUtils;
+import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+
+import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Maps;
+import com.wanma.model.TcbElectric;
+import com.wanma.model.TcbStation;
+import com.wanma.service.TcbElectricService;
+import com.wanma.support.common.MessageManager;
+import com.wanma.support.common.RedisService;
+import com.wanma.support.common.SpringContextHolder;
+import com.wanma.support.common.WanmaConstants;
+import com.wanma.support.http.ApiSecurityUtils;
+import com.wanma.support.http.HttpClientUtil;
+
+/**
+ * @author bc
+ *
+ */
+public class QuartzTask {
+	private final Logger log = Logger.getLogger(this.getClass());
+	private boolean initFlag=false;
+	private static TcbElectricService tcbElectricService;
+	private static RedisService redisService;
+	private String basePath = "";//"https://122.224.200.89:18080/";
+	private String cityCode = "330100";
+	private String operatorId="310000002";
+	private String partnerId = "00000004";
+	private String partnerKey = "jaGYGJ/tC1wXK4ZnoLbJ+MgqYSD5BaQurx3sRyJWH6c=";
+	private HttpClientUtil httpClientUtil = new HttpClientUtil();
+	public void init() {
+		if(initFlag) return;
+		basePath=MessageManager.getMessageManager().getSystemProperties("cgbPath");
+		ApplicationContext ac = SpringContextHolder.getSpringContext();
+		tcbElectricService = (TcbElectricService) ac
+				.getBean("tcbElectricServiceImpl");
+		redisService = (RedisService) ac.getBean("redisService");
+		initFlag=true;
+	}
+
+	public void run1() {
+		init();
+		String reqTime = getLatestSyncTime();
+		TcbElectric electric = new TcbElectric();
+		electric.setCityCode(cityCode);
+		electric.setRunDate(reqTime);
+		List<TcbElectric> electricPileList = tcbElectricService.getElectricList(electric);
+		Map<String,Object> map=Maps.newHashMap();
+		map.put("data",electricPileList);
+//		System.out.println(JSON.toJSONString(map));
+		//上传桩
+		String pileListUrl = basePath + "api/pipe/pmon-records";
+
+		String token = RandomStringUtils.randomAlphanumeric(16);
+		String timestamp = String.valueOf(System.currentTimeMillis());
+		String toSign = token + "#" + timestamp;
+		String sign = ApiSecurityUtils.encrypt(toSign, partnerKey,
+				ApiSecurityUtils.HS256);
+		Map<String, String> contentMap = Maps.newHashMap();
+		contentMap.put("partnerId", partnerId);
+		contentMap.put("timestamp", timestamp);
+		contentMap.put("token", token);
+		contentMap.put("input", JSON.toJSONString(map));
+		contentMap.put("sign", sign);
+		String rt = httpClientUtil.doPost(pileListUrl, contentMap);
+		System.out.println(rt);
+		//上传站----------------------------------------------
+		String stationListUrl = basePath + "api/pipe/station_records";
+		TcbStation station = new TcbStation();
+		station.setCityCode(cityCode);
+		station.setRunDate(reqTime);
+		List<TcbStation> stationList = tcbElectricService.getStationList(station);
+		map=Maps.newHashMap();
+		map.put("data",stationList);
+		contentMap.put("input", JSON.toJSONString(map));
+//		System.out.println(JSON.toJSONString(map));
+		String rt2 = httpClientUtil.doPost(stationListUrl, contentMap);
+		System.out.println(rt2);
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		setLatestSyncTime(sdf.format(new Date()));
+	}
+	
+	private String getStatusByState(Integer state){
+		//0-草稿 5-提交审核 3-已驳回 10-离线15-上线
+		if(state==0)return "01";
+		if(state==10)return "08";
+		if(state==15)return "03";
+		return "08";
+	}
+
+	private String getLatestSyncTime() {
+		String syncTime = redisService.strGet(WanmaConstants.SYNC_TIME);
+		return syncTime;
+	}
+
+	private void setLatestSyncTime(String time) {
+		redisService.strSet(WanmaConstants.SYNC_TIME, time);
+
+	}
+
+	public void run2() {
+		log.info("任务线程2开始执行");
+	}
+
+	public void run3() {
+		log.info("任务线程3开始执行");
+	}
+
+	public void run4() {
+		log.info("任务线程4开始执行");
+	}
+
+	public void run5() {
+		log.info("任务线程5开始执行");
+	}
+}

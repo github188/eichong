@@ -1,0 +1,42 @@
+{
+    "title" : {
+        "text": ""
+    },
+    "tooltip" : {
+        "trigger": "axis"
+    },
+    "legend": {
+        "data":["支付宝充值次数","微信充值次数","银联充值次数","平台人工充值次数","支付宝充值金额","微信充值金额","银联充值金额","平台人工充值金额"]
+    },
+    "toolbox": {
+        "show" : true,
+        "feature" : {
+        	"outView":{"show": false,color: '#8b3a3a'},
+        	"innerView":{"show": true,color: '#8b3a3a'},
+            "mark" : {"show": false},
+            "dataView" : {"show": false, readOnly: false},
+            "magicType": {"show": false, type: ["line", "bar"]},
+            "restore" : {"show": false},
+            "saveAsImage" : {"show": false}
+        }
+    },
+    "calculable" : true,
+    "xAxis" : [],
+    "yAxis" : [
+			    {
+			            "type" : 'value',
+			            "name" : '用户充值次数',
+			            "axisLabel" : {
+			                "formatter": '{value} 次'
+			            }
+			        },
+			       {
+			            "type" : 'value',
+			            "name" : '用户充值金额',
+			            "axisLabel" : {
+			                "formatter": '{value} (元)'
+			            }
+			        }
+        ],
+    "series" : []
+}

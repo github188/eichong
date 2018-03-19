@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.app.dao.AuthCodeMapper">
+	<resultMap type="AuthCode" id="result_data">
+		<result property="authCode" column="auth_code" />
+		<result property="mobileNumber" column="mobile_number" />
+		<result property="createDate" column="create_date" />
+		<result property="createUser" column="create_user" />
+		<result property="lastUpdateDate" column="last_update_date" />
+		<result property="lastUpdateUser" column="last_update_user" />
+	</resultMap>
+
+	<select id="getAuthCodeByMobile" parameterType="String"
+		resultMap="result_data">
+		select auth_code,create_date from tb_auth_code where
+		mobile_number
+		=#{mobileNumber}
+	</select>
+
+	<select id="getAuthCodeByTradeId" parameterType="String"
+		resultMap="result_data">
+		select
+		tac.auth_code, max(tac.create_date) as create_date
+		from
+		tb_auth_code tac,
+		p_m_user pmu,
+		tb_scan_trade sct
+		where
+		tac.mobile_number = pmu.mobile_number
+		and sct.user_id = pmu.user_id
+		and sct.trade_id = #{tradeId}
+		group by tac.mobile_number
+	</select>
+
+	<insert id="saveAuthCode" parameterType="AuthCode" keyProperty="auth_code">
+		insert into tb_auth_code
+		(
+		auth_code,
+		mobile_number,
+		create_user,
+		last_update_user
+		)
+		values
+		(
+		#{authCode},
+		#{mobileNumber},
+		'system',
+		'system'
+		)
+	</insert>
+
+	<delete id="deleteAuthCode" parameterType="String">
+		delete from
+		tb_auth_code
+		where
+		mobile_number =#{mobileNumber}
+	</delete>
+
+	<delete id="deleteAuthCodeById" parameterType="String">
+		delete from
+		tb_auth_code
+		where
+		auth_code =#{authCode}
+	</delete>
+
+</mapper>

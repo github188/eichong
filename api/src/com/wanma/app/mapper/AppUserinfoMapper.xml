@@ -1,0 +1,603 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.app.dao.AppUserinfoMapper">
+
+
+
+
+	<insert id="insertLoginRecord" parameterType="UserLoginRecord">
+
+
+		insert into tbl_applogin_record
+		(
+		userId,
+		deviceType,
+		registrationID,
+		ip_address,
+		city_code,
+		longitude,
+		latitude,
+		createdate
+		)
+		values
+		(
+		#{userId},
+		#{deviceType},
+		#{registrationID},
+		#{IPaddress},
+		#{cCode},
+		#{longitude},
+		#{latitude},
+        now()
+		)
+	</insert>
+
+
+
+	<resultMap id="tblUserinfoResultMap" type="TblUserinfo">
+		<id property="pkUserinfo" column="user_id" />
+		<result property="usinGroupid" column="user_leval" />
+		<result property="usinUsername" column="norm_name" />
+		<result property="usinPassword" column="user_password" />
+		<result property="usinPhone" column="user_account" />
+		<result property="usinUserstatus" column="user_status" />
+		<result property="usinFacticityname" column="norm_real_name" />
+		<result property="usinSex" column="norm_sex" />
+		<result property="usinHeadimage" column="usIn_HeadImage" />
+		<result property="usinIccode" column="usIn_ICcode" />
+		<result property="usinAccountbalance" column="norm_account_balance" />
+		<result property="usinBirthdate" column="norm_birthday" />
+		<result property="usinEmail" column="norm_email" />
+		<result property="usinDrivinglicense" column="norm_driving_licence" />
+		<result property="usinCarcompanyId" column="norm_car_company_id" />
+		<result property="usinIntegrate" column="norm_integrate" />
+		<result property="usinCarinfoId" column="norm_car_type_id" />
+		<result property="usinCarinfoName" column="CarInfo_StyleName" />
+		<result property="usinUseraddress" column="norm_address" />
+		<result property="usinPassword" column="user_password" />
+		<result property="usinCreatedate" column="createdate" />
+		<result property="usinUpdatedate" column="updatedate" />
+		<result property="usinVehiclenumbe" column="norm_vehicle_number" />
+		<result property="platform" column="norm_registe_type" />
+		<result property="did" column="norm_device_id" />
+		<result property="payPwd" column="pay_password" />
+		<result property="pCode" column="norm_p_code" />
+		<result property="cCode" column="norm_c_code" />
+		<result property="aCode" column="norm_a_code" />
+		<result property="payPwd" column="norm_pay_password" />
+		<result property="chargeCard" column="uc_ExternalCardNumber" />
+		<result property="usinPlatenumber" column="norm_plate_num" />
+		<result property="applyCard" column="apply_card" />
+		<result property="accountId" column="account_id" />
+		<result property="accountNo" column="account_no" />
+	</resultMap>
+	<resultMap id="pageResultMap" type="java.util.HashMap"
+		extends="tblUserinfoResultMap"></resultMap>
+	<resultMap id="findResultMap" type="java.util.HashMap"
+		extends="tblUserinfoResultMap"></resultMap>
+
+	<insert id="insert" parameterType="TblUserinfo"
+		useGeneratedKeys="true" keyProperty="pkUserinfo">
+		insert into tbl_UserInfo (
+		usIn_GroupID,
+		usIn_UserName,
+		usIn_Phone,
+		usIn_FacticityName,
+		usIn_Sex,
+		usIn_ICcode,
+		usIn_AccountBalance,
+		usIn_Birthdate,
+		usIn_Email,
+		usIn_DrivingLicense,
+		usIn_Acura,
+		usIn_Integrate,
+		usIn_HeadImage,
+		usIn_MemberCode,
+		usIn_UserAddress,
+		usIn_UserStatus,
+		usIn_Password,
+		usIn_Createdate,
+		usIn_Updatedate,
+		usIn_PlateNumber,
+		usIn_VehicleNumbe,
+		usIn_RegisteType
+		)values (
+		#{usinGroupid},
+		#{usinUsername},
+		#{usinPhone},
+		#{usinFacticityname},
+		#{usinSex},
+		#{usinIccode},
+		#{usinAccountbalance},
+		#{usinBirthdate},
+		#{usinEmail},
+		#{usinDrivinglicense},
+		#{usinAcura},
+		#{usinIntegrate},
+		#{usinHeadimage},
+		#{usinMembercode},
+		#{usinUseraddress},
+		#{usinUserstatus},
+		#{usinPassword},
+		#{usinCreatedate},
+		#{usinUpdatedate},
+		#{usinPlatenumber},
+		#{usinVehiclenumbe},
+		#{platform}
+		)
+	</insert>
+
+	<!-- 基本信息表 -->
+	<insert id="insertUserBase" parameterType="TblUserinfo"
+		useGeneratedKeys="true" keyProperty="pkUserinfo">
+		insert into tbl_user
+		(user_account,user_password,user_leval,user_status,level_id)
+		values
+		(#{usinPhone},#{usinPassword},#{usinGroupid},#{usinUserstatus},(select level_id from tbl_level where 
+		is_default=1 and cpy_id=(select cpy_id from tbl_company where cpy_number='1000'limit 1)))
+	</insert>
+	
+	<insert id="insertUserFinBill" parameterType="TblUserinfo"
+		useGeneratedKeys="true" keyProperty="accountId">
+		insert into fin_account(account_no,account_balance,trade_type,account_status,creator,modifier,account_pwd)
+      values(#{accountNo},#{usinAccountbalance},2,1,'app','app','e10adc3949ba59abbe56e057f20f883e')
+	</insert>
+<insert id="insertFinRelation" parameterType="TblUserinfo">
+		insert into fin_account_relation
+		(user_id,account_id,bill_account_id,priority,creator,modifier)
+		values
+		(#{pkUserinfo},#{accountId},1,1,'app','app')
+	</insert>
+	<insert id="insertUserNormal" parameterType="TblUserinfo">
+		insert into
+		tbl_user_normal
+		(user_id,norm_registe_type,account_id,norm_invitePhone,cpy_id)
+		values
+		(#{pkUserinfo},#{platform},#{accountId},#{invitePhone},(select cpy_id from tbl_company where cpy_number='1000' limit 1))
+	</insert>
+
+	<update id="update" parameterType="TblUserinfo">
+		update tbl_UserInfo set
+		usIn_GroupID=#{usinGroupid},
+		usIn_UserName=#{usinUsername},
+		usIn_Phone=#{usinPhone},
+		usIn_FacticityName=#{usinFacticityname},
+		usIn_Sex=#{usinSex},
+		usIn_ICcode=#{usinIccode},
+		usIn_AccountBalance=#{usinAccountbalance},
+		usIn_Birthdate=#{usinBirthdate},
+		usIn_Email=#{usinEmail},
+		usIn_DrivingLicense=#{usinDrivinglicense},
+		usIn_Acura=#{usinAcura},
+		usIn_Integrate=#{usinIntegrate},
+		usIn_HeadImage=#{usinHeadimage},
+		usIn_MemberCode=#{usinMembercode},
+		usIn_UserAddress=#{usinUseraddress},
+		usIn_UserStatus=#{usinUserstatus},
+		usIn_Password=#{usinPassword},
+		usIn_Createdate=#{usinCreatedate},
+		usIn_Updatedate=#{usinUpdatedate},
+		usIn_PlateNumber=#{usinPlatenumber},
+		usIn_VehicleNumbe=#{usinVehiclenumbe}
+		where
+		pk_UserInfo=#{pkUserinfo}
+	</update>
+
+	<update id="userRecharge" parameterType="TblUserinfo">
+		update tbl_user_normal
+		set
+		norm_account_balance=norm_account_balance+#{usinAccountbalance}
+		where
+		user_id=#{pkUserinfo}
+	</update>
+
+	<!-- <update id="upgradeoUser" parameterType="TblUserinfo"> update tbl_user 
+		set user_leval=5 where user_id=#{pkUserinfo} </update> -->
+
+	<select id="get" parameterType="int" resultMap="tblUserinfoResultMap">
+		select
+		a.user_id,
+		user_account,
+		user_password,
+		user_leval,
+		user_status,
+		getFullPath ('userAvatar', a.user_id) AS usIn_HeadImage,
+		norm_name,
+		norm_real_name,
+		ifnull((
+		SELECT
+		j.account_balance  + j.account_present
+		FROM
+		fin_account j
+		WHERE
+		j.account_id = b.account_id
+		),0) norm_account_balance,
+		norm_device_id,
+		norm_email,
+		norm_address,
+		a.user_idcard AS norm_id_card,
+		norm_sex,
+		norm_birthday,
+		(SELECT IFNULL(available_integrals,0) FROM tbl_integral WHERE user_id = #{pkUserinfo}) norm_integrate,
+		norm_car_company_id,
+		norm_car_type_id,
+		norm_vehicle_number,
+		norm_driving_licence,
+		a.province_code AS norm_p_code,
+		a.city_code AS norm_c_code,
+		a.area_code AS norm_a_code,
+		(
+		SELECT
+		f.account_pwd
+		FROM
+		fin_account f
+		WHERE
+		b.account_id = f.account_id
+		) AS norm_pay_password,
+		CarInfo_StyleName,
+		apply_card,
+		GROUP_CONCAT(uc_ExternalCardNumber) uc_ExternalCardNumber,
+		norm_plate_num
+		from tbl_user a inner join tbl_user_normal b on a.user_id = b.user_id
+		LEFT JOIN tbl_carinfo c on norm_car_type_id = c.pk_CarInfo
+		LEFT JOIN
+		tbl_usercard d on a.user_id = d.user_Id
+		where a.user_id =#{pkUserinfo}
+		and a.user_status != 3 and d.uc_Status = 0
+	</select >
+	
+	<update id="updateUserInfo" parameterType="TblUserinfo">
+	 update tbl_user set
+	 <if test=" aCode!=null ">
+	   area_code = #{aCode},
+	 </if>
+	  <if test=" cCode!=null ">
+	   city_code = #{cCode},
+	 </if>
+	 
+	  <if test=" pCode!=null ">
+	   province_code = #{pCode}
+	 </if>
+	  where user_id=#{pkUserinfo}
+	
+
+    </update>
+	<!-- 根据用户手机号获取用户信息 -->
+	<select id="getByPhone" parameterType="map" resultMap="tblUserinfoResultMap">
+		select
+		user_id,
+		user_account,
+		user_status,
+		user_password
+		from tbl_user
+		where
+		user_account=#{usinPhone}
+	</select>
+
+	<select id="findOne" parameterType="map" resultMap="findResultMap">
+		select
+		user_id,
+		norm_name,
+		norm_real_name,
+		norm_sex,
+		(
+		SELECT
+		b.account_balance
+		FROM
+		fin_account b
+		WHERE
+		a.account_id = b.account_id
+		) AS norm_account_balance,
+		norm_birthday,
+		norm_email,
+		norm_driving_licence,
+		norm_integrate,
+		<!-- usIn_HeadImage, -->
+		norm_address,
+		<!-- norm_status, -->
+		norm_registe_type
+		from tbl_user_normal a
+		where
+		user_id=#{pkUserinfo}
+	</select>
+
+	<select id="find" parameterType="map" resultMap="findResultMap">
+		select
+		pk_UserInfo,
+		usIn_GroupID,
+		usIn_UserName,
+		usIn_Phone,
+		usIn_FacticityName,
+		usIn_Sex,
+		usIn_ICcode,
+		usIn_AccountBalance,
+		usIn_Birthdate,
+		usIn_Email,
+		usIn_DrivingLicense,
+		usIn_Acura,
+		usIn_Integrate,
+		usIn_HeadImage,
+		usIn_MemberCode,
+		usIn_UserAddress,
+		usIn_UserStatus,
+		usIn_Password,
+		usIn_Createdate,
+		usIn_Updatedate,
+		usIn_PlateNumber,
+		usIn_VehicleNumbe
+		from tbl_UserInfo
+		<where>
+			<if test="pkUserinfo != null">
+				pk_UserInfo=#{pkUserinfo}
+			</if>
+			<if test="usinGroupid != null">
+				and usIn_GroupID=#{usinGroupid}
+			</if>
+			<if test="usinUsername != null">
+				and usIn_UserName=#{usinUsername}
+			</if>
+			<if test="usinPhone != null">
+				and usIn_Phone=#{usinPhone}
+			</if>
+			<if test="usinFacticityname != null">
+				and usIn_FacticityName=#{usinFacticityname}
+			</if>
+			<if test="usinSex != null">
+				and usIn_Sex=#{usinSex}
+			</if>
+			<if test="usinIccode != null">
+				and usIn_ICcode=#{usinIccode}
+			</if>
+			<if test="usinAccountbalance != null">
+				and usIn_AccountBalance=#{usinAccountbalance}
+			</if>
+			<if test="usinBirthdate != null">
+				and usIn_Birthdate=#{usinBirthdate}
+			</if>
+			<if test="usinEmail != null">
+				and usIn_Email=#{usinEmail}
+			</if>
+			<if test="usinDrivinglicense != null">
+				and usIn_DrivingLicense=#{usinDrivinglicense}
+			</if>
+			<if test="usinAcura != null">
+				and usIn_Acura=#{usinAcura}
+			</if>
+			<if test="usinIntegrate != null">
+				and usIn_Integrate=#{usinIntegrate}
+			</if>
+			<if test="usinHeadimage != null">
+				and usIn_HeadImage=#{usinHeadimage}
+			</if>
+			<if test="usinMembercode != null">
+				and usIn_MemberCode=#{usinMembercode}
+			</if>
+			<if test="usinUseraddress != null">
+				and usIn_UserAddress=#{usinUseraddress}
+			</if>
+			<if test="usinUserstatus != null">
+				and usIn_UserStatus=#{usinUserstatus}
+			</if>
+			<if test="usinPassword != null">
+				and usIn_Password=#{usinPassword}
+			</if>
+			<if test="usinCreatedate != null">
+				and usIn_Createdate=#{usinCreatedate}
+			</if>
+			<if test="usinUpdatedate != null">
+				and usIn_Updatedate=#{usinUpdatedate}
+			</if>
+			<if test="usinPlatenumber != null">
+				and usIn_PlateNumber=#{usinPlatenumber}
+			</if>
+			<if test="usinVehiclenumbe != null">
+				and usIn_VehicleNumbe=#{usinVehiclenumbe}
+			</if>
+		</where>
+	</select>
+
+
+	<!-- 根据手机号码取得用户ID -->
+	<select id="getUserByMobile" parameterType="String" resultType="hashmap">
+		select user_id,user_status,user_password from tbl_user where
+		user_account=#{usinPhone}
+	</select>
+
+	<!-- 取得用户 记录数 -->
+	<select id="getUserCountByPassword" parameterType="map"
+		resultType="int">
+		select count(user_id) from tbl_user where
+		user_status!=2 and
+		user_status != 3 and user_account=#{usinPhone} and user_password =
+		#{usInPassword}
+	</select>
+
+	<!-- 判断用户是否存在 -->
+	<select id="userIsExist" parameterType="String" resultType="int">
+		select count(*) userNum from tbl_user where
+		user_account=#{usinPhone}
+	</select>
+	<!-- 找回密码 -->
+	<update id="resetPasswrod" parameterType="map">
+		update tbl_user set
+		user_password = #{usinPassword} where user_account=#{usinPhone}
+	</update>
+	<!-- 修改密码 -->
+	<update id="updatePwByUid" parameterType="map">
+		update tbl_user set
+		user_password = #{npw} where user_id = #{uId}
+	</update>
+	<!-- 更新用户余额 -->
+	<update id="updateAccountbalance" parameterType="map">
+		update
+		tbl_user_normal set
+		norm_account_balance = #{usinAccountbalance}
+		where
+		user_id = #{pkUserinfo}
+	</update>
+	<!-- 获取用户余额，冻结金额，电桩最小充电金额 -->
+	<select id="selectMoney" parameterType="map" resultType="map">
+		select
+		usIn_AccountBalance accountBalance,
+		(select sum(besp_FrozenAmt)
+		from tbl_Bespoke where besp_UserInfo = #{pkUserinfo}
+		and
+		(besp_BespokeStatus =3 or besp_BespokeStatus =4) and <![CDATA[besp_EndTime>(select now())]]>)
+		frozenAmt,
+		(select
+		raIn_ReservationRate
+		from
+		tbl_RateInformation r left
+		join
+		tbl_ElectricPile e on r.pk_RateInformation =
+		e.elPi_RateInformationId
+		where e.pk_ElectricPile=#{pkElectricPile})
+		minFreezingMoney
+		from
+		tbl_UserInfo
+		where
+		pk_UserInfo = #{pkUserinfo}
+	</select>
+
+	<!-- 根据用户id更新账户余额 -->
+	<update id="updateUserBlance" parameterType="map">
+		update
+		tbl_user_normal set norm_account_balance = #{blance} where user_id =
+		#{userId}
+	</update>
+
+	<!-- 根据用户id更新账户余额 -->
+	<update id="updateBsUserBlance" parameterType="map">
+		update
+		tbl_user_normal set busi_account_balance = #{blance} where user_id =
+		#{userId}
+	</update>
+
+	<!-- 根据用户id获取充电订单列表 -->
+	<select id="getChargeOrderListByUid" parameterType="map" resultType="hashmap">
+		SELECT
+			pk_ChargingOrder,
+			chOr_Code,
+			elPi_ElectricPileCode,
+			elPi_ElectricPileName,
+			elPi_ElectricPileAddress,
+			chOr_ChargingStatus,
+			chOr_Createdate,
+			chOr_QuantityElectricity,
+			REPLACE (FORMAT(chOr_ChargeMoney, 2),',','') AS chOr_ChargeMoney,
+			REPLACE (FORMAT(chOr_ServiceMoney, 2),',','') AS chOr_ServiceMoney,
+			chOr_CouponMoney couMoney,
+			begin_charge_time,
+			end_charge_time,
+			chOr_Muzzle AS headCode,
+			chRe_FrozenAmt
+		FROM tbl_chargingorder co
+		LEFT JOIN tbl_electricpile ep ON co.chOr_PileNumber = ep.elPi_ElectricPileCode
+		LEFT JOIN tbl_chargingrecord r ON co.chOr_Code = r.chRe_Code
+		WHERE chOr_UserId = #{userId} 
+		<if test="coId != null and coId != '0'"> and pk_ChargingOrder = #{coId}
+		</if>
+		<choose>
+			<when test="sts==0"> and chOr_ChargingStatus in ('1','4')
+			</when>
+			<when test="sts==1"> and chOr_ChargingStatus in ('2','3','5') </when>
+			<when test="sts==2"> and chOr_ChargingStatus = '1' </when>
+		</choose>
+		order by chOr_Createdate
+		desc
+		<if test="pager != null"> limit #{pager.pageNumber},#{pager.pageNum}
+		</if>
+	</select>
+
+	<!-- 根据用户id获取充电订单列表 -->
+	<!-- <select id="getChargeOrderListByUid" parameterType="map" resultType="hashmap"> 
+		<if test="sts==0"> select pk_ChargingOrder,chOr_Code,elPi_ElectricPileCode,elPi_ElectricPileName,elPi_ElectricPileAddress, 
+		chOr_ChargingStatus,chOr_Createdate,chOr_QuantityElectricity, FORMAT(chOr_ChargeMoney,2) 
+		as chOr_ChargeMoney, FORMAT(chOr_ServiceMoney,2) as chOr_ServiceMoney,chOr_CouponMoney 
+		couMoney, begin_charge_time,end_charge_time,chOr_Muzzle as headCode from 
+		tbl_chargingorder co left join tbl_electricpile ep on co.chOr_PileNumber 
+		= ep.elPi_ElectricPileCode where chOr_UserId = #{userId} and chOr_ChargingStatus 
+		!= 3 <if test="coId != null and coId != '0'"> and pk_ChargingOrder = #{coId} 
+		</if> and chOr_ChargingStatus in ('1','3','4','5') union all SELECT '' AS 
+		elPi_ElectricPileCode, '' AS elPi_ElectricPileName, '' AS elPi_ElectricPileAddress, 
+		'' AS chOr_QuantityElectricity, 0 AS chOr_ChargeMoney, 0 AS chOr_ServiceMoney, 
+		0 AS couMoney, b.ELPI_ELECTRICPILECODE AS pk_ChargingOrder, a.chRe_StartDate 
+		AS begin_charge_time, a.chRe_FrozenAmt AS chOr_ChargeMoney, c.ePHe_ElectricpileHeadState 
+		AS chOr_ChargingStatus, a.chRe_StartDate AS chOr_Createdate, a.chRe_StartDate 
+		AS end_charge_time, c.EPHE_ELECTRICPILEHEADID AS headCode FROM tbl_chargingrecord 
+		a, tbl_electricpile b, tbl_electricpilehead c WHERE a.user_id = #{userId} 
+		and a.chRe_ElectricPileID = b.pk_ElectricPile AND a.chRe_ChargingNumber = 
+		c.ePHe_ElectricpileHeadId AND b.pk_ElectricPile = c.pk_ElectricPile and c.ePHe_ElectricpileHeadState=17 
+		<if test="pager != null"> limit #{pager.pageNumber},#{pager.pageNum} </if> 
+		</if> <if test="sts!=0"> select pk_ChargingOrder,chOr_Code,elPi_ElectricPileCode,elPi_ElectricPileName,elPi_ElectricPileAddress, 
+		chOr_ChargingStatus,chOr_Createdate,chOr_QuantityElectricity, FORMAT(chOr_ChargeMoney,2) 
+		as chOr_ChargeMoney, FORMAT(chOr_ServiceMoney,2) as chOr_ServiceMoney,chOr_CouponMoney 
+		couMoney, begin_charge_time,end_charge_time,chOr_Muzzle as headCode from 
+		tbl_chargingorder co left join tbl_electricpile ep on co.chOr_PileNumber 
+		= ep.elPi_ElectricPileCode where chOr_UserId = #{userId} and chOr_ChargingStatus 
+		!= 3 <if test="coId != null and coId != '0'"> and pk_ChargingOrder = #{coId} 
+		</if> <choose> <when test="sts==1"> and chOr_ChargingStatus = '2' </when> 
+		<when test="sts==2"> and chOr_ChargingStatus = '1' </when> </choose> order 
+		by chOr_Createdate desc <if test="pager != null"> limit #{pager.pageNumber},#{pager.pageNum} 
+		</if> </if> </select> -->
+
+	<update id="updateUserDeviceId">
+		update tbl_user_normal set norm_device_id = #{did}
+		where user_id = #{userId}
+	</update>
+
+	<update id="setPayPwd">
+		update fin_account set ACCOUNT_PWD =  #{pwd}   where  account_id 
+        in ( select account_id from fin_account_relation where user_id = #{uid} )
+	</update>
+
+	<select id="getUserABById" parameterType="int" resultType="hashmap">
+		SELECT
+		(
+		SELECT
+		b.account_balance + b.account_present
+		FROM
+		fin_account b
+		WHERE
+		b.account_id = a.account_id
+		) AS norm_account_balance
+		FROM
+		tbl_user_normal a
+		WHERE user_id =#{userId}
+	</select>
+
+	<!-- 申请充电卡 -->
+	<insert id="applyCard" parameterType="map">
+		insert into
+		tbl_cardapplicationform
+		(caf_user_id,caf_real_name,caf_phone,caf_address)
+		values
+		(#{uId},#{name},#{phone},#{addr})
+	</insert>
+
+	<!-- 更新用户表中的card申请状态字段 -->
+	<update id="updateUserApplyCardStatus" parameterType="map">
+		update
+		tbl_user_normal set apply_card = #{status} where user_id = #{uId}
+	</update>
+
+	<!-- 查某人的卡申请列表 -->
+	<select id="applyListByUid" parameterType="long" resultType="hashmap">
+		select caf_phone phone, caf_real_name name,caf_address addr,caf_Status
+		appStatus,
+		caf_usercard outNum,a.createdate appTime, uc_Status
+		cardStatus, gmt_modified lossTime
+		from tbl_cardapplicationform a LEFT
+		JOIN tbl_usercard b on a.caf_usercard = b.uc_ExternalCardNumber
+		where
+		caf_user_id = #{uId} order by a.createdate desc
+	</select>
+
+	<!-- 从user表获取用户的冻结状态 -->
+	<select id="getStatusFromUserTable" parameterType="long"
+		resultType="int">
+		select user_status from tbl_user where user_id = #{uId}
+	</select>
+</mapper> 

@@ -1,0 +1,92 @@
+package com.wanma.ims.common.domain;
+
+import com.wanma.ims.common.domain.base.BasicModel;
+
+public class CountAdminEpRelaDO extends BasicModel {
+
+	/**
+	 * 管理员与充电桩数据权限DO
+	 */
+	private static final long serialVersionUID = 6997125266000499117L;
+
+	private Long pkId; // 主键
+
+	private Long adminId; // 管理员ID
+
+	private Long powerStationId; // 充电点ID
+
+	private String powerStationName; // 充电点名称
+
+	private Long electricPileId; // 充电桩ID
+
+	private String electricPileCode; // 充电桩编码
+
+	private String electricPileName; // 充电桩名称
+
+	private String adminArea; // 管理员范围
+
+	public Long getPkId() {
+		return pkId;
+	}
+
+	public void setPkId(Long pkId) {
+		this.pkId = pkId;
+	}
+
+	public Long getAdminId() {
+		return adminId;
+	}
+
+	public void setAdminId(Long adminId) {
+		this.adminId = adminId;
+	}
+
+	public Long getPowerStationId() {
+		return powerStationId;
+	}
+
+	public void setPowerStationId(Long powerStationId) {
+		this.powerStationId = powerStationId;
+	}
+
+	public Long getElectricPileId() {
+		return electricPileId;
+	}
+
+	public void setElectricPileId(Long electricPileId) {
+		this.electricPileId = electricPileId;
+	}
+
+	public String getAdminArea() {
+		return adminArea;
+	}
+
+	public void setAdminArea(String adminArea) {
+		this.adminArea = adminArea;
+	}
+
+	public String getElectricPileCode() {
+		return electricPileCode;
+	}
+
+	public void setElectricPileCode(String electricPileCode) {
+		this.electricPileCode = electricPileCode;
+	}
+
+	public String getElectricPileName() {
+		return electricPileName;
+	}
+
+	public void setElectricPileName(String electricPileName) {
+		this.electricPileName = electricPileName;
+	}
+
+	public String getPowerStationName() {
+		return powerStationName;
+	}
+
+	public void setPowerStationName(String powerStationName) {
+		this.powerStationName = powerStationName;
+	}
+
+}

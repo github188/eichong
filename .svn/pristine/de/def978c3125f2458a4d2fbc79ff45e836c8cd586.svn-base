@@ -1,0 +1,34 @@
+package com.wanma.support.utils;
+
+import java.util.Calendar;
+
+import org.apache.commons.lang.StringUtils;
+
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSONArray;
+
+public class RateinformationUtil {
+	
+	/**
+	 * 获取当前时间对应的尖峰平谷那个段
+	 * @param jsonRate 格式化的费率字符串
+	 * @return 1尖2峰3平4谷
+	 */
+	public static String getCurrentPowerRateMark(String jsonRate){
+		if(StringUtils.isEmpty(jsonRate)){
+			return "0";
+		}
+		JSONObject jo = JSONObject.parseObject(jsonRate);
+		JSONArray ja = jo.getJSONArray("data");
+		Calendar c = Calendar.getInstance();
+		for(int i = 0;i < ja.size();i++){
+			JSONObject cjo = ja.getJSONObject(i);
+			int currentM = (c.get(Calendar.HOUR_OF_DAY)*60 + c.get(Calendar.MINUTE));
+			if(Integer.parseInt(cjo.getString("st")) < currentM && Integer.parseInt(cjo.getString("et")) > currentM){
+				return cjo.getString("mark");
+			}
+		}
+		return "0";
+	}
+
+}

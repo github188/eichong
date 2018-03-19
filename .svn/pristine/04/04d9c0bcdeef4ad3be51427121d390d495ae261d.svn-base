@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.app.dao.AppCarinfoMapper">
+
+	<insert id="saveApplyEp" parameterType="map">
+		insert into tbl_apply_ep(
+			aep_a_type,
+			aep_c_type,
+			aep_name,
+			aep_phone,
+			aep_p_code,
+			aep_c_code,
+			aep_a_code,
+			aep_addr,
+			<if test="h_park != null">aep_h_park,</if>
+			<if test="park_num != null">aep_park_num,</if>
+			<if test="ep_type != null">aep_ep_type,</if>
+			aep_i_agree,
+			aep_i_report,
+			aep_i_ground,
+			aep_user_id
+		)
+		values(
+			#{a_type},
+			#{c_type},
+			#{name},
+			#{phone},
+			#{p_code},
+			#{c_code},
+			#{a_code},
+			#{addr},
+			<if test="h_park != null">#{h_park},</if>
+			<if test="park_num != null">#{park_num},</if>
+			<if test="ep_type != null">#{ep_type},</if>
+			#{i_agree},
+			#{i_report},
+			#{i_ground},
+			#{uid}
+		)
+	</insert>	
+	
+	<select id="getApplyEpList" parameterType="int">
+		select * from tbl_apply_ep where aep_user_id = #{uid}
+	</select>
+</mapper> 

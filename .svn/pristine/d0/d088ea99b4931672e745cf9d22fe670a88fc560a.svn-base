@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.dubbox.dao.TblRoleMapper">
+	<resultMap id="result_role" type="TblRole">
+		<result property="id" column="role_id" />
+		<result property="name" column="role_name" />
+		<result property="ctgry" column="category" />
+		<result property="nt" column="notes" />
+		<result property="cdate" column="create_date" />
+		<result property="creUs" column="create_user" />
+		<result property="udate" column="last_update_date" />
+		<result property="updUs" column="last_update_user" />
+		<result property="menuId" column="menuId" />
+	</resultMap>
+
+	<update id="modifyRoleMenuRelation">
+		{ call role_menu_func(#{0},#{1})}
+	</update>
+
+	<insert id="insert" parameterType="TblRole" keyProperty="role_id">
+		insert
+		into p_m_role
+		(
+		role_id,
+		role_name,
+		category,
+		notes,
+		create_user,
+		last_update_user
+		)
+		values
+		(
+		#{id},
+		#{name},
+		#{ctgry},
+		#{nt},
+		#{creUs},
+		#{updUs}
+		)
+	</insert>
+
+	<update id="update" parameterType="TblRole">
+		update p_m_role
+		<set>
+			<if test="name !=null"> role_name=#{name}, </if>
+			<if test="ctgry !=null"> category=#{ctgry}, </if>
+			<if test="nt !=null"> notes=#{nt}, </if>
+			<if test="updUs !=null"> last_update_user=#{updUs}, </if>
+			last_update_date=sysdate()
+		</set>
+		<where>
+			role_id=#{id}
+		</where>
+	</update>
+
+	<select id="selectOne" parameterType="TblRole" resultMap="result_role">
+		select
+		${rtColumns}
+		from
+		p_m_role
+		where
+		role_id = #{id}
+	</select>
+
+	<select id="getCount" parameterType="TblRole" resultType="int">
+		select count(1)
+		from
+		p_m_role
+		where 1=1
+		<if test="name !=null"> and role_name like concat('%',#{name},'%')</if>
+		<if test="ctgry !=null"> and category=#{ctgry}</if>
+		<if test="nt !=null"> and notes=#{nt}</if>
+		<if test="cdate !=null"> and create_date=#{cdate}</if>
+		<if test="creUs != null"> and create_user=#{creUs}</if>
+		<if test="userIds != null">
+			and create_user in
+			<foreach item="item" index="index" collection="userIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+	</select>
+
+	<select id="getList" parameterType="TblRole" resultMap="result_role">
+		select
+		${rtColumns}
+		from
+		p_m_role
+		where 1=1
+		<if test="name !=null"> and role_name like concat('%',#{name},'%')</if>
+		<if test="ctgry !=null"> and category=#{ctgry}</if>
+		<if test="nt !=null"> and notes=#{nt}</if>
+		<if test="cdate !=null"> and create_date=#{cdate}</if>
+		<if test="creUs != null"> and create_user=#{creUs}</if>
+		<if test="pkIds != null">
+			and role_id in
+			<foreach item="item" index="index" collection="pkIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="userIds != null">
+			and create_user in
+			<foreach item="item1" index="index" collection="userIds"
+				open="(" separator="," close=")">
+				#{item1}
+			</foreach>
+		</if>
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<delete id="delete" parameterType="TblRole">
+		delete from p_m_role where
+		role_id=#{id}
+	</delete>
+
+</mapper>

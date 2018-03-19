@@ -1,0 +1,82 @@
+package com.cn.wanma.service.impl;
+
+import com.ec.usrcore.server.IEventCallBack;
+
+import org.springframework.stereotype.Service;
+
+import java.util.Map;
+
+@Service
+public class EpServiceImpl implements IEventCallBack {
+	/*private static final Logger LOGGER = LoggerFactory
+			.getLogger(EpServiceImpl.class);
+*/
+
+	@Override
+	public void onCanUseEp(int i, String s, String s1, int i1, String s2,
+			int i2, int i3, int i4, int i5) {
+
+	}
+
+	@Override
+	public void onChargeEvent(int orgNo, String userIdentity, String epCode,
+			int epGunNo, String extra, int status) {
+
+	
+
+	}
+
+	@Override
+	public void onChargeOrder(int arg0, String arg1, String arg2, int arg3,
+			String arg4, Map<String, Object> arg5) {
+		
+		
+	}
+
+	@Override
+	public void onGunLinkStatusChange(int arg0, String arg1, String arg2,
+			int arg3, String arg4, int arg5) {
+		
+
+	}
+
+	@Override
+	public void onQueryOrderInfo(int arg0, String arg1, String arg2, int arg3,
+			String arg4, int arg5, int arg6) {
+	
+	}
+
+	@Override
+	public void onRealData(int arg0, String arg1, String arg2, int arg3,
+			String arg4, Map<String, Object> arg5) {
+		
+
+	}
+
+	/**
+	 * 启动充电应答
+	 */
+	@Override
+	public void onStartCharge(int orgNo, String userIdentity, String epCode,
+			int epGunNo, String extra, int ret, int errorCode) {
+		
+	}
+
+	/**
+	 * 停止充电应答
+	 */
+	@Override
+	public void onStopCharge(int orgNo, String userIdentity, String epCode,
+			int epGunNo, String extra, int ret, int errorCode) {
+
+	}
+
+	@Override
+	public void onGunWorkStatusChange(int arg0, String arg1, String arg2,
+			int arg3, String arg4, int arg5) {
+
+	}
+
+	
+	
+}

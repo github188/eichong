@@ -1,0 +1,105 @@
+package com.wanma.ims.service;
+
+import com.wanma.ims.common.domain.LevelDO;
+import com.wanma.ims.common.domain.UserCompanyDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.domain.UserNormalDO;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.common.dto.ResultDTO;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+import java.util.Map;
+
+
+/**
+ * 用户基表Service
+ */
+public interface UserService {
+
+    /**
+     * 登录
+     */
+    UserDO loginUser(UserDO user) throws Exception;
+
+    /**
+     * 查询用户
+     */
+    List<UserDO> getUserList(UserDO searchModel);
+
+    /**
+     * 查询用户总数
+     */
+    long countUser(UserDO searchModel);
+
+    /**
+     * 根据用户帐户查找用户
+     */
+    UserDO findByUserAccount(String userAccount);
+
+    /**
+     * 新增渠道用户
+     */
+    BaseResultDTO addUserCompany(UserDO user, UserDO loginUser) throws Exception;
+
+    /**
+     * 导出用户信息
+     */
+    BaseResultDTO exportUser(HttpServletResponse response, UserDO searchModel, UserDO loginUser);
+
+    /**
+     * 重置登陆密码
+     */
+    BaseResultDTO resetLoginPassword(Long userId, UserDO loginUser);
+
+    /**
+     * 编辑
+     */
+    BaseResultDTO modifyUser(UserDO user, UserDO loginUser);
+
+    /**
+     * 编辑用户头像
+     */
+    ResultDTO<String> modifyUserHeadImg(MultipartFile[] file, Long userId, UserDO loginUser);
+
+    /**
+     * 冻结(批量冻结)
+     */
+    BaseResultDTO freezeUser(String userIds, UserDO loginUser);
+
+    /**
+     * 解冻(批量解冻)
+     */
+    BaseResultDTO unfreezeUser(String userIds, UserDO loginUser);
+
+    /**
+     * 获取用户主页
+     */
+    UserDO getUserIndex(Long userId, UserDO loginUsr);
+
+    /**
+     * 根据用户Id查询用户
+     */
+    UserDO getUserById(Long userId);
+
+    /**
+     * 根据用户Id查询app用户
+     */
+    UserNormalDO getUserNormalByUserId(Long userId);
+
+    /**
+     * 根据用户Id查询渠道用户
+     */
+    UserCompanyDO getUserCompanyByUserId(Long userId);
+
+    /**
+     * 获取公司主页的用户
+     */
+    Map<LevelDO, Long> getCompanyIndexUser(Long cpyId, UserDO loginUsr);
+
+    /**
+     * 检查用户账号是否唯一
+     */
+    boolean checkUserAccountIsUnique(Long cpyNum, String userAccount);
+}

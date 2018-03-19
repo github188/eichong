@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/style.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" href="../../../css/dataCenter/chargingPoint/elementUi.css">
+    <link rel="stylesheet" href="../../../css/dataCenter/chargingPoint/chargePointHomePage.css">
+    <link rel="stylesheet" href="../../../css/dataCenter/chargingPoint/swiper.css">
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/3.x.x/css/swiper.css">-->
+    <title>实时信息</title>
+</head>
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="btnLine">
+                </div>
+            </div>
+            <div class="row box">
+                <div class="col-sm-12 col-md-3 col-xs-12 boxLeft" style="padding:0 10px;">
+                    <div class="ibox float-e-margins">
+                        <div class="">
+                            <div class="ibox-content">
+                                <div class="searchStationList">
+                                    <div class="title row powerStationName"></div>
+                                    <ul class="stationHeadUl" id="stationHeadUl">
+                                        <!--<li class="stationHeadLi row">-->
+                                        <!--<span class="headNumCon col-sm-4 col-xs-4">枪口1</span>-->
+                                        <!--<span class="chargingModeCon col-sm-4 col-xs-4">直流120kw</span>-->
+                                        <!--<span class="headStatusCon col-sm-4 col-xs-4"><i class="circle"></i>空闲</span>-->
+                                        <!--</li>-->
+                                    </ul>
+                                    <div class="stationHeadPage">
+                                        <div id="stationDetailPage" class="pagination ">
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-9 col-xs-12 boxRight" style="padding:0 10px;">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-content">
+                            <!--电桩在线状态-->
+                            <div class="searchBlock" style="border-top:4px solid #c9c9c9;">
+                                <div class="search">
+                                    <span class="offLineSpan">
+                                        <i class="offLineState">电桩在线状态</i>
+                                        <i class="electricPile active" style="margin-left:20px;">电桩</i>
+                                        <i style="display: inline-block;width:2px;height:15px;background:#666;position:absolute;top:2px;"></i>
+                                        <i class="muzzle" style="margin-left:7px;">枪口</i>
+                                    </span>
+                                    <ul class="row chargeUl chargeUl1 switchState1" id="chargeUl" style="margin:0;border:1px solid #c9c9c9;">
+                                        <li class="chargingState commonState col-xs-3 col-xs-12">
+                                            <img src="../../../images/charge.png" alt=""/>充电中
+                                            <i class="chargingCount"></i>
+                                        </li>
+                                        <li class="freeState commonState col-xs-3 col-xs-12">
+                                            <img src="../../../images/free.png" alt=""/>空闲
+                                            <i class="freeCount"></i>
+                                        </li>
+                                        <li class="errorState commonState col-xs-3 col-xs-12">
+                                            <img src="../../../images/error.png" alt=""/>故障
+                                            <i class="errorCount"></i>
+                                        </li>
+                                        <li class="disconnectState commonState col-xs-3 col-xs-12">
+                                            <img src="../../../images/disconnect.png" alt=""/>离线
+                                            <i class="disconnectCount"></i>
+                                        </li>
+                                    </ul>
+                                    <ul class="row chargeUl chargeUl2 switchState2" id="chargeUl1" style="margin:0;border:1px solid #c9c9c9;">
+                                        <li class="chargingState commonState col-xs-3 col-xs-12">
+                                            <img src="../../../images/charge.png" alt=""/>充电中
+                                            <i class="chargingCountTwo"></i>
+                                        </li>
+                                        <li class="freeState commonState col-xs-3 col-xs-12">
+                                            <img src="../../../images/free.png" alt=""/>空闲
+                                            <i class="freeCountTwo"></i>
+                                        </li>
+                                        <li class="errorState commonState col-xs-3 col-xs-12">
+                                            <img src="../../../images/error.png" alt=""/>故障
+                                            <i class="errorCountTwo"></i>
+                                        </li>
+                                        <li class="disconnectState commonState col-xs-3 col-xs-12">
+                                            <img src="../../../images/disconnect.png" alt=""/>离线
+                                            <i class="disconnectCountTwo"></i>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="emptyDiv"></div>
+                            <!--地锁状态-->
+                            <div class="searchBlock searchCon">
+                                <div class="search">
+                                    <span class="offLineSpan">
+                                        <i class="offLineState">地锁状态</i>
+                                    </span>
+                                    <ul class="row lockStateUl" id="lockStateUl" style="margin:0;border:1px solid #c9c9c9;">
+                                        <li class="nomalState chargingState commonState col-xs-3 col-xs-12">
+                                            <img src="../../../images/nomalLock.png" alt=""/>升锁
+                                            <i class="nomalCount"></i>
+                                        </li>
+                                        <li class="usingState freeState commonState col-xs-3 col-xs-12">
+                                            <img src="../../../images/usingLock.png" alt=""/>降锁
+                                            <i class="usingCount"></i>
+                                        </li>
+                                        <li class="errorState commonState col-xs-3 col-xs-12">
+                                            <img src="../../../images/errorLock.png" alt=""/>故障
+                                            <i class="errorCount"></i>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="emptyDiv"></div>
+                        <!--车位状态-->
+                        <!--<div class="searchBlock searchCon">-->
+                            <!--<div class="search">-->
+                                <!--<span class="offLineSpan">-->
+                                    <!--<i class="offLineState">车位状态</i>-->
+                                <!--</span>-->
+                                <!--<ul class="row carStateUl" id="carStateUl" style="margin:0;border:1px solid #c9c9c9;">-->
+                                    <!--&lt;!&ndash;<li class="chargingState col-xs-3 col-xs-12"><img src="../../../images/charge.png" alt=""/>充电中</li>&ndash;&gt;-->
+                                <!--</ul>-->
+                            <!--</div>-->
+                        <!--</div>-->
+
+                        <!--充电点历史信息-->
+                        <div class="searchBlock searchCon" style="background:#fff;">
+                            <div class="search">
+                                <span class="offLineSpan">
+                                    <i class="offLineState">充电点历史信息</i>
+                                </span>
+                                <div class="row piPhoto" style="margin:0;text-align:center;padding-bottom:28px;">
+                                    <span style="position: relative;">
+                                        <i class="thickLine"></i>
+                                        <i style="font-size:12px;color:#666;font-weight:900;margin-left:10px;">充电点照片</i>
+                                    </span>
+                                </div>
+                                <div class="row  swiperPhoto" style="margin:0 0 30px 0;padding:0 50px;position:relative;">
+                                    <div class="swiper-container">
+                                        <div class="swiper-wrapper">
+
+                                        </div>
+                                    </div>
+                                    <!-- 如果需要导航按钮 -->
+                                    <div class="swiper-button-prev" style="position:absolute;top:60px;"></div>
+                                    <div class="swiper-button-next" style="position:absolute;top:60px;"></div>
+                                </div>
+                                <div class="row" style="margin:0;border:1px solid #c9c9c9;border-bottom:0;">
+                                    <div class="row" style="margin:0;text-align:center;height:auto;border-bottom:1px solid #c9c9c9;padding:12px 20px;">
+                                            <span style="position: relative;">
+                                                <i class="thickLine"></i>
+                                                <i style="font-size:12px;color:#666;font-weight:900;margin-left:10px;">历史数据</i>
+                                            </span>
+                                    </div>
+                                    <ul class="orderUl" id="orderUl">
+                                        <li class="row">
+                                            <span class="left">昨日充电订单</span>
+                                            <span class="right">
+                                                <i class="yesterdayOrderCount"></i>
+                                                <i>笔</i>
+                                            </span>
+                                        </li>
+                                        <li class="row">
+                                            <span class="left">昨日充电量</span>
+                                            <span class="right">
+                                                <i class="yesterdayChargeCount"></i>
+                                                <i>kwh</i>
+                                            </span>
+                                        </li>
+                                        <li class="row">
+                                            <span class="left">上月充电订单</span>
+                                            <span class="right">
+                                                <i class="lastMonthOrderCount"></i>
+                                                <i>笔</i>
+                                            </span>
+                                        </li>
+                                        <li class="row">
+                                            <span class="left">上月充电量</span>
+                                            <span class="right">
+                                                <i class="lastMonthChargeCount"></i>
+                                                <i>kwh</i>
+                                            </span>
+                                        </li>
+                                        <li class="row">
+                                            <span class="left">历史充电订单</span>
+                                            <span class="right">
+                                                <i class="allCountOrderCount"></i>
+                                                <i>笔</i>
+                                            </span>
+                                        </li>
+                                        <li class="row">
+                                            <span class="left">累计充电量</span>
+                                            <span class="right">
+                                                <i class="allCountChargeCount"></i>
+                                                <i>kwh</i>
+                                            </span>
+                                        </li>
+                                        <li class="row">
+                                            <span class="left">电桩故障</span>
+                                            <span class="right">
+                                                <i class="epError"></i>
+                                                <i>次</i>
+                                            </span>
+                                        </li>
+                                        <li class="row">
+                                            <span class="left">异常订单</span>
+                                            <span class="right">
+                                                <i class="orderError"></i>
+                                                <i>笔</i>
+                                            </span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="emptyDiv"></div>
+                        <!--视频监控-->
+                        <!--<div class="searchBlock searchCon">-->
+                            <!--<div class="row search" style="padding:0 10px;">-->
+                                <!--<div class="row" style="margin:0;padding:0 10px;">-->
+                                    <!--<span class="offLineSpan" style="float:left;">-->
+                                        <!--<i class="offLineState">视频监控</i>-->
+                                    <!--</span>-->
+                                    <!--<div class="model-select-box">-->
+                                        <!--<div class="model-select-text" style="">选择摄像头</div>-->
+                                        <!--<span class="cpyProvinceBlock clickRotateSpan downRow"></span>-->
+                                        <!--<ul class="model-select-option cameraUl" style="">-->
+                                            <!--<li class="seleced">请选择</li>-->
+                                            <!--<li>1号摄像头</li>-->
+                                            <!--<li>2号摄像头</li>-->
+                                            <!--<li>3号摄像头</li>-->
+                                        <!--</ul>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                                <!--<div class="row" style="margin:0;">-->
+                                    <!--<div  class="col-sm-5 videoLeft">-->
+                                        <!--<div class="ibox float-e-margins"></div>-->
+                                    <!--</div>-->
+                                    <!--<div class="col-sm-7 videoRight">-->
+                                        <!--<div class="col-sm-6 videoRightCon" style="margin-bottom:8px;">-->
+                                            <!--<div class="ibox float-e-margins"></div>-->
+                                        <!--</div>-->
+                                        <!--<div class="col-sm-6 videoRightCon" style="margin-bottom:8px;">-->
+                                            <!--<div class="ibox float-e-margins"></div>-->
+                                        <!--</div>-->
+                                        <!--<div class="col-sm-6 videoRightCon" style="margin-top:8px;">-->
+                                            <!--<div class="ibox float-e-margins"></div>-->
+                                        <!--</div>-->
+                                        <!--<div class="col-sm-6 videoRightCon" style="margin-top:8px;">-->
+                                            <!--<div class="ibox float-e-margins"></div>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="../../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/contabs.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/dataCenter/chargingPoint/chargePointHomePage.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.2/js/swiper.js"></script>
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/3.x.x/js/swiper.js"></script>-->
+<!-- 先引入 Vue -->
+<!--<script src="https://unpkg.com/vue/dist/vue.js"></script>-->
+<!-- 引入组件库 -->
+<!--<script src="https://unpkg.com/element-ui/lib/index.js"></script>-->
+</html>

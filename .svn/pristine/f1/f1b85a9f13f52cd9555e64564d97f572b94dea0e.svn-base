@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.app.dao.WebCouponMapper">
+	<select id="getGenerateCouponList" parameterType="HashMap" resultType="HashMap">
+		select a.acsc_num,
+			a.pk_ActivitySchedule,
+			a.pk_Activity,
+			a.pk_CouponVariety,
+			s.cova_Limitation,
+			s.cova_Stutas,
+			s.cova_CouponValue,
+			s.cova_CouponCondition,
+			s.cova_CouponTerm,
+			a.act_single_money,
+			t.act_top_money,
+			t.act_beginDate,
+			t.act_CouponEndDate,
+			date_add(t.act_endDate, INTERVAL 1 day) act_endDate,
+			act_Scope
+			
+	from tbl_activityschedule a,
+		 tbl_couponvariety s,
+		 tbl_activity t
+		where a.pk_CouponVariety = s.pk_CouponVariety
+		and a.pk_Activity = t.pk_Activity 
+		and s.cova_Stutas='0'
+		and t.act_Status='0'
+		and <![CDATA[t.act_beginDate <= CURDATE() and t.act_endDate >= CURDATE()]]>
+		and t.act_ActivityRule=#{actRule}
+		<if test=" ccode != null and ccode != ''">
+           and (t.act_Scope = 0 or t.city_code=#{ccode})
+       </if>
+		order by a.act_single_money+0.00 desc
+		
+		
+						
+	</select>
+	
+	<insert id="generateCode" parameterType="list">
+		insert into tbl_coupon(
+			pk_Activity,
+			pk_CouponVariety,
+			cp_Status,
+			cp_Limitation,
+			cp_CouponValue,
+			cp_CouponCondition,
+			cp_CouponCode,
+			cp_UserId,
+			cp_BeginDate,
+			cp_EndDate,
+			cp_Createdate,
+			cp_Updatedate
+		)
+		values
+		<foreach collection="list" item="item"  separator="," >
+            (
+			#{item.pk_Activity},
+			#{item.pk_CouponVariety},
+			#{item.cp_Status},
+			#{item.cova_Limitation},
+			#{item.cova_CouponValue},
+			#{item.cova_CouponCondition},
+			#{item.cp_CouponCode},
+			#{item.cp_UserId},
+			#{item.cp_BeginDate},
+			#{item.cp_EndDate},
+			sysdate(),
+			sysdate()
+			)
+        </foreach>
+	</insert>
+	
+	<select id="getPersonChargeSum" parameterType="HashMap" resultType="double">
+			select sum(ph.puHi_Monetary) from tbl_purchasehistory ph 
+			where ph.puHi_Type = '4' 
+			and ph.puHi_UserId = #{uId}
+			and <![CDATA[ph.puHi_Createdate >= #{bgDate} and ph.puHi_Createdate < #{edDate}]]>
+	</select>
+		
+</mapper>      

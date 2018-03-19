@@ -1,0 +1,1170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsChargOrderMapper">
+	<resultMap type="TblChargingOrder" id="result_Charge">
+		<result property="pkChargingorder" column="pk_ChargingOrder" />
+		<result property="chorCode" column="chOr_Code" />
+		<result property="chorAppointmencode" column="chOr_AppointmenCode" />
+		<result property="chorPilenumber" column="chOr_PileNumber" />
+		<result property="chorUserid" column="chOr_UserId" />
+		<result property="chorType" column="chOr_Type" />
+		<result property="chorMoeny" column="chOr_Moeny" />
+		<result property="chorQuantityelectricity" column="chOr_QuantityElectricity" />
+		<result property="chorTimequantum" column="chOr_TimeQuantum" />
+		<result property="chorMuzzle" column="chOr_Muzzle" />
+		<result property="chorChargingstatus" column="chOr_ChargingStatus" />
+		<result property="chorTranstype" column="chOr_TransType" />
+		<result property="chorCreatedate" column="chOr_Createdate" />
+		<result property="chorUpdatedate" column="chOr_Updatedate" />
+		<result property="chorUsername" column="chOr_UserName" />
+		<result property="chorTransactionnumber" column="chOr_TransactionNumber" />
+		<result property="chorOrdertype" column="chOr_OrderType" />
+		<result property="chorChargemoney" column="chOr_ChargeMoney" />
+		<result property="chorServicemoney" column="chOr_ServiceMoney" />
+		<result property="puhiInvoiceStatus" column="puhi_InvoiceStatus" />
+		<result property="ownerShip" column="owner_ship" />
+		<result property="chargePointAddress" column="elPi_ElectricPileAddress" />
+		<result property="chargePointName" column="chargePointName" />
+		<result property="elPiRateInformationId" column="elPi_RateInformationId" />
+		<result property="chReQuantumDate" column="chRe_QuantumDate" />
+		<result property="chReJPrice" column="chRe_JPrice" />
+		<result property="chReFPrice" column="chRe_FPrice" />
+		<result property="chRePPrice" column="chRe_PPrice" />
+		<result property="chReGPrice" column="chRe_GPrice" />
+		<result property="jprce" column="jprce" />
+		<result property="fprce" column="fprce" />
+		<result property="pprce" column="pprce" />
+		<result property="gprce" column="gprce" />
+		<result property="chReServiceCharge" column="chRe_ServiceCharge" />
+		<result property="couponMoney" column="chOr_CouponMoney" />
+		<result property="couponCondition" column="cp_CouponCondition" />
+		<result property="limitation" column="cp_Limitation" />
+		<result property="chorParterUserLogo" column="chor_parter_user_logo" />
+		<result property="chOrOrgNo" column="chOr_OrgNo" />
+		<result property="exterCardNumber" column="exterCardNumber" />
+		<result property="beginChargetime" column="begin_charge_time" />
+		<result property="endChargetime" column="end_charge_time" />
+		<result property="vinCode" column="vinCode" />
+		<result property="cvLicenseNumber" column="cvLicenseNumber" />
+		<result property="startSoc" column="start_soc" />
+		<result property="endSoc" column="end_soc" />
+		<result property="chargingMode" column="chargingMode" />
+		<result property="commStatus" column="comm_status" />
+		<result property="chRePayMode" column="chRe_PayMode" />
+
+	</resultMap>
+	<resultMap id="findMap" type="java.util.HashMap"></resultMap>
+	<!-- 根据ID查询充电列表 -->
+	<select id="findCharge" parameterType="String" resultMap="result_Charge">
+		SELECT
+		pk_ChargingOrder,
+		chOr_Code,
+		chOr_AppointmenCode,
+		chOr_PileNumber,
+		chOr_UserId,
+		chOr_Type,
+		chOr_Moeny,
+		chOr_QuantityElectricity,
+		chOr_TimeQuantum,
+		chOr_Muzzle,
+		chOr_ChargingStatus,
+		chOr_TransType,
+		chOr_OrderType
+		FROM tbl_ChargingOrder
+		where
+		pk_ChargingOrder#{pkChargingOrder}
+	</select>
+
+	<!-- 取得查询充电列表 -->
+	<select id="getChargeList" resultMap="result_Charge">
+		SELECT
+		pk_ChargingOrder,
+		chOr_Code,
+		chOr_AppointmenCode,
+		ep_num AS cpn,
+		(ep.elPi_ElectricPileCode) AS eleCode,
+		(ui.norm_real_name) AS usName,
+		(go.grou_GroupName) AS goName,
+		chOr_Moeny,
+		chOr_QuantityElectricity,
+		chOr_TimeQuantum,
+		(eh.ePHe_ElectricpileHeadName) AS eleheadName,
+		chOr_ChargingStatus,
+		chOr_TransType,
+		chOr_OrderType,
+		chOr_CouponMoney,
+		(select poSt_Name from tbl_powerstation where pk_PowerStation=
+		ep.elPi_RelevancePowerStation) as chargePointName,
+		(select
+		uc_ExternalCardNumber from tbl_usercard where pk_UserCard=
+		co.pk_UserCard ) as exterCardNumber
+		FROM tbl_ChargingOrder co INNER
+		JOIN (SELECT a.user_account, b.* FROM tbl_user a, tbl_user_normal b
+		WHERE a.user_id = b.user_id) AS ui ON ui.user_id = co.chOr_UserId
+		INNER JOIN tbl_Group AS go ON go.pk_Group = co.chOr_Type
+		INNER JOIN
+		tbl_ElectricPileHead AS eh ON eh.pk_ElectricpileHead =
+		co.chOr_Muzzle
+		INNER JOIN tbl_ElectricPile AS ep ON ep.pk_ElectricPile =
+		co.chOr_PileNumber
+		<where>
+			1=1
+			<if test="exterCardNumber!=null and exterCardNumber!=''">
+				and exists (select 1 from tbl_usercard where pk_UserCard=
+				co.pk_UserCard and uc_ExternalCardNumber like
+				concat('%',#{exterCardNumber},'%'))
+			</if>
+
+			<if test="provinceCode!=null and provinceCode!=''">
+				and ep.elPi_OwnProvinceCode = #{provinceCode}
+			</if>
+			<if test="cityCode!=null and cityCode!=''">
+				and ep.elPi_OwnCityCode = #{cityCode}
+			</if>
+			<if test="countryCode!=null and countryCode!=''">
+				and ep.elPi_OwnCountyCode = #{countryCode}
+			</if>
+			<if test="chorCode !=null and chorCode !=''">
+				and chOr_Code=#{chorCode}
+			</if>
+			<if test="chorChargingstatus !=null and chorChargingstatus !=''">
+				and chOr_ChargingStatus=#{chorChargingstatus}
+			</if>
+			<if test="usName !=null and usName !=''">
+				and ui.norm_real_name like concat('%',#{usName},'%')
+			</if>
+			<if test="usPhone !=null and usPhone !=''">
+				and ui.user_account like concat('%',#{usPhone},'%')
+			</if>
+		</where>
+	</select>
+
+	<!-- 查询全部充电列表 -->
+	<select id="searchChargeList" parameterType="TblChargingOrder"
+		resultMap="result_Charge">
+		SELECT
+		pk_ChargingOrder,
+		chOr_Code,
+		chOr_AppointmenCode,
+		ep_num AS cpn,
+		(ep.elPi_ElectricPileCode) AS eleCode,
+		<!-- ep.elPi_ElectricPileAddress, -->
+		ep.owner_ship,
+		ep.elPi_RateInformationId,
+		<!-- pu.puhi_InvoiceStatus, -->
+		ui.user_account as userPhone,
+		(ui.norm_real_name) AS usName,
+		<!-- (go.grou_GroupName) AS goName, -->
+		chOr_Moeny,
+		chOr_QuantityElectricity,
+		chOr_TimeQuantum,
+		pu.puhi_InvoiceStatus,
+		<!-- (eh.ePHe_ElectricpileHeadName) AS eleheadName, -->
+		chOr_ChargingStatus,
+		chOr_ChargeMoney chorChargemoney,
+		chOr_ServiceMoney chorServicemoney,
+		chOr_TransType,
+		chOr_OrderType,
+		chOr_Muzzle,
+		begin_charge_time,
+		end_charge_time,
+		cr.chRe_QuantumDate,
+		cr.chRe_JPrice,
+		cr.chRe_FPrice,
+		cr.chRe_PPrice,
+		cr.chRe_GPrice,
+		cr.chRe_ServiceCharge,
+		chOr_CouponMoney,
+		cp.cp_CouponCondition,
+		cp.cp_Limitation,
+		(select poSt_Name from tbl_powerstation where
+		pk_PowerStation=
+		ep.elPi_RelevancePowerStation) as chargePointName,
+		(select uc_ExternalCardNumber from tbl_usercard where pk_UserCard=
+		co.pk_UserCard ) as exterCardNumber
+		FROM
+		tbl_ChargingOrder co INNER JOIN
+		tbl_user_normal_view ui ON ui.user_id = co.chOr_UserId
+		AND
+		ui.user_leval = '6'
+		LEFT JOIN tbl_ElectricPile AS ep ON
+		ep.elPi_ElectricPileCode = co.chOr_PileNumber
+		LEFT JOIN
+		tbl_chargingrecord AS cr ON cr.chRe_Code = co.chOr_Code
+		LEFT JOIN
+		tbl_purchasehistory AS pu ON pu.puHi_TransactionNumber =
+		co.chOr_TransactionNumber AND pu.puHi_Type IN (1, 2)
+		LEFT JOIN
+		tbl_coupon AS cp ON cp.pk_Coupon = co.pk_Coupon
+		<where>
+			1=1
+			<if test="exterCardNumber!=null and exterCardNumber!=''">
+				and exists (select 1 from tbl_usercard where pk_UserCard=
+				co.pk_UserCard and uc_ExternalCardNumber like
+				concat('%',#{exterCardNumber},'%'))
+			</if>
+			<if test="provinceCode!=null and provinceCode!=''">
+				and ep.elPi_OwnProvinceCode = #{provinceCode}
+			</if>
+			<if test="cityCode!=null and cityCode!=''">
+				and ep.elPi_OwnCityCode = #{cityCode}
+			</if>
+			<if test="countryCode!=null and countryCode!=''">
+				and ep.elPi_OwnCountyCode = #{countryCode}
+			</if>
+			<if test="chorUser!=null and chorUser!=''">
+				and ep.elPi_UserName = #{chorUser}
+			</if>
+			<if test="eleCode !=null and eleCode !=''">
+				and ep.elPi_ElectricPileCode like
+				concat('%',#{eleCode},'%')
+			</if>
+			<if test="chorCode !=null and chorCode !=''">
+				and chOr_Code like concat('%',#{chorCode},'%')
+			</if>
+			<if test="chorChargingstatus !=null and chorChargingstatus !=''">
+				and chOr_ChargingStatus=#{chorChargingstatus}
+			</if>
+			<if test="usName !=null and usName !=''">
+				and (ui.norm_real_name like concat('%',#{usName},'%') or
+				ui.user_account like concat('%',#{usName},'%'))
+			</if>
+			<if test="usPhone !=null and usPhone !=''">
+				and ui.user_account like concat('%',#{usPhone},'%')
+			</if>
+			<if test="beginChargetime !=null and beginChargetime !=''">
+				<![CDATA[and begin_charge_time>=#{beginChargetime}]]>
+			</if>
+			<if test="endChargetime !=null and endChargetime !=''">
+				<![CDATA[and begin_charge_time<=  date_add(#{endChargetime}, interval 1 day)]]>
+			</if>
+			<if test="puhiInvoiceStatus !=null and puhiInvoiceStatus !=''">
+				and pu.puhi_InvoiceStatus= #{puhiInvoiceStatus}
+			</if>
+			<if test="isExport==1">
+				<![CDATA[and begin_charge_time>=  DATE_SUB(CURDATE(), INTERVAL 3 MONTH)]]>
+			</if>
+		</where>
+		order by pk_ChargingOrder DESC
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<!-- 查询充电数量 -->
+	<select id="searchChargeCount" parameterType="TblChargingOrder"
+		resultType="long">
+		select
+		count(pk_ChargingOrder)
+		FROM tbl_ChargingOrder co inner JOIN
+		(select
+		a.user_account,b.user_id,b.norm_real_name from tbl_user
+		a,tbl_user_normal b where a.user_leval='6' and a.user_id=b.user_id) AS
+		ui ON ui.user_id = co.chOr_UserId
+		left JOIN tbl_ElectricPile AS ep ON
+		ep.elPi_ElectricPileCode =
+		co.chOr_PileNumber
+		left JOIN
+		tbl_chargingrecord AS cr ON cr.chRe_Code=co.chOr_Code
+		left JOIN
+		tbl_purchasehistory AS pu ON co.chOr_TransactionNumber =
+		pu.puHi_TransactionNumber AND pu.puHi_Type in (1,2)
+		LEFT JOIN (SELECT *
+		from tbl_ElectricPileHead GROUP BY pk_ElectricPile) AS
+		eh ON
+		eh.pk_ElectricPile = ep.pk_ElectricPile
+		and eh.ePHe_ElectricpileHeadId
+		= co.chOr_Muzzle
+		<where>
+			1=1
+			<if test="exterCardNumber!=null and exterCardNumber!=''">
+				and exists (select 1 from tbl_usercard where pk_UserCard=
+				co.pk_UserCard and uc_ExternalCardNumber like
+				concat('%',#{exterCardNumber},'%'))
+			</if>
+			<if test="provinceCode!=null and provinceCode!=''">
+				and ep.elPi_OwnProvinceCode = #{provinceCode}
+			</if>
+			<if test="cityCode!=null and cityCode!=''">
+				and ep.elPi_OwnCityCode = #{cityCode}
+			</if>
+			<if test="countryCode!=null and countryCode!=''">
+				and ep.elPi_OwnCountyCode = #{countryCode}
+			</if>
+
+			<if test="chorUser!=null and chorUser!=''">
+				and ep.elPi_UserName = #{chorUser}
+			</if>
+			<if test="eleCode !=null and eleCode !=''">
+				and ep.elPi_ElectricPileCode like
+				concat('%',#{eleCode},'%')
+			</if>
+			<if test="chorCode !=null and chorCode !=''">
+				and chOr_Code like concat('%',#{chorCode},'%')
+			</if>
+			<if test="chorChargingstatus !=null and chorChargingstatus !=''">
+				and chOr_ChargingStatus=#{chorChargingstatus}
+			</if>
+			<if test="usName !=null and usName !=''">
+				and (ui.norm_real_name like concat('%',#{usName},'%') or
+				ui.user_account like concat('%',#{usName},'%'))
+			</if>
+			<if test="chorUser !=null and chorUser !=''">
+				and ep.elPi_UserName= #{chorUser}
+			</if>
+			<if test="usPhone !=null and usPhone !=''">
+				and ui.user_account like concat('%',#{usPhone},'%')
+			</if>
+			<if test="puhiInvoiceStatus !=null and puhiInvoiceStatus !=''">
+				and pu.puhi_InvoiceStatus= #{puhiInvoiceStatus}
+			</if>
+			<if test="beginChargetime !=null and beginChargetime !=''">
+				<![CDATA[and begin_charge_time>=#{beginChargetime}]]>
+			</if>
+			<if test="endChargetime !=null and endChargetime !=''">
+				<![CDATA[and begin_charge_time<=  date_add(#{endChargetime}, interval 1 day)]]>
+
+			</if>
+		</where>
+	</select>
+
+	<!-- 删除充电 -->
+	<delete id="deleteCharge" parameterType="map">
+		delete from
+		tbl_Charge
+		where
+		pk_Charge=#{pkCharge}
+	</delete>
+
+	<!-- 根据ID查询充电（个体商家） -->
+	<select id="findUnitCharge" parameterType="String" resultMap="result_Charge">
+		SELECT
+		pk_ChargingOrder,
+		chOr_Code,
+		chOr_AppointmenCode,
+		(ep.elPi_ElectricPileCode) AS eleCode,
+		(ui.usIn_FacticityName) AS
+		usName,
+		(ui.usIn_Phone) AS usPhone,
+		chOr_Moeny,
+		chOr_QuantityElectricity,
+		chOr_TimeQuantum,
+		(eh.ePHe_ElectricpileHeadName) AS eleheadName,
+		chOr_ChargingStatus,
+		chOr_TransType,
+		chOr_OrderType
+		FROM tbl_ChargingOrder
+		where
+		pk_ChargingOrder=#{pkChargingOrder} and
+		chOr_Type=2
+	</select>
+
+	<!-- 取得充电列表（个体商家） -->
+	<select id="getUnitChargeList" resultMap="result_Charge">
+		SELECT
+		pk_ChargingOrder,
+		chOr_Code,
+		chOr_AppointmenCode,
+		ep_num AS cpn,
+		(ep.elPi_ElectricPileCode) AS eleCode,
+		(ui.norm_real_name) AS usName,
+		(ep.elPi_UserName) as comName,
+		(ui.user_account) AS usPhone,
+		chOr_Moeny,
+		chOr_QuantityElectricity,
+		chOr_TimeQuantum,
+		(eh.ePHe_ElectricpileHeadName) AS eleheadName,
+		chOr_ChargingStatus,
+		chOr_TransType
+		FROM tbl_ChargingOrder co INNER JOIN (SELECT
+		a.user_account, b.* FROM
+		tbl_user a, tbl_user_normal b
+		WHERE a.user_id =
+		b.user_id) AS ui ON ui.user_id = co.chOr_UserId
+		INNER JOIN
+		tbl_ElectricPileHead AS eh ON eh.pk_ElectricpileHead =
+		co.chOr_Muzzle
+		INNER JOIN tbl_ElectricPile AS ep ON ep.pk_ElectricPile =
+		co.chOr_PileNumber
+		<where>
+			chOr_Type = 2 and chOr_ChargingStatus!=4
+			<if test="chorCode !=null and chorCode !=''">
+				and chOr_Code=#{chorCode}
+			</if>
+			<if test="chorChargingstatus !=null and chorChargingstatus !=''">
+				and chOr_ChargingStatus=#{chorChargingstatus}
+			</if>
+			<if test="usName !=null and usName !=''">
+				and ui.norm_real_name like concat('%',#{usName},'%')
+			</if>
+			<if test="usPhone !=null and usPhone !=''">
+				and ui.user_account=#{usPhone}
+			</if>
+		</where>
+	</select>
+
+	<!-- 查询全部充电列表（个体商家） -->
+	<select id="searchUnitChargeList" parameterType="TblChargingOrder"
+		resultType="TblChargingOrder">
+		SELECT
+		pk_ChargingOrder pkChargingorder,
+		chOr_Code chorCode,
+		chOr_AppointmenCode chorAppointmencode,
+		ep_num AS cpn,
+		(ep.elPi_ElectricPileCode) AS eleCode,
+		ep.elPi_ElectricPileName
+		chargePointName,
+		ep.elPi_ElectricPileAddress chargePointAddress,
+		ui.user_account userPhone,
+		(a1.norm_real_name) AS usName,
+		(ui.norm_real_name) AS comName,
+		(ui.user_account) AS usPhone,
+		chOr_Moeny chorMoeny,
+		chOr_QuantityElectricity chorQuantityelectricity,
+		chOr_TimeQuantum chorTimequantum,
+		(eh.ePHe_ElectricpileHeadName) AS
+		eleheadName,
+		chOr_ChargingStatus chorChargingstatus,
+		chOr_ChargeMoney
+		chorChargemoney,
+		chOr_ServiceMoney chorServicemoney,
+		chOr_TransType
+		chorTranstype,
+		chOr_OrderType chorOrdertype
+		FROM tbl_ChargingOrder co
+		left JOIN tbl_ElectricPile AS
+		ep ON ep.elPi_ElectricPileCode =
+		co.chOr_PileNumber
+		inner join (select a.user_account,
+		a.user_id,a.norm_real_name FROM
+		tbl_user_normal_view a WHERE
+		a.user_leval = '5') AS ui on ui.user_id =
+		ep.elPi_UserId
+		left JOIN
+		tbl_ElectricPileHead AS eh ON eh.pk_ElectricPile =
+		ep.pk_ElectricPile
+		and eh.ePHe_ElectricpileHeadId = co.chOr_Muzzle
+		left JOIN
+		tbl_user_normal_view AS a1 ON a1.user_id = co.chOr_UserId
+		<where>
+			1=1 and chOr_ChargingStatus!=4
+			<if test="userLevel==5">
+				and ep.elPi_UserId = #{loginUserId}
+			</if>
+			<if test="chorCode !=null and chorCode !=''">
+				and chOr_Code like concat('%',#{chorCode},'%')
+			</if>
+			<if test="eleCode !=null and eleCode !=''">
+				and ep.elPi_ElectricPileCode like
+				concat('%',#{eleCode},'%')
+			</if>
+			<if test="chorChargingstatus !=null and chorChargingstatus !=''">
+				and chOr_ChargingStatus=#{chorChargingstatus}
+			</if>
+			<if test="usName !=null and usName !=''">
+				and (ui.norm_real_name like concat('%',#{usName},'%') or
+				ui.user_account like concat('%',#{usName},'%') )
+			</if>
+			<if test="chargePointName !=null and chargePointName !=''">
+				and ep.elPi_ElectricPileName like
+				concat('%',#{chargePointName},'%')
+			</if>
+			<if test="chargePointAddress !=null and chargePointAddress !=''">
+				and ep.elPi_ElectricPileAddress like
+				concat('%',#{chargePointAddress},'%')
+			</if>
+			<if test="beginChargetime !=null and beginChargetime !=''">
+				and begin_charge_time>=#{beginChargetime}
+			</if>
+			<if test="endChargetime !=null and endChargetime !=''">
+				<![CDATA[and end_charge_time<=date_add(#{endChargetime}, interval 1 day)]]>
+
+			</if>
+		</where>
+		order by chOr_Createdate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<!-- 查询全部充电数量（个体商家） -->
+	<select id="searchUnitChargeCount" parameterType="TblChargingOrder"
+		resultType="long">
+		select
+		count(pk_ChargingOrder)
+		FROM tbl_ChargingOrder co left JOIN
+		tbl_ElectricPile AS ep ON
+		ep.elPi_ElectricPileCode = co.chOr_PileNumber
+		inner join (select a.user_account, a.user_id,a.norm_real_name FROM
+		tbl_user_normal_view a WHERE a.user_leval = '5') AS ui on ui.user_id =
+		ep.elPi_UserId
+		left JOIN tbl_ElectricPileHead AS eh ON
+		eh.pk_ElectricPile =
+		ep.pk_ElectricPile
+		and eh.ePHe_ElectricpileHeadId =
+		co.chOr_Muzzle
+		<where>
+			1=1 and chOr_ChargingStatus!=4
+			<if test="userLevel==5">
+				and ep.elPi_UserId = #{loginUserId}
+			</if>
+			<if test="chorCode !=null and chorCode !=''">
+				and chOr_Code like concat('%',#{chorCode},'%')
+			</if>
+			<if test="eleCode !=null and eleCode !=''">
+				and ep.elPi_ElectricPileCode like
+				concat('%',#{eleCode},'%')
+			</if>
+			<if test="chorChargingstatus !=null and chorChargingstatus !=''">
+				and chOr_ChargingStatus=#{chorChargingstatus}
+			</if>
+			<if test="usName !=null and usName !=''">
+				and (ui.norm_real_name like concat('%',#{usName},'%') or
+				ui.user_account like concat('%',#{usName},'%') )
+			</if>
+			<if test="chargePointName !=null and chargePointName !=''">
+				and ep.elPi_ElectricPileName like
+				concat('%',#{chargePointName},'%')
+			</if>
+			<if test="chargePointAddress !=null and chargePointAddress !=''">
+				and ep.elPi_ElectricPileAddress like
+				concat('%',#{chargePointAddress},'%')
+			</if>
+			<if test="beginChargetime !=null and beginChargetime !=''">
+				and begin_charge_time>=#{beginChargetime}
+			</if>
+			<if test="endChargetime !=null and endChargetime !=''">
+				<![CDATA[and end_charge_time<=date_add(#{endChargetime}, interval 1 day)]]>
+
+			</if>
+
+		</where>
+
+	</select>
+
+	<!-- 根据ID查询充电列表（纯商家） -->
+	<select id="findFirmCharge" parameterType="String" resultMap="result_Charge">
+		SELECT
+		pk_ChargingOrder,
+		chOr_Code,
+		chOr_AppointmenCode,
+		ep_num AS cpn,
+		(ep.elPi_ElectricPileCode) AS eleCode,
+		(pb.puBu_CompanyName) AS
+		comName,
+		chOr_Moeny,
+		chOr_QuantityElectricity,
+		chOr_TimeQuantum,
+		(eh.ePHe_ElectricpileHeadName) AS eleheadName,
+		chOr_ChargingStatus,
+		chOr_TransType,
+		go.grou_GroupName,
+		chOr_OrderType
+		FROM tbl_ChargingOrder
+		co INNER JOIN tbl_PureBusiness AS pb ON
+		pb.pk_PureBusiness =
+		co.chOr_UserId
+		INNER JOIN tbl_ElectricPileHead AS eh ON
+		eh.pk_ElectricpileHead =
+		co.chOr_Muzzle
+		INNER JOIN tbl_ElectricPile AS
+		ep ON ep.pk_ElectricPile =
+		co.chOr_PileNumber
+		INNER JOIN tbl_Group AS go
+		ON go.pk_Group = co.chOr_Type
+		where
+		pk_ChargingOrder=#{pkChargingOrder}
+		and chOr_Type = 3
+	</select>
+
+	<!-- 取得充电列表（纯商家） -->
+	<select id="getFirmChargeList" resultMap="result_Charge">
+		SELECT
+		pk_ChargingOrder,
+		chOr_Code,
+		chOr_AppointmenCode,
+		ep_num AS cpn,
+		(ep.elPi_ElectricPileCode) AS eleCode,
+		(ep.elPi_UserName) AS comName,
+		chOr_Moeny,
+		chOr_QuantityElectricity,
+		chOr_TimeQuantum,
+		(eh.ePHe_ElectricpileHeadName) AS eleheadName,
+		chOr_ChargingStatus,
+		chOr_TransType,
+		go.grou_GroupName,
+		chOr_OrderType,
+		start_soc,
+		end_soc
+		FROM
+		tbl_ChargingOrder co left JOIN tbl_PureBusiness AS pb ON
+		pb.pk_PureBusiness = co.chOr_UserId
+		left JOIN tbl_ElectricPileHead AS
+		eh ON eh.pk_ElectricpileHead =
+		co.chOr_Muzzle
+		left JOIN tbl_ElectricPile
+		AS ep ON ep.pk_ElectricPile =
+		co.chOr_PileNumber
+		left JOIN tbl_Group AS
+		go ON go.pk_Group = co.chOr_Type
+		<where>
+			chOr_Type = 3
+			and chOr_ChargingStatus!=4
+			<if test="chorCode !=null and chorCode !=''">
+				and chOr_Code=#{chorCode}
+			</if>
+			<if test="chorChargingstatus !=null and chorChargingstatus !=''">
+				and chOr_ChargingStatus=#{chorChargingstatus}
+			</if>
+			<if test="comName !=null and comName !=''">
+				and ep.elPi_UserName like concat('%',#{comName},'%')
+			</if>
+			<if test="eleCode !=null and eleCode !=''">
+				and ep.elPi_ElectricPileCode=#{eleCode}
+			</if>
+		</where>
+	</select>
+
+	<!-- 查询全部充电列表（纯商家 ） -->
+	<select id="searchFirmChargeList" parameterType="TblChargingOrder"
+		resultType="TblChargingOrder">
+		SELECT
+		pk_ChargingOrder pkChargingorder,
+		chOr_Code chorCode,
+		chOr_AppointmenCode chorAppointmencode,
+		ep_num AS cpn,
+		ep.elPi_ElectricPileCode AS eleCode,
+		<!-- ep.elPi_ElectricPileName chargePointName, -->
+		<!-- ep.elPi_ElectricPileAddress chargePointAddress, -->
+		(select poSt_Address from tbl_powerstation where pk_PowerStation=
+		ep.elPi_RelevancePowerStation) as chargePointAddress,
+		(select poSt_Name
+		from tbl_powerstation where pk_PowerStation=
+		ep.elPi_RelevancePowerStation) as chargePointName,
+		bv.company_name AS
+		comName,
+		chOr_Moeny chorMoeny,
+		chOr_CouponMoney couponMoney,
+		chOr_QuantityElectricity chorQuantityelectricity,
+		chOr_TimeQuantum
+		chorTimequantum,
+		eh.ePHe_ElectricpileHeadName AS eleheadName,
+		chOr_ChargingStatus chorChargingstatus,
+		chOr_ChargeMoney
+		chorChargemoney,
+		chOr_ServiceMoney chorServicemoney,
+		chOr_TransType
+		chorTranstype,
+		chOr_OrderType chorOrdertype,
+		begin_charge_time
+		beginChargetime,
+		end_charge_time endChargetime,
+		chor_parter_user_logo
+		chorParterUserLogo,
+		chOr_tipPower,
+		chOr_peakPower,
+		chOr_usualPower,
+		chOr_valleyPower,
+		tbre.chRe_JPrice ,
+		tbre.chRe_FPrice,
+		tbre.chRe_PPrice ,
+		tbre.chRe_GPrice ,
+		start_soc startSoc,
+		end_soc endSoc,
+		(select
+		uc_ExternalCardNumber from tbl_usercard where pk_UserCard=
+		co.pk_UserCard ) as exterCardNumber,
+		(select cv_vin_code from
+		tbl_car_vin where pk_car_vin= co.pk_Coupon and
+		co.chOr_Third_Type=2 )
+		as vinCode,
+		(select cv_license_number from tbl_car_vin where
+		pk_car_vin= co.pk_Coupon and
+		co.chOr_Third_Type=2 ) as cvLicenseNumber
+		from tbl_ChargingOrder co
+		LEFT JOIN tbl_ElectricPile AS ep ON
+		ep.elPi_ElectricPileCode =
+		co.chOr_PileNumber
+		LEFT JOIN
+		tbl_ElectricPileHead AS eh ON eh.pk_ElectricPile =
+		ep.pk_ElectricPile
+		AND eh.ePHe_ElectricpileHeadId = co.chOr_Muzzle
+		LEFT JOIN
+		tbl_user_business_view bv ON bv.user_id = ep.elPi_UserId
+		LEFT JOIN
+		tbl_user u ON u.user_id = co.chOr_UserId
+		LEFT JOIN tbl_chargingrecord
+		tbre ON tbre.chRe_Code = co.chOr_Code
+		<where>
+			1=1 and chOr_ChargingStatus!=4
+			<if test="exterCardNumber!=null and exterCardNumber!=''">
+				and exists (select 1 from tbl_usercard where pk_UserCard=
+				co.pk_UserCard and uc_ExternalCardNumber like
+				concat('%',#{exterCardNumber},'%'))
+			</if>
+			<if test="vinCode!=null and vinCode!=''">
+				and exists (select 1 from tbl_car_vin where pk_car_vin=
+				co.pk_Coupon and cv_isdelete=0 and co.chOr_Third_Type=2 and
+				cv_vin_code like concat('%',#{vinCode},'%'))
+			</if>
+			<if test="cvLicenseNumber!=null and cvLicenseNumber!=''">
+				and exists (select 1 from tbl_car_vin where pk_car_vin=
+				co.pk_Coupon and cv_isdelete=0 and co.chOr_Third_Type=2 and
+				cv_license_number like concat('%',#{cvLicenseNumber},'%'))
+			</if>
+			<choose>
+				<when test="userLevel==3">
+					and exists(
+					select 1 from tbl_user_business_view b
+					where b.user_id=ep.elPi_UserId
+					and EXISTS (select 1 from
+					tbl_user_business_view
+					b1 where b.busi_company_id=b1.busi_company_id
+					and b1.user_id=#{loginUserId}))
+				</when>
+				<otherwise>
+					and exists (select 1 from tbl_user a where a.user_leval =
+					'3' and a.user_id = ep.elPi_UserId)
+				</otherwise>
+			</choose>
+			<if test="userAccount !=null and userAccount !=''">
+				AND u.user_account like CONCAT('%',#{userAccount},'%')
+				AND length(u.user_account) = 12
+			</if>
+			<if test="partnerName !=null and partnerName !=''">
+				AND co.chOr_OrgNo in (SELECT c.cpy_CompanyNumber from
+				tbl_company c where c.cpy_CompanyName like
+				CONCAT('%',#{partnerName},'%'))
+			</if>
+			<if test="chorCode !=null and chorCode !=''">
+				and chOr_Code like concat('%',#{chorCode},'%')
+			</if>
+			<if test="chorChargingstatus !=null and chorChargingstatus !=''">
+				and chOr_ChargingStatus=#{chorChargingstatus}
+			</if>
+			<if test="comName !=null and comName !=''">
+				and bv.company_name like concat('%',#{comName},'%')
+			</if>
+			<if test="eleCode !=null and eleCode !=''">
+				and ep.elPi_ElectricPileCode like
+				concat('%',#{eleCode},'%')
+			</if>
+			<if test="chargePointName !=null and chargePointName !=''">
+				AND Exists (select 1 from tbl_powerstation where pk_PowerStation=
+				ep.elPi_RelevancePowerStation and poSt_Name like
+				concat('%',#{chargePointName},'%') )
+				<!-- and ep.elPi_ElectricPileName like concat('%',#{chargePointName},'%') -->
+			</if>
+			<if test="chargePointAddress !=null and chargePointAddress !=''">
+				AND Exists (select 1 from tbl_powerstation where pk_PowerStation=
+				ep.elPi_RelevancePowerStation and poSt_Address like
+				concat('%',#{chargePointAddress},'%') )
+				<!-- and ep.elPi_ElectricPileAddress like concat('%',#{chargePointAddress},'%') -->
+			</if>
+			<if test="beginChargetime !=null and beginChargetime !=''">
+				<![CDATA[and begin_charge_time>=#{beginChargetime}]]>
+			</if>
+			<if test="endChargetime !=null and endChargetime !=''">
+				<![CDATA[and begin_charge_time<=date_add(#{endChargetime}, interval 1 day)]]>
+			</if>
+			<if test="provinceCode!=null and provinceCode!=''">
+				and ep.elPi_OwnProvinceCode = #{provinceCode}
+			</if>
+			<if test="cityCode!=null and cityCode!=''">
+				and ep.elPi_OwnCityCode = #{cityCode}
+			</if>
+			<if test="countryCode!=null and countryCode!=''">
+				and ep.elPi_OwnCountyCode = #{countryCode}
+			</if>
+			<if test="isExport==1">
+				<![CDATA[and begin_charge_time>=  DATE_SUB(CURDATE(), INTERVAL 3 MONTH)]]>
+			</if>
+		</where>
+		group by pk_ChargingOrder
+		order by pk_ChargingOrder desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<!-- 查询充电信息数量（纯商家 ） -->
+	<select id="searchFirmChargeCount" parameterType="TblChargingOrder"
+		resultType="long">
+		SELECT count(1)
+		from tbl_ChargingOrder co
+		LEFT JOIN tbl_ElectricPile AS
+		ep ON ep.elPi_ElectricPileCode =
+		co.chOr_PileNumber
+		LEFT JOIN
+		tbl_ElectricPileHead AS eh ON eh.pk_ElectricPile =
+		ep.pk_ElectricPile
+		AND eh.ePHe_ElectricpileHeadId = co.chOr_Muzzle
+		LEFT JOIN
+		tbl_user_business_view bv ON bv.user_id = ep.elPi_UserId
+		LEFT JOIN
+		tbl_user u ON u.user_id = co.chOr_UserId
+		<where>
+			1=1 and chOr_ChargingStatus!=4
+			<if test="exterCardNumber!=null and exterCardNumber!=''">
+				and exists (select 1 from tbl_usercard where pk_UserCard=
+				co.pk_UserCard and uc_ExternalCardNumber like
+				concat('%',#{exterCardNumber},'%'))
+			</if>
+			<if test="vinCode!=null and vinCode!=''">
+				and exists (select 1 from tbl_car_vin where pk_car_vin=
+				co.pk_Coupon and cv_isdelete=0 and co.chOr_Third_Type=2 and
+				cv_vin_code like concat('%',#{vinCode},'%'))
+			</if>
+			<if test="cvLicenseNumber!=null and cvLicenseNumber!=''">
+				and exists (select 1 from tbl_car_vin where pk_car_vin=
+				co.pk_Coupon and cv_isdelete=0 and co.chOr_Third_Type=2 and
+				cv_license_number like concat('%',#{cvLicenseNumber},'%'))
+			</if>
+			<choose>
+				<when test="userLevel==3">
+					and exists(
+					select 1 from tbl_user_business_view b
+					where b.user_id=ep.elPi_UserId
+					and EXISTS (select 1 from
+					tbl_user_business_view
+					b1 where b.busi_company_id=b1.busi_company_id
+					and b1.user_id=#{loginUserId}))
+				</when>
+				<otherwise>
+					and exists (select 1 from tbl_user a where a.user_leval =
+					'3' and a.user_id = ep.elPi_UserId)
+				</otherwise>
+			</choose>
+			<if test="userAccount !=null and userAccount !=''">
+				AND u.user_account like CONCAT('%',#{userAccount},'%')
+				AND length(u.user_account) = 12
+			</if>
+			<if test="partnerName !=null and partnerName !=''">
+				AND co.chOr_OrgNo in (SELECT c.cpy_CompanyNumber from
+				tbl_company c where c.cpy_CompanyName like
+				CONCAT('%',#{partnerName},'%'))
+			</if>
+			<if test="chorCode !=null and chorCode !=''">
+				and chOr_Code like concat('%',#{chorCode},'%')
+			</if>
+			<if test="chorChargingstatus !=null and chorChargingstatus !=''">
+				and chOr_ChargingStatus=#{chorChargingstatus}
+			</if>
+			<if test="comName !=null and comName !=''">
+				and bv.company_name like concat('%',#{comName},'%')
+			</if>
+			<if test="eleCode !=null and eleCode !=''">
+				and ep.elPi_ElectricPileCode like
+				concat('%',#{eleCode},'%')
+			</if>
+			<if test="chargePointName !=null and chargePointName !=''">
+				AND Exists (select 1 from tbl_powerstation where
+				pk_PowerStation=
+				ep.elPi_RelevancePowerStation and poSt_Name like
+				concat('%',#{chargePointName},'%') )
+			</if>
+			<if test="chargePointAddress !=null and chargePointAddress !=''">
+				AND Exists (select 1 from tbl_powerstation where
+				pk_PowerStation=
+				ep.elPi_RelevancePowerStation and poSt_Address like
+				concat('%',#{chargePointAddress},'%') )
+			</if>
+			<if test="beginChargetime !=null and beginChargetime !=''">
+				and begin_charge_time>=#{beginChargetime}
+			</if>
+			<if test="endChargetime !=null and endChargetime !=''">
+				<![CDATA[and begin_charge_time<=date_add(#{endChargetime}, interval 1 day)]]>
+			</if>
+			<if test="provinceCode!=null and provinceCode!=''">
+				and ep.elPi_OwnProvinceCode = #{provinceCode}
+			</if>
+			<if test="cityCode!=null and cityCode!=''">
+				and ep.elPi_OwnCityCode = #{cityCode}
+			</if>
+			<if test="countryCode!=null and countryCode!=''">
+				and ep.elPi_OwnCountyCode = #{countryCode}
+			</if>
+		</where>
+	</select>
+
+
+	<!-- 取得充电列表（合作商） -->
+	<select id="searchPartnerChargeList" parameterType="TblChargingOrder"
+		resultType="TblChargingOrder">
+		SELECT
+		pk_ChargingOrder pkChargingorder,
+		chOr_Code chorCode,
+		f.poSt_Name
+		AS chargePointName,
+		chOr_AppointmenCode chorAppointmencode,
+		ep.elPi_ElectricPileCode AS eleCode,
+		ep.elPi_ElectricPileName AS
+		elpiElectricpileName,
+		chOr_Moeny chorMoeny,
+		chOr_QuantityElectricity
+		chorQuantityelectricity,
+		chOr_TimeQuantum chorTimequantum,
+		chOr_ChargingStatus chorChargingstatus,
+		chOr_ChargeMoney
+		chorChargemoney,
+		chOr_ServiceMoney chorServicemoney,
+		chOr_TransType
+		chorTranstype,
+		chOr_OrderType chorOrdertype,
+		chor_parter_user_logo
+		chorParterUserLogo,
+		c.cpy_CompanyName partnerName,
+		begin_charge_time as beginChargetime ,
+		end_charge_time as endChargetime
+		FROM tbl_ChargingOrder
+		co <!-- left JOIN tbl_PureBusiness AS pb ON pb.pk_PureBusiness = co.chOr_UserId -->
+		left JOIN tbl_ElectricPile AS ep ON ep.elPi_ElectricPileCode =
+		co.chOr_PileNumber
+		LEFT JOIN tbl_powerstation AS f ON f.pk_PowerStation
+		=ep.elPi_RelevancePowerStation
+		Left JOIN tbl_ElectricPileHead AS eh ON
+		eh.pk_ElectricPile =
+		ep.pk_ElectricPile
+		and eh.ePHe_ElectricpileHeadId =
+		co.chOr_Muzzle
+		LEFT JOIN tbl_user_business u on u.user_id =
+		co.chOr_UserId
+		left JOIN tbl_company c on c.cpy_CompanyNumber =
+		co.chOr_OrgNo
+		AND u.busi_company_id = c.pk_CompanyId
+		<where>
+			1=1 and chOr_ChargingStatus!=4
+			AND co.chOr_OrgNo !=0 AND co.chOr_OrgNo
+			!=1001 AND co.chOr_OrgNo != 9999 and LENGTH(chor_parter_user_logo)!=0
+			<if test="partnerName !=null and partnerName !=''">
+				AND c.cpy_CompanyName like CONCAT('%',#{partnerName},'%')
+			</if>
+			<if test="chargePointName !=null and chargePointName !=''">
+				AND f.poSt_Name like CONCAT('%',#{chargePointName},'%')
+			</if>
+			<if test="chorParterUserLogo !=null and chorParterUserLogo !=''">
+				AND chor_parter_user_logo like
+				CONCAT('%',#{chorParterUserLogo},'%')
+			</if>
+			<if test="chorCode !=null and chorCode !=''">
+				and chOr_Code like concat('%',#{chorCode},'%')
+			</if>
+			<if test="chorChargingstatus !=null and chorChargingstatus !=''">
+				and chOr_ChargingStatus=#{chorChargingstatus}
+			</if>
+			<if test="eleCode !=null and eleCode !=''">
+				and ep.elPi_ElectricPileCode like
+				concat('%',#{eleCode},'%')
+			</if>
+			<if test="beginChargetime !=null and beginChargetime !=''">
+				<![CDATA[and begin_charge_time>=#{beginChargetime}]]>
+			</if>
+			<if test="endChargetime !=null and endChargetime !=''">
+				<![CDATA[and begin_charge_time<=date_add(#{endChargetime}, interval 1 day)]]>
+			</if>
+		</where>
+		group by pk_ChargingOrder
+		order by chOr_Createdate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	<select id="searchPartnerChargeCount" parameterType="TblChargingOrder"
+		resultType="long">
+		SELECT
+		count(distinct pk_ChargingOrder)
+		FROM tbl_ChargingOrder co
+		Left
+		JOIN tbl_ElectricPile AS ep ON ep.elPi_ElectricPileCode =
+		co.chOr_PileNumber
+		LEFT JOIN tbl_powerstation AS f ON f.pk_PowerStation
+		=ep.elPi_RelevancePowerStation
+		Left JOIN tbl_ElectricPileHead AS eh ON
+		eh.pk_ElectricPile =
+		ep.pk_ElectricPile
+		and eh.ePHe_ElectricpileHeadId =
+		co.chOr_Muzzle
+		LEFT JOIN tbl_user_business u on u.user_id =
+		co.chOr_UserId
+		Left JOIN tbl_company c on c.cpy_CompanyNumber =
+		co.chOr_OrgNo
+		AND u.busi_company_id = c.pk_CompanyId
+		<where>
+			1=1 and chOr_ChargingStatus!=4
+			AND co.chOr_OrgNo !=0 and co.chOr_OrgNo
+			!=1001 AND co.chOr_OrgNo != 9999
+			and LENGTH(chor_parter_user_logo)!=0
+			<if test="partnerName !=null and partnerName !=''">
+				AND c.cpy_CompanyName like CONCAT('%',#{partnerName},'%')
+			</if>
+			<if test="chargePointName !=null and chargePointName !=''">
+				AND f.poSt_Name like CONCAT('%',#{chargePointName},'%')
+			</if>
+			<if test="chorParterUserLogo !=null and chorParterUserLogo !=''">
+				AND chor_parter_user_logo like
+				CONCAT('%',#{chorParterUserLogo},'%')
+			</if>
+			<if test="chorCode !=null and chorCode !=''">
+				and chOr_Code like concat('%',#{chorCode},'%')
+			</if>
+			<if test="chorChargingstatus !=null and chorChargingstatus !=''">
+				and chOr_ChargingStatus=#{chorChargingstatus}
+			</if>
+			<if test="eleCode !=null and eleCode !=''">
+				and ep.elPi_ElectricPileCode like
+				concat('%',#{eleCode},'%')
+			</if>
+			<if test="beginChargetime !=null and beginChargetime !=''">
+				and begin_charge_time>=#{beginChargetime}
+			</if>
+			<if test="endChargetime !=null and endChargetime !=''">
+				<![CDATA[and begin_charge_time<=date_add(#{endChargetime}, interval 1 day)]]>
+			</if>
+		</where>
+	</select>
+
+	<!-- 导出合作商充电订单列表 -->
+	<select id="getPartnerBusChargeExport" parameterType="map"
+		resultMap="findMap">
+		SELECT
+		chOr_Code '订单编号' ,
+		ep.elPi_ElectricPileCode '桩体编码',
+		f.poSt_Name
+		'充电点名称',
+		chor_parter_user_logo '用户标示',
+		c.cpy_CompanyName '合作商',
+		chOr_Moeny '金额(元)',
+		chOr_QuantityElectricity '电量',
+		chOr_ChargeMoney
+		'充电电费(元)',
+		chOr_ServiceMoney '充电服务费(元)',
+		chOr_TimeQuantum '充电时间段',
+		chOr_ChargingStatus '订单状态'
+		FROM
+		tbl_ChargingOrder co
+		LEFT JOIN
+		tbl_ElectricPile AS ep ON ep.elPi_ElectricPileCode =
+		co.chOr_PileNumber
+		LEFT JOIN tbl_powerstation AS f ON f.pk_PowerStation
+		= ep.elPi_RelevancePowerStation
+		LEFT JOIN tbl_ElectricPileHead AS eh ON
+		eh.pk_ElectricPile = ep.pk_ElectricPile
+		AND eh.ePHe_ElectricpileHeadId
+		= co.chOr_Muzzle
+		LEFT JOIN tbl_user_business u ON u.user_id =
+		co.chOr_UserId
+		LEFT JOIN tbl_company c ON c.cpy_CompanyNumber =
+		co.chOr_OrgNo
+		AND u.busi_company_id = c.pk_CompanyId
+		<where>
+			1 = 1
+			AND chOr_ChargingStatus != 4
+			AND co.chOr_OrgNo != 0
+			AND
+			co.chOr_OrgNo != 1001
+			AND co.chOr_OrgNo != 9999
+			AND
+			LENGTH(chor_parter_user_logo) != 0
+			<if test="partnerName !=null and partnerName !=''">
+				AND c.cpy_CompanyName like CONCAT('%',#{partnerName},'%')
+			</if>
+			<if test="chargePointName !=null and chargePointName !=''">
+				AND f.poSt_Name like CONCAT('%',#{chargePointName},'%')
+			</if>
+			<if test="chorParterUserLogo !=null and chorParterUserLogo !=''">
+				AND chor_parter_user_logo like
+				CONCAT('%',#{chorParterUserLogo},'%')
+			</if>
+			<if test="chorCode !=null and chorCode !=''">
+				and chOr_Code like concat('%',#{chorCode},'%')
+			</if>
+			<if test="chorChargingstatus !=null and chorChargingstatus !=''">
+				and chOr_ChargingStatus=#{chorChargingstatus}
+			</if>
+			<if test="eleCode !=null and eleCode !=''">
+				and ep.elPi_ElectricPileCode like
+				concat('%',#{eleCode},'%')
+			</if>
+			<if test="beginChargetime !=null and beginChargetime !=''">
+				and begin_charge_time>=#{beginChargetime}
+			</if>
+			<if test="endChargetime !=null and endChargetime !=''">
+			<![CDATA[and begin_charge_time<=date_add(#{endChargetime}, interval 1 day)]]>
+			</if>
+			<![CDATA[and begin_charge_time>=  DATE_SUB(CURDATE(), INTERVAL 3 MONTH)]]>
+		</where>
+		group by pk_ChargingOrder
+		order by chOr_Createdate desc
+	</select>
+	<!-- 获取结算前订单信息 -->
+	<select id="getSettleInfo" parameterType="String" resultMap="result_Charge">
+		SELECT
+		a.pk_ChargingOrder,
+		a.chOr_PileNumber,
+		a.chOr_Muzzle,
+		a.chOr_ChargingStatus,
+		a.begin_charge_time,
+		b.chRe_FrozenAmt as
+		chOr_ChargeMoney,
+		c.elPi_ChargingMode as chargingMode,
+		c.comm_status,
+		b.chRe_PayMode
+		FROM
+		tbl_chargingorder a,tbl_chargingrecord
+		b,tbl_electricpile c
+		WHERE
+		a.chOr_Code=b.chRe_Code
+		and
+		b.chRe_ElectricPileID=c.pk_ElectricPile
+		and a.pk_ChargingOrder = #{id}
+	</select>
+	<!-- 订单表人工结算状态及电量电费等修改 -->
+	<update id="updateChargingOrder" parameterType="map">
+		update
+		tbl_chargingorder set
+		chOr_ChargingStatus=#{chOrChargingStatus},chOr_ChargeMoney=#{settleChargeFee},
+		chOr_ServiceMoney=#{settleFwfee},end_charge_time=#{settleEnd},chOr_Moeny=#{settleMoney},
+		chOr_valleyPower=#{settlePower},chOr_QuantityElectricity=#{settlePower},chOr_TimeQuantum=CONCAT(chOr_TimeQuantum,#{qutumTime})
+		where pk_ChargingOrder=#{orderId}
+	</update>
+	<!-- 订单记录表人工结算状态及电量电费等修改 -->
+	<update id="updateChargingRecord" parameterType="map">
+		update
+		tbl_chargingrecord set
+		chRe_EndDate=STR_TO_DATE(#{settleEnd},'%Y-%m-%d
+		%H:%i:%s'),chRe_EndShowsNumber=#{settlePower},
+		chRe_Status=1 where
+		(select chOr_Code from tbl_chargingorder where
+		pk_ChargingOrder=#{orderId})
+	</update>
+	<!-- 消费记录表新增记录 -->
+	<insert id="insertHistoryLine" parameterType="map">
+		INSERT INTO
+		tbl_purchasehistory (
+		puHi_Type,
+		puHi_PurchaseHistoryTime,
+		puHi_Monetary,
+		puHi_PurchaseContent,
+		puHi_UserId,
+		puHi_ElectricPileCode,
+		puHi_TransactionNumber
+		)
+		
+		SELECT
+		1,
+		STR_TO_DATE(#{settleEnd},'%Y-%m-%d %H:%i:%s'),
+		#{settleMoney},
+		'人工结算消费',
+		a.chOr_UserId,
+		a.chOr_PileNumber,
+		a.chOr_TransactionNumber
+		FROM
+		tbl_chargingorder a
+		WHERE
+		a.pk_ChargingOrder = #{orderId} limit 1
+		
+	</insert>
+	<!-- 资金账户预冻结金额退款 -->
+	<update id="updateAccount" parameterType="map">
+		update tbl_user_normal
+		set
+		norm_account_balance=norm_account_balance+#{returnMonney}
+		where user_id=(select chOr_UserId from tbl_chargingorder where
+		pk_ChargingOrder = #{orderId} )
+	</update>
+</mapper>

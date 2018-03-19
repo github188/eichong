@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.web.dao.WebCarmakerMapper">
+
+	<resultMap id="tblCarmaker" type="tblCarmaker">
+		<id property="id" column="pk_District" />
+		<result property="pkCarmaker" column="pk_Carmaker" />
+		<result property="makerName" column="maker_Name" />
+		<result property="makerRemark" column="maker_Remark" />
+		<result property="makerCreatedate" column="maker_Createdate" />
+		<result property="makerUpdatedate" column="maker_Updatedate" />
+	</resultMap>
+
+	<select id="getAll" parameterType="map" resultMap="tblCarmaker">
+		SELECT
+			t.pk_Carmaker,
+			t.maker_Name,
+			t.maker_Remark,
+			t.maker_Createdate,
+			t.maker_Updatedate
+		from tbl_pilemaker t
+	</select>
+	<select id="getOne" parameterType="map" resultMap="tblCarmaker">
+	   SELECT
+			t.pk_Carmaker,
+			t.maker_Name,
+			t.maker_Remark,
+			t.maker_Createdate,
+			t.maker_Updatedate
+		from tbl_pilemaker t
+		where 
+	    pk_Carmaker=#{pkCarmaker}  
+	</select>
+	<insert id="insert" parameterType="tblCarmaker">
+	   insert into tbl_pilemaker (
+	     maker_Name,
+	     maker_Remark,
+	     maker_Createdate,
+	     maker_Updatedate
+	   )values (
+	     #{makerName},
+	     #{maker_Remark},
+	     #{makerCreatedat},
+	     #{makerUpdatedate}
+	   )
+	</insert>
+	<update id="update" parameterType="tblCarmaker">
+	   update tbl_pilemaker set
+	     maker_Name=#{makerName},
+	     maker_Remark=#{makerRemark},
+	     maker_Createdate=#{makerCreatedate},
+	     maker_Updatedate=#{makerUpdatedate}
+	   where 
+	    pk_Carmaker=#{pkCarmaker} 
+	</update>
+
+	<delete id="delete" parameterType="tblCarmaker">
+	   delete from 
+	     tbl_pilemaker 
+	   where 
+	    pk_Carmaker=#{pk_Carmaker} 
+	</delete>
+</mapper> 

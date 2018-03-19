@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.ElectricParamMapper">
+
+    <resultMap id="resultElectricParam" type="ElectricParamDO">
+        <id column="id" property="id"/>
+        <result column="ep_code" property="electricPileCode"/>
+        <result column="arg_id" property="argId"/>
+        <result column="arg_value" property="argValue"/>
+        <result column="issued_status" property="issuedStatus"/>
+        <result column="delete_flag" property="isDel"/>
+        <result column="create_date" property="gmtCreate"/>
+        <result column="update_date" property="gmtModified"/>
+        <result column="creator" property="creator"/>
+        <result column="modifier" property="modifier"/>
+    </resultMap>
+
+  <select id="selectOfflineList" parameterType="ElectricParamDO" resultType="ElectricParamDO">
+	 select id,ep_code,arg_id,arg_value,issued_status,update_date from tbl_electricpile_workarg where delete_flag = 0 and arg_id = 3 
+	 <if test="list != null and list.size() > 0">
+		    and ep_code in 
+		   <foreach collection="list" item="id" open="(" close=")" separator=",">
+		        #{id}
+		   </foreach>
+	 </if>
+  </select>
+  <select id="selectSocList" parameterType="ElectricParamDO" resultType="ElectricParamDO">
+	 select id,ep_code,arg_id,arg_value,issued_status,update_date from tbl_electricpile_workarg where delete_flag = 0 and arg_id = 1 
+	 <if test="list != null and list.size() > 0">
+		    and ep_code in 
+		   <foreach collection="list" item="id" open="(" close=")" separator=",">
+		        #{id}
+		   </foreach>
+	 </if>
+  </select>
+  
+  <select id="selectTimeChargeList" parameterType="ElectricParamDO" resultType="ElectricParamDO">
+	 select id,ep_code,arg_id,arg_value,issued_status,charge_time,update_date from tbl_electricpile_workarg where delete_flag = 0 and arg_id = 2 
+	 <if test="list != null and list.size() > 0">
+		    and ep_code in 
+		   <foreach collection="list" item="id" open="(" close=")" separator=",">
+		        #{id}
+		   </foreach>
+	 </if>
+  </select>
+	
+  <select id="selectElectricParam" parameterType="ElectricParamDO" resultType="ElectricParamDO">
+     select id,ep_code,arg_id,arg_value,issued_status,charge_time from tbl_electricpile_workarg where delete_flag = 0 and ep_code = #{electricPileCode} and arg_id = #{argId}
+  </select>
+  
+  <insert id="insertElectricParam" parameterType="ElectricParamDO">
+      insert into tbl_electricpile_workarg (id,ep_code,arg_id,arg_value,issued_status,charge_time,creator)
+      values (null,#{electricPileCode},#{argId},#{argValue},#{issuedStatus},#{chargeTime},#{creator})
+  </insert>
+    
+  <update id="updateElectricParam" parameterType="ElectricParamDO">
+      update tbl_electricpile_workarg set modifier = #{modifier}
+      <if test="argValue != null and argValue != 0">
+         arg_value = #{argValue},
+      </if>
+      <if test="issuedStatus != null">
+         issued_status = #{issuedStatus},
+      </if>
+      where delete_flag = 0 and id = #{id}
+  </update>
+	
+</mapper>

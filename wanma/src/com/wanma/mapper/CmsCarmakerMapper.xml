@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsCarmakerMapper">
+
+	<resultMap id="tblCarmaker" type="TblCarmaker">
+		<id property="id" column="pk_District" />
+		<result property="pkCarmaker" column="pk_Carmaker" />
+		<result property="makerName" column="maker_Name" />
+		<result property="makerRemark" column="maker_Remark" />
+		<result property="makerCreatedate" column="maker_Createdate" />
+		<result property="makerUpdatedate" column="maker_Updatedate" />
+	</resultMap>
+
+	<select id="getAll" parameterType="TblCarmaker" resultType="TblCarmaker">
+		SELECT
+			t.pk_Carmaker pkCarmaker,
+			t.maker_Name makerName, 
+			t.maker_Remark makerRemark,
+			t.maker_Createdate makerCreatedate,
+			t.maker_Updatedate makerUpdatedate,
+			(select count(1) from tbl_electricpile a where a.elPi_Maker = t.pk_Carmaker) bindCount
+		from tbl_pilemaker t where 1=1 order by t.maker_Createdate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	<select id="getCount" parameterType="TblCarmaker" resultType="int">
+		SELECT count(1)
+		from tbl_pilemaker t
+	</select>
+	
+	<select id="getOne" parameterType="TblCarmaker" resultMap="tblCarmaker">
+	   SELECT
+			t.pk_Carmaker,
+			t.maker_Name,
+			t.maker_Remark,
+			t.maker_Createdate,
+			t.maker_Updatedate
+		from tbl_pilemaker t
+		where pk_Carmaker=#{pkCarmaker}
+	</select>
+	<select id="getByProperty" parameterType="TblCarmaker" resultMap="tblCarmaker">
+	   SELECT
+			t.pk_Carmaker,
+			t.maker_Name,
+			t.maker_Remark,
+			t.maker_Createdate,
+			t.maker_Updatedate
+		from tbl_pilemaker t
+		<where>
+		    1=1  
+		    <if test="pkCarmaker!=null and pkCarmaker !=''">
+		        and pk_Carmaker !=#{pkCarmaker} 
+		    </if>
+		    and (1=0
+		 	<if test="makerName!=null and makerName !=''">
+					or	maker_Name=#{makerName}
+			</if>
+			<if test="makerRemark!=null and makerRemark !=''">
+					or	maker_Remark=#{makerRemark}
+			</if>
+			)
+		</where>
+	</select>
+	
+	<insert id="insert" parameterType="TblCarmaker">
+	   insert into tbl_pilemaker (
+	     maker_Name,
+	     maker_Remark,
+	     maker_Createdate,
+	     maker_Updatedate
+	   )values (
+	     #{makerName},
+	     #{makerRemark},
+	     #{makerCreatedate},
+	     #{makerUpdatedate}
+	   )
+	</insert>
+	<update id="update" parameterType="TblCarmaker">
+	   update tbl_pilemaker set
+	     maker_Name=#{makerName},
+	     maker_Remark=#{makerRemark},
+	     maker_Createdate=#{makerCreatedate},
+	     maker_Updatedate=#{makerUpdatedate}
+	   where 
+	    pk_Carmaker=#{pkCarmaker} 
+	</update>
+
+	<delete id="delete" parameterType="TblCarmaker">
+	   delete from 
+	     tbl_pilemaker 
+	   where 
+	    pk_Carmaker=#{pkCarmaker} 
+	</delete>
+	<delete id="deleteBatch" parameterType="String">
+	   delete from 
+	     tbl_pilemaker 
+	   where 
+	    pk_Carmaker in (${_parameter}) 
+	</delete>
+	
+	<select id="getRemark" parameterType="String"  resultType="boolean">
+	 select 
+	 maker_Remark,
+	 maker_Name
+	 from 
+	</select>
+	
+</mapper> 

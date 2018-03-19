@@ -1,0 +1,8 @@
+package com.wanma.ims.controller.order;
+
+/**
+ * 订单管理-合作商用户订单
+ */
+public class OrderCompanyController {
+
+}

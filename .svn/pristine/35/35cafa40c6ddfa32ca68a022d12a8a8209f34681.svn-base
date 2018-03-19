@@ -1,0 +1,212 @@
+package com.wanma.ims.service.impl;
+
+import com.google.common.base.Strings;
+import com.wanma.ims.common.domain.MultiMediaDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.constants.WanmaConstants;
+import com.wanma.ims.core.GlobalSystem;
+import com.wanma.ims.mapper.MultiMediaMapper;
+import com.wanma.ims.service.MultipartFileService;
+import com.wanma.ims.util.ImageUtils;
+import com.wanma.ims.util.MoveFileUtil;
+import com.wanma.ims.util.PKUtil;
+import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 图片文件处理接口
+ */
+@Service
+public class MultipartFileServiceImpl implements MultipartFileService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(MultipartFileServiceImpl.class);
+
+    @Autowired
+    private MultiMediaMapper multiMediaMapper;
+
+    @Override
+    public List<String> getAllMultiUrl(String businessType, String referenceId) {
+        List<String> urlList = new ArrayList<>();
+
+        List<MultiMediaDO> multiMediaList = multiMediaMapper.selectByReferenceId(businessType, referenceId);
+        String filePre = GlobalSystem.getConfig(WanmaConstants.PICTURE_SERVICE_SCANURL);
+        for (MultiMediaDO multiMedia : multiMediaList) {
+            String url = filePre + multiMedia.getRelativePath() + "/" + multiMedia.getFileName();
+            urlList.add(url);
+        }
+
+        return urlList;
+    }
+
+    @Override
+    public String saveMultiFile(MultipartFile[] allMultiFile, String businessType, String referenceId, boolean izZip, UserDO loginUser) {
+        String processFlg;
+        if (allMultiFile == null || allMultiFile.length == 0) {
+            return WanmaConstants.PROCESS_STATUS_NG;
+        }
+
+        processFlg = processAllMultiFile(allMultiFile, businessType, referenceId, izZip, loginUser);
+        return processFlg;
+    }
+
+    @SuppressWarnings("resource")
+    private String processAllMultiFile(MultipartFile[] allMultiFile, String businessType, String referenceId, boolean isZip, UserDO loginUser) {
+        String processFlg = WanmaConstants.PROCESS_STATUS_OK;
+        try {
+            int index = 0;
+            for (MultipartFile multipartFile : allMultiFile) {
+                if (multipartFile == null || multipartFile.getSize() == 0) {
+                    continue;
+                }
+
+                CommonsMultipartFile cf = (CommonsMultipartFile) multipartFile;
+                // 上传文件名
+                String originalName = cf.getOriginalFilename();
+                // 存储用文件名
+                String filePrefixName = referenceId + PKUtil.generatePkMenuId() + index;
+                String fileSuffixName = originalName.substring(originalName.lastIndexOf("."));
+                //文件名
+                String fileName = filePrefixName + fileSuffixName;
+                // 得到文件上传到服务器的临时位置
+                String dir = getMultiFileDir(businessType);
+                // 判断是否压缩文件,压缩文件并上传到Zip额外后缀的ftp文件夹中
+                if (isZip) {
+                    int width = WanmaConstants.PICTRUE_W;
+                    int height = WanmaConstants.PICTRUE_H;
+                    String zipFileName = filePrefixName + "_" + width + "X" + height + fileSuffixName;
+                    compressImageAndUpload(multipartFile, dir, zipFileName, businessType, width, height);
+                    width = WanmaConstants.PICTRUE_W_1280;
+                    height = WanmaConstants.PICTRUE_H_720;
+                    zipFileName = filePrefixName + "_" + width + "X" + height + fileSuffixName;
+                    compressImageAndUpload(multipartFile, dir, zipFileName, businessType, width, height);
+                }
+
+                MoveFileUtil.fileCopybyFtp(multipartFile.getInputStream(), businessType + "/" + fileName);
+
+                multiMediaMapper.insertMultiMedia(MultiMediaDO.valueOf(businessType, referenceId, businessType, fileName, "0", loginUser.getCreator()));
+
+                index++;
+            }
+        } catch (Exception e) {
+            LOGGER.error(e.getLocalizedMessage());
+            return WanmaConstants.PROCESS_STATUS_NG;
+        }
+        return processFlg;
+    }
+
+    /**
+     * 获取文件转存地址
+     */
+    private String getMultiFileDir(String businessType) {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        // 01 获取相对路径
+        // 正式文件存放路径
+        String relFilePath = GlobalSystem.getConfig(WanmaConstants.PRO_KEY_STORAGE_REL_PATH);
+        // 图片存放相对路径
+        String relativePath = GlobalSystem.getConfig(businessType);
+        String fullPath = relFilePath + "/" + relativePath;
+
+        return request.getSession().getServletContext().getRealPath(fullPath);
+    }
+
+    private void compressImageAndUpload(MultipartFile file, String dir, String fileName, String businessType, int width, int height) throws Exception {
+        InputStream is;
+        File tempFile = null;
+        String filePath = dir + File.separator + fileName;
+        try {
+            CommonsMultipartFile cf = (CommonsMultipartFile) file;
+            DiskFileItem fi = (DiskFileItem) cf.getFileItem();
+            File f = fi.getStoreLocation();
+            ImageUtils.compress(f, filePath, width, height);
+            tempFile = new File(filePath);
+            is = new FileInputStream(tempFile);
+        } catch (Exception e) {
+            StringWriter stringWriter = new StringWriter();
+            PrintWriter writer = new PrintWriter(stringWriter);
+            e.printStackTrace(writer);
+            StringBuffer buffer = stringWriter.getBuffer();
+            LOGGER.error(filePath + "文件压缩失败:" + buffer.toString());
+            is = file.getInputStream();
+        }
+
+        // 上传子文件
+        MoveFileUtil.fileCopybyFtp(is, businessType + "/" + fileName);
+        if (tempFile != null && tempFile.exists()) {
+            boolean result = tempFile.delete();
+            if (!result) {
+                LOGGER.error(filePath + "文件压缩失败");
+            }
+        }
+    }
+
+    @Override
+    public String deleteMulti(List<String> allMultiFile, String businessType, String referenceId, UserDO loginUser) {
+        String processFlg = WanmaConstants.PROCESS_STATUS_OK;
+        if (allMultiFile == null || allMultiFile.size() == 0) {
+            return processFlg;
+        }
+
+        String fileName;
+        try {
+            for (String imageFileUrl : allMultiFile) {
+                if (Strings.isNullOrEmpty(imageFileUrl)) {
+                    continue;
+                }
+
+                if (imageFileUrl.contains("/") && !imageFileUrl.endsWith("/")) {
+                    fileName = imageFileUrl.substring(imageFileUrl.lastIndexOf("/") + 1);
+                } else {
+                    fileName = imageFileUrl;
+                }
+
+//                // 删除文件以及数据库的存储
+//                // 测试环境 使用 --start
+//                // 正式文件存放路径
+//                String relFilePath = GlobalSystem.getConfig(WanmaConstants.PRO_KEY_STORAGE_REL_PATH);
+//                // 图片存放相对路径
+//                String relativePath = GlobalSystem.getConfig(businessType);
+//                // 完整路径
+//                String fullPath = relFilePath + "/" + relativePath;
+//                HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+//                String dir = request.getSession().getServletContext().getRealPath(fullPath);
+//                if (FileUtils.directoryContains(new File(dir), new File(dir, fileName))) {
+//                    FileUtils.deleteQuietly(new File(dir, fileName));
+//                }
+//                // 测试环境 使用 --end
+
+                // 正式环境 使用 --start
+                multiMediaMapper.deleteByReferenceId(businessType, referenceId, fileName);
+
+                MoveFileUtil.delete(businessType + "/" + fileName);
+                // 正式环境 使用 --end
+                String filePrefixName = fileName.substring(0, fileName.lastIndexOf("."));
+                String fileSuffixName = fileName.substring(fileName.lastIndexOf("."));
+                int width = WanmaConstants.PICTRUE_W;
+                int height = WanmaConstants.PICTRUE_H;
+                String zipFileName = filePrefixName + "_" + width + "X" + height + fileSuffixName;
+                MoveFileUtil.delete(businessType + "/" + zipFileName);
+
+                width = WanmaConstants.PICTRUE_W_1280;
+                height = WanmaConstants.PICTRUE_H_720;
+                zipFileName = filePrefixName + "_" + width + "X" + height + fileSuffixName;
+                MoveFileUtil.delete(businessType + "/" + zipFileName);
+            }
+        } catch (Exception e) {
+            LOGGER.error(e.getLocalizedMessage());
+            return WanmaConstants.PROCESS_STATUS_NG;
+        }
+
+        return processFlg;
+    }
+}

@@ -1,0 +1,316 @@
+package com.wanma.ims.service.impl;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.google.common.collect.Lists;
+import com.wanma.ims.common.domain.CompanyDO;
+import com.wanma.ims.common.domain.FinAccountConfigRelaDO;
+import com.wanma.ims.common.domain.FinAccountDO;
+import com.wanma.ims.common.domain.FinAccountRelationDO;
+import com.wanma.ims.common.domain.PurchaseHistoryDO;
+import com.wanma.ims.common.domain.UserCardDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.domain.UserRelaDO;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.constants.DownFileConstants;
+import com.wanma.ims.constants.ResultCodeConstants;
+import com.wanma.ims.constants.WanmaConstants;
+import com.wanma.ims.mapper.FinAccountConfigRelaMapper;
+import com.wanma.ims.mapper.FinAccountMapper;
+import com.wanma.ims.mapper.FinAccountRelationMapper;
+import com.wanma.ims.mapper.PurchaseHistoryMapper;
+import com.wanma.ims.mapper.UserCardMapper;
+import com.wanma.ims.service.UserCardService;
+import com.wanma.ims.service.UserRelaService;
+import com.wanma.ims.service.UserService;
+import com.wanma.ims.util.ExcelExporterUtil;
+
+
+@Service("userCardService")
+public class UserCardServiceImpl implements UserCardService {
+
+	 private static final Logger LOGGER = LoggerFactory.getLogger(UserCardServiceImpl.class);
+	@Autowired
+	private UserCardMapper userCardMapper;
+	@Autowired
+	private UserRelaService userRelaService;
+	@Autowired
+	private UserService userService;
+	@Autowired
+	private FinAccountConfigRelaMapper finAccountConfigRelaMapper;
+	@Autowired
+	private FinAccountMapper finAccountMapper;
+	@Autowired
+	private PurchaseHistoryMapper purchaseHistoryMapper;
+	@Autowired
+	private FinAccountRelationMapper finAccountRelationMapper;
+	
+	@Override
+	public long getCardCount(UserCardDO userCard) {
+		userCardMapper.getUserCard(userCard);
+		return userCardMapper.getCardCount(userCard);
+	}
+	@Override
+	public List<UserCardDO> getCardList(UserCardDO userCard) {
+		List<UserCardDO> userCardList =  userCardMapper.getCardList(userCard);
+		for(UserCardDO card : userCardList){
+//			if(card.getIsApp()==1){
+//				UserRelaDO rela =	userRelaService.getRelaByCardId(card.getUcUserId());
+//				if(rela != null){
+//					UserDO user = 	userService.getUserById(rela.getUserId());
+//					card.setUserAccount(user.getUserAccount());
+//				}
+//			}
+		}
+		return userCardList;
+	}
+	@Override
+	public UserCardDO getUserCard(UserCardDO userCard) {
+		return userCardMapper.getUserCard(userCard);
+	}
+
+	@Override
+	public List<UserCardDO> getCardInfoByUserId(UserCardDO userCard) {
+		return userCardMapper.getCardInfoByUserId(userCard);
+	}
+	@Override
+	public boolean lossUserCard(UserCardDO userCard) {
+		userCard.setUcStatus(WanmaConstants.UCSTATUSLOSS);//挂失
+		return	userCardMapper.updateUserCard(userCard)>0 ? true:false;
+	}
+	@Override
+	public boolean relieveLossUserCard(UserCardDO userCard) {
+		userCard.setUcStatus(WanmaConstants.UCSTATUSNORMAL);//解挂
+		return	userCardMapper.updateUserCard(userCard)>0 ? true:false;
+	}
+
+	@Override
+	public boolean frozenUserCard(UserCardDO userCard) {
+		userCard.setUcStatus(2);//解冻
+		return userCardMapper.updateUserCard(userCard)>0 ? true:false;
+	}
+	@Override
+	public boolean relieveFrozenUserCard(UserCardDO userCard) {
+		userCard.setUcStatus(WanmaConstants.UCSTATUSNORMAL);//解冻
+		return userCardMapper.updateUserCard(userCard)>0 ? true:false;
+	}
+	@Override
+	public boolean cancelUserCard(UserCardDO userCard) {//还缺少增加消费记录的接口
+		userCard.setUcStatus(WanmaConstants.UCSTATUSCANCEL);
+		return userCardMapper.updateUserCard(userCard)>0? true:false;
+	}
+	@Override
+	public UserCardDO checkExternalCardNumber(UserCardDO userCard) {
+			 return userCardMapper.checkExternalCardNumber(userCard);
+	}
+	@Override
+	public boolean bindCard(UserCardDO userCard,UserDO userDO) {
+		 userCard.setNewUserId(userDO.getUserId());
+		 List<FinAccountConfigRelaDO> finConfigRelaDOList = getFinAccountConfigRelaList(userDO.getCpyId());
+			if(finConfigRelaDOList!=null){
+				if(finConfigRelaDOList.get(0).getPaymentRule()!=WanmaConstants.PAYMENTRULE_CPYACCOUNT){
+					 FinAccountDO cardFinAccount = new FinAccountDO();
+					 cardFinAccount.setAccountId(userCard.getAccountId());
+					 List<FinAccountDO> finAccountDOList = finAccountMapper.getFinAccountList(cardFinAccount);
+					if(finAccountDOList!=null){
+						Double allocationAmount = finAccountDOList.get(0).getAccountBalance();//查出卡里面的钱 
+						if(allocationAmount>0){
+							cardFinAccount.setAllocationAmount("-"+allocationAmount);
+							cardFinAccount.setModifier(userCard.getModifier());
+							finAccountMapper.modifyFinAccountBalance(cardFinAccount);//卡账户的钱减掉
+							PurchaseHistoryDO cardPurchaseHistory = new PurchaseHistoryDO();
+							cardPurchaseHistory.setPuHiType(17);//对于卡是资金划出
+							cardPurchaseHistory.setPuHiMonetary(allocationAmount);
+							cardPurchaseHistory.setPuHiUserId(userCard.getUcUserId());
+							addPurchaseHistory(cardPurchaseHistory);
+							
+							FinAccountDO userFinAccount = new FinAccountDO();
+							userFinAccount.setAllocationAmount(allocationAmount.toString());
+							userFinAccount.setAccountId(userDO.getAccountId());
+							userFinAccount.setModifier(userCard.getModifier());
+							finAccountMapper.modifyFinAccountBalance(userFinAccount);//用户的账户钱增加
+							PurchaseHistoryDO userpurchaseHistory = new PurchaseHistoryDO();
+							userpurchaseHistory.setPuHiType(7);//对于用户是资金划入
+							userpurchaseHistory.setPuHiUserId(userCard.getNewUserId());
+							userpurchaseHistory.setPuHiMonetary(allocationAmount);
+							addPurchaseHistory(userpurchaseHistory);
+							//添加流水记录资金划入
+						}
+					}	 
+				}
+			}
+		
+		 return userCardMapper.bindCard(userCard)>0?true:false;//根据是否app用户修改卡表
+	}
+	
+	public void addPurchaseHistory(PurchaseHistoryDO purchaseHistoryDO) {
+		purchaseHistoryDO.setPuHiPurchaseHistoryTime(new Date());
+		purchaseHistoryDO.setPuHiConsumerRemark("");
+		purchaseHistoryDO.setPuHiChargeType(0);
+		purchaseHistoryDO.setPuHiUserOrigin(0);
+		purchaseHistoryDO.setPuHiElectricPileCode("");
+		purchaseHistoryDO.setPuHiExternalCardNumber("");
+		purchaseHistoryDO.setPuHiTransactionNumber("");
+		purchaseHistoryDO.setPuHiPaymentNumber("");
+		purchaseHistoryDO.setPuhiInvoiceStatus(0);
+		purchaseHistoryDO.setPkInvoice(new Long(0));
+		purchaseHistoryMapper.addPurchaseHistory(purchaseHistoryDO);
+	}
+	@Override
+	public void disableCardByUserId(List<Long> userIdList,UserDO loginUser) {//禁用
+		for (long userId : userIdList) {
+			UserCardDO userCard = new UserCardDO();
+			userCard.setModifier(loginUser.getUserId()+"-"+loginUser.getUserName());
+			userCard.setUcStatus(2);
+			userCard.setUcUserId(userId);
+			userCardMapper.disableCardByUserId(userCard);
+		}
+	}
+	@Override
+	public void releaseCardByUserId(List<Long> userIdList,UserDO loginUser) {//解禁
+		for (long userId : userIdList) {
+			UserCardDO userCard = new UserCardDO();
+			userCard.setModifier(loginUser.getUserId()+"-"+loginUser.getUserName());
+			userCard.setUcStatus(0);
+			userCard.setUcUserId(userId);
+			userCardMapper.disableCardByUserId(userCard);
+		}
+	}
+	@Override
+	public UserCardDO getCardBasicInfo(UserCardDO userCard) {
+		return userCardMapper.getCardBasicInfo(userCard);
+	}
+	@Override
+	public BaseResultDTO exportCard(HttpServletResponse response,
+			UserCardDO searchModel, UserDO loginUser) {
+		 BaseResultDTO result = new BaseResultDTO();
+	        List<UserCardDO> userCardList = getExportCardList(searchModel);
+	        if (CollectionUtils.isEmpty(userCardList)) {
+	            LOGGER.warn("UserCardServiceImpl-exportUser exportUserCardList is empty|searchModel={}|loginUser={}", searchModel, loginUser);
+	            return new BaseResultDTO(false, ResultCodeConstants.FAILED, "您导出的数据不存在，请修改正确的查询条件后再导出！");
+	        }
+	        List<String> attrList = Lists.newArrayList("ucInternalCardNumber", "ucExternalCardNumber", "chUcType", "chUcStatus", "chIsApp", "cpyCompanyname","cardBalance","userAccount");
+	        List<String> header = Lists.newArrayList("内卡号", "外卡号", "卡类型", "状态", "是否绑定app", "渠道公司","卡内余额","用户账号");
+	        ExcelExporterUtil.exportExcel(response, attrList, header, userCardList, UserCardDO.class, DownFileConstants.FILE_CARD_EXPORT, DownFileConstants.FILE_CARD_EXPORT_SHEET);
+
+	        return result;
+	}
+    private List<UserCardDO> getExportCardList(UserCardDO searchModel) {
+        List<UserCardDO> userCardList = userCardMapper.getExportCardList(searchModel);
+        Map<Integer, String> cardTypeMap = new HashMap<>();
+        cardTypeMap.put(10, "爱充普通公共储蓄卡");
+        cardTypeMap.put(11, "爱充普通专属储蓄卡");
+        cardTypeMap.put(12, "爱充企业信用卡");
+        cardTypeMap.put(13, "爱充合作公共储蓄卡");
+        cardTypeMap.put(14, "爱充合作专属储蓄卡");
+
+        Map<Integer, String> cardStatusMap = new HashMap<>();
+        cardStatusMap.put(0, "正常");
+        cardStatusMap.put(1, "挂失");
+        cardStatusMap.put(2, "冻结");
+        
+        Map<Integer, String> cardAppMap = new HashMap<>();
+        cardAppMap.put(0, "否");
+        cardAppMap.put(1, "是");
+
+        for (UserCardDO userCard : userCardList) {
+        	userCard.setChUcType(cardTypeMap.get(userCard.getUcType()));
+        	userCard.setChIsApp(cardAppMap.get(userCard.getIsApp()));
+        	userCard.setChUcStatus(cardStatusMap.get(userCard.getUcStatus()));
+        	if(userCard.getIsApp()==1){
+					UserDO user = 	userService.getUserById(userCard.getNewUserId());
+					userCard.setUserAccount(user.getUserAccount());
+			}
+        }
+        return userCardList;
+    }
+	@Override
+	public Map<String, Integer> getCardForCompany(UserCardDO userCard) {
+		Map<String, Integer> userCardMap =  new HashMap<String, Integer>();
+		int totalCardNum = userCardMapper.getTotalCpyCardNum(userCard);
+		int lossCardNum = userCardMapper.getLossCpyCardNum(userCard);
+		userCardMap.put("totalCardNum", totalCardNum);
+		userCardMap.put("lossCardNum", lossCardNum);
+		return userCardMap;
+	}
+	@Override
+	public void lossUserCardForList(UserCardDO userCard, String ids) {
+		userCard.setUcStatus(WanmaConstants.UCSTATUSLOSS);//挂失
+		String[] idArr = ids.split(",");
+		for(int i=0;i<idArr.length;i++){
+			userCard.setUcId(Long.parseLong(idArr[i]));
+			userCardMapper.updateUserCard(userCard);
+		}
+	}
+	
+	public List<FinAccountConfigRelaDO> getFinAccountConfigRelaList(Long cpyId) {
+		FinAccountConfigRelaDO finAccountConfigRelaDO = new FinAccountConfigRelaDO();
+		finAccountConfigRelaDO.setBillAccountId(new Long(1));
+		finAccountConfigRelaDO.setCpyId(cpyId);
+		return finAccountConfigRelaMapper.getFinAccountConfigRelaList(finAccountConfigRelaDO);
+	}
+	
+	@Override
+	public BaseResultDTO bindCompanyForCard(String ids, CompanyDO company,
+			UserDO loginUser) {
+		BaseResultDTO result = new BaseResultDTO();
+		try {
+			String accountId = "";
+			List<FinAccountConfigRelaDO> finConfigRelaDOList = getFinAccountConfigRelaList(company.getCpyId());
+			if(finConfigRelaDOList!=null){
+				if(finConfigRelaDOList.get(0).getPaymentRule()==WanmaConstants.PAYMENTRULE_CPYACCOUNT){
+					accountId = company.getAccountId().toString();
+
+				}
+			}
+			String[] idArr = ids.split(",");
+			for(int i=0;i<idArr.length;i++){
+				UserCardDO userCard = new UserCardDO();
+				userCard.setUcId(Long.parseLong(idArr[i]));
+				userCard = userCardMapper.getUserCard(userCard);
+				userCard.setModifier(loginUser.getUserAccount());
+				userCard.setUcCpyId(company.getCpyId().intValue());
+				userCard.setUcStatus(0);
+				
+				if(!"".equals(accountId)){
+					userCard.setAccountId(Long.parseLong(accountId));
+				}
+				userCardMapper.updateUserCard(userCard);
+				addFinAccountRelation(userCard.getUcUserId(),company.getCpyId(),loginUser);
+			}
+		} catch (Exception e) {
+			 return new BaseResultDTO(false, ResultCodeConstants.FAILED, "绑定失败!");
+		}
+		
+		return result;
+	}
+	/**
+	 * 卡绑公司 资金账目关系表增加记录
+	 * @param id
+	 * @param accountId
+	 * @param loginUser 
+	 */
+	public void addFinAccountRelation(Long id,Long accountId, UserDO loginUser) {
+		FinAccountRelationDO finAccountRelation = new FinAccountRelationDO();
+		finAccountRelation.setUserId(id);
+		finAccountRelation.setBillAccountId(1L);
+		finAccountRelation.setAccountId(accountId);
+		finAccountRelation.setPriority(1);
+		finAccountRelation.setIsDel(0);
+		finAccountRelation.setCreator(loginUser.getUserAccount());
+		finAccountRelation.setGmtCreate(new Date());
+		finAccountRelation.setModifier(loginUser.getUserAccount());
+		finAccountRelationMapper.addFinAccountRelation(finAccountRelation);
+	}
+}

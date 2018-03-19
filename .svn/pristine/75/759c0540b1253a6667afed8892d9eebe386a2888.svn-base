@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/style.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/integral/integralActivityList/integralActivity_festival_ed.css"/>
+    <title>节假日</title>
+</head>
+<body>
+<div class="col-sm-12">
+    <div class="ibox float-e-margins" style="margin: 0">
+        <div class="userBaseInfo col-sm-12 clearfix">
+            <div class="form-group col-xs-10">
+                <div class="col-sm-2 queryParam">
+                    状态：
+                </div>
+                <label class="radio-inline log" state="1">
+                    <input type="radio" name="state" value="0" checked="checked"> 开启
+                </label>
+                <label class="radio-inline" state="2">
+                    <input type="radio" name="state" value="1"> 关闭
+                </label>
+            </div>
+            <div class="form-group col-xs-10">
+                <div class="col-sm-2 queryParam">
+                    活动名称：
+                </div>
+                <div class="col-sm-3 userAccount">
+                    <input type="text" name="" class="userAccountInput" value="节假日" disabled>
+                </div>
+            </div>
+            <div class="form-group col-xs-10">
+                <div class="col-sm-2 queryParam">
+                    积分方法：
+                </div>
+                <div class="col-sm-3">
+                    <ch style="line-height: 40px;">获取</ch>
+                </div>
+            </div>
+            <div class="form-group col-xs-10">
+                <div class="col-sm-2 queryParam">
+                    分值设置：
+                </div>
+                <div class="col-sm-6">
+					<span>
+					<span>节假日设置</span><br/>
+                    <ch>指类似于元旦、劳动节、端午节的节日。</ch><br/>
+                    <ch>可以设定节日日期的范围。例如12:30-01.02，元旦活动。</ch>
+					</span>
+                </div>
+            </div>
+            <div class="form-group col-xs-10">
+                <div class="col-sm-2 queryParam"></div>
+                <div class="col-sm-3 queryParam">
+                    已存在的节假日活动：
+                </div>
+                <div class="col-sm-6">
+                </div>
+            </div>
+            <div class="clear">
+            </div>
+            <table class="already-Exit-Activity table table-bordered text-center" id="table" style="border: 1px solid #DCDCDC;">
+                <tr class="already-festival">
+                    <th>
+                        活动名称
+                    </th>
+                    <th>
+                        活动时间
+                    </th>
+                    <th>
+                        分值
+                    </th>
+                    <th>
+                        操作
+                    </th>
+                </tr>
+            </table>
+            <div class="add-activity-botton" style="display: none;">
+                <a href="javascript:showAddInput();">+增加一个新活动</a>
+            </div>
+            <div class="new-Fesitival-Activity">
+                <div class="form-group col-xs-10">
+                    <div class="col-sm-2">
+                    </div>
+                    <div class="col-sm-3 activity-title">
+                        编辑节假日活动：
+                    </div>
+                </div>
+
+                <div class="form-group col-xs-10">
+                    <div class="col-sm-2 queryParam">
+                        活动名称：
+                    </div>
+                    <div class="col-sm-3 userAccount">
+                        <input class="userAccountInput" type="text" name="add_FestivalName" value="" placeholder="例如：元旦">
+                    </div>
+                </div>
+                <div class="form-group col-xs-10">
+                    <div class="col-sm-2 queryParam">
+                        日期：
+                    </div>
+                    <div class="col-sm-3 userAccount">
+                        <input type="text" name="" value="" class="userAccountInput" id="datePicker"/>
+                        <input type="text" name="startGmtCreate" value="" class="userAccountInput" hidden="hidden" style="display: none;"/>
+                        <input type="text" name="endGmtCreate" value="" class="userAccountInput" hidden="hidden" style="display: none;"/>
+                    </div>
+                </div>
+                <div class="form-group col-xs-10">
+                    <div class="col-sm-2 queryParam">
+                        分值：
+                    </div>
+                    <div class="col-sm-3 userAccount">
+                        <input class="userAccountInput" type="text" name="score" value="100">
+                    </div>
+                    <ch style="line-height: 30px;">请输入正整数，不包含小数。</ch>
+                </div>
+            </div>
+            <div class="col-xs-10 saveBtn form-group" id="saveBtn" onclick="addInfo();" style="display: none;">
+                保存
+            </div>
+            <div class="col-xs-10 saveBtn form-group" id="updateBtn" onclick="updateInfo();">
+                更新
+            </div>
+            <div class="col-xs-10 goBack form-group" id="toPowerStationList">
+                返回
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="../../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/layDate-v5.0.4/laydate/laydate.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/contabs.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/apiAddress.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/integral/integralActivityList/integralActivity_festival_ed.js" type="text/javascript" charset="utf-8"></script>
+</html>

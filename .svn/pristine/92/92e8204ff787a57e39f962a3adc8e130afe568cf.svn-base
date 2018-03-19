@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wanma.dao.TblRateInformationMapper">
+	
+	<resultMap id="tblRateInformationResultMap" type="TblRateInformation">
+		<result property="pkRateInformation" column="pk_RateInformation" />
+		<result property="raInModelId" column="raIn_ModelId" />
+		<result property="raInEffectiveDates" column="raIn_EffectiveDates" />
+		<result property="raInExpiryDate" column="raIn_ExpiryDate" />
+		<result property="raInFreezingMoney" column="raIn_FreezingMoney" />
+		<result property="raInMinFreezingMoney" column="raIn_MinFreezingMoney" />
+		<result property="raInQuantumDate" column="raIn_QuantumDate" />
+		<result property="raInStartQuantumDate" column="raIn_StartQuantumDate" />
+		<result property="raInEndQuantumDate" column="raIn_EndQuantumDate" />
+		<result property="raInTimeMarker" column="raIn_TimeMarker" />
+		<result property="raInTipTimeTariff" column="raIn_TipTimeTariff" />
+		<result property="raInPeakElectricityPrice" column="raIn_PeakElectricityPrice" />
+		<result property="raInUsualPrice" column="raIn_UsualPrice" />
+		<result property="raInValleyTimePrice" column="raIn_ValleyTimePrice" />
+		<result property="raInReservationRate" column="raIn_ReservationRate" />
+		<result property="raInServiceCharge" column="raIn_ServiceCharge" />
+		<result property="raInWarnMoney" column="raIn_WarnMoney" />
+	</resultMap>
+
+	<!-- 根据Id获取结果 -->
+	<select id="getById" parameterType="java.lang.Long" resultMap="tblRateInformationResultMap">
+		SELECT * FROM tbl_rateinformation WHERE pk_RateInformation=#{pkRateInformation}
+	</select>
+	
+	<select id="selectOne" parameterType="TblRateInformation" resultMap="tblRateInformationResultMap">
+		SELECT * FROM tbl_rateinformation t WHERE 1=1
+		<if test="elcId != null or elcId != ''">
+			and exists (select 1 from tbl_electricpile e where e.elPi_RateInformationId = t.pk_RateInformation and e.pk_ElectricPile = #{elcId})
+  		</if> 
+		
+	</select>
+	
+	<select id="selectMinPriceByPsId" parameterType="int" resultType="Double">
+		SELECT min(t.raIn_ValleyTimePrice) FROM tbl_rateinformation t WHERE 1=1
+			and exists (select 1 from tbl_electricpile e where e.elPi_RateInformationId = t.pk_RateInformation and e.elPi_RelevancePowerStation = #{value})
+		
+	</select>
+	
+
+
+</mapper>

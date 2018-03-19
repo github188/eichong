@@ -1,0 +1,200 @@
+//获取电桩列表的menuId
+var getMenuMap = window.localStorage.getItem('menuMap');
+var getCurruntMap = JSON.parse(getMenuMap);
+var menuId = getCurruntMap['电桩参数设置列表'];
+$(function () {
+//    ctrlMenu(menuId);
+    //去加载表格的数据
+    setTimeout("getElectricParamList()", 100);
+})
+function ctrlMenu(menuId) {
+    $.ajax({
+        type: "post",
+        url: basePath + getSelfButtonTreeUrl,
+        async: true,
+        data: {
+            menuId: menuId
+        },
+        success: function (req) {
+            var data = req.dataObject;
+            if (data.length == 0) {
+                return;
+            } else {
+                for (var i = 0; i < data.length; i++) {
+                    var contents = data[i].contents;
+                    if (contents.indexOf('设置') > -1) {
+                        $('#setBtn').show();
+                    }
+                }
+            }
+
+
+        }
+    });
+}
+
+
+function toUnbindEvent() {
+    $('.cpyProvinceBlock').unbind();
+    $('.cypCityBlock').unbind();
+    $('.cpyAreaBlock').unbind();
+}
+toUnbindEvent();
+
+function getElectricParamList() {
+    toGiveHiddenInput();
+    initTable("electricParamListForm", "electricParamPage", electricParamListUrl, electricParamListCallback);
+}
+function electricParamListCallback(req) {
+    var data = req.dataObject;
+    var listTr = "";
+    for (var i = 0; i < data.length; i++) {
+    	var dateTime = data[i].chargeTime;
+    		dateTime = new Date(dateTime).format("yyyy-MM-dd");
+        
+        listTr += '<tr><td><input type="checkbox" name="ids" class="selectedBox" value="' + data[i].id + '"/>'
+        + '</td><td class="electricParamList_electricPileCode">' + data[i].electricPileCode
+        + '</td><td class="electricParamList_epnum">' + data[i].epNum
+        + '</td><td class="electricParamList_powerStationName">' + data[i].powerStationName
+        + '</td><td class="electricParamList_chargeMode">' + data[i].chargeMode
+        + '</td><td class="electricParamList_commonStatus">' + data[i].commonStatus
+        + '</td><td class="electricParamList_offlineNum">' + data[i].offlineNum
+        + '</td><td class="electricParamList_chargeTime">' + dateTime 
+        + '</td><td class="electricParamList_soc">' + data[i].socValue
+        + '</td><td class="electricParamList_status">' + data[i].issuedStatus
+        + '</td><td class="electricParamList_gmtModified">' + data[i].gmtModified
+        + '</td></tr>';
+    }
+    $("#myTbogy").html(listTr);
+}
+//查询条件部分=========================
+//点击桩编号，进去桩详情
+function toLoadPileDetail(obj) {
+    var electricPileId = $(obj).attr('data-id');
+    window.location.href = 'electricPile_detail.html?electricPileId=' + electricPileId;
+}
+function toGiveHiddenInput() {
+    var provinceCodeHtmlValue = $('#provinceCodeHtml').attr('data-value');
+    var cityCodeHtmlValue = $('#cityCodeHtml').attr('data-value');
+    var areaCodeHtmlValue = $('#areaCodeHtml').attr('data-value');
+    var electricPileCodeValue = $('input[name=electricPileCode]').val();
+    if (electricPileCodeValue == "") {
+        codeValue = $('input[name=electricPileCode]').val('');
+    } else {
+        $('input[name=electricPileCode]').val();
+    }
+    var powerStationNameValue = $('input[name=powerStationName]').val();
+    if (powerStationNameValue == "") {
+        codeValue = $('input[name=powerStationName]').val('');
+    } else {
+        $('input[name=powerStationName]').val();
+    }
+}
+//加载省市
+setTimeout("toLoadProvince('', '#provinceCodeHtml', '.cpyProvinceUl', 'toUnbindEvent')", 100);
+
+//点击省加载市
+$('.cpyProvinceUl').on("click", "li", function () {
+    var provinceCodeId = $(this).attr('data-option');
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+    var flag = $(this).attr('data-option');
+    if (flag == "") {
+        $('#cityCodeHtml').html('请选择');
+        $('.cypCityUl').html('');
+        $('#cityCodeHtml').attr('data-value', '');
+        $('#areaCodeHtml').html('请选择');
+        $('.areaUl').html('');
+        $('#areaCodeHtml').attr('data-value', '');
+    } else {
+        toLoadCity(provinceCodeId, '', '#cityCodeHtml', '.cypCityUl', 'toUnbindEvent');
+    }
+})
+//点击市加载区
+$('.cypCityUl').on("click", "li", function () {
+    var cityCodeId = $(this).attr('data-option');
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+    var flag = $(this).attr('data-option');
+
+    if (flag == "") {
+        $('#areaCodeHtml').html('请选择');
+        $('.areaUl').html('');
+        $('#areaCodeHtml').attr('data-value', '');
+    } else {
+        $('.areaUl').html('');
+        toLoadArea(cityCodeId, '', '#areaCodeHtml', '.areaUl', 'toUnbindEvent');
+    }
+})
+
+//点击区获取值
+$('.areaUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+})
+
+
+$('body').on('click', '#setElectricParam', function () {
+    window.location.href = 'set_electricParam.html';
+})
+
+$('.el_cpyProvinceUl').on("click", "li", function () {
+    var provinceCodeId = $(this).attr('data-option');
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+    var flag = $(this).attr('data-option');
+    if (flag == "") {
+        $('#ele_cypCityCode').html('请选择');
+        $('.ele_cypCityUl').html('');
+        $('#ele_cypCityCode').attr('data-value', '');
+        $('#ele_cpyCompanyName').html('请选择');
+        $('.ele_cpyCompanyUl').html('');
+        $('#ele_cpyCompanyName').attr('data-value', '');
+    } else {
+        toLoadCity(provinceCodeId, '', '#ele_cypCityCode', '.ele_cypCityUl', 'toUnbindEvent');
+    }
+});
+$('.ele_cypCityUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+    var flag = $(this).attr('data-option');
+    var cypCityCodeValue = $('#ele_cypCityCode').attr('data-value');
+    var cpyProvinceCodeValue = $('#ele_cpyProvinceCode').attr('data-value');
+    if (flag == "") {
+        $('#ele_cpyCompanyName').html('请选择');
+        $('.ele_cpyCompanyUl').html('');
+        $('#ele_cpyCompanyName').attr('data-value', '');
+    }
+});
+function toAjaxCompany(cpyObject, cpyId) {
+    $.ajax({
+        type: "post",
+        url: basePath + getCompanyListUrl,
+        async: true,
+        data: cpyObject,
+        success: function (data) {
+            if (data.success == true) {
+                var dataModule = data.dataObject;
+                if (cpyId == '') {
+                    var cypCompanyLi = '<li data-option="">请选择</li>';
+                    for (var i = 0; i < dataModule.length; i++) {
+                        cypCompanyLi += '<li data-option="' + dataModule[i].cpyId + '" data-cpyNumber="' + dataModule[i].cpyNumber + '">' + dataModule[i].cpyName + '</li>';
+                    }
+                } else {
+                    var cypCompanyLi = '<li data-option="">请选择</li>';
+                    for (var i = 0; i < dataModule.length; i++) {
+                        if (dataModule[i].cpyId == cpyId) {
+                            $('#ele_cpyCompanyName').html(dataModule[i].cpyId);
+                            cypCompanyLi += '<li data-option="' + dataModule[i].cpyId + '" data-cpyNumber="' + dataModule[i].cpyNumber + '" class="data-selected">' + dataModule[i].cpyName + '</li>';
+                        } else {
+                            cypCompanyLi += '<li data-option="' + dataModule[i].cpyId + '" data-cpyNumber="' + dataModule[i].cpyNumber + '">' + dataModule[i].cpyName + '</li>';
+                        }
+
+                    }
+                }
+                $('.ele_cpyCompanyUl').html(cypCompanyLi);
+                toUnbindEvent();
+            }
+        }
+    });
+}

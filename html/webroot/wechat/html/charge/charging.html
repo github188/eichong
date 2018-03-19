@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no"/>
+    <title>充电</title>
+    <script>
+        (function(){
+            var html = document.documentElement;
+            var hWidth = html.getBoundingClientRect().width;
+            html.style.fontSize = hWidth/15 + "px";
+        })()
+    </script>
+    <link rel="stylesheet" href="../../css/common.css">
+    <link rel="stylesheet" href="../../css/charging.css">
+</head>
+<body>
+<div class="chargingCar">
+    <div class="chargingStatus">正在充电</div>
+    <div class="car">
+        <img src="../../img/img_car3@2x.png" alt="">
+    </div>
+    <div class="statusValue" id="socValue"></div>
+</div>
+<div class="chargingDetail">
+    <ul class="detailList">
+        <li>
+            <span class="paramValue" id="timeCharge">00:00:00</span>
+            <span class="paramTip">&nbsp;&nbsp;已充时长</span>
+        </li>
+        <li>
+            <span class="paramValue" id="power">0.00</span>
+            <span class="paramTip">电量(度)</span>
+        </li>
+        <li>
+            <span class="paramValue" id="feeTotal">0.00</span>
+            <span class="paramTip">计费(元)</span>
+        </li>
+    </ul>
+</div>
+<div class="endBlock">
+    <div class="tip">实际金额以订单结算金额为准</div>
+    <div class="doneBtn" id="doneBtn">结束充电</div>
+</div>
+</body>
+<script src="../../js/jquery-2.1.0.js"></script>
+<script src="../../lib/layer_mobile/layer.js"></script>
+<script src="../../js/common.js"></script>
+<!--<script src="../../js/jweixin-1.0.02.js"></script>-->
+<script src="../../js/charging.js"></script>
+</html>

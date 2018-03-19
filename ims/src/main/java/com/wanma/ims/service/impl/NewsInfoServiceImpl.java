@@ -1,0 +1,103 @@
+package com.wanma.ims.service.impl;
+
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.wanma.ims.common.domain.NewsInfoDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.common.dto.ResultDTO;
+import com.wanma.ims.constants.ResultCodeConstants;
+import com.wanma.ims.constants.WanmaConstants;
+import com.wanma.ims.core.GlobalSystem;
+import com.wanma.ims.mapper.NewsInfoMapper;
+import com.wanma.ims.service.MultipartFileService;
+import com.wanma.ims.service.NewsInfoService;
+
+@Service("newsInfoService")
+public class NewsInfoServiceImpl implements NewsInfoService{
+	
+	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+	@Autowired
+	private NewsInfoMapper newsInfoMapper;
+	@Autowired
+	private MultipartFileService multipartFileService;
+	
+	@Override
+	public long selectNewsInfoCount(NewsInfoDO newsInfoDO) {
+		return newsInfoMapper.selectNewsInfoCount(newsInfoDO);
+	}
+
+	@Override
+	public List<NewsInfoDO> selectNewsInfoList(NewsInfoDO newsInfoDO) {
+		return newsInfoMapper.selectNewsInfoList(newsInfoDO);
+	}
+
+	@Override
+	@Transactional
+	public BaseResultDTO addNewsInfo(NewsInfoDO newsInfoDO, MultipartFile[] file, UserDO loginUser) throws Exception {
+		ResultDTO<String> result = new ResultDTO<>();
+		 if(!(newsInfoMapper.insertNewsInfo(newsInfoDO)>0)){
+			 return new BaseResultDTO(false, ResultCodeConstants.FAILED, "新增资讯失败");
+		  }
+		String referenceId =""+newsInfoDO.getNewsInfoId();
+		String results = multipartFileService.saveMultiFile(file, WanmaConstants.NEWSINFO_PIC, referenceId, false, loginUser);
+		LOGGER.error("newsInfoLogo："+GlobalSystem.getConfig("picture.service.uploadUrl")+"::"+GlobalSystem.getConfig("picture.service.scanUrl")+"::"+results);
+		if (!WanmaConstants.PROCESS_STATUS_OK.equals(results)) {
+			  throw new Exception("图片上传失败");
+		  }
+		return result;
+	}
+
+	@Override
+	@Transactional
+	public BaseResultDTO updateNewsInfo(NewsInfoDO newsInfoDO, MultipartFile[] file, UserDO loginUser) throws Exception {
+		ResultDTO<String> result = new ResultDTO<>();
+		String referenceId =""+newsInfoDO.getNewsInfoId();
+		if (file.length>0) {
+			//先删除原先的
+			List<String> oldFileUrlList = multipartFileService.getAllMultiUrl(WanmaConstants.NEWSINFO_PIC, referenceId);
+	        multipartFileService.deleteMulti(oldFileUrlList, WanmaConstants.NEWSINFO_PIC, referenceId, loginUser);
+	        String results = multipartFileService.saveMultiFile(file, WanmaConstants.NEWSINFO_PIC, referenceId, false, loginUser);
+	        LOGGER.error("newsInfoLogo："+GlobalSystem.getConfig("picture.service.uploadUrl")+"::"+GlobalSystem.getConfig("picture.service.scanUrl")+"::"+results);
+	        if (WanmaConstants.PROCESS_STATUS_OK.equals(results)) {
+				  if(!(newsInfoMapper.updateNewsInfo(newsInfoDO)>0)){
+					  return new BaseResultDTO(false, ResultCodeConstants.FAILED, "编辑资讯失败");
+				  }
+			  }else{
+				  throw new Exception("图片上传失败");
+			  }
+		}else{
+			 if(!(newsInfoMapper.updateNewsInfo(newsInfoDO)>0)){
+				 return new BaseResultDTO(false, ResultCodeConstants.FAILED, "编辑资讯失败");
+			  }
+		}
+		return result;
+	}
+
+	@Override
+	@Transactional
+	public boolean deleteNewsInfo(NewsInfoDO newsInfoDO) {
+		return newsInfoMapper.deleteNewsInfo(newsInfoDO)>0;
+	}
+
+	@Override
+	@Transactional
+	public boolean downNewsInfoById(NewsInfoDO newsInfoDO) {
+		return newsInfoMapper.downNewsInfoById(newsInfoDO);
+	}
+
+	@Override
+	public NewsInfoDO getNewsInfoById(NewsInfoDO newsInfoDO) {
+		return newsInfoMapper.getNewsInfoById(newsInfoDO);
+	}
+
+	
+
+}

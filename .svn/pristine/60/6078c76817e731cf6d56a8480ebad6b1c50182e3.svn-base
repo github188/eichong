@@ -1,0 +1,112 @@
+package com.wanma.ims.service;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
+
+import com.wanma.ims.common.domain.CompanyDO;
+import com.wanma.ims.common.domain.UserCardDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.dto.BaseResultDTO;
+
+
+public interface UserCardService {
+	/**
+	 * 获取卡列表数量
+	 * @author mb
+	 */
+	long getCardCount(UserCardDO userCard);
+	/**
+	 * 获取卡列表
+	 * @author mb
+	 */
+	List<UserCardDO> getCardList(UserCardDO userCard);
+	/**
+	 * 根据卡主键获取卡信息
+	* @author mb
+	 */
+	UserCardDO getUserCard(UserCardDO userCard);
+	/**
+	 * 挂失卡
+	 * @author mb
+	 */
+	boolean lossUserCard(UserCardDO userCard);
+	/**
+	 * 获取用户的所有卡
+	 * @author mb
+	 */
+	List<UserCardDO> getCardInfoByUserId(UserCardDO userCard);
+	/**
+	 * 冻结卡
+	* @author mb
+	 */
+	boolean frozenUserCard(UserCardDO userCard);
+	/**
+	 * 注销卡
+	* @author mb
+	 */
+	boolean cancelUserCard(UserCardDO userCard);
+	/**
+	 * 根据外卡号检查卡是否能绑定
+	* @author mb
+	 */
+	UserCardDO checkExternalCardNumber(UserCardDO userCard);
+
+	boolean bindCard(UserCardDO userCard, UserDO userDO);
+	
+	void disableCardByUserId(List<Long> userIdList,UserDO loginUser);
+	
+	void releaseCardByUserId(List<Long> userIdList,UserDO loginUser);
+	/**
+	 * 解挂卡
+	 * @author mb
+	 */
+	boolean relieveLossUserCard(UserCardDO userCard);
+	/**
+	 * 解冻卡
+	 * @author mb
+	 */
+	boolean relieveFrozenUserCard(UserCardDO userCard);
+	/**
+	 * 卡主页基本信息获取
+	* @author mb
+	 */
+	UserCardDO getCardBasicInfo(UserCardDO userCard);
+	/**
+	 * 导出卡信息
+	 * @param response
+	 * @param searchModel
+	 * @param loginUser
+	 * @return
+	 */
+	BaseResultDTO exportCard(HttpServletResponse response,
+			UserCardDO searchModel, UserDO loginUser);
+	/**
+	 * 公司主页 充点卡信息
+	 * @param response
+	 * @param searchModel
+	 * @param loginUser
+	 * @return
+	 */
+	Map<String, Integer> getCardForCompany(UserCardDO userCard);
+	/**
+	 * 卡列表批量挂失
+	 * @param response
+	 * @param searchModel
+	 * @param loginUser
+	 * @return
+	 */
+	void lossUserCardForList(UserCardDO userCard, String ids);
+	/**
+	 * 卡列表绑公司
+	 * @param response
+	 * @param searchModel
+	 * @param loginUser
+	 * @param tradeType 
+	 * @return
+	 */
+	BaseResultDTO bindCompanyForCard(String ids, CompanyDO company, UserDO loginUser, Integer tradeType);
+
+
+}

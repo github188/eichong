@@ -1,0 +1,8 @@
+package com.wanma.ims.model;
+
+/**
+ * 渠道用户实体类 
+ */
+public class UserCompanyDO {
+
+}

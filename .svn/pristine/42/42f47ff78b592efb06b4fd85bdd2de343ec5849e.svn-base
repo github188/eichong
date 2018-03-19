@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.ConfigContentMapper">
+    <resultMap id="resultConfigContent" type="ConfigContentDO">
+        <id column="pk_ConfigContent" property="id"/>
+        <result column="coCo_ConfigParameterID" property="configParameterId"/>
+        <result column="coCo_Content" property="content"/>
+        <result column="coCo_ConfigPStatus" property="status"/>
+        <result column="coCo_Createdate" property="createTime"/>
+        <result column="coCo_Updatedate" property="modifyTime"/>
+        <result column="coCo_memo" property="memo"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        pk_ConfigContent, coCo_ConfigParameterID, coCo_Content, coCo_ConfigPStatus, coCo_Createdate,
+        coCo_Updatedate, coCo_memo
+    </sql>
+
+    <select id="selectById" parameterType="Integer" resultMap="resultConfigContent">
+        select
+        <include refid="Base_Column_List"/>
+        from tbl_configcontent
+        where pk_ConfigContent = #{id}
+    </select>
+
+    <sql id="condition">
+        <where>
+            <if test="id != null">
+                AND pk_ConfigContent = #{id}
+            </if>
+            <if test="configParameterId != null">
+                AND coCo_ConfigParameterID = #{configParameterId}
+            </if>
+        </where>
+    </sql>
+
+    <select id="getConfigContentList" parameterType="ConfigContentDO" resultMap="resultConfigContent">
+        select
+        <include refid="Base_Column_List"/>
+        from tbl_configcontent
+        <include refid="condition"/>
+    </select>
+
+    <select id="getConfigContentListByParameterIds" parameterType="List" resultMap="resultConfigContent">
+        select
+        <include refid="Base_Column_List"/>
+        from tbl_configcontent
+        where 1 = 1
+        <if test="configParameterIds != null and configParameterIds.size() > 0">
+            and coCo_ConfigParameterID in
+            <foreach collection="configParameterIds" item="configParameterId" open="(" close=")" separator=",">
+                #{configParameterId}
+            </foreach>
+        </if>
+    </select>
+
+    <delete id="deleteById" parameterType="Integer">
+        DELETE FROM tbl_configcontent
+        WHERE pk_ConfigContent = #{id}
+    </delete>
+
+    <insert id="insertConfigContent" parameterType="ConfigContentDO">
+        INSERT INTO tbl_configcontent (pk_ConfigContent, coCo_ConfigParameterID,
+                                       coCo_Content, coCo_ConfigPStatus, coCo_Createdate,
+                                       coCo_Updatedate, coCo_memo)
+        VALUES (#{id}, #{configParameterId},
+                #{content}, #{status},
+                #{createTime},
+                #{modifyTime}, #{memo})
+    </insert>
+
+    <update id="updateSelective" parameterType="ConfigContentDO">
+        update tbl_configcontent
+        <set>
+            <if test="configParameterId != null">
+                coCo_ConfigParameterID = #{configParameterId},
+            </if>
+            <if test="content != null">
+                coCo_Content = #{content},
+            </if>
+            <if test="status != null">
+                coCo_ConfigPStatus = #{status},
+            </if>
+            <if test="createTime != null">
+                coCo_Createdate = #{createTime},
+            </if>
+            <if test="modifyTime != null">
+                coCo_Updatedate = #{modifyTime},
+            </if>
+            <if test="memo != null">
+                coCo_memo = #{memo},
+            </if>
+        </set>
+        where pk_ConfigContent = #{id}
+    </update>
+</mapper>

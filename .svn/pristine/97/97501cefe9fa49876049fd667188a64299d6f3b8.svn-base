@@ -1,0 +1,200 @@
+package com.wanma.ims.controller.config;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.wanma.ims.common.domain.LevelDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.domain.base.Pager;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.constants.ResultCodeConstants;
+import com.wanma.ims.controller.BaseController;
+import com.wanma.ims.controller.result.JsonResult;
+import com.wanma.ims.controller.sys.MenuController;
+import com.wanma.ims.service.LevelService;
+
+/**
+ * 公司管理-等级管理
+ */
+@Controller
+@RequestMapping("/manage/config/level")
+public class LevelController extends BaseController{
+	private static Logger log = Logger.getLogger(MenuController.class);
+	@Autowired
+	private LevelService levelService;
+	
+	/**
+	 * 等级列表
+	 * @author mb
+	 * @param 
+	 * @return
+	 */
+	@RequestMapping(value = "/getLevelList")
+	@ResponseBody
+	public void getLevelList(@ModelAttribute("pager") Pager pager,
+			@ModelAttribute LevelDO level,HttpServletRequest request) {
+		JsonResult result = new JsonResult();
+		List<LevelDO> levelList = null;
+		long total = 0;
+		try {
+			total = levelService.getLevelCount(level);
+			if (total <= pager.getOffset()) {
+				pager.setPageNo(1L);
+			}
+			level.setPager(pager);
+			levelList = levelService.getLevelList(level);
+			pager.setTotal(total);
+			result.setDataObject(levelList);
+			result.setPager(pager);
+		} catch (Exception e) {
+			log.error(this.getClass()+".getLevelList() error:",e);
+		}
+		responseJson(result);
+		
+	}
+	/**
+	 * 删除等级
+	 * @author mb
+	 * @param 
+	 * @return
+	 */
+	@RequestMapping(value = "/removeLevel")
+	@ResponseBody
+	public void removeLevel(@ModelAttribute LevelDO level,HttpServletRequest request) {
+		UserDO loginUser = getCurrentLoginUser();
+		JsonResult result = new  JsonResult() ;
+		try {
+			 BaseResultDTO resultDTO =levelService.removeLevel(level,loginUser);
+			if (resultDTO.isFailed()) {
+                responseJson( new JsonResult(false, resultDTO.getResultCode(), resultDTO.getErrorDetail()));
+            }
+		} catch (Exception e) {
+			log.error(this.getClass()+".removeLevel() error:",e);
+			responseJson(new JsonResult(false,ResultCodeConstants.EXCEPTION,"删除等级失败"));
+		}
+		responseJson(result);
+	}
+	/**
+	 * 设为默认
+	 * @author mb
+	 * @param 
+	 * @return
+	 */
+	@RequestMapping(value = "/setLevelDefault")
+	@ResponseBody
+	public void setDefault(@ModelAttribute LevelDO level,HttpServletRequest request) {
+		UserDO loginUser = getCurrentLoginUser();
+		JsonResult result = new  JsonResult() ;
+		level.setModifier(loginUser.getUserAccount());
+		if(!levelService.setLevelDefault(level)){
+			responseJson(new JsonResult(false,ResultCodeConstants.EXCEPTION,"设置默认失败"));
+			return;
+		}
+		responseJson(result);
+	}
+	/**
+	 * 判断序列是否存在
+	 * @author mb
+	 * @param 
+	 * @return
+	 */
+	@RequestMapping(value = "/checkLevelCode")
+	@ResponseBody
+	public void checkLevelCode(@ModelAttribute LevelDO level,HttpServletRequest request) {
+		JsonResult result = new  JsonResult() ;
+		if(!levelService.checkLevelCode(level)){
+			responseJson(new JsonResult(false,ResultCodeConstants.EXCEPTION,"序列已存在"));
+			return;
+		}
+		responseJson(result);
+	}
+	/**
+	 * 判断等级名称是否存在
+	 * @author mb
+	 * @param 
+	 * @return
+	 */
+	@RequestMapping(value = "/checkLevelName")
+	@ResponseBody
+	public void checkLevelName(@ModelAttribute LevelDO level,HttpServletRequest request) {
+		JsonResult result = new  JsonResult() ;
+		if(!levelService.checkLevelName(level)){
+			responseJson(new JsonResult(false,ResultCodeConstants.EXCEPTION,"等级名称已存在"));
+			return;
+		}
+		responseJson(result);
+	}
+	/**
+	 * 新增等级
+	 * @author mb
+	 * @param 
+	 * @return
+	 */
+	@RequestMapping(value = "/addLevel")
+	@ResponseBody
+	public void addLevel(@ModelAttribute LevelDO level,HttpServletRequest request) {
+		JsonResult result = new  JsonResult() ;
+		try {
+			UserDO loginUser = getCurrentLoginUser();
+			level.setCreator(loginUser.getUserAccount());
+			level.setModifier(loginUser.getUserAccount());
+			if(level.getCpyId()==null||StringUtils.isBlank(level.getLevelSeq())||StringUtils.isBlank(level.getLevelName())){
+				responseJson(new JsonResult(false,ResultCodeConstants.FAILED,"请求参数不全"));
+				return;
+			}
+			if(!levelService.checkLevelName(level)){
+				responseJson(new JsonResult(false,ResultCodeConstants.FAILED,"等级名称已存在"));
+				return;
+			}
+			if(levelService.getLevelByCpyId(level.getCpyId()).size()==0&&level.getIsDefault()==0){
+				responseJson(new JsonResult(false,ResultCodeConstants.FAILED,"该公司第一次设置等级必须为默认"));
+				return;
+			}
+			if(levelService.getLevelByCpyId(level.getCpyId()).size()>0&&level.getIsDefault()==1&&StringUtils.isEmpty(level.getIsCover())){
+				responseJson(new JsonResult(false,ResultCodeConstants.ERROR_MSG_LEVEL_ISCOVER,"覆盖默认等级?"));
+				return;
+			}
+			if(!levelService.checkLevelCode(level)){
+				responseJson(new JsonResult(false,ResultCodeConstants.FAILED,"序列已存在"));
+				return;
+			}
+			if(!levelService.addLevel(level)){
+				responseJson(new JsonResult(false,ResultCodeConstants.EXCEPTION,"新增等级失败"));
+				return;
+			}
+			responseJson(result);
+		} catch (Exception e) {
+			log.error(this.getClass()+".addLevel() error:",e);
+		}
+		
+	}
+	/**
+	 * 根据公司id 查询等级
+	 * @author mb
+	 * @param 
+	 * @return
+	 */
+	@RequestMapping(value = "/getLevelByCpyId")
+	@ResponseBody
+	public void getLevelByCpyId(@ModelAttribute LevelDO level,HttpServletRequest request) {
+		JsonResult result = new JsonResult();
+		List<LevelDO> levelList = null;
+		try {
+			levelList = levelService.getLevelByCpyId(level.getCpyId());
+			result.setDataObject(levelList);
+		} catch (Exception e) {
+			log.error(this.getClass()+".getLevelList() error:",e);
+		}
+		responseJson(result);
+		
+	}
+}

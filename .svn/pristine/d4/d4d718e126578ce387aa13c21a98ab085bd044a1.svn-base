@@ -1,0 +1,21 @@
+package com.wanma.ims.service;
+
+import com.wanma.ims.common.domain.OrderDO;
+
+
+/**
+ * 推送记录
+ * @author bingo
+ * @date 2017-12-15
+ */
+public interface JPushRecordService {
+
+	/**
+	 * <p>Description: 通过订单推送记录</p>
+	 * @param
+	 * @param checkExistence 是否需要存在性验证
+	 * @author bingo
+	 * @date 2017-12-15
+	 */
+	public void doJPushRecordForBatch(OrderDO orderDO, boolean checkExistence) throws Exception;
+}

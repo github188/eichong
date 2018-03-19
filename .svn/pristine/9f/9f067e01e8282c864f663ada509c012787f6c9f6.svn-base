@@ -1,0 +1,19 @@
+package com.wanma.ims.service.impl;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.wanma.ims.model.LevelDO;
+import com.wanma.ims.service.LevelService;
+
+@Service
+public class LevelServiceImpl implements LevelService{
+
+	@Override
+	public List<LevelDO> getLevelListByCpyId(Long cpyId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

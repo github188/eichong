@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/style.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/parkingLock/add_parkingLock.css"/>
+    <title>编辑地锁</title>
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="container-fluid">
+        <div class="row">
+        </div>
+        <div class="row">
+            <div class="col-sm-12" style="padding: 0">
+                <div class="ibox float-e-margins">
+                    <div class="">
+                        <div class="ibox-content">
+                            <div class="add_userBlock">
+                                <div class="add_greyBlock">
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">地锁编号<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="code" id="ps_code" class="commonStyle"
+                                                   placeholder="请输入地锁编号" readonly="readonly"/>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="toLockNumber">
+
+                                        </div>
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">供应商<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8">
+                                            <div class=" col-sm-3 col-xs-4 model-select-box" style="width: 100%">
+                                                <div class="model-select-text lockScopeBlock" data-value="" id="parkingLockPlatformHtml"></div>
+                                                <span class="downRow lockScopeBlock clickRotateSpan"></span>
+                                                <ul class="model-select-option supplierLockUl">
+                                                    <li class="seleced" data-option="0">电喵</li>
+                                                    <li data-option="1">慧泊金</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="supplierLock">
+
+                                        </div>
+                                    </div>
+
+                                    <!--城市-->
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">城市<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8">
+                                            <div class=" col-sm-4 col-xs-4  model-select-box" style="border-right:0;">
+                                                <div class="model-select-text cpyProvinceBlock" data-value="" id="provinceCodeHtml">请选择省份</div>
+                                                <span class="downRow cpyProvinceBlock clickRotateSpan"></span>
+                                                <input type="text" name="provinceCode" hidden="hidden" id="" value="" />
+                                                <ul class="model-select-option provinceUl">
+
+                                                </ul>
+                                            </div>
+                                            <div class=" col-sm-4 col-xs-4 col-sm-offset-0 model-select-box" style="border-right:0;">
+                                                <div class="model-select-text cpyCityBlock" data-value="" id="cityCodeHtml">请选择市</div>
+                                                <span class="downRow cpyCityBlock clickRotateSpan"></span>
+                                                <input type="text" name="cityCode" hidden="hidden" id="" value="" id="cpyCity" />
+                                                <ul class="model-select-option cityUl">
+
+                                                </ul>
+                                            </div>
+                                            <div class=" col-sm-4 col-xs-4 col-sm-offset-0 model-select-box">
+                                                <div class="model-select-text cpyAreaBlock" data-value="" id="areaCodeHtml">请选择区/县</div>
+                                                <span class="downRow cpyAreaBlock clickRotateSpan"></span>
+                                                <input type="text" name="areaCode" hidden="hidden" value="" id="" />
+                                                <ul class="model-select-option areaUl">
+
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="cpyCityTip">
+
+                                        </div>
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">充电点<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="powerStationName" id="lock_powerStationName" class="commonStyle"
+                                                   placeholder="充电点" readonly="readonly"/>
+                                            <input type="text" name="powerStationId" id="powerStationId" class="commonStyle"
+                                                   placeholder="" hidden="hidden" value=""/>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="changeLock">
+                                            <span class="replaceLock" id="replacePowerStation">更换</span>
+                                        </div>
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">具体地址<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="address" id="address" class="commonStyle"
+                                                   placeholder="请输入具体地址"/>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="addressLockTip">
+
+                                        </div>
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="col-sm-12 comTitle">对接key<span class="errorStyle">*</span></div>
+                                        <div class="col-sm-8 comHeight">
+                                            <input type="text" name="platformLockKey" id="platformLockKey" class="commonStyle" readonly="readonly"/>
+                                        </div>
+                                        <div class="col-sm-4 errorStyle" id="platformLockKeyTip">
+
+                                        </div>
+                                    </div>
+                                    <!--按钮组合-->
+                                    <div class="saveBtn commonBtn" id="addSaveBtnLock" onclick="saveParkingLock()">保存</div>
+                                    <div class="quitBtn commonBtn" id="addGobackLock">取消</div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--绑定充电点-->
+<div class="bindPile bindVinBlock" id="bindParkingLock" style="display: none;">
+    <form id="powerstationListForm">
+        <div class="bindPileSelect">
+            <input type="text" name="powerstationName" placeholder="充电点名称" id="ps_powerstationName"/>
+            <span class="selectBtn" onclick="powerStationListSearch()">查询</span>
+            <!--省份-->
+            <div class="model-select-box">
+                <div class="model-select-text powerStationProvinceBlock" data-value="" id="powerStationProvinceHtml">省份</div>
+                <span class="downRow powerStationProvinceBlock clickRotateSpan"></span>
+                <input type="text" name="provinceCode" hidden="hidden" id="ps_provinceCode" value="" />
+                <ul class="model-select-option ps_provinceUl" id="electricPower">
+                    <li data-option="" class="seleced">省份</li>
+                </ul>
+            </div>
+            <!--城市-->
+            <div class=" model-select-box">
+                <div class="model-select-text powerStationCityBlock" data-value="" id="powerStationCityHtml">城市</div>
+                <span class="downRow powerStationCityBlock clickRotateSpan"></span>
+                <input type="text" name="cityCode" id="ps_cityCode" value="" hidden="hidden"/>
+                <ul class="model-select-option ps_cityUl" id="electricChargeMode">
+                    <li data-option="" class="seleced">城市</li>
+
+                </ul>
+            </div>
+            <!--区-->
+            <div class="model-select-box">
+                <div class="model-select-text powerStationAreaBlock" data-value="" id="powerStationAreaHtml">区</div>
+                <span class="downRow powerStationAreaBlock clickRotateSpan"></span>
+                <input type="text" name="areaCode" id="ps_areaCode" value="" hidden="hidden"/>
+                <ul class="model-select-option ps_areaUl">
+                    <li data-option="" class="seleced">区</li>
+
+                </ul>
+            </div>
+        </div>
+    </form>
+    <div class="bindPileBlock table-responsive">
+        <table class="bindPileTable table">
+            <thead>
+            <tr class="active">
+                <th>选择</th>
+                <!--<th><input type="checkbox" name="" class="selAllVinCode" value="" /></th>-->
+                <th>名称</th>
+                <th>地址</th>
+            </tr>
+            </thead>
+            <tbody id="bindPowerStationTbody">
+
+            </tbody>
+        </table>
+    </div>
+    <div class="fixedPagination">
+        <div id="powerstationListPage" class="pagination myPagination">
+        </div>
+        <div class="sureBindBtn cursor">确定</div>
+    </div>
+</div>
+
+</body>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/parkingLock/parkingLock_edit.js" type="text/javascript" charset="utf-8"></script>
+</html>

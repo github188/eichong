@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.web.dao.WebPurchasehistoryMapper">
+
+	<resultMap id="tblPurchasehistoryResultMap" type="TblPurchasehistory">
+		<id property="pkPurchasehistory" column="pk_PurchaseHistory" />
+		<result property="puhiType" column="puHi_Type" />
+		<result property="puhiPurchasehistorytime" column="puHi_PurchaseHistoryTime" />
+		<result property="puhiMonetary" column="puHi_Monetary" />
+		<result property="puhiConsumerremark" column="puHi_ConsumerRemark" />
+		<result property="puhiCreatedate" column="puHi_Createdate" />
+		<result property="puhiUpdatedate" column="puHi_Updatedate" />
+		<result property="puhiPurchasecontent" column="puHi_PurchaseContent" />
+		<result property="puhiUserid" column="puHi_UserId" />
+		<result property="puhiChargeType" column="puhi_ChargeType" />
+	</resultMap>
+	<resultMap id="pageResultMap"  type="java.util.HashMap" extends="tblPurchasehistoryResultMap"></resultMap>
+	<resultMap id="findResultMap"  type="java.util.HashMap" extends="tblPurchasehistoryResultMap"></resultMap>
+	<resultMap id="findMap" type="java.util.HashMap"></resultMap>
+
+	<insert id="insert" parameterType="TblPurchasehistory" useGeneratedKeys="true" keyProperty="pkPurchasehistory">
+	   insert into tbl_PurchaseHistory (
+	     pk_PurchaseHistory,
+	     puHi_Type,
+	     puHi_PurchaseHistoryTime,
+	     puHi_Monetary,
+	     puHi_ConsumerRemark,
+	     puHi_Createdate,
+	     puHi_Updatedate,
+	     puHi_PurchaseContent,
+	     puHi_UserId,
+	     puhi_ChargeType
+	   )values (
+	     #{pkPurchasehistory},
+	     #{puhiType},
+	     #{puhiPurchasehistorytime},
+	     #{puhiMonetary},
+	     #{puhiConsumerremark},
+	     #{puhiCreatedate},
+	     #{puhiUpdatedate},
+	     #{puhiPurchasecontent},
+	     #{puhiUserid},
+	     #{puhiChargeType}
+	   )
+	</insert>
+
+	<update id="update" parameterType="TblPurchasehistory">
+	   update tbl_PurchaseHistory set
+	     pk_PurchaseHistory=#{pkPurchasehistory},
+	     puHi_Type=#{puhiType},
+	     puHi_PurchaseHistoryTime=#{puhiPurchasehistorytime},
+	     puHi_Monetary=#{puhiMonetary},
+	     puHi_ConsumerRemark=#{puhiConsumerremark},
+	     puHi_Createdate=#{puhiCreatedate},
+	     puHi_Updatedate=#{puhiUpdatedate},
+	     puHi_PurchaseContent=#{puhiPurchasecontent},
+	     puHi_UserId=#{puhiUserid}
+	     puhi_ChargeType=#{puhiChargeType}
+	   where 
+	    pk_PurchaseHistory=#{pkPurchasehistory} 
+	</update>
+
+	<delete id="delete" parameterType="map">
+	   delete from 
+	     tbl_PurchaseHistory 
+	   where 
+	    pk_PurchaseHistory=#{pkPurchasehistory} 
+	</delete>
+
+	<select id="get" parameterType="map" resultMap="tblPurchasehistoryResultMap">
+	   select 
+	    pk_PurchaseHistory,
+	    puHi_Type,
+	    puHi_PurchaseHistoryTime,
+	    puHi_Monetary,
+	    puHi_ConsumerRemark,
+	    puHi_Createdate,
+	    puHi_Updatedate,
+	    puHi_PurchaseContent,
+	    puHi_UserId,
+	    puhi_ChargeType
+	   from tbl_PurchaseHistory
+	   where 
+	    pk_PurchaseHistory=#{pkPurchasehistory} 
+	</select>
+
+	<select id="findOne" parameterType="map" resultMap="findResultMap">
+	   select 
+	    pk_PurchaseHistory,
+	    puHi_Type,
+	    puHi_PurchaseHistoryTime,
+	    puHi_Monetary,
+	    puHi_ConsumerRemark,
+	    puHi_Createdate,
+	    puHi_Updatedate,
+	    puHi_PurchaseContent,
+	    puHi_UserId,
+	    puhi_ChargeType
+	   from tbl_PurchaseHistory
+	   where 
+	    pk_PurchaseHistory=#{pkPurchasehistory} 
+	</select>
+
+	<select id="find" parameterType="map" resultMap="tblPurchasehistoryResultMap">
+	   select 
+	     pk_PurchaseHistory,
+	     puHi_Type,
+	     puHi_PurchaseHistoryTime,
+	     puHi_Monetary,
+	     puHi_ConsumerRemark,
+	     puHi_Createdate,
+	     puHi_Updatedate,
+	     puHi_PurchaseContent,
+	     puHi_UserId,
+	     puhi_ChargeType
+	   from tbl_PurchaseHistory
+	   <where>
+	     <if test="pkPurchasehistory != null">
+	        pk_PurchaseHistory=#{pkPurchasehistory}
+	     </if>
+	     <if test="puhiType != null">
+	        and puHi_Type=#{puhiType}
+	     </if>
+	     <if test="puhiPurchasehistorytime != null">
+	        and puHi_PurchaseHistoryTime=#{puhiPurchasehistorytime}
+	     </if>
+	     <if test="puhiMonetary != null">
+	        and puHi_Monetary=#{puhiMonetary}
+	     </if>
+	     <if test="puhiConsumerremark != null">
+	        and puHi_ConsumerRemark=#{puhiConsumerremark}
+	     </if>
+	     <if test="puhiCreatedate != null">
+	        and puHi_Createdate=#{puhiCreatedate}
+	     </if>
+	     <if test="puhiUpdatedate != null">
+	        and puHi_Updatedate=#{puhiUpdatedate}
+	     </if>
+	     <if test="puhiPurchasecontent != null">
+	        and puHi_PurchaseContent=#{puhiPurchasecontent}
+	     </if>
+	     <if test="puhiUserid != null">
+	        and puHi_UserId=#{puhiUserid}
+	     </if>
+	   </where>
+	</select>
+	
+	<select id="page" parameterType="map" resultMap="pageResultMap">
+	   select 
+	     pk_PurchaseHistory,
+	     puHi_Type,
+	     puHi_PurchaseHistoryTime,
+	     puHi_Monetary,
+	     puHi_ConsumerRemark,
+	     puHi_Createdate,
+	     puHi_Updatedate,
+	     puHi_PurchaseContent,
+	     puHi_UserId,
+	     puhi_ChargeType
+	   from tbl_PurchaseHistory
+	   <where>
+	     <if test="pkPurchasehistory != null">
+	        pk_PurchaseHistory=#{pkPurchasehistory}
+	     </if>
+	     <if test="puhiType != null">
+	        and puHi_Type=#{puhiType}
+	     </if>
+	     <if test="puhiPurchasehistorytime != null">
+	        and puHi_PurchaseHistoryTime=#{puhiPurchasehistorytime}
+	     </if>
+	     <if test="puhiMonetary != null">
+	        and puHi_Monetary=#{puhiMonetary}
+	     </if>
+	     <if test="puhiConsumerremark != null">
+	        and puHi_ConsumerRemark=#{puhiConsumerremark}
+	     </if>
+	     <if test="puhiCreatedate != null">
+	        and puHi_Createdate=#{puhiCreatedate}
+	     </if>
+	     <if test="puhiUpdatedate != null">
+	        and puHi_Updatedate=#{puhiUpdatedate}
+	     </if>
+	     <if test="puhiPurchasecontent != null">
+	        and puHi_PurchaseContent=#{puhiPurchasecontent}
+	     </if>
+	     <if test="puhiUserid != null">
+	        and puHi_UserId=#{puhiUserid}
+	     </if>
+	   </where>
+	</select>
+	<select id="findPage" parameterType="map" resultMap="tblPurchasehistoryResultMap">
+	   select 
+	     pk_PurchaseHistory,
+	     puHi_Type,
+	     puHi_PurchaseHistoryTime,
+	     puHi_Monetary,
+	     puHi_ConsumerRemark,
+	     puHi_Createdate,
+	     puHi_Updatedate,
+	     puHi_PurchaseContent,
+	     puHi_UserId,
+	     puhi_ChargeType
+	   from tbl_PurchaseHistory
+	   where puHi_UserId=#{userId}
+		 and puHi_PurchaseHistoryTime between #{beginTime} and #{endTime}
+	   order by 
+	   	 puHi_PurchaseHistoryTime desc
+	   limit #{pageNumber},#{pageNum}
+	</select>
+	<select id="countConsume" parameterType="map" resultType="long">
+	   select count(*)
+	   from tbl_PurchaseHistory
+	   where puHi_UserId=#{userId}
+		 and puHi_PurchaseHistoryTime between #{beginTime} and #{endTime}
+	</select>
+	
+	<select id="findWallet" parameterType="map" resultMap="findMap">
+	   select * from (
+		  select 
+		    puHi_Type recordTitle,
+		    puHi_PurchaseHistoryTime recordTime,
+		    puHi_Monetary recordMoney,
+		    puHi_PurchaseContent recordContent
+		 from 
+		 	tbl_PurchaseHistory
+		 where 
+		 	puHi_UserId=#{userId}
+		
+		 <if test="(beginTime != null ) or (endTime != null )">
+		  and 	puHi_PurchaseHistoryTime between #{beginTime} and #{endTime}
+		 </if>
+		 <if test="walletType != null and walletType!=0">
+	        and puHi_Type=#{walletType}
+	     </if>	
+	     <!-- 个人用户没有收益一说 -->
+		 <!-- union all
+		 select 
+	     	5 recordTitle,
+	     	ear_PurchaseHistoryTime recordTime,
+	     	ear_Monetary recordMoney,
+	     	ear_Content recordContent
+	     from 
+	     	tbl_Earnings
+	     where 
+	     	ear_UserId=#{userId}
+		
+		 <if test="(beginTime != null) or (endTime != null)">
+		  and 	ear_PurchaseHistoryTime between #{beginTime} and #{endTime}
+		 </if>	
+		 <if test="walletType != null and walletType!=5">
+	        and ear_Type=#{walletType}
+	     </if>	 -->
+	   ) as walletRecord
+	   order by recordTime desc
+	   limit #{pageNumber},#{pageNum}
+	</select>
+	<select id="countWallet" parameterType="map" resultType="long">
+	   select count(*) from (
+		 select 
+		    puHi_PurchaseHistoryTime recordTime
+		 from
+		  	tbl_PurchaseHistory
+		 where
+			puHi_UserId=#{userId}
+			 <if test="(beginTime != null) or (endTime != null)">
+		 and puHi_PurchaseHistoryTime between #{beginTime} and #{endTime}
+		 	</if>
+		 <if test="walletType != null  and walletType!=0 ">
+	        and puHi_Type=#{walletType}
+	     </if>
+	     <!-- 暂时去掉收益 -->
+		 <!-- union all
+		 select 
+	     	ear_PurchaseHistoryTime recordTime
+	     from 
+	     	tbl_Earnings
+	     where
+	     	ear_UserId=#{userId}
+	     	 <if test="(beginTime != null) or (endTime != null)">
+		 and ear_PurchaseHistoryTime between #{beginTime} and #{endTime}
+		 	</if>
+		 <if test="walletType != null and walletType!=5">
+	        and ear_Type=#{walletType}
+	     </if> -->		
+	  ) as walletRecord
+	</select>
+	
+	<select id="getPurchaseHistory" parameterType="map" resultType="long">
+	   select 
+	    count(1)
+	   from tbl_PurchaseHistory
+	   <where>
+	   		1=1 
+	     <if test="puhiType != null">
+	        and puHi_Type=#{puhiType}
+	     </if>
+	     <if test="puhiMonetary != null">
+	        and puHi_Monetary=#{puhiMonetary}
+	     </if>
+	     <if test="puhiConsumerremark != null">
+	        and puHi_ConsumerRemark=#{puhiConsumerremark}
+	     </if>
+	     <if test="puhiUserid != null">
+	        and puHi_UserId=#{puhiUserid}
+	     </if>
+	     <if test="act_beginTime != null">
+	        and  <![CDATA[puHi_PurchaseHistoryTime <= #{act_beginTime} ]]>
+	     </if>
+	   </where>
+	</select>
+</mapper> 

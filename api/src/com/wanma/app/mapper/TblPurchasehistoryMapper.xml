@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.app.dao.TblPurchasehistoryMapper">
+
+	<resultMap id="tblPurchasehistoryResultMap" type="TblPurchasehistory">
+		<id property="pkPurchasehistory" column="pk_PurchaseHistory" />
+		<result property="puhiType" column="puHi_Type" />
+		<result property="puhiPurchasehistorytime" column="puHi_PurchaseHistoryTime" />
+		<result property="puhiMonetary" column="puHi_Monetary" />
+		<result property="puhiConsumerremark" column="puHi_ConsumerRemark" />
+		<result property="puhiCreatedate" column="puHi_Createdate" />
+		<result property="puhiUpdatedate" column="puHi_Updatedate" />
+		<result property="puhiPurchasecontent" column="puHi_PurchaseContent" />
+		<result property="puhiUserid" column="puHi_UserId" />
+	</resultMap>
+	<resultMap id="pageResultMap"  type="java.util.HashMap" extends="tblPurchasehistoryResultMap"></resultMap>
+	<resultMap id="findResultMap"  type="java.util.HashMap" extends="tblPurchasehistoryResultMap"></resultMap>
+
+	<insert id="insert" parameterType="TblPurchasehistory">
+	   insert into tbl_PurchaseHistory (
+	     puHi_Type,
+	     puHi_PurchaseHistoryTime,
+	     puHi_Monetary,
+	     puHi_ConsumerRemark,
+	     puHi_Createdate,
+	     puHi_PurchaseContent,
+	     puHi_ChargeType,
+	     puHi_UserId
+	   )values (
+	     #{puhiType},
+	     #{puhiPurchasehistorytime},
+	     #{puhiMonetary},
+	     #{puhiConsumerremark},
+	     #{puhiCreatedate},
+	     #{puhiPurchasecontent},
+	     #{chargeType},
+	     #{puhiUserid}
+	   )
+	</insert>
+
+	<update id="update" parameterType="TblPurchasehistory">
+	   update tbl_PurchaseHistory set
+	     puHi_Type=#{puhiType},
+	     puHi_PurchaseHistoryTime=#{puhiPurchasehistorytime},
+	     puHi_Monetary=#{puhiMonetary},
+	     puHi_ConsumerRemark=#{puhiConsumerremark},
+	     puHi_Createdate=#{puhiCreatedate},
+	     puHi_Updatedate=#{puhiUpdatedate},
+	     puHi_PurchaseContent=#{puhiPurchasecontent},
+	     puHi_UserId=#{puhiUserid}
+	   where 
+	    pk_PurchaseHistory=#{pkPurchasehistory} 
+	</update>
+
+	<delete id="delete" parameterType="map">
+	   delete from 
+	     tbl_PurchaseHistory 
+	   where 
+	    pk_PurchaseHistory=#{pkPurchasehistory} 
+	</delete>
+
+	<select id="get" parameterType="map" resultMap="tblPurchasehistoryResultMap">
+	   select 
+	    pk_PurchaseHistory,
+	    puHi_Type,
+	    puHi_PurchaseHistoryTime,
+	    puHi_Monetary,
+	    puHi_ConsumerRemark,
+	    puHi_Createdate,
+	    puHi_Updatedate,
+	    puHi_PurchaseContent,
+	    puHi_UserId
+	   from tbl_PurchaseHistory
+	   where 
+	    pk_PurchaseHistory=#{pkPurchasehistory} 
+	</select>
+
+	<select id="findOne" parameterType="map" resultMap="findResultMap">
+	   select 
+	    pk_PurchaseHistory,
+	    puHi_Type,
+	    puHi_PurchaseHistoryTime,
+	    puHi_Monetary,
+	    puHi_ConsumerRemark,
+	    puHi_Createdate,
+	    puHi_Updatedate,
+	    puHi_PurchaseContent,
+	    puHi_UserId
+	   from tbl_PurchaseHistory
+	   where 
+	    pk_PurchaseHistory=#{pkPurchasehistory} 
+	</select>
+
+	<select id="find" parameterType="map" resultMap="tblPurchasehistoryResultMap">
+	   select 
+	     pk_PurchaseHistory,
+	     puHi_Type,
+	     puHi_PurchaseHistoryTime,
+	     puHi_Monetary,
+	     puHi_ConsumerRemark,
+	     puHi_Createdate,
+	     puHi_Updatedate,
+	     puHi_PurchaseContent,
+	     puHi_UserId
+	   from tbl_PurchaseHistory
+	   <where>
+	     <if test="pkPurchasehistory != null">
+	        pk_PurchaseHistory=#{pkPurchasehistory}
+	     </if>
+	     <if test="puhiType != null">
+	        and puHi_Type=#{puhiType}
+	     </if>
+	     <if test="puhiPurchasehistorytime != null">
+	        and puHi_PurchaseHistoryTime=#{puhiPurchasehistorytime}
+	     </if>
+	     <if test="puhiMonetary != null">
+	        and puHi_Monetary=#{puhiMonetary}
+	     </if>
+	     <if test="puhiConsumerremark != null">
+	        and puHi_ConsumerRemark=#{puhiConsumerremark}
+	     </if>
+	     <if test="puhiCreatedate != null">
+	        and puHi_Createdate=#{puhiCreatedate}
+	     </if>
+	     <if test="puhiUpdatedate != null">
+	        and puHi_Updatedate=#{puhiUpdatedate}
+	     </if>
+	     <if test="puhiPurchasecontent != null">
+	        and puHi_PurchaseContent=#{puhiPurchasecontent}
+	     </if>
+	     <if test="puhiUserid != null">
+	        and puHi_UserId=#{puhiUserid}
+	     </if>
+	     <if test="starttime != null">
+	     	and puHi_Createdate between #{starttime} and #{endtime}
+	     </if>
+	   </where>
+	   order by puHi_Createdate desc
+	</select>
+	
+	<select id="myBills" parameterType="map" resultMap="tblPurchasehistoryResultMap">
+	   select 
+	     pk_PurchaseHistory,
+	     puHi_Type,
+	     puHi_PurchaseHistoryTime,
+	     puHi_Monetary,
+	     puHi_ConsumerRemark,
+	     puHi_Createdate,
+	     puHi_Updatedate,
+	     puHi_PurchaseContent,
+	     puHi_UserId
+	   from tbl_PurchaseHistory
+	   <where>
+	    ACCOUNT_ID = (SELECT  distinct  account_id FROM fin_account_relation WHERE USER_ID = #{uId})   
+	   </where>
+	   order by puHi_Createdate desc
+	   limit #{pageNumber},#{pageNum}
+	</select>
+	
+	<select id="invoicePurList" parameterType="long" resultMap="tblPurchasehistoryResultMap">
+	   select 
+	     pk_PurchaseHistory,
+	     puHi_Type,
+	     puHi_PurchaseHistoryTime,
+	     puHi_Monetary,
+	     puHi_ConsumerRemark,
+	     puHi_Createdate,
+	     puHi_Updatedate,
+	     puHi_PurchaseContent,
+	     puHi_UserId
+	   from tbl_PurchaseHistory
+	   <where>
+	     pk_Invoice=#{iId}
+	   </where>
+	   
+	</select>
+	
+	<select id="page" parameterType="map" resultMap="pageResultMap">
+	   select 
+	     pk_PurchaseHistory,
+	     puHi_Type,
+	     puHi_PurchaseHistoryTime,
+	     puHi_Monetary,
+	     puHi_ConsumerRemark,
+	     puHi_Createdate,
+	     puHi_Updatedate,
+	     puHi_PurchaseContent,
+	     puHi_UserId
+	   from tbl_PurchaseHistory
+	   <where>
+	     <if test="pkPurchasehistory != null">
+	        pk_PurchaseHistory=#{pkPurchasehistory}
+	     </if>
+	     <if test="puhiType != null">
+	        and puHi_Type=#{puhiType}
+	     </if>
+	     <if test="puhiPurchasehistorytime != null">
+	        and puHi_PurchaseHistoryTime=#{puhiPurchasehistorytime}
+	     </if>
+	     <if test="puhiMonetary != null">
+	        and puHi_Monetary=#{puhiMonetary}
+	     </if>
+	     <if test="puhiConsumerremark != null">
+	        and puHi_ConsumerRemark=#{puhiConsumerremark}
+	     </if>
+	     <if test="puhiCreatedate != null">
+	        and puHi_Createdate=#{puhiCreatedate}
+	     </if>
+	     <if test="puhiUpdatedate != null">
+	        and puHi_Updatedate=#{puhiUpdatedate}
+	     </if>
+	     <if test="puhiPurchasecontent != null">
+	        and puHi_PurchaseContent=#{puhiPurchasecontent}
+	     </if>
+	     <if test="puhiUserid != null">
+	        and puHi_UserId=#{puhiUserid}
+	     </if>
+	   </where>
+	</select>
+	
+	<update id="updateInvoice" parameterType="map">
+	   update tbl_PurchaseHistory set
+	    puhi_InvoiceStatus=1,
+	    pk_Invoice=#{pkInvoice} 
+	   where find_in_set(pk_PurchaseHistory,#{ivRecords}) 
+	</update>
+
+	<select id="getMtBills" parameterType="map" resultType="map">
+		select a.mt,cast(GROUP_CONCAT(detail) as char) detail from(
+			SELECT
+			LEFT (t.puHi_Createdate, 7) mt,
+			CONCAT(
+				t.puHi_Type,
+				'|',
+				sum(ifnull(t.puHi_Monetary,0)),
+				'|',
+				sum(ifnull(p.chOr_QuantityElectricity,0))
+			) detail
+		FROM
+			tbl_purchasehistory t
+			left join
+			tbl_chargingorder p
+			on t.puHi_TransactionNumber = p.chOr_TransactionNumber
+		where t.puHi_UserId = #{uId} and t.puHi_Type in ('1','4','6', '11')
+		GROUP BY
+			LEFT (t.puHi_Createdate, 7),
+			t.puHi_Type) a
+			group by a.mt
+			order by a.mt desc
+			limit #{pager.pageNumber},#{pager.pageNum}
+	</select>
+
+	<select id="getPhDetail" parameterType="map" resultType="map">
+		select
+		left(puHi_PurchaseHistoryTime,19) phTm,
+		puHi_Type type,
+		puHi_Monetary mn,
+		case when t.puHi_Type = 1 THEN
+		(SELECT ph.puHi_Monetary FROM tbl_purchasehistory ph
+				WHERE ph.puHi_TransactionNumber = t.puHi_TransactionNumber AND ph.puHi_Type = 11)
+		ELSE
+			0
+		end pcm
+		from tbl_PurchaseHistory t
+		where ACCOUNT_ID = (SELECT  distinct  account_id FROM fin_account_relation WHERE USER_ID = #{uId})  and puHi_Type != 11
+		<if test="mt != null and mt !=''">
+	        and LEFT (t.puHi_Createdate, 7)=#{mt}
+	     </if>
+		<if test="type != null and type !=''">
+	        and puHi_Type=#{type}
+	     </if>
+		order by LEFT (t.puHi_Createdate, 19) desc
+		limit #{pager.pageNumber},#{pager.pageNum}
+	</select>
+</mapper> 

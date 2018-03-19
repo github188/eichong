@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bluemobi.product.dao.DepartmentInclusionMapper">
+	<resultMap type="DepartmentInclusionModel" id="result_deptInclusion">
+		<result property="companyId" column="company_id" />
+		<result property="parentDepartmentId" column="parent_department_id" />
+		<result property="departmentId" column="department_id" />
+		<result property="depth" column="depth" />
+		<result property="createDate" column="create_date" />
+		<result property="createUser" column="create_user" />
+		<result property="lastUpdateDate" column="last_update_date" />
+		<result property="lastUpdateUser" column="last_update_user" />
+	</resultMap>
+
+	<insert id="addDeptInclusion" parameterType="DepartmentInclusionModel"
+		keyProperty="deptInclusion_id">
+		insert into p_m_department_inclusion
+		(
+		company_id,
+		parent_department_id,
+		department_id,
+		depth,
+		create_user,
+		last_update_user
+		)
+		values
+		(
+		#{companyId},
+		#{parentDepartmentId},
+		#{departmentId},
+		#{depth},
+		#{createUser},
+		#{lastUpdateUser}
+		)
+	</insert>
+
+	<update id="modifyDeptInclusion" parameterType="DepartmentInclusionModel">
+		update p_m_department_inclusion
+		<set>
+			<if test="companyId!=null"> company_id=#{companyId}, </if>
+			<if test="parentDepartmentId!=null"> parent_department_id=#{parentDepartmentId}, </if>
+			<if test="departmentId!=null"> department_id=#{departmentId}, </if>
+			<if test="depth!=null"> depth=#{depth}, </if>
+			last_update_date=sysdate(),
+			<if test="lastUpdateUser!=null"> last_update_user=#{lastUpdateUser}, </if>
+		</set>
+		<where>
+			company_id=#{companyId}
+			and parent_department_id =
+			#{parentDepartmentId}
+			and department_id = #{departmentId}
+		</where>
+	</update>
+
+	<delete id="removeDeptInclusion" parameterType="DepartmentInclusionModel">
+		delete from p_m_department_inclusion
+		<where>
+			<if test="companyId!=null"> and company_id=#{companyId} </if>
+			<if test="parentDepartmentId!=null"> and parent_department_id=#{parentDepartmentId} </if>
+			<if test="departmentId!=null"> and department_id=#{departmentId}</if>
+		</where>
+	</delete>
+
+	<select id="getAllSelfAndChildInc" parameterType="DepartmentInclusionModel"
+		resultMap="result_deptInclusion">
+		select company_id,parent_department_id,department_id,depth
+		from
+		p_m_department_inclusion
+		where
+		company_id=#{companyId} and
+		department_id
+		in ( select
+		pmdi.department_id
+		from
+		p_m_department_inclusion pmdi
+		where
+		pmdi.parent_department_id =
+		#{departmentId})
+	</select>
+
+	<select id="getRealParentDept" parameterType="DepartmentInclusionModel"
+		resultType="String">
+		select parent_department_id from
+		p_m_department_inclusion
+		where
+		company_id = #{companyId}
+		and
+		department_id =
+		#{departmentId}
+		and
+		depth = 1
+	</select>
+
+	<select id="getAllParentDept" parameterType="DepartmentInclusionModel"
+		resultMap="result_deptInclusion">
+		select company_id,parent_department_id,department_id,depth
+		from
+		p_m_department_inclusion
+		where
+		company_id = #{companyId}
+		and
+		department_id =
+		#{departmentId}
+	</select>
+</mapper>

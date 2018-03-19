@@ -1,0 +1,165 @@
+package com.wanma.ims.common.domain;
+
+import java.util.List;
+
+import com.wanma.ims.common.domain.base.BasicModel;
+
+/**
+ * 唯一费率表
+ * @author bingo
+ * @date 2017-7-24
+ */
+public class RateUniqueRelaDO extends BasicModel {
+
+	private static final long serialVersionUID = 5049841833947830535L;
+	
+	private Long pkId; //主键
+	
+	private Long cpyId; //渠道ID
+	
+	private Long electricpileId; //桩ID
+	
+	private Long levelId; //级别ID
+	
+	private Long rateinfoId; //费率ID
+
+	private String electricpileIds; //以'，'隔开的桩字符串
+	
+	private List<Long> electricpileList;  //桩集合
+	
+	private String levelName;//级别名称
+	
+	private String rateName;//费率名称
+	
+	private String cityCode; // 市
+	
+	private String cityName;//市名称
+	
+	private int num;//数量
+	
+	private Long powerStationId;//电站ID
+	
+	private String powerStationName; //电站名称
+
+    private String electricpileName;//电桩名称
+	
+	public Long getPkId() {
+		return pkId;
+	}
+
+	public void setPkId(Long pkId) {
+		this.pkId = pkId;
+	}
+
+	public Long getCpyId() {
+		return cpyId;
+	}
+
+	public void setCpyId(Long cpyId) {
+		this.cpyId = cpyId;
+	}
+
+	public Long getElectricpileId() {
+		return electricpileId;
+	}
+
+	public void setElectricpileId(Long electricpileId) {
+		this.electricpileId = electricpileId;
+	}
+
+	public Long getLevelId() {
+		return levelId;
+	}
+
+	public void setLevelId(Long levelId) {
+		this.levelId = levelId;
+	}
+
+	public Long getRateinfoId() {
+		return rateinfoId;
+	}
+
+	public void setRateinfoId(Long rateinfoId) {
+		this.rateinfoId = rateinfoId;
+	}
+
+	public String getElectricpileIds() {
+		return electricpileIds;
+	}
+
+	public void setElectricpileIds(String electricpileIds) {
+		this.electricpileIds = electricpileIds;
+	}
+
+	public List<Long> getElectricpileList() {
+		return electricpileList;
+	}
+
+	public void setElectricpileList(List<Long> electricpileList) {
+		this.electricpileList = electricpileList;
+	}
+
+	public String getLevelName() {
+		return levelName;
+	}
+
+	public void setLevelName(String levelName) {
+		this.levelName = levelName;
+	}
+
+	public String getRateName() {
+		return rateName;
+	}
+
+	public void setRateName(String rateName) {
+		this.rateName = rateName;
+	}
+
+	public String getCityCode() {
+		return cityCode;
+	}
+
+	public void setCityCode(String cityCode) {
+		this.cityCode = cityCode;
+	}
+
+	public String getCityName() {
+		return cityName;
+	}
+
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
+	}
+
+	public int getNum() {
+		return num;
+	}
+
+	public void setNum(int num) {
+		this.num = num;
+	}
+
+	public Long getPowerStationId() {
+		return powerStationId;
+	}
+
+	public void setPowerStationId(Long powerStationId) {
+		this.powerStationId = powerStationId;
+	}
+
+	public String getPowerStationName() {
+		return powerStationName;
+	}
+
+	public void setPowerStationName(String powerStationName) {
+		this.powerStationName = powerStationName;
+	}
+
+	public String getElectricpileName() {
+		return electricpileName;
+	}
+
+	public void setElectricpileName(String electricpileName) {
+		this.electricpileName = electricpileName;
+	}
+}

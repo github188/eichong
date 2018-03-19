@@ -1,0 +1,80 @@
+package com.wanma.ims.controller.user;
+
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.wanma.ims.controller.sys.RoleController;
+import com.wanma.ims.service.UserCompanyService;
+import com.wanma.ims.service.UserNormalService;
+import com.wanma.ims.service.UserService;
+
+
+/**
+ * 用戶管理-用户管理
+ * 总入口（APP用户，渠道用户只有一个controller）
+ */
+@RequestMapping("/user")
+@Controller
+public class UserController {
+	private static Logger log = Logger.getLogger(RoleController.class);
+	@Autowired
+	private UserService userService;
+	@Autowired
+	private UserNormalService userNormalService;
+	@Autowired
+	private UserCompanyService userCompanyService;
+	/** 
+	 * 用戶列表
+	 * @param
+	 * @param
+	 * */
+	public String getUserListPage(){
+		return null;
+	}
+	/** 
+	 * 新增渠道用户View
+	 * @param
+	 * @param
+	 * */
+	public String addUserCompanyView(){
+		return null;
+	}
+	/** 
+	 * 新增渠道用户
+	 * @param
+	 * @param
+	 * */
+	public String addUserCompany(){
+	    return null;	
+	}
+	
+	/** 
+	 * 编辑
+	 * @param
+	 * @param
+	 * */
+	public String modifyUser(){
+	    return null;	
+	}
+	/** 
+	 * 冻结
+	 * @param
+	 * @param
+	 * */
+	public String frostUser(){
+	    return null;	
+	}
+	/** 
+	 * 删除
+	 * @param
+	 * @param
+	 * */
+	public String removeUser(){
+	    return null;	
+	}
+
+    
+}

@@ -1,0 +1,355 @@
+﻿ <!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta http-equiv="Expires" content="0">
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Cache-control" content="no-cache">
+		<meta http-equiv="Cache" content="no-cache">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+			
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="blank" />
+		<meta name="format-detection" content="telephone=no" />
+		<title>申请建桩</title>
+		<!--<link rel="stylesheet" type="text/css" href="dist/css/bootstrap.min.css"/>-->
+		<link rel="stylesheet" href="css/mui.simple.css">
+		<link rel="stylesheet" type="text/css" href="dist/css/bootstrap.css"/>
+		<link rel="stylesheet"  type="text/css" href="css/applyBuilder.css"/>
+		<link rel="stylesheet" type="text/css" href="css/writeInfo.css"/>
+		<link rel="stylesheet" type="text/css" href="css/builderInfo.css"/>
+		<link rel="stylesheet" type="text/css" href="css/app.css"/>
+		<link href="css/mui.picker.css" rel="stylesheet" />
+		<link href="css/mui.poppicker.css" rel="stylesheet" />
+		<style type="text/css">
+			body,html{
+				font-size: 62.5%;
+				background: #FFFFFF;
+				padding-top: 1rem;
+			}
+			.container{
+				display:none;
+			}
+			.tabContent{
+				width: 100%;
+				height: 100%;
+				/*position: absolute;*/
+			}
+		</style>
+		<!--<script src="js/city.data-3.js" type="text/javascript" charset="utf-8"></script>-->
+		<script src="js/cityData.js" type="text/javascript" charset="utf-8"></script>
+		<!--[if lt IE 9]>
+			<script src="dist/js/html5shiv.min.js"></script>
+			<script src="dist/js/respond.min.js"></script>
+		<![endif]-->
+	</head>
+	<body>
+<div class="tabContent" id="main1">	
+	<!--第一块头部================================================================-->
+		<div class="container navbar-fixed-top">
+			<div class="row">
+				 <div class="col-xs-2 back">
+					 <a href="###" onclick="toMyPage()"><img src="img/back.png"/></a> 
+				</div> 
+				<div class="col-xs-8 head col-xs-offset-2">
+					申请建桩 
+				</div>
+			</div>
+		</div>
+	<!--第二块简单介绍流程部分============================================================-->
+	<section>
+		<div class="flow">
+			<h3>只需四步，快速完成建桩。</h3>
+			<p>建桩/建站流程</p>
+		</div>
+		<div class="diagram">
+			
+				<div class="num_step">
+					<div class="round">
+						提交<br/>申请
+					</div>
+					<img src="img/doubleEnter.png"/>
+					
+				</div>
+				<div class="num_step">
+					<div class="round">
+						勘探<br/>现场
+					</div>
+					<img src="img/doubleEnter.png"/>
+				</div>
+				<div class="num_step">
+					<div class="round">
+						现场<br/>施工
+					</div>
+					<img src="img/doubleEnter.png"/>
+				</div>
+				<div class="num_step">
+					<div class="round">
+						建桩<br/>完成
+					</div>
+					
+				</div>
+			
+		</div>
+	</section>
+	<!--立即申请部分================================================================-->
+	<div class="right_apply">
+		<a id="rightApply1" onclick="toPage1()" class="btn">立即申请</a>
+	</div>
+	
+	<!--第四部分 立即申请===================================================================-->
+	 <div class="applylistHead applyD" style="display:none;">
+    	<div class="col-xs-3 head">
+    		申请类型
+    	</div>
+    	<div class="col-xs-3 head">
+    		分类
+    	</div>
+    	<div class="col-xs-3 head">
+    		申请时间
+    	</div>
+    	<div class="col-xs-3 head">
+    		申请状态
+    	</div>
+    </div>
+    <div class="applyMain applyD" id="applyMain" style="display:none;">
+		<!-- <div class="applyStates">
+			<div class="col-xs-3 headValue headValueCenter">
+	    		申请类型
+	    	</div>
+	    	<div class="col-xs-3 headValue headValueCenter">
+	    		个人
+	    	</div>
+	    	<div class="col-xs-3 headValue">
+	    		2015年11月14日
+	    	</div>
+	    	<div class="col-xs-3 headValue red headValueCenter">
+	    		申请状态
+	    	</div>
+		</div>
+		<div class="applyStates">
+			<div class="col-xs-3 headValue headValueCenter">
+	    		申请类型
+	    	</div>
+	    	<div class="col-xs-3 headValue headValueCenter">
+	    		个人
+	    	</div>
+	    	<div class="col-xs-3 headValue">
+	    		2015年11月14日
+	    	</div>
+	    	<div class="col-xs-3 headValue red headValueCenter">
+	    		申请状态
+	    	</div>
+		</div>  -->
+	</div>
+	
+</div>
+
+<!-- 下一步 -->
+<div class="tabContent" id="main2" style="display:none;">
+	<!--第一块头部================================================================-->
+		<div class="container navbar-fixed-top">
+			<div class="row">
+				 <div class="col-xs-2 back">
+					<a id="back1"><img src="img/back.png"/></a> 
+				</div> 
+				<div class="col-xs-10 head">
+					填写基本信息
+				</div>
+			</div>
+		</div>
+		<!--第二块列表================================================================-->
+		<div class="content-list">
+			<div class="detailList" id="typeInfoBlock">
+				<div class="col-xs-4 textTip">
+					申请类型
+				</div>
+				<div class="col-xs-8 choice-enter">
+					<!--<span id="typeInfo">
+						111111111111
+					</span>-->
+					<form action="">
+						<select  name="typeInfo" id="typeInfo" class="typeInfo">
+							<option value="1">免费建桩</option>
+							<option value="2">自费建桩</option>
+						</select>
+						<a href="###"><img src="img/enter.png"/></a>
+					</form>
+					<!--<a href="###"><img src="img/enter.png"/></a>-->
+				</div>
+				
+			</div>
+			<div class="detailList" id="classInfoBlock">
+				<div class="col-xs-4 textTip">
+					分类
+				</div>
+				<div class="col-xs-8 choice-enter">
+					
+					<form action="">
+						<select name="classInfo" id="classInfo" class="classInfo">
+							<option value="1">个人</option>
+							<option value="2">企业</option>
+						</select>
+						<a href="###"><img src="img/enter.png"/></a>
+					</form>
+					<!--<a href="###"><img src="img/enter.png"/></a>-->
+				</div>
+			</div>
+			<div class="detailList">
+				<div class="col-xs-4 textTip">
+					联系人
+				</div>
+				<div class="col-xs-8 choice-enter">
+					<input type="text" id="people" value="" class="peopleInfo" placeholder="填写联系人"/>
+				</div>
+			</div>
+			<div class="detailList">
+				<div class="col-xs-4 textTip">
+					电话
+				</div>
+				<div class="col-xs-8 choice-enter">
+					<input type="text" id="telNumber" value="" class="peopleInfo" placeholder="填写电话"/>
+					<!--<span id="telTip">
+						
+					</span>-->
+				</div>
+			</div>
+			<div class="detailList" id="areaBlock">
+				<div class="col-xs-4 textTip">
+					建桩地区
+				</div>
+				<div class="col-xs-8 choice-enter" id='showCityPicker3' onclick="showCityPicker()">
+					<!--一个三级菜单============================================================-->
+					<span id='cityResult3' class="ui-alert"></span>
+					
+					<a href="###"><img src="img/enter.png"/></a>
+					
+				</div>
+					<input type="hidden" id="provinceId"/>
+					<input type="hidden" id="cityId"/>
+					<input type="hidden" id="areaId"/>
+			</div>
+			<div class="detailList">
+				<div class="col-xs-4 textTip ">
+					详细地址
+				</div>
+				<div class="col-xs-8 choice-enter">
+					<input type="text" id="detailInfo" value="" class="peopleInfo peopleInfo2" placeholder="填写详细地址"/>
+				</div>
+			</div>
+			
+		</div>
+		<!--第三块下一步按钮===========================================================================-->
+		<div class="nextStep">
+			<a id="rightApply2" onclick="toPage2()"  class="btn btn-default">下一步</a>
+		</div>
+</div>
+<div class="tabContent" id="main3" style="display:none;">
+		<!--第一块头部================================================================-->
+		<div class="container navbar-fixed-top">
+			<div class="row">
+				<div class="col-xs-2 back">
+					<a id="back2" onclick="toPage1()"><img src="img/back.png"/></a> 
+				</div> 
+				<div class="col-xs-10 head">
+					填写建桩信息
+				</div>
+			</div>
+		</div>
+		<!--第二块列表================================================================-->
+		<div class="content-list">
+			<div class="class1 detailList">
+				<div class="col-xs-4 textTip">
+					是否自有车位
+				</div>
+				<div class="col-xs-8 choice-enter">
+					<select id="aepHPark" name="" class="choiceSelect">
+						<option value="1">有</option>
+						<option value="2">无</option>
+					</select>
+					<!--<a href="###"><img src="img/enter.png"/></a>-->
+				</div>
+			</div>
+			<div class="class2 detailList">
+				<div class="col-xs-4 textTip">
+					车位数量
+				</div>
+				<div class="col-xs-8 choice-enter">
+					<select id="aepParkNum" name="" class="choiceSelect choiceSelect1">
+						<option value="1">&ge;10个</option>
+						<option value="2"><10个</option>
+					</select>
+					<!--<a href="###"><img src="img/enter.png" style="display: inline-block;"/></a>-->
+				</div>
+			</div>
+			
+			<div class="class2 detailList">
+				<div class="col-xs-4 textTip">
+					设备需求
+				</div>
+				<div class="col-xs-8 choice-enter">
+					<select id="aepEpType" name="" class="choiceSelect">
+						<option value="1">&nbsp;&nbsp;直&nbsp;&nbsp;流</option>
+						<option value="2">&nbsp;&nbsp;交&nbsp;&nbsp;流</option>
+						<option value="3">交/直流</option>
+					</select>
+					<!--<a href="###"><img src="img/enter.png"  style="display: inline-block;"/></a>-->
+				</div>
+			</div>
+			<div class="detailList">
+				<div class="col-xs-8 textTip">
+					物业是否同意安装
+				</div>
+				<div class="col-xs-4 choice-enter">
+					<select id="aepIAgree" name="" class="choiceSelect">
+						<option value="1">已同意</option>
+						<option value="2">不同意</option>
+					</select>
+					<!--<a href="###"><img src="img/enter.png"  style="display: inline-block;"/></a>-->
+				</div>
+			</div>
+			<div class="detailList">
+				<div class="col-xs-8 textTip" id="aaa">
+					电力是否通过报备
+				</div>
+				<div class="col-xs-4 choice-enter">
+					<select id="aepIReport" name="" class="choiceSelect">
+						<option value="1">已通过</option>
+						<option value="2">未通过</option>
+					</select>
+					<!--<a href="###"><img src="img/enter.png"  style="display: inline-block;"/></a>-->
+				</div>
+			</div>
+			<div class="detailList">
+				<div class="col-xs-6 textTip">
+					安装地点
+				</div>
+				<div class="col-xs-6 choice-enter">
+					<select id="aepIGround" name="" class="choiceSelect">
+						<option value="1">地面</option>
+						<option value="2">地下</option>
+					</select>
+					<!--<a href="###"><img src="img/enter.png" style="display: inline-block;"/></a>-->
+				</div>
+			</div>
+		</div>
+		<!--第三块下一步按钮===========================================================================-->
+		<div class="nextStep">
+			<span id="rightApply3" class="btn btn-default">提交</span>
+		</div>
+</div>		
+	</body>
+	<script src="js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+	<!--<script type="text/javascript" src="dist/js/jquery-1.11.1.min.js" ></script>-->
+	<!--<script src="dist/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>-->
+	<script type="text/javascript" src="dist/js/bootstrap.js" ></script>
+	<script type="text/javascript" src="js/url.js" ></script>
+	<script src="js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/mui.picker.js"></script>
+	<script src="js/mui.poppicker.js"></script>
+	<script src="js/userinfo.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/writeInfo.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/applyBuilder.js" type="text/javascript" charset="utf-8"></script>
+</html>

@@ -1,0 +1,105 @@
+package com.wanma.ims.controller.config;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.wanma.ims.common.domain.RateUniqueRelaDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.domain.base.Pager;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.constants.ResultCodeConstants;
+import com.wanma.ims.controller.BaseController;
+import com.wanma.ims.controller.result.JsonResult;
+import com.wanma.ims.core.SessionMgr;
+import com.wanma.ims.service.RateUniqueRelaService;
+
+/**
+ * 唯一费率管理 
+ */
+@RequestMapping("/config")
+@Controller
+public class RateUniqueRelaController extends BaseController{
+
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	
+	@Autowired
+	private RateUniqueRelaService rateUniqueRelaService;
+	
+	/**
+	* <p>Description: 获取分组后的唯一费率列表</p>
+	* @param
+	* @author bingo
+	* @date 2017-7-25
+	 */
+	@RequestMapping(value = "/getRateUniqueRelaGroup")
+	@ResponseBody
+	public void getRateUniqueRelaGroup(@ModelAttribute("pager") Pager pager,
+			@ModelAttribute RateUniqueRelaDO rateUniqueRela, HttpServletRequest request){
+		JsonResult batchResult = new JsonResult();
+		batchResult.setDataObject(rateUniqueRelaService.getRateUniqueRelaList(rateUniqueRela));		
+		responseJson(batchResult);
+	}
+	
+	
+	/**
+	* <p>Description: 获取唯一费率列表</p>
+	* @param
+	* @author bingo
+	* @date 2017-7-25
+	 */
+	@RequestMapping(value = "/getRateUniqueRelaList")
+	@ResponseBody
+	public void getRateUniqueRelaList(@ModelAttribute("pager") Pager pager,
+			@ModelAttribute RateUniqueRelaDO rateUniqueRela, HttpServletRequest request){
+		JsonResult batchResult = new JsonResult();
+		Long total = rateUniqueRelaService.getRateUniqueRelaCount(rateUniqueRela);
+		if (total <= pager.getOffset()) {
+			pager.setPageNo(1L);
+		}
+		pager.setTotal(total);
+		rateUniqueRela.setPager(pager);
+		
+		List<RateUniqueRelaDO> rateUniqueRelaList = rateUniqueRelaService.getRateUniqueRelaList(rateUniqueRela);
+		batchResult.setDataObject(rateUniqueRelaList);
+		batchResult.setPager(pager);
+		
+		responseJson(batchResult);
+	}	
+	
+	/**
+	* <p>Description: 新增唯一费率信息</p>
+	* @param
+	* @author bingo
+	* @date 2017-7-25
+	 */
+	@RequestMapping(value = "/addRateUniqueRela")
+	@ResponseBody
+	public void addRateUniqueRela(@ModelAttribute RateUniqueRelaDO rateUniqueRela, Model model, HttpServletRequest request) {
+		//取当前登录用户
+		UserDO user = SessionMgr.getWebUser(request);
+		
+		BaseResultDTO baseResultDTO = new BaseResultDTO();
+		try {
+			baseResultDTO = rateUniqueRelaService.addRateUniqueRela(rateUniqueRela, user);
+		} catch (Exception e) {
+			log.error(this.getClass() + ".addRateInfo() error : ", e);
+			responseJson(new JsonResult(false, ResultCodeConstants.FAILED, e.toString()));
+		}
+		
+		if(!baseResultDTO.isSuccess()){
+			responseJson(new JsonResult(false, ResultCodeConstants.FAILED, baseResultDTO.getErrorDetail()));
+		}else {			
+			responseJson(new JsonResult());
+		}
+	}
+}

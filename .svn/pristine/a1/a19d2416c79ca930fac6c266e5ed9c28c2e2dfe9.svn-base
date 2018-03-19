@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.dubbox.dao.TblMenuMapper">
+	<resultMap type="TblMenu" id="result_menu">
+		<result property="id" column="menu_id" />
+		<result property="type" column="menu_type" />
+		<result property="txt" column="contents" />
+		<result property="stNum" column="sort_number" />
+		<result property="url" column="url" />
+		<result property="rel" column="rel" />
+		<result property="pid" column="parent_menu_id" />
+		<result property="nt" column="notes" />
+		<result property="cdate" column="create_date" />
+		<result property="creUs" column="create_user" />
+		<result property="udate" column="last_update_date" />
+		<result property="uptUs" column="last_update_user" />
+		<result property="hasChild" column="hasChild" />
+	</resultMap>
+
+	<insert id="insert" parameterType="TblMenu" keyProperty="menu_id">
+		insert
+		into p_m_menu
+		(
+		menu_id,
+		menu_type,
+		contents,
+		sort_number,
+		url,
+		rel,
+		parent_menu_id,
+		notes,
+		create_user,
+		last_update_user
+		)
+		values
+		(
+		#{id},
+		#{type},
+		#{txt},
+		#{stNum},
+		#{url},
+		#{rel},
+		#{pid},
+		#{nt},
+		#{creUs},
+		#{uptUs}
+		)
+	</insert>
+
+	<update id="update" parameterType="TblMenu">
+		update p_m_menu
+		<set>
+			<if test="id!=null"> menu_id=#{id}, </if>
+			<if test="type!=null"> menu_type=#{type}, </if>
+			<if test="txt!=null"> contents=#{txt}, </if>
+			<if test="stNum!=null"> sort_number=#{stNum}, </if>
+			<if test="url!=null"> url=#{url}, </if>
+			<if test="rel!=null"> rel=#{rel}, </if>
+			<if test="pid!=null"> parent_menu_id=#{pid}, </if>
+			<if test="nt!=null"> notes=#{nt}, </if>
+			<if test="uptUs!=null"> last_update_user=#{uptUs}, </if>
+			last_update_date=sysdate()
+		</set>
+		<where>
+			menu_id=#{id}
+		</where>
+	</update>
+
+	<select id="selectOne" parameterType="TblMenu" resultMap="result_menu">
+		select
+		${rtColumns}
+		from
+		p_m_menu t
+		where
+		t.menu_id = #{id}
+	</select>
+
+	<select id="getList" parameterType="TblMenu" resultMap="result_menu">
+		select ${rtColumns},(select count(1) from p_m_menu p where p.parent_menu_id = t.menu_id and p.menu_type=1
+			<if test="pid !=null"> and FIND_IN_SET(n.ROLE_ID,#{roleIds})</if>) hasChild
+		from
+		p_m_menu t
+		<where>
+			1=1
+			<if test="id !=null"> and t.menu_id=#{id}</if>
+			<if test="type !=null and type !=''"> and t.menu_type=#{type}</if>
+			<if test="txt !=null and txt !=''"> and t.contents like concat('%',#{txt},'%')</if>
+			<if test="stNum !=null and stNum !=''"> and t.sort_number=#{stNum}</if>
+			<if test="url !=null and url !=''"> and t.url like concat('%',#{url},'%')</if>
+			<if test="rel !=null and rel !=''"> and t.rel=#{rel}</if>
+			<if test="pid !=null"> and t.parent_menu_id=#{pid}</if>
+			<if test="nt !=null and nt !=''"> and t.notes=#{nt}</if>
+			<if test="pkIds != null">
+				and menu_id in
+				<foreach item="item" index="index" collection="pkIds" open="("
+					separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+		</where>
+		order by t.PARENT_MENU_ID ASC, t.sort_number asc,t.menu_id asc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<select id="getCount" parameterType="TblMenu" resultType="int">
+		select
+		count(1)
+		from
+		p_m_menu t
+		<where>
+			1=1
+			<if test="id !=null"> and t.menu_id=#{id}</if>
+			<if test="type !=null and type !=''"> and t.menu_type=#{type}</if>
+			<if test="txt !=null and txt !=''"> and t.contents like concat('%',#{txt},'%')</if>
+			<if test="stNum !=null and stNum !=''"> and t.sort_number=#{stNum}</if>
+			<if test="url !=null and url !=''"> and t.url like concat('%',#{url},'%')</if>
+			<if test="rel !=null and rel !=''"> and t.rel=#{rel}</if>
+			<if test="pid !=null"> and t.parent_menu_id=#{pid}</if>
+			<if test="nt !=null and nt !=''"> and t.notes=#{nt}</if>
+			<if test="pkIds != null">
+				and menu_id in
+				<foreach item="item" index="index" collection="pkIds" open="("
+					separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+		</where>
+	</select>
+
+	<delete id="delete" parameterType="TblMenu">
+		delete from p_m_menu where
+		1=1
+		<if test="pkIds != null">
+			and menu_id in
+			<foreach item="item" index="index" collection="pkIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+	</delete>
+
+</mapper>

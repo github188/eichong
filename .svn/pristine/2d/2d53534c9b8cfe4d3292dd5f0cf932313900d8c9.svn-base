@@ -1,0 +1,100 @@
+@charset "utf-8";
+.battery{
+	width: 100%;
+	min-height: 6rem;
+	=background: #0062CC;
+	text-align: center;
+	line-height: 15rem;
+	
+}
+.battery img{
+	width: 50%;
+	height: 10rem;
+}
+.detailInfo{
+	width: 100%;
+	min-height: 15rem;
+	-background: #008000;
+}
+.detailInfo .baseHeight{
+	width: 100%;
+	min-height: 3.6rem;
+	-background: #F0AD4E;
+	-border-bottom: 0.1rem solid #CCCCCC;
+	text-align: center;
+	font-size: 2rem;
+}
+.finishedBtn{
+	width: 80%;
+	height: 4rem;
+	background: #FF7D00;
+	color: #FFFFFF !important;
+	margin: 0 auto;
+	border-radius: 1rem;
+	font-size: 1.6rem;
+}
+.finishedBtn:focus,.finishedBtn:active{
+	width: 80%;
+	height: 4rem;
+	background: #FF7D00;
+	color: #FFFFFF !important;
+	margin: 0 auto;
+	border-radius: 1rem;
+	font-size: 1.6rem;
+	outline-style: none;
+	border:0.1rem solid #FF7D00;
+}
+@media only screen and (min-width: 319px) and (max-width: 379px) {
+	.battery{
+		width: 100%;
+		min-height: 6rem;
+		=background: #0062CC;
+		text-align: center;
+		line-height: 15rem;
+		
+	}
+	.battery img{
+		width: 50%;
+		height: 10rem;
+	}
+	.detailInfo .baseHeight{
+		width: 100%;
+		min-height: 3.6rem;
+		-background: #F0AD4E;
+		-border-bottom: 0.1rem solid #CCCCCC;
+		text-align: center;
+		font-size: 2rem;
+	}
+}
+
+/*模态框样式=====*/
+.modal-content{
+	width: 80%;
+	height: 50%;
+	margin: 0 auto;
+}
+
+.modal-content .modal-header {
+  min-height: 16.42857143px;
+  padding: 1.5rem;
+  text-align: center;
+  color: #FF7D00;
+  
+}
+.modal-content .modal-header,.modal-content .modal-footer{
+  padding: 1.5rem;
+  text-align: center;
+  border-top: 0 !important;
+  border-bottom: 0 !important;
+}
+.modal-content .modal-header .modal-title{
+	font-size: 2.4rem;
+}
+.modal-content .modal-footer .certain{
+	background: #FF7D00;
+	color: #FFFFFF;
+	border: 0;
+	outline-style:none ;
+	width: 40%;
+	font-size: 1.6rem;
+}

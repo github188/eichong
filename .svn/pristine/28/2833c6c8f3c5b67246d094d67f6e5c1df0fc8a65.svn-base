@@ -1,0 +1,53 @@
+package com.wanma.ims.service.impl;
+
+import java.util.Date;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.wanma.ims.common.domain.IntegralDO;
+import com.wanma.ims.common.domain.bo.IntegralStatisticsBO;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.mapper.IntegralMapper;
+import com.wanma.ims.service.IntegralService;
+
+@Service("integralService")
+public class IntegralServiceImpl implements IntegralService {
+
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	@Autowired
+    private IntegralMapper integralMapper;
+	
+	@Override
+	public Long getIntegralCount(IntegralDO integral) {
+		return integralMapper.getIntegralCount(integral);
+	}
+	
+	@Override
+	public List<IntegralDO> getIntegralList(IntegralDO integral) {
+		return integralMapper.getIntegralList(integral);
+	}
+	
+	@Override
+	public BaseResultDTO modifyIntegral(IntegralDO integral) throws Exception{
+		BaseResultDTO baseResultDTO = new BaseResultDTO();
+		
+		integral.setGmtModified(new Date());
+		
+		int result =  integralMapper.modifyIntegral(integral);
+		if (result != 1) {
+			log.error(this.getClass() + ".modifyIntegral() error : 更新积分失败!");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("更新失败！更新" + result + "条记录。");
+		}
+		return baseResultDTO;
+	}
+
+	@Override
+	public IntegralStatisticsBO doIntegralStatistics(IntegralDO integral) throws Exception {
+		return integralMapper.doIntegralStatistics(integral);
+	}
+}

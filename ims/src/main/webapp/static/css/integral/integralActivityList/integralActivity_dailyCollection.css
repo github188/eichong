@@ -1,0 +1,94 @@
+@charset "utf-8";
+
+body {
+    height: auto!important;
+    color: #000;
+    font-size: 12px;
+    background-color: #f3f3f4;
+}
+
+.userBaseInfo {
+    background-color: #ffffff;
+    border-top: 4px solid #E5E5E5;
+    margin-top: 20px;
+    padding: 14px;
+    background-color: #ffffff;
+}
+
+.queryParam {
+    line-height: 40px;
+    font-size: 14px;
+    text-align: left;
+    color: #333;
+}
+
+.formBlock {
+    width: 100%;
+    min-height: 138px;
+    height: 100%;
+    /*overflow: hidden;*/
+    background: #FFFFFF;
+    border-top: 3px solid #E5E5E5;
+    padding: 26px 18px 20px 20px;
+}
+
+.userAccount {
+    /*border: 1px solid #DCDCDC;*/
+    height: 32px;
+}
+
+.userAccount .userAccountInput {
+    display: inline;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #DCDCDC;
+    outline: none;
+    color: #666666;
+}
+
+.userAccount .userAccountInput:focus {
+    display: inline;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #ff7d00;
+    color: #666666;
+}
+
+.virtual-word {
+    line-height: 40px;
+    padding: 0px;
+    color: #949494;
+    margin-left: 15px;
+}
+
+.saveBtn {
+    display: inline-block;
+    width: 80px;
+    height: 30px;
+    line-height: 30px;
+    color: #ffffff;
+    background-color: #ff7d00;
+    text-align: center;
+    border-radius: 4px;
+    font-size: 13px;
+    margin: 5% 0 0 20%;
+    cursor: pointer;
+}
+
+.col-sm-3,.radio-inline {
+    line-height: 40px;
+}
+
+.radio-inline input {
+    margin-left: 1%;
+    margin-top: 13px!important;
+}
+.log{
+    margin-left: 15px;
+}
+@media (min-width: 768px) {
+    .col-sm-2 {
+        width: 14%;
+    }
+}
+

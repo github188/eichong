@@ -1,0 +1,55 @@
+package com.wanma.service.impl;
+
+import java.util.HashMap;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.wanma.dao.PileFilterMapper;
+import com.wanma.service.PileFilterService;
+
+@Service
+public class PileFilterServiceImpl implements PileFilterService {
+
+	@Autowired
+	private PileFilterMapper pileFilterMapper;
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(PileFilterServiceImpl.class);
+
+	@Override
+	public boolean checkPileIsOk(String org, String stubId) {
+		HashMap<String, String> map = new HashMap<String, String>();
+		map.put("companyId", org);
+		map.put("pileId", stubId);
+		try {
+			long count = pileFilterMapper.checkPileIsOk(map);
+			if (count > 0) {
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			LOGGER.error("校验充电桩能否充电失败！");
+		}
+		return false;
+	}
+
+	@Override
+	public boolean checkOk(String org,String stubId) {
+		HashMap<String, String> map = new HashMap<String, String>();
+		map.put("partnerKey", org);
+		map.put("electricPileCode", stubId);
+		try {
+			long count = pileFilterMapper.checkOk(map);
+			if (count > 0) {
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			LOGGER.error("校验充电桩能否充电失败！");
+		}
+		return false;
+	}
+
+}

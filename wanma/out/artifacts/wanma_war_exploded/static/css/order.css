@@ -1,0 +1,70 @@
+/*预约*/
+.order_cont{margin:0 auto;border: 1px solid #dcdcdc;padding: 10px 2%;}
+.eva_all{height: 30px;line-height: 30px;border-bottom: 2px solid #aca39e;}
+.state{color: #f08307;font-size: 20px;}
+.contInfo{width: 100%;overflow: hidden;margin: 50px auto;}
+.time_box{width: 70%;}
+.clock_info{width: 65%;margin: 0 auto;border-bottom: 1px dashed #c5c5c5;}
+.clock{margin: 40px auto;}
+.time_info{width: 750px;margin: 40px auto 0;}
+.time_list{margin-top:60px;}
+.return_left{background: url(../images/img/order/return_left.png) no-repeat;width: 15px;height: 36px;left: 0;top:15px;}
+.return_right{background: url(../images/img/order/return_right.png) no-repeat;width: 15px;height: 36px;right: 0;top:15px;}
+.datelist_box{width:640px;margin: 0 auto;height: 70px;}
+.datelist_box ul{overflow: hidden;}
+.datelist_box ul li{width: 160px;float: left;}
+.step_img{position: relative;}
+.bottom_abs{position: absolute;bottom: 0;}
+.top_abs{position: absolute;top:-28px;}
+.big_btn{width: 30%;margin: 40px auto 0;background: #f0830f;height: 50px;line-height:50px;border-radius: 5px;}
+.big_btn a{display: block;color: #fff;text-align: center;font-size: 22px;cursor: pointer;}
+.order_right{width: 20%;}
+.radius_info{border: 1px solid #f08307;border-radius: 8px;}
+.rd_tit{text-align:center;border-bottom: 1px dashed #f08307;height: 40px;line-height: 40px;width: 80%;margin: 0 auto;}
+.rd_price{text-align: center;padding:15px 0;font-size: 30px;color: #f08307;}
+.mt{margin-top:30px;}
+.rd_price p{line-height: 25px;font-size:16px;padding: 0 15px;color: #333;}
+
+/*预约支付*/
+.divCont{border-bottom: 1px dashed #a9a9a9;width: 85%;margin: 0 auto;}
+.divInput{height: 40px;line-height: 40px;}
+.leftTit{width: 20%;text-align: right;float: left;}
+.rightInfo{width: 75%;float: left;margin-left: 3%;}
+.gray{color: #bfbfbf;}
+.yellow{color: #f08307;}
+.divBottm{margin-top: 30px;}
+.order_know{overflow: hidden;}
+.or_left{width:15%;line-height:40px;float: left;text-align: right;color: #7b7b7b;}
+.or_right{width:75%;float: left;margin-left: 3%;}
+.or_right p{line-height:25px;}
+.check_icon{background:url(../images/img/order/checked.png) no-repeat;width: 16px;height: 16px;}
+.check_mt{margin-top: 20px;margin-left: 18%;}
+.check_mt span{display: inline-block;vertical-align: middle;color: #7b7b7b;}
+
+/*预约成功*/
+.succeed_cont{width:70%;margin:0 auto;}
+.suc_tit{margin: 40px 0 20px;}
+.notice p{text-align: center;color: #333!important;font-size: 16px!important;line-height: 25px;}
+.btn_cont{margin: 40px auto 0;width: 50%;}
+.pay_btn{width: 100%;height: 40px;line-height: 38px;background: #fff;border: 2px solid #f08307;border-radius: 5px;}
+.pay_btn a{display: block;text-align: center;color: #f08307;}
+.a_btn{width: 100%;margin-top:25px;height: 40px;line-height: 38px;}
+.a_btn a{width: 45%;background: #f08307;color: #fff;text-align: center;display:inline-block;border-radius: 5px;}
+.daohang{margin-left:8%;padding-left: 13px;}
+.nav_icon{top: 4px;left: 8px;}
+
+/*支付*/
+.payCont{border: 1px solid #ccc;}
+.pay_div{height: 40px;line-height: 40px;overflow: hidden;padding: 10px 0;}
+.pay_left{float: left;width: 20%;text-align: right;color: #7b7b7b;}
+.pay_right{width: 75%;margin-left:3%;overflow: hidden;float: left;}
+.price{font-size: 24px;}
+.pay_type span{display: inline-block;vertical-align: middle;}
+.type_img{height: 47px;}
+.ml{margin-left:40px;}
+.radio_icon{background: url(../images/img/order/no_radio.png) no-repeat;width: 21px;height: 20px;}
+.radio_icon.checked{background: url(../images/img/order/radio.png) no-repeat;width: 21px;height: 20px;}
+.type_btn{border-radius:5px;height:40px;line-height: 40px;text-align: center;width: 30%;display: inline-block;}
+.type_a{width: 50%;margin: 30px 0 25px 15%;}
+.sure{background: #f08307;color: #fff;}
+.cancal{background: #fff;border: 2px solid #f08307;color: #f08307;margin-left: 5%;}

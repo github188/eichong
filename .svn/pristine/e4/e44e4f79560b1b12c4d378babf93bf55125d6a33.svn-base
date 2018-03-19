@@ -1,0 +1,29 @@
+
+#cpy_id公司ID处理
+UPDATE tbl_electricpile electricpile,tbl_company company 
+SET electricpile.`cpy_id` = company.`cpy_id` 
+WHERE electricpile.`company_number` = company.`cpy_number`;
+#爱充特殊处理
+UPDATE tbl_electricpile electricpile,tbl_company company 
+SET electricpile.`cpy_id` = company.`cpy_id` 
+WHERE electricpile.`company_number` in (0,9999,1001);
+#公司状态
+UPDATE tbl_electricpile set elPi_state = 1 where elPi_state > 0;
+
+
+
+#费率
+-- update tbl_rateinformation
+-- set 
+-- raIn_TipTimeTariffMoney = raIn_ServiceCharge,
+-- raIn_PeakElectricityMoney = raIn_ServiceCharge,
+-- raIn_UsualMoney = raIn_ServiceCharge,
+-- raIn_ValleyTimeMoney = raIn_ServiceCharge;
+
+
+ #桩体配置
+ alter table tbl_pilemaker add column is_del int(1) not null DEFAULT 0 COMMENT '删除标识';
+ alter table tbl_carcompany add column is_del int(1) not null DEFAULT 0 COMMENT '删除标识'; 
+ alter table tbl_carInfo add column is_del int(1) not null DEFAULT 0 COMMENT '删除标识'; 
+
+

@@ -1,0 +1,12 @@
+package com.wanma.ims.service.impl;
+
+
+import com.wanma.ims.service.UserNormalService;
+import org.springframework.stereotype.Service;
+
+/**
+ * 普通管理员Service
+ */
+@Service
+public class UserNormalServiceImpl implements UserNormalService {
+}

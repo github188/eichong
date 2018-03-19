@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.app.dao.TblChargingorderMapper">
+
+	<resultMap id="tblChargingorderResultMap" type="TblChargingorder">
+		<id property="pkChargingorder" column="pk_ChargingOrder" />
+		<result property="chorCode" column="chOr_Code" />
+		<result property="chorAppointmencode" column="chOr_AppointmenCode" />
+		<result property="chorPilenumber" column="chOr_PileNumber" />
+		<result property="chorUserid" column="chOr_UserId" />
+		<result property="chorType" column="chOr_Type" />
+		<result property="chorMoeny" column="chOr_Moeny" />
+		<result property="chorQuantityelectricity" column="chOr_QuantityElectricity" />
+		<result property="chorTimequantum" column="chOr_TimeQuantum" />
+		<result property="chorMuzzle" column="chOr_Muzzle" />
+		<result property="chorChargingstatus" column="chOr_ChargingStatus" />
+		<result property="chorTranstype" column="chOr_TransType" />
+		<result property="chorCreatedate" column="chOr_Createdate" />
+		<result property="chorUpdatedate" column="chOr_Updatedate" />
+		<result property="chorUsername" column="chOr_UserName" />
+		<result property="chorTransactionnumber" column="chOr_TransactionNumber" />
+		<result property="chorOrdertype" column="chOr_OrderType" />
+		<result property="chorChargemoney" column="chOr_ChargeMoney" />
+		<result property="chorServicemoney" column="chOr_ServiceMoney" />
+		<result property="couMoney" column="chOr_CouponMoney"/>
+	</resultMap>
+	<resultMap id="findResultMap"  type="java.util.HashMap" extends="tblChargingorderResultMap"></resultMap>
+	<!-- 新增充电消费订单 -->
+	<insert id="insertChargeOrder" parameterType="TblChargingorder" useGeneratedKeys="true" keyProperty="pkChargingorder">
+	   insert into tbl_ChargingOrder (
+	     chOr_Code,
+	     chOr_AppointmenCode,
+	     chOr_PileNumber,
+	     chOr_UserId,
+	     chOr_Type,
+	     chOr_Moeny,
+	     chOr_tipPower,
+	     chOr_peakPower,
+	     chOr_usualPower,
+	     chOr_valleyPower,
+	     chOr_QuantityElectricity,
+	     chOr_TimeQuantum,
+	     chOr_Muzzle,
+	     chOr_ChargingStatus,
+	     chOr_TransType,
+	     chOr_Createdate,
+	     chOr_Updatedate,
+		 chOr_UserName,
+	     chOr_TransactionNumber,
+		  chOr_OrderType,
+	     chOr_ChargeMoney,
+	     chOr_ServiceMoney
+	   )values (
+	     #{chorCode},
+	     #{chorAppointmencode},
+	     #{chorPilenumber},
+	     #{chorUserid},
+	     #{chorType},
+	     #{chorMoeny},
+	     #{chOr_tipPower},
+	     #{chOr_peakPower},
+	     #{chOr_usualPower},
+	     #{chOr_valleyPower},
+	     #{chorQuantityelectricity},
+	     #{chorTimequantum},
+	     #{chorMuzzle},
+	     #{chorChargingstatus},
+	     #{chorTranstype},
+	     #{chorCreatedate},
+	     #{chorUpdatedate},
+		 #{chorUsername},
+	     #{chorTransactionnumber},
+		 #{chorOrdertype},
+	     #{chorChargemoney},
+	     #{chorServicemoney}
+	   )
+	</insert>
+	<!-- 获取充电电度，金额，服务费，总费用，开始时间，结束时间 -->
+	<select id="selectChargeData" parameterType="map" resultMap="findResultMap">
+		select 
+		co.pk_ChargingOrder,
+		co.chOr_Code,
+		co.chOr_ChargeMoney,
+		co.chOr_ServiceMoney,
+		co.chOr_CouponMoney,
+		co.chOr_QuantityElectricity,
+		co.chOr_Moeny,
+		begin_charge_time startDate ,
+		end_charge_time endDate<!-- ,
+		(select count(pk_ChargingFaultRecord) from tbl_ChargingFaultRecord where cFRe_TransactionNumber = chOr_TransactionNumber) faultStatus,
+		(select cFRe_FaultCause from tbl_ChargingFaultRecord where cFRe_TransactionNumber = chOr_TransactionNumber limit 0,1) cfreFaultcause -->
+		from
+		tbl_ChargingOrder co
+		where
+		co.chOr_TransactionNumber = #{chOrTransactionNumber} and co.chOr_UserId = #{pkUserinfo}
+		 group by co.pk_ChargingOrder 
+	</select>
+	<!-- 更新订单状态 -->
+	<update id="updateStatus" parameterType="map">
+		update tbl_ChargingOrder set
+		chOr_ChargingStatus=#{chorChargingstatus}
+		where
+		 pk_ChargingOrder=#{pkChargingorder} 
+	</update>
+
+	<update id="update" parameterType="TblChargingorder">
+	   update tbl_ChargingOrder set
+	     pk_ChargingOrder=#{pkChargingorder},
+	     chOr_Code=#{chorCode},
+	     chOr_AppointmenCode=#{chorAppointmencode},
+	     chOr_PileNumber=#{chorPilenumber},
+	     chOr_UserId=#{chorUserid},
+	     chOr_Type=#{chorType},
+	     chOr_Moeny=#{chorMoeny},
+	     chOr_QuantityElectricity=#{chorQuantityelectricity},
+	     chOr_TimeQuantum=#{chorTimequantum},
+	     chOr_Muzzle=#{chorMuzzle},
+	     chOr_ChargingStatus=#{chorChargingstatus},
+	     chOr_TransType=#{chorTranstype},
+	     chOr_Createdate=#{chorCreatedate},
+	     chOr_Updatedate=#{chorUpdatedate},
+	     chOr_UserName=#{chorUsername},
+	     chOr_TransactionNumber=#{chorTransactionnumber},
+	     chOr_OrderType=#{chorOrdertype}
+	   where 
+	    pk_ChargingOrder=#{pkChargingorder} 
+	</update>
+
+	<delete id="delete" parameterType="map">
+	   delete from 
+	     tbl_ChargingOrder 
+	   where 
+	    pk_ChargingOrder=#{pkChargingorder} 
+	</delete>
+
+	<select id="get" parameterType="map" resultMap="tblChargingorderResultMap">
+	   select 
+	    pk_ChargingOrder,
+	    chOr_Code,
+	    chOr_AppointmenCode,
+	    chOr_PileNumber,
+	    chOr_UserId,
+	    chOr_Type,
+	    chOr_Moeny,
+	    chOr_QuantityElectricity,
+	    chOr_TimeQuantum,
+	    chOr_Muzzle,
+	    chOr_ChargingStatus,
+	    chOr_TransType,
+	    chOr_Createdate,
+	    chOr_Updatedate,
+	    chOr_UserName,
+	    chOr_TransactionNumber,
+	    chOr_OrderType
+	   from tbl_ChargingOrder
+	   where 
+	    pk_ChargingOrder=#{pkChargingorder} 
+	</select>
+
+	<select id="findOne" parameterType="map" resultMap="findResultMap">
+	   select 
+	    pk_ChargingOrder,
+	    chOr_Code,
+	    chOr_AppointmenCode,
+	    chOr_PileNumber,
+	    chOr_UserId,
+	    chOr_Type,
+	    chOr_Moeny,
+	    chOr_QuantityElectricity,
+	    chOr_TimeQuantum,
+	    chOr_Muzzle,
+	    chOr_ChargingStatus,
+	    chOr_TransType,
+	    chOr_Createdate,
+	    chOr_Updatedate,
+	    chOr_UserName,
+	    chOr_TransactionNumber,
+	    chOr_OrderType
+	   from tbl_ChargingOrder
+	   where 
+	    pk_ChargingOrder=#{pkChargingorder} 
+	</select>
+
+	<select id="find" parameterType="map" resultMap="findResultMap">
+	   select 
+	     pk_ChargingOrder,
+	     chOr_Code,
+	     chOr_AppointmenCode,
+	     chOr_PileNumber,
+	     chOr_UserId,
+	     chOr_Type,
+	     chOr_Moeny,
+	     chOr_QuantityElectricity,
+	     chOr_TimeQuantum,
+	     chOr_Muzzle,
+	     chOr_ChargingStatus,
+	     chOr_TransType,
+	     chOr_Createdate,
+	     chOr_Updatedate,
+	     chOr_UserName,
+	     chOr_TransactionNumber,
+	     chOr_OrderType
+	   from tbl_ChargingOrder
+	   <where>
+	     <if test="pkChargingorder != null">
+	        pk_ChargingOrder=#{pkChargingorder}
+	     </if>
+	     <if test="chorCode != null">
+	        and chOr_Code=#{chorCode}
+	     </if>
+	     <if test="chorAppointmencode != null">
+	        and chOr_AppointmenCode=#{chorAppointmencode}
+	     </if>
+	     <if test="chorPilenumber != null">
+	        and chOr_PileNumber=#{chorPilenumber}
+	     </if>
+	     <if test="chorUserid != null">
+	        and chOr_UserId=#{chorUserid}
+	     </if>
+	     <if test="chorType != null">
+	        and chOr_Type=#{chorType}
+	     </if>
+	     <if test="chorMoeny != null">
+	        and chOr_Moeny=#{chorMoeny}
+	     </if>
+	     <if test="chorQuantityelectricity != null">
+	        and chOr_QuantityElectricity=#{chorQuantityelectricity}
+	     </if>
+	     <if test="chorTimequantum != null">
+	        and chOr_TimeQuantum=#{chorTimequantum}
+	     </if>
+	     <if test="chorMuzzle != null">
+	        and chOr_Muzzle=#{chorMuzzle}
+	     </if>
+	     <if test="chorChargingstatus != null">
+	        and chOr_ChargingStatus=#{chorChargingstatus}
+	     </if>
+	     <if test="chorTranstype != null">
+	        and chOr_TransType=#{chorTranstype}
+	     </if>
+	     <if test="chorCreatedate != null">
+	        and chOr_Createdate=#{chorCreatedate}
+	     </if>
+	     <if test="chorUpdatedate != null">
+	        and chOr_Updatedate=#{chorUpdatedate}
+	     </if>
+	     <if test="chorUsername != null">
+	        and chOr_UserName=#{chorUsername}
+	     </if>
+	     <if test="chorTransactionnumber != null">
+	        and chOr_TransactionNumber=#{chorTransactionnumber}
+	     </if>
+	     <if test="chorOrdertype != null">
+	        and chOr_OrderType=#{chorOrdertype}
+	     </if>
+	   </where>
+	</select>
+	
+	<select id="getUnpayOrder" parameterType="int" resultType="int">
+		select count(*) num from tbl_chargingorder 
+		where chOr_ChargingStatus = 1 and chOr_UserId = #{userId}
+	</select>
+</mapper> 

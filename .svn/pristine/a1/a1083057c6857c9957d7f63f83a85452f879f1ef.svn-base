@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.VersionMapper">
+
+    <resultMap id="resultVersion" type="VersionDO">
+        <id column="pk_Version" property="pkVersion"/>
+        <result column="vers_Number" property="versNumber"/>
+        <result column="vers_Type" property="versType"/>
+        <result column="vers_Url" property="versUrl"/>
+        <result column="vers_Createdate" property="versCreatedate"/>
+        <result column="vers_Updatedate" property="versUpdatedate"/>
+        <result column="vers_auto_update" property="isAutoUpdate"/>
+        <result column="vers_Remark" property="versRemark"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    pk_Version, vers_Number, vers_Type, vers_Url, vers_Createdate, vers_Updatedate, vers_auto_update, 
+    vers_Remark
+  </sql>
+
+    <sql id="condition">
+        <where>
+            <if test="pkVersion != null">
+                AND pk_Version = #{pkVersion}
+            </if>
+            <if test="versType != null">
+                AND vers_Type = #{versType}
+            </if>
+            <if test="isAutoUpdate != null">
+                AND vers_auto_update = #{isAutoUpdate}
+            </if>
+        </where>
+    </sql>
+
+    <select id="selectVersionList" parameterType="Map" resultMap="resultVersion">
+        select
+        <include refid="Base_Column_List"/>
+        from tbl_version
+        <include refid="condition"/>
+        ORDER BY vers_Createdate DESC
+        <if test="pager!=null">
+            limit #{pager.offset},#{pager.pageSize}
+        </if>
+    </select>
+
+    <select id="countVersion" parameterType="Map" resultType="long">
+        select count(1)
+        from tbl_version
+        <include refid="condition"/>
+    </select>
+
+    <select id="selectVersionById" parameterType="Long" resultMap="resultVersion">
+        select
+        <include refid="Base_Column_List"/>
+        from tbl_version
+        where pk_Version = #{pkVersion}
+    </select>
+
+    <select id="selectMaxVersionNum" resultType="long">
+        select vers_Number
+        from tbl_version order by vers_Createdate desc limit 1
+    </select>
+
+    <delete id="deleteVersionById" parameterType="Long">
+     delete from tbl_version
+     where pk_Version = #{pkVersion}
+    </delete>
+
+    <insert id="insertVersion" parameterType="VersionDO">
+    insert into tbl_version (pk_Version, vers_Number, vers_Type, 
+      vers_Url, vers_Createdate, vers_Updatedate, 
+      vers_auto_update, vers_Remark)
+    values (#{pkVersion}, #{versNumber}, #{versType}, 
+      #{versUrl}, now(), now(),
+      #{isAutoUpdate}, #{versRemark})
+  </insert>
+
+    <update id="updateVersionByIdSelective" parameterType="VersionDO">
+        update tbl_version
+        <set>
+            <if test="versNumber != null">
+                vers_Number = #{versNumber},
+            </if>
+            <if test="versType != null">
+                vers_Type = #{versType},
+            </if>
+            <if test="versUrl != null">
+                vers_Url = #{versUrl},
+            </if>
+            <if test="isAutoUpdate != null">
+                vers_auto_update = #{isAutoUpdate},
+            </if>
+            <if test="versRemark != null">
+                vers_Remark = #{versRemark},
+            </if>
+            vers_Updatedate = now()
+        </set>
+        where pk_Version = #{pkVersion}
+    </update>
+</mapper>

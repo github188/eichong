@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsCategoryMapper">
+
+	<resultMap id="tblCategoryResultMap" type="TblCategory">
+		<id property="pkCategory" column="pk_Category" />
+		<result property="cateName" column="cate_Name" />
+		<result property="cateCreatedate" column="cate_Createdate" />
+		<result property="cateUpdatedate" column="cate_Updatedate" />
+	</resultMap>
+	<resultMap id="pageResultMap"  type="java.util.HashMap" extends="tblCategoryResultMap"></resultMap>
+	<resultMap id="findResultMap"  type="java.util.HashMap" extends="tblCategoryResultMap"></resultMap>
+	<!-- 新增商品大分类 -->
+	<insert id="insertCategory" parameterType="TblCategory">
+	   insert into tbl_Category (
+	     cate_Name,
+	     cate_Createdate,
+	     cate_Updatedate
+	   )values (
+	     #{cateName},
+	     #{cateCreatedate},
+	     #{cateUpdatedate}
+	   )
+	</insert>
+	<!-- 更新商品大分类 -->
+	<update id="updateCategory" parameterType="TblCategory">
+	   update tbl_Category set
+	     cate_Name=#{cateName},
+	     cate_Updatedate=#{cateUpdatedate}
+	   where 
+	    pk_Category=#{pkCategory} 
+	</update>
+	<!-- 删除商品大分类 -->
+	<delete id="deleteById" parameterType="map">
+	   delete from 
+	     tbl_Category 
+	   where 
+	    pk_Category=#{pkCategory} 
+	</delete>
+	<!-- 获取商品大分类 -->
+	<select id="findCategory" parameterType="map" resultMap="tblCategoryResultMap">
+	   select 
+	    pk_Category,
+	    cate_Name,
+	    cate_Createdate,
+	    cate_Updatedate
+	   from tbl_Category
+	   where 
+	    pk_Category=#{pkCategory} 
+	</select>
+	<!-- 获取商品大分类列表 -->
+	<select id="findCategoryList" parameterType="map" resultMap="findResultMap">
+	   select 
+	     pk_Category,
+	     cate_Name,
+	     cate_Createdate,
+	     cate_Updatedate
+	   from tbl_Category
+	   <where>
+	     <if test="pkCategory != null">
+	        pk_Category=#{pkCategory}
+	     </if>
+	     <if test="cateName != null">
+	        and cate_Name=#{cateName}
+	     </if>
+	     <if test="cateCreatedate != null">
+	        and cate_Createdate=#{cateCreatedate}
+	     </if>
+	     <if test="cateUpdatedate != null">
+	        and cate_Updatedate=#{cateUpdatedate}
+	     </if>
+	   </where>
+	   order by cate_Createdate desc
+	   <if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+</mapper> 

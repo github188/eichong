@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsConfigparameterMapper">
+
+	<resultMap id="tblConfigparameterResultMap" type="TblConfigparameter">
+		<id property="pkConfigparameter" column="pk_ConfigParameter" />
+		<result property="copaName" column="coPa_Name" />
+		<result property="coCoMemo" column="coCo_memo" />
+		<result property="copaType" column="coPa_Type" />
+		<result property="copaStatus" column="coPa_Status" />
+		<result property="copaCreatedate" column="coPa_Createdate" />
+		<result property="copaUpdatedate" column="coPa_Updatedate" />
+	</resultMap>
+	<resultMap id="pageResultMap"  type="java.util.HashMap" extends="tblConfigparameterResultMap"></resultMap>
+	<resultMap id="findResultMap"  type="java.util.HashMap" extends="tblConfigparameterResultMap"></resultMap>
+	<!-- 新增配置参数名称 -->
+	<insert id="insertConPara" parameterType="TblConfigparameter">
+	   insert into tbl_ConfigParameter (
+	     coPa_Name,
+	     coCo_memo,
+	     coPa_Type,
+	     coPa_Status,
+	     coPa_Createdate,
+	     coPa_Updatedate
+	   )values (
+	     #{copaName},
+	     #{coCoMemo},
+	     #{copaType},
+	     #{copaStatus},
+	     #{copaCreatedate},
+	     #{copaUpdatedate}
+	   )
+	</insert>
+	<!-- 更新配置参数名称 -->
+	<update id="updateConPara" parameterType="TblConfigparameter">
+	   update tbl_ConfigParameter set
+	     pk_ConfigParameter=#{pkConfigparameter},
+	     coPa_Name=#{copaName},
+	     coCo_memo=#{coCoMemo},
+	     coPa_Updatedate=#{copaUpdatedate}
+	   where 
+	    pk_ConfigParameter=#{pkConfigparameter} 
+	</update>
+	<!-- 删除配置参数名称 -->
+	<delete id="deleteById" parameterType="map">
+	   update
+	     tbl_ConfigParameter 
+	    set
+	    coPa_Status = #{copaStatus}
+	   where 
+	    pk_ConfigParameter=#{pkConfigparameter} 
+	</delete>
+	<!-- 获取配置参数 -->
+	<select id="findConPara" parameterType="map" resultMap="tblConfigparameterResultMap">
+	   select 
+	    pk_ConfigParameter,
+	    coCo_memo,
+	    coPa_Name,
+	    coPa_Type,
+	    coPa_Status,
+	    coPa_Createdate,
+	    coPa_Updatedate
+	   from tbl_ConfigParameter
+	   where 
+	    pk_ConfigParameter=#{pkConfigparameter} 
+	</select>
+	<!-- 获取配置参数列表 -->
+	<select id="findConParaList" parameterType="map" resultMap="tblConfigparameterResultMap">
+	   select 
+	     pk_ConfigParameter,
+	     coPa_Name,
+	     coPa_Type,
+	     coPa_Status,
+	     coPa_Createdate,
+	     coPa_Updatedate
+	   from tbl_ConfigParameter
+	   <where>
+	     <if test="pkConfigparameter != null">
+	        pk_ConfigParameter=#{pkConfigparameter}
+	     </if>
+	     <if test="copaName != null">
+	        and coPa_Name=#{copaName}
+	     </if>
+	     <if test="copaType != null">
+	        and coPa_Type=#{copaType}
+	     </if>
+	      <if test="copaStatus != null">
+	        and coPa_Status=#{copaStatus}
+	     </if>
+	     <if test="copaCreatedate != null">
+	        and coPa_Createdate=#{copaCreatedate}
+	     </if>
+	     <if test="copaUpdatedate != null">
+	        and coPa_Updatedate=#{copaUpdatedate}
+	     </if>
+	   </where>
+	   order by coPa_Createdate desc
+	   <if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	<!-- 获取配置参数数量 -->
+	<select id="findCount" parameterType="map" resultType="long">
+		select count(pk_ConfigParameter)
+		from
+		tbl_ConfigParameter
+		<where>
+	     <if test="pkConfigparameter != null">
+	        pk_ConfigParameter=#{pkConfigparameter}
+	     </if>
+	     <if test="copaName != null">
+	        and coPa_Name=#{copaName}
+	     </if>
+	     <if test="copaType != null">
+	        and coPa_Type=#{copaType}
+	     </if>
+	     <if test="copaStatus != null">
+	        and coPa_Status=#{copaStatus}
+	     </if>
+	     <if test="copaCreatedate != null">
+	        and coPa_Createdate=#{copaCreatedate}
+	     </if>
+	     <if test="copaUpdatedate != null">
+	        and coPa_Updatedate=#{copaUpdatedate}
+	     </if>
+	   </where>
+	</select>
+	
+</mapper> 

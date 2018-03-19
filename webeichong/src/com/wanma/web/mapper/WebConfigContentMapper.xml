@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.web.dao.WebConfigContentMapper">
+
+	<select id="getConfigContentListByCpId" parameterType="String" resultType="HashMap">
+		SELECT pk_ConfigContent,coCo_ConfigParameterID,coCo_Content 
+		from tbl_configcontent 
+		where  coCo_ConfigPStatus = 0 
+		<if test="cpId != null and cpId!=''">
+			and coCo_ConfigParameterID = #{cpId}
+	     </if>
+	     order by coCo_ConfigParameterID
+	</select>
+</mapper> 

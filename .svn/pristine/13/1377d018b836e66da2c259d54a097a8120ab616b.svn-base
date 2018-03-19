@@ -1,0 +1,278 @@
+package com.wanma.ims.service.impl;
+
+import java.util.Date;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.wanma.ims.common.domain.IntegralActivityDO;
+import com.wanma.ims.common.domain.IntegralDO;
+import com.wanma.ims.common.domain.IntegralDetailsDO;
+import com.wanma.ims.common.domain.bo.IntegralActivityAndRulesBO;
+import com.wanma.ims.common.domain.bo.IntegralBO;
+import com.wanma.ims.common.domain.bo.IntegralResultBO;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.mapper.IntegralActivityMapper;
+import com.wanma.ims.mapper.IntegralDetailsMapper;
+import com.wanma.ims.mapper.IntegralMapper;
+import com.wanma.ims.service.IntegralDetailsService;
+
+@Service("integralDetailsService")
+public class IntegralDetailsServiceImpl implements IntegralDetailsService {
+
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	@Autowired
+    private IntegralDetailsMapper integralDetailsMapper;
+	
+	@Autowired
+    private IntegralMapper integralMapper;
+	
+	@Autowired
+    private IntegralActivityMapper integralActivityMapper;
+	
+	@Override
+	public Long getIntegralDetailsCount(IntegralDetailsDO integralDetails) {
+		return integralDetailsMapper.getIntegralDetailsCount(integralDetails);
+	}
+	
+	@Override
+	public List<IntegralDetailsDO> getIntegralDetailsList(IntegralDetailsDO integralDetails) {
+		return integralDetailsMapper.getIntegralDetailsList(integralDetails);
+	}	
+	
+	@Override
+	public BaseResultDTO addIntegralDetails(IntegralBO integralBO, IntegralActivityAndRulesBO defaultActivity) throws Exception {
+		BaseResultDTO baseResultDTO = new BaseResultDTO();
+		IntegralResultBO integralResultBO = new IntegralResultBO();
+		if (integralBO == null) {
+			log.error(this.getClass() + ".addIntegralDetails() error : 积分对象不允许为空！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("积分对象不允许为空！");
+			return baseResultDTO;
+		}
+		
+		if (integralBO.getIntegralActivityId() == null) {
+			log.error(this.getClass() + ".addIntegralDetails() error : 积分活动不允许为空！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("积分活动不允许为空！");
+			return baseResultDTO;
+		}
+		
+		if (integralBO.getDirection() == null) {
+			log.error(this.getClass() + ".addIntegralDetails() error : 积分变化方向不允许为空！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("积分变化方向不允许为空！");
+			return baseResultDTO;
+		}
+
+		int direction = integralBO.getDirection();//积分方向（0：获取；1：消耗）
+		Long integralActivityId = integralBO.getIntegralActivityId();//积分活动Id
+		Long electricPileId = integralBO.getElectricPileId();//桩
+		
+		//积分活动
+		IntegralActivityAndRulesBO integralActivity;
+		if (defaultActivity != null && defaultActivity.getPkId() != null) {
+			integralActivity = defaultActivity;
+		}else{			
+			IntegralActivityDO qryIntegralActivity = new IntegralActivityDO();
+			qryIntegralActivity.setPkId(integralActivityId);
+			if (electricPileId != null) {
+				qryIntegralActivity.setElectricPileId(electricPileId);
+			}
+			List<IntegralActivityAndRulesBO> integralActivityList = integralActivityMapper.getIntegralActivityAndRulesList(qryIntegralActivity);
+			if (integralActivityList == null || integralActivityList.size() == 0) {
+				String errorMsg = "积分活动Id不存在！";
+				if (electricPileId != null) {
+					errorMsg = "没有查找到电桩Id对应的积分活动！";
+				}
+				log.error(this.getClass() + ".addIntegralDetails() error : " + errorMsg);
+				baseResultDTO.setSuccess(false);
+				baseResultDTO.setErrorDetail(errorMsg);
+				return baseResultDTO;
+			}
+			integralActivity = integralActivityList.get(0);
+			if (integralActivity.getDirection() != direction) {
+				log.error(this.getClass() + ".addIntegralDetails() error : 积分变化方向错误！");
+				baseResultDTO.setSuccess(false);
+				baseResultDTO.setErrorDetail("积分变化方向错误！");
+				return baseResultDTO;
+			}
+		}
+
+		Long integralValue = 0l;//积分
+		int choiceCount = 0;//抽奖次数
+		Long chargingOrderId = 0L; //充电消费订单Id
+		Double moneyInvolved = integralBO.getMoneyInvolved();//金额
+		Date completeDate = integralBO.getCompleteDate(); //交易完成时间
+		Date startDate = integralActivity.getStartDate();//活动开始日期
+		Date endDate = integralActivity.getEndDate();//活动结束日期
+		int integralActivityIdToInt = integralActivityId.intValue();
+		if (direction == 0) {
+			if (integralActivityIdToInt != 3 && integralActivityIdToInt != 4) {				
+				if (integralBO.getCompleteDate() == null) {
+					log.error(this.getClass() + ".addIntegralDetails() error : 交易完成时间不允许为空！");
+					baseResultDTO.setSuccess(false);
+					baseResultDTO.setErrorDetail("交易完成时间不允许为空！");
+					return baseResultDTO;
+				}
+				
+				if (integralBO.getMoneyInvolved() == null) {
+					log.error(this.getClass() + ".addIntegralDetails() error : 金额不允许为空！");
+					baseResultDTO.setSuccess(false);
+					baseResultDTO.setErrorDetail("金额不允许为空！");
+					return baseResultDTO;
+				}
+				
+				if (completeDate.getTime() < startDate.getTime() || completeDate.getTime() > endDate.getTime()) {
+					log.error(this.getClass() + ".addIntegralDetails() error : 交易完成时间不在积分活动的有效时间内");
+					baseResultDTO.setSuccess(false);
+					baseResultDTO.setErrorDetail("交易完成时间不在积分活动的有效时间内");
+					return baseResultDTO;
+				}
+			}
+			
+			if (integralActivityIdToInt == 1 || integralActivityIdToInt == 2) {
+				/****** 充电/消费赠送积分、抽奖机会 ******/
+				Long fixedIntegralValue = integralActivity.getFixedIntegralValue();
+				Long ratioIntegralValue = integralActivity.getRatioIntegralValue();
+				Long choiceMoney = integralActivity.getChoiceMoney();
+				if (integralActivityIdToInt == 2) {//消费
+					chargingOrderId = integralBO.getChargingOrderId();
+				}
+				
+				//积分值
+				if (fixedIntegralValue != null) {
+					integralValue = fixedIntegralValue;
+				}else {
+					integralValue = new Long(((Double)(moneyInvolved / ratioIntegralValue.doubleValue())).intValue());
+				}
+				
+				//抽奖次数
+				choiceCount = ((Double)(moneyInvolved / choiceMoney.doubleValue())).intValue();
+			}else if (integralActivityIdToInt == 3 || integralActivityIdToInt == 4) {
+				integralValue = integralActivity.getFixedIntegralValue();
+			}else if (integralActivityIdToInt == 5) {
+				/****** 分享赠送积分、抽奖机会 ******/
+				chargingOrderId = integralBO.getChargingOrderId();
+				int isShareChoice = integralActivity.getIsShareChoice();
+				if (isShareChoice == 1) {
+					IntegralDetailsDO qryIntegralDetails = new IntegralDetailsDO();
+					qryIntegralDetails.setIntegralActivityId(5L);
+					List<IntegralDetailsDO> integralDetailsList = integralDetailsMapper.getIntegralDetailsList(qryIntegralDetails);
+					if (integralDetailsList == null) {
+						integralValue = integralActivity.getShareIntegralValue();
+						
+						Integer shareChoice = integralActivity.getShareChoice();
+						if (shareChoice != null && shareChoice == 0) {
+							choiceCount = 1;
+						}
+					}else{
+						IntegralDetailsDO integralDetails = integralDetailsList.get(0);
+						Date integralDate = integralDetails.getIntegralDate();
+						if (integralDate.getTime() < startDate.getTime()) {
+							integralValue = integralActivity.getShareIntegralValue();
+							
+							Integer shareChoice = integralActivity.getShareChoice();
+							if (shareChoice != null && shareChoice == 0) {
+								choiceCount = 1;
+							}
+						}else if(integralDate.getTime() >= startDate.getTime() && integralDate.getTime() < endDate.getTime()){
+							log.error(this.getClass() + ".addIntegralDetails() error : 已经赠送过积分");
+							baseResultDTO.setSuccess(false);
+							baseResultDTO.setErrorDetail("已经赠送过积分");
+							return baseResultDTO;
+						}
+					}
+				}else if (isShareChoice == 2) {
+					integralValue = integralActivity.getShareIntegralValue();
+					
+					Integer shareChoice = integralActivity.getShareChoice();
+					if (shareChoice != null && shareChoice == 0) {
+						choiceCount = 1;
+					}
+				}
+			}else if (integralActivityIdToInt == 8) {
+				integralValue = integralActivity.getFixedIntegralValue();
+			}
+		}else{
+			if (integralActivityIdToInt == 6) {
+				if (integralBO.getCouponVarietyId() == null) {
+					log.error(this.getClass() + ".addIntegralDetails() error : 优惠券品种不能为空！");
+					baseResultDTO.setSuccess(false);
+					baseResultDTO.setErrorDetail("优惠券品种不能为空！");
+					return baseResultDTO;
+				}
+			}
+			//积分抽奖，后台只需要知道积分值
+			integralValue = integralActivity.getFixedIntegralValue();
+		}
+		
+		Long integralId;//总积分Id
+		//总积分
+		IntegralDO qryIntegral = new IntegralDO();
+		qryIntegral.setUserId(integralBO.getUserId());
+		List<IntegralDO> integralList = integralMapper.getIntegralList(qryIntegral);
+		if (integralList == null || integralList.size() == 0) {
+			IntegralDO integral = new IntegralDO();
+			integral.setUserId(integralBO.getUserId());
+			integral.setTotalIntegrals(integralValue);
+			integral.setAvailableIntegrals(integralValue);
+			integral.setUsedIntegrals(0l);
+			integral.setCreator(integralBO.getCreator());
+			integral.setGmtCreate(new Date());
+			integralId = integralMapper.addIntegral(integral);
+			if (integralId == 0L) {
+				log.error(this.getClass() + ".addIntegralDetails() error : 增加积分明细时，增加总积分失败！");
+				baseResultDTO.setSuccess(false);
+				baseResultDTO.setErrorDetail("增加积分明细时，增加总积分失败！");
+				return baseResultDTO;
+			}
+		}else {
+			IntegralDO integral = integralList.get(0);
+			integralId = integral.getPkId();
+			if (direction == 0) {
+				integral.setTotalIntegrals(integral.getTotalIntegrals() + integralValue);
+				integral.setAvailableIntegrals(integral.getAvailableIntegrals() + integralValue);
+			}else if (direction == 1){
+				integral.setAvailableIntegrals(integral.getAvailableIntegrals() - integralValue);
+				integral.setUsedIntegrals(integral.getUsedIntegrals() + integralValue);
+			}
+			integral.setModifier(integral.getCreator());
+			integral.setGmtModified(new Date());
+			
+			int modifyResult = integralMapper.modifyIntegral(integral);
+			if (modifyResult == 0) {
+				log.error(this.getClass() + ".addIntegralDetails() error : 增加积分明细时，修改总积分失败！");
+				baseResultDTO.setSuccess(false);
+				baseResultDTO.setErrorDetail("增加积分明细时，修改总积分失败！");
+				return baseResultDTO;
+			}
+		}
+		
+		//积分明细
+		IntegralDetailsDO integralDetails = new IntegralDetailsDO();
+		integralDetails.setIntegralId(integralId);
+	  	integralDetails.setIntegralActivityId(integralActivityId);
+	  	integralDetails.setMoneyInvolved(moneyInvolved == null ? 0D : moneyInvolved);
+	  	integralDetails.setChargingOrderId(chargingOrderId);
+		integralDetails.setIntegralId(integralId);
+		integralDetails.setDirection(direction);
+		integralDetails.setIntegralValue(integralValue);
+		integralDetails.setIntegralDate(integralBO.getCompleteDate() == null ? new Date() : integralBO.getCompleteDate());
+		integralDetails.setCreator(integralBO.getCreator() == null ? "" : integralBO.getCreator());
+		int result = integralDetailsMapper.addIntegralDetails(integralDetails);
+		if (result == 0) {
+			log.error(this.getClass() + ".addIntegralDetails() error : 增加积分明细失败！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("增加积分明细失败！");
+		}
+		
+		integralResultBO.setIntegralValue(integralValue);
+		integralResultBO.setChoiceCount(choiceCount);
+		baseResultDTO.setObj(integralResultBO);
+		return baseResultDTO;
+	}
+}

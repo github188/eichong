@@ -1,0 +1,43 @@
+package com.wanma.ims.service.impl;
+
+import java.util.List;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.wanma.ims.common.domain.UserCardDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.domain.UserRelaDO;
+import com.wanma.ims.mapper.UserRelaMapper;
+import com.wanma.ims.service.UserRelaService;
+
+
+@Service("UserRelaService")
+public class UserRelaServiceImpl implements UserRelaService {
+
+	private static Logger log = Logger.getLogger(UserRelaServiceImpl.class);
+	@Autowired
+	private UserRelaMapper userRelaMapper;
+//	@Override
+//	public void insertRealInfo(UserCardDO userCard, UserDO user) {
+//		UserRelaDO userRela = new UserRelaDO();
+//		userRela.setUserId(user.getUserId());
+//		userRela.setUserDefaultId(userCard.getUcUserId());;
+//	    userRelaMapper.insertRealInfo(userRela);
+//	}
+//	@Override
+//	public boolean checkCardRela(UserCardDO userCard) {
+//		return userRelaMapper.checkCardRela(userCard.getUcUserId())>0 ? true:false;
+//	}
+//	@Override
+//	public List<UserRelaDO> getRelaByUserId(Long userId) {
+//		return userRelaMapper.getRelaByUserId(userId);
+//	}
+//	@Override
+//	public UserRelaDO getRelaByCardId(Long userDefaultId) {
+//		return userRelaMapper.getRelaByCardId(userDefaultId);
+//	}
+	
+	
+}

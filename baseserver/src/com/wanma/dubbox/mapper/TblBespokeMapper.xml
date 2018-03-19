@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wanma.dubbox.dao.TblBespokeMapper">
+	<resultMap id="BaseResultMap" type="com.wanma.dubbox.model.TblBespoke">
+		<id column="pk_Bespoke" property="id" jdbcType="BIGINT" />
+		<result column="besp_ElectricPileId" property="eId" jdbcType="INTEGER" />
+		<result column="besp_BespokeTime" property="time" jdbcType="VARCHAR" />
+		<result column="besp_BespokeRemark" property="remark" jdbcType="VARCHAR" />
+		<result column="besp_BespokeTimes" property="times" jdbcType="VARCHAR" />
+		<result column="besp_BespokePrice" property="price" jdbcType="DECIMAL" />
+		<result column="besp_BespokeStatus" property="sts" jdbcType="INTEGER" />
+		<result column="besp_Createdate" property="cdate" jdbcType="TIMESTAMP" />
+		<result column="besp_Updatedate" property="udate" jdbcType="TIMESTAMP" />
+		<result column="besp_ElectricPileHead" property="hid" jdbcType="INTEGER" />
+		<result column="besp_UserInfo" property="user" jdbcType="INTEGER" />
+		<result column="besp_ResePaymentCode" property="payCd"
+			jdbcType="VARCHAR" />
+		<result column="besp_FrozenAmt" property="froAmt" jdbcType="DECIMAL" />
+		<result column="besp_BeginTime" property="begTim" jdbcType="TIMESTAMP" />
+		<result column="besp_EndTime" property="endTim" jdbcType="TIMESTAMP" />
+		<result column="besp_RealityTime" property="rltyTim" jdbcType="TIMESTAMP" />
+		<result column="besp_OrderType" property="ordTp" jdbcType="INTEGER" />
+		<result column="besp_appclientip" property="clitip" jdbcType="VARCHAR" />
+		<result column="besp_UserOrigin" property="uOrg" jdbcType="TINYINT" />
+		<result column="besp_OccurFrozenAmt" property="occFroAmt"
+			jdbcType="DECIMAL" />
+		<result column="besp_PayMode" property="pMode" jdbcType="INTEGER" />
+		<result column="besp_OrgNo" property="orgNo" jdbcType="INTEGER" />
+	</resultMap>
+	<delete id="delete" parameterType="java.lang.Long">
+		delete from tbl_bespoke
+		where
+		pk_Bespoke = #{id,jdbcType=BIGINT}
+	</delete>
+
+	<insert id="insert" parameterType="com.wanma.dubbox.model.TblBespoke">
+		insert into tbl_bespoke
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				pk_Bespoke,
+			</if>
+			<if test="eId != null">
+				besp_ElectricPileId,
+			</if>
+			<if test="time != null">
+				besp_BespokeTime,
+			</if>
+			<if test="remark != null">
+				besp_BespokeRemark,
+			</if>
+			<if test="times != null">
+				besp_BespokeTimes,
+			</if>
+			<if test="price != null">
+				besp_BespokePrice,
+			</if>
+			<if test="sts != null">
+				besp_BespokeStatus,
+			</if>
+			<if test="cdate != null">
+				besp_Createdate,
+			</if>
+			<if test="udate != null">
+				besp_Updatedate,
+			</if>
+			<if test="hid != null">
+				besp_ElectricPileHead,
+			</if>
+			<if test="user != null">
+				besp_UserInfo,
+			</if>
+			<if test="payCd != null">
+				besp_ResePaymentCode,
+			</if>
+			<if test="froAmt != null">
+				besp_FrozenAmt,
+			</if>
+			<if test="begTim != null">
+				besp_BeginTime,
+			</if>
+			<if test="endTim != null">
+				besp_EndTime,
+			</if>
+			<if test="rltyTim != null">
+				besp_RealityTime,
+			</if>
+			<if test="ordTp != null">
+				besp_OrderType,
+			</if>
+			<if test="clitip != null">
+				besp_appclientip,
+			</if>
+			<if test="uOrg != null">
+				besp_UserOrigin,
+			</if>
+			<if test="occFroAmt != null">
+				besp_OccurFrozenAmt,
+			</if>
+			<if test="pMode != null">
+				besp_PayMode,
+			</if>
+			<if test="orgNo != null">
+				besp_OrgNo,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=BIGINT},
+			</if>
+			<if test="eId != null">
+				#{eId,jdbcType=INTEGER},
+			</if>
+			<if test="time != null">
+				#{time,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				#{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="times != null">
+				#{times,jdbcType=VARCHAR},
+			</if>
+			<if test="price != null">
+				#{price,jdbcType=DECIMAL},
+			</if>
+			<if test="sts != null">
+				#{sts,jdbcType=INTEGER},
+			</if>
+			<if test="cdate != null">
+				#{cdate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="udate != null">
+				#{udate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="hid != null">
+				#{hid,jdbcType=INTEGER},
+			</if>
+			<if test="user != null">
+				#{user,jdbcType=INTEGER},
+			</if>
+			<if test="payCd != null">
+				#{payCd,jdbcType=VARCHAR},
+			</if>
+			<if test="froAmt != null">
+				#{froAmt,jdbcType=DECIMAL},
+			</if>
+			<if test="begTim != null">
+				#{begTim,jdbcType=TIMESTAMP},
+			</if>
+			<if test="endTim != null">
+				#{endTim,jdbcType=TIMESTAMP},
+			</if>
+			<if test="rltyTim != null">
+				#{rltyTim,jdbcType=TIMESTAMP},
+			</if>
+			<if test="ordTp != null">
+				#{ordTp,jdbcType=INTEGER},
+			</if>
+			<if test="clitip != null">
+				#{clitip,jdbcType=VARCHAR},
+			</if>
+			<if test="uOrg != null">
+				#{uOrg,jdbcType=TINYINT},
+			</if>
+			<if test="occFroAmt != null">
+				#{occFroAmt,jdbcType=DECIMAL},
+			</if>
+			<if test="pMode != null">
+				#{pMode,jdbcType=INTEGER},
+			</if>
+			<if test="orgNo != null">
+				#{orgNo,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	<update id="update" parameterType="com.wanma.dubbox.model.TblBespoke">
+		update tbl_bespoke
+		<set>
+			<if test="eId != null">
+				besp_ElectricPileId = #{eId,jdbcType=INTEGER},
+			</if>
+			<if test="time != null">
+				besp_BespokeTime = #{time,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				besp_BespokeRemark = #{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="times != null">
+				besp_BespokeTimes = #{times,jdbcType=VARCHAR},
+			</if>
+			<if test="price != null">
+				besp_BespokePrice = #{price,jdbcType=DECIMAL},
+			</if>
+			<if test="sts != null">
+				besp_BespokeStatus = #{sts,jdbcType=INTEGER},
+			</if>
+			<if test="cdate != null">
+				besp_Createdate = #{cdate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="udate != null">
+				besp_Updatedate = #{udate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="hid != null">
+				besp_ElectricPileHead = #{hid,jdbcType=INTEGER},
+			</if>
+			<if test="user != null">
+				besp_UserInfo = #{user,jdbcType=INTEGER},
+			</if>
+			<if test="payCd != null">
+				besp_ResePaymentCode = #{payCd,jdbcType=VARCHAR},
+			</if>
+			<if test="froAmt != null">
+				besp_FrozenAmt = #{froAmt,jdbcType=DECIMAL},
+			</if>
+			<if test="begTim != null">
+				besp_BeginTime = #{begTim,jdbcType=TIMESTAMP},
+			</if>
+			<if test="endTim != null">
+				besp_EndTime = #{endTim,jdbcType=TIMESTAMP},
+			</if>
+			<if test="rltyTim != null">
+				besp_RealityTime = #{rltyTim,jdbcType=TIMESTAMP},
+			</if>
+			<if test="ordTp != null">
+				besp_OrderType = #{ordTp,jdbcType=INTEGER},
+			</if>
+			<if test="clitip != null">
+				besp_appclientip = #{clitip,jdbcType=VARCHAR},
+			</if>
+			<if test="uOrg != null">
+				besp_UserOrigin = #{uOrg,jdbcType=TINYINT},
+			</if>
+			<if test="occFroAmt != null">
+				besp_OccurFrozenAmt = #{occFroAmt,jdbcType=DECIMAL},
+			</if>
+			<if test="pMode != null">
+				besp_PayMode = #{pMode,jdbcType=INTEGER},
+			</if>
+			<if test="orgNo != null">
+				besp_OrgNo = #{orgNo,jdbcType=INTEGER},
+			</if>
+		</set>
+		where pk_Bespoke = #{id,jdbcType=BIGINT}
+	</update>
+
+	<select id="selectOne" resultMap="BaseResultMap" parameterType="TblBespoke">
+		select ${rtColumns}
+		from tbl_bespoke
+		<where>
+			1=1
+			<if test="id != null">
+				and pk_Bespoke = #{id}
+			</if>
+		</where>
+	</select>
+
+	<select id="getCount" resultType="int" parameterType="TblBespoke">
+		select count(1) from tbl_Bespoke t
+		<where>
+			t.besp_BespokeStatus!=5 and t.besp_BespokeStatus!=6
+			<if test="bslev != null">
+				and exists (select 1 from tbl_user u where u.user_id =
+				t.besp_UserInfo and u.user_leval = #{bslev})
+			</if>
+			<if test="eids != null">
+				and besp_ElectricPileId in
+				<foreach item="item" index="index" collection="eids" open="("
+					separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			<if test="hids != null">
+				and besp_ElectricPileHead in
+				<foreach item="item1" index="index" collection="hids" open="("
+					separator="," close=")">
+					#{item1}
+				</foreach>
+			</if>
+			<if test="payCds != null">
+				and besp_ResePaymentCode in
+				<foreach item="item2" index="index" collection="payCds"
+					open="(" separator="," close=")">
+					#{item2}
+				</foreach>
+			</if>
+			<if test="userIds != null">
+				and besp_UserInfo in
+				<foreach item="item3" index="index" collection="userIds"
+					open="(" separator="," close=")">
+					#{item3}
+				</foreach>
+			</if>
+			<if test="slcBgDate !=null and slcBgDate !=''">
+				<![CDATA[AND TO_DAYS(besp_BeginTime) >= TO_DAYS(#{slcBgDate})]]>
+			</if>
+			<if test="slcEdDate !=null and slcEdDate !=''">
+				<![CDATA[AND TO_DAYS(besp_BeginTime) <= TO_DAYS(#{slcEdDate})]]>
+			</if>
+			<if test="user != null">
+				and t.besp_UserInfo = #{user}
+			</if>
+			<if test="payCd != null">
+				and besp_ResePaymentCode like concat('%',#{payCd},'%')
+			</if>
+			<if test="ordTp != null">
+				and besp_OrderType = #{ordTp}
+			</if>
+		</where>
+	</select>
+
+	<select id="getList" resultMap="BaseResultMap" parameterType="TblBespoke">
+		select ${rtColumns} from tbl_Bespoke t
+		<where>
+			t.besp_BespokeStatus!=5 and t.besp_BespokeStatus!=6
+			<if test="bslev != null">
+				and exists (select 1 from tbl_user u where u.user_id =
+				t.besp_UserInfo and u.user_leval = #{bslev})
+			</if>
+			<if test="eids != null">
+				and besp_ElectricPileId in
+				<foreach item="item" index="index" collection="eids" open="("
+					separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			<if test="hids != null">
+				and besp_ElectricPileHead in
+				<foreach item="item1" index="index" collection="hids" open="("
+					separator="," close=")">
+					#{item1}
+				</foreach>
+			</if>
+			<if test="payCds != null">
+				and besp_ResePaymentCode in
+				<foreach item="item2" index="index" collection="payCds"
+					open="(" separator="," close=")">
+					#{item2}
+				</foreach>
+			</if>
+			<if test="userIds != null">
+				and besp_UserInfo in
+				<foreach item="item3" index="index" collection="userIds"
+					open="(" separator="," close=")">
+					#{item3}
+				</foreach>
+			</if>
+			<if test="slcBgDate !=null and slcBgDate !=''">
+				<![CDATA[AND TO_DAYS(besp_BeginTime) >= TO_DAYS(#{slcBgDate})]]>
+			</if>
+			<if test="slcEdDate !=null and slcEdDate !=''">
+				<![CDATA[AND TO_DAYS(besp_BeginTime) <= TO_DAYS(#{slcEdDate})]]>
+			</if>
+			<if test="user != null">
+				and t.besp_UserInfo = #{user}
+			</if>
+			<if test="payCd != null">
+				and besp_ResePaymentCode like concat('%',#{payCd},'%')
+			</if>
+			<if test="ordTp != null">
+				and besp_OrderType = #{ordTp}
+			</if>
+			<if test="pager !=null">limit #{pager.offset},#{pager.numPerPage}</if>
+		</where>
+	</select>
+
+</mapper>

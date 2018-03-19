@@ -1,0 +1,10 @@
+package com.wanma.ims.common.facade;
+
+
+
+/**
+ * 公司FacadeService
+ */
+public interface CompanyFacadeService {
+    
+}

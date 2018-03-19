@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.dao.CmsFeeLimitMapper">	
+	<!-- 城市费率数量 -->
+	<select id="searchServiceLimitCount" parameterType="map" resultType="long">
+		SELECT
+			count(CITY_ID)
+		FROM 
+			tb_m_city 
+		<where>
+			<if test="provinceId!=null and provinceId !=''">
+			and	PROVINCE_ID=#{provinceId}
+			</if>
+			<if test="cityId!=null and cityId !=''">
+			and	CITY_ID=#{cityId}
+			</if>
+		</where>
+	</select>
+	<!-- 查询出城市费率列表 -->
+	<select id="searchServiceLimitList" parameterType="map" resultType="hashMap">
+		SELECT
+			CITY_ID as cityId,
+		    CITY_NAME as cityName,
+		    serviceLimit,
+		    PROVINCE_ID  as provinceId,
+		    CREATE_DATE as createDate,
+		    LAST_UPDATE_DATE as lastUpdatedate
+		FROM 
+			tb_m_city 
+		<where>
+			<if test="provinceId!=null and provinceId !=''">
+			and	PROVINCE_ID=#{provinceId}
+			</if>
+			<if test="cityId!=null and cityId !=''">
+			and	CITY_ID=#{cityId}
+			</if>
+		</where>
+		ORDER BY createDate DESC		
+		<if test="offset!= null and numPerPage !=null">limit #{offset},#{numPerPage}</if>
+	</select>
+	<!-- 根据城市ID查出该城市费率详情  -->
+		<select id="findServiceLimit" parameterType="map"  resultType="hashMap">
+		SELECT
+			CITY_ID as cityId,
+		    CITY_NAME as cityName,		    
+		    PROVINCE_ID  as provinceId,
+		    CREATE_DATE  as createDate,
+		    LAST_UPDATE_DATE as lastUpdatedate,
+		    serviceLimit	    
+		FROM 
+			tb_m_city where CITY_ID = #{cityId}		
+	</select> 
+	<!-- 更改城市汇率 -->
+	<update id="updateServiceLimitById" parameterType="map">
+	update tb_m_city set
+		CITY_ID=#{cityId},
+		<if test="cityName != null and cityName != ''">
+			CITY_NAME=#{cityName},
+		</if>
+		<if test="provinceId != null and provinceId != ''">
+			PROVINCE_ID=#{provinceId},
+		</if>
+		serviceLimit = #{serviceLimit}
+		where
+		CITY_ID=#{cityId} 
+	</update>
+	
+	<select id="getMaxHighCheckCount" parameterType="map"  resultType="int">
+		select count(1) from tbl_rateinformation t where t.raIn_province_id = #{provinceId} and t.raIn_city_id = #{cityId} and t.raIn_ServiceCharge > #{serviceLimit}	
+	</select> 
+	
+</mapper>

@@ -1,0 +1,33 @@
+{
+	 "title" : {
+        "text": ""
+    },
+    "tooltip" : {
+        "trigger": "axis"
+    },
+    "legend": {
+        "data":[""]
+    },
+    "toolbox": {
+        "show" : true,
+        "feature" : {
+        	"outView":{"show": false,color: '#8b3a3a'},
+        	"innerView":{"show": true,color: '#8b3a3a'},
+            "mark" : {"show": false},
+            "dataView" : {"show": false, "readOnly": false},
+            "magicType" : {"show": false, "type": ["line", "bar"]},
+            "restore" : {"show": false},
+            "saveAsImage" : {"show": false}
+        }
+    },
+    "xAxis" : [],
+    "yAxis" : [
+			    {
+			            "type" : 'value',
+			            "name" : '年度注册人数',
+			            "axisLabel" : {
+			                "formatter": '{value} 人'
+			            }
+			        }]         
+    
+}

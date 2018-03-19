@@ -1,0 +1,734 @@
+@charset "utf-8";
+/* CSS Document */
+.page{
+    margin-bottom: 40px;
+}
+.content {
+    width: 1162px;
+    border-radius: 15px;
+    margin: 0px auto;
+    overflow: hidden;
+}
+.list-tit{
+    text-indent: 10px;
+    height: 60px;
+    line-height: 60px;
+    font-size: 16px;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+}
+.list-tit dt,.list-tit dd{
+    float: left;
+}
+.list-tit dd a{
+    color: #333;
+    padding: 10px 19px;
+    border-radius: 6px;
+    font-size: 16px;
+    margin-left: 30px;
+}
+.list-tit dd a.current{
+    color: #fff;
+    background-color: #f37814;
+}
+/*****查找电桩内容样式*******/
+.search-electric {
+    width: 1160px;
+    padding-bottom: 20px;
+    margin: 10px auto;
+    overflow: hidden;
+}
+
+.search-electric ul.search-title {
+    overflow: hidden;
+}
+
+.search-electric ul.search-title li {
+    width: 185px;
+    height: 35px;
+    font-family: "微软雅黑";
+    float: left;
+    color: #3f3a39;
+    font-size: 18px;
+    text-align: center;
+    line-height: 35px;
+    border: 1px solid #dddddd;
+    cursor: pointer;
+}
+
+.search-electric ul.search-title li.current {
+    background-color: #fabf1b;
+    color: #fff;
+    border: none;
+    height: 37px;
+    line-height: 37px;
+}
+
+.search-electric ul.search-title li img {
+    width: 21px;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+
+.search-electric .search-con {
+    margin-top: 20px;
+    font-family: "微软雅黑";
+}
+
+/***第一个内容样式******/
+.search-electric .search-con .list-con {
+    border: 1px solid #dddddd;
+    overflow: hidden;
+}
+
+.search-electric .search-con .list-con .list-tit {
+    font-size: 14px;
+    line-height: 40px;
+    text-indent: 10px;
+    border-bottom: 1px dashed #dddddd;
+    position: relative;
+
+}
+
+.search-electric .search-con .list-con .list-tit img {
+    vertical-align: middle;
+    margin-right: 10px;
+
+}
+
+.search-electric .search-con .list-con ul {
+    padding-left: 40px;
+    overflow: hidden;
+
+}
+
+.search-electric .search-con .list-con .area-tit ul {
+    display: inline-block;
+    overflow: hidden;
+    position: absolute;
+    top: 5px;
+    left: 80px;
+
+}
+
+.search-electric .search-con .list-con .area-tit ul li {
+    float: left;
+    width: 80px;
+    line-height: 30px;
+    height: 30px;
+    padding: 0 !important;
+    border-radius: 8px;
+    text-align: left;
+    cursor: pointer;
+    margin: 0 15px;
+
+}
+
+.search-electric .search-con .list-con .area-tit ul li.area-current {
+    background-color: #f37814;
+    color: #fff;
+    text-align: center;
+}
+
+.search-electric .search-con .list-con ul li {
+    overflow: hidden;
+    font-size: 14px;
+    color: #666666;
+    padding: 10px 0;
+}
+
+.search-electric .search-con .list-con ul li span {
+    display: block;
+    float: left;
+    width: 80px;
+    line-height: 30px;
+    height: 30px;
+    text-align: center;
+}
+
+.search-electric .search-con .list-con ul li ul {
+    overflow: hidden;
+    padding-left: 0;
+}
+
+.search-electric .search-con .list-con ul li ul li {
+    float: left;
+    width: 80px;
+    line-height: 30px;
+    height: 30px;
+    padding: 0;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    margin: 0 15px;
+}
+
+.search-electric .search-con .list-con ul li ul li.current {
+    background-color: #f37814;
+    color: #fff;
+    text-align: center;
+}
+.map-con{
+    padding-top: 20px;
+    position: relative;
+    height:870px;
+    overflow: hidden;
+	display: none;
+}
+/***第二部分内容样式********/
+.electric-num {
+    border: 1px solid #dddddd;
+    overflow: hidden;
+    margin-top:30px;
+    padding-bottom: 20px;
+}
+
+.electric-num .num-title {
+    overflow: hidden;
+    background-color: #efece8;
+
+}
+.electric-num .num-title li{
+    width: 110px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    font-family: "微软雅黑";
+    font-size: 18px;
+    float: left;
+    color: #111111;
+    cursor: pointer;
+    border-left: 1px solid #dddddd;
+    border-right: 1px solid #dddddd;
+}
+.electric-num .num-title li.num-current{
+    background-color: #ff8800;
+    border: none;
+}
+.electric-num .electric-con{
+    overflow: hidden;
+}
+.electric-num .electric-con li{
+    font-family: "微软雅黑";
+    float: left;
+    width: 360px;
+    overflow: hidden;
+    margin-top:20px;
+    margin-left: 18px;
+    border: 1px solid #dddddd;
+    padding-bottom: 10px;
+    float: left;
+}
+.electric-num .electric-con li img{
+    width: 360px;
+}
+.electric-num .electric-con li h4{
+    font-size: 18px;
+    font-weight: normal;
+    color: #111111;
+    text-indent: 13px;
+    position: relative;
+}
+.electric-num .electric-con li h4 .num{
+    position: absolute;
+    top: 0px;
+    right: 5px;
+    color: #f18d2c;
+}
+.electric-num .electric-con li p{
+    text-indent: 20px;
+    color:#696969;
+    font-size: 14px;
+}
+.electric-num .electric-con .tips-wrap{
+    font-size: 0;
+    text-indent: 0;
+    margin-left: 20px;
+}
+.tips-wrap .tips{
+    vertical-align: middle;
+    display: inline-block;
+    margin-right: 5px;
+    padding:6px 8px;
+    background-color: #ddd;
+    font-size: 12px;
+    color: #333;
+    text-align: center;
+    border-radius: 5px;
+}
+.electric-num .electric-con li p img{
+    width:12px;
+}
+/*****查找电桩内容样式结束*******/
+
+/*****电桩内容详情样式*******/
+/*{*/
+    /*width: 1160px;*/
+    /*padding-bottom: 20px;*/
+    /*margin: 10px auto;*/
+    /*overflow: hidden;*/
+/*}*/
+.electri-inf{
+    width: 1160px;
+    overflow: hidden;
+    padding-bottom: 50px;
+    border-bottom: 1px solid #dddddd;
+}
+.electri-inf a{
+    display: block;
+    background-color: #fabf13;
+    width:156px ;
+    height: 50px;
+    line-height:50px ;
+    color: #fff;
+    text-align: center;
+    text-decoration: none;
+    font-family: "微软雅黑";
+    font-size: 18px;
+
+}
+.electri-inf .left-con{
+    float: left;
+}
+.electri-inf .left-con p{
+    color: #5b5b5b;
+    font-family: 18px;
+    text-indent: 40px;
+    line-height: 36px;
+}
+
+.left-con .same{
+    background-repeat: no-repeat;
+}
+.left-con .num{
+    background-image: url(../images/icon/ligth_.png);
+    background-position: 0 5px;
+    margin-top: 20px;
+}
+.left-con .static{
+    background-image: url(../images/icon/light.png);
+    background-position: 0 7px;
+}
+.static .ml10{
+    color: #ea4472;
+}
+.left-con .address{
+    background-image: url(../images/icon/location.png);
+    background-position: 0 9px;
+}
+.left-con .tel{
+    background-image: url(../images/icon/iphone.png);
+    background-position: 0 5px;
+}
+.cs-wrap{
+    height: 50px;
+    line-height: 50px;
+}
+.collect,.share{
+    color: #ea4472;
+    font-size: 20px; 
+    background:  url(../images/icon/Shape-24.png) 0 center no-repeat;
+    text-indent: 40px;
+}
+.share{
+    background-image:  url(../images/icon/97.png); 
+    color: #333;
+    margin-left: 40px;
+}
+
+.share .share-icon .icon{
+    float: left;
+    margin: 10px 0 0 10px;
+    width: 30px;
+    height: 30px;
+    background: #fff url(../images/icon/weibo-icon.png) 0 0 no-repeat;
+    -webkit-background-size: 100%;
+    -moz-background-size: 100%;
+    -ms-background-size: 100%;
+    -o-background-size: 100%;
+    background-size: 100%;
+}
+.share .share-icon .qsoze{
+    background-image: url(../images/icon/kongjian.png);
+}
+.share .share-icon .friends{
+    background-image: url(../images/icon/friends.png);
+}
+.electri-inf .left-con h3{
+    font-size: 28px;
+    color: #5b5b5b;
+}
+.electri-inf .left-con h3 img{
+    vertical-align: middle;
+}
+.electri-inf .left-con h3 span{
+    color: #8ac457;
+    font-size: 24px;
+}
+.electri-inf .right-con{
+    width: 600px;
+    float: right;
+}
+.electric-main{
+    padding: 20px 0;
+}
+.electric-main .left-main{
+    width:100% ;
+    float: left;
+    overflow: hidden;
+}
+h4.tit{
+    font-size: 22px;
+    color: #F08307;
+    border-bottom: 2px solid #aca39e;
+    line-height: 40px;
+    position: relative;
+    letter-spacing: 1px;
+}
+
+.electric-main .left-main .electric-text{
+    float: left;
+    overflow: hidden;
+    width: 430px;
+    margin-left: 15px;
+}
+.electric-main .left-main .electric-text .cheng_p{
+    color: #f08300;
+    font-size: 20px;
+    line-height: 50px;
+
+}
+.electric-main .left-main .electric-text p{
+    line-height: 50px;
+    font-size: 20px;
+}
+.electric-main .left-main .electric-text p span{
+    color: #aca39e;
+    font-size: 18px;
+}
+.electric-main .left-main .electric-text p img{
+    width:112px ;
+    float: none;
+    display: inline;
+}
+.electric-main .left-main .electric-text a{
+    color: #f08300;
+    margin: 0 30px;
+    text-decoration: none;
+}
+.electric-main .left-main .ping-con{
+    overflow: hidden;
+}
+.electric-main .left-main .ping-con li{
+    padding: 20px 0;
+    border-bottom: 1px solid #dddddd;
+    overflow: hidden;
+}
+.electric-main .left-main .ping-con li img{
+    float: left;
+    width:80px;
+    height:80px;
+}
+.electric-main .left-main .ping-con li .ping-main{
+    float:left;
+    width:780px;
+    overflow: hidden;
+    position: relative;
+    margin-left: 18px;
+}
+.electric-main .left-main .ping-con li .ping-main p{
+    font-size:16px ;
+    color: #221815;
+    line-height: 24px;
+}
+.electric-main .left-main .ping-con li .ping-main p span{
+    color: #989696;
+    font-size: 16px;
+    margin-left:15px;
+}
+.electric-main .left-main .ping-con li .ping-main img{
+    width: 120px;
+    position: absolute;
+    right: 10px;
+    height: 30px;
+    top: 0;
+}
+.electric-main .right-main{
+    float: right;
+    width: 230px;
+    overflow: hidden;
+    padding: 10px 20px;
+    border: 1px solid #dddddd;
+}
+.electric-main .right-main h4{
+    line-height: 40px;
+}
+.electric-main .right-main ul li img{
+    width: 230px;
+}
+.electric-main .right-main ul li .star_icon{
+    width: 120px;
+}
+.electric-main .right-main ul li p{
+    font-size: 16px;
+    color: #343434;
+}
+.electric-main .right-main ul li p span{
+    color: #999999;
+    font-size:12px;
+    margin-left: 10px;
+}
+
+.left-con img{
+    width: 570px;
+    height: 380px;
+}
+.map-wrap{
+    padding-top: 20px;
+    position: relative;
+    height:242px;
+    overflow: hidden;
+}
+.map-wrap .check{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    background: rgba(0,0,0,0.5);
+}
+.check-icon{
+    position: absolute;
+    left: 50%;
+    top: 10px;
+    color: #fff;
+    margin-left: -60px;
+    background:  url(../images/icon/Zoom-In.png) 0 0 no-repeat;
+    text-indent: 30px;
+}
+.reviews{
+    width: 100%;
+    height: 137px;
+    padding-top: 10px;
+    border: 1px solid #ccc;
+    text-indent: 20px;
+    box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    -moz-box-sizing:border-box;
+    -ms-box-sizing:border-box;
+    -o-box-sizing:border-box;
+    resize: none;
+}
+.star-wrap{
+    position: absolute;
+    right: 0;
+    top: -1px;
+}
+.star-wrap .f18{
+    font-size: 18px;
+    color: #333;
+}
+.star-wrap .img-star{
+    width: 21px;
+    height: 21px;
+}
+.submit-btn{
+    padding: 13px 50px;
+    background-color: #f08307;
+    color: #fff;
+    font-size: 22px;
+    border-radius: 5px;
+}
+.star-wrap .more{
+    text-decoration: underline;
+    top: 5px;
+}
+/* 评价 */
+.ping-con{
+    overflow: hidden;
+}
+.ping-con li{
+    padding: 20px 0;
+    border-bottom: 1px solid #dddddd;
+    overflow: hidden;
+}
+.ping-con li img{
+    float: left;
+    width:80px;
+    height:80px;
+}
+.ping-con li .ping-main{
+    float:left;
+    width:1060px;
+    overflow: hidden;
+    position: relative;
+    margin-left: 18px;
+}
+.ping-con li .ping-main p{
+    font-size:16px ;
+    color: #221815;
+    line-height: 24px;
+}
+.ping-con li .ping-main p span{
+    color: #989696;
+    font-size: 16px;
+    margin-left:15px;
+}
+.ping-con li .ping-main .star{
+    width: 120px;
+    position: absolute;
+    right: 10px;
+    height: 30px;
+    top: 0;
+}
+
+/* api details */
+.select-l .rest,.select-l .busy{
+    height: 30px;
+    line-height: 30px;
+}
+.select-r a{
+    border-radius: 5px;
+    background-color: #f0830f;
+    margin-top: 20px;
+}
+.parameters{
+    padding: 10px 20px;
+    color: #555;
+}
+.parameters li{
+    padding: 10px 0;
+}
+.fileImg-wrap li{
+    float: left;
+    min-width: 54px;
+    min-height: 54px;
+    background:  url(../images/icon/fileBg.png) 0 0 no-repeat;
+    margin-right: 30px;
+    position: relative;
+}
+ .fileImg-wrap li .size{
+    min-width: 54px;
+    min-height: 54px; 
+ }
+ /* new goos */
+ .newGoods .electric-num{
+    margin-top: 0;
+ }
+.newGoods .price{
+    line-height: 30px;
+}
+.newGoods .price .num{
+    font-size: 22px;
+}
+/* details select */   
+.selectNum .sort{
+    background-image: url(../images/icon/sort.png);
+    background-position:0 7px;
+}
+.selectNum .car{
+    background-image: url(../images/icon/car.png);
+    background-position:0 7px;
+}
+.selectNum .list{
+    background-image: url(../images/icon/num.png);
+    background-position:0 7px;
+}
+.same{
+    color: #5B5B5B;
+    text-indent: 40px;
+    line-height: 36px;
+}
+
+.count-wrap .less,.count-wrap .add,.count-wrap .digital{
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    line-height: 50px;
+    border:1px solid #ccc;
+    text-indent: 0;
+    cursor: pointer;
+}
+.count-wrap .digital{
+    width: 60px;
+    border-left: none;
+    border-right: none;
+    cursor: default;
+}
+.selectNum .btn-wrap button{
+    width: 210px;
+    height: 60px;
+    line-height: 60px;
+    text-align: center;
+    font-size: 22px;
+    border: 1px solid #f08307;
+    color: #f08307;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.cs-wrap .assess{
+    background: #fff url(../images/icon/pingjia.png) 0 center no-repeat;
+    text-indent: 35px;
+    font-size: 20px;
+}
+.selectNum .btn-wrap button.current{
+    background-color: #f08307;
+    color: #fff
+}
+.order-details{
+    padding-top: 40px;
+}
+.order-details .odl-l{
+    width: 830px;
+}
+.services{
+    margin: 30px 0;
+    line-height: 40px;
+    background:  url(../images/icon/tel_icon.png) 0 center no-repeat;
+    color: #e92d65;
+    text-indent: 75px;
+    font-size: 20px;
+}
+.odl-r{
+    width: 314px;
+    border:1px solid #ccc;
+}
+.odl-r h4.tit{
+    color: #444;
+    border-bottom: 1px solid #ccc;
+    text-indent: 20px;
+    padding: 10px 0;
+}
+.assess-wrap{
+    padding:0 10px;
+}
+.assess-wrap li{
+    border-bottom: 1px solid #ccc;
+    padding: 10px 0;
+}
+.user-info .star-wrap{
+    position: static;
+}
+.assess-wrap li:last-child{
+    border: none;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

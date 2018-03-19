@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bluemobi.product.dao.CompanyPostMapper">
+	<resultMap type="CompanyPostModel" id="result_post">
+		<result property="companyId" column="company_id" />
+		<result property="companyName" column="company_name" />
+		<result property="postId" column="post_id" />
+		<result property="postName" column="post_name" />
+		<result property="sortKey" column="sort_key" />
+		<result property="notes" column="notes" />
+		<result property="createDate" column="create_date" />
+		<result property="createUser" column="create_user" />
+		<result property="lastUpdateDate" column="last_update_date" />
+		<result property="lastUpdateUser" column="last_update_user" />
+	</resultMap>
+
+	<insert id="addPost" parameterType="CompanyPostModel"
+		keyProperty="post_id">
+		insert into p_m_company_post
+		(
+		company_id,
+		post_id,
+		post_name,
+		sort_key,
+		notes,
+		create_user,
+		last_update_user
+		)
+		values
+		(
+		#{companyId},
+		#{postId},
+		#{postName},
+		#{sortKey},
+		#{notes},
+		#{createUser},
+		#{lastUpdateUser}
+		)
+	</insert>
+
+	<update id="modifyPost" parameterType="CompanyPostModel">
+		update p_m_company_post
+		<set>
+			<if test="postName!=null"> post_name=#{postName}, </if>
+			<if test="sortKey!=null"> sort_key=#{sortKey}, </if>
+			<if test="notes!=null"> notes=#{notes}, </if>
+			last_update_date=sysdate(),
+			<if test="lastUpdateUser!=null"> last_update_user=#{lastUpdateUser}, </if>
+		</set>
+		<where>
+			company_id=#{companyId}
+			and
+			post_id=#{postId}
+		</where>
+	</update>
+
+	<select id="getPostCountById" parameterType="CompanyPostModel"
+		resultType="int">
+		select count(post_id) as data_count from
+		p_m_company_post
+		where
+		company_id=#{companyId}
+		and post_id=#{postId}
+	</select>
+
+	<select id="findPost" parameterType="CompanyPostModel"
+		resultMap="result_post">
+		select
+		p_m_company_post.company_id,
+		p_m_company.notes as company_name,
+		p_m_company_post.post_id,
+		p_m_company_post.post_name,
+		p_m_company_post.sort_key,
+		p_m_company_post.notes,
+		p_m_company_post.create_date,
+		p_m_company_post.create_user,
+		p_m_company_post.last_update_date,
+		p_m_company_post.last_update_user
+		from
+		p_m_company_post
+		left join p_m_company on
+		p_m_company_post.company_id = p_m_company.company_id
+		where
+		p_m_company_post.company_id=#{companyId}
+		and
+		p_m_company_post.post_id =
+		#{postId}
+	</select>
+
+	<select id="getPostList" resultMap="result_post">
+		select
+		p_m_company_post.company_id,
+		p_m_company.notes as company_name,
+		p_m_company_post.post_id,
+		p_m_company_post.post_name,
+		p_m_company_post.sort_key,
+		p_m_company_post.notes,
+		p_m_company_post.create_date,
+		p_m_company_post.create_user,
+		p_m_company_post.last_update_date,
+		p_m_company_post.last_update_user
+		from
+		p_m_company_post
+		left join p_m_company on
+		p_m_company_post.company_id = p_m_company.company_id
+	</select>
+
+	<select id="searchPostCount" parameterType="CompanyPostModel"
+		resultType="long">
+		select
+		count(p_m_company_post.post_id) as data_count
+		from
+		p_m_company_post
+		left join p_m_company on
+		p_m_company_post.company_id = p_m_company.company_id
+		<where>
+			<if test="postId!=null"> and p_m_company_post.post_id like concat('%',#{postId},'%')</if>
+			<if test="postName!=null"> and p_m_company_post.post_name like concat('%',#{postName},'%')</if>
+			<if test="category!=null"> and p_m_company_post.category=#{category}</if>
+			<if test="notes!=null"> and p_m_company_post.notes=#{notes}</if>
+			<if test="createDate!=null"> and p_m_company_post.create_date=#{createDate}</if>
+			<if test="createUser!=null"> and p_m_company_post.create_user=#{createUser}</if>
+			<if test="lastUpdateDate!=null"> p_m_company_post.and last_update_date=#{lastUpdateDate}</if>
+			<if test="lastUpdateUser!=null"> p_m_company_post.and last_update_user=#{lastUpdateUser}</if>
+		</where>
+	</select>
+
+	<select id="searchPostList" parameterType="CompanyPostModel"
+		resultMap="result_post">
+		select
+		p_m_company_post.company_id,
+		p_m_company.notes as company_name,
+		p_m_company_post.post_id,
+		p_m_company_post.post_name,
+		p_m_company_post.sort_key,
+		p_m_company_post.notes,
+		p_m_company_post.create_date,
+		p_m_company_post.create_user,
+		p_m_company_post.last_update_date,
+		p_m_company_post.last_update_user
+		from
+		p_m_company_post
+		left join p_m_company on
+		p_m_company_post.company_id = p_m_company.company_id
+		<where>
+			<if test="postId!=null"> and p_m_company_post.post_id like concat('%',#{postId},'%')</if>
+			<if test="postName!=null"> and p_m_company_post.post_name like concat('%',#{postName},'%')</if>
+			<if test="category!=null"> and p_m_company_post.category=#{category}</if>
+			<if test="notes!=null"> and p_m_company_post.notes=#{notes}</if>
+			<if test="createDate!=null"> and p_m_company_post.create_date=#{createDate}</if>
+			<if test="createUser!=null"> and p_m_company_post.create_user=#{createUser}</if>
+			<if test="lastUpdateDate!=null"> p_m_company_post.and last_update_date=#{lastUpdateDate}</if>
+			<if test="lastUpdateUser!=null"> p_m_company_post.and last_update_user=#{lastUpdateUser}</if>
+		</where>
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<delete id="removePost" parameterType="String">
+		delete from
+		p_m_company_post where
+		company_id=#{companyId}
+		and
+		post_id=#{postId}
+	</delete>
+
+	<select id="getMenuPostList" parameterType="String" resultMap="result_post">
+		select
+		p_m_company_post.company_id,
+		p_m_company.notes as company_name,
+		p_m_company_post.post_id,
+		p_m_company_post.post_name,
+		p_m_company_post.sort_key,
+		p_m_company_post.notes
+		from
+		p_m_menu_post,
+		p_m_company_post
+		left join p_m_company on
+		p_m_company_post.company_id = p_m_company.company_id
+		where
+		p_m_company_post.post_id =
+		p_m_menu_post.post_id
+		and
+		p_m_menu_post.menu_id = #{menuId}
+	</select>
+
+	<select id="getActionPostList" parameterType="String" resultMap="result_post">
+		select
+		p_m_company_post.company_id,
+		p_m_company.notes as company_name,
+		p_m_company_post.post_id,
+		p_m_company_post.post_name,
+		p_m_company_post.sort_key,
+		p_m_company_post.notes
+		from
+		p_m_action_post,
+		p_m_company_post
+		left join p_m_company on
+		p_m_company_post.company_id = p_m_company.company_id
+		where
+		p_m_company_post.post_id =
+		p_m_action_post.post_id
+		and
+		p_m_action_post.action_id = #{actionId}
+	</select>
+
+	<select id="getAppApiPostList" parameterType="String" resultMap="result_post">
+		select
+		p_m_company_post.company_id,
+		p_m_company.notes as company_name,
+		p_m_company_post.post_id,
+		p_m_company_post.post_name,
+		p_m_company_post.sort_key,
+		p_m_company_post.notes
+		from
+		p_m_app_api_post,
+		p_m_company_post
+		left join p_m_company on
+		p_m_company_post.company_id = p_m_company.company_id
+		where
+		p_m_company_post.post_id =
+		p_m_app_api_post.post_id
+		and
+		p_m_app_api_post.app_api_id = #{appApiId}
+	</select>
+
+</mapper>

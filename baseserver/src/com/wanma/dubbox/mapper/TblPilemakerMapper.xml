@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dubbox.dao.TblPilemakerMapper">
+
+	<resultMap id="tblPilemakerResultMap" type="TblPilemaker">
+		<id property="id" column="pk_Carmaker" />
+		<result property="name" column="maker_Name" />
+		<result property="remark" column="maker_Remark" />
+		<result property="cdate" column="maker_Createdate" />
+		<result property="udate" column="maker_Updatedate" />
+	</resultMap>
+
+	<insert id="insert" parameterType="TblPilemaker">
+		insert into tbl_pilemaker (
+		maker_Name,
+		maker_Remark,
+		maker_Createdate,
+		maker_Updatedate
+		)values (
+		#{name},
+		#{remark},
+		sysdate(),
+		sysdate()
+		)
+	</insert>
+
+	<!-- 更新 -->
+	<update id="update" parameterType="TblPilemaker">
+		update tbl_pilemaker set
+		<if test="name != null">
+			maker_Name=#{name},
+		</if>
+		<if test="remark != null">
+			maker_Remark=#{remark},
+		</if>
+		maker_Updatedate=sysdate()
+		where
+		pk_Carmaker=#{id}
+	</update>
+
+
+	<delete id="delete" parameterType="TblPilemaker">
+		delete from
+		tbl_pilemaker
+		where
+		1=1
+		<if test="id != null">
+			and pk_Carmaker=#{id}
+		</if>
+		<if test="pkIds != null">
+			and pk_Carmaker in
+			<foreach item="item" index="index" collection="pkIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+	</delete>
+
+	<!-- 查询单条记录 -->
+	<select id="selectOne" parameterType="TblPilemaker" resultMap="tblPilemakerResultMap">
+		select
+		${rtColumns}
+		from tbl_pilemaker
+		where
+		pk_Carmaker=#{id}
+	</select>
+
+	<!-- 查询列表数量 -->
+	<select id="getCount" parameterType="TblPilemaker" resultType="int">
+		select count(1)
+		from tbl_pilemaker c
+		where 1=1
+		<if test="name != null and name !=''">
+			and maker_Name=#{name}
+		</if>
+		order by maker_Updatedate desc
+	</select>
+
+	<!-- 获取列表 -->
+	<select id="getList" parameterType="TblPilemaker" resultMap="tblPilemakerResultMap">
+		select ${rtColumns}
+		from tbl_pilemaker c
+		where 1=1
+		<if test="name != null and name !=''">
+			and maker_Name=#{name}
+		</if>
+		order by maker_Updatedate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+</mapper>

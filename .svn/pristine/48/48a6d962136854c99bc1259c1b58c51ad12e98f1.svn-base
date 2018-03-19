@@ -1,0 +1,268 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>【爱充网】-智能充电桩厂家,APP充电桩,智能充电桩安装,电动车充电服务点,智能充电设施销售,电动汽车充电桩厂商</title>
+<meta name="description" content="爱充网致力新能源充电设施服务，主营厂商业务智能充电桩、APP充电桩、智能充电桩安装、电动汽车充电桩、电动车充电服务、智能充电设施销售，系万马控股集团下充电桩厂家,充电服务点网络平台的全资子公司，充电设施等通过ISO 9001:2008标准认证，销售质量可靠。">
+<meta name="keywords" content="爱充,充电桩,充电桩APP,汽车充电服务,电动车充电,充电桩厂家,智能充电桩,充电桩安装,充电设施销售">
+<link href="/favicon.ico" type="image/x-icon" rel="shortcut icon">
+<link href="static/css/page.css" rel="stylesheet" type="text/css"/>
+<link href="static/css/reset.css" rel="stylesheet" type="text/css"/>
+<link href="static/css/infobox.css" rel="stylesheet" type="text/css"/>
+
+<link href="static/css/style.css" rel="stylesheet" type="text/css" /><!--全局-->
+<link href="static/css/loginBox.css" rel="stylesheet" type="text/css"/>
+<link href="static/css/archefoucs.css" rel="stylesheet" type="text/css"/>
+<!-- common js aere -->
+<script src="static/js/jquery-1.10.2.min.js" type="text/javascript"></script>
+<script src="static/js/archefoucs.js" type="text/javascript"></script><!--首页通栏幻灯调用-->
+<script src="static/js/index/index.js" type="text/javascript"></script><!--加载图片首页通栏幻灯调用-->
+<script src="static/js/respond.src.js"></script><!--首页的四格响应式布局ie6-8兼容性插件-->
+<script type="text/javascript">
+	var basepath="";
+	var this_tag = "";	
+</script>
+</head>
+<body>
+
+<!--导航-->
+<div class="NavWarp">
+  <div class="Nav">
+    <div class="Logo"></div>
+    <div class="NavMu">
+      <ul class="70w">
+        <li id="index" 				  class="ab abcd"><a href="index.html">首页</a></li>
+        <li id="packageCase" 		  class="abcd"><a href="case.html">方案案例</a></li>
+        <!-- <li id="electricDistribution" class="abcd"><a href="electric/search.do">电桩分布</a></li> -->
+        <li id="huodongMenu"  	  class="abcd"><a href="activity.html">活动中心</a></li>
+        <li id="hangyeMenu"   	  class="abcd"><a href="company.html">行业动态</a></li>
+      </ul>
+      <!--登录&注册-->
+      <!-- <ul class="Login 30w offline" style="display:none;">
+        <li class="abc" id="login"><a>登录</a></li>
+        <li class="abc" id="regist"><a>注册</a></li>
+      </ul> -->      
+      <!--登录后出现个人中心-->
+      <!-- <ul class="online" style="display:none;">
+        <li class="abcd abcd-h"><a href="/mycenter.do">个人中心</a></li>
+      </ul>      
+      <ul class="HasLogged online" style="display:none;">
+        <li class="Nickname" id="userAccount"></li>
+        <li class="Logout"><a  class="logoutAll">注销</a></li>
+      </ul> -->
+     
+    </div>
+  </div>
+</div><div style="clear:both;"></div>
+<!-- 导航结束 -->
+
+
+<!--通栏大图-->
+<div class="ImgShow">
+
+    <div id="topguangao" class="header">
+      <div class="gg" id="gg">
+        <div class="ggLoading">
+          <div class="ggLoading2"><em>精彩活动载入中</em></div>
+        </div>
+        <div class="ggs">
+          <div class="ggBox" id="ggBox"> 
+        </div>
+        <div class="ggb">
+          <div class="ggBtns" id="ggBtns" > 
+          </div>
+        </div>
+      </div>
+    </div>
+
+</div>
+
+<!--一行四列图标-->
+<div class="container">
+  <div class="col-four-1"><a title="申请购桩(智能快/慢充电桩)" href="#"></a></div>
+  <div class="col-four-2"><a title="申请智能电桩入网" href="#"></a></div>
+  <div class="col-four-3"><a title="充电桩APP下载" href="http://www.eichong.com/app/app.html"></a></div>
+  <div class="col-four-4"><a title="充电桩管理" href="http://www.eichong.com/wanma" target="_blank"></a></div>
+</div>
+
+<!--/*首页的精彩活动&行业资讯-->
+<div class="Wonderful">
+
+  <div class="mar_center">
+    <div class="cont_left">
+      <dl class="tu_left">
+        <dt><img src="static/images/img/icon-1.png" width="30" height="30" /></dt>
+        <dd><img src="static/images/img/huodong.png" width="250" height="80" alt="精彩活动，不容错过" /></dd>
+        <dd><a href="activity.html"><img src="static/images/img/huodong_nav.png" width="110" height="40" alt="更多" /></a></dd>
+      </dl>
+    </div>
+    <div class="cont_right">
+      <ul class="tu_right">
+        <li class="Section" id="dt1"><a href="/activity.html"><img src="static/images/img/more.png" width="75" height="20" alt="More >" />精彩活动</a></li>
+<!--         <li class="EM" ><a href="#"><img src="static/images/huodong/1.jpg" width="640" height="240" /></a><a href="#">“小豆豆”来啦！众泰“知豆”万马团购季</a></li>
+   <li class="Row"><span>2015-07-22</span><a href="#">发布的活动标题发布的活动标题发布的活动标题</a></li>
+        <li class="Row"><span>2015-07-16</span><a href="#">发布的活动标题发布的活动标题发布的活动标题发布的活动标题</a></li> -->
+      </ul>
+    </div>
+  </div>
+  <div style="clear:both;"></div>
+</div>
+<!--/*首页的精彩活动&行业资讯-->
+<div class="Wonderful mar_top10">
+
+  <div class="mar_center">
+    <div class="cont_left">
+      <dl class="tu_left">
+        <dt><img src="static/images/img/icon-2.png" width="30" height="30" /></dt>
+        <dd><img src="static/images/img/dongtai.png" width="250" height="80" alt="爱充动态，行业资讯" /></dd>
+        <dd><a href="/company.html"><img src="static/images/img/dongtai_nav.png" width="110" height="40" alt="更多" /></a></dd>
+      </dl>
+    </div>
+    <div class="cont_right">
+      <ul class="tu_right">
+        <li class="Section" id="dt2"><a href="/company.html"><img src="static/images/img/more.png" width="75" height="20" alt="More >" />最新动态</a></li>
+      </ul>
+    </div>
+  </div>
+  <div style="clear:both;"></div>
+</div>
+
+<!--首页关于我们-->
+<div class="Wonderful mar_top10">
+
+  <div class="mar_center">
+    <div class="about_left"><img src="static/images/img/aboutus.jpg" width="388" height="365" alt="爱充APP,充电桩服务简介" /></div>
+    <div class="about_right">
+      <dl>
+        <dt>关于爱充</dt>
+        <dd>&nbsp;&nbsp; 爱充网是由浙江爱充网络科技有限公司研发的，方便快捷的充电服务网络平台。爱充网络系万马联合控股集团下属全资子公司，公司成立于2014年，主要致力于为电动交通工具提供便捷、经济、环保的充电服务。业务范围包括电动车充电服务网络运营、智能充<a href="http://www.eichong.com/electric/search.do" style="color:#838383"><span lang="el" class="dianz">电桩</span></a>安装与运营、电动交通工具和充电设施的销售。</dd>
+        <!-- <dd><a href="/company.html"><img src="static/images/img/chakan_nav.png" width="110" height="40" alt="  " /></a></dd> -->
+      </dl>
+      <dl>
+        <dt>联系我们</dt>
+        <dd>地址：杭州市西湖区天际大厦1101室（天目山路181号）<br />
+          电话：0571-89731727<br />
+        全国服务热线：400-085-0006</dd>    
+      </dl>
+    </div>
+  </div>
+
+</div>
+
+<!--合作商家-->
+<div class="Wonderful mar_top10">
+  <div class="mar_center">
+    <dl class="hezuoshangjia">
+      <dt>合作商家</dt>
+      <dd><img src="static/images/img/hezuo.jpg" width="995" height="359" alt="智能充电桩厂家销售服务案例" /></dd>
+    </dl>
+  </div>
+</div>
+
+<!--关注我们-->
+<div class="WeiboFull mar_top10">
+  <div class="mar_center">
+    <dl class="Weibo">
+      <dt>关注我们</dt>
+      <dd>
+     <div class="WeiboShow" ><a href="javascript://"><img src="static/images/img/weixn2.png" width="60" height="60" alt="  " border="0" onMouseOver="this.src='static/images/img/weixn1.png'" onMouseOut="this.src='static/images/img/weixn2.png'" /></a>
+     <p class="WeiboShowImg"><img src="static/images/img/weixin.png" width="150" height="150" alt=" " /></p></div>
+     <div><a href="javascript://" onClick="javascript:window.open('http://weibo.com/p/1006065684810452/home?from=page_100606&mod=TAB#place')"><img src="static/images/img/sina2.png" width="60" height="60" alt="  " border="0" onMouseOver="this.src='static/images/img/sina1.png'" onMouseOut="this.src='static/images/img/sina2.png'" /></a></div></dd>
+    </dl>
+  </div>
+</div>
+<!--footer-->
+
+
+<div id="footContent" style="text-align:center; line-height:60px; color:#888; font-size:14px;width:100%;height:60px;background:#eee;bottom:0;margin:0 auto; ">浙江爱充网络科技有限公司    Copyright ©2017爱充网版权所有.浙ICP备15005865号-1</div>
+
+<div style="text-align:center; line-height:10px; color:#888; font-size:14px;width:100%;height:20px; "><a href="/" target="_blank" style="color:#3C3C3C">首 页</a> | <a href="/case.html" target="_blank" style="color:#3C3C3C">方案案例</a> | <a href="/activity.html" target="_blank" style="color:#3C3C3C">活动中心</a> | <a href="/company.html" target="_blank" style="color:#3C3C3C">行业动态</a> | <a href="/app/app.html" target="_blank" style="color:#3C3C3C">App下载</a></div>
+
+<div class="LogBox" id="loginBox" style="display: none;">
+<form class="validForm" name="loginForm" id="loginForm">
+    <dl class="LogMain">
+      <dt>
+      <a class="Close" id="closeLogin"></a>用户登录
+      <!-- <a class="shangjiaLink" href="/wanma/">企业商家入口</a> -->
+      </dt>
+      <dd class="ddTop"><span class="W180Left">登录账号</span>
+      <span class="W280Left"><input class="w280denglu" id="loginPhone"  name="userAccount" type="text" value="" placeholder="请输入手机号码"></span></dd>
+      <dd><span class="W180Left">输入密码:</span><span class="W280Left"><input class="w280denglu" name="userPassword" type="password" value=""></span></dd>
+      <dd><span class="W180Left">输入图片验证码:</span><span class="W100Left"><input class="w100denglu"  name="code" type="text"></span>
+	  <a class="imageCodeHuoqu" id="validateCodeLogin">获取验证码</a>
+	  <a style="font-size:14px;" class="huan changeCode" data-id="validateCodeLogin">换一张</a>	
+	  </dd>
+	  <dd><input name="rememberMe" type="checkbox"><span style="font-size:12px;">记住密码</span></dd> 
+      <dd  class="ddfooter"><a class="tijiao" id="loginSubmit">登录</a></dd>
+      <dd><span class="wangji"><a style="margin-left:10px;" id="reset">忘记密码？</a></span>
+      <span class="lijizhuce"><a style="margin-left:100px;" id="regist2">没有账号？现在去注册</a></span></dd>   
+    </dl><div class="clear"> </div>
+</form>    
+</div>
+<div  class="LogBox" id="registBox" style="display: none;">
+<form id="registForm">
+	<input class="D200"  name="normRegistetype" type="hidden" value="2">
+    <dl class="LogMain">
+      <dt><a class="Close" id="closeRegist"></a>用户注册</dt>
+      <dd class="ddTop"><span class="W180Left">设置昵称</span><span class="W280Left"><input class="w280denglu" id="registName" name="normName" type="text"></span></dd>
+      <dd><span class="W180Left">设置密码</span><span class="W280Left"><input class="w280denglu" id="registPassword" name="userPassword" type="password"></span></dd>
+      <dd><span class="W180Left">再次确认密码</span><span class="W280Left"><input class="w280denglu" id="registRePassword" name="rePassword" type="password"></span></dd>
+      <dd><span class="W180Left">输入图片验证码</span><span class="W100Left"><input id="registYz"  class="w100denglu" name="code" type="text" /></span>
+		<a  class="imageCodeHuoqu" id="validateCodeRegist">获取验证码</a>
+		<a style="font-size:14px;" class="changeCode huan" data-id="validateCodeRegist">换一张</a>
+	  </dd>
+      <dd><span class="W180Left">输入手机号码</span><span class="W280Left"><input class="w280denglu" id="registPhone" name="userAccount" type="text"></span></dd>
+      <dd><span class="W180Left">输入手机验证码</span><span class="W100Left"><input id="registPhoneYz"  class="w100denglu" name="msgCode" type="text"></span>
+	  <a  class="huoqu" id="btn-message">获取验证码</a></dd>
+      <dd class="ddfooter"><a class="tijiao" id="registSubmit">提交注册</a></dd>   
+    </dl>
+</form>    
+</div>
+<div class="LogBox" id="resetBox" style="display: none;">
+<form class="validForm" name="resetForm" id="resetForm">
+	<input type="hidden" id="userAccountHidden" value="" />	
+    <dl class="LogMain">
+      <dt><a class="Close" id="closeReset"></a><t id="resetTitle">密码找回</t></dt>
+      <dd class="ddTop">
+	      <span class="W180Left">输入手机号码</span>
+	      <span class="W280Left"><input class="w280denglu" id="resetPhone" name="userAccount" type="text" value=""></span>
+	  </dd>
+      <dd><span class="W180Left">输入手机验证码</span>
+      	  <span class="W100Left"><input class="w100denglu" name="msgCode" type="text"></span>
+		<a class="huoqu"  id="btn-message2">获取验证码</a>
+	  </dd>
+      <dd><span class="W180Left" >设置新密码</span><span class="W280Left"><input class="w280denglu" name="userPassword" type="password" value=""></span></dd>
+      <dd><span class="W180Left" >再次确认新密码</span><span class="W280Left"><input class="w280denglu" name="rePassword" type="password" value=""></span></dd>
+      <dd class="ddfooter"><a class="tijiao" id="resetSubmit">提交</a></dd>   
+    </dl>
+</form>    
+</div>
+		
+<div class="information label infohide" ></div> 
+<script type="text/javascript">
+/**
+ * 内容切换
+ */
+	var this_tag = "index";
+
+</script>
+
+<!-- common js aere -->
+<script src="static/lib/json3/json3.min.js" type="text/javascript"></script>
+<script src="static/lib/template/template.js" type="text/javascript"></script>
+<script src="static/lib/md5/jquery.md5.js" type="text/javascript"></script>
+<script src="static/js/validate.js" type="text/javascript"></script>
+<script src="static/js/DateUtil.js" type="text/javascript"></script>
+<script src="static/js/common/common.js" type="text/javascript"></script>
+<script src="static/js/user-service.js" type="text/javascript"></script>
+<script src="static/js/global.js" type="text/javascript"></script>
+<script src="static/js/config.js" type="text/javascript"></script>
+<script src="static/js/template-other.js" type="text/javascript"></script>
+<script src="static/js/index/regist.js" type="text/javascript"></script>
+<script src="static/js/index/reset.js" type="text/javascript"></script>
+<script type="text/javascript">
+	var year = new Date().getFullYear();
+	$('#footContent').html('浙江爱充网络科技有限公司    Copyright ©'+year+'爱充网版权所有.浙ICP备15005865号-1')
+</script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+			
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="blank" />
+		<meta name="format-detection" content="telephone=no" />
+		<title>我的钱包</title>
+		<!--<link rel="stylesheet" type="text/css" href="dist/css/bootstrap.min.css"/>-->
+		<!--<link rel="stylesheet" type="text/css" href="css/mui.css"/>-->
+		<link rel="stylesheet" type="text/css" href="js/datepicker/css/mobiscroll_002.css"/>
+		<link rel="stylesheet" type="text/css" href="js/datepicker/css/mobiscroll_003.css"/>
+		<link rel="stylesheet" type="text/css" href="dist/css/bootstrap.css"/>
+		<!--<link rel="stylesheet" type="text/css" href="css/mui.css"/>-->
+		<link rel="stylesheet" type="text/css" href="css/base.css"/>
+		<link rel="stylesheet" type="text/css" href="css/myWallet.css"/>
+		<style type="text/css">
+			 input{
+	            width: 70%;
+	            padding: 5px;
+	            margin: 3px 0;
+	          	font-size: 1.4rem;
+	            border: 1px solid #aaa;
+	            box-sizing: border-box;
+	            border-radius: 5px;
+	            -moz-box-sizing: border-box;
+	            -webkit-box-sizing: border-box;
+	            -webkit-border-radius: 5px;
+	        }
+		</style>
+		<!--[if lt IE 9]>
+			<script src="dist/js/html5shiv.min.js"></script>
+			<script src="dist/js/respond.min.js"></script>
+		<![endif]-->
+	</head>
+	<body>
+	<!--<div class="waitLoad" id="waitLoad">
+		<img src="img/load.gif"/>
+	</div>-->
+	<!--头部=============================================================================================-->
+	<header class="navbar-fixed-top">
+		<div class="col-xs-2 headLeft" onclick="getBack()">
+			<img src="img/nav_btn_back.png"/>
+		</div>
+		<div class="col-xs-8 col-xs-offset-2 headCenter">
+			我的钱包
+		</div>
+	</header>
+	<!--占位部分=============================================================================================-->
+	<div class="occupied">
+		
+	</div>
+	<!--当前余额===============================================================================================-->
+	<section>
+		<div class="balanceTip">
+			<p class="currentPrice">当前余额</p>
+			<p class="price"><span id="balance">0.00</span><span class="unit">(元)</span></p>
+			<a class="btn btn-block" style="dispaly:block;width: 5rem; height: 3rem;line-height: 1.6rem; color: #FFFFFF;text-decoration: none;background: #FF7D00;margin: 0 auto; text-align: center;" onclick="toWalletCharge()">充值</a>
+		</div>
+	</section>
+	<!--交易记录=================================================================================================-->
+	<div class="tradingRecord">
+		<p class="tradTitle">交易记录</p>
+		<div class="container">
+			<div class="rows">
+				<div class="col-xs-6" >
+					<select name="" class="typeChoice" id="typeChoice">
+						<option value="">所有消费</option>
+						<option value="1">充电消费</option>
+						<option value="2">预约消费</option>
+						<option value="3">购物消费</option>
+						<option value="4">充值</option>
+					</select>
+				</div>
+				<div class="col-xs-6 dataChoice ">
+					<!--<div id='pickDateBtn' type="button" class="mui-btn mui-btn-block startTime">2014-8-14</div><br /><br />-->
+					<!--<span id="to"></span>-->
+					<!--<div id='pickDateBtn2' type="button" class="mui-btn mui-btn-block endTime">2014-8-16</div>-->
+					<input value="" class="appDate" readonly="readonly" name="appDate" id="appDate" type="text">
+					<input value="" class="appDate" readonly="readonly" name="appDate" id="appDate2" type="text">
+				</div>
+				
+			</div>
+			<div class="filterList" id="filterList">
+				<!--<div class="col-xs-4 average" id="kinds">
+					预约
+				</div>
+				<div class="col-xs-6 average" id="datas">
+					2015/11/12日
+				</div>
+				<div class="col-xs-2 average" id="money">
+					-10.00
+				</div>-->
+			
+			</div>
+			
+			
+		</div>
+	</div>
+<!--模态框==============================================================================================-->	
+	<div class="modal" id="myModal" tabindex="-1" role="dialog"  aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+		      <div class="modal-content">
+		         <div class="modal-header">
+		            <h4 class="modal-title" id="modalTip">
+		               		评价成功！
+		            </h4>
+		         </div>
+		         <!--<div class="modal-body">
+		         </div>-->
+		         <div class="modal-footer">
+		            <a class="btn btn-primary certain" id="certain" 
+   data-target="#myModal2" data-backdrop="static" data-dismiss="modal">
+		              	 确定
+		            </a>
+		         </div>
+		      </div><!-- /.modal-content -->
+		</div><!-- /.modal -->
+	</div>
+	</body>
+	<script type="text/javascript" src="dist/js/jquery-1.11.0.js" ></script>
+	<script src="js/datepicker/js/mobiscroll_002.js" type="text/javascript"></script>
+	<script src="js/datepicker/js/mobiscroll_003.js" type="text/javascript"></script>
+	<script src="js/datepicker/js/mobiscroll.js" type="text/javascript"></script>
+	<script src="js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+	
+	
+	<!--<script src="dist/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>-->
+	
+	<script type="text/javascript" src="dist/js/bootstrap.js" ></script>
+	<script src="js/userinfo.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/url.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/myWallet.js" type="text/javascript" charset="utf-8"></script>
+</html>

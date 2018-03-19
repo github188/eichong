@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.FinAccountConfigRelaMapper">
+	<resultMap type="FinAccountConfigRelaDO" id="finAccountConfigRela">
+		<result property="pkId" column="pk_id" />
+		<result property="cpyId" column="cpy_id" />
+		<result property="billAccountId" column="bill_account_id" />
+		<result property="paymentRule" column="payment_rule" />
+		<result property="isDel" column="is_del" />
+		<result property="creator" column="creator" />
+		<result property="modifier" column="modifier" />
+		<result property="gmtCreate" column="gmt_create" />
+		<result property="gmtModified" column="gmt_modified" />
+	</resultMap>
+	
+	<resultMap type="FinAccountConfigRelaDO" id="finAccountConfigRela4Cpy" extends="finAccountConfigRela">
+		<result property="billAccountName" column="bill_account_name" />
+	</resultMap>
+	
+	<select id="getFinAccountConfigRelaCount" parameterType="FinAccountConfigRelaDO" resultType="long">
+		SELECT
+			 COUNT(*)
+		FROM
+			 FIN_ACCOUNT_CONFIG_RELA b 
+		where 1=1
+		<if test="pkId != null">
+		  and pk_id = #{pkId}
+		</if>
+		<if test="cpyId != null">
+		  and cpy_id = #{cpyId}
+		</if>
+		<if test="billAccountId != null">
+		  and bill_account_id = #{billAccountId}
+		</if>
+		<if test="paymentRule != null">
+		  and payment_rule = #{paymentRule}
+		</if>
+		<if test="isDel != null">
+		  and is_del = #{isDel}
+		</if>
+	</select>
+	
+	<select id="getFinAccountConfigRelaList" parameterType="FinAccountConfigRelaDO" resultMap="finAccountConfigRela">
+		SELECT
+			b.pk_id pkId,
+			b.cpy_id cpyId,
+			b.bill_account_id billAccountId,
+			b.payment_rule paymentRule,
+			b.is_del isDel,
+			b.creator creator,
+			b.modifier modifier,
+			b.gmt_create gmtCreate,
+			b.gmt_modified gmtModified
+		FROM
+			FIN_ACCOUNT_CONFIG_RELA b
+		where 1=1
+		<if test="pkId != null">
+		  and pk_id = #{pkId}
+		</if>
+		<if test="cpyId != null">
+		  and cpy_id = #{cpyId}
+		</if>
+		<if test="billAccountId != null">
+		  and bill_account_id = #{billAccountId}
+		</if>
+		<if test="paymentRule != null">
+		  and payment_rule = #{paymentRule}
+		</if>
+		<if test="isDel != null">
+		  and is_del = #{isDel}
+		</if>
+		order by gmt_modified desc
+        <if test="pager!=null">limit #{pager.offset},#{pager.pageSize}</if>
+	</select>
+	
+	<!-- 添加账务配置 -->
+	<insert id="addFinAccountConfigRela" parameterType="FinAccountConfigRelaDO" keyProperty="pk_id">
+		INSERT INTO FIN_ACCOUNT_CONFIG_RELA
+		(cpy_id, bill_account_id, payment_rule, is_del, creator, modifier, gmt_create, gmt_modified)
+		VALUES
+		(#{cpyId},#{billAccountId},#{paymentRule},#{isDel},#{creator},#{modifier},#{gmtCreate},#{gmtModified})
+	</insert>
+	
+	<!-- 修改账务配置 -->
+	<update id="modifyFinAccountConfigRela" parameterType="FinAccountConfigRelaDO" >
+		UPDATE FIN_ACCOUNT_CONFIG_RELA
+		SET cpy_id = #{cpyId},
+		bill_account_id = #{billAccountId},
+		payment_rule = #{paymentRule},
+		is_del = #{isDel},
+		modifier = #{modifier},
+		gmt_modified = #{gmtModified}
+		where pk_id = #{pkId}
+	</update>
+	
+	<!-- 删除账务配置 -->
+	<delete id="removeFinAccountConfigRela" parameterType="String">
+		DELETE FROM FIN_ACCOUNT_CONFIG_RELA WHERE pk_id=#{pkId}
+	</delete>
+	
+	<select id="getFinAccountConfigRela4Cpy" parameterType="FinAccountConfigRelaDO" resultMap="finAccountConfigRela4Cpy">
+		SELECT
+			b.cpy_id cpyId,
+			b.bill_account_id billAccountId,
+			b.payment_rule paymentRule,
+			a.bill_account_name billAccountName
+		FROM
+			FIN_ACCOUNT_CONFIG_RELA b
+			inner join fin_bill_account a on a.pk_id = b.bill_account_id
+		where b.cpy_id = #{cpyId}
+	</select>
+</mapper>

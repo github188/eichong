@@ -1,0 +1,512 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.OrderMapper">
+	<resultMap type="OrderDO" id="resultOrder">
+		<result property="orderId" column="pk_ChargingOrder" />
+		<result property="orderCode" column="chOr_Code" />
+		<result property="electricPileCode" column="chOr_PileNumber" />
+		<result property="electricPileHeadNo" column="chOr_Muzzle" />
+		<result property="powerStationId" column="powerStationId" />
+		<result property="powerstationName" column="powerstationName" />
+		<result property="userId" column="chOr_UserId" />
+		<result property="cpyNumber" column="chOr_OrgNo" />
+		<result property="cardNum" column="cardNum" />
+	    <result property="startChargeTime" column="begin_charge_time" />
+		<result property="endChargeTime" column="end_charge_time" />
+		<result property="chargeTime" column="chargeTime" />
+		<result property="orderStatus" column="chOr_ChargingStatus" />
+		<result property="totalfavMoney" column="chOr_CouponMoney" />
+		<result property="totalServiceMoney" column="chOr_ServiceMoney" />
+		<result property="totalElectricMoney" column="chOr_ChargeMoney" />
+		<result property="totalElectricCharge" column="chOr_QuantityElectricity" />
+		<result property="totalMoney" column="totalMoney" />
+		<result property="favMoney" column="favMoney" />
+		<result property="favServiceMoney" column="favServiceMoney" />
+		<result property="vinCode" column="cv_vin_code" />
+		<result property="accountId" column="account_id"/>
+		<result property="invoiceStatus" column="invoiceStatus"/>
+		<result property="pileHeadNum" column="chOr_Muzzle"/>
+		<result property="pkChargingRecord" column="pkChargingRecord"/>
+		<result property="frozenAmt" column="frozenAmt"/>
+		<result property="cpyName" column="cpyName" />
+		<result property="JMoney" column="JMoney"/>
+		<result property="FMoney" column="FMoney"/>
+		<result property="PMoney" column="PMoney"/>
+		<result property="GMoney" column="GMoney"/>
+		<result property="JPower" column="JPower"/>
+		<result property="FPower" column="FPower"/>
+		<result property="PPower" column="PPower"/>
+		<result property="GPower" column="GPower"/>
+		<result property="JServiceMoney" column="JServiceMoney"/>
+		<result property="FServiceMoney" column="FServiceMoney"/>
+		<result property="PServiceMoney" column="PServiceMoney"/>
+		<result property="GServiceMoney" column="GServiceMoney"/>
+		<result property="normPlateNum" column="normPlateNum"/>
+		
+	</resultMap>
+	
+	<resultMap type="OrderInvoiceDO" id="resultOrderInvoiceDO">
+		<result property="orderId" column="pk_ChargingOrder" />
+		<result property="orderCode" column="chOr_Code" />
+		<result property="electricPileCode" column="chOr_PileNumber" />
+		<result property="electricPileHeadNo" column="chOr_Muzzle" />
+		<result property="powerstationName" column="powerstationName" />
+		<result property="userId" column="chOr_UserId" />
+		<result property="cpyNumber" column="chOr" />
+	    <result property="startChargeTime" column="begin_charge_time" />
+		<result property="endChargeTime" column="end_charge_time" />
+		<result property="orderStatus" column="chOr_ChargingStatus" />
+		<result property="totalfavMoney" column="chOr_CouponMoney" />
+		<result property="totalServiceMoney" column="chOr_ServiceMoney" />
+		<result property="totalElectricMoney" column="chOr_ChargeMoney" />
+		<result property="totalElectricCharge" column="chOr_QuantityElectricity" />
+		<result property="invoiceId" column="invoiceId" />
+		<result property="favMoney" column="favMoney" />
+		<result property="favServiceMoney" column="favServiceMoney" />
+	</resultMap>
+
+	<resultMap type="OrderDO" id="orderForBatch" extends="resultOrder">
+		<result property="orgNo" column="chOr_OrgNo" />
+		<result property="chOrMoeny" column="chOr_Moeny" />
+		<result property="pkCoupon" column="pk_Coupon" />
+		<result property="transactionNumber" column="chOr_TransactionNumber" />
+	</resultMap>
+
+	<!-- 订单 -->
+	<sql id="where-order-sql">
+	    <if test="orderCode != null and orderCode !=''">
+	        and ord.chOr_Code LIKE "%"#{orderCode}"%"
+	    </if>
+	    <if test="electricPileCode != null and electricPileCode !=''">
+	        and ord.chOr_PileNumber LIKE "%"#{electricPileCode}"%"
+	    </if>
+	    <if test="orderStatus != null and orderStatus !=0">
+	        and ord.chOr_ChargingStatus = #{orderStatus}
+	    </if>
+	    <if test="cpyNumberList != null and cpyNumberList.size() > 0">
+	        and ord.chOr_OrgNo in 
+	        <foreach collection="cpyNumberList" item="id" open="(" close=")" separator=",">
+		        #{id}
+		   </foreach>
+	    </if>
+	    <if test="cpyNumber != null and cpyNumber !=0">
+	        and ord.chOr_OrgNo = #{cpyNumber}
+	    </if>
+	    <if test="startGmtCreate != null and startGmtCreate !=''">
+	        and <![CDATA[date_format(ord.chOr_Createdate,'%Y-%m-%d')  >=  #{startGmtCreate} ]]>
+	    </if>
+	    <if test="endGmtCreate != null and endGmtCreate !=''">
+	        and <![CDATA[ date_format(ord.chOr_Createdate,'%Y-%m-%d')  <=  #{endGmtCreate} ]]>
+	    </if>
+	</sql>
+	<!-- 发票 -->
+	<sql id="where-invoice-sql">
+	    <if test="orderCode != null and orderCode !=''">
+	        and ord.chOr_Code = #{orderCode}
+	    </if>
+	    <if test="electricPileCode != null and electricPileCode !=''">
+	        and ord.chOr_PileNumber = #{electricPileCode}
+	    </if>
+	    <if test="transNumbers != null and transNumbers.size() > 0">
+	        and ord.chOr_TransactionNumber in 
+	        <foreach collection="transNumbers" item="id" open="(" close=")" separator=",">
+		        #{id}
+		   </foreach>
+	    </if>
+<!-- 	    <if test="startGmtCreate != null and startGmtCreate !=''"> -->
+<!-- 	        and <![CDATA[ord.chOr_Createdate >=  date_format(#{startGmtCreate},'%Y-%m-%d') ]]> -->
+<!-- 	    </if> -->
+<!-- 	    <if test="endGmtCreate != null and endGmtCreate !=''"> -->
+<!-- 	        and <![CDATA[ord.chOr_Createdate <=  date_format(#{endGmtCreate},'%Y-%m-%d') ]]> -->
+<!-- 	    </if> -->
+	</sql>
+	
+	<!-- 发票优惠后的服务费、电费 -->
+	<select id="selectFav" parameterType="OrderInvoiceDO" resultMap="resultOrderInvoiceDO">
+	      SELECT  p.pk_Invoice invoiceId,
+                  (SUM(
+                    IF ((ord.chOr_ServiceMoney-ord.chOr_CouponMoney) &lt; 0,
+                       (ord.chOr_ChargeMoney-(ord.chOr_CouponMoney-ord.chOr_ServiceMoney)),
+                           ord.chOr_ChargeMoney )))AS favMoney,
+                  (SUM(
+                    IF ((ord.chOr_ServiceMoney - ord.chOr_CouponMoney)&lt; 0,0,
+			            (ord.chOr_ServiceMoney - ord.chOr_CouponMoney))) ) AS  favServiceMoney
+           FROM tbl_purchasehistory p
+		       INNER JOIN tbl_ChargingOrder ord ON p.puHi_TransactionNumber = ord.chOr_TransactionNumber 
+		   where chOr_ChargingStatus in (2,3)
+         and ord.chOr_UserId = p.puHi_UserId 
+         and puhi_InvoiceStatus in (1,2)
+         <if test="invoiceIdList != null and invoiceIdList.size() > 0">
+            and p.pk_Invoice in
+             <foreach collection="invoiceIdList" item="id" open="(" close=")" separator=",">
+		        #{id}
+             </foreach> 
+         </if>
+         GROUP BY p.pk_Invoice 
+	</select>
+	
+	<select id="countOrderInvoiceDetail" parameterType="OrderInvoiceDO" resultType="long">
+	     SELECT
+		      count(1)
+		  FROM tbl_ChargingOrder ord 
+		        left JOIN (SELECT ps.powerStation_name,ep.elPi_ElectricPileCode FROM tbl_electricpile ep,tbl_powerstation ps where ep.elPi_RelevancePowerStation = ps.powerStation_id) ep
+		                ON ep.elPi_ElectricPileCode = ord.chOr_PileNumber
+		        inner join tbl_user tuser on tuser.user_id = ord.chOr_UserId
+		   where chOr_ChargingStatus!=4 
+		        <include refid="where-invoice-sql"/>
+				order by chOr_Createdate desc
+	</select>
+	
+	<select id="selectOrderInvoiceDetail" parameterType="OrderInvoiceDO" resultMap="resultOrderInvoiceDO">
+	    SELECT
+		      ord.pk_ChargingOrder orderId,
+		      ord.chOr_Code orderCode,
+		      ord.chOr_PileNumber electricPileCode,
+		      ord.chOr_ChargeMoney totalElectricMoney,
+		      ord.chOr_ServiceMoney totalServiceMoney,
+		      ord.chOr_CouponMoney totalfavMoney,
+		      ord.chOr_QuantityElectricity totalElectricCharge,
+		      ord.chOr_ChargingStatus orderStatus,
+		      ord.begin_charge_time startChargeTime,
+		      ord.end_charge_time endChargeTime,
+		      ep.powerStation_name powerstationName,
+		      (SUM(
+                    IF ((ord.chOr_ServiceMoney-ord.chOr_CouponMoney) &lt; 0,
+                       (ord.chOr_ChargeMoney-(ord.chOr_CouponMoney-ord.chOr_ServiceMoney)),
+                           ord.chOr_ChargeMoney )))AS favMoney,
+              (SUM(
+                    IF ((ord.chOr_ServiceMoney - ord.chOr_CouponMoney)&lt; 0,0,
+			            (ord.chOr_ServiceMoney - ord.chOr_CouponMoney))) ) AS  favServiceMoney
+		  FROM tbl_ChargingOrder ord 
+		        left JOIN (SELECT ps.powerStation_name,ep.elPi_ElectricPileCode FROM tbl_electricpile ep,tbl_powerstation ps where ep.elPi_RelevancePowerStation = ps.powerStation_id) ep
+		                ON ep.elPi_ElectricPileCode = ord.chOr_PileNumber
+		        inner join tbl_user tuser on tuser.user_id = ord.chOr_UserId
+		   where chOr_ChargingStatus!=4 
+		        <include refid="where-invoice-sql"/>
+		        GROUP BY ord.pk_ChargingOrder
+				order by chOr_Createdate desc
+				<if test="pager !=null">limit #{pager.offset},#{pager.pageSize}</if>
+	</select>
+	
+	<select id="countOrderList" parameterType="OrderDO" resultType="Long">
+	     SELECT
+	      count(1) 
+		  FROM tbl_ChargingOrder ord INNER JOIN tbl_chargingrecord record ON
+                ord.chOr_TransactionNumber = record.chRe_TransactionNumber and ord.chOr_UserId = record.user_id 
+               left JOIN tbl_purchasehistory history ON history.puHi_TransactionNumber = record.chRe_TransactionNumber and history.puHi_UserId = ord.chOr_UserId 
+                and history.puHi_ElectricPileCode = ord.chOr_PileNumber AND history.puHi_Type = 1   
+               inner JOIN (SELECT ps.powerStation_name,ep.elPi_ElectricPileCode FROM tbl_electricpile ep,tbl_powerstation ps where ep.elPi_RelevancePowerStation = ps.powerStation_id
+		          <if test="powerStationId !=null and powerStationId !=0">
+		               and ps.powerStation_id = #{powerStationId}
+		           </if>
+		            <if test="provinceCode != null and provinceCode !=''">
+		               and ps.province_code = #{provinceCode}
+		           </if>
+		           <if test="cityCode !=null and cityCode !=''">
+		               and ps.city_code = #{cityCode}
+		           </if>
+		           <if test="areaCode !=null and areaCode !=''">
+		               and ps.area_code = #{areaCode}
+		           </if>
+		       ) ep
+		                ON ep.elPi_ElectricPileCode = ord.chOr_PileNumber
+		        LEFT JOIN tbl_usercard card on card.uc_id = ord.pk_UserCard
+				inner join tbl_user_view tuser on tuser.user_id = ord.chOr_UserId
+			  <if test="normPlateNum != null and normPlateNum !=''">
+			      and tuser.normPlateNum = #{normPlateNum}
+			  </if>
+		        inner join tbl_company cpy on cpy.cpy_number= ord.chOr_OrgNo
+		       <if test="slaveCpyId !=null and slaveCpyId !=0">
+		           and cpy.slave_cpy_id = #{slaveCpyId}
+		       </if>
+			   <if test="tagId!=null and tagId !=''">
+				   inner JOIN tbl_user_tag tag on tag.user_id = ord.chOr_UserId and tag.is_del = 0 
+				        and tag.tag_id = #{tagId}
+				</if>
+				<if test="carNo != null and carNo !=''">
+				    inner JOIN (select vin.cv_license_number carNo,cpy.cpy_number,vin.cv_vin_code from tbl_car_vin_rela vin,tbl_company cpy where vin.cpy_id = cpy.cpy_id and vin.cv_license_number = #{carNo}) vin
+				</if>
+				<if test="carNo == null">
+				    left join (select vin.cv_license_number carNo,cpy.cpy_number,vin.cv_vin_code from tbl_car_vin_rela vin,tbl_company cpy where vin.cpy_id = cpy.cpy_id) vin
+				</if>
+				<if test="carNo == ''">
+				    left join (select vin.cv_license_number carNo,cpy.cpy_number,vin.cv_vin_code from tbl_car_vin_rela vin,tbl_company cpy where vin.cpy_id = cpy.cpy_id) vin
+				</if>
+			   ON ord.chOr_OrgNo = vin.cpy_number and vin.cv_vin_code = ord.cv_vin_code
+		   where 1 = 1 
+		        <include refid="where-order-sql"/>
+		        <if test="userAccount !=null and userAccount !=''">
+		           and tuser.user_account LIKE "%"#{userAccount}"%"
+		        </if>
+		        <if test="cardNum != null and cardNum !=''">
+		           and card.uc_ExternalCardNumber LIKE "%"#{cardNum}"%"
+		        </if>
+				order by chOr_Createdate desc
+	</select>
+	
+	<select id="selectOrderList" parameterType="OrderDO" resultMap="resultOrder">
+	    SELECT
+	      cpy.cpy_name cpyName,
+	      ord.pk_ChargingOrder orderId,
+	      ord.chOr_Code orderCode,
+	      ord.chOr_PileNumber electricPileCode,
+	      FORMAT(ord.chOr_ChargeMoney,4) as totalElectricMoney,
+	      FORMAT(ord.chOr_ServiceMoney,4) as totalServiceMoney,
+	      FORMAT(ord.chOr_CouponMoney,4) as totalfavMoney,
+	      FORMAT(ord.chOr_QuantityElectricity,2) as totalElectricCharge,
+	      ord.chOr_ChargingStatus orderStatus,
+	      ord.begin_charge_time startChargeTime,
+	      ord.end_charge_time endChargeTime,
+	      IFNULL(TRUNCATE ((UNIX_TIMESTAMP(ord.end_charge_time) - UNIX_TIMESTAMP(ord.begin_charge_time)) / 60,2),0) AS chargeTime,
+          ord.start_soc startSoc,
+          ord.end_soc endSoc,
+          ord.chOr_TimeQuantum timeQuantum,
+          ord.cv_vin_code vinCode,
+          ord.chOr_Muzzle,
+          record.account_id accountId,
+          ep.powerStation_name powerstationName,
+		  card.uc_ExternalCardNumber cardNum,
+          tuser.user_account userAccount,
+          history.pk_Invoice invoiceStatus,
+          vin.carNo carNo,
+          tuser.normPlateNum normPlateNum,
+          record.chRe_FrozenAmt frozenAmt,
+          FORMAT(IFNULL((ord.chOr_tipPower),0),2) as JPower,
+          FORMAT(IFNULL((ord.chOr_peakPower),0),2) as FPower,
+          FORMAT(IFNULL((ord.chOr_usualPower),0),2) as PPower,
+          FORMAT(IFNULL((ord.chOr_valleyPower),0),2) as GPower,
+          FORMAT(IFNULL((ord.chOr_tipPower * record.chRe_JMoney),0),4) as JServiceMoney,
+          FORMAT(IFNULL((ord.chOr_peakPower * record.chRe_FMoney),0),4) as FServiceMoney,
+          FORMAT(IFNULL((ord.chOr_usualPower * record.chRe_PMoney),0),4) as PServiceMoney,
+          FORMAT(IFNULL((ord.chOr_valleyPower * record.chRe_GMoney),0),4) as GServiceMoney,
+          FORMAT(IFNULL((ord.chOr_tipPower * record.chRe_JPrice),0),4) as JMoney,
+          FORMAT(IFNULL((ord.chOr_peakPower * record.chRe_FPrice),0),4) as FMoney,
+          FORMAT(IFNULL((ord.chOr_usualPower * record.chRe_PPrice),0),4) as PMoney,
+          FORMAT(IFNULL((ord.chOr_valleyPower * record.chRe_GPrice),0),4) as GMoney
+		  FROM tbl_ChargingOrder ord INNER JOIN tbl_chargingrecord record ON
+               ord.chOr_TransactionNumber = record.chRe_TransactionNumber and ord.chOr_UserId = record.user_id 
+               left JOIN tbl_purchasehistory history ON history.puHi_TransactionNumber = record.chRe_TransactionNumber and history.puHi_UserId = ord.chOr_UserId 
+                and history.puHi_ElectricPileCode = ord.chOr_PileNumber AND history.puHi_Type = 1   
+                inner JOIN (SELECT ps.powerStation_name,ep.elPi_ElectricPileCode FROM tbl_electricpile ep,tbl_powerstation ps where ep.elPi_RelevancePowerStation = ps.powerStation_id
+		          <if test="powerStationId !=null and powerStationId !=0">
+		               and ps.powerStation_id = #{powerStationId}
+		           </if>
+		            <if test="provinceCode != null and provinceCode !=''">
+		               and ps.province_code = #{provinceCode}
+		           </if>
+		           <if test="cityCode !=null and cityCode !=''">
+		               and ps.city_code = #{cityCode}
+		           </if>
+		           <if test="areaCode !=null and areaCode !=''">
+		               and ps.area_code = #{areaCode}
+		           </if>
+		       ) ep
+		                ON ep.elPi_ElectricPileCode = ord.chOr_PileNumber
+		        LEFT JOIN tbl_usercard card on card.uc_id = ord.pk_UserCard
+				inner join tbl_user_view tuser on tuser.user_id = ord.chOr_UserId
+			  <if test="normPlateNum != null and normPlateNum !=''">
+			      and tuser.normPlateNum = #{normPlateNum}
+			  </if>
+		        inner join tbl_company cpy on cpy.cpy_number= ord.chOr_OrgNo
+		       <if test="slaveCpyId !=null and slaveCpyId !=0">
+		           and cpy.slave_cpy_id = #{slaveCpyId}
+		       </if>
+			   <if test="tagId!=null and tagId !=''">
+				   inner JOIN tbl_user_tag tag on tag.user_id = ord.chOr_UserId and tag.is_del = 0 
+				        and tag.tag_id = #{tagId}
+			   </if>
+			  	<if test="carNo != null and carNo !=''">
+				    inner JOIN (select vin.cv_license_number carNo,cpy.cpy_number,vin.cv_vin_code from tbl_car_vin_rela vin,tbl_company cpy where vin.cpy_id = cpy.cpy_id and vin.cv_license_number = #{carNo}) vin
+				</if>
+				<if test="carNo == null">
+				    left join (select vin.cv_license_number carNo,cpy.cpy_number,vin.cv_vin_code from tbl_car_vin_rela vin,tbl_company cpy where vin.cpy_id = cpy.cpy_id) vin
+				</if>
+				<if test="carNo == ''">
+				    left join (select vin.cv_license_number carNo,cpy.cpy_number,vin.cv_vin_code from tbl_car_vin_rela vin,tbl_company cpy where vin.cpy_id = cpy.cpy_id) vin
+				</if>
+			   ON ord.chOr_OrgNo = vin.cpy_number and vin.cv_vin_code = ord.cv_vin_code
+		   where 1 = 1 
+		        <include refid="where-order-sql"/>
+		        <if test="userAccount !=null and userAccount !=''">
+		           and tuser.user_account LIKE "%"#{userAccount}"%"
+		        </if>
+		        <if test="cardNum != null and cardNum !=''">
+		           and card.uc_ExternalCardNumber LIKE "%"#{cardNum}"%"
+		        </if>
+				order by chOr_Createdate desc
+				<if test="pager !=null">limit #{pager.offset},#{pager.pageSize}</if>
+	</select>
+	
+	<select id="countThirdOrderList" parameterType="OrderDO" resultType="long">
+	     SELECT
+		     count(1)
+		   FROM tbl_ChargingOrder ord INNER JOIN tbl_chargingrecord record ON
+               ord.chOr_TransactionNumber = record.chRe_TransactionNumber
+               and ord.chOr_UserId = record.user_id 
+                left JOIN tbl_purchasehistory history ON history.puHi_TransactionNumber = record.chRe_TransactionNumber and history.puHi_UserId = ord.chOr_UserId 
+                and history.puHi_ElectricPileCode = ord.chOr_PileNumber AND history.puHi_Type = 1   
+		       inner JOIN (SELECT ps.powerStation_name,ep.elPi_ElectricPileCode FROM tbl_electricpile ep,tbl_powerstation ps where ep.elPi_RelevancePowerStation = ps.powerStation_id
+		           <if test="powerStationId !=null and powerStationId !=0">
+		               and ps.powerStation_id = #{powerStationId}
+		           </if>
+		            <if test="provinceCode != null and provinceCode !=''">
+		               and ps.province_code = #{provinceCode}
+		           </if>
+		           <if test="cityCode !=null and cityCode !=''">
+		               and ps.city_code = #{cityCode}
+		           </if>
+		       
+		       ) ep
+		                ON ep.elPi_ElectricPileCode = ord.chOr_PileNumber
+		       LEFT JOIN tbl_usercard card on card.uc_id = ord.pk_UserCard 
+		        inner join tbl_company cpy on cpy.cpy_number= ord.chOr_OrgNo and ord.chOr_OrgNo in ('1011','9002','9006')
+		   where 1 = 1
+		   <include refid="where-order-sql"/>
+		   <if test="cpyNumber !=null and cpyNumber !=0">
+		           and cpy.cpy_number = #{cpyNumber}
+		   </if>
+		   <if test="slaveCpyId !=null and slaveCpyId !=0">
+		           and cpy.slave_cpy_id = #{slaveCpyId}
+		   </if>
+				order by chOr_Createdate desc
+	</select>
+	
+	<select id="selectThirdOrderList" parameterType="OrderDO" resultMap="resultOrder">
+	      SELECT
+	          cpy.cpy_name cpyName,
+		      ord.pk_ChargingOrder orderId,
+		      ord.chOr_Code orderCode,
+		      ord.chOr_PileNumber electricPileCode,
+		      FORMAT(ord.chOr_ChargeMoney,4) as totalElectricMoney,
+	          FORMAT(ord.chOr_ServiceMoney,4) as totalServiceMoney,
+	          FORMAT(ord.chOr_CouponMoney,4) as totalfavMoney,
+	          FORMAT(ord.chOr_QuantityElectricity,2) as totalElectricCharge,
+		      ord.chOr_ChargingStatus orderStatus,
+		      ord.begin_charge_time startChargeTime,
+		      ord.end_charge_time endChargeTime,
+		      IFNULL(TRUNCATE ((UNIX_TIMESTAMP(ord.end_charge_time) - UNIX_TIMESTAMP(ord.begin_charge_time)) / 3600,2),0) AS chargeTime,
+	          ord.start_soc startSoc,
+	          ord.end_soc endSoc,
+	          ord.chOr_TimeQuantum timeQuantum,
+	          ord.cv_vin_code vinCode,
+	          record.account_id accountId,
+	          ep.powerStation_name powerstationName,
+	          card.uc_ExternalCardNumber cardNum,
+	          history.pk_Invoice invoiceStatus,
+	          FORMAT(IFNULL((ord.chOr_tipPower * record.chRe_JMoney),0),4) as JServiceMoney,
+	          FORMAT(IFNULL((ord.chOr_peakPower * record.chRe_FMoney),0),4) as FServiceMoney,
+	          FORMAT(IFNULL((ord.chOr_usualPower * record.chRe_PMoney),0),4) as PServiceMoney,
+	          FORMAT(IFNULL((ord.chOr_valleyPower * record.chRe_GMoney),0),4) as GServiceMoney,
+	          FORMAT(IFNULL((ord.chOr_tipPower * record.chRe_JPrice),0),4) as JMoney,
+	          FORMAT(IFNULL((ord.chOr_peakPower * record.chRe_FPrice),0),4) as FMoney,
+	          FORMAT(IFNULL((ord.chOr_usualPower * record.chRe_PPrice),0),4) as PMoney,
+	          FORMAT(IFNULL((ord.chOr_valleyPower * record.chRe_GPrice),0),4) as GMoney
+		   FROM tbl_ChargingOrder ord INNER JOIN tbl_chargingrecord record ON
+               ord.chOr_TransactionNumber = record.chRe_TransactionNumber
+               and ord.chOr_UserId = record.user_id 
+               left JOIN tbl_purchasehistory history ON history.puHi_TransactionNumber = record.chRe_TransactionNumber and history.puHi_UserId = ord.chOr_UserId 
+                and history.puHi_ElectricPileCode = ord.chOr_PileNumber AND history.puHi_Type = 1   
+		       inner JOIN (SELECT ps.powerStation_name,ep.elPi_ElectricPileCode FROM tbl_electricpile ep,tbl_powerstation ps where ep.elPi_RelevancePowerStation = ps.powerStation_id
+		        <if test="powerStationId !=null and powerStationId !=0">
+		               and ps.powerStation_id = #{powerStationId}
+		           </if>
+		            <if test="provinceCode != null and provinceCode !=''">
+		               and ps.province_code = #{provinceCode}
+		           </if>
+		           <if test="cityCode !=null and cityCode !=''">
+		               and ps.city_code = #{cityCode}
+		           </if>
+		       ) ep
+		                ON ep.elPi_ElectricPileCode = ord.chOr_PileNumber 
+		       LEFT JOIN tbl_usercard card on card.uc_id = ord.pk_UserCard 
+		       inner join tbl_company cpy on cpy.cpy_number= ord.chOr_OrgNo and ord.chOr_OrgNo in ('1011','9002','9006')
+		   where 1 = 1
+		   <include refid="where-order-sql"/>
+		   <if test="cpyNumber !=null and cpyNumber !=0">
+		           and cpy.cpy_number = #{cpyNumber}
+		   </if>
+		   <if test="slaveCpyId !=null and slaveCpyId !=0">
+		           and cpy.slave_cpy_id = #{slaveCpyId}
+		   </if>
+				order by chOr_Createdate desc
+		   <if test="pager !=null">limit #{pager.offset},#{pager.pageSize}</if>
+	</select>
+
+	<select id="getOrdersForBatch" parameterType="OrderDO" resultMap="orderForBatch">
+		SELECT
+			s.pk_ChargingOrder,
+			s.chOr_Code,
+			s.chOr_OrgNo,
+			s.chOr_PileNumber,
+			s.chOr_ChargeMoney,
+			s.chOr_ServiceMoney,
+			s.chOr_CouponMoney,
+			s.pk_Coupon,
+			s.chOr_QuantityElectricity,
+			s.chOr_ChargingStatus,
+			s.begin_charge_time,
+			s.end_charge_time,
+			s.chOr_Moeny,
+			s.chOr_UserId,
+			s.chOr_TransactionNumber
+		from
+			(SELECT
+				o.pk_ChargingOrder,
+				o.chOr_Code,
+				o.chOr_OrgNo,
+				o.chOr_PileNumber,
+				o.chOr_ChargeMoney,
+				o.chOr_ServiceMoney,
+				o.chOr_CouponMoney,
+				o.pk_Coupon,
+				o.chOr_QuantityElectricity,
+				o.chOr_ChargingStatus,
+				o.begin_charge_time,
+				o.end_charge_time,
+				o.chOr_Moeny,
+				o.chOr_UserId,
+				o.chOr_TransactionNumber
+			FROM
+				tbl_ChargingOrder o
+			where 1=1
+			<if test="orderCode != null and orderCode != 0">
+				and o.chOr_Code = #{orderCode}
+			</if>
+			ORDER BY
+			o.pk_ChargingOrder DESC
+			LIMIT 5000) s
+		where s.chOr_ChargingStatus in (1, 2, 3)
+	</select>
+	
+	<select id="selectOrderById" parameterType="OrderDO" resultMap="resultOrder">
+	   select 
+	          record.pk_ChargingRecord pkChargingRecord,
+	          ord.pk_ChargingOrder orderId,
+	          ord.chOr_Code orderCode,
+	          ord.chOr_TransactionNumber transactionNumber,
+	          ord.chOr_UserId userId,
+	          ord.chOr_Moeny totalMoney,
+	          record.chRe_FrozenAmt frozenAmt
+	   from tbl_chargingorder ord 
+	   INNER JOIN tbl_chargingrecord record ON
+               ord.chOr_TransactionNumber = record.chRe_TransactionNumber
+               and ord.chOr_UserId = record.user_id 
+	   where ord.chOr_ChargingStatus = #{orderStatus} and ord.pk_ChargingOrder = #{orderId}
+	</select>
+	
+	<select id="selectOrderRecordByTransNo" parameterType="OrderDO" resultType="long">
+	    select record.account_id accountId
+	           from tbl_chargingrecord record 
+	        where record.chRe_TransactionNumber = #{transactionNumber}
+	          and record.user_id = #{userId} order by pk_ChargingRecord desc limit 1;
+	</select>
+	
+	<update id="updateOrderById" parameterType="OrderDO">
+	   update tbl_chargingorder set chOr_ChargingStatus = #{orderStatus} where pk_ChargingOrder = #{orderId} 
+	</update>
+	
+	<update id="updateOrderRecordById" parameterType="Long">
+	   update tbl_chargingrecord set chRe_Status = 3 where pk_ChargingRecord = #{pkChargingRecord}
+	</update>
+</mapper>

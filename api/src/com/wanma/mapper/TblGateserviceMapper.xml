@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.TblGateserviceMapper">
+
+	<resultMap id="tblGateserviceResultMap" type="TblGateservice">
+		<id property="pkGateid" column="pk_GateId" />
+		<result property="gtseGatename" column="gtSe_GateName" />
+		<result property="gtseGateip" column="gtSe_GateIp" />
+		<result property="gtseGateport" column="gtSe_GatePort" />
+		<result property="gtseCreatetime" column="gtSe_CreateTime" />
+		<result property="gtseUpdatetime" column="gtSe_UpdateTime" />
+		<result property="gateState" column="gtSe_GateState" />
+		<result property="failTimes" column="gtSe_FailTimes" />
+	</resultMap>
+	<resultMap id="pageResultMap"  type="java.util.HashMap" extends="tblGateserviceResultMap"></resultMap>
+	<resultMap id="findResultMap"  type="java.util.HashMap" extends="tblGateserviceResultMap"></resultMap>
+
+	<insert id="insert" parameterType="TblGateservice">
+	   insert into tbl_gateservice (
+	     pk_GateId,
+	     gtSe_GateName,
+	     gtSe_GateIp,
+	     gtSe_GatePort,
+	     gtSe_CreateTime,
+	     gtSe_UpdateTime
+	   )values (
+	     #{pkGateid},
+	     #{gtseGatename},
+	     #{gtseGateip},
+	     #{gtseGateport},
+	     #{gtseCreatetime},
+	     #{gtseUpdatetime}
+	   )
+	</insert>
+
+	<update id="update" parameterType="TblGateservice">
+	   update tbl_gateservice set
+	     pk_GateId=#{pkGateid},
+	     gtSe_GateName=#{gtseGatename},
+	     gtSe_GateIp=#{gtseGateip},
+	     gtSe_GatePort=#{gtseGateport},
+	     gtSe_CreateTime=#{gtseCreatetime},
+	     gtSe_UpdateTime=#{gtseUpdatetime}
+	   where 
+	    pk_GateId=#{pkGateid} 
+	</update>
+
+	<delete id="delete" parameterType="map">
+	   delete from 
+	     tbl_gateservice 
+	   where 
+	    pk_GateId=#{pkGateid} 
+	</delete>
+
+	<select id="get" parameterType="map" resultMap="tblGateserviceResultMap">
+	   select 
+	    pk_GateId,
+	    gtSe_GateName,
+	    gtSe_GateIp,
+	    gtSe_GatePort,
+	    gtSe_CreateTime,
+	    gtSe_UpdateTime,
+	    gtSe_GateState
+	   from tbl_gateservice
+	   where 
+	    pk_GateId=#{pkGateid} 
+	</select>
+
+	<select id="findOne" parameterType="map" resultMap="findResultMap">
+	   select 
+	    pk_GateId,
+	    gtSe_GateName,
+	    gtSe_GateIp,
+	    gtSe_GatePort,
+	    gtSe_CreateTime,
+	    gtSe_UpdateTime,
+	    gtSe_GateState,
+	    gtSe_FailTimes
+	   from tbl_gateservice
+	   where 
+	    pk_GateId=#{pkGateid} 
+	</select>
+
+	<select id="find" parameterType="map" resultMap="findResultMap">
+	   select 
+	     pk_GateId,
+	     gtSe_GateName,
+	     gtSe_GateIp,
+	     gtSe_GatePort,
+	     gtSe_CreateTime,
+	     gtSe_UpdateTime,
+	    gtSe_GateState
+	   from tbl_gateservice
+	   <where>
+	     <if test="pkGateid != null">
+	        pk_GateId=#{pkGateid}
+	     </if>
+	     <if test="gtseGatename != null">
+	        and gtSe_GateName=#{gtseGatename}
+	     </if>
+	     <if test="gtseGateip != null">
+	        and gtSe_GateIp=#{gtseGateip}
+	     </if>
+	     <if test="gtseGateport != null">
+	        and gtSe_GatePort=#{gtseGateport}
+	     </if>
+	     <if test="gtseCreatetime != null">
+	        and gtSe_CreateTime=#{gtseCreatetime}
+	     </if>
+	     <if test="gtseUpdatetime != null">
+	        and gtSe_UpdateTime=#{gtseUpdatetime}
+	     </if>
+	   </where>
+	</select>
+	<select id="find1" parameterType="map" resultMap="tblGateserviceResultMap">
+	   select 
+	     pk_GateId,
+	     gtSe_GateName,
+	     gtSe_GateIp,
+	     gtSe_GatePort,
+	     gtSe_CreateTime,
+	     gtSe_UpdateTime,
+	    gtSe_GateState,
+	    gtSe_FailTimes
+	   from tbl_gateservice
+	   <where>
+	     <if test="pkGateid != null">
+	        pk_GateId=#{pkGateid}
+	     </if>
+	     <if test="gtseGatename != null">
+	        and gtSe_GateName=#{gtseGatename}
+	     </if>
+	     <if test="gtseGateip != null">
+	        and gtSe_GateIp=#{gtseGateip}
+	     </if>
+	     <if test="gtseGateport != null">
+	        and gtSe_GatePort=#{gtseGateport}
+	     </if>
+	     <if test="gtseCreatetime != null">
+	        and gtSe_CreateTime=#{gtseCreatetime}
+	     </if>
+	     <if test="gtseUpdatetime != null">
+	        and gtSe_UpdateTime=#{gtseUpdatetime}
+	     </if>
+	   </where>
+	</select>
+	<select id="page" parameterType="map" resultMap="pageResultMap">
+	   select 
+	     pk_GateId,
+	     gtSe_GateName,
+	     gtSe_GateIp,
+	     gtSe_GatePort,
+	     gtSe_CreateTime,
+	     gtSe_UpdateTime,
+	    gtSe_GateState
+	   from tbl_gateservice
+	   <where>
+	     <if test="pkGateid != null">
+	        pk_GateId=#{pkGateid}
+	     </if>
+	     <if test="gtseGatename != null">
+	        and gtSe_GateName=#{gtseGatename}
+	     </if>
+	     <if test="gtseGateip != null">
+	        and gtSe_GateIp=#{gtseGateip}
+	     </if>
+	     <if test="gtseGateport != null">
+	        and gtSe_GatePort=#{gtseGateport}
+	     </if>
+	     <if test="gtseCreatetime != null">
+	        and gtSe_CreateTime=#{gtseCreatetime}
+	     </if>
+	     <if test="gtseUpdatetime != null">
+	        and gtSe_UpdateTime=#{gtseUpdatetime}
+	     </if>
+	   </where>
+	</select>
+	
+	<update id="updateFailState" parameterType="map">
+	   update tbl_gateservice set
+	     gtSe_FailTimes=gtSe_FailTimes+1
+	   where 
+	    pk_GateId=#{pkGateid} 
+	</update>
+</mapper> 

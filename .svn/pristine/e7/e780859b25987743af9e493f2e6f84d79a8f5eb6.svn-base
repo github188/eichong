@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.FinBillAccountMapper">
+	<resultMap type="FinBillAccountDO" id="finBillAccount">
+		<result property="pkId" column="pk_id" />
+		<result property="billAccountCode" column="bill_account_code" />
+		<result property="billAccountName" column="bill_account_name" />
+		<result property="isDel" column="is_del" />
+		<result property="creator" column="creator" />
+		<result property="modifier" column="modifier" />
+		<result property="gmtCreate" column="gmt_create" />
+		<result property="gmtModified" column="gmt_modified" />
+	</resultMap>
+	
+	<select id="getFinBillAccountCount" parameterType="FinBillAccountDO" resultType="long">
+		SELECT
+			 COUNT(*)
+		FROM
+			 FIN_BILL_ACCOUNT b 
+		where 1=1
+		<if test="pkId != null">
+		  and pk_id = #{pkId}
+		</if>
+		<if test="billAccountCode != null and billAccountCode !=''">
+		  and bill_account_code = #{billAccountCode}
+		</if>
+		<if test="billAccountName != null and billAccountName != ''">
+		  and bill_account_name = #{billAccountName}
+		</if>
+		<if test="isDel != null">
+		  and is_del = #{isDel}
+		</if>
+	</select>
+	
+	<select id="getFinBillAccountList" parameterType="FinBillAccountDO" resultMap="finBillAccount">
+		SELECT
+			b.pk_id pkId,
+			b.bill_account_code billAccountCode,
+			b.bill_account_name billAccountName,
+			b.is_del isDel,
+			b.creator creator,
+			b.modifier modifier,
+			b.gmt_create gmtCreate,
+			b.gmt_modified gmtModified
+		FROM
+			FIN_BILL_ACCOUNT b
+		where 1=1
+		<if test="pkId != null">
+		  and pk_id = #{pkId}
+		</if>
+		<if test="billAccountCode != null and billAccountCode != ''">
+		  and bill_account_code = #{billAccountCode}
+		</if>
+		<if test="billAccountName != null and billAccountName != ''">
+		  and bill_account_name = #{billAccountName}
+		</if>
+		<if test="isDel != null">
+		  and is_del = #{isDel}
+		</if>
+		order by gmt_modified desc
+        <if test="pager!=null">limit #{pager.offset},#{pager.pageSize}</if>
+	</select>
+	
+	<!-- 添加账单科目 -->
+	<insert id="addFinBillAccount" parameterType="FinBillAccountDO" keyProperty="pk_id" >
+		INSERT INTO FIN_BILL_ACCOUNT
+		(bill_account_code, bill_account_name, is_del, creator, modifier, gmt_create, gmt_modified)
+		VALUES
+		(#{billAccountCode},#{billAccountName},#{isDel},#{creator},#{modifier},#{gmtCreate},#{gmtModified})
+	</insert>
+	
+	<!-- 修改账单科目 -->
+	<update id="modifyFinBillAccount" parameterType="FinBillAccountDO" >
+		UPDATE FIN_BILL_ACCOUNT
+		SET bill_account_name = #{billAccountName},
+		is_del = #{isDel},
+		modifier = #{modifier},
+		gmt_modified = #{gmtModified},
+		where pk_id = #{pkId}
+	</update>
+	
+	<!-- 删除账单科目 -->
+	<delete id="removeFinBillAccount" parameterType="String">
+		DELETE FROM FIN_BILL_ACCOUNT WHERE pk_id=#{pkId}
+	</delete>
+</mapper>

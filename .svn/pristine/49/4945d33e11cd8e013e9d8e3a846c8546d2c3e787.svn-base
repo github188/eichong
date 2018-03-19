@@ -1,0 +1,66 @@
+@r:50rem;
+a,
+//input,
+//button {
+//  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+//}
+input,
+button {
+  -webkit-appearance: none;
+  border-radius: 0;
+}
+body {
+  margin:0;
+  -webkit-user-select:auto;
+  font-family: "微软雅黑";
+}
+body * {
+  -webkit-user-select:auto;
+}
+body {
+  -webkit-text-size-adjust: 100%;
+}
+*{
+  padding: 0;
+  margin:0;
+}
+
+html,body{
+  width:100%;
+  height:100%;
+  background-color: #ebebeb;
+  -webkit-user-select:auto;
+}
+.tip{
+  width: 710/@r;
+  height:124/@r;
+  background-color: #ebebeb;
+  line-height: 124/@r;
+  color: #003333;
+  font-size: 32/@r;
+  padding-left: 40/@r;
+}
+.num{
+  display: inline-block;
+  width:710/@r;
+  background-color: #FFFFFF;
+  color: #888888;
+  font-size: 30/@r;
+  border:none;
+  outline: none;
+  -webkit-appearance: none;
+  padding: 30/@r 0 30/@r 40/@r;
+}
+.sureBtn{
+  width: 660/@r;
+  height: 90/@r;
+  margin:60/@r auto 0;
+  border:1px solid #ff7d00;
+  background-color: #ff7d00;
+  line-height: 90/@r;
+  color: #FFFFFF;
+  border-radius: 8/@r;
+  font-size: 36/@r;
+  text-align: center;
+  -webkit-user-select:none !important;
+}

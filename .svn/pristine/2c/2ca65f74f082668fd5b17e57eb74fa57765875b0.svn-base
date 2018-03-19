@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>电桩编辑</title>
+		<link rel="stylesheet" type="text/css" href="static/css/electric/electricEdit.css"/>
+	</head>
+	<body>
+		<div id="container1">
+			<div class="nav">
+				电桩编辑	
+			</div>
+			<form id="electricEditForm" method="post" action="/admin/electric/electricModify.do">
+			<input type="hidden" name="pkElectricpile" id="pkElectricpile" value="" />
+			<div class="orderDetail">
+				<div class="lineBlock">
+					<div class="line">
+						<span class="lineLeft">桩体编码 </span>
+						<span class="lineRight" id="elpiElectricpilecode"> </span>
+					</div>
+					<div class="line">
+						<span class="lineLeft">电桩名称 </span>
+						<span class="lineRight" id="elpiElectricpilename"></span>
+					</div>
+				</div>
+				<div class="validateBlock">
+				<div class="lineBlock">
+					<div class="line">
+						<span class="lineLeft">充电方式</span>
+						<select name="elpiChargingmode"  id="elpiChargingmode">
+						</select>
+					</div>
+					<div class="line">
+						<span class="lineLeft">电桩状态</span>
+						<select name="elpiState" id="elpiState">
+						</select>
+					</div>
+				</div>
+				<div class="lineBlock">
+					<div class="line">
+						<span class="lineLeft">功率</span>
+						<select name="elpiPowersize" id="elpiPowersize">
+						</select>
+					</div>
+					<div class="line">
+						<span class="lineLeft">类型</span>
+						<select name="elpiType" id="elpiType">
+						</select>
+					</div>
+				</div>
+				<div class="lineBlock">
+					<div class="line">
+						<span class="lineLeft">接口标准</span>
+						<select name="elpiPowerinterface" id="elpiPowerinterface">
+						</select>
+					</div>
+					<div class="line">
+						<span class="lineLeft">制造厂商</span>
+						<select name="elpiMaker" id="elpiMaker">
+						</select>
+					</div>
+				</div>
+				<div class="lineBlock">
+					<div class="line">
+						<span class="lineLeft">产品型号</span>
+						<select name="elpiTypeSpanId" id="elpiTypeSpanId">
+						</select>
+					</div>
+					<div class="line">
+						<span class="lineLeft">公司标识</span>
+						<input type="number" name="companyNumber" id="companyFlag" value="1" class="numTest"/>
+					</div>
+				</div>
+				<div class="lineBlock">
+					<div class="line">
+						<span class="lineLeft">运营平台</span>
+						<select name="elPiOwnerCompany" id="elPiOwnerCompany">
+						</select>
+					</div>
+					<div class="line">
+						<span class="lineLeft">费率id</span>
+						<select name="elPiRateInformationId" id="elPiRateInformationId">
+						</select>
+					</div>
+				</div>
+				<div class="lineBlock">
+					<div class="line">
+						<span class="lineLeft">省份</span>
+						<select name="elPiOwnProvinceCode"  id="electricEditProvince" onchange="ProvinceChange(this)">
+						</select>
+					</div>
+					<div class="line">
+						<span class="lineLeft">城市</span>
+						<select name="elPiOwnCityCode" id="electricEditCity" onchange="cityChange(this)">
+						</select>
+					</div>
+				</div>
+				<div class="lineBlock">
+					<div class="line">
+						<span class="lineLeft">区/县</span>
+						<select name="elPiOwnCountyCode" id="electricEditArea" >
+						</select>
+					</div>
+					<div class="line">
+						<span class="lineLeft">具体地址</span>
+						<input type="" name="elpiElectricpileaddress" id="elpiElectricpileaddress" value="" />
+					</div>
+				</div>
+				<div class="lineBlock">
+					<div class="line">
+						<span class="lineLeft">经度</span>
+						<input type="" name="elpiLongitude" id="longitude" value="" />
+					</div>
+					<div class="line">
+						<span class="lineLeft">纬度</span>
+						<input type="" name="elpiLatitude" id="latitude" value="" />
+					</div>
+				</div>
+				<div class="lineBlock">
+					<div class="line">
+						<span class="lineLeft">最大输出电压</span>
+						<input type="" name="elpiOutputvoltage" id="maxVoltage" value="" />
+					</div>
+					<div class="line">
+						<span class="lineLeft">最大输出电流</span>
+						<input type="" name="elpiOutputcurrent" id="maxCurrent" value="" />
+					</div>
+				</div>
+				<div class="lineBlock">
+					<div class="line">
+						<span class="lineLeft">是否有枪</span>
+						<select name="elPiHaveConnectLine" id="elPiHaveConnectLine">
+						</select>
+					</div>
+					<div class="line">
+						<span class="lineLeft">枪头数量</span>
+						<input type="" name="elpiPowernumber" id="headNum" value="" />
+					</div>
+				</div>
+				
+				</div>
+				<div class="lineBlock">
+					<div class="line">
+						<span class="lineLeft">联系电话</span>
+						<input type="" name="elPi_Tell" id="elPi_Tell" value="" />
+					</div>
+					<div class="line">
+						<span class="lineLeft">开放时间</span>
+						<input type="" name="elPiOnlineTime" id="elPiOnlineTime" value="" />
+					</div>
+				</div>
+				<div class="lineBlock">
+					<div class="line">
+						<span class="lineLeft">sim卡卡号</span>
+						<input type="" name="elPiSimPhoneNum" id="elPiSimPhoneNum" value="" />
+					</div>
+					<div class="line">
+						<span class="lineLeft">sim卡编码</span>
+						<input type="" name="elPiSimMac" id="elPiSimMac" value="" />
+					</div>
+				</div>
+				<div class="lineBlock">
+					<div class="line">
+						<span class="lineLeft red">是否支持通讯</span>
+						<select name="elPiHaveGps" id="elPiHaveGps">
+						</select>
+					</div>
+					<div class="line">
+						<span class="lineLeft red">是否支持预约</span>
+						<select name="elpiIsappoint" id="elpiIsappoint">
+						</select>
+					</div>
+				</div>
+				<div class="lineBlock">
+					<div class="line">
+						<span class="lineLeft red">是否有LED灯</span>
+						<select name="elPiHaveLedFlash" id="elPiHaveLedFlash">
+						</select>
+					</div>
+					<div class="line">
+						<span class="lineLeft">车位号</span>
+						<input type="" name="" id="" value="" />
+					</div>
+				</div>
+				<div class="lineBlock">
+					<div class="electricEditTextTip" style="display: none; color: #FF0000;font-size: 14px;">
+						
+					</div>
+				</div>
+				<div class="saveBlock">
+					<div class="saveBtn submitBtn" id="electricEditSaveBtn" rel="electricEditForm">
+						保存
+					</div>
+					<div class="electricEditCancelBtn cancelBtn" id="electricEditCancelBtn">
+						取消
+					</div>
+				</div>
+			</div>
+			</form>
+		</div>
+	</body>
+<script src="static/js/electric/electricEdit.js" type="text/javascript" charset="utf-8"></script>
+</html>

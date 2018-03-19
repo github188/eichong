@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.StatisticAssertMapper">
+    <!-- 资产统计 -->
+    <select id="selectAssertDataCount" resultType="java.util.Map">
+	   SELECT * FROM
+			(
+				SELECT
+					sum(IF (t.elPi_ChargingMode = 5, 1, 0)) AS v3,
+					sum(IF (t.elPi_ChargingMode = 14, 1, 0)) AS v2
+				FROM tbl_electricpile t
+				WHERE t.elPi_State IN ('10', '15') AND t.delete_flag = '0'
+			) a,
+			(
+				SELECT
+					count(1) AS v1
+				FROM tbl_powerstation p 
+				WHERE p.poSt_Status IN ('10', '15')
+			) b,
+			(
+				SELECT
+					COUNT(pk_ElectricpileHead) AS v4
+				FROM tbl_electricpilehead tt
+				WHERE tt.delete_flag = 0
+			) c
+	</select>
+	<!-- 资产统计地图 -->
+	<select id="selectAssertDataMap" resultType="java.util.Map">
+	    SELECT * FROM
+			(
+				SELECT
+					a.PROVINCE_NAME AS provinceName,
+					t.elPi_OwnProvinceCode AS provinceCode,
+					t.elPi_OwnCityCode AS cityCode,
+					count(1) AS pileNum
+				FROM
+					tb_m_province a,
+					tb_m_city h,
+					tbl_electricpile t,
+					tbl_user p,
+					tbl_powerstation f
+				WHERE
+					t.elPi_UserId = p.user_id
+				AND a.PROVINCE_ID = t.elPi_OwnProvinceCode
+				AND h.CITY_ID = t.elPi_OwnCityCode
+				AND f.pk_PowerStation = t.elPi_RelevancePowerStation
+				AND t.elPi_State IN ('10', '15')
+				AND t.delete_flag = 0
+				GROUP BY
+					t.elPi_OwnProvinceCode,
+					t.elPi_OwnCityCode WITH ROLLUP
+			) cc
+		WHERE cc.provincecode IS NOT NULL AND cityCode is null
+		ORDER BY cc.provinceCode,cc.cityCode
+	</select>
+    <!-- 资产统计 明细 -->
+	<select id="selectAssertDataDetail" resultType="java.util.Map">
+	    SELECT * FROM
+			(
+				SELECT
+					a.PROVINCE_NAME AS provinceName,
+					t.elPi_OwnProvinceCode AS provinceCode,
+					h.CITY_NAME AS cityName,
+					t.elPi_OwnCityCode AS cityCode,
+					count(1) AS pileNum,
+					count(DISTINCT t.elPi_RelevancePowerStation) AS chargeNum,
+					sum(IF (t.elPi_ChargingMode = 5, 1, 0)) AS dcPileNum,
+					sum(IF (t.elPi_ChargingMode = 14, 1, 0)) AS acPileNum
+				FROM
+					tb_m_province a,
+					tb_m_city h,
+					tbl_electricpile t,
+					tbl_user p,
+					tbl_powerstation f
+				WHERE
+					t.elPi_UserId = p.user_id
+				AND a.PROVINCE_ID = t.elPi_OwnProvinceCode
+				AND h.CITY_ID = t.elPi_OwnCityCode
+				AND f.pk_PowerStation = t.elPi_RelevancePowerStation
+				AND t.elPi_State IN ('10', '15')
+				AND t.delete_flag = 0
+				GROUP BY
+					t.elPi_OwnProvinceCode,
+					t.elPi_OwnCityCode WITH ROLLUP
+			) cc
+		WHERE cc.provincecode IS NOT NULL
+		ORDER BY cc.provinceCode,cc.cityCode
+	</select>
+	
+	<!-- 资产统计 总桩数 （根据全国、省）-->
+	<select id="selectElecPileData" resultType="java.util.Map" parameterType="java.util.Map">
+	    SELECT * FROM
+			(
+				SELECT
+					t.elPi_OwnProvinceCode AS provinceCode,
+				    t.elPi_OwnCityCode AS cityCode,
+					count(1) AS pileNum
+				FROM
+					tbl_electricpile t,
+					tbl_user p,
+					tbl_powerstation f
+				WHERE
+					t.elPi_UserId = p.user_id
+				AND f.pk_PowerStation = t.elPi_RelevancePowerStation
+				AND t.elPi_State IN ('10', '15')
+				AND t.delete_flag = 0
+				GROUP BY
+					t.elPi_OwnProvinceCode,
+					t.elPi_OwnCityCode WITH ROLLUP
+			) cc
+		<where>
+		   <!-- 全部 -->
+		   <if test="(provinceCode == null or provinceCode=='')  and (cityCode == null or cityCode == '')">
+		      and provinceCode is null and cityCode is null
+		   </if>
+		   <!-- 省-->
+		   <if test="provinceCode != null and provinceCode != '' and (cityCode == null or cityCode == '')">
+		      and provinceCode = #{provinceCode} and cityCode is null
+		   </if>
+		   <!-- 市 -->
+		   <if test="provinceCode != null and provinceCode != '' and cityCode != null and cityCode != ''">
+		      and provinceCode = #{provinceCode} and cityCode = #{cityCode}
+		   </if>
+		</where>	
+		ORDER BY cc.provinceCode,cc.cityCode
+	</select>
+</mapper> 

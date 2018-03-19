@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/finManage/finManege_list.css"/>
+    <title>分成明细</title>
+</head>
+<body>
+<div class="container animated fadeInRight">
+    <div class="row">
+        <div class="formBlock clearfix">
+            <form id="divideListForm">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <div class="companyListSelect row companyContent" style="padding:0 15px;">
+                        <div class="col-sm-3 col-xs-12">
+                            <div class=" col-sm-11 companyLogos">
+                                <input type="text" name="chargingOrderCode" id="chargingOrderCode" placeholder="订单编号" value="" class="companyLogosInput"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-xs-12">
+                            <div class="col-sm-11 col-xs-12 model-select-box">
+                                <div class="model-select-text orderStatusBlock" data-value="" id="chargingOrderStatus">订单状态</div>
+                                <span class="downRow orderStatusBlock clickRotateSpan"></span>
+                                <input type="text" name="chargingOrderStatus" id="" value="" hidden="hidden"/>
+                                <ul class="model-select-option orderStatusUl">
+                                    <li data-option="" class="seleced">全部状态</li>
+                                    <li data-option="2">结算已到账</li>
+                                    <li data-option="3">结算未到账</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-xs-12">
+                            <div class="col-sm-11 userAccount">
+                                <input type="text" name="" value="" class="userAccountInput" id="datePicker" placeholder="时间选择"/>
+                                <input type="text" name="startDate" value="" class="userAccountInput" hidden="hidden" style="display: none;"/>
+                                <input type="text" name="endDate" value="" class="userAccountInput" hidden="hidden" style="display: none;"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-xs-12">
+                            <div class="col-sm-11 companyName companyNameDiv">
+                                <input type="text" name="" id="cpyName" value="" placeholder="公司名称" class="companyNameInput"/>
+                                <input type="text" name="cpyId" id="cpyId" value="" style="display: none;" />
+                                <ul class="cpyNameUl">
+
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-sm-12" style="height: 25px;"></div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="position: relative;">
+                    <div class="queryBtn" onclick="divideListSearch()">
+                        查询
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!--表格部分开始==========================================================-->
+        <div class="showSet table-responsive">
+            <div class="commonDiv">
+                <table class=" table table-bordered text-center" style="border: 1px solid #DCDCDC;">
+                    <thead>
+                    <tr>
+                        <th><input type="checkbox" name="" class="selAll" value=""/></th>
+                        <th style="min-width: 100px;">分账方名称</th>
+                        <th style="min-width: 120px;">服务费分账金额</th>
+                        <th style="min-width: 110px;">电费分账金额</th>
+                        <th style="min-width: 140px;">电量*价格分账金额</th>
+                        <th style="min-width: 120px;">优惠分账金额</th>
+                        <th style="min-width: 100px;">订单编号</th>
+                        <th style="min-width: 80px;">充电电量</th>
+                        <th style="min-width: 90px;">充电金额</th>
+                        <th style="min-width: 90px;">充电电费</th>
+                        <th style="min-width: 90px;">充电服务费</th>
+                        <th style="min-width: 80px;">订单状态</th>
+                        <th style="min-width: 90px;">时间</th>
+                    </tr>
+                    </thead>
+                    <tbody id="myCompanyTb">
+
+                    </tbody>
+                </table>
+            </div>
+
+
+            <div id="divideListPage" class="pagination">
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/contabs.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layDate-v5.0.4/laydate/laydate.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/finManage/finManage_detail.js" type="text/javascript" charset="utf-8"></script>
+</html>

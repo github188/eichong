@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.TblPartnerMapper">
+	<select id="getPartnerList"  resultType="TblPartner" >
+		select 
+		pk_partner partnerId,
+		partnerName,
+		partnerKey,
+		partnerToken,
+		paymod
+		from tbl_partner 
+	</select>
+	<select id="getPartnerListCount"  resultType="long">
+		select
+		count(*)
+		from tbl_partner
+	</select>
+	<insert id="addPartner" parameterType="TblPartner">
+		insert into tbl_partner
+		(
+			partnerName,
+			partnerKey,
+			partnerToken,
+			paymod
+		)
+		values
+		(
+			#{partnerName},
+			#{partnerKey},
+			#{partnerToken},
+			#{paymod}
+		)
+		
+	</insert>
+	<update id="updatePartnerKeyById" parameterType="TblPartner">
+		update tbl_partner
+		<set>  
+        <if test="partnerKey != null and partnerKey != '' ">  
+            partnerKey = #{partnerKey},  
+        </if>
+        <if test="partnerName != null and partnerName != '' ">  
+            partnerName = #{partnerName},  
+        </if>
+        <if test="partnerToken != null and partnerToken != '' ">  
+            partnerToken = #{partnerToken},  
+        </if>
+        <if test="paymod != null and paymod != '' ">  
+            paymod = #{paymod},  
+        </if>  
+        </set>
+		where
+		pk_partner=#{partnerId} 
+	</update>
+	<select id="selectPartnerNameById" parameterType="int" resultType="TblPartner" >
+		select 
+		pk_partner partnerId,
+		partnerName,
+		paymod,
+		partnerKey,
+		partnerToken
+		from tbl_partner 
+		where pk_partner = #{partnerId}
+	</select>
+	<select id="checkPartnerName" parameterType="string" resultType="int">
+		select count(1) from tbl_partner
+		where partnerKey = #{partnerKey}
+	</select>
+	<delete id="deletePartnerById" parameterType="string">
+		delete from tbl_partner
+		where pk_partner = #{partnerId}
+	</delete>
+</mapper>

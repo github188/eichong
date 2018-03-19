@@ -1,0 +1,8 @@
+package com.wanma.ims.controller.order;
+
+/**
+ * 订单管理-普通用户订单
+ */
+public class OrderNormalController {
+
+}

@@ -1,0 +1,35 @@
+package com.wanma.ims.service.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.wanma.ims.common.domain.ReportOrderDO;
+import com.wanma.ims.mapper.ReportOrderMapper;
+import com.wanma.ims.service.ReportCpyOrderService;
+
+@Service
+public class ReportCpyOrderServiceImpl implements ReportCpyOrderService{
+
+	@Autowired
+	private ReportOrderMapper reportOrderMapper;
+	@Override
+	public Long countReportCpyOrder(ReportOrderDO orderReportDO) {
+		return reportOrderMapper.countReportCpyOrder(orderReportDO);
+	}
+
+	@Override
+	public List<ReportOrderDO> getReportCpyOrder(ReportOrderDO orderReportDO) {
+		List<ReportOrderDO> list = reportOrderMapper.selectReportCpyOrder(orderReportDO);
+		List<Long> cpyIdList = new ArrayList<Long>();
+		for (ReportOrderDO reportOrderDO : list) {
+			cpyIdList.add(reportOrderDO.getCpyId());
+		}
+		
+		
+		return list;
+	}
+
+}

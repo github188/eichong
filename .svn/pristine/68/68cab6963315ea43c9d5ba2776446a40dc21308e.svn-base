@@ -1,0 +1,11 @@
+{
+	"dataObject": {
+		"totalDiscountAmount": "11.02",
+		"availableCoupon": 0
+	},
+	"failed": false,
+	"msg": "操作成功",
+	"pager": null,
+	"status": "",
+	"success": true
+}

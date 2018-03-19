@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.app.dao.ChargeCardMapper">
+
+	<insert id="initCard" parameterType="map" >
+		insert into tbl_usercard(
+			uc_InternalCardNumber,
+			uc_ExternalCardNumber,
+			uc_type,
+			user_Id
+		)
+		values(
+			#{inNum},
+			#{outNum},
+			'10',
+			#{userId}
+		)
+	</insert>
+	<insert id="addUser" parameterType="com.wanma.model.TblUser" useGeneratedKeys="true" keyProperty="userId">
+		insert into tbl_user(
+			user_account,
+			user_password,
+			user_leval,
+			user_status,
+			creator
+		)
+		values(
+			#{userAccount},
+			'e10adc3949ba59abbe56e057f20f883e',
+			'7',
+			'1',
+			'api'
+		)
+	</insert>	
+	
+	<select id="countCardByOutNum" parameterType="string" resultType="int">
+		select count(*) cardNum from tbl_usercard where uc_ExternalCardNumber = #{outNum}
+	</select>
+	
+	<select id="countCardByOutAndInNum" parameterType="map" resultType="int">
+		select count(*) cardNum from tbl_usercard where uc_ExternalCardNumber = #{outNum} and uc_InternalCardNumber = #{inNum}
+	</select>
+	
+	<select id="getCompMarkList" resultType="hashmap">
+		select cpy_id compId, cpy_name compName,cpy_number compMark from tbl_company where cpy_number > 0
+	</select>
+	
+	<select id="getCardInfoByInNum" parameterType="string" resultType="hashmap">
+		select uc_id as pk_UserCard,uc_InternalCardNumber inNum,uc_ExternalCardNumber outNum,t.cpy_number as compNum,
+			user_Id uId,cpy_name compName 
+			from tbl_usercard LEFT JOIN tbl_company t on cpy_id = t.cpy_id
+			where uc_Status = 0 and user_Id > 0 
+			<!-- and cpy_CompanyNumber > 0  -->
+			and uc_InternalCardNumber = #{inNum}
+			GROUP BY uc_id
+	</select>
+	
+	<!-- 根据用户id获取绑定的卡列表 -->
+	<select id="cardListByUid" parameterType="long" resultType="hashmap">
+		select gmt_modified updatedate, uc_ExternalCardNumber outNum,uc_type payMode, uc_Status status from tbl_usercard
+        where user_Id = #{uId} and uc_type!=0 and gmt_modified in 
+        (select max(gmt_modified) from tbl_usercard where user_Id = #{uId} group by uc_type)
+        order by gmt_modified DESC
+	</select>
+	
+	<!-- 根据用户id和外卡号修改卡状态 -->
+	<update id="updateStatusByUidAndOutNum" parameterType="map">
+		update tbl_usercard set uc_Status = #{status} where user_Id = #{uId} and uc_ExternalCardNumber = #{outNum}
+	</update>
+	
+	<select id="getcardByUid" parameterType="long" resultType="hashmap">
+	select uc_InternalCardNumber,uc_ExternalCardNumber,uc_Status,(CASE WHEN gmt_modified  IS NULL THEN " " ELSE gmt_modified END ) gmt_create  , 1 as type
+	from tbl_usercard
+	where uc_Status in (0,1,2) and new_user_id = #{userId}
+	</select>
+	
+	<select id="myApplyInfo" parameterType="long" resultType="hashmap">
+	select caf_phone,caf_real_name,caf_address,createdate ,caf_Status , 0 as type  from
+	tbl_cardapplicationform where caf_Status in (0)
+	and caf_user_id = #{userId} order by CREATEdate desc limit 1
+	</select>
+	
+</mapper> 

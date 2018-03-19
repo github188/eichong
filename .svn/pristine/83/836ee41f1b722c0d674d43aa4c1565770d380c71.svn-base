@@ -1,0 +1,32 @@
+/**
+ * FileName:AppFeedbackMapper.java
+ * Author: Administrator
+ * Create: 2014年6月26日
+ * Last Modified: 2014年6月26日
+ * Version: V1.0 
+ */
+package com.wanma.web.service;
+
+import java.util.Map;
+
+import com.wanma.model.TblRateinformation;
+
+/**
+ * @Description: 费率信息业务处理接口
+ * @author songjf
+ * @createTime：2015-4-10 下午04:00:23
+ * @updator：
+ * @updateTime：
+ * @version：V1.0
+ */
+public interface TblRateinformationService {
+
+	/**
+	 * @Title: findRateInfo
+	 * @Description: 根据电桩id获取电桩费率信息
+	 * @param params
+	 * @return
+	 */
+	public TblRateinformation findRateInfo(Map<String, Object> params);
+
+}

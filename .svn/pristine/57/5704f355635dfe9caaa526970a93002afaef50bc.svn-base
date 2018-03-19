@@ -1,0 +1,63 @@
+package com.wanma.ims.service;
+
+import java.util.List;
+
+
+
+
+import com.wanma.ims.common.domain.AppButtonDO;
+import com.wanma.ims.common.domain.BannerDO;
+
+
+
+/**
+ * app按钮
+ */
+public interface AppButtonService {
+
+	long selectAppButtonCount(AppButtonDO appButtonDO);
+	/**
+	 * 获取buttton列表
+	 * @param appButtonDO
+	 * @return
+	 */
+	List<AppButtonDO> selectAppButtonList(AppButtonDO appButtonDO);
+	/**
+	 * 增加buttton
+	 * @param appButtonDO
+	 * @return
+	 */
+	boolean insertAppButton(AppButtonDO appButtonDO);
+	/**
+	 * 更加id获取buttton
+	 * @param appButtonDO
+	 * @return
+	 */
+	AppButtonDO getAppButtonById(AppButtonDO appButtonDO);
+	/**
+	 * 修改buttton
+	 * @param appButtonDO
+	 * @return
+	 */
+	boolean updateButton(AppButtonDO appButtonDO);
+	/**
+	 * 删除 buttton
+	 * @param appButtonDO
+	 * @return
+	 */
+	boolean deleteAppButton(AppButtonDO appButtonDO);
+	/**
+	 * 下架 buttton
+	 * @param appButtonDO
+	 * @return
+	 */
+	boolean downAppButton(AppButtonDO appButtonDO);
+	/**
+	 * 修改顺序
+	 * @param appButtonDO
+	 * @return
+	 */
+	boolean changeButtonSort(AppButtonDO appButtonDO);
+
+	
+}

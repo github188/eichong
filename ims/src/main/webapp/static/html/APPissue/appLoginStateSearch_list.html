@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/APPissue/androidUpdate_list.css"/>
+    <title>APP登录记录查询列表</title>
+</head>
+<body>
+<div class="container animated fadeInRight">
+    <div class="row">
+        <div class="formBlock clearfix">
+            <form id="appLoginRecordListForm">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" >
+                    <div class="blackWhiteListSelect row blackWhiteContent" style="padding:0 15px;">
+                        <div class="col-sm-3 col-xs-12">
+                            <div class="col-sm-11 col-xs-12 userAccount">
+                                <input type="text" name="userAccount" value="" placeholder="账号" class="userAccountInput"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-xs-12">
+                            <div class="col-sm-11 col-xs-12 model-select-box">
+                                <div class="model-select-text deviceTypeBlock" data-value="" id="deviceTypeHtml">终端</div>
+                                <span class="downRow deviceTypeBlock clickRotateSpan"></span>
+                                <input type="text" name="deviceType" id="" value="" hidden="hidden"/>
+                                <ul class="model-select-option deviceTypeUl">
+                                    <li data-option="" class="seleced">全部</li>
+                                    <li data-option="2">ios</li>
+                                    <li data-option="1">android</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3 col-xs-12">
+                            <div class="col-sm-11 userAccount">
+                                <input type="text" name="" value="" class="userAccountInput" placeholder="按日期范围选" id="datePicker"/>
+                                <input type="text" name="createdateBegin" value="" class="userAccountInput" hidden="hidden" style="display: none;"/>
+                                <input type="text" name="createdateEnd" value="" class="userAccountInput" hidden="hidden" style="display: none;"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-12" style="height: 25px;"></div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="position: relative;">
+                        <div class="queryBtn" onclick="getAppLoginRecordListSearch()">
+                            查询
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!--按钮部分开始==========================================================-->
+        <div class="btnBlock">
+            <div class="row">
+
+            </div>
+        </div>
+        <!--表格部分开始==========================================================-->
+        <div class="showSet table-responsive">
+            <table class=" table table-bordered text-center" style="border: 1px solid #DCDCDC;">
+                <thead>
+                <tr>
+                    <th style="width: 80px;">序号</th>
+                    <th style="width: 80px;">登录时间</th>
+                    <th style="width: 80px;">终端</th>
+                    <th style="width: 80px;">设备号</th>
+                    <th style="width: 80px;">账号</th>
+                    <th style="width: 120px;">IP地址</th>
+                    <th style="width: 80px;">经度</th>
+                    <th style="width: 80px;">纬度</th>
+                    <th style="width: 120px;">登录地点</th>
+                </tr>
+                </thead>
+                <tbody id="appLoginRecordTbody">
+
+                </tbody>
+            </table>
+
+            <div id="appLoginRecordListPage" class="pagination">
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layDate-v5.0.4/laydate/laydate.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/contabs.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/APPissue/appLoginStateSearch.js" type="text/javascript" charset="utf-8"></script>
+</html>

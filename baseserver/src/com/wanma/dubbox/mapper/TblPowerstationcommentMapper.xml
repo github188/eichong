@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dubbox.dao.TblPowerstationcommentMapper">
+	<resultMap id="result_product" type="TblPowerstationcomment">
+		<id property="id" column="pk_PsComment" />
+		<result property="pid" column="psc_PsId" />
+		<result property="uid" column="psc_UserId" />
+		<result property="uname" column="psc_UserName" />
+		<result property="prsCt" column="praise_count" />
+		<result property="rpyCt" column="reply_count" />
+		<result property="pic" column="psc_CommentPic" />
+		<result property="upId" column="up_commentId" />
+		<result property="cdate" column="psc_Createdate" />
+		<result property="udate" column="psc_Updatedate" />
+		<result property="sts" column="psc_Utatus" />
+		<result property="txt" column="psc_Content" />
+	</resultMap>
+
+	<!-- 添加评论 -->
+	<insert id="insert" parameterType="TblPowerstationcomment">
+		insert into tbl_powerstationcomment
+		(
+		psc_PsId,
+		psc_UserId,
+		psc_UserName,
+		praise_count,
+		reply_count,
+		psc_CommentPic,
+		up_commentId,
+		psc_Createdate,
+		psc_Updatedate,
+		psc_Utatus,
+		psc_Content
+		)values (
+		#{pid},
+		#{uid},
+		#{uname},
+		#{prsCt},
+		#{rpyCt},
+		#{pic},
+		#{upId},
+		sysdate(),
+		sysdate(),
+		#{sts},
+		#{txt}
+		)
+	</insert>
+
+	<!-- 删除评论列表 -->
+	<update id="update" parameterType="TblPowerstationcomment">
+		update
+		tbl_powerstationcomment
+		set
+		<if test="pid != null">
+			psc_PsId=#{pid},
+		</if>
+		<if test="uid != null">
+			psc_UserId=#{uid},
+		</if>
+		<if test="uname != null">
+			psc_UserName=#{uname},
+		</if>
+		<if test="prsCt != null">
+			praise_count=#{prsCt},
+		</if>
+		<if test="rpyCt != null">
+			reply_count=#{rpyCt},
+		</if>
+		<if test="pic != null">
+			psc_CommentPic=#{pic},
+		</if>
+		<if test="upId != null">
+			up_commentId=#{upId},
+		</if>
+		<if test="type != null">
+			psc_type=#{type},
+		</if>
+		<if test="sts != null">
+			psc_Utatus=#{sts},
+		</if>
+		<if test="txt != null">
+			psc_Content=#{txt},
+		</if>
+		psc_Updatedate=sysdate()
+		where
+		pk_PsComment=#{id}
+	</update>
+
+
+	<!-- 取得评论条数 -->
+	<select id="getCount" parameterType="TblPowerstationcomment"
+		resultType="int">
+		select
+		count(1)
+		from
+		tbl_powerstationcomment
+	</select>
+
+	<!-- 取得评论列表 -->
+	<select id="getList" parameterType="TblPowerstationcomment"
+		resultMap="result_product">
+		select
+		${rtColumns}
+		from
+		tbl_powerstationcomment
+	</select>
+
+	<!-- 删除评论列表 -->
+	<update id="delete" parameterType="TblPowerstationcomment">
+		update
+		tbl_powerstationcomment
+		set
+		psc_Utatus = 1
+		WHERE pk_PsComment = #{id}
+	</update>
+
+</mapper>

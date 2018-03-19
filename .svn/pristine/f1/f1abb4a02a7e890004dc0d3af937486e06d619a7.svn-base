@@ -1,0 +1,13 @@
+package com.wanma.ims.controller.usercard;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+/**
+ * 用戶管理-卡管理
+ */
+@RequestMapping("/usercard")
+@Controller
+public class UserCardController {
+ 
+}

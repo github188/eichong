@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsConsultMapper">
+	<resultMap type="Consult" id="result_consult">
+		<id property="consultId" column="pk_ConsultInfo" />
+		<result property="userLogin" column="coIn_User_Login" />
+		<result property="contact" column="coIn_Contact" />
+		<result property="consultContent" column="coIn_ConsultContent" />
+		<result property="consultAddress" column="coIn_ConsultAddress" />
+		<result property="createDate" column="coIn_Createdate" />
+		<result property="updateDate" column="coIn_Updatedate" />
+	</resultMap>
+	
+	<!-- 取得评论列表 -->
+	<select id="getConsultList" resultMap="result_consult">
+		select
+			pk_ConsultInfo,
+			coIn_User_Login,
+			coIn_Contact,
+			coIn_ConsultContent,
+			coIn_ConsultAddress,
+			coIn_Createdate
+		from 
+			tbl_ConsultInfo
+	</select>
+	
+	<!-- 查询评论数量  -->
+	<select id="searchConsultCount" parameterType="Consult" resultType="long">
+		select
+			count(pk_ConsultInfo)
+		from 
+			tbl_ConsultInfo
+		<where>
+			<if test="userLogin!=null and userLogin !=''">
+				and coIn_User_Login=#{userLogin}
+			</if>
+			<if test="start_create_date !=null and start_create_date !='' ">
+			  <![CDATA[and tbl_ConsultInfo.coIn_Createdate >=#{start_create_date}]]>
+			</if>
+			
+			<if test="end_create_date !=null and end_create_date !=''">
+				 <![CDATA[and tbl_ConsultInfo.coIn_Createdate <=#{end_create_date}]]>
+			</if>
+		</where>
+	</select>
+	
+	<!-- 查询评论数量列表 -->
+	<select id="searchConsultList" parameterType="Consult" resultMap="result_consult">
+		select
+			pk_ConsultInfo,
+			coIn_User_Login,
+			coIn_Contact,
+			coIn_ConsultContent,
+			coIn_ConsultAddress,
+			coIn_Createdate
+		from 
+			tbl_ConsultInfo
+		<where>
+			<if test="userLogin!=null and userLogin !=''">
+				and coIn_User_Login=#{userLogin}
+			</if>
+			<if test="start_create_date !=null and start_create_date !='' ">
+			  <![CDATA[and tbl_ConsultInfo.coIn_Createdate >=#{start_create_date}]]>
+			</if>
+			
+			<if test="end_create_date !=null and end_create_date !=''">
+				 <![CDATA[and tbl_ConsultInfo.coIn_Createdate <=#{end_create_date}]]>
+			</if>
+		</where>
+		ORDER BY coIn_Createdate DESC
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+

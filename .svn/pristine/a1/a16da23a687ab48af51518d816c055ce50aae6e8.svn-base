@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:p="http://www.springframework.org/schema/p"
+xmlns:context="http://www.springframework.org/schema/context"
+xmlns:tx="http://www.springframework.org/schema/tx"
+xmlns:mvc="http://www.springframework.org/schema/mvc"
+xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-4.0.xsd
+       http://www.springframework.org/schema/tx 
+       http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+       http://www.springframework.org/schema/mvc 
+       http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
+    
+    <!-- 启用注解，该项可不要 -->   
+    <context:annotation-config />
+     
+
+	
+    
+    <!-- jedis连接工厂，使用连接池 -->
+    <bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
+    p:use-pool="true" p:host-name="${redis.host}" p:port="${redis.port}"  p:password="${redis.pass}" />
+    <!--  p:password="${redis.pass}"-->
+   
+    
+    <!-- redis template definition 
+	<bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate" 
+	p:connection-factory-ref="jedisConnectionFactory" />-->
+	
+	<bean id="stringRedisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate" 
+	p:connection-factory-ref="jedisConnectionFactory"/>
+</beans>

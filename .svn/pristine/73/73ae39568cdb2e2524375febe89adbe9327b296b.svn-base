@@ -1,0 +1,66 @@
+package com.wanma.ims.constants;
+
+/**
+ * 菜单图片URL 
+ * (默认后台写死)
+ */
+public enum MenuEnum {
+	
+//     MENU_USER("用户管理","/static/images/menu/user.png"),
+//     MENU_USER_CARD("卡管理","/static/images/menu/card.png"),
+//     MENU_COMPANY("公司管理","/static/images/menu/company.png"),
+//     MENU_CONFIG("配置管理","/static/images/menu/config.png"),
+//     MENU_ELECTRIC("桩体管理","/static/images/menu/electric.png"),
+//     MENU_ORDER("订单管理","/static/images/menu/order.png"),
+//     MENU_SYS("系统管理","/static/images/menu/sys.png"),
+//     MENU_ACCOUNT("资金账户","/static/images/menu/account.png");
+     
+	 MENU_COMPANY("公司管理","/static/images/menu/company.png"),
+	 MENU_ORDER("订单管理","/static/images/menu/order.png"),
+	 MENU_PS("充电点管理","/static/images/menu/powerStation.png"),
+	 MENU_PILE("充电桩管理","/static/images/menu/electric.png"),
+	 MENU_FINANCE("财务管理","/static/images/menu/finance.png"),
+     MENU_APP("APP发布管理","/static/images/menu/appRelease.png"),
+     MENU_RATE("费率管理","/static/images/menu/rate.png"),
+     MENU_TAG("标签管理","/static/images/menu/tag.png"),
+     MENU_LEVEL("等级管理","/static/images/menu/level.png");
+     
+   
+	
+   private String menuName;
+   private String menuImgUrl;
+   
+   private MenuEnum(String menuName,String menuImgUrl){
+	   this.menuName = menuName;
+	   this.menuImgUrl = menuImgUrl;
+   }
+
+   public static String getMenuUrl(String menuName) {  
+       for (MenuEnum c : MenuEnum.values()) {  
+           if (c.getMenuName() == menuName) {  
+               return c.menuImgUrl;  
+           }  
+       }  
+       return null;  
+    }  
+   
+	public String getMenuName() {
+		return menuName;
+	}
+	
+	
+	public void setMenuName(String menuName) {
+		this.menuName = menuName;
+	}
+	
+	
+	public String getMenuImgUrl() {
+		return menuImgUrl;
+	}
+	
+	
+	public void setMenuImgUrl(String menuImgUrl) {
+		this.menuImgUrl = menuImgUrl;
+	}
+	   
+}

@@ -1,0 +1,23 @@
+package com.wanma.ims.mapper;
+
+import java.util.List;
+
+import com.wanma.ims.common.domain.TypeSpanDO;
+
+
+
+
+public interface TypeSpanMapper {
+
+	long getTypeSpanCount(TypeSpanDO typeSpanDO);
+
+	List<TypeSpanDO> getTypeSpanList(TypeSpanDO typeSpanDO);
+
+	int checkTsTypeSpan(String tsTypeSpan);
+
+	int addTypeSpan(TypeSpanDO typeSpanDO);
+
+	
+
+
+}

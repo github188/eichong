@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/style.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/electric/electricPile/electricPile_edit.css"/>
+    <title>电桩编辑</title>
+</head>
+<body>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 ">
+                <div class="ibox float-e-margins" style="margin: 0">
+                    <div class="">
+                        <div class="ibox-content clearfix">
+                            <div class="userBaseInfo col-sm-12 ">
+                                <div class="col-sm-12 titleTip">电桩编辑</div>
+                                <div class="col-sm-6" style="padding: 0">
+                                    <ul class="baseInfoLeft commonUl">
+                                        <li>
+                                            <span class="col-sm-6 col-xs-12">桩体编码</span>
+                                            <span class="col-sm-6 col-xs-12 text-right" id="code"></span>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">充电方式</span>
+                                            <div class="col-sm-6 col-xs-6 model-select-box" style="padding: 0;">
+                                                <div class="model-select-text chargingMethodBlock" data-value="" id="chargingMethod">
+                                                    请选择
+                                                </div>
+                                                <span class="downRow chargingMethodBlock"></span>
+                                                <ul class="model-select-option" id="electricChargeMode">
+                                                    <li data-option="0" class="seleced">请选择</li>
+
+                                                </ul>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">功率</span>
+                                            <div class="col-sm-6 col-xs-6 model-select-box" style="padding: 0;">
+                                                <div class="model-select-text electricPowerBlock" data-value="" id="chPower">
+                                                    请选择
+                                                </div>
+                                                <span class="downRow electricPowerBlock"></span>
+                                                <ul class="model-select-option" id="electricPower">
+                                                    <li data-option="0" class="seleced">请选择</li>
+
+                                                </ul>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">资产归属</span>
+                                            <div class="col-sm-6 col-xs-6 model-select-box" style="padding: 0;">
+                                                <div class="model-select-text ownerShipBlock" data-value="" id="ownerShip">
+                                                    请选择
+                                                </div>
+                                                <span class="downRow ownerShipBlock"></span>
+                                                <ul class="model-select-option" id="owershipUl">
+                                                    <li data-option="0" class="seleced">请选择</li>
+
+                                                </ul>
+                                            </div>
+                                        </li>
+
+                                        <li>
+                                            <span class="col-sm-6 col-xs-12">产品型号</span>
+                                            <span class="col-sm-6 col-xs-12 text-right" id="productModel"></span>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-12">渠道</span>
+                                            <span class="col-sm-6 col-xs-12 text-right" id="company"></span>
+                                        </li>
+
+
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">省份</span>
+                                            <div class="col-sm-6 col-xs-6 model-select-box" style="padding: 0;">
+                                                <div class="model-select-text provinceBlock" data-value="" id="province">
+                                                    请选择
+                                                </div>
+                                                <span class="downRow provinceBlock"></span>
+                                                <ul class="model-select-option provinceUl">
+                                                    <li data-option="0" class="seleced">请选择</li>
+
+                                                </ul>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">城市</span>
+                                            <div class="col-sm-6 col-xs-6 model-select-box" style="padding: 0;">
+                                                <div class="model-select-text cityBlock" data-value="" id="city">
+                                                    请选择
+                                                </div>
+                                                <span class="downRow cityBlock"></span>
+                                                <ul class="model-select-option cityUl">
+                                                    <!--<li data-option="0" class="seleced">请选择</li>-->
+
+                                                </ul>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">区／县</span>
+                                            <div class="col-sm-6 col-xs-6 model-select-box" style="padding: 0;">
+                                                <div class="model-select-text areaBlock" data-value="" id="areaHtml">
+                                                    请选择
+                                                </div>
+                                                <span class="downRow areaBlock"></span>
+                                                <ul class="model-select-option areaUl">
+                                                    <!--<li data-option="0" class="seleced">请选择</li>-->
+
+                                                </ul>
+                                            </div>
+                                        </li>
+                                        <!--这里sim卡运营商不能修改，不给他点击事件-->
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">sim卡运营商</span>
+                                            <span class="col-sm-6 col-xs-12 text-right" id="simName"></span>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">备注</span>
+                                            <input type="" name="" id="remark" value=""
+                                                   class="col-sm-6 col-xs-12" placeholder="请输入备注"/>
+                                        </li>
+
+                                    </ul>
+                                </div>
+                                <div class="col-sm-6" style="padding: 0">
+                                    <ul class="baseInfoRight commonUl">
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">桩编号</span>
+                                            <input type="" name="" id="num" value=""
+                                                   class="col-sm-6 col-xs-12" placeholder="请输入桩编号"/>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">电桩状态</span>
+                                            <span class="col-sm-6 col-xs-12 text-right" id="chStatus">上线</span>
+
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">电桩类型</span>
+                                            <div class="col-sm-6 col-xs-6 model-select-box" style="padding: 0;">
+                                                <div class="model-select-text typeBlock" data-value="" id="type">
+                                                    请选择
+                                                </div>
+                                                <span class="downRow typeBlock"></span>
+                                                <ul class="model-select-option" id="electricPileType">
+                                                    <li data-option="0" class="seleced">请选择</li>
+
+                                                </ul>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">制造商</span>
+                                            <span class="col-sm-6 col-xs-12 text-right" id="pileMaker">万马</span>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">默认费率</span>
+                                            <div class="col-sm-6 col-xs-6 model-select-box" style="padding: 0;">
+                                                <div class="model-select-text rateInformationIdBlock" data-value="" id="rateInformationId">
+                                                    请选择
+                                                </div>
+                                                <span class="downRow rateInformationIdBlock"></span>
+                                                <ul class="model-select-option rateInformationUl" id="">
+                                                    <li>1</li>
+                                                    <li>2</li>
+                                                    <li>3</li>
+
+                                                </ul>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">枪头数量</span>
+                                            <input type="" name="" id="muzzleNumber" value=""
+                                                   class="col-sm-6 col-xs-12" placeholder="请输入枪头数量"/>
+                                        </li>
+
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">具体地址</span>
+                                            <input type="" name="" id="address" value=""
+                                                   class="col-sm-6 col-xs-12" placeholder="请输入具体地址"/>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-12">经度</span>
+                                            <input type="" name="" id="longitude" value=""
+                                                   class="col-sm-6 col-xs-12" placeholder="请输入经度"/>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">纬度</span>
+                                            <input type="" name="" id="latitude" value=""
+                                                   class="col-sm-6 col-xs-12" placeholder="请输入纬度"/>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-12">接口标准</span>
+                                            <input type="" name="" id="interfaceStandard" value=""
+                                            class="col-sm-6 col-xs-12" placeholder="请输入接口标准"/>
+                                        </li>
+                                        <li>
+                                            <span class="col-sm-6 col-xs-6">sim卡编码</span>
+                                            <span class="col-sm-6 col-xs-12 text-right" id="simMac"></span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <!--按钮组合-->
+                                <div class="saveBtn cursor" id="saveBtn" onclick="toModifyElectricPile()">保存</div>
+                                <div class="goBack cursor" id="toPileDetail">返回</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+<script src="../../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="../../../js/contabs.min.js"></script>
+<script src="../../../js/electric/electricPile/electricPile_edit.js" type="text/javascript" charset="utf-8"></script>
+</html>

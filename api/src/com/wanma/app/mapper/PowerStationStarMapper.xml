@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.app.dao.PowerStationStarMapper">
+
+	<insert id="insert" parameterType="map">
+	   insert into tbl_powerstationstar (
+	     pss_PsId,
+	     pss_UserId,
+	     pss_UserName,
+	     pss_Utatus,
+	     pss_CommentStar,
+	     pss_Createdate
+	   )values (
+	     #{psId},
+	     #{uId},
+	     #{uName},
+	     0,
+	     #{psStar},
+	     #{createdate}
+	   )
+	</insert>
+
+	
+	 <select id="countPsStarByPowerId" parameterType="Integer" resultType="HashMap">
+	    select case when powerStarCount is null then 0 else powerStarCount end powerStarCount
+	    from(
+	    SELECT avg(pss_CommentStar) powerStarCount
+	    from  tbl_powerstationstar 
+	    where 1=1 and pss_PsId=#{psId}
+	    ) a
+	      
+	  </select>
+	
+	<select id="getStarNumByUserIdPsId" parameterType="map" resultType="int">
+		select count(*) num from tbl_powerstationstar where pss_PsId = #{psId} and pss_UserId = #{uId};
+	</select>
+	
+</mapper> 

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/style.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/companyList/company_setChargeRela.css"/>
+    <title>设置充电范围</title>
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="container-fluid">
+        <div class="row btnBlock">
+            <!--按钮组合-->
+            <div class="editBtn cursor" id="saveBtn">保存</div>
+            <div class="goBack cursor" id="goCancel">取消</div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 ">
+                <div class="ibox float-e-margins" style="margin: 0">
+                    <div class="">
+                        <div class="ibox-content clearfix">
+                            <div class="userBaseInfo col-sm-12">
+                                充电范围管理
+                            </div>
+                            <div class="userBaseInfo col-sm-12 ">
+                                <div class="userBaseInfo col-sm-11 ">
+                                    <div class="col-sm-2" style="padding: 0">
+                                        公司名称
+                                    </div>
+                                    <div class="col-sm-9" style="padding: 0">
+                                        <t id="companyNameInfo">北京出行分时租赁</t>
+                                    </div>
+                                </div>
+                                <div class="userBaseInfo col-sm-11 ">
+                                    <div class="col-sm-2" style="padding: 0">
+                                        充电范围
+                                    </div>
+                                    <div class="col-sm-9" style="padding: 0">
+                                        <t id="siteNum">22</t>个充电点，<t id="pileNum">222</t>个充电桩
+                                    </div>
+                                </div>
+                                <div class="userBaseInfo col-sm-11 ">
+                                    <div class="col-sm-2" style="padding: 0">
+                                        充电点选择
+                                    </div>
+                                    <div class="col-sm-9 row" style="padding: 0">
+                                        <div class="col-sm-2 col-xs-6 model-select-box">
+                                            <div class="model-select-text cpyProvinceBlock" data-value="" id="provinceCodeHtml">请选择省份</div>
+                                            <span class="downRow cpyProvinceBlock"></span>
+                                            <input type="text" name="provinceCode" hidden="hidden" id="" value="" />
+                                            <ul class="model-select-option cpyProvinceUl">
+                                                <li data-option="" class="seleced">请选择省份</li>
+                                                <li data-option="" class="">111</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-xs-6 col-sm-2  model-select-box">
+                                            <div class="model-select-text cypCityBlock" data-value="" id="cityCodeHtml">请选择城市</div>
+                                            <span class="downRow cypCityBlock"></span>
+                                            <input type="text" name="cityCode" hidden="hidden" id="" value="" />
+                                            <ul class="model-select-option cypCityUl">
+                                                <li data-option="" class="seleced">请选择城市</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-sm-2 col-xs-6 model-select-box">
+                                            <div class="model-select-text cpyAreaBlock" data-value="" id="areaCodeHtml">请选择区/县</div>
+                                            <span class="downRow cpyAreaBlock"></span>
+                                            <input type="text" name="areaCode" id="" value="" hidden="hidden"/>
+                                            <ul class="model-select-option areaUl">
+                                                <li data-option="" class="seleced">请选择区/县</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-1 col-md-1 col-lg-1" style="position: relative;">
+                                    <div class="queryBtn" onclick="searchListBtn()" id="searchListBtn">
+                                        查询
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-sm-12 ">
+                <div class="ibox float-e-margins" style="margin: 0">
+                    <div class="">
+                        <div class="ibox-content clearfix">
+                            <div class="userBaseInfo col-sm-12 ">
+                                <div class="col-sm-5 tableBaseInfo table-responsive" style="padding: 0">
+                                    <table class=" table table-bordered text-center" style="border: 1px solid #DCDCDC;">
+                                        <thead>
+                                        <tr>
+                                            <th>
+                                                <input type="checkbox" name="" value="" id="checkAll" />
+                                                全选充电点
+                                            </th>
+                                            <th>充电点名称</th>
+                                            <th>已选电桩数量</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="myTbogySite">
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-sm-5 tableBaseInfo table-responsive" style="padding: 0">
+                                    <table class=" table table-bordered text-center" style="border: 1px solid #DCDCDC;">
+                                        <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>桩体编码</th>
+                                            <th>电桩名称</th>
+                                            <th>充电方式</th>
+                                            <th>功率</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="myTbogyPile">
+
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<!--<script src="../js/apiAddress.js" type="text/javascript" charset="utf-8"></script>-->
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="../../js/contabs.min.js"></script>
+<script src="../../js/companyList/company_setChargeRela.js" type="text/javascript" charset="utf-8"></script>
+
+</html>

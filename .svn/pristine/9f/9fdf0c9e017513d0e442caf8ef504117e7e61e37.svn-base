@@ -1,0 +1,102 @@
+package com.wanma.ims.controller;
+
+import java.io.PrintWriter;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import net.sf.json.JSONObject;
+
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletWebRequest;
+
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.constants.WanmaConstants;
+import com.wanma.ims.service.CommonRedisService;
+
+
+public class BaseController {
+
+    private final org.slf4j.Logger log = LoggerFactory.getLogger(this.getClass());
+    protected HttpServletResponse response;
+    protected HttpServletRequest request;
+    protected HttpSession session;
+    
+    @Autowired
+    private CommonRedisService commonRedisService;
+
+    @ModelAttribute
+    public void setReqAndRes(HttpServletRequest request, HttpServletResponse response) {
+        this.response = response;
+        this.request = request;
+        this.session = request.getSession();
+    }
+
+    /**
+     * 获取当前登录用户ID
+     *
+     * @param request
+     * @return
+     */
+    public Long getCurrentUserId() {
+    	return getCurrentLoginUser().getUserId();
+    }
+
+    /**
+     * 获取当前登录用户账号
+     *
+     * @param request
+     * @return
+     */
+    public String getCurrentUserName() {
+    	return getCurrentLoginUser().getUserAccount();
+    }
+
+    /**
+     * 获取当前用户信息(获取用户其他信息可以从这个获取，比如Level级别,adminType)
+     *
+     * @param request
+     * @return UserDO
+     */
+    public UserDO getCurrentLoginUser() {
+    	UserDO user = ((UserDO) session.getAttribute(WanmaConstants.SESS_PRINCIPAL));
+        UserDO login = commonRedisService.getCurrentLogin(user.getUserId());
+        if(null == login){
+        	log.error("当前登录信息为空，请重新登录");
+        }
+        return login;
+    }
+    
+    /**
+     * 页面输出JSON串
+     *
+     * @param obj
+     * @return json
+     */
+    public void responseJson(Object obj) {
+        PrintWriter out = null;
+        try {
+            if (null == response) {
+                response = ((ServletWebRequest) RequestContextHolder.getRequestAttributes()).getResponse();
+            }
+            response.setContentType("text/json; charset=UTF-8");
+            JSONObject jsonObj = JSONObject.fromObject(obj);
+            String json = jsonObj.toString();
+            log.debug("json:" + json);
+            out = response.getWriter();
+            out.print(json);
+            out.flush();
+        } catch (Exception e) {
+            log.error("JSON转换异常", e);
+        } finally {
+            if (null != out) {
+                out.close();
+            }
+       }
+    }
+
+}

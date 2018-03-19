@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+			
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="blank" />
+		<meta name="format-detection" content="telephone=no" />
+		<title>填写建桩信息</title>
+		<!--<link rel="stylesheet" type="text/css" href="dist/css/bootstrap.min.css"/>-->
+		<link rel="stylesheet" type="text/css" href="dist/css/bootstrap.css"/>
+		<link rel="stylesheet" type="text/css" href="css/builderInfo.css"/>
+		<!--[if lt IE 9]>
+			<script src="dist/js/html5shiv.min.js"></script>
+			<script src="dist/js/respond.min.js"></script>
+		<![endif]-->
+	</head>
+	<body>
+		<!--第一块头部================================================================-->
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-2 back">
+					<a id="giveBack"><img src="img/back.png"/></a>
+				</div>
+				<div class="col-xs-10 head">
+					填写建桩信息
+				</div>
+			</div>
+		</div>
+		<!--第二块列表================================================================-->
+		<div class="content-list">
+			<div class="class1 detailList">
+				<div class="col-xs-4 textTip">
+					是否自有车位
+				</div>
+				<div class="col-xs-8 choice-enter">
+					<select id="aepHPark" name="" class="choiceSelect">
+						<option value="1">有</option>
+						<option value="2">没有</option>
+					</select>
+					<!--<a href="###"><img src="img/enter.png"/></a>-->
+				</div>
+			</div>
+			<div class="class2 detailList">
+				<div class="col-xs-4 textTip">
+					车位数量
+				</div>
+				<div class="col-xs-8 choice-enter">
+					<select id="aepParkNum" name="" class="choiceSelect choiceSelect1">
+						<option value="1">小于等于10个</option>
+						<option value="2">大于10个</option>
+					</select>
+					<!--<a href="###"><img src="img/enter.png"/></a>-->
+				</div>
+			</div>
+			
+			<div class="class2 detailList">
+				<div class="col-xs-4 textTip">
+					设备需求
+				</div>
+				<div class="col-xs-8 choice-enter">
+					<select id="aepEpType" name="" class="choiceSelect">
+						<option value="1">直流</option>
+						<option value="2">交流</option>
+						<option value="3">交直流都有</option>
+					</select>
+					<!--<a href="###"><img src="img/enter.png"/></a>-->
+				</div>
+			</div>
+			<div class="detailList">
+				<div class="col-xs-8 textTip">
+					物业是否同意安装
+				</div>
+				<div class="col-xs-4 choice-enter">
+					<select id="aepIAgree" name="" class="choiceSelect">
+						<option value="1">同意</option>
+						<option value="2">不同意</option>
+					</select>
+					<!--<a href="###"><img src="img/enter.png"/></a>-->
+				</div>
+			</div>
+			<div class="detailList">
+				<div class="col-xs-8 textTip" id="aaa">
+					电力是否通过报备
+				</div>
+				<div class="col-xs-4 choice-enter">
+					<select id="aepIReport" name="" class="choiceSelect">
+						<option value="1">通过</option>
+						<option value="2">未通过</option>
+					</select>
+					<!--<a href="###"><img src="img/enter.png"/></a>-->
+				</div>
+			</div>
+			<div class="detailList">
+				<div class="col-xs-4 textTip">
+					安装地点
+				</div>
+				<div class="col-xs-8 choice-enter">
+					<select id="aepIGround" name="" class="choiceSelect">
+						<option value="1">地面</option>
+						<option value="2">地下</option>
+					</select>
+					<!--<a href="###"><img src="img/enter.png"/></a>-->
+				</div>
+			</div>
+		</div>
+		<!--第三块下一步按钮===========================================================================-->
+		<div class="nextStep">
+			<a id="submitForm"><button type="button" class="btn btn-default">提交</button></a>
+		</div>
+		
+		
+
+	</body>
+	<!--<script type="text/javascript" src="dist/js/jquery-1.11.0.js" ></script>-->
+	<script type="text/javascript" src="dist/js/jquery-1.11.1.min.js" ></script>
+	<!--<script src="dist/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>-->
+	<script type="text/javascript" src="dist/js/bootstrap.js" ></script>
+	<script type="text/javascript" src="js/url.js" ></script>
+	<!--<script src="js/builderInfo.js" type="text/javascript" charset="utf-8"></script>-->
+	<script type="text/javascript">
+	var userId=getUrlParam("userId");
+	if(!userId){
+		userId=-1;
+	}
+	var aepOrigin=getUrlParam("aepOrigin");
+	var token=getUrlParam("token");
+	var pageFlag=true;
+	$.ajax({
+		  url: getRootPath()+"/itf/applyep/valid",
+		  type:"post",
+		  dataType: 'json',
+		  data: {
+			  token:token,
+			  aepOrigin:aepOrigin
+		  },
+		  success: function(datas){
+		  	if(datas.status!=100){
+		  		pageFlag=false;
+		  		//alert("页面参数有误！");
+		  		window.location.href="error.html";
+		  	}
+		  }
+	});
+	var typeInfo=getUrlParam("typeInfo");
+	//分类的值
+	var classInfo=getUrlParam("classInfo");
+	//联系人的值        escape()和unescape()方法
+	var people= unescape(getUrlParam("people"));
+	//电话
+	var telNumber=getUrlParam("telNumber");
+	//建桩地区 escape
+	var provinceId=getUrlParam("provinceId");
+	var cityId=getUrlParam("cityId");
+	var areaId=getUrlParam("areaId");
+	
+	//详细信息 escape
+	var detailInfo=unescape(getUrlParam("detailInfo"));
+	if(classInfo=="1"){
+		$(".class1").show();
+		$(".class2").hide();
+	}else{
+		$(".class1").hide();
+		$(".class2").show();
+	}
+	$("#submitForm").click(function(){
+		if(!(userId&&pageFlag)){
+			alert("来源信息有误!");
+			return;
+		}
+		$.ajax({
+		  url: getRootPath()+"/itf/applyep/new",
+		  type:"post",
+		  dataType: 'json',
+		  data: {
+			aepAType:typeInfo,
+			aepCType:classInfo,
+			aepName:people,
+			aepPhone:telNumber,
+			aepPCode:provinceId,
+			aepCCode:cityId,
+			aepACode:areaId,
+			aepAddr:detailInfo,
+			aepHPark:$("#aepHPark").val(),
+			aepParkNum:$("#aepParkNum").val(),
+			aepEpType:$("#aepEpType").val(),
+			aepIAgree:$("#aepIAgree").val(),
+			aepIReport:$("#aepIReport").val(),
+			aepIGround:$("#aepIGround").val(),
+			aepUserId:userId,
+			aepOrigin:aepOrigin,
+			token:token
+		  },
+		  success: function(datas){
+		  	if(datas.status=100){
+		  		alert("申请成功！");
+		  		window.location.href="applyBuilder.html?userId="+userId+"&aepOrigin="+aepOrigin+"&token="+token;
+		  	}
+		  }
+		});
+	})
+	$("#giveBack").click(function(){
+		window.history.back(-1);
+	})
+	</script>
+</html>

@@ -1,0 +1,655 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pub.dao.TblUserMapper">
+	<resultMap type="TblUser" id="result_user">
+		<result property="userId" column="user_id" />
+		<result property="userAccount" column="user_account" />
+		<result property="userPassword" column="user_password" />
+		<result property="userLevel" column="user_leval" />
+		<result property="userStatus" column="user_status" />
+		<result property="normName" column="norm_name" />
+		<result property="normRealName" column="norm_real_name" />
+		<result property="normStatus" column="norm_status" />
+		<result property="normRegisteType" column="norm_registe_type" />
+		<result property="normAccountBalance" column="norm_account_balance" />
+		<result property="normPayPassword" column="norm_pay_password" />
+		<result property="normDeviceId" column="norm_device_id" />
+		<result property="normEmail" column="norm_email" />
+		<result property="normAddress" column="norm_address" />
+		<result property="normIdCard" column="norm_id_card" />
+		<result property="normSex" column="norm_sex" />
+		<result property="normBirthday" column="norm_birthday" />
+		<result property="normIntegrate" column="norm_integrate" />
+		<result property="normCarCompanyId" column="norm_car_company_id" />
+		<result property="normCarTypeId" column="norm_car_type_id" />
+		<result property="normVehicleNumber" column="norm_vehicle_number" />
+		<result property="normDrivingLicence" column="norm_driving_licence" />
+		<result property="busiCompanyId" column="busi_company_id" />
+		<result property="busiCompany" column="company_name" />
+		<result property="busiParentId" column="busi_parent_id" />
+		<result property="busiName" column="busi_name" />
+		<result property="busiPhone" column="busi_phone" />
+		<result property="adminName" column="admin_name" />
+		<result property="adminPhone" column="admin_phone" />
+	</resultMap>
+	<select id="getByAccount" parameterType="TblUser" resultMap="result_user">
+		select u.user_id,u.user_account,u.user_password,u.user_leval,u.user_status,
+			getFullPath('userAvatar',u.user_id) userImage
+		from tbl_user u 
+		where user_status = '1' and u.user_account=#{userAccount} 
+		and u.user_leval != '6'
+	</select>
+	<!-- 新增用户 -->
+	<insert id="insert" parameterType="TblUser" useGeneratedKeys="true" keyProperty="userId">
+		insert into tbl_user
+		(
+			user_account,
+			user_password,
+			user_leval,
+			user_status,
+			createdate,
+			updatedate
+		)
+		values
+		(
+			#{userAccount},
+			#{userPassword},
+			#{userLevel},
+	       <if test="userStatus!=null">#{userStatus},</if>
+	       <if test="userStatus==null">1,</if>
+			sysdate(),
+			sysdate()
+		)
+	</insert>
+	 
+	<!-- 获取普通用户 -->
+	<select id="findUser" parameterType="long" resultMap="result_user">
+		SELECT a.user_id,
+			   a.user_account,
+			   a.user_leval,
+			   a.user_password,
+			   a.user_status
+			FROM
+				tbl_user a
+			WHERE a.user_id=#{userId}
+	</select>
+	
+	<insert id="insertNormalUser" parameterType="TblUser">
+		insert into tbl_user_normal
+		(
+			user_id,
+			norm_name,
+			norm_real_name,
+			<if test="normStatus!=null">norm_status,</if>
+			<if test="normRegisteType!=null">norm_registe_type,</if>
+			<if test="normAccountBalance!=null">norm_account_balance,</if>
+			<if test="normPayPassword!=null">norm_pay_password,</if>
+			<if test="normDeviceId!=null">norm_device_id,</if>
+			<if test="normEmail!=null">norm_email,</if>
+			<if test="normAddress!=null">norm_address,</if>
+			<if test="normIdCard!=null">norm_id_card,</if>
+			<if test="normSex!=null">norm_sex,</if>
+			<if test="normBirthday!=null">norm_birthday,</if>
+			<if test="normIntegrate!=null">norm_integrate,</if>
+			<if test="normCarCompanyId!=null">norm_car_company_id,</if>
+			<if test="normCarTypeId">norm_car_type_id,</if>
+			<if test="normVehicleNumber!=null">norm_vehicle_number,</if>
+			<if test="normDrivingLicence!=null">norm_driving_licence,</if>
+			createdate,
+			updatedate
+		)
+		values
+		(
+			#{userId},
+			#{normName},
+			#{normRealName},
+			<if test="normStatus!=null">#{normStatus},</if>
+			<if test="normRegisteType!=null">#{normRegisteType},</if>
+			<if test="normAccountBalance!=null">#{normAccountBalance},</if>
+			<if test="normPayPassword!=null">#{normPayPassword},</if>
+			<if test="normDeviceId!=null">#{normDeviceId},</if>
+			<if test="normEmail!=null">#{normEmail},</if>
+			<if test="normAddress!=null">#{normAddress},</if>
+			<if test="normIdCard!=null">#{normIdCard},</if>
+			<if test="normSex!=null">#{normSex},</if>
+			<if test="normBirthday!=null">#{normBirthday},</if>
+			<if test="normIntegrate!=null">#{normIntegrate},</if>
+			<if test="normCarCompanyId!=null">#{normCarCompanyId},</if>
+			<if test="normCarTypeId">#{normCarTypeId},</if>
+			<if test="normVehicleNumber!=null">#{normVehicleNumber},</if>
+			<if test="normDrivingLicence!=null">#{normDrivingLicence},</if>
+			sysdate(),
+			sysdate()
+		)
+	</insert>
+
+	<update id="update" parameterType="TblUser">
+		update tbl_user
+		<set>
+			<if test="userAccount!=null"> user_account=#{userAccount}, </if>
+			<if test="userPassword!=null and userPassword!=''"> user_password=md5(#{userPassword}), </if>
+			<if test="userLevel!=null"> user_leval=#{userLevel}, </if>
+			<if test="userStatus!=null"> user_status=#{userStatus}, </if>
+			updatedate=sysdate()
+		</set>
+		<where>
+			user_id=#{userId}
+		</where>
+	</update>
+	
+	<update id="updateNormalUser" parameterType="TblUser">
+		update tbl_user_normal
+		<set>
+			<if test="normName!=null"> norm_name=#{normName}, </if>
+			<if test="normRealName!=null"> norm_real_name=#{normRealName}, </if>
+			<if test="normStatus!=null"> norm_status=#{normStatus}, </if>
+			<if test="normRegisteType!=null"> norm_registe_type=#{normRegisteType}, </if>
+			<if test="normAccountBalance!=null"> norm_account_balance=#{normAccountBalance}, </if>
+			<if test="normPayPassword!=null"> norm_pay_password=#{normPayPassword}, </if>
+			<if test="normDeviceId!=null"> norm_device_id=#{normDeviceId}, </if>
+			<if test="normEmail!=null"> norm_email=#{normEmail}, </if>
+			<if test="normAddress!=null"> norm_address=#{normAddress}, </if>
+			<if test="normIdCard!=null"> norm_id_card=#{normIdCard}, </if>
+			<if test="normSex!=null"> norm_sex=#{normSex}, </if>
+			<if test="normBirthday!=null"> norm_birthday=#{normBirthday}, </if>
+			<if test="normIntegrate!=null"> norm_integrate=#{normIntegrate}, </if>
+			<if test="normCarCompanyId!=null"> norm_car_company_id=#{normCarCompanyId}, </if>
+			<if test="normCarTypeId!=null"> norm_car_type_id=#{normCarTypeId}, </if>
+			<if test="normVehicleNumber!=null"> norm_vehicle_number=#{normVehicleNumber}, </if>
+			<if test="normDrivingLicence!=null"> norm_driving_licence=#{normDrivingLicence}, </if>
+				updatedate=sysdate()
+		</set>
+		<where>
+			user_id=#{userId}
+		</where>
+	</update>
+	
+	<!-- 获取普通用户 -->
+	<select id="findNomalUser" parameterType="long" resultMap="result_user">
+		SELECT t.*,
+			   getFullPath('userAvatar',#{userId}) userImage,
+			   getFullPath('IdCardImage',#{userId}) idCardimage
+			FROM
+				tbl_user_normal_view t
+			WHERE t.user_id=#{userId}
+	</select>
+	
+	<!-- 获取普通用户列表 -->
+	<select id="getNomalUserList" parameterType="TblUser" resultMap="result_user">
+		SELECT a.user_account,
+			   a.user_leval,
+			   a.user_password,
+			   a.user_status,
+			   c.CarInfo_StyleName normCarType,
+			   d.carCompany_Name normCarCompany,
+			   b.*
+			FROM
+				tbl_user a,
+				tbl_user_normal b
+				left join tbl_carinfo c on b.norm_car_type_id=c.pk_CarInfo
+				left join tbl_carcompany d on b.norm_car_company_id=d.pk_carCompany
+		<where>
+			b.user_id = a.user_id
+			and a.user_status != '3'
+			<if test="userId!=null">and a.user_id = #{userId}</if>
+			<if test="userLevel!=null">and a.user_leval = #{userLevel}</if>
+			<if test="userStatus!=null">and a.user_status = #{userStatus}</if>
+			<if test="userAccount!=null and userAccount!=''">and a.user_account like concat('%',#{userAccount},'%')</if>
+			<if test="normRegisteType != null" >and b.norm_registe_type = #{normRegisteType}</if>
+			<if test="normEmail!=null and normEmail!=''">and b.norm_email like concat('%',#{normEmail},'%')</if>
+			<if test="normIdCard!=null and normIdCard!=''" >and b.norm_id_card = #{normIdCard}</if>
+			<if test="normCarCompanyId!=null and normCarCompanyId!=''" >and norm_car_company_id = #{normCarCompanyId}</if>
+			<if test="normCarTypeId!=null and normCarTypeId!=''">and b.norm_car_type_id = #{normCarTypeId}</if>
+			<if test="normStatus!=null">and b.norm_status = #{normStatus}</if>
+			<if test="normRealName!=null and normRealName!=''">and b.norm_real_name like concat('%',#{normRealName},'%')</if>
+			<if test="applyCard !=null and applyCard !=''">and b.apply_card in('0','1')</if>
+			<if test="startDate !=null and startDate !=''">
+				and a.createdate>=#{startDate}
+			</if>
+			<if test="endDate !=null and endDate !=''">
+				<![CDATA[and a.createdate<=  date_add(#{endDate}, interval 1 day)]]>
+			</if>
+		</where>
+		order by a.createdate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	
+	<select id="getNomalUserCount" parameterType="TblUser"
+		resultType="long">
+		select
+		count(1) data_count
+		from tbl_user_normal a
+		<where>
+		exists (select 1 from tbl_user b where b.user_status != '3'
+			<if test="userLevel!=null">
+				and b.user_leval = #{userLevel}
+			</if>
+			<if test="userStatus!=null">
+				and b.user_status = #{userStatus}
+			</if>
+			<if test="userAccount!=null and userAccount!=''">
+				and b.user_account like concat('%',#{userAccount},'%')
+			</if>
+				and a.user_id=b.user_id)
+			<if test="userId!=null">and user_id = #{userId}</if>
+			<if test="normEmail!=null and normEmail!=''">and a.norm_email like concat('%',#{normEmail},'%')</if>
+			<if test="normIdCard!=null and normIdCard!=''" >and norm_id_card = #{normIdCard}</if>
+			<if test="normCarCompanyId!=null and normCarCompanyId!=''" >and norm_car_company_id = #{normCarCompanyId}</if>
+			<if test="normCarTypeId!=null and normCarTypeId!=''">and a.norm_car_type_id = #{normCarTypeId}</if>
+			<if test="normStatus!=null">and norm_status = #{normStatus}</if>
+			<if test="normRealName!=null and normRealName!=''">and norm_real_name like concat('%',#{normRealName},'%')</if>
+			<if test="applyCard !=null and applyCard !=''">and b.apply_card in('0','1')</if>
+			<if test="startDate !=null and startDate !=''">
+				and a.createdate>=#{startDate}
+			</if>
+			<if test="endDate !=null and endDate !=''">
+				<![CDATA[and a.createdate<=  date_add(#{endDate}, interval 1 day)]]>
+			</if>
+		</where>
+	</select>
+	
+	<!-- 获取商家用户列表 -->
+	<select id="getBusinessUserList" parameterType="TblUser" resultMap="result_user">
+		SELECT a.user_account,
+			   a.user_leval,
+			   a.user_password,
+			   a.user_status,
+			   c.cpy_CompanyName busiCompany,
+			   b.*
+			FROM
+				tbl_user a,
+				tbl_user_business b
+				left join tbl_company c on b.busi_company_id=c.pk_CompanyId
+		<where>
+			b.user_id = a.user_id
+			and a.user_status != '3' and  (a.user_leval =3 or a.user_leval=4)
+			<if test="userId!=null">and a.user_id = #{userId}</if>
+			<if test="userAccount!=null and userAccount!=''">and a.user_account like concat('%',#{userAccount},'%')</if>
+			<if test="busiParentId!=null and busiParentId==0">and b.busi_parent_id = 0</if>
+			<if test="busiParentId!=null and busiParentId!=0">and b.busi_parent_id != 0</if>
+			<if test="busiCompanyId!=null">and b.busi_company_id = #{busiCompanyId}</if>
+			<if test="busiCompany!=null and busiCompany!=''">and c.cpy_CompanyName like concat('%',#{busiCompany},'%')</if>
+		</where>
+		order by b.busi_parent_id asc,a.updatedate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	
+	<select id="getBusinessUserCount" parameterType="TblUser" resultType="long">
+		SELECT count(1)
+			FROM
+				tbl_user a,
+				tbl_user_business b
+				left join tbl_company c on b.busi_company_id=c.pk_CompanyId
+		<where>
+			b.user_id = a.user_id
+			and a.user_status != '3' and  (a.user_leval =3 or a.user_leval=4)
+			<if test="userId!=null">and a.user_id = #{userId}</if>
+			<if test="userAccount!=null and userAccount!=''">and a.user_account like concat('%',#{userAccount},'%')</if>
+			<if test="busiParentId!=null and busiParentId==0">and b.busi_parent_id = 0</if>
+			<if test="busiParentId!=null and busiParentId!=0">and b.busi_parent_id != 0</if>
+			<if test="busiCompanyId!=null">and b.busi_company_id = #{busiCompanyId}</if>
+			<if test="busiCompany!=null and busiCompany!=''">and c.cpy_CompanyName like concat('%',#{busiCompany},'%')</if>
+		</where>
+	</select>
+	
+	<insert id="insertBusinessUser" parameterType="TblUser">
+		insert into tbl_user_business
+		(
+			user_id,
+			<if test="busiCompanyId!=null">busi_company_id,</if>
+			<if test="busiParentId!=null">busi_parent_id,</if>
+			<if test="busiName!=null">busi_name,</if>
+			<if test="busiPhone!=null">busi_phone,</if>
+			createdate,
+			updatedate
+		)
+		values
+		(
+			#{userId},
+			<if test="busiCompanyId!=null">#{busiCompanyId},</if>
+			<if test="busiParentId!=null">#{busiParentId},</if>
+			<if test="busiName!=null">#{busiName},</if>
+			<if test="busiPhone!=null">#{busiPhone},</if>
+			sysdate(),
+			sysdate()
+		)
+	</insert>
+	
+	<update id="updateBusinessUser" parameterType="TblUser">
+		update tbl_user_business
+		<set>
+			<if test="normName!=null"> busi_company_id=#{busiCompanyId}, </if>
+			<if test="normRealName!=null"> busi_parent_id=#{busiParentId}, </if>
+			<if test="busiName!=null">busi_name=#{busiName},</if>
+			<if test="busiPhone!=null">busi_phone=#{busiPhone},</if>
+				updatedate=sysdate()
+		</set>
+		<where>
+			user_id=#{userId}
+		</where>
+	</update>
+	
+	<!-- 获取纯商家用户 -->
+	<select id="findBusinessUser" parameterType="long" resultMap="result_user">
+		SELECT * FROM tbl_user_business_view t WHERE t.user_id=#{userId}
+	</select>
+	
+	<!-- 获取管理员列表 -->
+	<select id="getAdminUserList" parameterType="TblUser" resultMap="result_user">
+		SELECT a.user_id,
+			   a.user_account,
+			   a.user_status,
+			   a.user_leval,
+			   ua.*,
+			   GROUP_CONCAT(r.ROLE_NAME) roleNames
+			FROM
+				tbl_user a,
+				tbl_user_admin ua,
+				p_m_user_role ur,
+				p_m_role r
+		<where>
+		a.user_id=ur.user_id and a.user_id=ua.user_id and ur.role_id=r.role_id 
+		and a.user_status != '3' and a.user_leval = '2'
+			<if test="userId!=null">and a.user_id = #{userId}</if>
+			<if test="userAccount!=null">and a.user_account like concat('%',#{userAccount},'%')</if>
+			<if test="adminName!=null">and ua.admin_name like concat('%',#{adminName},'%')</if>
+		</where>
+		group by a.user_id
+		order by a.updatedate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	
+	<select id="getAdminUserCount" parameterType="TblUser"
+		resultType="long">
+		select count(1) data_count from 
+			(SELECT a.user_id
+				FROM
+					tbl_user a,
+					tbl_user_admin ua,
+					p_m_user_role ur,
+					p_m_role r
+			<where>
+			a.user_id=ur.user_id and a.user_id=ua.user_id and ur.role_id=r.role_id 
+			and a.user_status != '3' and a.user_leval = '2'
+				<if test="userId!=null">and a.user_id = #{userId}</if>
+				<if test="userAccount!=null">and a.user_account like concat('%',#{userAccount},'%')</if>
+				<if test="adminName!=null">and ua.admin_name like concat('%',#{adminName},'%')</if>
+			</where>
+				group by a.user_id
+			) b
+	</select>
+	
+	<!-- 新增用户 -->
+	<insert id="insertAdminUser" parameterType="TblUser" >
+		insert into tbl_user_admin
+		(
+			user_id,
+			admin_name,
+			admin_phone,
+			createdate,
+			updatedate
+		)
+		values
+		(
+			#{userId},
+			#{adminName},
+			#{adminPhone},
+			sysdate(),
+			sysdate()
+		)
+	</insert>
+	
+	
+	<update id="updateStatus" parameterType="TblUser">
+		update tbl_user set user_status = #{userStatus},
+		updatedate=sysdate()
+		<where>
+			user_id=#{userId}
+		</where>
+	</update>
+	
+	<select id="checkAccount" parameterType="string" resultType="int">
+		select count(1) FROM tbl_user a where a.user_account = #{userAccount} and a.user_status!=3
+		<if test="userId!=null">and a.user_id != #{userId}</if>
+	</select>
+	<select id="checkBusinessAccount" parameterType="TblUser" resultType="int">
+		select count(1) FROM tbl_user a,tbl_user_business b 
+		where a.user_id = b.user_id and a.user_account = #{userAccount} and a.user_status!=3
+		<if test="busiCompanyId!=null">and b.busi_company_id = #{busiCompanyId}</if>
+	</select>
+	
+	
+	<select id="checkBusinessPhone" parameterType="TblUser" resultType="int">
+		select count(1) FROM tbl_user a,tbl_user_business b 
+		where a.user_id = b.user_id and b.busi_phone = #{busiPhone} and a.user_status!=3
+		<if test="userId!=null">and a.user_id != #{userId}</if>
+	</select>
+	
+	
+	<select id="checkAdminPhone" parameterType="TblUser" resultType="int">
+		select count(1) FROM tbl_user a,tbl_user_admin b 
+		where a.user_id = b.user_id and b.admin_phone = #{adminPhone}
+		<if test="userId!=null">and a.user_id != #{userId}</if>
+	</select>
+	
+	<!-- 获取角色列表信息 -->
+	<select id="getRoleUserList" parameterType="TblUser" resultMap="result_user">
+		select
+		pmu.user_id,
+		pmu.user_account,
+		pmu.user_leval
+		from
+		tbl_user pmu,
+		p_m_user_role pmur
+		where pmu.user_id = pmur.user_id
+		and pmu.user_status != '3'
+		and
+		pmur.role_id =#{roleId}
+	</select>
+	
+	<!-- 获取可选角色用户列表信息 -->
+	
+	<select id="getSelectRoleUserList" parameterType="TblUser" resultMap="result_user">
+		SELECT a.user_id,
+			   a.user_account,
+			   a.user_leval
+			FROM
+				tbl_user a
+		<where>
+			a.user_status != '3'
+			and a.user_leval = #{userLevel}
+			<if test="userId!=null">and a.user_id != #{userId}</if>
+			<if test="busiCompanyId!=null">and exists (select 1 from tbl_user_business b where b.user_id=a.user_id and b.busi_company_id = #{busiCompanyId})</if>
+			<if test="userAccount!=null">and a.user_account like concat('%',#{userAccount},'%')</if>
+			and not exists (select 1 from p_m_user_role c where c.user_id=a.user_id)
+		</where>
+		order by a.updatedate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	
+	<select id="getSelectRoleUserCount" parameterType="TblUser" resultType="long">
+		select
+		count(1) data_count
+		from tbl_user a
+		<where>
+			a.user_status != '3'
+			and a.user_leval = #{userLevel}
+			<if test="userId!=null">and a.user_id != #{userId}</if>
+			<if test="busiCompanyId!=null">and exists (select 1 from tbl_user_business b where b.user_id=a.user_id and b.busi_company_id = #{busiCompanyId})</if>
+			<if test="userAccount!=null">and a.user_account like concat('%',#{userAccount},'%')</if>
+			and not exists (select 1 from p_m_user_role c where c.user_id=a.user_id)
+		</where>
+	</select>
+	<select id="getUserConsumeCount" parameterType="TblUser" resultType="int">
+		select
+		count(1) 
+		from tbl_purchasehistory a
+		<where>
+			1=1
+			<if test="userId!=null">and a.puHi_UserId = #{userId}</if>
+		</where>
+	</select>
+	<select id="getPileAndChildCount" parameterType="long" resultType="TblUser">
+		select  t.user_account,
+		  (select count(1) from tbl_electricpile where elPi_UserId=t.user_id) pileCount,
+		  (select count(1) from tbl_user_business ub where ub.busi_parent_id=t.user_id) childCount
+		 from tbl_user t where t.user_id=#{userId}
+	</select>
+	<!-- 获取管理员用户 -->
+	<select id="findAdminUser" parameterType="long" resultMap="result_user">
+		SELECT * FROM tbl_user t,tbl_user_admin ua WHERE t.user_id=ua.user_id and t.user_id=#{userId}
+	</select>
+	<update id="updateAdminUser" parameterType="TblUser">
+		update tbl_user_admin
+		<set>
+			<if test="adminName!=null"> admin_name=#{adminName}, </if>
+			<if test="adminPhone!=null"> admin_phone=#{adminPhone}, </if>
+			updatedate=sysdate()
+		</set>
+		<where>
+			user_id=#{userId}
+		</where>
+	</update>
+	
+	
+	
+	<!-- 获取用户手机 -->
+	<select id="findPhoneByAccount" parameterType="TblUser" resultType="TblUser">
+		SELECT
+		(
+			CASE
+			WHEN a.user_leval = '1' THEN
+				(select b.admin_phone from tbl_user_admin b where b.user_id = a.user_id)
+			WHEN a.user_leval = '2' THEN
+				(select b.admin_phone from tbl_user_admin b where b.user_id = a.user_id)
+			WHEN a.user_leval = '3' THEN
+				(select b.busi_phone from tbl_user_business b where b.user_id = a.user_id)
+			WHEN a.user_leval = '5' THEN
+				a.user_account
+			END
+		) AS 'phone',
+		a.user_leval userLevel,
+		a.user_account userAccount
+		FROM
+		tbl_user a where a.user_account = #{userAccount}
+	</select>
+	
+	<!-- 获取用户手机 -->
+	<select id="findUserCountByPhone" parameterType="TblUser" resultType="int">
+		select count(1) from (
+			select 1 from tbl_user a where a.user_account = #{phone}
+			union 
+			select 1 from tbl_user_admin a where a.admin_phone = #{phone}
+			union 
+			select 1 from tbl_user_business a where a.busi_phone = #{phone}
+		) b
+	</select>
+	
+	<!-- 获取用户根据状态和账号获取用户信息 -->
+	<select id="getAllUserByAccount" parameterType="TblUser" resultMap="result_user">
+		select u.user_status,u.user_leval,u.user_account
+		from tbl_user u 
+		where u.user_account=#{userAccount}
+	</select>
+	
+	<!-- 获取可绑定卡用户数量 -->
+	<select id="getApplyCardUserListCount" parameterType="TblUser" resultType="long">
+		SELECT count(1)
+		FROM
+			tbl_user_normal_view a
+		WHERE
+			a.user_leval = '6'
+		and a.user_status = '1'
+		<if test="normRealName!=null and normRealName!=''">and a.norm_real_name like concat('%',#{normRealName},'%')</if>
+		<if test="userAccount!=null and userAccount!=''">and a.user_account like concat('%',#{userAccount},'%')</if>
+		<if test="ucPayMode == 12"> and length(a.user_account) = 12</if>
+		<if test="ucPayMode != 12">
+			<if test="ucPayMode == 10">
+				AND EXISTS (SELECT 1 FROM tbl_cardapplicationform b WHERE
+						b.caf_user_id = a.user_id and b.caf_usercard = '')
+			</if>
+			and	length(a.user_account) != 12
+			AND NOT EXISTS (
+				SELECT 1 FROM tbl_usercard b WHERE
+						b.uc_pay_mode = #{ucPayMode}
+				AND b.uc_Status = '0'
+				AND b.uc_UserId = a.user_id)
+		</if>
+	</select>
+	
+	<!-- 获取可绑定卡用户列表  -->
+	<select id="getApplyCardUserList" parameterType="TblUser" resultMap="result_user">
+		SELECT
+			a.user_id,
+			a.user_account,
+			a.norm_real_name,
+			a.norm_email,
+			a.updatedate
+		FROM
+			tbl_user_normal_view a
+		WHERE
+			a.user_leval = '6'
+		and a.user_status = '1'
+		<if test="normRealName!=null and normRealName!=''">and a.norm_real_name like concat('%',#{normRealName},'%')</if>
+		<if test="userAccount!=null and userAccount!=''">and a.user_account like concat('%',#{userAccount},'%')</if>
+		<if test="ucPayMode == 12"> and length(a.user_account) = 12</if>
+		<if test="ucPayMode != 12">
+			<if test="ucPayMode == 10">
+				AND EXISTS (SELECT 1 FROM tbl_cardapplicationform b WHERE
+					b.caf_user_id = a.user_id and b.caf_usercard = '')
+			</if>
+			and	length(a.user_account) != 12
+			AND NOT EXISTS (
+				SELECT 1 FROM tbl_usercard b WHERE
+						b.uc_pay_mode = #{ucPayMode}
+				AND b.uc_Status = '0'
+				AND b.uc_UserId = a.user_id)
+		</if>
+		order by a.updatedate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	
+	<!-- 获取可绑定卡用户数量（快速发卡） -->
+	<select id="getQuicklyApplyCardUserListCount" parameterType="TblUser" resultType="long">
+		SELECT count(1)
+		FROM
+			tbl_user_normal_view a
+		WHERE
+			a.user_leval = '6'
+		and a.user_status = '1'
+		and	length(a.user_account) != 12
+		AND NOT EXISTS (
+			SELECT 1 FROM tbl_usercard b WHERE
+					b.uc_pay_mode = '10'
+			AND b.uc_Status = '0'
+			AND b.uc_UserId = a.user_id)
+		<if test="userAccount!=null and userAccount!=''">and a.user_account like concat('%',#{userAccount},'%')</if>
+	</select>
+	
+	<!-- 获取可绑定卡用户列表（快速发卡）  -->
+	<select id="getQuicklyApplyCardUserList" parameterType="TblUser" resultMap="result_user">
+		SELECT
+			a.user_id,
+			a.user_account,
+			a.norm_real_name,
+			a.norm_email,
+			a.updatedate
+		FROM
+			tbl_user_normal_view a
+		WHERE
+		
+			a.user_leval = '6'
+		and a.user_status = '1'
+		and	length(a.user_account) != 12
+		AND NOT EXISTS (
+			SELECT 1 FROM tbl_usercard b WHERE
+					b.uc_pay_mode = '10'
+			AND b.uc_Status = '0'
+			AND b.uc_UserId = a.user_id)
+		<if test="userAccount!=null and userAccount!=''">and a.user_account like concat('%',#{userAccount},'%')</if>
+		order by a.updatedate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	
+</mapper>

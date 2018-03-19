@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.dubbox.dao.TblHomepageMapper">
+	<resultMap type="TblHomepage" id="result_homepage">
+		<id property="id" column="pk_Homepage" />
+		<result property="name" column="hoPa_HomePageName" />
+		<result property="img" column="hoPa_Image" />
+		<result property="seq" column="hoPa_Sequence" />
+		<result property="cdate" column="hoPa_Createdate" />
+		<result property="udate" column="hoPa_Updatedate" />
+		<result property="sts" column="hoPa_Status" />
+		<result property="url" column="hoPa_Url" />
+	</resultMap>
+	
+	<!--查询单个首页广告图片-->
+	<select id="selectOne" parameterType="TblHomepage" resultMap="result_homepage">
+		select
+		${rtColumns}
+		from 
+			tbl_HomePage
+		where pk_Homepage=#{id}
+	</select>
+	
+	<!--修改首页广告-->
+	<update id="update" parameterType="TblHomepage">
+		update tbl_HomePage
+		<set>
+			<if test="name !=null"> hoPa_HomePageName=#{name}, </if>
+			<if test="img !=null"> hoPa_Image=#{img}, </if>
+			<if test="seq !=null"> hoPa_Sequence=#{seq}, </if>
+			<if test="sts !=null"> hoPa_Status=#{sts}, </if>
+			<if test="url !=null"> hoPa_Url=#{url},</if>
+			hoPa_Updatedate=sysdate()
+		</set>
+		<where>
+			pk_Homepage=#{id}
+		</where>
+	</update>
+	<select id="getCount" parameterType="TblHomepage" resultType="int">
+		select
+			count(1)
+		from 
+			tbl_HomePage
+	</select>
+	
+	<select id="getList" parameterType="TblHomepage" resultMap="result_homepage">
+		select
+		${rtColumns}
+		from 
+			tbl_HomePage
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	
+	<insert id="insert" parameterType="TblHomepage"
+		useGeneratedKeys="true" keyProperty="homepageId">
+		insert into tbl_HomePage (
+			hoPa_HomePageName,
+			hoPa_Image,
+			hoPa_Sequence,
+			hoPa_Status
+		)values (
+			#{name},
+			#{img},
+			#{seq},
+			#{sts}
+		)
+	</insert>
+</mapper>

@@ -1,0 +1,37 @@
+/** 
+ * FileName RoleServiceImpl.java
+ * 
+ * Version 1.0
+ *
+ * Create by gx 2016/7/1
+ * 
+ * Copyright 2000-2001 wanma. All Rights Reserved.
+ */
+package com.cn.wanma.service.impl;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.cn.wanma.dao.CommonMapper;
+import com.cn.wanma.service.CommonService;
+
+/**
+ * FileName RoleServiceImpl.java
+ * 
+ * Version 1.0
+ * 
+ * Create by gx 
+ * 
+ * 角色业务处理类
+ */
+@Service("commonService")
+public class CommonServiceImpl implements CommonService {
+	@Autowired
+	private CommonMapper  commonMapper;
+
+	@Override
+	public String getKey(int comNum) {
+		return commonMapper.getKey(comNum);
+	}
+}

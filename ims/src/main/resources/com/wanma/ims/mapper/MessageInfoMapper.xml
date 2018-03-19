@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.MessageInfoMapper">
+	<resultMap type="MessageInfoDO" id="result_messageInfo">
+			<result property="pkMessageInfoId" column="pk_mei_id" />
+		<result property="messageInfoContent" column="mei_content" />
+		<result property="messageInfoName" column="mei_name" />
+		<result property="messageInfoStatus" column="mei_status" />
+		<result property="messageInfoType" column="mei_type" />
+		<result property="messageInfoBegintime" column="mei_begin_time" />
+		<result property="messageInfoEndtime" column="mei_end_time" />
+		<result property="messageInfoCreatedate" column="mei_begin_time" />
+		<result property="messageInfoUpdatedate" column="mei_updatedate" />
+		<result property="messageInfoProvinceCode" column="mei_provincecode" />
+		<result property="messageInfoCityCode" column="mei_citycode" />
+		<result property="messageInfoCountyCode" column="mei_countycode" />
+		<result property="pkPowerstation" column="pk_powerstation" />
+		<result property="mprName" column="mpr_name" />
+	</resultMap>
+	<!-- 查询有效消息列表 -->
+	<select id="selectMessageInfoList"  parameterType="MessageInfoDO" resultMap="result_messageInfo">
+	SELECT
+	pk_mei_id,
+	mei_name,
+	mei_content,
+	mei_status,
+	mei_type,
+	mei_begin_time,
+	mei_end_time,
+	mei_createdate,
+	mei_updatedate,
+	mei_provincecode,
+	mei_citycode,
+	'有效' AS messageInfoPageStatus
+FROM
+	tbl_message_info
+<where>
+				mei_status = 1 AND
+			(case when mei_type = 1 then 1=1 
+ 			      when mei_type = 2 then date_add(mei_createdate, interval 7 day)>now() END)
+			<if test="messageInfoName !=null and messageInfoName !=''">
+				and mei_name like CONCAT('%','${messageInfoName}','%' )
+			</if>
+			<if test="messageInfoType !=null and messageInfoType !=''">
+				and mei_type = #{messageInfoType}
+			</if>
+			<if test="messageInfoProvinceCode !=null and messageInfoProvinceCode !=''">
+				and mei_provincecode = #{messageInfoProvinceCode}
+			</if>
+			<if test="messageInfoCityCode !=null and messageInfoCityCode !=''">
+				and mei_citycode = #{messageInfoCityCode}
+			</if>
+			<if test="messageInfoBegintimeStartTime !=null and messageInfoBegintimeStartTime !=''">
+				and mei_begin_time>=#{messageInfoBegintimeStartTime}
+			</if>
+			<if test="messageInfoBegintimeEndTime !=null and messageInfoBegintimeEndTime !=''">
+				<![CDATA[and mei_begin_time<=  date_add(#{messageInfoBegintimeEndTime}, interval 1 day)]]>
+			</if>
+			
+			<if test="messageInfoEndtimeStartTime !=null and messageInfoEndtimeStartTime !=''">
+				and mei_end_time>=#{messageInfoEndtimeStartTime}
+			</if>
+			<if test="messageInfoEndtimeEndTime !=null and messageInfoEndtimeEndTime !=''">
+				<![CDATA[and mei_end_time<=  date_add(#{messageInfoEndtimeEndTime}, interval 1 day)]]>
+			</if>
+		</where>
+union all
+	SELECT
+		pk_mei_id,
+		mei_name,
+		mei_content,
+		mei_status,
+		mei_type,
+		mei_begin_time,
+		mei_end_time,
+		mei_createdate,
+		mei_updatedate,
+		mei_provincecode,
+		mei_citycode,
+		'已关闭' AS messageInfoPageStatus
+	FROM
+		tbl_message_info
+	<where>
+				mei_status = 2 
+			<if test="messageInfoName !=null and messageInfoName !=''">
+				and mei_name like CONCAT('%','${messageInfoName}','%' )
+			</if>
+			<if test="messageInfoType !=null and messageInfoType !=''">
+				and mei_type = #{messageInfoType}
+			</if>
+			<if test="messageInfoProvinceCode !=null and messageInfoProvinceCode !=''">
+				and mei_provincecode = #{messageInfoProvinceCode}
+			</if>
+			<if test="messageInfoCityCode !=null and messageInfoCityCode !=''">
+				and mei_citycode = #{messageInfoCityCode}
+			</if>
+			<if test="messageInfoBegintimeStartTime !=null and messageInfoBegintimeStartTime !=''">
+				and mei_begin_time>=#{messageInfoBegintimeStartTime}
+			</if>
+			<if test="messageInfoBegintimeEndTime !=null and messageInfoBegintimeEndTime !=''">
+				<![CDATA[and mei_begin_time<=  date_add(#{messageInfoBegintimeEndTime}, interval 1 day)]]>
+			</if>
+			
+			<if test="messageInfoEndtimeStartTime !=null and messageInfoEndtimeStartTime !=''">
+				and mei_end_time>=#{messageInfoEndtimeStartTime}
+			</if>
+			<if test="messageInfoEndtimeEndTime !=null and messageInfoEndtimeEndTime !=''">
+				<![CDATA[and mei_end_time<=  date_add(#{messageInfoEndtimeEndTime}, interval 1 day)]]>
+			</if>
+		</where>
+union all
+		SELECT
+			pk_mei_id,
+			mei_name,
+			mei_content,
+			mei_status,
+			mei_type,
+			mei_begin_time,
+			mei_end_time,
+			mei_createdate,
+			mei_updatedate,
+			mei_provincecode,
+			mei_citycode,
+			'已过期' AS messageInfoPageStatus
+		FROM
+			tbl_message_info
+		<where>
+			 mei_status != 3 
+			 AND mei_status != 2
+			 and mei_type = 2
+			 and
+			<![CDATA[ (case when mei_type = 1 then 1=1 
+ 			      when mei_type = 2 then date_add(mei_createdate, interval 7 day)<now() END)]]>
+			<if test="messageInfoName !=null and messageInfoName !=''">
+				and mei_name like CONCAT('%','${messageInfoName}','%' )
+			</if>
+			<if test="messageInfoType !=null and messageInfoType !=''">
+				and mei_type = #{messageInfoType}
+			</if>
+			<if test="messageInfoProvinceCode !=null and messageInfoProvinceCode !=''">
+				and mei_provincecode = #{messageInfoProvinceCode}
+			</if>
+			<if test="messageInfoCityCode !=null and messageInfoCityCode !=''">
+				and mei_citycode = #{messageInfoCityCode}
+			</if>
+			<if test="messageInfoBegintimeStartTime !=null and messageInfoBegintimeStartTime !=''">
+				and mei_begin_time>=#{messageInfoBegintimeStartTime}
+			</if>
+			<if test="messageInfoBegintimeEndTime !=null and messageInfoBegintimeEndTime !=''">
+				<![CDATA[and mei_begin_time<=  date_add(#{messageInfoBegintimeEndTime}, interval 1 day)]]>
+			</if>
+			
+			<if test="messageInfoEndtimeStartTime !=null and messageInfoEndtimeStartTime !=''">
+				and mei_end_time>=#{messageInfoEndtimeStartTime}
+			</if>
+			<if test="messageInfoEndtimeEndTime !=null and messageInfoEndtimeEndTime !=''">
+				<![CDATA[and mei_end_time<=  date_add(#{messageInfoEndtimeEndTime}, interval 1 day)]]>
+			</if>
+		</where>
+		ORDER BY messageInfoPageStatus DESC , mei_type ASC ,mei_createdate DESC
+	<if test="pager!=null">limit #{pager.offset},#{pager.pageSize}</if>
+	</select>
+  <select id="selectMessageInfoCount"  parameterType="MessageInfoDO" resultType="long">
+		SELECT 
+			count(*)
+ 		FROM tbl_message_info 
+		<where>
+			 mei_status != 3
+			<if test="messageInfoName !=null and messageInfoName !=''">
+				and mei_name like CONCAT('%','${messageInfoName}','%' )
+			</if>
+			<if test="messageInfoType !=null and messageInfoType !=''">
+				and mei_type = #{messageInfoType}
+			</if>
+			<if test="messageInfoProvinceCode !=null and messageInfoProvinceCode !=''">
+				and mei_provincecode = #{messageInfoProvinceCode}
+			</if>
+			<if test="messageInfoCityCode !=null and messageInfoCityCode !=''">
+				and mei_citycode = #{messageInfoCityCode}
+			</if>
+			<if test="messageInfoBegintimeStartTime !=null and messageInfoBegintimeStartTime !=''">
+				and mei_begin_time>=#{messageInfoBegintimeStartTime}
+			</if>
+			<if test="messageInfoBegintimeEndTime !=null and messageInfoBegintimeEndTime !=''">
+				<![CDATA[and mei_begin_time<=  date_add(#{messageInfoBegintimeEndTime}, interval 1 day)]]>
+			</if>
+			
+			<if test="messageInfoEndtimeStartTime !=null and messageInfoEndtimeStartTime !=''">
+				and mei_end_time>=#{messageInfoEndtimeStartTime}
+			</if>
+			<if test="messageInfoEndtimeEndTime !=null and messageInfoEndtimeEndTime !=''">
+				<![CDATA[and mei_end_time<=  date_add(#{messageInfoEndtimeEndTime}, interval 1 day)]]>
+			</if>
+		</where>
+	</select>
+  <insert id="insertMessageInfo" parameterType="MessageInfoDO" useGeneratedKeys="true" keyProperty="pkMessageInfoId">
+		insert into tbl_message_info(
+		mei_name,
+		mei_content,
+		mei_status,
+		mei_type,
+		mei_begin_time,
+		mei_end_time,
+		mei_provincecode,
+		mei_citycode
+		)values(
+		#{messageInfoName},
+		#{messageInfoContent},
+		1,
+		#{messageInfoType},
+		#{messageInfoBegintime},
+		#{messageInfoEndtime},
+		#{messageInfoProvinceCode},
+		#{messageInfoCityCode}
+		)
+	</insert>
+  	<select id="getMprName" parameterType="int" resultType="string">
+		SELECT powerStation_name mprName
+		FROM tbl_powerstation 
+		where powerStation_id = #{powerstationId}
+	</select>
+	<insert id="relationPowerStation" parameterType="MessageInfoDO">
+	insert into tbl_message_point_rela(
+		pk_mei_id,
+		pk_powerstation,
+		mpr_name
+		)values(
+		#{pkMessageInfoId},
+		#{pkPowerstation},
+		#{mprName}
+		)
+	</insert>
+  	<select id="getpowerstation"  parameterType="map" resultType="map"  >
+		SELECT
+		powerStation_id pkPowerstation ,
+		powerStation_name mprName
+		FROM
+		tbl_powerstation
+		WHERE
+		powerStation_name LIKE CONCAT('%',#{powerstationName},'%' )
+		<if test="proviceId !=null and proviceId !=''">
+				and province_code = #{proviceId}
+		</if>
+		<if test="cityId !=null and cityId !=''">
+				and city_code = #{cityId}
+		</if>
+	</select>
+  	<select id="getMessageInfoById" parameterType="string" resultMap="result_messageInfo">
+			SELECT
+			pk_mei_id,
+			mei_name,
+			mei_content,
+			mei_type,
+			date_format(mei_begin_time,'%Y-%m-%d %T') mei_begin_time,
+			mei_provincecode,
+			mei_citycode
+			FROM
+			tbl_message_info
+			WHERE
+			pk_mei_id = #{pkMessageInfoId}
+	</select>
+	<select id="getPowerstationById" parameterType="int" resultType="map">
+			SELECT
+			pk_powerstation pkPowerstation,
+			mpr_name mprName
+			FROM
+			tbl_message_point_rela
+			WHERE
+			pk_mei_id = #{pkMessageInfoId}
+	</select>
+	<delete id="removeRelationPowerStation" parameterType="MessageInfoDO">
+		delete from tbl_message_point_rela
+		where pk_mei_id = #{pkMessageInfoId}
+		and pk_powerstation = #{pkPowerstation}
+	</delete>
+	<update id="updateMessageInfo" parameterType="MessageInfoDO">
+	 update  tbl_message_info
+	set
+		mei_name = #{messageInfoName},
+		mei_content = #{messageInfoContent},
+		mei_type = #{messageInfoType},
+		mei_begin_time = #{messageInfoBegintime},
+		mei_provincecode = #{messageInfoProvinceCode},
+		mei_citycode = #{messageInfoCityCode}
+		where 
+		pk_mei_id = #{pkMessageInfoId}
+	</update>
+	<select id="getMprNameByPkPowerstation" parameterType="String" resultType="String">
+		SELECT
+		powerStation_name
+		FROM
+		tbl_powerstation
+		WHERE
+		powerStation_id =#{pkPowerstation}
+	</select>
+	<update id="closeMessageInfoById" parameterType="string">
+	 update  tbl_message_info
+		set
+		mei_status = 2,
+		mei_end_time = now()
+		where 
+		pk_mei_id = #{pkMessageInfoId}
+	</update>
+	<update id="deleteMessageInfoById" parameterType="string">
+	 update  tbl_message_info
+		set
+		mei_status = 3
+		where 
+		pk_mei_id = #{pkMessageInfoId}
+	</update>
+	<delete id="deleteMessageInfoPointById" parameterType="string">
+		delete from tbl_message_point_rela
+		where pk_mei_id = #{pkMessageInfoId}
+	</delete>
+</mapper>

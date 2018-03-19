@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.ReportOrderMapper">
+<resultMap type="ReportOrderDO" id="resultReportOrderDO">
+		<result property="tradeType" column="tradeType" />
+		<result property="slaveCpyId" column="slaveCpyId" />
+		<result property="slaveCpyName" column="slaveCpyName"/>
+		<result property="cpyId" column="cpyId"/>
+		<result property="cpyNumber" column="cpyNumber" />
+		<result property="cpyName" column="cpyName" />
+	    <result property="serviceTime" column="serviceTime" />
+		<result property="totalfavMoney" column="chOr_CouponMoney" />
+		<result property="totalServiceMoney" column="chOr_ServiceMoney" />
+		<result property="totalElectricMoney" column="chOr_ChargeMoney" />
+		<result property="totalElectricCharge" column="chOr_QuantityElectricity" />
+	</resultMap>
+	
+    <sql id="where-sql">
+        <if test="cpyName !=  null and cpyName !=''">
+             and cpy.cpy_name = #{cpyName}
+        </if>
+        <if test="tradeType !=  null and tradeType !=0">
+             and cpy.trade_type = #{tradeType}
+        </if>
+        <if test="slaveCpyId !=  null and slaveCpyId !=0">
+             and cpy.slave_cpy_id = #{slaveCpyId}
+        </if>
+        <if test="startServiceTime !=  null and startServiceTime !=''">
+           <![CDATA[and date_format(ord.chOr_Createdate,'%Y-%m') >= date_format(#{startServiceTime},'%Y-%m') ]]>
+        </if>
+        <if test="endServiceTime !=  null and endServiceTime !=''">
+           <![CDATA[and date_format(ord.chOr_Createdate,'%Y-%m') <= date_format(#{endServiceTime},'%Y-%m')  ]]>
+        </if>
+        <if test="cpyIdList !=null and cpyIdList.size() > 0">
+          and ord.chOr_OrgNo in 
+          <foreach collection="cpyIdList" item="id" open="(" close=")" separator=",">
+		        #{id}
+		   </foreach>
+        </if>
+    </sql>
+    
+	<select id="countReportCpyOrder" parameterType="ReportOrderDO" resultType="long">
+	      SELECT
+	        count(1)
+		  FROM tbl_ChargingOrder ord 
+		    LEFT JOIN 
+            (SELECT a.cpy_number cpyNumber,a.cpy_name cpyName,a.trade_type tradeType,a.slave_cpy_id slaveCpyId,b.cpy_name slaveCpyName from tbl_company a LEFT JOIN tbl_company b ON a.slave_cpy_id = b.cpy_id) cpy
+             ON cpy.cpyNumber = ord.chOr_OrgNo
+		   where chOr_ChargingStatus in (2,3)
+           and date_format(chOr_Createdate,'%Y-%m')=date_format(DATE_SUB(curdate(), INTERVAL 1 MONTH),'%Y-%m') 
+           <include refid="where-sql"/>
+           and cpy.cpyNumber is not null
+            GROUP BY serviceTime,cpy.cpyNumber
+		   order by serviceTime,cpy.cpyNumber desc
+	</select>
+	
+	<select id="selectReportCpyOrder" parameterType="ReportOrderDO" resultMap="resultReportOrderDO">
+		    SELECT
+		    cpy.cpyId cpyId,
+	        cpy.cpyNumber cpyNumber,
+	        cpy.cpyName cpyName,
+	        cpy.tradeType tradeType,
+	        cpy.slaveCpyId slaveCpyId,
+            cpy.slaveCpyName slaveCpyName,
+	        date_format(chOr_Createdate,'%Y-%m') serviceTime,
+            SUM(ord.chOr_ChargeMoney) totalElectricMoney,
+		    SUM(ord.chOr_ServiceMoney) totalServiceMoney,
+		    SUM(ord.chOr_CouponMoney) totalfavMoney,
+		    SUM(ord.chOr_QuantityElectricity) totalElectricCharge
+		  FROM tbl_ChargingOrder ord 
+		    LEFT JOIN 
+            (SELECT a.cpy_id cpyId,a.cpy_number cpyNumber,a.cpy_name cpyName,a.trade_type tradeType,a.slave_cpy_id slaveCpyId,b.cpy_name slaveCpyName from tbl_company a LEFT JOIN tbl_company b ON a.slave_cpy_id = b.cpy_id) cpy
+             ON cpy.cpyNumber = ord.chOr_OrgNo
+		   where chOr_ChargingStatus in (2,3)
+           and date_format(chOr_Createdate,'%Y-%m')=date_format(DATE_SUB(curdate(), INTERVAL 1 MONTH),'%Y-%m') 
+           <include refid="where-sql"/>
+           and cpy.cpyNumber is not null
+            GROUP BY serviceTime,cpy.cpyNumber
+		   order by serviceTime,cpy.cpyNumber desc
+		   <if test="pager !=null">#{pager.offset},#{pager.pageSize}</if>
+	</select>
+</mapper>

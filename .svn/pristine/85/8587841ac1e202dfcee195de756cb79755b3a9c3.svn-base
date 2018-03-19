@@ -1,0 +1,395 @@
+//获取管理员列表的menuId
+var getMenuMap = window.localStorage.getItem('menuMap');
+var getCurruntMap = JSON.parse(getMenuMap);
+var menuId = getCurruntMap['管理员列表'];
+$(function () {
+    ctrlMenu(menuId);
+    //去加载表格的数据
+    setTimeout('adminListSearch()', 100);
+    //加载角色列表
+    setTimeout('toLoadRoleList()', 200);
+    //去加载城市的省
+    setTimeout("getBaseInfo()", 300);
+})
+function ctrlMenu(menuId) {
+    $.ajax({
+        type: "post",
+        url: basePath + getSelfButtonTreeUrl,
+        async: true,
+        data: {
+            menuId: menuId
+        },
+        success: function (req) {
+            var data = req.dataObject;
+            //console.log(data);
+            if(data==null){
+                return;
+            }
+            if (data.length == 0) {
+                return;
+            } else {
+                for (var i = 0; i < data.length; i++) {
+                    var contents = data[i].contents;
+                    if (contents.indexOf('新建') > -1) {
+                        $('#addAdmin').show();
+                    }
+                    if (contents.indexOf('禁用') > -1) {
+                        $('#disabledBtn').show();
+                    }
+
+
+                }
+            }
+
+
+        }
+    });
+}
+function adminListSearch() {
+    toGiveHiddenInput();
+    initTable("adminListForm", "adminListPage", adminListUrl, adminListCallback);
+}
+function adminListCallback(req) {
+    var data = req.dataObject;
+    var pageNum = req.pager.pageNo;
+    var listTr = "";
+    for (var i = 0; i < data.length; i++) {
+        listTr += '<tr><td><input type="checkbox" name="ids" class="selectedBox" value="' + data[i].userId + '"/></td><td><a class="adminHome" onclick="return false;" href="' + basePath + '/static/html/admin/admin_home.html?userId=' + data[i].userId + '&cpyType=' + data[i].cpyType + '&cpyId=' + data[i].cpyId + '">' + data[i].userAccount + '</a>'
+        + '</span></td><td>' + data[i].cpyName
+        + '</td><td>' + data[i].roleName
+        + '</td><td>' + data[i].userLevalStr
+        + '</td><td>' + data[i].userStatus
+        + '</td></tr>';
+    }
+    //console.log(listTr);
+    $("#myTbody").html(listTr);
+}
+newTab(".adminHome", "管理员主页");
+function toUnbindEvent() {
+    $('.provinceBlock').unbind();
+    $('.cityBlock').unbind();
+    $('.cpyProvinceBlock').unbind();
+    $('.cypCityBlock').unbind();
+    $('.userStatusBlock').unbind();
+    $('.cpyCompanyBlock').unbind();
+    $('.adminTypeBlock').unbind();
+    $('.roleIdBlock').unbind();
+    //$('.levelBlock').unbind();
+    selectModel();
+}
+//跳转到新建管理员
+$('#addAdmin').on('click', function () {
+    window.location.href = 'add_admin.html';
+})
+//查询条件部分=========================
+
+function toGiveHiddenInput() {
+    var provinceCodeValue = $('#provinceCode').attr('data-value');
+    var cityCodeValue = $('#cityCode').attr('data-value');
+    var userStatusValue = $('#userStatus').attr('data-value');
+    var adminTypeValue = $('#adminTypeHtml').attr('data-value');
+    var cpyCompanyValue = $('#cpyCompanyName').attr('data-value');
+    var roleIdValue = $('#roleIdHtml').attr('data-value');
+    if (provinceCodeValue == "") {
+        $('input[name=provinceCode]').val('');
+    } else {
+        $('input[name=provinceCode]').val(provinceCodeValue);
+    }
+    if (cityCodeValue == "") {
+        $('input[name=cityCode]').val('');
+    } else {
+        $('input[name=cityCode]').val(cityCodeValue);
+    }
+    if (userStatusValue == "") {
+        $('input[name=userStatus]').val('');
+    } else {
+        $('input[name=userStatus]').val(userStatusValue);
+    }
+    if (cpyCompanyValue == "") {
+        $('input[name=cpyId]').val('');
+    } else {
+        $('input[name=cpyId]').val(cpyCompanyValue);
+    }
+    if (adminTypeValue == "") {
+        $('input[name=userLevel]').val('');
+    } else {
+        $('input[name=userLevel]').val(adminTypeValue);
+    }
+
+    if (roleIdValue == "") {
+        $('input[name=roleId]').val('');
+    } else {
+        $('input[name=roleId]').val(roleIdValue);
+    }
+}
+//根据管理员类型判断是否去加载对应的渠道公司
+function getBaseInfo() {
+    var loginUser = window.localStorage.getItem('loginUser');
+    var getLoginUser = JSON.parse(loginUser);
+    var userLevel = getLoginUser.userLevel;
+    isLoadCompany(userLevel);
+}
+
+function isLoadCompany(userLevel) {
+    if (userLevel == 1) {
+        toLoadProvince('', '#provinceCode', '.provinceUl', 'toUnbindEvent');
+    }
+    if (userLevel == 2) {
+        toLoadProvince('', '#provinceCode', '.provinceUl', 'toUnbindEvent');
+    } else if (userLevel == 8) {
+        toLoadCpy();
+    }
+}
+
+function toLoadCpy() {
+    $.ajax({
+        type: "post",
+        url: basePath + getCompanyListUrl,
+        async: true,
+        data: {
+            provinceCode: '',
+            cityCode: ''
+        },
+        success: function (data) {
+            if (data.success == true) {
+                var dataModule = data.dataObject;
+                var cypCompanyLi = '<li data-option="">请选择</li>';
+                for (var i = 0; i < dataModule.length; i++) {
+                    cypCompanyLi += '<li data-option="' + dataModule[i].cpyId + '" data-cpyNumber="' + dataModule[i].cpyNumber + '">' + dataModule[i].cpyName + '</li>';
+                }
+                $('.cpyCompanyUl').html(cypCompanyLi);
+                toUnbindEvent();
+            }
+        }
+    });
+}
+
+$('.provinceUl').on("click", "li", function () {
+    $('#cityCode').html('请选择');
+    $('#cityCode').attr('data-value', '');
+    $('.cityUl').html('');
+    $('input[name=cityCode]').val('');
+    var provinceCodeId = $(this).attr('data-option');
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+    var flag = $(this).attr('data-option');
+    if (flag == "") {
+        $('#cityCode').html('请选择');
+        $('#cityCode').attr('data-value', '');
+        $('.cityUl').html('');
+        $('input[name=cityCode]').val('');
+    } else {
+        toLoadCity(provinceCodeId, '', '#cityCode', '.cityUl', 'toUnbindEvent');
+    }
+})
+
+$('.cityUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+});
+//用户状态
+$('.userStatusUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+});
+
+//渠道筛选部分=============
+//思路：先加载省，省的li点击，加载对应的市，市点击加载对应的公司，点击公司加载对应等级
+$('.cpyProvinceUl').on("click", "li", function () {
+    $('#cypCityCode').html('请选择');
+    $('.cypCityUl').html('');
+    $('input[name=cityCode]').val('');
+    $('#cpyCompanyName').html('请选择');
+    $('.cpyCompanyUl').html('');
+    $('#cpyCompanyName').attr('data-value', '');
+    var provinceCodeId = $(this).attr('data-option');
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+    var flag = $(this).attr('data-option');
+    if (flag == "") {
+        $('#cypCityCode').html('请选择');
+        $('.cypCityUl').html('');
+        $('input[name=cityCode]').val('');
+        $('#cpyCompanyName').html('请选择');
+        $('.cpyCompanyUl').html('');
+        $('#cpyCompanyName').attr('data-value', '');
+        //$('#levelId').html("请选择");
+        //$('.levelUl').html('');
+        //$('input[name=levelId]').val('');
+    } else {
+        toLoadCity(provinceCodeId, '', '#cypCityCode', '.cypCityUl', 'toUnbindEvent');
+    }
+});
+$('.cypCityUl').on("click", "li", function () {
+    $('#cpyCompanyName').html('请选择');
+    $('.cpyCompanyUl').html('');
+    $('#cpyCompanyName').attr('data-value', '');
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+    var flag = $(this).attr('data-option');
+    var cypCityCodeValue = $('#cypCityCode').attr('data-value');
+    var cpyProvinceCodeValue = $('#cpyProvinceCode').attr('data-value');
+    if (flag == "") {
+        $('#cpyCompanyName').html('请选择');
+        $('.cpyCompanyUl').html('');
+        $('#cpyCompanyName').attr('data-value', '');
+        //$('#levelId').html("请选择");
+        //$('.levelUl').html('');
+        //$('input[name=levelId]').val('');
+    } else {
+        toLoadComponyName(cypCityCodeValue, cpyProvinceCodeValue);
+    }
+});
+function toLoadComponyName(cypCityCodeValue, cpyProvinceCodeValue, cpyId) {
+    var cypCompanyLi = "";
+    var cpyObject = {
+        provinceCode: cpyProvinceCodeValue,
+        cityCode: cypCityCodeValue
+    };
+    if (JSON.stringify(cpyObject) == "{}") {
+        $('#cpyCompanyName').html("请选择");
+    } else {
+        toAjaxCompany(cpyObject, cpyId);
+    }
+}
+function toAjaxCompany(cpyObject, cpyId) {
+    $.ajax({
+        type: "post",
+        url: basePath + getCompanyListUrl,
+        async: true,
+        data: cpyObject,
+        success: function (data) {
+            //alert(cpyId+":"+JSON.stringify(data));
+            if (data.success == true) {
+                var dataModule = data.dataObject;
+                if (cpyId == '') {
+                    var cypCompanyLi = '<li data-option="">请选择</li>';
+                    for (var i = 0; i < dataModule.length; i++) {
+                        cypCompanyLi += '<li data-option="' + dataModule[i].cpyId + '" data-cpyNumber="' + dataModule[i].cpyNumber + '">' + dataModule[i].cpyName + '</li>';
+                    }
+                } else {
+                    var cypCompanyLi = '<li data-option="">请选择</li>';
+                    for (var i = 0; i < dataModule.length; i++) {
+                        if (dataModule[i].cpyId == cpyId) {
+                            $('#cpyCompanyName').html(dataModule[i].cpyId);
+                            cypCompanyLi += '<li data-option="' + dataModule[i].cpyId + '" data-cpyNumber="' + dataModule[i].cpyNumber + '" class="data-selected">' + dataModule[i].cpyName + '</li>';
+                        } else {
+                            cypCompanyLi += '<li data-option="' + dataModule[i].cpyId + '" data-cpyNumber="' + dataModule[i].cpyNumber + '">' + dataModule[i].cpyName + '</li>';
+                        }
+
+                    }
+                }
+                $('.cpyCompanyUl').html(cypCompanyLi);
+                toUnbindEvent();
+            }
+        }
+    });
+}
+$('.cpyCompanyUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option')).attr('data-cpyNumber', $(this).attr('data-cpyNumber'));
+});
+
+//类型选择
+$('.adminTypeUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+});
+//监听回车键
+$(document).keyup(function (event) {
+    if (event.keyCode == 13) {
+        adminListSearch();
+    }
+});
+
+//禁用按钮
+
+//点击禁用
+$("body").off("click", "#disabledBtn").on("click", "#disabledBtn", function () {
+    layer.closeAll();
+    layer.open({
+        type: 1,
+        offset: '100px',
+        title: ["确认", "font-size:12px;text-align:left;padding-left:20px;"],
+        shadeClose: false,
+        closeBtn: 1,
+        area: ['310px', '180px'],//宽高
+        content: $('.disabledContent'),
+        btn: ["确定", "取消"],
+        yes: function (index, layero) {
+            layer.closeAll();
+            toSubmitDisAble();
+        },
+        cancel: function (index, layero) {
+            layer.closeAll();
+        }
+    });
+});
+function toSubmitDisAble() {
+    var ids = '';
+    $('input[name=ids]').each(function () {
+        var flag = $(this).prop('checked');
+        if (flag == true) {
+            ids += $(this).attr('value') + ',';
+        }
+    });
+    if (!ids) {
+        layer.open({
+            type: 1,
+            offset: '100px',
+            title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+            shadeClose: false,
+            closeBtn: 1,
+            area: ['310px', '160px'],//宽高
+            content: '请指定表单元素',
+            time: 3000,
+            btn: ["确定"]
+        });
+    } else {
+        $.ajax({
+            type: "post",
+            url: basePath + freezeUserUrl,
+            async: true,
+            data: {
+                userIds: ids
+            },
+            success: function (data) {
+                if (data.success == true) {
+                    layer.closeAll();
+                    layer.open({
+                        type: 1,
+                        offset: '100px',
+                        title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+                        shadeClose: false,
+                        closeBtn: 1,
+                        area: ['310px', '160px'],//宽高
+                        content: '禁用成功',
+                        btn: ["确定"],
+                        yes: function (index, layero) {
+                            layer.closeAll();
+                            window.location.reload();
+                        },
+                        cancel: function (index, layero) {
+                            layer.closeAll();
+                            window.location.reload();
+                        }
+                    });
+
+                } else {
+                    layer.open({
+                        type: 1,
+                        offset: '100px',
+                        title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+                        shadeClose: false,
+                        closeBtn: 1,
+                        area: ['310px', '160px'],//宽高
+                        content: data.msg,
+                        time: 3000,
+                        btn: ["确定"]
+                    });
+                }
+            }
+        });
+    }
+}
+

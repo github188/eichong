@@ -1,0 +1,138 @@
+*{
+	margin: 0;
+	padding: 0;
+}
+body,html{
+	font-size: 62.5%;
+	background: #EBECED;
+	font-family: "微软雅黑";
+}
+.col-xs-2,.col-xs-8,.col-xs-4{
+	padding: 0;
+	height: 4rem;
+}
+/*第一块===================================================*/
+header{
+	width: 100%;
+	height: 4.6rem;
+	background-color: #FF7D00;
+}
+header .backPage a img{
+	width: 3rem;
+	height: 3rem;
+	margin-top: 0.6rem;
+}
+header .searchBlock{
+	width: 65%;
+	height: 2.8rem;
+	border: 0.1rem solid #FFFFFF;
+	border-radius: 3rem;
+	margin-top: 0.8rem;
+}
+header .searchBlock input{
+	width: 90%;
+	height: 1.8rem;
+	border:0;
+	margin-left: 1rem;
+	margin-top: 0.2rem;
+	outline-style: none;
+	background: #FF7D00;
+}
+header .searchBtn a{
+	display: block;
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	line-height: 4.6rem;
+	text-decoration: none;
+	color: #FFFFFF;
+	font-size: 1.6rem;
+}
+
+/*历史收藏部分======================================================================================*/
+/*.historySearch{
+	height: 3rem;
+	margin-left: 2rem;
+	color: #808080;
+	-background: #007AFF;
+	line-height: 3rem;
+	font-size: 1.4rem;
+}
+.hisoryList{
+	width: 100%;
+	height: auto;
+	border-top: 0.1rem solid #C0C0C0;
+	border-bottom: 0.1rem solid #C0C0C0;
+	background: #FFFFFF;
+	margin-bottom: 0;
+}
+.hisoryList li{
+	width: 100%;
+	height: 4rem;
+	border-bottom: 0.1rem solid #CCCCCC;
+	line-height: 4rem;
+	padding-left: 2rem;
+	list-style: none;
+	position: relative;
+	font-size: 1.4rem;
+	color: #808080;
+}
+.hisoryList li img{
+	width: 3rem;
+	height: 3rem;
+	position: absolute;
+	top: 0.4rem;
+	right: 2rem;
+}
+.hisoryList li .clearBtn{
+	width: 30%;
+	height: 3rem;
+	line-height: 1.6rem;
+	padding: 0;
+	margin-left: 30%;
+	color: #808080;
+	
+}
+.hisoryList li .clearBtn:active,.hisoryList li .clearBtn:focus{
+	outline-style: none;
+	border: 0.1rem solid #CCCCCC;
+}*/
+/*我的收藏部分==========================================================================================*/
+.MyCollection{
+	height: 3rem;
+	margin-left: 2rem;
+	color: #808080;
+	line-height: 3rem;
+	font-size: 1.4rem;
+}
+.collectionList{
+	width: 100%;
+	height: auto;
+	border-top: 0.1rem solid #C0C0C0;
+	border-bottom: 0.1rem solid #C0C0C0;
+	background: #FFFFFF;
+}
+.collectionList li{
+	width: 100%;
+	height: 4rem;
+	border-bottom: 0.1rem solid #CCCCCC;
+	line-height: 4rem;
+	padding-left: 2rem;
+	list-style: none;
+	position: relative;
+	font-size: 1.4rem;
+	color: #808080;
+}
+.collectionList li .moreBtn{
+	width: 30%;
+	height: 3rem;
+	line-height: 1.6rem;
+	padding: 0;
+	margin-left: 30%;
+	color: #808080;
+	
+}
+.collectionList li .moreBtn:active,.collectionList li .moreBtn:focus{
+	outline-style: none;
+	border: 0.1rem solid #CCCCCC;
+}

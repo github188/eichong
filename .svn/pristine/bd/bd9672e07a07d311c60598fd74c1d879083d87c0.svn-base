@@ -1,0 +1,295 @@
+var pkMessageInfoId = getUrlParam('pkMessageInfoId');
+//下拉列表
+function toUnbindEvent() {
+    $('.messageInfoTypeBlock').unbind();
+    $('.messageInfoProvinceCodeBlock').unbind();
+    $('.messageInfoCityCodeBlock').unbind();
+    selectModel();
+}
+//加载信息
+toLoadMessageInfo();
+var powerStationArr = [];
+function toLoadMessageInfo(){
+    $.ajax({
+        type: "post",
+        url: basePath + getMessageInfoByIdUrl,
+        async: true,
+        data: {
+            pkMessageInfoId: pkMessageInfoId
+        },
+        success: function (req) {
+            var data = req.dataObject;
+            var messageInfoType =data.messageInfoType;
+            var messageInfoName = data.messageInfoName;
+            var messageInfoContent = data.messageInfoContent;
+            var messageInfoProvinceCode = data.messageInfoProvinceCode;
+            var messageInfoCityCode = data.messageInfoCityCode;
+            var messageInfoBegintime = data.messageInfoBegintime;
+            var powerstationList = data.powerstationList;
+            for(var i=0;i<powerstationList.length;i++){
+                var stationName = powerstationList[i].mprName;
+                var num = powerstationList[i].pkPowerstation;
+                var obj ={
+                    stationName:stationName,
+                    sNumber:num
+                }
+                powerStationArr.push(obj);
+            }
+            var listLi='';
+            for(var j=powerStationArr.length-1;j>-1;j--){
+                $('#stationTextUl').html('');
+                listLi +='<li class="stationTextLi"><t class="sName">'+powerStationArr[j].stationName+'</t><span class="delStation">删除</span></li>';
+            }
+            $('#stationTextUl').prepend(listLi)
+
+            if(messageInfoType==1){
+                $('#messageInfoType').html('故障');
+                $('#messageInfoType').attr('data-value',1);
+            }else if(messageInfoType==2){
+                $('#messageInfoType').html('新建');
+                $('#messageInfoType').attr('data-value',2);
+            }
+            $('#messageInfoName').val(messageInfoName);
+            $('#messageInfoContent').val(messageInfoContent);
+            $('#messageInfoProvinceCode').attr('data-value',messageInfoProvinceCode);
+            $('#messageInfoCityCode').attr('data-value',messageInfoCityCode);
+            $('#messageInfoBegintime').val(messageInfoBegintime);
+            setTimeout(function () {
+                toLoadProvince(messageInfoProvinceCode, '#messageInfoProvinceCode', '.messageInfoProvinceCodeUl', 'toUnbindEvent');
+            }, 200);
+            setTimeout(function () {
+                toLoadCity(messageInfoProvinceCode, messageInfoCityCode, '#messageInfoCityCode', '.messageInfoCityCodeUl', 'toUnbindEvent');
+            }, 400);
+        }
+    });
+}
+
+//类型
+$('.messageInfoTypeUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+})
+//城市的加载
+$('.messageInfoProvinceCodeUl').on("click", "li", function () {
+    $('#messageInfoCityCode').html('请选择');
+    $('.messageInfoCityCodeUl').html('');
+    $('#messageInfoCityCode').attr('data-value', '');
+    var provinceCodeId = $(this).attr('data-option');
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+    var flag = $(this).attr('data-option');
+    if (flag == "") {
+        $('#messageInfoCityCode').html('请选择');
+        $('.messageInfoCityCodeUl').html('');
+        $('#messageInfoCityCode').attr('data-value', '');
+    } else {
+        toLoadCity(provinceCodeId, '', '#messageInfoCityCode', '.messageInfoCityCodeUl', 'toUnbindEvent');
+    }
+})
+$('.messageInfoCityCodeUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+    var cpyCityName = $('#messageInfoCityCode').attr('data-value');
+    //城市提示及验证
+    if (!cpyCityName) {
+        $('#cpyCityTip').html('请选择城市');
+    } else {
+        $('#cpyCityTip').html('');
+    }
+})
+//标题内容提示
+$('#messageInfoName').on('blur',function(){
+    $('#messageInfoNameTip').html('');
+    var messageInfoName = $(this).val();
+    if(!messageInfoName){
+        $('#messageInfoNameTip').html('请输入标题，最多64个字');
+        $('#messageInfoName').val('');
+        $('#messageInfoName').focus();
+    }else if(messageInfoName.length>64){
+        $('#messageInfoNameTip').html('标题长度有误，请重新输入标题，最多64个字');
+        $('#messageInfoName').val('');
+        $('#messageInfoName').focus();
+    }
+})
+//加载充电点
+$('#powerstationName').keyup(function(){
+    setTimeout('toLoadPowerStation()',500)
+    $('#stationListUl').css('display','block');
+})
+function toLoadPowerStation(){
+    var powerstationNameValue = $('#powerstationName').val();
+    var proviceIdValue = $('#messageInfoProvinceCode').attr('data-value');
+    var cityIdValue = $('#messageInfoCityCode').attr('data-value');
+    $.ajax({
+        type: "post",
+        url: basePath + getPowerstationUrl,
+        async: true,
+        data: {
+            powerstationName: powerstationNameValue,
+            proviceId: proviceIdValue,
+            cityId: cityIdValue
+        },
+        success: function (data) {
+            if (data.success == true) {
+                var data = data.dataObject;
+                var stationListLi = '';
+                for (var i = 0; i < data.length; i++) {
+                    stationListLi += '<li class="stationLi" data-option="' + data[i].pkPowerstation + '">' + data[i].mprName + '</li>';
+                }
+                $('#stationListUl').html(stationListLi);
+                toUnbindEvent();
+            }
+        }
+    });
+}
+//点击充电点添加关联
+var powerStationArr = [];
+$("body").off("click", ".stationLi").on("click", ".stationLi", function(){
+    $('#powerstationNameTip').html('');
+    var stationName = $(this).html();
+    var sNumber = $(this).attr('data-option');
+    var obj ={
+        stationName:stationName,
+        sNumber:sNumber
+    }
+    powerStationArr.push(obj);
+    $('#stationListUl').css('display','none');
+    for(var i=0;i<powerStationArr.length-1;i++){
+        if((powerStationArr[i].sNumber)==sNumber){
+            layer.closeAll();
+            layer.open({
+                type: 1,
+                offset: '100px',
+                title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+                shadeClose: false,
+                closeBtn: 1,
+                area: ['310px', '180px'],//宽高
+                content: "充电点已被关联，不能重复关联！",
+                btn: ["确定"]
+            });
+            powerStationArr.pop()
+        }
+    }
+    var listLi='';
+    for(var j=powerStationArr.length-1;j>-1;j--){
+        $('#stationTextUl').html('');
+        listLi +='<li class="stationTextLi"><t class="sName">'+powerStationArr[j].stationName+'</t><span class="delStation">删除</span></li>';
+    }
+    $('#stationTextUl').prepend(listLi)
+})
+$("body").off("click", ".delStation").on("click", ".delStation", function(){
+    $('#powerstationNameTip').html('');
+    var aaa = $(this).parent();
+    var i = aaa.index();
+    $('#stationTextUl').find(aaa).remove();
+    var lilength = $('#stationTextUl').children().length;
+    powerStationArr.splice((lilength - i), 1);
+    if(powerStationArr.length==0){
+        $('#powerstationNameTip').html('请选择关联充电点');
+    }
+})
+//提交
+$('#saveBtn').click(function () {
+    $('#messageInfoNameTip').html('');
+    $('#messageInfoContentTip').html('');
+    $('#messageInfoCityCodeTip').html('');
+    $('#messageInfoBegintimeTip').html('');
+    $('#powerstationNameTip').html('');
+    var messageInfoNameValue = $('#messageInfoName').val();
+    var messageInfoContentValue = $('#messageInfoContent').val();
+    var messageInfoCityCodeValue = $('#messageInfoCityCode').attr('data-value');
+    var messageInfoBegintimeValue = $('#messageInfoBegintime').val();
+    if (!messageInfoNameValue) {
+        $('#messageInfoName').focus();
+        $('#messageInfoName').val('');
+        $('#messageInfoNameTip').html('请输入标题，最多64个字');
+        return false;
+    }
+    if (messageInfoContentValue=='') {
+        $('#messageInfoContentTip').html('请输入内容，最多250个字');
+        return false;
+    }else if(messageInfoContentValue.length>250){
+        $('#messageInfoContentTip').html('内容长度有误，请重新输入内容，最多250个字');
+        return false;
+    }
+    if (!messageInfoCityCodeValue) {
+        $('#messageInfoCityCodeTip').html('请选择城市');
+        return false;
+    }
+    if(!messageInfoBegintimeValue){
+        $('#messageInfoBegintime').focus();
+        $('#messageInfoBegintime').val('');
+        $('#messageInfoBegintimeTip').html('请选择开始时间');
+        return false;
+    }
+    if(powerStationArr.length==0){
+        $('#powerstationNameTip').html('请选择关联充电点');
+        return false;
+    }
+    toSaveMessageInfo();
+})
+//数据传给后台
+function toSaveMessageInfo() {
+    var messageInfoTypeValue = $('#messageInfoType').attr('data-value');
+    var messageInfoNameValue = $('#messageInfoName').val();
+    var messageInfoContentValue = $('#messageInfoContent').val();
+    var messageInfoProvinceCodeValue = $('#messageInfoProvinceCode').attr('data-value');
+    var messageInfoCityCodeValue = $('#messageInfoCityCode').attr('data-value');
+    var messageInfoBegintimeValue = $('#messageInfoBegintime').val();
+    var pkPowerstationsValue='';
+    for(var i=0;i<powerStationArr.length;i++){
+        pkPowerstationsValue += powerStationArr[i].sNumber+',';
+    }
+    var obj = {
+        pkMessageInfoId:pkMessageInfoId,
+        messageInfoType:messageInfoTypeValue,
+        messageInfoName:messageInfoNameValue,
+        messageInfoContent:messageInfoContentValue,
+        messageInfoProvinceCode:messageInfoProvinceCodeValue,
+        messageInfoCityCode:messageInfoCityCodeValue,
+        messageInfoBegintime:messageInfoBegintimeValue,
+        pkPowerstations:pkPowerstationsValue
+    };
+    var index =layer.load(1);
+    $.ajax({
+        type: "post",
+        url: basePath + updateMessageInfoUrl,
+        async: true,
+        data: obj,
+        success: function (data) {
+            if (data.success == true) {
+                layer.closeAll();
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+                    shadeClose: false,
+                    closeBtn: 1,
+                    area: ['310px', '180px'],//宽高
+                    content: "保存成功",
+                    btn: ["确定"],
+                    yes:function(index,layero){
+                        window.location.href = 'AppIndexList.html';
+                    }
+                });
+            } else {
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+                    shadeClose: false,
+                    closeBtn: 1,
+                    area: ['310px', '160px'],//宽高
+                    content: data.msg,
+                    time: 3000,
+                    btn: ["确定"]
+                });
+            }
+        }
+    });
+}
+
+//刚一进页面就要执行的所有验证
+$('#goCancel').on('click', function () {
+    window.location.href = 'AppIndexList.html';
+})

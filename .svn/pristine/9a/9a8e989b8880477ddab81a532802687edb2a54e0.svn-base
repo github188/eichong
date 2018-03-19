@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.TypeSpanMapper">
+	<resultMap type="TypeSpanDO" id="resultTypeSpan">
+		<result property="pkTypeSpanId" column="pk_TypeSpanId" />
+		<result property="tsTypeSpan" column="ts_TypeSpan" />
+		<result property="tsModelName" column="ts_ModelName" />
+		<result property="tsFactTag" column="ts_FactTag" />
+		<result property="tsFileName" column="ts_FileName" />
+		<result property="tsProductNumber" column="ts_ProductNumber" />
+		<result property="tsRemarks" column="ts_Remarks" />
+		<result property="tsCreatedate" column="ts_Createdate" />
+		<result property="tsUpdatedate" column="ts_Updatedate" />
+		<result property="elPiPowerNumber" column="elPi_PowerNumber" />
+		<result property="elPiChargingMode" column="elPi_ChargingMode" />
+		<result property="elPiPowerSize" column="elPi_PowerSize" />
+		<result property="elPiMaker" column="elPi_Maker" />
+		<result property="elPiType" column="elPi_Type" />
+	</resultMap>
+   
+   <select id="getTypeSpanList" parameterType="TypeSpanDO" resultMap="resultTypeSpan">
+   		select pk_TypeSpanId,ts_TypeSpan,ts_ModelName,ts_FactTag,ts_FileName,ts_ProductNumber,ts_Remarks
+   		from tbl_typespan 
+   		where 1=1
+   		<if test="tsTypeSpan !=null and tsTypeSpan !=''">
+   			and ts_TypeSpan like concat('%',#{tsTypeSpan},'%')
+   		</if>
+   		order by ts_Updatedate desc
+   		<if test="pager!=null">limit #{pager.offset},#{pager.pageSize}</if>
+   </select>
+   
+   <select id="getTypeSpanCount" parameterType="TypeSpanDO" resultType="long">
+	   	select count(*) from tbl_typespan
+	   	where 1=1
+	   	<if test="tsTypeSpan !=null and tsTypeSpan !=''">
+	   			and ts_TypeSpan like concat('%',#{tsTypeSpan},'%')
+	  	</if>
+		<if test="tsModelName !=null and tsModelName !=''">
+				and ts_ModelName like concat('%',#{tsModelName},'%')
+		</if>
+   </select>
+   
+   <select id="checkTsTypeSpan" parameterType="String" resultType="int">
+		SELECT count(*)
+		FROM tbl_typespan t
+		where ts_TypeSpan = #{tsTypeSpan}
+   </select>
+   <!-- 新增产品信息 -->
+	<insert id="addTypeSpan" parameterType="TypeSpanDO" useGeneratedKeys="true" keyProperty="pkTypeSpanId">
+		insert into tbl_typespan
+		(
+		ts_TypeSpan,
+		ts_ModelName,
+		ts_FactTag,
+		ts_FileName,
+		ts_ProductNumber,
+		ts_Remarks,
+		ts_Createdate,
+		ts_Updatedate,
+		elPi_PowerNumber,
+		elPi_ChargingMode,
+		elPi_PowerSize,
+		elPi_Maker,
+		elPi_Type
+		)
+		values
+		(
+		#{tsTypeSpan},
+		#{tsModelName},
+		'',
+		'',
+		#{tsProductNumber},
+		#{tsRemarks},
+		sysdate(),
+		sysdate(),
+		#{elPiPowerNumber},
+		#{elPiChargingMode},
+		#{elPiPowerSize},
+		#{elPiMaker},
+		#{elPiType}
+		)
+	</insert>
+   	<select id="getTypeSpanById" parameterType="TypeSpanDO" resultMap="resultTypeSpan">
+		SELECT pk_TypeSpanId,ts_TypeSpan,ts_ModelName,ts_FactTag,ts_FileName,ts_ProductNumber,ts_Remarks,
+		elPi_PowerNumber,elPi_ChargingMode,elPi_PowerSize,elPi_Maker,elPi_Type
+		FROM tbl_typespan t
+		where pk_TypeSpanId = #{pkTypeSpanId}
+	</select>
+   <!-- 修改产品信息 -->
+	<update id="updateTypeSpan" parameterType="TypeSpanDO">
+		update tbl_typespan
+		set
+		ts_TypeSpan = #{tsTypeSpan},
+		ts_ModelName = #{tsModelName},
+		ts_FactTag = #{tsFactTag},
+		ts_FileName = #{tsFileName},
+		ts_ProductNumber = #{tsProductNumber},
+		ts_Remarks = #{tsRemarks},
+		ts_Updatedate = sysdate(),
+		elPi_PowerNumber = #{elPiPowerNumber},
+		elPi_ChargingMode = #{elPiChargingMode},
+		elPi_PowerSize = #{elPiPowerSize},
+		elPi_Maker = #{elPiMaker},
+		elPi_Type = #{elPiType}
+		where pk_TypeSpanId = #{pkTypeSpanId}
+	</update>
+   <select id="selectPileList" parameterType="ElectricPileDO"	resultType="hashMap">
+		SELECT
+		pk_ElectricPile pkElectricPile,
+		elPi_ElectricPileCode code,
+		e.comm_status commStatus,
+		p.powerStation_name powerName,
+		date_format(
+			(
+				SELECT
+					ev_Updatedate
+				FROM
+					tbl_equipmentversion
+				WHERE
+					ev_ProductID = e.pk_ElectricPile
+				AND ev_ProductType = 3
+				ORDER BY
+					ev_Updatedate
+				LIMIT 1
+			),
+			'%Y-%m-%d %T'
+		) AS ev_Updatedate,
+		(
+			SELECT
+				ev_FirmwareNumber
+			FROM
+				tbl_equipmentversion
+			WHERE
+				ev_ProductID = e.pk_ElectricPile
+			AND ev_ProductType = 3
+			ORDER BY
+				ev_Updatedate
+			LIMIT 1
+		) ugFirmwareNumber,
+		(
+			SELECT
+				ev_FirmwareVersion
+			FROM
+				tbl_equipmentversion
+			WHERE
+				ev_ProductID = e.pk_ElectricPile
+			AND ev_ProductType = 3
+			ORDER BY
+				ev_Updatedate
+			LIMIT 1
+		) ugFirmwareVersion,
+		(
+			SELECT
+				ev_FirmwareNumber
+			FROM
+				tbl_equipmentversion
+			WHERE
+				ev_ProductID = e.pk_ElectricPile
+			AND ev_ProductType = 1
+			ORDER BY
+				ev_Updatedate
+			LIMIT 1
+		) firmwareNumber,
+		(
+			SELECT
+				ev_FirmwareVersion
+			FROM
+				tbl_equipmentversion
+			WHERE
+				ev_ProductID = e.pk_ElectricPile
+			AND ev_ProductType = 1
+			ORDER BY
+				ev_Updatedate
+			LIMIT 1
+		) firmwareVersion,
+		t.ts_TypeSpan,
+		e.elpi_TypeSpanId
+		FROM
+			tbl_electricpile e
+		LEFT JOIN tbl_powerstation p ON p.powerStation_id = e.elPi_RelevancePowerStation
+		LEFT JOIN tbl_typespan t ON t.pk_TypeSpanId = e.elpi_TypeSpanId
+		where 1=1
+		<if test="commStatus !=null and commStatus != ''">
+		    and e.comm_status = #{commStatus}
+		</if>
+		<if test="code !=null and code !=''">
+			and e.elPi_ElectricPileCode like concat('%',#{code},'%')
+		</if>
+		<if test="powerStationName !=null and powerStationName !=''">
+			and p.powerStation_name like concat('%',#{powerStationName},'%')
+		</if>
+		<if test="provinceCode !=null and provinceCode !=''">
+				and e.elPi_OwnProvinceCode like concat('%',#{provinceCode},'%')
+		</if>
+		<if test="cityCode !=null and cityCode !=''">
+			and e.elPi_OwnCityCode like concat('%',#{cityCode},'%')
+		</if>
+		<if test="areaCode !=null and areaCode !=''">
+			and e.elPi_OwnCountyCode like concat('%',#{areaCode},'%')
+		</if>
+		<if test="productModel !=null and productModel !=''">
+			and t.ts_TypeSpan like concat('%',#{productModel},'%')
+		</if>
+		<if test="pager!=null">limit #{pager.offset},#{pager.pageSize}</if>
+	</select>
+
+	<select id="selectPileListCount" parameterType="ElectricPileDO" resultType="long">
+	 SELECT
+				count(*)
+				FROM
+				tbl_electricpile e
+				LEFT JOIN tbl_powerstation p ON p.powerStation_id =e.elPi_RelevancePowerStation
+				LEFT JOIN tbl_typespan t ON t.pk_TypeSpanId = e.elpi_TypeSpanId
+				where 1=1
+					<if test="commStatus !=null and commStatus != ''">
+		    and e.comm_status = #{commStatus}
+				</if>
+				<if test="code !=null and code !=''">
+				and e.elPi_ElectricPileCode like concat('%',#{code},'%')
+				</if>
+				<if test="powerStationName !=null and powerStationName !=''">
+					and p.powerStation_name like concat('%',#{powerStationName},'%')
+				</if>
+				<if test="provinceCode !=null and provinceCode !=''">
+					and e.elPi_OwnProvinceCode like concat('%',#{provinceCode},'%')
+				</if>
+				<if test="cityCode !=null and cityCode !=''">
+					and e.elPi_OwnCityCode like concat('%',#{cityCode},'%')
+				</if>
+				<if test="areaCode !=null and areaCode !=''">
+					and e.elPi_OwnCountyCode like concat('%',#{areaCode},'%')
+				</if>
+				<if test="productModel !=null and productModel !=''">
+				and t.ts_TypeSpan like concat('%',#{productModel},'%')
+				</if>
+	</select>
+	<select id="getCheckUpList" parameterType="TypeSpanDO"
+		resultType="hashMap">
+		SELECT
+		ifNull((
+		SELECT
+		ev_FirmwareNumber
+		FROM
+		tbl_equipmentversion
+		WHERE
+		ev_ProductType = 3
+		AND ev_ProductID = t.ev_ProductID
+		ORDER BY
+		ev_Updatedate
+		LIMIT 1
+		),"") ugFirmwareNumber,
+		ifnull((
+		SELECT
+		ev_FirmwareVersion
+		FROM
+		tbl_equipmentversion
+		WHERE
+		ev_ProductType = 3
+		AND ev_ProductID = t.ev_ProductID
+		ORDER BY
+		ev_Updatedate
+		LIMIT 1
+		),"") ugFirmwareVersion,
+		ifnull((
+		SELECT
+		ev_FirmwareNumber
+		FROM
+		tbl_equipmentversion
+		WHERE
+		ev_ProductType = 1
+		AND ev_ProductID = t.ev_ProductID
+		ORDER BY
+		ev_Updatedate
+		LIMIT 1
+		),"")firmwareNumber,
+		ifnull((
+		SELECT
+		ev_FirmwareVersion
+		FROM
+		tbl_equipmentversion
+		WHERE
+		ev_ProductType = 1
+		AND ev_ProductID = t.ev_ProductID
+		ORDER BY
+		ev_Updatedate
+		LIMIT 1
+		),"") firmwareVersion
+		FROM
+		tbl_equipmentversion t
+		WHERE
+		ev_ProductID = #{item}
+		ORDER BY
+		ev_Updatedate
+		LIMIT 1
+	</select>
+</mapper>

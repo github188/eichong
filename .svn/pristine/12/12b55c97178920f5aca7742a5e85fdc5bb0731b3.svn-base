@@ -1,0 +1,26 @@
+package com.wanma.ims.service;
+
+
+public interface OrderStatisticService {
+     
+	/** 用户总电量*/
+	public Double countTotalElectricCharge(Long userId);
+	
+	/** 用户订单*/
+	public String countTotalOrder(Long userId);
+	
+	/** 用户今日订单*/
+	public String countTotalTodayOrder(Long userId);
+	
+	/** 公司累计充电量*/
+	public Double countTotalCpyElectricCharge(Integer cpyNumber);
+	
+	/** 公司累计订单*/
+	public String countTotalCpyOrder(Integer cpyNumber);
+	
+	/** 公司累计消费*/
+	public Double countTotalCpyConsume(Integer cpyNumber);
+	
+	/** 公司今日订单*/
+	public String countTotalTodayCpyOrder(Integer cpyNumber);
+}

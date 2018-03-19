@@ -1,0 +1,40 @@
+package com.sgcc.constant;
+
+import com.echong.common.MessageManager;
+import com.google.common.base.Strings;
+
+/**
+ * Created by zangyaoyi on 2016/12/30.
+ */
+public class CommonConsts {
+    //国网配置文件
+    public static String SGCC_BASE_URL = "";
+    public static String SGCC_OPERATOR_ID = "";
+    public static String SGCC_OPERATOR_SECRET = "";
+    public static String SGCC_DATA_SECRET = "";
+    public static String SGCC_SIG_SECRET = "";
+    public static String SGCC_DATA_SECRET_IV = "";
+    public static String SGCC_SYNC_STATION_INFO = "sync_station_info";
+    public static String SGCC_SYNC_STATION_STATS_INFO = "sync_station_stats_info";
+    public static String SGCC_SYNC_EQUIPMENT_INFO = "sync_equipment_info";
+    public static String SGCC_SYNC_EQUIPMENT_STATS_INFO = "sync_equipment_stats_info";
+    public static String SGCC_SYNC_CONNECTOR_INFO = "sync_connector_info";
+    public static String SGCC_SYNC_TIME="sgcc:sync:time";
+
+
+
+    static {
+        if (Strings.isNullOrEmpty(SGCC_BASE_URL) || Strings.isNullOrEmpty(SGCC_DATA_SECRET_IV)) {
+            MessageManager manager = MessageManager.getMessageManager();
+            SGCC_BASE_URL = manager.getSGCCProperties(SGCCWangConsts.BASE_URL);
+            SGCC_OPERATOR_ID = manager.getSGCCProperties(SGCCWangConsts.OPERATOR_ID);
+            SGCC_OPERATOR_SECRET = manager.getSGCCProperties(SGCCWangConsts.OPERATOR_SECRET);
+            SGCC_DATA_SECRET = manager.getSGCCProperties(SGCCWangConsts.DATA_SECRET);
+            SGCC_SIG_SECRET = manager.getSGCCProperties(SGCCWangConsts.SIG_SECRET);
+            SGCC_DATA_SECRET_IV = manager.getSGCCProperties(SGCCWangConsts.DATA_SECRET_IV);
+        }
+
+    }
+
+}
+

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.TblOffLineInfoDao">
+
+    <resultMap id="tblOffLineInfo" type="TblOffLineInfo">
+        <id property="id" column="id"/>
+        <result property="elPiElectricPileCode" column="elPi_ElectricPileCode"/>
+        <result property="elPiRelevancePowerStation" column="elPi_RelevancePowerStation"/>
+        <result property="beginOfflineTime" column="begin_offline_time"/>
+        <result property="endOfflineTime" column="end_offline_time"/>
+        <result property="type" column="type"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <resultMap id="pageResultMap" type="java.util.HashMap" extends="tblOffLineInfo"></resultMap>
+
+
+    <select id="getTblOffLineInfoList" parameterType="TblOffLineInfo"
+            resultMap="tblOffLineInfo">
+        SELECT a.*,
+        c.poSt_Name elPiRelevancePowerStation
+        FROM tbl_offline_info a,tbl_electricpile b, tbl_powerstation c
+        <where>
+            a.elPi_ElectricPileCode=b.elPi_ElectricPileCode
+            AND b.elPi_RelevancePowerStation=c.pk_PowerStation
+            <if test="elPiRelevancePowerStation != null and elPiRelevancePowerStation != ''">
+                AND c.poSt_Name=#{elPiRelevancePowerStation}
+            </if>
+            <if test="elPiElectricPileCode != null and elPiElectricPileCode != ''">
+                AND a.elPi_ElectricPileCode=#{elPiElectricPileCode}
+            </if>
+            <if test="beginOfflineTime !=null and beginOfflineTime !=''">
+                and begin_offline_time>=#{beginOfflineTime}
+            </if>
+            <if test="endOfflineTime !=null and endOfflineTime !=''">
+                <![CDATA[and begin_offline_time<= #{endOfflineTime}]]>
+            </if>
+        </where>
+        order by update_time DESC
+        <if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+    </select>
+
+</mapper>

@@ -1,0 +1,540 @@
+//获取电桩列表的menuId
+var getMenuMap = window.localStorage.getItem('menuMap');
+var getCurruntMap = JSON.parse(getMenuMap);
+var menuId = getCurruntMap['电桩列表'];
+$(function () {
+    ctrlMenu(menuId);
+    //去加载表格的数据
+    setTimeout("getElectricPileList()", 100);
+})
+function ctrlMenu(menuId) {
+    $.ajax({
+        type: "post",
+        url: basePath + getSelfButtonTreeUrl,
+        async: true,
+        data: {
+            menuId: menuId
+        },
+        success: function (req) {
+            var data = req.dataObject;
+            if (data.length == 0) {
+                return;
+            } else {
+                for (var i = 0; i < data.length; i++) {
+                    var contents = data[i].contents;
+                    if (contents.indexOf('显示') > -1) {
+                        $('#showBtn').show();
+                    }
+                    if (contents.indexOf('导入') > -1) {
+                        $('#importElectricBtn').show();
+                    }
+                    if (contents.indexOf('导出') > -1) {
+                        $('#exportElectricBtn').show();
+                    }
+                    if (contents.indexOf('新建') > -1) {
+                        $('#addElectric').show();
+                    }
+                    if (contents.indexOf('删除') > -1) {
+                        $('#deleteBtn').show();
+                    }
+                    if (contents.indexOf('资产绑定') > -1) {
+                        $('#ownshipBind').show();
+                    }
+                }
+            }
+
+
+        }
+    });
+}
+
+
+function toUnbindEvent() {
+    $('.pileStatusBlock').unbind();
+    $('.electricPileTypeBlock').unbind();
+    $('.electricChargeModeBlock').unbind();
+    $('.electricPowerBlock').unbind();
+    $('.cpyProvinceBlock').unbind();
+    $('.cypCityBlock').unbind();
+    $('.cpyAreaBlock').unbind();
+    $('.pileMakerBlock').unbind();
+    $('.ownerShipBlock').unbind();
+    $('.ele_cpyProvinceBlock').unbind();
+    $('.ele_cypCityBlock').unbind();
+    $('.ele_cpyCompanyBlock').unbind();
+    selectModel();
+}
+toUnbindEvent();
+
+function getElectricPileList() {
+    toGiveHiddenInput();
+    initTable("electricListForm", "electricListPage", electricListUrl, electricListCallback);
+}
+function electricListCallback(req) {
+    var data = req.dataObject;
+//    var pageNum = req.pager.pageNo;
+    var listTr = "";
+    for (var i = 0; i < data.length; i++) {
+        var dateTime = data[i].gmtCreate.time;
+        listTr += '<tr><td><input type="checkbox" name="ids" class="selectedBox" value="' + data[i].id + '"/></td><td class="electricPileList_electricPileCode"><span class="toPileDetail" data-id="' + data[i].id + '" onclick="toLoadPileDetail(this)">' + data[i].code
+        + '</span></td><td class="electricPileList_electricPileNum">' + data[i].num
+        + '</td><td class="electricPileList_chargeMode">' + data[i].chChargingMethod
+        + '</td><td class="electricPileList_powerNum">' + data[i].chPower
+        + '</td><td class="electricPileList_headNum">' + data[i].muzzleNumber
+        + '</td><td class="electricPileList_pileStatus">' + data[i].chStatus
+        + '</td><td class="electricPileList_pileAddress">' + data[i].address
+        + '</td><td class="electricPileList_pileOwnner">' + data[i].ownerShip
+        + '</td><td class="electricPileList_creatTime">' + new Date(dateTime).format("yyyy-MM-dd")
+        + '</td><td class="electricPileList_typeSpan">' + data[i].productModel
+        + '</td><td class="electricPileList_pileType">' + data[i].type
+        + '</td><td class="electricPileList_pileCompany">' + data[i].pileMaker
+        + '</td><td class="electricPileList_defaultRateInfo">' + data[i].rateInformationId
+        + '</td><td class="electricPileList_pileName">' + data[i].name
+        + '</td></tr>';
+
+    }
+    $("#myTbogy").html(listTr);
+    var arr = ['electricPileList_electricPileCode', 'electricPileList_electricPileNum',
+        'electricPileList_chargeMode', 'electricPileList_powerNum', 'electricPileList_headNum',
+        'electricPileList_pileStatus', 'electricPileList_pileAddress', 'electricPileList_pileOwnner',
+        'electricPileList_creatTime', 'electricPileList_typeSpan', 'electricPileList_pileType',
+        'electricPileList_pileCompany', 'electricPileList_defaultRateInfo', 'electricPileList_pileName'];
+    toGetLocalStorageInfo(arr);
+}
+//查询条件部分=========================
+//点击桩编号，进去桩详情
+function toLoadPileDetail(obj) {
+    var electricPileId = $(obj).attr('data-id');
+    window.location.href = 'electricPile_detail.html?electricPileId=' + electricPileId;
+}
+function toGiveHiddenInput() {
+    var pileStatusHtmlValue = $('#pileStatusHtml').attr('data-value');
+    var powerHtmlValue = $('#powerHtml').attr('data-value');
+    var chargingMethodHtmlValue = $('#chargingMethodHtml').attr('data-value');
+    var pileMakerIdHtmlValue = $('#pileMakerIdHtml').attr('data-value');
+    var typeIdHtmlValue = $('#typeIdHtml').attr('data-value');
+    var provinceCodeHtmlValue = $('#provinceCodeHtml').attr('data-value');
+    var cityCodeHtmlValue = $('#cityCodeHtml').attr('data-value');
+    var areaCodeHtmlValue = $('#areaCodeHtml').attr('data-value');
+    var ownerShipHtmlValue = $('#ownerShipHtml').attr('data-value');
+    var codeValue = $('input[name=code]').val();
+    if (codeValue == "") {
+        codeValue = $('input[name=code]').val('');
+    } else {
+        $('input[name=code]').val();
+    }
+    if (pileStatusHtmlValue == "") {
+        $('input[name=status]').val('');
+    } else {
+        $('input[name=status]').val(pileStatusHtmlValue);
+    }
+    if (powerHtmlValue == "") {
+        $('input[name=power]').val('');
+    } else {
+        $('input[name=power]').val(powerHtmlValue);
+    }
+    if (chargingMethodHtmlValue == "") {
+        $('input[name=chargingMethod]').val('');
+    } else {
+        $('input[name=chargingMethod]').val(chargingMethodHtmlValue);
+    }
+    if (pileMakerIdHtmlValue == "") {
+        $('input[name=pileMakerId]').val('');
+    } else {
+        $('input[name=pileMakerId]').val(pileMakerIdHtmlValue);
+    }
+    if (typeIdHtmlValue == "") {
+        $('input[name=typeId]').val('');
+    } else {
+        $('input[name=typeId]').val(typeIdHtmlValue);
+    }
+    if (provinceCodeHtmlValue == '') {
+        $('input[name=provinceCode]').val('');
+    } else {
+        $('input[name=provinceCode]').val(provinceCodeHtmlValue);
+    }
+    if (cityCodeHtmlValue == '') {
+        $('input[name=cityCode]').val('');
+    } else {
+        $('input[name=cityCode]').val(cityCodeHtmlValue);
+    }
+    if (areaCodeHtmlValue == '') {
+        $('input[name=areaCode]').val('');
+    } else {
+        $('input[name=areaCode]').val(areaCodeHtmlValue);
+    }
+
+    if (ownerShipHtmlValue == '') {
+        $('input[name=ownerShip]').val('');
+    } else {
+        $('input[name=ownerShip]').val(ownerShipHtmlValue);
+    }
+}
+var selectMap = {
+    1: 'electricPileType',
+    3: 'electricChargeMode',
+    4: 'electricPower'
+}
+initSelects(selectMap);
+//功率选择
+$('#electricPower').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+});
+//充电方式选择
+$('#electricChargeMode').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+});
+//电桩类型
+$('#electricPileType').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+});
+//电桩状态
+$('.pileStatusUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+});
+//加载省市
+setTimeout("toLoadProvince('', '#provinceCodeHtml', '.cpyProvinceUl', 'toUnbindEvent')", 100);
+
+//点击省加载市
+$('.cpyProvinceUl').on("click", "li", function () {
+    var provinceCodeId = $(this).attr('data-option');
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+    var flag = $(this).attr('data-option');
+    if (flag == "") {
+        $('#cityCodeHtml').html('请选择');
+        $('.cypCityUl').html('');
+        $('#cityCodeHtml').attr('data-value', '');
+        $('#areaCodeHtml').html('请选择');
+        $('.areaUl').html('');
+        $('#areaCodeHtml').attr('data-value', '');
+    } else {
+        toLoadCity(provinceCodeId, '', '#cityCodeHtml', '.cypCityUl', 'toUnbindEvent');
+    }
+})
+//点击市加载区
+$('.cypCityUl').on("click", "li", function () {
+    var cityCodeId = $(this).attr('data-option');
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+    var flag = $(this).attr('data-option');
+
+    if (flag == "") {
+        $('#areaCodeHtml').html('请选择');
+        $('.areaUl').html('');
+        $('#areaCodeHtml').attr('data-value', '');
+    } else {
+        $('.areaUl').html('');
+        toLoadArea(cityCodeId, '', '#areaCodeHtml', '.areaUl', 'toUnbindEvent');
+    }
+})
+
+//点击区获取值
+$('.areaUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+})
+
+//电桩制造厂商选择
+setTimeout('toPileMarkerList()', 200);
+$('.pileMarkerUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+});
+
+
+$('body').on('click', '#addElectric', function () {
+    window.location.href = 'add_electricPile.html';
+})
+//按钮功能部分
+//导出
+$('body').on('click', '#exportElectricBtn', function () {
+    toGiveHiddenInput();
+    var obj = {
+        code: $('input[name=code]').val(),
+        status: $('input[name=status]').val(),
+        power: $('input[name=power]').val(),
+        chargingMethod: $('input[name=chargingMethod]').val(),
+        pileMakerId: $('input[name=pileMakerId]').val(),
+        provinceCode: $('input[name=provinceCode]').val(),
+        cityCode: $('input[name=cityCode]').val(),
+        areaCode: $('input[name=areaCode]').val(),
+        typeId: $('input[name=typeId]').val(),
+        ownerShip: $('input[name=ownerShip]').val()
+    };
+    window.location.href = basePath + exportElectricUrl + '?code='
+    + obj.code + '&status='
+    + obj.status + '&power='
+    + obj.power + '&chargingMethod='
+    + obj.chargingMethod + '&pileMakerId='
+    + obj.pileMakerId + '&provinceCode='
+    + obj.provinceCode + '&cityCode='
+    + obj.cityCode + '&areaCode='
+    + obj.areaCode + '&typeId='
+    + obj.typeId + '&ownerShip='
+    + obj.ownerShip;
+});
+
+//删除电桩
+$("body").off("click", "#deleteBtn").on("click", "#deleteBtn", function () {
+    layer.closeAll();
+    layer.open({
+        type: 1,
+        offset: '100px',
+        title: ["提示", "font-size:12px;text-align:center"],
+        shadeClose: false,
+        closeBtn: 2,
+        area: ['310px', '180px'],//宽高
+        content: $('.deleteContent'),
+        btn: ["确定", "取消"],
+        yes: function (index, layero) {
+            layer.closeAll();
+            toDeleteElectric();
+        },
+        cancel: function (index, layero) {
+            layer.closeAll();
+        }
+    });
+});
+function toDeleteElectric() {
+    var ids = '';
+    $('input[name=ids]').each(function () {
+        var flag = $(this).prop('checked');
+        if (flag == true) {
+            ids += $(this).attr('value') + ',';
+        }
+    });
+    if (!ids) {
+        layer.open({
+            type: 1,
+            offset: '100px',
+            title: ["提示", "font-size:12px;text-align:center"],
+            shadeClose: false,
+            closeBtn: 2,
+            area: ['310px', '160px'],//宽高
+            content: '请指定表单元素',
+            time: 3000,
+            btn: ["确定", "取消"]
+        });
+    } else {
+        $.ajax({
+            type: "post",
+            url: basePath + delElectricUrl,
+            async: true,
+            data: {
+                ids: ids
+            },
+            success: function (data) {
+                if (data.success == true) {
+                    layer.closeAll();
+                    layer.open({
+                        type: 1,
+                        offset: '100px',
+                        title: ["提示", "font-size:12px;text-align:center"],
+                        shadeClose: false,
+                        closeBtn: 2,
+                        area: ['310px', '160px'],//宽高
+                        content: '删除成功',
+                        btn: ["确定", "取消"],
+                        yes: function (index, layero) {
+                            layer.closeAll();
+                            window.location.reload();
+                        },
+                        cancel: function (index, layero) {
+                            layer.closeAll();
+                        }
+                    });
+
+                } else {
+                    layer.open({
+                        type: 1,
+                        offset: '100px',
+                        title: ["提示", "font-size:12px;text-align:center"],
+                        shadeClose: false,
+                        closeBtn: 2,
+                        area: ['310px', '160px'],//宽高
+                        content: data.msg,
+                        time: 3000,
+                        btn: ["确定", "取消"]
+                    });
+                }
+            }
+        });
+    }
+}
+//资产绑定
+$("body").off("click", "#ownshipBind").on("click", "#ownshipBind", function () {
+    toLoadProvince('', '#el_cpyProvinceCode', '.el_cpyProvinceUl', 'toUnbindEvent');
+    layer.closeAll();
+    layer.open({
+        type: 1,
+        offset: '100px',
+        title: ["提示", "font-size:12px;text-align:center"],
+        shadeClose: false,
+        closeBtn: 2,
+        area: ['340px', '400px'],//宽高
+        content: $('.ownshipBindBlock'),
+        btn: ["确定", "取消"],
+        yes: function (index, layero) {
+            layer.closeAll();
+            toBindOwnShip();
+
+        },
+        cancel: function (index, layero) {
+            layer.closeAll();
+        }
+    });
+});
+$('.el_cpyProvinceUl').on("click", "li", function () {
+    var provinceCodeId = $(this).attr('data-option');
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+    var flag = $(this).attr('data-option');
+    if (flag == "") {
+        $('#ele_cypCityCode').html('请选择');
+        $('.ele_cypCityUl').html('');
+        $('#ele_cypCityCode').attr('data-value', '');
+        $('#ele_cpyCompanyName').html('请选择');
+        $('.ele_cpyCompanyUl').html('');
+        $('#ele_cpyCompanyName').attr('data-value', '');
+    } else {
+        toLoadCity(provinceCodeId, '', '#ele_cypCityCode', '.ele_cypCityUl', 'toUnbindEvent');
+    }
+});
+$('.ele_cypCityUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+    var flag = $(this).attr('data-option');
+    var cypCityCodeValue = $('#ele_cypCityCode').attr('data-value');
+    var cpyProvinceCodeValue = $('#ele_cpyProvinceCode').attr('data-value');
+    if (flag == "") {
+        $('#ele_cpyCompanyName').html('请选择');
+        $('.ele_cpyCompanyUl').html('');
+        $('#ele_cpyCompanyName').attr('data-value', '');
+    } else {
+        toLoadComponyName(cypCityCodeValue, cpyProvinceCodeValue);
+    }
+});
+
+$('.ele_cpyCompanyUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+});
+function toLoadComponyName(cypCityCodeValue, cpyProvinceCodeValue, cpyId) {
+    var cpyObject = {
+        provinceCode: cpyProvinceCodeValue,
+        cityCode: cypCityCodeValue
+    };
+    if (JSON.stringify(cpyObject) == "{}") {
+        $('#ele_cpyCompanyName').html("请选择");
+    } else {
+        toAjaxCompany(cpyObject, cpyId);
+    }
+}
+function toAjaxCompany(cpyObject, cpyId) {
+    $.ajax({
+        type: "post",
+        url: basePath + initCompanyListUrl,
+        async: true,
+        data: cpyObject,
+        success: function (data) {
+            if (data.success == true) {
+                var dataModule = data.dataObject;
+                if (cpyId == '') {
+                    var cypCompanyLi = '<li data-option="">请选择</li>';
+                    for (var i = 0; i < dataModule.length; i++) {
+                        cypCompanyLi += '<li data-option="' + dataModule[i].cpyId + '" data-cpyNumber="' + dataModule[i].cpyNumber + '">' + dataModule[i].cpyName + '</li>';
+                    }
+                } else {
+                    var cypCompanyLi = '<li data-option="">请选择</li>';
+                    for (var i = 0; i < dataModule.length; i++) {
+                        if (dataModule[i].cpyId == cpyId) {
+                            $('#ele_cpyCompanyName').html(dataModule[i].cpyId);
+                            cypCompanyLi += '<li data-option="' + dataModule[i].cpyId + '" data-cpyNumber="' + dataModule[i].cpyNumber + '" class="data-selected">' + dataModule[i].cpyName + '</li>';
+                        } else {
+                            cypCompanyLi += '<li data-option="' + dataModule[i].cpyId + '" data-cpyNumber="' + dataModule[i].cpyNumber + '">' + dataModule[i].cpyName + '</li>';
+                        }
+
+                    }
+                }
+                $('.ele_cpyCompanyUl').html(cypCompanyLi);
+                toUnbindEvent();
+            }
+        }
+    });
+}
+function toBindOwnShip(){
+    var ids = '';
+    $('input[name=ids]').each(function () {
+        var flag = $(this).prop('checked');
+        if (flag == true) {
+            ids += $(this).attr('value') + ',';
+        }
+    });
+    ids = ids.substring(0, ids.length - 1);
+    var ownerShip=$('#ele_cpyCompanyName').attr('data-value');
+    if (!ids) {
+        layer.open({
+            type: 1,
+            offset: '100px',
+            title: ["提示", "font-size:12px;text-align:center"],
+            shadeClose: false,
+            closeBtn: 2,
+            area: ['310px', '160px'],//宽高
+            content: '请指定表单元素',
+            time: 3000,
+            btn: ["确定", "取消"]
+        });
+    } else {
+        var index = layer.load(1);
+        $.ajax({
+            type: "post",
+            url: basePath + modifyOwnerShipUrl,
+            async: true,
+            data: {
+                electricPileIds: ids,
+                ownerShip:ownerShip
+            },
+            success: function (data) {
+                if (data.success == true) {
+                    layer.close(index);
+                    layer.closeAll();
+                    layer.open({
+                        type: 1,
+                        offset: '100px',
+                        title: ["提示", "font-size:12px;text-align:center"],
+                        shadeClose: false,
+                        closeBtn: 2,
+                        area: ['310px', '160px'],//宽高
+                        content: '绑定成功',
+                        btn: ["确定", "取消"],
+                        yes: function (index, layero) {
+                            layer.closeAll();
+                            window.location.reload();
+                        },
+                        cancel: function (index, layero) {
+                            layer.closeAll();
+                        }
+                    });
+
+                } else {
+                    layer.open({
+                        type: 1,
+                        offset: '100px',
+                        title: ["提示", "font-size:12px;text-align:center"],
+                        shadeClose: false,
+                        closeBtn: 2,
+                        area: ['310px', '160px'],//宽高
+                        content: data.msg,
+                        time: 3000,
+                        btn: ["确定", "取消"]
+                    });
+                }
+            }
+        });
+    }
+}

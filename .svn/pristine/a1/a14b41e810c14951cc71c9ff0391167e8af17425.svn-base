@@ -1,0 +1,454 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.RoleMapper">
+	<resultMap type="RoleDO" id="resultRole">
+		<result property="roleId" column="role_id" />
+		<result property="roleName" column="role_name" />
+		<result property="category" column="category" />
+		<result property="notes" column="notes" />
+		<result property="isDel" column="is_del" />
+		<result property="createDate" column="create_date" />
+		<result property="createUser" column="create_user" />
+		<result property="lastUpdateDate" column="last_update_date" />
+		<result property="lastUpdateUser" column="last_update_user" />
+		<result property="menuId" column="menuId" />
+	</resultMap>
+	
+	<sql id="query-columns">
+		role_id, role_name,category,notes,is_del,create_date,create_user,last_update_date,last_update_user
+	</sql>
+	<sql id="where-columns">
+	    is_del = 0
+        <if test="roleId!=null"> 
+		   and role_id=#{roleId}
+	    </if>
+		<if test="roleName!=null and roleName!=''">
+		   and role_name=#{roleName}
+		 </if>
+		<if test="category!=null and category!=''">
+		   and category = #{category}
+		</if>
+		<if test="notes!=null and notes!=''">
+		   and notes like concat('%',#{notes},'%')
+		</if>
+	</sql>
+	
+	<!-- 根据userId获取Role -->
+	<select id="selectRoleListByUserId" parameterType="Long"  resultMap="resultRole">
+		select
+		r.role_id,
+		r.role_name,
+		r.category,
+		r.notes,
+		r.create_date,
+		r.create_user,
+		r.last_update_date,
+		r.last_update_user
+		from
+		p_m_role r,p_m_user_role ur where r.role_id=ur.role_id
+		and ur.user_id=#{userId}
+	</select>
+	
+	<!-- 统计-超级管理员角色列表 -->
+	<select id="countRoleListByAdmin" parameterType="UserDO" resultType="Long">
+		select count(1) from p_m_role r where is_del = 0
+	</select>
+	
+	<!-- 查询-超级管理员角色列表 -->
+	<select id="selectSubRoleListByAdmin" parameterType="UserDO" resultMap="resultRole">
+		select <include refid="query-columns"/> from p_m_role where is_del = 0 order by create_date
+		<if test="pager!=null">limit #{pager.pageNo},#{pager.pageSize}</if>
+	</select>
+	
+	<!-- 统计-合作商角色列表 -->
+	<select id="countSubRoleListByOperatorId" parameterType="UserDO" resultType="Long">
+      select count(1) from p_m_role left join tbl_user u ON CREATE_USER=u.user_id  
+        where is_del = 0 and category=#{userLevel} order by create_date
+	</select>
+	
+	<!-- 查询-合作商角色列表 -->
+	<select id="selectSubRoleListByOperatorId" parameterType="UserDO" resultMap="resultRole">
+		 select <include refid="query-columns"/> from p_m_role left join tbl_user u ON CREATE_USER=u.user_id 
+		     where is_del = 0 and category=#{userLevel} order by create_date
+		  <if test="pager!=null">limit #{pager.pageNo},#{pager.pageSize}</if>
+	</select>
+	
+	<!-- 统计-自己创建角色列表 -->
+	<select id="countSubRoleListByCreateUserId" parameterType="UserDO" resultType="Long">
+      select count(1) from p_m_role where left join tbl_user u ON CREATE_USER=u.user_id 
+         where is_del = 0 and and create_user=#{userId} order by create_date
+	</select>
+	
+	<!-- 查询-自己创建角色列表 -->
+	<select id="selectSubRoleListByCreateUserId" parameterType="UserDO" resultMap="resultRole">
+		 select <include refid="query-columns"/> from p_m_role left join tbl_user u ON CREATE_USER=u.user_id 
+		    where is_del = 0 and create_user=#{userId} order by create_date
+	     <if test="pager!=null">limit #{pager.pageNo},#{pager.pageSize}</if>
+	</select>
+	
+	<!-- 根据role_id查询role -->
+	<select id="selectRoleById" parameterType="String" resultMap="resultRole">
+		select <include refid="query-columns"/>from p_m_role
+		where is_del = 0 and role_id = #{roleId}
+	</select>
+	
+	<!-- 添加-角色 -->
+	<insert id="insertRole" parameterType="RoleDO" keyProperty="role_id">
+		insert into p_m_role
+		( <include refid="query-columns"/>)
+		values
+		(#{roleId},#{roleName},#{category},#{notes},0,NOW(),#{createUser},null,'')
+	</insert>
+	
+	<!-- 修改-角色菜单权限 -->
+	<update id="updateRoleMenuRela">
+	   { call role_menu_func(#{0},#{1})}   
+	</update>
+	
+	
+	<!-- 以下暂时不可用 -->
+	<update id="modifyRoleMenuRelation"  >  
+        { call role_menu_func(#{0},#{1})}   
+    </update>  
+	<insert id="addRole" parameterType="RoleDO" keyProperty="role_id">
+		insert into p_m_role
+		(
+		role_id,
+		role_name,
+		category,
+		notes,
+		create_user,
+		last_update_user
+		)
+		values
+		(
+		#{roleId},
+		#{roleName},
+		#{category},
+		#{notes},
+		#{createUser},
+		#{lastUpdateUser}
+		)
+	</insert>
+ 
+	<update id="modifyRole" parameterType="RoleDO">
+		update p_m_role
+		<set>
+			<if test="roleId!=null"> role_id=#{roleId}, </if>
+			<if test="roleName!=null"> role_name=#{roleName}, </if>
+			<if test="category!=null"> category=#{category}, </if>
+			<if test="notes!=null"> notes=#{notes}, </if>
+			last_update_date=sysdate(),
+			<if test="lastUpdateUser!=null"> last_update_user=#{lastUpdateUser}, </if>
+		</set>
+		<where>
+			role_id=#{roleId}
+		</where>
+	</update>
+
+	<select id="getRoleCountById" parameterType="String" resultType="int">
+		select count(role_id) as data_count from
+		p_m_role
+		where
+		role_id=#{roleId}
+	</select>
+
+	
+
+	<select id="getRoleList" resultMap="resultRole">
+		select
+		p_m_role.role_id,
+		p_m_role.role_name,
+		p_m_role.category,
+		p_m_role.notes,
+		p_m_role.create_date,
+		p_m_role.create_user,
+		p_m_role.last_update_date,
+		p_m_role.last_update_user
+		from
+		p_m_role
+	</select>
+	<select id="getRole" parameterType="RoleDO" resultMap="resultRole">
+		select
+		r.role_id,
+		r.role_name,
+		r.category,
+		r.notes,
+		r.create_date,
+		r.create_user,
+		r.last_update_date,
+		r.last_update_user
+		from
+		p_m_role r
+		where 1=1
+		<if test="roleId!=null"> and role_id like concat('%',#{roleId},'%')</if>
+		<if test="roleName!=null"> and role_name like concat('%',#{roleName},'%')</if>
+		<if test="category!=null"> and category=#{category}</if>
+		<if test="notes!=null"> and notes=#{notes}</if>
+		<if test="createDate!=null"> and create_date=#{createDate}</if>
+		<if test="createUser!=null"> and create_user=#{createUser}</if>
+	</select>
+
+	<select id="searchRoleList" parameterType="RoleDO" resultMap="resultRole">
+		select
+		p_m_role.role_id,
+		p_m_role.role_name,
+		p_m_role.category,
+		p_m_role.notes,
+		p_m_role.create_date,
+		p_m_role.create_user,
+		p_m_role.last_update_date,
+		p_m_role.last_update_user
+		from
+		p_m_role
+		<where>
+			1=1
+			<if test="menuId!=null"> and not exists (select 1 from p_m_menu_role a where a.role_id = p_m_role.role_id and menu_id=#{menuId})</if>
+			<if test="roleId!=null"> and role_id like concat('%',#{roleId},'%')</if>
+			<if test="roleName!=null"> and role_name like concat('%',#{roleName},'%')</if>
+			<if test="category!=null"> and category=#{category}</if>
+			<if test="notes!=null"> and notes=#{notes}</if>
+			<if test="createDate!=null"> and create_date=#{createDate}</if>
+			<if test="createUser!=null"> and create_user=#{createUser}</if>
+			<if test="lastUpdateDate!=null"> and last_update_date=#{lastUpdateDate}</if>
+			<if test="lastUpdateUser!=null"> and last_update_user=#{lastUpdateUser}</if>
+			<if test="userLevel==0 || userLevel==1"> and p_m_role.create_user in (select USER_ID from tbl_user where USER_LEVAL in (1,2))</if>
+		</where>
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<select id="searchRoleCount" parameterType="RoleDO" resultType="long">
+		select
+		count(p_m_role.role_id) as data_count
+		from
+		p_m_role
+		<where>
+			1=1
+			<if test="menuId!=null"> and not exists (select 1 from p_m_menu_role a where a.role_id = p_m_role.role_id and menu_id=#{menuId})</if>
+			<if test="roleId!=null"> and role_id like concat('%',#{roleId},'%')</if>
+			<if test="roleName!=null"> and role_name like concat('%',#{roleName},'%')</if>
+			<if test="category!=null"> and category=#{category}</if>
+			<if test="notes!=null"> and notes=#{notes}</if>
+			<if test="createDate!=null"> and create_date=#{createDate}</if>
+			<if test="createUser!=null"> and create_user=#{createUser}</if>
+			<if test="lastUpdateDate!=null"> and last_update_date=#{lastUpdateDate}</if>
+			<if test="lastUpdateUser!=null"> and last_update_user=#{lastUpdateUser}</if>
+			<if test="userLevel==0 || userLevel==1"> and p_m_role.create_user in (select USER_ID from tbl_user where USER_LEVAL in (1,2))</if>
+		</where>
+	</select>
+
+	<delete id="removeRole" parameterType="String">
+		delete from p_m_role where
+		role_id=#{roleId}
+	</delete>
+
+	<delete id="removeSelfAndChildRole" parameterType="String">
+		delete from
+		p_m_role
+		where
+		exists( select
+		p_m_role_inclusion.role_id
+		from
+		p_m_role_inclusion
+		where
+		p_m_role_inclusion.parent_role_id = #{roleId}
+		and
+		p_m_role_inclusion.role_id =
+		p_m_role.role_id)
+	</delete>
+
+	<select id="getMenuRoleList" parameterType="String" resultMap="resultRole">
+		select
+		p_m_role.role_id,
+		p_m_role.role_name,
+		p_m_role.category,
+		p_m_role.notes,
+		p_m_role.create_date,
+		p_m_role.create_user,
+		p_m_role.last_update_date,
+		p_m_role.last_update_user
+		from
+		p_m_role,p_m_menu_role
+		where
+		p_m_role.role_id =
+		p_m_menu_role.role_id
+		and p_m_menu_role.menu_id = #{menuId}
+		 
+	</select>
+<select id="getMenuRoleList1" parameterType="RoleDO" resultMap="resultRole">
+		select
+		p_m_role.role_id,
+		p_m_role.role_name,
+		p_m_role.category,
+		p_m_role.notes,
+		p_m_role.create_date,
+		p_m_role.create_user,
+		p_m_role.last_update_date,
+		p_m_role.last_update_user
+		from
+		p_m_role,p_m_menu_role,tbl_user
+		where
+		p_m_role.role_id =
+		p_m_menu_role.role_id
+		and p_m_menu_role.menu_id = #{menuId}
+		and tbl_user.user_id = p_m_role.create_user
+		<if test="createUser!=null"> and p_m_role.create_user=#{createUser}</if>
+		<if test="userLevel !=null"> and tbl_user.USER_LEVAL in (1,2)</if>
+	</select>
+	<select id="getActionRoleList" parameterType="String" resultMap="resultRole">
+		select
+		p_m_role.role_id,
+		p_m_role.role_name,
+		p_m_role.category,
+		p_m_role.notes,
+		p_m_role.create_date,
+		p_m_role.create_user,
+		p_m_role.last_update_date,
+		p_m_role.last_update_user
+		from
+		p_m_role,p_m_action_role
+		where
+		p_m_role.role_id =
+		p_m_action_role.role_id
+		and p_m_action_role.action_id = #{actionId}
+	</select>
+
+	<select id="getAppApiRoleList" parameterType="String" resultMap="resultRole">
+		select
+		p_m_role.role_id,
+		p_m_role.role_name,
+		p_m_role.category,
+		p_m_role.notes,
+		p_m_role.create_date,
+		p_m_role.create_user,
+		p_m_role.last_update_date,
+		p_m_role.last_update_user
+		from
+		p_m_role,p_m_app_api_role
+		where
+		p_m_role.role_id =
+		p_m_app_api_role.role_id
+		and p_m_app_api_role.app_api_id = #{appApiId}
+	</select>
+	<select id="getParentRoleList" parameterType="UserDO" resultMap="resultRole">
+		select
+		r.role_id,
+		r.role_name,
+		r.category,
+		r.notes,
+		r.create_date,
+		r.create_user,
+		u.user_account createUserAccount,
+		r.last_update_date,
+		r.last_update_user
+		from
+		p_m_role r 
+		left join tbl_user u ON r.CREATE_USER=u.user_id 
+		where r.category!=4
+ 		order by r.create_date
+ 		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	<select id="getParentRoleListCount" parameterType="UserDO" resultType="Long">
+		select
+		count(1)
+		from
+		p_m_role r
+		where r.category!=4
+	</select>
+	<select id="getParentRoleListByUserLevel" parameterType="UserDO"  resultMap="resultRole">
+		select
+		r.role_id,
+		r.role_name,
+		r.category,
+		r.notes,
+		r.create_date,
+		r.create_user,
+		u.user_account createUserAccount,
+		r.last_update_date,
+		r.last_update_user
+		from
+		p_m_role r
+		left join tbl_user u ON r.CREATE_USER=u.user_id 
+		where r.category=#{userLevel} 
+		order by r.create_date
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	<select id="getParentRoleListCountByUserLevel" parameterType="UserDO"  resultType="Long">
+		select
+		count(1)
+		from
+		p_m_role r
+		where r.category=#{userLevel} 
+	</select>
+	<select id="getParentRoleListByCompanyId" parameterType="UserDO" resultMap="resultRole">
+		select
+		r.role_id,
+		r.role_name,
+		r.category,
+		r.notes,
+		r.create_date,
+		r.create_user,
+		u.user_account createUserAccount,
+		r.last_update_date,
+		r.last_update_user
+		from
+		p_m_role r
+		left join tbl_user u ON r.CREATE_USER=u.user_id 
+		where  1=1
+		<if test="busiCompanyId==null">and r.category=3</if>
+		<if test="busiCompanyId!=null">and r.create_user in(select user_id from tbl_user_business  where  busi_company_id=#{busiCompanyId})</if>
+		order by r.create_date
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	<select id="getParentRoleListCountByCompanyId" parameterType="UserDO"  resultType="Long">
+		select
+		count(1)
+		from
+		p_m_role r
+		where 1=1
+		<if test="busiCompanyId==null">and r.category=3</if>
+		<if test="busiCompanyId!=null">and r.create_user in(select user_id from tbl_user_business  where  busi_company_id=#{busiCompanyId})</if>
+		
+	</select>
+	<select id="getParentRoleListByCreateUserId" parameterType="UserDO"  resultMap="resultRole">
+		select
+		r.role_id,
+		r.role_name,
+		r.category,
+		r.notes,
+		r.create_date,
+		r.create_user,
+		u.user_account createUserAccount,
+		r.last_update_date,
+		r.last_update_user
+		from
+		p_m_role r
+		left join tbl_user u ON r.CREATE_USER=u.user_id 
+		where r.create_user=#{userId}
+		order by r.create_date
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	<select id="getParentRoleListCountByCreateUserId" parameterType="UserDO"  resultType="Long">
+		select
+		count(1)
+		from
+		p_m_role r
+		where r.create_user>=#{userId}
+	</select>
+	<delete id="deleteUserRoleRelation" >
+		delete from p_m_user_role where
+		user_id=#{0} 
+	</delete>
+	<insert id="saveUserRoleRelation" keyProperty="role_id">
+		insert into p_m_user_role
+		SELECT #{0},role_id,now(),1,now(),1 FROM p_m_role where  FIND_IN_SET(ROLE_ID,#{1}) ;
+	</insert>
+	<select id="checkCommonUnique" parameterType="map" resultType="int">
+		select count(1) from ${tName}
+		<where>
+			${tProperty}=#{value}
+			<if test="pkTProperty!=null">and ${pkTProperty}!=#{pkTValue}</if>
+		</where>
+	</select>	
+</mapper>

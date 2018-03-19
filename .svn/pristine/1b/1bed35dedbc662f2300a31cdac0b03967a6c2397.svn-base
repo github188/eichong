@@ -1,0 +1,159 @@
+package com.wanma.ims.controller.sys;
+
+import java.util.Arrays;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.wanma.ims.common.domain.MenuDO;
+import com.wanma.ims.common.domain.base.Pager;
+import com.wanma.ims.constants.ResultCodeConstants;
+import com.wanma.ims.controller.BaseController;
+import com.wanma.ims.controller.result.JsonException;
+import com.wanma.ims.controller.result.JsonResult;
+import com.wanma.ims.service.MenuService;
+import com.wanma.ims.service.RoleService;
+import com.wanma.ims.util.PKUtil;
+
+/**
+ * 系统管理-菜单管理
+ */
+@Controller
+@RequestMapping("/sys/menu")
+public class MenuController extends BaseController{
+
+	private final org.slf4j.Logger log =  LoggerFactory.getLogger(this.getClass());  
+	@Autowired
+	private MenuService menuService;
+	@Autowired
+	private RoleService roleService;
+
+	@RequestMapping(value = "/toIndexPage")
+	public String toIndexPage() {
+		return "sys/menu/menu_list";
+	}
+
+	/**
+	 * 菜单列表
+	 */
+	@RequestMapping(value = "/getMenuListPage", method = RequestMethod.POST)
+	@ResponseBody
+	public void getMenuListPage(MenuDO menuDO, Pager pager, HttpServletRequest request) {
+		JsonResult result = new JsonResult();
+		try {
+			Long total = menuService.countMenuList(menuDO);
+			if (total <= pager.getOffset()) {
+				pager.setPageNo(1L);
+			}
+			pager.setTotal(total);
+			menuDO.setPager(pager);
+			List<MenuDO> menuList = menuService.getMenuListPage(menuDO);
+			result.setPager(pager);
+			result.setDataObject(menuList);
+		} catch (Exception e) {
+			log.error(this.getClass() + ".getMenuListPage() error:" ,e);
+			responseJson(new JsonException("菜单管理-获取分页信息失败"));
+			return;
+		}
+		responseJson(result);
+	}
+	
+	/**
+	 * 菜单-添加
+	 */
+	@RequestMapping(value = "/addMenu", method = RequestMethod.POST)
+	@ResponseBody
+	public void addMenu(MenuDO menuDO, HttpServletRequest request, Model model) {
+		JsonResult result = new JsonResult();
+		try {
+			menuDO.setMenuId(PKUtil.generatePkMenuId());
+			menuDO.setCreator(getCurrentUserName());
+			menuDO.setModifier(getCurrentUserName());
+			if(!menuService.addMenu(menuDO)){
+				result.setSuccess(false);
+				result.setStatus(ResultCodeConstants.ERROR_PARAM);
+				result.setMsg("添加菜单失败");
+				responseJson(result);
+				return;
+			}
+		} catch (Exception e) {
+			log.error(this.getClass() + ".addMenu() error:" ,e);
+			responseJson(new JsonException());
+			return;
+		}
+		responseJson(result);
+	}
+
+	/**
+	 * 菜单-根据ID查询
+	 */
+	@RequestMapping(value = "/getMenuById")
+	@ResponseBody
+	public void getMenuById(String menuId, Model model) {
+		MenuDO menuDO = menuService.getMenuById(menuId);
+		responseJson(new JsonResult(menuDO));
+	}
+
+	/**
+	 * 菜单-编辑
+	 */
+	@RequestMapping(value = "/modifyMenu")
+	@ResponseBody
+	public void modifyMenu(MenuDO menuDO, Model model, HttpServletRequest request){
+		JsonResult result = new JsonResult();
+		try {
+			menuDO.setModifier(getCurrentUserName());
+			if(!menuService.modifyMenu(menuDO)){
+				 responseJson(new JsonResult(false,ResultCodeConstants.FAILED,"菜单编辑失败"));
+				 return;
+			}
+		} catch (Exception e) {
+			log.error(this.getClass() + ".modifyMenu() error:" ,e);
+			responseJson(new JsonException());
+			return;
+		}
+		responseJson(result);
+	}
+
+
+	/**
+	 * 菜单-删除(该菜单下有按钮权限，提醒)
+	 */
+	@RequestMapping(value = "/removeMenu")
+	@ResponseBody
+	public void removeMenu(@RequestParam("ids") String ids, HttpServletRequest request) {
+		JsonResult result = new JsonResult();
+		try {
+			List<String> menuIds = Arrays.asList(ids);
+			String errorCode = "";
+			for (String id : menuIds) {
+				List<MenuDO> menuList = menuService.getMenuByParentId(id);
+				if (CollectionUtils.isEmpty(menuList)) {
+					errorCode = StringUtils.join(menuList, ",");
+				}
+			}
+			if (StringUtils.isNotBlank(errorCode)) {
+				String errorMsg = "菜单下有其他菜单/按钮权限:" + errorCode;
+				responseJson(new JsonResult(false,ResultCodeConstants.FAILED,errorMsg));
+				return;
+			}
+			menuService.removeMenu(menuIds);
+		} catch (Exception e) {
+			log.error(this.getClass() + ".removeMenu() error:" ,e);
+			responseJson(new JsonException());
+		}
+		responseJson(result);
+	}
+
+}

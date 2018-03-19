@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.app.dao.MyOrderMapper">
+	<resultMap id="findResultMap" type="java.util.HashMap"></resultMap>
+
+	<select id="getShopOrde" parameterType="map" resultMap="findResultMap">
+		select pk_Order,
+		orde_Code,orde_CommodityShops,orde_Status,orde_CommodityTotal,orde_TotalAmount
+		from tbl_Order
+		<where>
+			<if test="orderState !=null">
+				orde_Status=#{orderState}
+		 </if>
+			<if test="userId !=null">
+				and orde_UserId=#{userId}
+		 </if>
+		</where>
+	</select>
+
+	<select id="getShopOrdeDetail" parameterType="map" resultMap="findResultMap">
+		select
+		pk_OrderDetail,orDe_ProductName,orDe_Price,orDe_Quantity,prod_ProductImage,prod_ProductTag
+		from tbl_OrderDetail
+		,tbl_Product
+		<where>
+			orDe_ProductId=pk_Product
+			<if test="orderId != null">
+				and orDe_ParentId=#{orderId}
+	     </if>
+		</where>
+	</select>
+
+	<select id="getInstallOrde" parameterType="map" resultMap="findResultMap">
+		select pk_AppointmentInstallationOrder,
+		aLOr_InstallationOrderCode,aLOr_CommodityShops,aLOr_InstallationOrderStatus,aLOr_CommodityTotal
+		,aLOr_Money from tbl_AppointmentInstallationOrder
+		<where>
+			<if test="orderState !=null">
+				aLOr_InstallationOrderStatus=#{orderState}
+		 </if>
+			<if test="userId !=null">
+				and aLOr_UserID=#{userId}
+		 </if>
+		</where>
+	</select>
+	<select id="getInstallOrdeDetail" parameterType="map" resultMap="findResultMap">
+		select
+		pk_InstallDetail,inDe_ProductName,inDe_Price,inDe_Quantity,prod_ProductImage,prod_ProductTag
+		from tbl_InstallDetail
+		,tbl_Product
+		<where>
+			inDe_ProductId=pk_Product
+			<if test="orderId != null">
+				and inde_parentId=#{orderId}
+	     </if>
+		</where>
+	</select>
+</mapper> 

@@ -1,0 +1,59 @@
+/**
+ * FileName:AppFeedbackMapper.java
+ * Author: Administrator
+ * Create: 2014年6月26日
+ * Last Modified: 2014年6月26日
+ * Version: V1.0 
+ */
+package com.wanma.app.service;
+
+import java.util.List;
+import java.util.Map;
+
+import com.wanma.model.ElectricPileMap;
+import com.wanma.model.TblElectricpile;
+import com.wanma.model.TblPowerstation;
+
+/**
+ * 反馈信息业务处理接口
+ * 
+ * @version V1.0
+ * @author Administrator
+ * @date 2014年6月26日
+ */
+public interface ElectricPileMapService {
+
+	/**
+	 * 获取地图模式电桩列表
+	 */
+	public List<ElectricPileMap> getElectricMapList(TblPowerstation tblPowerstation,TblElectricpile tblElectricpile);
+
+	/**
+	 * 获取锚点简介
+	 * @param params
+	 * @return
+	 */
+	public Map<String, String> getAnchorSummary(Map<String, Object> params);
+	
+	/**
+	 * 根据用户id获取汽车的 直交流和接口标准
+	 * @param userId
+	 * @return
+	 */
+	public Map<String, String> getPileConditionByUserId(int userId);
+
+	/**
+	 * 获取市级充电点聚合
+	 * @param params 
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<Map<String, Object>> getCtyPoints(Map<String, Object> params) throws Exception;
+
+	/**
+	 * 获取省级充电点聚合
+	 * @param params 
+	 * @return
+	 */
+	public List<Map<String, Object>> getProPoints(Map<String, Object> params);
+}

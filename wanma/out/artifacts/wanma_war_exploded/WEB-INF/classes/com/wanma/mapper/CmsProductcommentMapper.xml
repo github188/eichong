@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.CmsProductcommentMapper">
+	<resultMap type="TblProductComment" id="result_product">
+		<id property="pkProductcomment" column="pk_ProductComment" />
+		<result property="prcoProductid" column="prCo_ProductId" />
+		<result property="prcoUserid" column="prCo_UserId" />
+		<result property="prcoUsername" column="prCo_UserName" />
+		<result property="prcoCreatetime" column="prCo_CreateTime" />
+		<result property="prcoCommentstart" column="prCo_CommentStart" />
+		<result property="prcoCommentpic" column="prCo_CommentPic" />
+		<result property="prcoOrderid" column="prCo_OrderID" />
+		<result property="prcoCommentType" column="prCo_Comment_type" />
+		<result property="prcoCreatedate" column="prCo_Createdate" />
+		<result property="prcoUpdatedate" column="prCo_Updatedate" />
+		<result property="prcoUtatus" column="prCo_Utatus" />
+		<result property="prcoContent" column="prCo_Content" />
+	</resultMap>
+	
+	<!-- 取得评论列表 -->
+	<select id="getContentList" resultMap="result_product">
+		select
+			pk_ProductComment,
+			prCo_ProductId,
+			prCo_UserId,
+			prCo_UserName,
+			prCo_CreateTime,
+			prCo_CommentStart,
+			prCo_CommentPic,
+			prCo_OrderID,
+			prCo_Comment_type,
+			prCo_Createdate,
+			prCo_Updatedate,
+			prCo_Utatus,
+			prCo_Content
+		from 
+			tbl_ProductComment
+	</select>
+	
+	<!-- 查询评论列表数量 -->
+	<select id="searchContentCount" parameterType="TblProductComment" resultType="long">
+		select count(1) from (
+				select
+					pk_ProductComment
+				from tbl_ProductComment pc 
+				                  INNER JOIN tbl_User AS ui ON ui.user_id = pc.prCo_UserId 
+							      left JOIN tbl_Product AS pd ON pd.pk_Product = pc.prCo_ProductId
+							      left JOIN tbl_Order AS od ON od.pk_Order = pc.prCo_OrderID	
+		<where>
+			<if test="choevaluate !=null and choevaluate !=''">
+			   	ui.user_account like concat('%',#{choevaluate},'%') or od.orde_Code like concat('%',#{choevaluate},'%') 
+			</if>
+			<if test="start_create_date !=null and start_create_date !=''">
+			  <![CDATA[and date_format(pc.prCo_CreateTime,'%Y-%m-%d') >=#{start_create_date}]]>
+			</if>
+			<if test="end_create_date !=null and end_create_date !=''">
+				 <![CDATA[and date_format(pc.prCo_CreateTime,'%Y-%m-%d') <=#{end_create_date}]]>
+			</if>
+			<if test="proCode!=null and proCode!=''">
+				and pd.prod_ProductCode=#{proCode}
+			</if>
+			<if test="userLevel == 3 || userLevel == 5">
+				and pc.prCo_UserId = #{prcoUserid}
+			</if>
+		</where> 	
+				UNION ALL
+				select 
+				pk_EpcComment				
+				from tbl_electricpilecomment ec 
+							      INNER JOIN tbl_User AS ui ON ui.user_id = ec.epc_UserId	
+								  left JOIN tbl_electricpile AS ep ON ep.pk_ElectricPile = ec.epc_EpId
+		<where>
+			<if test="choevaluate !=null and choevaluate !=''">
+			   	ui.user_account like concat('%',#{choevaluate},'%')  
+			</if>
+			<if test="start_create_date !=null and start_create_date !=''">
+			  <![CDATA[and date_format(ec.epc_Createdate,'%Y-%m-%d') >=#{start_create_date}]]>
+			</if>
+			<if test="end_create_date !=null and end_create_date !=''">
+				 <![CDATA[and date_format(ec.epc_Createdate,'%Y-%m-%d') <=#{end_create_date}]]>
+			</if>
+			<if test="proCode!=null and proCode!=''">
+				and ep.elPi_ElectricPileCode=#{proCode}
+			</if>
+			<if test="userLevel == 3 || userLevel == 5">
+				and ec.epc_UserId = #{prcoUserid}
+			</if>
+		</where> 
+			UNION ALL
+				select 
+				pk_PsComment	
+				from tbl_powerstationcomment psc 
+								  INNER JOIN tbl_User AS ui ON ui.user_id = psc.psc_UserId	
+								  left JOIN tbl_powerstation AS ps ON ps.pk_PowerStation = psc.psc_PsId
+		<where>
+			<if test="choevaluate !=null and choevaluate !=''">
+			   	ui.user_account like concat('%',#{choevaluate},'%')  
+			</if>
+			<if test="start_create_date !=null and start_create_date !=''">
+			  <![CDATA[and date_format(psc.psc_Createdate,'%Y-%m-%d') >=#{start_create_date}]]>
+			</if>
+			<if test="end_create_date !=null and end_create_date !=''">
+				 <![CDATA[and date_format(psc.psc_Createdate,'%Y-%m-%d') <=#{end_create_date}]]>
+			</if>
+		
+			<if test="proCode!=null and proCode!=''">
+				and ps.pk_PowerStation=#{proCode}
+			</if>
+			<if test="userLevel == 3 || userLevel == 5">
+				and psc.psc_UserId = #{prcoUserid}
+			</if>
+		</where> 
+				 ) a
+		<where>
+			<if test="chooseProduct !=null and chooseProduct!=''">
+				a.prcoCommentType = #{chooseProduct}
+			</if>
+		</where>
+	</select>
+	
+	<!-- 查询全部评论列表 -->
+	<select id="searchProContentList" parameterType="TblProductComment" resultMap="result_product">
+	select * from (
+				select
+					pk_ProductComment,
+					(ui.user_account) as phone,
+					prCo_CreateTime,
+					2 as prcoCommentType,
+					(pd.prod_ProductCode)  as proCode,
+					(pd.prod_ProductName)  as proCodeName,
+					(od.orde_Code) as ordCode,
+					prCo_Content,
+					prCo_UserName,
+					prCo_Createdate,
+					prCo_Updatedate,
+					prCo_CommentStart,
+					prCo_CommentPic,
+					prCo_Utatus
+				from tbl_ProductComment pc 
+				                  INNER JOIN tbl_User AS ui ON ui.user_id = pc.prCo_UserId 
+							      LEFT JOIN tbl_Product AS pd ON pd.pk_Product = pc.prCo_ProductId
+							      LEFT JOIN tbl_Order AS od ON od.pk_Order = pc.prCo_OrderID	
+		<where>
+			<if test="choevaluate !=null and choevaluate !=''">
+			   	ui.user_account like concat('%',#{choevaluate},'%') or od.orde_Code like concat('%',#{choevaluate},'%') 
+			</if>
+			<if test="start_create_date !=null and start_create_date !=''">
+			  <![CDATA[and date_format(pc.prCo_CreateTime,'%Y-%m-%d') >=#{start_create_date}]]>
+			</if>
+			<if test="end_create_date !=null and end_create_date !=''">
+				 <![CDATA[and date_format(pc.prCo_CreateTime,'%Y-%m-%d') <=#{end_create_date}]]>
+			</if>
+			<if test="proCode!=null and proCode!=''">
+				and pd.prod_ProductCode=#{proCode}
+			</if>
+			<if test="userLevel == 3 || userLevel == 5">
+				and pc.prCo_UserId = #{prcoUserid}
+			</if>
+		</where> 	
+				UNION ALL
+				select 
+				pk_EpcComment ,
+				(ui.user_account) as phone,
+				epc_Createdate as prCo_CreateTime,
+				1  as prcoCommentType,		
+				ep.elPi_ElectricPileCode as proCode,
+			    ep.elPi_ElectricPileName as proCodeName,
+				 "" as ordCode,
+				epc_Content as prCo_Content,
+				epc_UserName as prCo_UserName,
+				epc_Createdate,
+				epc_Updatedate,
+				""  as prCo_CommentStart,
+				""  as prCo_CommentPic,
+				""  as prCo_Utatus				
+				from tbl_electricpilecomment ec 
+							      INNER JOIN tbl_User AS ui ON ui.user_id = ec.epc_UserId	
+								  LEFT JOIN tbl_electricpile AS ep ON ep.pk_ElectricPile = ec.epc_EpId
+		<where>
+			<if test="choevaluate !=null and choevaluate !=''">
+			   	ui.user_account like concat('%',#{choevaluate},'%')  
+			</if>
+			<if test="start_create_date !=null and start_create_date !=''">
+			  <![CDATA[and date_format(ec.epc_Createdate,'%Y-%m-%d') >=#{start_create_date}]]>
+			</if>
+			<if test="end_create_date !=null and end_create_date !=''">
+				 <![CDATA[and date_format(ec.epc_Createdate,'%Y-%m-%d') <=#{end_create_date}]]>
+			</if>
+			<if test="proCode!=null and proCode!=''">
+				and ep.elPi_ElectricPileCode=#{proCode}
+			</if>
+			<if test="userLevel == 3 || userLevel == 5">
+				and ec.epc_UserId = #{prcoUserid}
+			</if>
+		</where> 
+			UNION ALL
+				select 
+				pk_PsComment ,
+				(ui.user_account) as phone,
+				psc_Createdate  as prCo_CreateTime,
+				3 as prcoCommentType,		
+				ps.pk_PowerStation as proCode,
+			    ps.poSt_Name as proCodeName,
+				"" as ordCode,				
+				psc_Content as prCo_Content,
+				psc_UserName as prCo_UserName,
+				psc_Createdate ,
+				psc_Updatedate ,
+				""  as prCo_CommentStart,
+				""  as prCo_CommentPic,
+				""  as prCo_Utatus				
+				from tbl_powerstationcomment psc 
+								  INNER JOIN tbl_User AS ui ON ui.user_id = psc.psc_UserId	
+								  LEFT JOIN tbl_powerstation AS ps ON ps.pk_PowerStation = psc.psc_PsId
+		<where>
+			<if test="choevaluate !=null and choevaluate !=''">
+			   	ui.user_account like concat('%',#{choevaluate},'%')  
+			</if>
+			<if test="start_create_date !=null and start_create_date !=''">
+			  <![CDATA[and date_format(psc.psc_Createdate,'%Y-%m-%d') >=#{start_create_date}]]>
+			</if>
+			<if test="end_create_date !=null and end_create_date !=''">
+				 <![CDATA[and date_format(psc.psc_Createdate,'%Y-%m-%d') <=#{end_create_date}]]>
+			</if>
+		
+			<if test="proCode!=null and proCode!=''">
+				and ps.pk_PowerStation=#{proCode}
+			</if>
+			<if test="userLevel == 3 || userLevel == 5">
+				and psc.psc_UserId = #{prcoUserid}
+			</if>
+		</where> 
+				 ) a
+		<where>
+			<if test="chooseProduct !=null and chooseProduct!=''">
+				a.prcoCommentType = #{chooseProduct}
+			</if>
+		</where>
+		ORDER BY a.prCo_CreateTime DESC
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	
+	<!-- 删除评论列表 -->				
+	<delete id="removeProduct" parameterType="int">	
+		DELETE FROM tbl_ProductComment 
+		WHERE pk_ProductComment = #{pkProductcomment}			
+	</delete>
+	<delete id="removeElectricpilecomment" parameterType="int">	
+		DELETE FROM tbl_electricpilecomment 
+		WHERE pk_EpcComment = #{pkProductcomment} or up_commentId =  #{pkProductcomment}			
+	</delete>
+	<delete id="removePowerstationcomment" parameterType="int">	
+		DELETE FROM tbl_powerstationcomment 
+		WHERE pk_PsComment =#{pkProductcomment}	or up_commentId = #{pkProductcomment}
+	</delete>
+
+</mapper>

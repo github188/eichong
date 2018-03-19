@@ -1,0 +1,40 @@
+package com.wanma.ims.service;
+
+import java.util.List;
+
+import com.wanma.ims.common.domain.TypeSpanDO;
+
+
+/**
+ * 产品型号
+ */
+public interface TypeSpanService {
+	/**
+	 * 获取产品型号数量
+	 * @param typeSpanDO
+	 * @return
+	 */
+	long getTypeSpanCount(TypeSpanDO typeSpanDO);
+	/**
+	 * 获取产品型号列表
+	 * @param typeSpanDO
+	 * @return
+	 */
+	List<TypeSpanDO> getTypeSpanList(TypeSpanDO typeSpanDO);
+	/**
+	 * 获取产品型号列表
+	 * @param typeSpanDO
+	 * @return
+	 */
+	int checkTsTypeSpan(String tsTypeSpan);
+	/**
+	 * 新增产品型号
+	 * @param typeSpanDO
+	 * @return
+	 */
+	boolean addTypeSpan(TypeSpanDO typeSpanDO);
+	
+	
+	
+
+}

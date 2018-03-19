@@ -1,0 +1,21 @@
+package com.wanma.ims.service;
+
+import java.util.List;
+
+import com.wanma.ims.common.domain.NewsInfoDO;
+
+public interface NewsInfoService {
+
+	public long selectNewsInfoCount(NewsInfoDO newsInfoDO);
+
+	public List<NewsInfoDO> selectNewsInfoList(NewsInfoDO newsInfoDO);
+
+	public boolean addNewsInfo(NewsInfoDO newsInfoDO);
+
+	public boolean updateNewsInfo(NewsInfoDO newsInfoDO);
+
+	public boolean deleteNewsInfo(NewsInfoDO newsInfoDO);
+
+	public boolean downNewsInfoById(NewsInfoDO newsInfoDO);
+
+}

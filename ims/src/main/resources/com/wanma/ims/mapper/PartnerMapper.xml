@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wanma.ims.mapper.PartnerMapper">
+    <resultMap id="partner" type="PartnerDO">
+        <id column="pk_partner" property="partnerId"/>
+        <result column="partnerName" property="partnerName"/>
+        <result column="partnerKey" property="partnerKey"/>
+        <result column="partnerToken" property="partnerToken"/>
+        <result column="registerdate" property="registerdate"/>
+        <result column="partnerClientId" property="partnerClientId"/>
+        <result column="partnerUpdateCycleType" property="partnerUpdateCycleType"/>
+        <result column="partnerUpdateCycleValue" property="partnerUpdateCycleValue"/>
+        <result column="partnerClientIp" property="partnerClientIp"/>
+        <result column="partnerClientPort" property="partnerClientPort"/>
+        <result column="partnerClientKey" property="partnerClientKey"/>
+        <result column="createdate" property="createdate"/>
+        <result column="updatedate" property="updatedate"/>
+        <result column="valid" property="valid"/>
+        <result column="paymod" property="paymod"/>
+    </resultMap>
+
+    <select id="getPartnerList"  resultMap="partner" >
+        select
+        pk_partner,
+        partnerName,
+        partnerKey,
+        partnerToken,
+        paymod
+        from tbl_partner
+        where 1=1
+        <if test="partnerId != null">
+            and pk_partner = #{partnerId}
+        </if>
+        <if test="partnerName != null and partnerName !=''">
+            and partnerName = #{partnerName}
+        </if>
+        <if test="partnerKey != null and partnerKey != ''">
+            and partnerKey = #{partnerKey}
+        </if>
+        <if test="paymod != null">
+            and paymod = #{paymod}
+        </if>
+        <if test="valid != null">
+            and valid = #{valid}
+        </if>
+    </select>
+
+    <select id="getPartnerListCount"  resultType="long">
+        select
+        count(*)
+        from tbl_partner
+        where 1=1
+        <if test="partnerId != null">
+            and pk_partner = #{partnerId}
+        </if>
+        <if test="partnerName != null and partnerName !=''">
+            and partnerName = #{partnerName}
+        </if>
+        <if test="partnerKey != null and partnerKey != ''">
+            and partnerKey = #{partnerKey}
+        </if>
+        <if test="paymod != null">
+            and paymod = #{paymod}
+        </if>
+        <if test="valid != null">
+            and valid = #{valid}
+        </if>
+    </select>
+
+    <insert id="addPartner" parameterType="PartnerDO">
+        insert into tbl_partner
+        (
+        partnerName,
+        partnerKey,
+        partnerToken,
+        paymod
+        )
+        values
+        (
+        #{partnerName},
+        #{partnerKey},
+        #{partnerToken},
+        #{paymod}
+        )
+    </insert>
+
+    <update id="updatePartnerKeyById" parameterType="PartnerDO">
+        update tbl_partner
+        <set>
+            <if test="partnerName != null and partnerName != '' ">
+                partnerName = #{partnerName},
+            </if>
+            <if test="partnerToken != null and partnerToken != '' ">
+                partnerToken = #{partnerToken},
+            </if>
+            <if test="paymod != null and paymod != '' ">
+                paymod = #{paymod},
+            </if>
+            <if test="valid != null">
+                valid = #{valid},
+            </if>
+        </set>
+        where
+        pk_partner=#{partnerId}
+    </update>
+
+    <select id="selectPartnerNameById" parameterType="int" resultMap="partner" >
+        select
+        pk_partner,
+        partnerName,
+        paymod,
+        partnerKey,
+        partnerToken
+        from tbl_partner
+        where pk_partner = #{partnerId}
+    </select>
+
+    <select id="checkPartnerName" parameterType="string" resultType="int">
+        select count(1) from tbl_partner
+        where pk_partner = #{partnerId}
+    </select>
+
+    <delete id="deletePartnerById" parameterType="string">
+        delete from tbl_partner
+        where pk_partner = #{partnerId}
+    </delete>
+</mapper>

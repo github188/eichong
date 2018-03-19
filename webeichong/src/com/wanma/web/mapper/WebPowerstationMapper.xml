@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.web.dao.WebPowerstationMapper">
+
+
+	<resultMap id="tblPowerstationResultMap" type="TblPowerstation">
+		<id property="pkPowerstation" column="pk_PowerStation" />
+		<result property="postName" column="poSt_Name" />
+		<result property="postPic" column="poSt_Pic" />
+		<result property="postDetailpic" column="poSt_DetailPic" />
+		<result property="postAddress" column="poSt_Address" />
+		<result property="postLongitude" column="poSt_Longitude" />
+		<result property="postLatitude" column="poSt_Latitude" />
+		<result property="postPhone" column="poSt_Phone" />
+		<result property="postEleids" column="poSt_Eleids" />
+		<result property="postStatus" column="poSt_Status" />
+		<result property="postAreacode" column="poSt_AreaCode" />
+		<result property="postCreatedate" column="poSt_Createdate" />
+		<result property="postUpdatedate" column="poSt_Updatedate" />
+		<result property="postRemark" column="poSt_Remark" />
+		<result property="postPoweruser" column="poSt_PowerUser" />
+		<result property="postIsappoint" column="poSt_IsAppoint" />
+	</resultMap>
+	<resultMap id="pageResultMap" type="java.util.HashMap"
+		extends="tblPowerstationResultMap"></resultMap>
+	<resultMap id="findResultMap" type="java.util.HashMap"
+		extends="tblPowerstationResultMap">
+		<result property="poStOnlineTime" column="poSt_OnlineTime" /></resultMap>
+	<resultMap id="findMap" type="java.util.HashMap"></resultMap>
+
+
+
+	<insert id="insert" parameterType="TblPowerstation">
+		insert into tbl_PowerStation (
+		pk_PowerStation,
+		poSt_Name,
+		poSt_Pic,
+		poSt_DetailPic,
+		poSt_Address,
+		poSt_Longitude,
+		poSt_Latitude,
+		poSt_Phone,
+		poSt_Eleids,
+		poSt_Status,
+		poSt_AreaCode,
+		poSt_Createdate,
+		poSt_Updatedate,
+		poSt_Remark,
+		poSt_PowerUser,
+		poSt_IsAppoint
+		)values (
+		#{pkPowerstation},
+		#{postName},
+		#{postPic},
+		#{postDetailpic},
+		#{postAddress},
+		#{postLongitude},
+		#{postLatitude},
+		#{postPhone},
+		#{postEleids},
+		#{postStatus},
+		#{postAreacode},
+		#{postCreatedate},
+		#{postUpdatedate},
+		#{postRemark},
+		#{postPoweruser},
+		#{postIsappoint}
+		)
+	</insert>
+
+	<update id="update" parameterType="TblPowerstation">
+		update tbl_PowerStation set
+		pk_PowerStation=#{pkPowerstation},
+		poSt_Name=#{postName},
+		poSt_Pic=#{postPic},
+		poSt_DetailPic=#{postDetailpic},
+		poSt_Address=#{postAddress},
+		poSt_Longitude=#{postLongitude},
+		poSt_Latitude=#{postLatitude},
+		poSt_Phone=#{postPhone},
+		poSt_Eleids=#{postEleids},
+		poSt_Status=#{postStatus},
+		poSt_AreaCode=#{postAreacode},
+		poSt_Createdate=#{postCreatedate},
+		poSt_Updatedate=#{postUpdatedate},
+		poSt_Remark=#{postRemark},
+		poSt_PowerUser=#{postPoweruser},
+		poSt_IsAppoint=#{postIsappoint}
+		where
+		pk_PowerStation=#{pkPowerstation}
+	</update>
+
+	<delete id="delete" parameterType="map">
+		delete from
+		tbl_PowerStation
+		where
+		pk_PowerStation=#{pkPowerstation}
+	</delete>
+
+	<select id="get" parameterType="map" resultMap="tblPowerstationResultMap">
+		select
+		pk_PowerStation,
+		poSt_Name,
+		getFullPath('powerListImage',pk_PowerStation) as poStPic,
+		poSt_DetailPic,
+		poSt_Address,
+		poSt_Longitude,
+		poSt_Latitude,
+		poSt_Phone,
+		poSt_Eleids,
+		poSt_Status,
+		poSt_AreaCode,
+		poSt_Createdate,
+		poSt_Updatedate,
+		poSt_Remark,
+		poSt_PowerUser,
+		poSt_IsAppoint
+		from tbl_PowerStation
+		where
+		pk_PowerStation=#{pkPowerstation}
+	</select>
+
+	<select id="findOne" parameterType="map" resultMap="findResultMap">
+		select
+		pk_PowerStation,
+		poSt_Name,
+		getFullPath('powerListImage',pk_PowerStation) as poStPic,
+		poSt_DetailPic,
+		poSt_Address,
+		poSt_Longitude,
+		poSt_Latitude,
+		poSt_Phone,
+		poSt_Eleids,
+		poSt_Status,
+		poSt_AreaCode,
+		poSt_Createdate,
+		poSt_Updatedate,
+		poSt_Remark,
+		poSt_PowerUser,
+		poSt_IsAppoint
+		from
+		tbl_PowerStation
+		where
+		pk_PowerStation=#{pkPowerstation}
+	</select>
+	<select id="getPowerstationById" parameterType="map" resultMap="findResultMap">
+		select
+		pk_PowerStation,
+		poSt_Name,
+		getFullPath('powerListImage',pk_PowerStation) as postPic,
+		poSt_DetailPic,
+		poSt_Address,
+		poSt_Longitude,
+		poSt_Latitude,
+		poSt_Phone,
+		poSt_Eleids,
+		poSt_Status,
+		poSt_AreaCode,
+		poSt_Createdate,
+		poSt_Updatedate,
+		poSt_Remark,
+		poSt_PowerUser,
+		poSt_IsAppoint,
+		poSt_OnlineTime,
+		(select count(pk_UserCollect) from tbl_UserCollect
+		 	where usCo_Userid = #{pkUserinfo} and usCo_Type = '2'
+		 	and usCo_Objectid=#{pkPowerstation} ) isCollect,
+		(select count(pk_ElectricPile) from tbl_ElectricPile
+			where elPi_RelevancePowerStation = #{pkPowerstation}) pileSum,
+		(select avg(pss_CommentStar)  from  tbl_powerstationstar 
+	    where  pss_PsId=#{pkPowerstation}) as powerCommentStar	
+		from
+		tbl_PowerStation pst
+		where
+		pk_PowerStation=#{pkPowerstation}
+	</select>
+	<select id="find" parameterType="map" resultMap="findResultMap">
+		select
+		pk_PowerStation,
+		poSt_Name,
+		getFullPath('powerListImage',pk_PowerStation) as poStPic,
+		poSt_DetailPic,
+		poSt_Address,
+		poSt_Longitude,
+		poSt_Latitude,
+		poSt_Phone,
+		poSt_Eleids,
+		poSt_Status,
+		poSt_AreaCode,
+		poSt_Createdate,
+		poSt_Updatedate,
+		poSt_Remark,
+		poSt_PowerUser,
+		poSt_IsAppoint
+		from tbl_PowerStation
+		<where>
+			<if test="pkPowerstation != null">
+				pk_PowerStation=#{pkPowerstation}
+			</if>
+			<if test="postName != null">
+				and poSt_Name=#{postName}
+			</if>
+			<if test="postPic != null">
+				and poSt_Pic=#{postPic}
+			</if>
+			<if test="postDetailpic != null">
+				and poSt_DetailPic=#{postDetailpic}
+			</if>
+			<if test="postAddress != null">
+				and poSt_Address=#{postAddress}
+			</if>
+			<if test="postLongitude != null">
+				and poSt_Longitude=#{postLongitude}
+			</if>
+			<if test="postLatitude != null">
+				and poSt_Latitude=#{postLatitude}
+			</if>
+			<if test="postPhone != null">
+				and poSt_Phone=#{postPhone}
+			</if>
+			<if test="postEleids != null">
+				and poSt_Eleids=#{postEleids}
+			</if>
+			<if test="postStatus != null">
+				and poSt_Status=#{postStatus}
+			</if>
+			<if test="postAreacode != null">
+				and poSt_AreaCode=#{postAreacode}
+			</if>
+			<if test="postCreatedate != null">
+				and poSt_Createdate=#{postCreatedate}
+			</if>
+			<if test="postUpdatedate != null">
+				and poSt_Updatedate=#{postUpdatedate}
+			</if>
+			<if test="postRemark != null">
+				and poSt_Remark=#{postRemark}
+			</if>
+			<if test="postPoweruser != null">
+				and poSt_PowerUser=#{postPoweruser}
+			</if>
+			<if test="postIsappoint != null">
+				and poSt_IsAppoint=#{postIsappoint}
+			</if>
+		</where>
+	</select>
+
+	<select id="page" parameterType="map" resultMap="pageResultMap">
+		select
+		pk_PowerStation,
+		poSt_Name,
+		getFullPath('powerListImage',pk_PowerStation) as poStPic,
+		poSt_DetailPic,
+		poSt_Address,
+		poSt_Longitude,
+		poSt_Latitude,
+		poSt_Phone,
+		poSt_Eleids,
+		poSt_Status,
+		poSt_AreaCode,
+		poSt_Createdate,
+		poSt_Updatedate,
+		poSt_Remark,
+		poSt_PowerUser,
+		poSt_IsAppoint
+		from tbl_PowerStation
+		<where>
+			<if test="pkPowerstation != null">
+				pk_PowerStation=#{pkPowerstation}
+			</if>
+			<if test="postName != null">
+				and poSt_Name=#{postName}
+			</if>
+			<if test="postPic != null">
+				and poSt_Pic=#{postPic}
+			</if>
+			<if test="postDetailpic != null">
+				and poSt_DetailPic=#{postDetailpic}
+			</if>
+			<if test="postAddress != null">
+				and poSt_Address=#{postAddress}
+			</if>
+			<if test="postLongitude != null">
+				and poSt_Longitude=#{postLongitude}
+			</if>
+			<if test="postLatitude != null">
+				and poSt_Latitude=#{postLatitude}
+			</if>
+			<if test="postPhone != null">
+				and poSt_Phone=#{postPhone}
+			</if>
+			<if test="postEleids != null">
+				and poSt_Eleids=#{postEleids}
+			</if>
+			<if test="postStatus != null">
+				and poSt_Status=#{postStatus}
+			</if>
+			<if test="postAreacode != null">
+				and poSt_AreaCode=#{postAreacode}
+			</if>
+			<if test="postCreatedate != null">
+				and poSt_Createdate=#{postCreatedate}
+			</if>
+			<if test="postUpdatedate != null">
+				and poSt_Updatedate=#{postUpdatedate}
+			</if>
+			<if test="postRemark != null">
+				and poSt_Remark=#{postRemark}
+			</if>
+			<if test="postPoweruser != null">
+				and poSt_PowerUser=#{postPoweruser}
+			</if>
+			<if test="postIsappoint != null">
+				and poSt_IsAppoint=#{postIsappoint}
+			</if>
+		</where>
+	</select>
+	<select id="findPowerstation" parameterType="map" resultMap="findMap">
+		select
+			last.pk_PowerStation,
+			last.poSt_Name,
+			last.poSt_Address,
+			getFullPath('powerListImage',last.pk_PowerStation) as poStPic,
+			last.poSt_PowerUser,
+			last.poSt_Status,
+			last.poSt_IsAppoint,
+			last.poSt_Longitude,
+			last.poSt_Latitude,
+			(select 
+				count(*)
+			from 
+				tbl_ElectricPile epl
+			where 
+				epl.elPi_RelevancePowerStation = last.pk_PowerStation
+			) electricPileCount
+		from 
+			tbl_PowerStation last
+		<where>
+			last.poSt_Status in (10, 15)
+			<if test="searchPoweruser != null and searchPoweruser != 0">
+				and last.poSt_PowerUser=#{searchPoweruser}<!-- 电桩查找 列表模式，车辆类型 -->
+			</if>
+			<if test="searchStatus != null and searchStatus != 0">
+				and last.poSt_Status=#{searchStatus}
+			</if>
+		</where>
+		limit #{pageNumber},#{pageNum}
+	</select>
+	<select id="countPowerstation" parameterType="map" resultType="long">
+		select 
+			count(*)
+		from 
+			tbl_PowerStation last
+		<where>
+			last.poSt_Status in (10, 15)
+			<if test="searchPoweruser != null and searchPoweruser != 0">
+				and last.poSt_PowerUser=#{searchPoweruser}<!-- 电桩查找 列表模式，车辆类型 -->
+			</if>
+			<if test="searchStatus != null and searchStatus != 0">
+				and last.poSt_Status=#{searchStatus}
+			</if>
+		</where>
+	</select>
+	
+	<select id="getPowerstationForMap" parameterType="map" resultMap="findMap">
+	   select ps.pk_PowerStation,
+			ps.poSt_Name,
+			ps.poSt_Address,
+			getFullPath('powerListImage',ps.pk_PowerStation) as poStPic,
+			ps.poSt_PowerUser,
+			(select case when count(1)>0 then 15 else 10 end from tbl_ElectricPile where elPi_RelevancePowerStation=ps.pk_PowerStation and elPi_State=15) poSt_Status,
+			ps.poSt_IsAppoint,
+			(select elPi_OwnerCompany from tbl_ElectricPile where elPi_RelevancePowerStation=ps.pk_PowerStation  limit 1) companyType,
+			(select count(*) from tbl_ElectricPile where elPi_RelevancePowerStation = ps.pk_PowerStation) electricPileSum,
+			(SELECT count(*) FROM tbl_ElectricPile a, tbl_electricpilehead b WHERE a.pk_ElectricPile = b.pk_ElectricPile AND a.elPi_RelevancePowerStation = ps.pk_PowerStation) headNum,
+			(SELECT count(*) FROM tbl_ElectricPile a, tbl_electricpilehead b WHERE a.pk_ElectricPile = b.pk_ElectricPile AND a.elPi_RelevancePowerStation = ps.pk_PowerStation AND b.ePHe_ElectricpileHeadState = 0) freeHeadNum,
+			ps.poSt_Name electricName,
+			ps.poSt_Longitude,
+			ps.poSt_Latitude from tbl_powerstation ps where poSt_Status!=3 and poSt_Status!=5 and poSt_Status!=0 
+	   	 <if test="postAddress != null">
+	       and (ps.post_Address like CONCAT('%','${postAddress}','%' ) or  ps.poSt_Name like CONCAT('%','${postAddress}','%' ))
+	     </if>
+	   	 <if test="postStatus != null">
+	       and ps.poSt_Status=#{postStatus}
+	     </if>
+	      <if test="postIsappoint != null">
+	        and ps.poSt_IsAppoint=#{postIsappoint}
+	     </if>
+	     <if test="screenRadius != null">
+   			<!-- 
+			 * mysql 通过两点经纬度，算两点之间距离(单位米)
+			 * 第一点经纬度：@lng1 @lat1
+	                             第二点经纬度：@lng2 @lat2
+	                范例：round(6378.138*2*asin(sqrt(pow(sin( (@lat1*pi()/180-@lat2*pi()/180)/2),2)+cos(@lat1*pi()/180)*cos(@lat2*pi()/180)* pow(sin( (@lng1*pi()/180-@lng2*pi()/180)/2),2)))*1000) 
+	                 电桩查找 列表模式，距离排序  默认5km以内-->
+	        and round(6378.138*2*asin(sqrt(pow(sin( (#{postLatitude}*pi()/180-ps.poSt_Latitude*pi()/180)/2),2)+cos(#{postLatitude}*pi()/180)*cos(ps.poSt_Latitude*pi()/180)* 
+              pow(sin( (#{postLongitude}*pi()/180-ps.poSt_Longitude*pi()/180)/2),2)))*1000) 
+	     </if>
+	   		and pk_PowerStation in (select elPi_RelevancePowerStation from 
+	   		tbl_electricpile a    where elPi_Binding=1 and elPi_State in (10, 15)
+			<if test="headState != null">
+				and a.pk_ElectricPile in(select pk_ElectricPile from tbl_electricpilehead  where ePHe_ElectricpileHeadState=#{headState})
+			</if>
+			<if test="commStatus != null">
+				 and comm_Status = #{commStatus} and elPi_State =15
+			</if>
+			<if test="chargingMode != null">
+				 and elPi_ChargingMode = #{chargingMode} 
+			</if>
+			<if test="elpiPowerinterface != null">
+				 and elPi_PowerInterface = #{elpiPowerinterface} 
+			</if>
+			<if test="postPoweruser != null">
+	        and (elPi_PowerUser=#{postPoweruser} or elPi_PowerUser=13) 
+	     </if>
+			) 
+	      
+	      
+	  </select>
+	<select id="getPowerstation" parameterType="map" resultMap="findMap">
+		select 
+			last.pk_PowerStation relatedId,
+			getFullPath('powerListImage',last.pk_PowerStation) as relatedImage,
+			last.poSt_Name relatedName,
+			round(
+				6378.138*2*asin(sqrt(pow(sin( (#{latitude}*pi()/180-last.poSt_Latitude*pi()/180)/2),2)
+				+cos(#{latitude}*pi()/180)*cos(last.poSt_Latitude*pi()/180)* 
+              	pow(sin( (#{longitude}*pi()/180-last.poSt_Longitude*pi()/180)/2),2)))*1000
+            ) distance,
+			(select
+				round(avg(t.prCo_CommentStart))
+			from
+				tbl_ProductComment t
+			where
+				t.prCo_ProductId=last.pk_PowerStation
+			and t.prCo_Comment_type=4
+			) relatedStart
+		from 
+			tbl_PowerStation last
+		order by
+			distance asc
+		limit 4
+	</select>
+</mapper> 

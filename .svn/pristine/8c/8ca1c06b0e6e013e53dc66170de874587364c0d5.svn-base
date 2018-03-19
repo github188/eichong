@@ -1,0 +1,103 @@
+var concentratorId = getUrlParam('concentratorId');
+//获取集中器主页的menuId
+var getMenuMap = window.localStorage.getItem('menuMap');
+var getCurruntMap = JSON.parse(getMenuMap);
+var menuId = getCurruntMap['集中器主页'];
+$(function () {
+    ctrlMenu(menuId);
+    setTimeout("getConcentratorInfo()", 100);
+    //加载对应的集中器下面的电桩
+    setTimeout("getBindElectricPileInfo()", 200);
+})
+function ctrlMenu(menuId) {
+    $.ajax({
+        type: "post",
+        url: basePath + getSelfButtonTreeUrl,
+        async: true,
+        data: {
+            menuId: menuId
+        },
+        success: function (req) {
+            var data = req.dataObject;
+            if (data.length == 0) {
+                return;
+            } else {
+                for (var i = 0; i < data.length; i++) {
+                    var contents = data[i].contents;
+                    if (contents.indexOf('编辑') > -1) {
+                        $('#editBtn').show();
+                    }
+                }
+            }
+
+
+        }
+    });
+}
+function getConcentratorInfo() {
+    $.ajax({
+        type: "post",
+        url: basePath + getConcentratorInfoByIdUrl,
+        async: true,
+        data: {
+            concentratorId: concentratorId
+        },
+        success: function (req) {
+            console.log(req)
+            var data = req.dataObject;
+            var concentratorName = data.concentratorName;//集中器名称
+            var simMac = data.simMac;//SIM卡号
+            var simCode = data.simCode;//SIM卡编号(电话号码)
+            var simType = data.simType;//SIM来源(1：联通,2：电信,3：移动)
+            var state = data.state;//集中器状态(0：离线,1：上线 2：无效)
+            var creator = data.creator;//资产所属
+            $('#concentratorName').html(concentratorName);
+            $('#simMac').html(simMac);
+            $('#simCode').html(simCode);
+            $('#simType').html(simType);
+            $('#state').html(state);
+            $('#creator').html(creator);
+
+        }
+    });
+}
+//点击编辑
+$('#editBtn').on('click', function () {
+    window.location.href = 'concentrator_edit.html?concentratorId=' + concentratorId;
+})
+//点击返回
+$('#toPileList').on('click', function () {
+    window.location.href = 'concentrator_list.html';
+})
+//加载绑定电桩列表
+function getBindElectricPileInfo() {
+    var index = layer.load(1);
+    $.ajax({
+        type: "post",
+        url: basePath + getAllElectricPileListUrl,
+        async: true,
+        data: {
+            concentratorId: concentratorId
+        },
+        success: function (req) {
+            if (req.success == true) {
+                layer.close(index);
+                var data = req.dataObject;
+                var listTr = "";
+                for (var i = 0; i < data.length; i++) {
+                    var xuhaoNum = i + 1;
+                    listTr += '<tr>'
+                    + '<td class="concentratorList_concentratorId">' + xuhaoNum
+                    + '</td><td class="concentratorList_code">' + data[i].code
+                    + '</td><td class="concentratorList_num">' + data[i].num
+                    + '</td><td class="concentratorList_chStatus">' + data[i].chStatus
+                    + '</td><td class="concentratorList_chChargingMethod">' + data[i].chChargingMethod
+                    + '</td><td class="concentratorList_chPower">' + data[i].chPower
+                    + '</td><td class="concentratorList_type">' + data[i].type
+                    + '</td></tr>';
+                }
+                $("#myTbogy").html(listTr);
+            }
+        }
+    });
+}

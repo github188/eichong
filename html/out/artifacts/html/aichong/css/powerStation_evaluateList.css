@@ -1,0 +1,96 @@
+body,html{
+	width: 100%;
+	height: 100%;
+	font-size: 62.5%;
+}
+.active{
+	width:100%;
+	min-height:10rem;
+	=background:#f00;
+	margin-top: 1.5rem;
+	font-size: 1.6rem;
+	color: #666666;
+	border-bottom: 0.1rem solid #C0C0C0;
+}
+.commentTop{
+	width: 100%;
+	min-height: 2rem;
+	border-bottom: 0.1rem solid #C0C0C0;
+	border-top: 0.1rem solid #C0C0C0;
+}
+.commentTop .headPortrait,.commentTop .nickName,.commentTop .star{
+	display: inline-block;
+	overflow: hidden;
+	line-height: 3rem;
+}
+.commentTop .headPortrait{
+	width: 15%;
+	height: 3rem;
+	=background: #00FF00;
+	padding-left: 4%;
+	margin-top: 1rem;
+}
+.commentTop .nickName{
+	width: 34%;
+	height: 3rem;
+	=background: #FFFF00;
+}
+.commentTop .star{
+	width: 48%;
+	height: 3rem;
+	=background: #0062CC;
+	text-align: left;
+}
+.commentCenter{
+	width: 86%;
+	min-height: 1rem;
+	margin-left: 14%;
+	=background: #FFF6EC;
+}
+.commentBottom{
+	width: 86%;
+	min-height: 2rem;
+	margin-left: 14%;
+	=background: #008000;
+}
+.commentDay{
+	display: inline-block;
+	width: 90%;
+	height: 3rem;
+	=background: #FFCC33;
+	line-height: 3rem;
+}
+.round{
+	height: 2.5rem;
+	width: 2.5rem;
+	/*line-height: 3rem;*/
+	/*text-align: center;*/
+	
+}
+.round img{
+	width: 100%;
+	height: 100%;
+	border-radius: 5rem;
+	border: 0.1rem solid #C0C0C0;
+}
+.starList{
+	width: 100%;
+	min-height: 1rem;
+	list-style: none;
+	padding-left: 0;
+	text-align: center;
+}
+.starList li{
+	display: inline-block;
+	width: 2.2rem;
+	height:2.2rem;
+	/*background: #007AFF;*/
+	/*background: #FF0000;*/
+	margin-top: 0.2rem;
+	background: url(../img/bg_star_off.png) no-repeat center;
+	background-size:100% ;
+}
+.starList .activeStyle{
+	background:url(../img/bg_star_on.png) no-repeat center;
+	background-size:100% ;
+}

@@ -1,0 +1,59 @@
+package com.wanma.ims.service.impl;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.wanma.ims.mapper.InitialMapper;
+import com.wanma.ims.model.base.AreaDO;
+import com.wanma.ims.model.base.CityDO;
+import com.wanma.ims.model.base.ProvinceDO;
+import com.wanma.ims.service.InitialService;
+
+
+public class InitialServiceImpl implements InitialService{
+    
+	@Autowired
+	private InitialMapper initialMapper; 
+	
+	@Override
+	public List<ProvinceDO> getProvinceList(Map<String, String> map) {
+		return initialMapper.selectProvinceList(null);
+	}
+	
+	@Override
+	public Map<String,List<CityDO>> getCityMap(String provinceId) {
+		List<CityDO> cityList = initialMapper.selectCityList(null);
+		Map<String,List<CityDO>> map = new HashMap<String,List<CityDO>>();
+		List<CityDO> list = null;
+		for (CityDO cityDO : cityList) {
+			if(null == map.get("provinceId")){
+				list = new ArrayList<CityDO>();
+			}
+			list.add(cityDO);
+			map.put(cityDO.getProvinceId(), list);
+		}
+		return map;
+	}
+   
+	@Override
+	public Map<String,List<AreaDO>> getAreaMap(String cityId) {
+		List<AreaDO> areaList = initialMapper.selectAreaList(null);
+		Map<String,List<AreaDO>> map = new HashMap<String,List<AreaDO>>();
+		List<AreaDO> list = null;
+		for (AreaDO areaDO : areaList) {
+			if(null == map.get("cityId")){
+				list = new ArrayList<AreaDO>();
+			}
+			list.add(areaDO);
+			map.put(areaDO.getCityId(), list);
+		}
+		return map;
+		
+	}
+	
+	
+}

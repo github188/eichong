@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+			
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="blank" />
+		<meta name="format-detection" content="telephone=no" />
+		<title>地图列表</title>
+		<!--<link rel="stylesheet" type="text/css" href="dist/css/bootstrap.min.css"/>-->
+		<link rel="stylesheet" type="text/css" href="dist/css/bootstrap.css"/>
+		<link rel="stylesheet" type="text/css" href="css/mui.css"/>
+		<link rel="stylesheet" type="text/css" href="css/app.css"/>
+		<link rel="stylesheet" type="text/css" href="css/map_List.css"/>
+		<link rel="stylesheet" type="text/css" href="css/base.css"/>
+		<link rel="stylesheet" type="text/css" href="css/iconfont.css"/>
+		<!--[if lt IE 9]>
+			<script src="dist/js/html5shiv.min.js"></script>
+			<script src="dist/js/respond.min.js"></script>
+		<![endif]-->
+	</head>
+	<body>
+		
+	<!--第一块头部===============================================================================-->
+	<header class="navbar-fixed-top">
+		<div class="col-xs-2 scanning">
+			<img src="img/nav_btn_scanning.png" class="scan" />
+		</div>
+		<div class="col-xs-8 search">
+			<div class="searchBlock">
+				<img src="img/nav_btn_search.png" onclick="loadBySearchKey()"/>
+				<input type="text" name="" id="searchKey" value="" />
+			</div>
+		</div>
+		<div class="col-xs-2 mapIcon">
+			<img src="img/nav_btn_map.png" class="toMap"/>
+		</div>
+		
+	</header>
+	
+	<!--第二块=三个列表的切换====================================================================================-->
+	<ul id="classifyList" class="classifyList"> 
+		<li class="col-xs-4 active" style="border-left: 0;" id="screenRadius">距离</li>
+		<li class="col-xs-4" id="electricPrices">价格</li>
+		<li class="col-xs-4" id="electricEvaluate">评分</li>
+	</ul>
+	<!--第三块切换部分=============================================================================================-->
+	<div class="mainContent" id="mainContent">
+		<!--按照距离写的section==================================-->
+		<div class="distanceBlock" id="distanceBlock">
+			<!--<section>
+				<div class="detailTop">
+					<div class="powerStationAddress left" id="electricName">
+						杭州天际大厦
+					</div>
+					<div class="distance right" id="electricDistance">
+						233m
+					</div>
+				</div>
+				<div class="detailCenter">-->
+					<!--模拟button=========================-->
+					<!--<ul class="showBtn">
+						<li>
+							<span>
+								快充
+							</span>
+							<span class="fastRound">
+								200
+							</span>
+							<span>
+								空闲
+							</span>
+							<span class="freeRound">
+								300
+							</span>
+						</li>
+						<li>
+							<span>
+								慢充
+							</span>
+							<span class="slowlyRound">
+								200
+							</span>
+							<span>
+								空闲
+							</span>
+							<span class="freeRound">
+								300
+							</span>
+						</li>
+					</ul>-->
+					<!--具体地址==========================-->
+					<!--<div class="powerStationAddress" id="electricAddress">
+						杭州市西湖区天目山路181号杭州市西湖区天目山路181号
+					</div>
+				</div>
+				<div class="detailBottom">
+					<div class="col-xs-3 baseStyle rate" style="border-left: 0;">
+						<span id="serviceCharge">1.00</span>元/度
+						
+					</div>
+					<div class="col-xs-3 baseStyle star">
+						<span id="commentStart">4.7</span>分
+						
+					</div>
+					<div class="col-xs-3 baseStyle navImgActive">
+						导航
+					</div>
+					<div class="col-xs-3 baseStyle appointmentBtn">
+						预约
+					</div>
+				</div>
+			</section>-->
+		</div>
+		<!--按照价格写的section====================================-->
+		<div class="priceBlock" style="display: none;">
+		
+		</div>
+		<!--按照评分写的section====================================-->
+		<div class="starBlock" style="display: none;">
+		
+		</div>
+	</div>
+	<!--第四块底部=====================================================================================-->
+	<nav class="mui-bar mui-bar-tab menuBtn" id="menuBtn">
+			<a class="mui-tab-item mui-active " href="#tabbar" style="color: #FF7D00;">
+				<span class="mui-icon iconfont">&#xe635;</span>
+				<span class="mui-tab-label">首页</span>
+				
+			</a>
+			<a class="mui-tab-item" href="#tabbar-with-map" style="color: #929292;" id="#orderDetail">
+				<span class="mui-icon iconfont">&#xe606;</span>
+				<span class="mui-tab-label">订单</span>
+			</a>
+			<a class="mui-tab-item" href="#tabbar-with-contact" style="color: #929292;" id="myPage">
+				<span class="mui-icon iconfont">&#xe613;</span>
+				<span class="mui-tab-label">我的</span>
+			</a>
+	</nav>
+	</body>
+	<script type="text/javascript" src="dist/js/jquery-1.11.0.js" ></script>
+	<script type="text/javascript">
+//		if ('addEventListener' in document) {
+//		    document.addEventListener('DOMContentLoaded', function() {
+//		        FastClick.attach(document.body);
+//		    }, false);
+//		}
+		$(function() {
+		    FastClick.attach(document.body);
+		});
+
+	</script>
+	<!--<script src="dist/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>-->
+	<script src="js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript" src="dist/js/bootstrap.js" ></script>
+	<script src="js/userinfo.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/url.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/map_List.js" type="text/javascript" charset="utf-8"></script>
+	
+</html>

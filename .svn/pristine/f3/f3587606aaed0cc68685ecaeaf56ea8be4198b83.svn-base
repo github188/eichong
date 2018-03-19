@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+<!-- Mirrored from www.zi-han.net/theme/hplus/register.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 20 Jan 2016 14:19:52 GMT -->
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<title>i-charge 充值送系统</title>
+
+
+<link rel="shortcut icon" href="favicon.ico">
+<link href="css/bootstrap.min14ed.css?v=3.3.6" rel="stylesheet">
+<link href="css/font-awesome.min93e3.css?v=4.4.0" rel="stylesheet">
+<link href="css/custom.css" rel="stylesheet">
+<link href="css/animate.min.css" rel="stylesheet">
+<link href="css/style.min862f.css?v=4.1.0" rel="stylesheet">
+<script>
+	if (window.top !== window.self) {
+		window.top.location = window.location;
+	}
+</script>
+
+</head>
+
+<body class="gray-bg">
+<div id="mainDiv" style="display:none;" >
+
+	<div class="col-sm-4"></div>
+
+	<div class="col-sm-4">
+	
+		<div  class="form-horizontal">
+		 <div class="form-group">
+			<center><h2>欢迎登陆充值</h2></center>
+			</div>
+			   <div class="form-group">
+                                <label class="col-sm-4 control-label">账户类型</label>
+
+                                <div class="col-sm-8">
+                                 <select class="form-control m-b"  id="acountType">
+                                        <option>普通账户</option>
+                                        <option>大账户</option>
+                                      
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">充值账号</label>
+                            
+
+                                <div class="col-sm-7">
+                                    <input type="text" id="phone" class="form-control">
+                                   
+                                </div>
+                                 <div class="col-sm-1">
+                                  <font color="red">*</font>
+                                  </div>
+                            </div>
+                          
+                               <div class="form-group">
+                                <label class="col-sm-4 control-label">充值金额（元）</label>
+                                
+
+                                <div class="col-sm-7">
+                                    <input type="text" id="charge"  onkeyup="clearNoNum(this)" class="form-control">
+                                    
+                                </div>
+                                  <div class="col-sm-1">
+                                  <font color="red">*</font>
+                                  </div>
+                            </div>
+                               <div class="form-group">
+                                <label class="col-sm-4 control-label">赠送金额（元）</label>
+
+                                <div class="col-sm-8">
+                                    <input type="text" id="gift"  onkeyup="clearNoNum(this)" class="form-control">
+                                </div>
+                            </div>
+                               <div class="form-group">
+                                <label class="col-sm-4 control-label">备注</label>
+
+                                <div class="col-sm-8">
+                                   <textarea class="form-control" id="remark"   onKeyUp="checkValid(this)" rows="5" placeholder="请输入备注..."></textarea>
+                                </div>
+                            </div>
+                             <div class="form-group">
+                                
+                                <div class="col-sm-8 col-sm-offset-6">
+                                    <button class="btn btn-primary" id="submitButton" >确定充值</button>
+                                </div>
+                            </div>
+                            </div>
+	</div>
+	<div class="col-sm-4">
+		<div class="wrapper wrapper-content animated fadeInUp">
+			<ul class="notes">
+				<li>
+					<div>
+					<!-- 	<small>2014年10月24日(星期五) 下午5:31</small> -->
+						<h4>充值说明：</h4>
+						<p>①普通用户单次充值金额范围0-2000.00元</p>
+						<p>②大账户单次充值金额范围0-100万元，</p>
+						<p>@赠送金额范围0-100元</p>
+						<a><i class="fa fa-trash-o "></i></a>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+	<script src="js/jquery.min.js?v=2.1.4"></script>
+	<script src="js/bootstrap.min.js?v=3.3.6"></script>
+	<script src="js/icheck.min.js"></script>
+	 <script src="js/layer/layer.min.js"></script>
+	<script type="text/javascript" src="js/url.js" ></script>
+	<script src="js/main.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+		$(document).ready(function() {
+			$(".i-checks").iCheck({
+				checkboxClass : "icheckbox_square-green",
+				radioClass : "iradio_square-green",
+			})
+		});
+	</script>
+	<script type="text/javascript"
+		src="http://tajs.qq.com/stats?sId=9051096" charset="UTF-8"></script>
+		
+		<script  type="text/javascript" charset="utf-8">
+		function checkValid(obj){
+			var value=obj.value;
+			if(value.length>=100){
+				obj.value=value.substr(0,100);
+				event.returnValue=false};
+		}
+	</script>
+</body>
+
+
+<!-- Mirrored from www.zi-han.net/theme/hplus/register.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 20 Jan 2016 14:19:52 GMT -->
+</html>

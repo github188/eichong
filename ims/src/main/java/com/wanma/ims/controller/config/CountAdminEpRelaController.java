@@ -1,0 +1,159 @@
+package com.wanma.ims.controller.config;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.wanma.ims.common.domain.CountAdminEpRelaDO;
+import com.wanma.ims.common.domain.base.Pager;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.constants.ResultCodeConstants;
+import com.wanma.ims.controller.BaseController;
+import com.wanma.ims.controller.result.JsonException;
+import com.wanma.ims.controller.result.JsonResult;
+import com.wanma.ims.service.CountAdminEpRelaService;
+import com.wanma.ims.util.ObjectUtil;
+
+/**
+ *  管理员与充电桩数据权限表
+ *  @author zhangchunyan
+ *  @date 2017-6-26
+ */
+@Controller
+@RequestMapping("/manage/config")
+public class CountAdminEpRelaController extends BaseController{
+	
+	private final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+	
+    @Autowired
+    private CountAdminEpRelaService countAdminEpRelaService;
+    
+    /**
+     * 
+     * 查询管理员桩权限 
+     */
+	@RequestMapping(value = "/getCountAdminEPListPage")
+	@ResponseBody
+    public void getCountAdminEPListPage(Pager pager,Long userId,String electricPileCode) {
+    	JsonResult result = new JsonResult();
+     	try{
+    		if(ObjectUtil.isEmpty(userId)){
+    			responseJson(new JsonResult(false, ResultCodeConstants.ERROR_PARAM, "管理员ID不能为空"));
+				return;
+    		}
+    		CountAdminEpRelaDO countAdminEpRelaDO = new CountAdminEpRelaDO();
+    		countAdminEpRelaDO.setAdminId(userId);
+    		countAdminEpRelaDO.setElectricPileCode(electricPileCode);
+    		Long total = countAdminEpRelaService.countAdminEPList(countAdminEpRelaDO);
+    		if (total <= pager.getOffset()) {
+				pager.setPageNo(1L);
+			}
+			pager.setTotal(total);
+			countAdminEpRelaDO.setPager(pager);
+			List<CountAdminEpRelaDO> list = countAdminEpRelaService.getCountAdminEPList(countAdminEpRelaDO);
+			result.setPager(pager);
+			result.setDataObject(list);
+    	}catch(Exception e){
+    		LOGGER.error(this.getClass() + ".getCountAdminEPListPage() error : ", e);
+			responseJson(new JsonException("查询管理员桩权限异常"));
+			return;
+    	}
+    	responseJson(result);
+    }
+    
+    /**
+     * 设置管理员桩权限 
+     */
+	@RequestMapping(value = "/addCountAdminEP")
+	@ResponseBody
+    public void addCountAdminEP(Long userId,String electricPileCode) {
+    	JsonResult result = new JsonResult();
+    	try{
+    		if(ObjectUtil.isEmpty(userId)){
+    			responseJson(new JsonResult(false, ResultCodeConstants.ERROR_PARAM, "管理员ID不能为空"));
+				return;
+    		}
+    		if(ObjectUtil.isEmpty(electricPileCode)){
+    			responseJson(new JsonResult(false, ResultCodeConstants.ERROR_PARAM, "电桩编码不能为空"));
+				return;
+    		}
+    		BaseResultDTO dto = countAdminEpRelaService.addAdminEpByLoginId(getCurrentLoginUser(),userId,electricPileCode);
+    		if(!dto.isSuccess()){
+    			responseJson(new JsonResult(false, ResultCodeConstants.FAILED, dto.getErrorDetail()));
+				return;
+    		}
+    	}catch(Exception e){
+    		LOGGER.error(this.getClass() + ".addCountAdminEP() error : ", e);
+			responseJson(new JsonException("设置管理员桩权限失败"));
+			return;
+    	}
+    	responseJson(result);
+    }
+	
+	/**
+     * 解绑管理员桩权限 
+     */
+	@RequestMapping(value = "/removeCountAdminEP")
+    public void removeCountAdminEP(Long userId,String epIds) {
+    	JsonResult result = new JsonResult();
+    	try{
+    		if(ObjectUtil.isEmpty(userId)){
+    			responseJson(new JsonResult(false, ResultCodeConstants.ERROR_PARAM, "管理员ID不能为空"));
+				return;
+    		}
+    		if(ObjectUtil.isEmpty(epIds)){
+    			responseJson(new JsonResult(false, ResultCodeConstants.ERROR_PARAM, "电桩编码不能为空"));
+				return;
+    		}
+    		String[] ids = epIds.split(",");
+    		List<Long> epId = new ArrayList<Long>();
+    		for (String string : ids) {
+				epId.add(Long.parseLong(string));
+			}
+    		BaseResultDTO dto = countAdminEpRelaService.removeAdminEpByLoginId(userId,epId,getCurrentUserName());
+    		if(!dto.isSuccess()){
+    			responseJson(new JsonResult(false, ResultCodeConstants.FAILED, dto.getErrorDetail()));
+				return;
+    		}
+    	}catch(Exception e){
+    		LOGGER.error(this.getClass() + ".removeCountAdminEP() error : ", e);
+			responseJson(new JsonException("解绑管理员桩权限异常"));
+			return;
+    	}
+    	responseJson(result);
+    }
+	
+	 /**
+     * 设置管理员桩权限 （批量）
+     */
+	@RequestMapping(value = "/addCountAdminEPByPsId")
+	@ResponseBody
+    public void addCountAdminEP(Long userId,Long powerStationId) {
+    	JsonResult result = new JsonResult();
+    	try{
+    		if(ObjectUtil.isEmpty(userId)){
+    			responseJson(new JsonResult(false, ResultCodeConstants.ERROR_PARAM, "管理员ID不能为空"));
+				return;
+    		}
+    		if(ObjectUtil.isEmpty(powerStationId)){
+    			responseJson(new JsonResult(false, ResultCodeConstants.ERROR_PARAM, "充电站ID不能为空"));
+				return;
+    		}
+    		BaseResultDTO dto = countAdminEpRelaService.addAdminEpByPsId(getCurrentLoginUser(),userId,powerStationId);
+    		if(!dto.isSuccess()){
+    			responseJson(new JsonResult(false, ResultCodeConstants.FAILED, dto.getErrorDetail()));
+				return;
+    		}
+    	}catch(Exception e){
+    		LOGGER.error(this.getClass() + ".addCountAdminEP() error : ", e);
+			responseJson(new JsonException("设置管理员桩权限失败"));
+			return;
+    	}
+    	responseJson(result);
+    }
+}

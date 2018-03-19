@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.JPushRecordMapper">
+    <resultMap type="JpushRecordDO" id="jpushRecordDO">
+		<result property="pkId" column="pk_id" />
+		<result property="chargingOrderId" column="charging_order_id" />
+		<result property="chargingOrderStatus" column="charging_order_status" />
+		<result property="creator" column="creator" />
+		<result property="modifier" column="modifier" />
+		<result property="gmtCreate" column="gmt_create" />
+		<result property="gmtModified" column="gmt_modified" />
+    </resultMap>
+
+	<select id="getJPushRecordCount" parameterType="JpushRecordDO" resultType="long">
+		SELECT COUNT(1)
+		FROM tbl_jpush_record b
+		WHERE 1=1
+		<if test="pkId != null">
+			and b.pk_id = #{pkId}
+		</if>
+		<if test="chargingOrderId != null">
+			and b.charging_order_id = #{chargingOrderId}
+		</if>
+		<if test="chargingOrderStatus != null">
+			and b.charging_order_status = #{chargingOrderStatus}
+		</if>
+	</select>
+
+	<!-- 增加推送记录 -->
+	<insert id="addJPushRecord" useGeneratedKeys="true" parameterType="java.util.List">
+		insert into tbl_jpush_record
+		(pk_id, charging_order_id, charging_order_status, creator, modifier, gmt_create, gmt_modified)
+		values
+		(null,#{chargingOrderId},#{chargingOrderStatus},#{creator},#{modifier},#{gmtCreate},#{gmtModified})
+	</insert>
+
+	<select id="getMaxChargingOrderId" parameterType="JpushRecordDO" resultType="java.lang.String">
+		SELECT charging_order_id
+		FROM tbl_jpush_record
+		WHERE charging_order_status = 1
+		ORDER BY charging_order_id DESC
+		LIMIT 1
+	</select>
+</mapper>

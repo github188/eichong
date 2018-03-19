@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.app.dao.ElctrcplscrnconfgurtnMapper">
+
+	<resultMap id="tblElctrcplscrnconfgurtnResultMap" type="TblElctrcplscrnconfgurtn">
+		<id property="pkElctrcplscrnconfgurtn" column="pk_ElctrcPlScrnConfgurtn" />
+		<result property="epscName" column="ePSC_Name" />
+		<result property="epscType" column="ePSC_Type" />
+		<result property="epscCreatedate" column="ePSC_Createdate" />
+		<result property="epscUpdatedate" column="ePSC_Updatedate" />
+	</resultMap>
+	<resultMap id="pageResultMap"  type="java.util.HashMap" extends="tblElctrcplscrnconfgurtnResultMap"></resultMap>
+	<resultMap id="findResultMap"  type="java.util.HashMap" extends="tblElctrcplscrnconfgurtnResultMap"></resultMap>
+
+	<insert id="insert" parameterType="TblElctrcplscrnconfgurtn">
+	   insert into tbl_ElctrcPlScrnConfgurtn (
+	     ePSC_Name,
+	     ePSC_Type,
+	     ePSC_Createdate,
+	     ePSC_Updatedate
+	   )values (
+	     #{epscName},
+	     #{epscType},
+	     #{epscCreatedate},
+	     #{epscUpdatedate}
+	   )
+	</insert>
+
+	<update id="update" parameterType="TblElctrcplscrnconfgurtn">
+	   update tbl_ElctrcPlScrnConfgurtn set
+	     ePSC_Name=#{epscName},
+	     ePSC_Type=#{epscType},
+	     ePSC_Createdate=#{epscCreatedate},
+	     ePSC_Updatedate=#{epscUpdatedate}
+	   where 
+	    pk_ElctrcPlScrnConfgurtn=#{pkElctrcplscrnconfgurtn} 
+	</update>
+
+	<delete id="delete" parameterType="map">
+	   delete from 
+	     tbl_ElctrcPlScrnConfgurtn 
+	   where 
+	    pk_ElctrcPlScrnConfgurtn=#{pkElctrcplscrnconfgurtn} 
+	</delete>
+
+	<select id="get" parameterType="map" resultMap="tblElctrcplscrnconfgurtnResultMap">
+	   select 
+	    pk_ElctrcPlScrnConfgurtn,
+	    ePSC_Name,
+	    ePSC_Type,
+	    ePSC_Createdate,
+	    ePSC_Updatedate
+	   from tbl_ElctrcPlScrnConfgurtn
+	   where 
+	    pk_ElctrcPlScrnConfgurtn=#{pkElctrcplscrnconfgurtn} 
+	</select>
+
+	<select id="findOne" parameterType="map" resultMap="findResultMap">
+	   select 
+	    pk_ElctrcPlScrnConfgurtn,
+	    ePSC_Name,
+	    ePSC_Type,
+	    ePSC_Createdate,
+	    ePSC_Updatedate
+	   from tbl_ElctrcPlScrnConfgurtn
+	   where 
+	    pk_ElctrcPlScrnConfgurtn=#{pkElctrcplscrnconfgurtn} 
+	</select>
+
+	<select id="find" parameterType="map" resultMap="findResultMap">
+	   select 
+	     pk_ElctrcPlScrnConfgurtn,
+	     ePSC_Name,
+	     ePSC_Type,
+	     ePSC_Createdate,
+	     ePSC_Updatedate
+	   from tbl_ElctrcPlScrnConfgurtn
+	   <where>
+	     <if test="pkElctrcplscrnconfgurtn != null">
+	        pk_ElctrcPlScrnConfgurtn=#{pkElctrcplscrnconfgurtn}
+	     </if>
+	     <if test="epscName != null">
+	        and ePSC_Name=#{epscName}
+	     </if>
+	     <if test="epscType != null">
+	        and ePSC_Type=#{epscType}
+	     </if>
+	     <if test="epscCreatedate != null">
+	        and ePSC_Createdate=#{epscCreatedate}
+	     </if>
+	     <if test="epscUpdatedate != null">
+	        and ePSC_Updatedate=#{epscUpdatedate}
+	     </if>
+	   </where>
+	</select>
+	
+	<select id="page" parameterType="map" resultMap="pageResultMap">
+	   select 
+	     pk_ElctrcPlScrnConfgurtn,
+	     ePSC_Name,
+	     ePSC_Type,
+	     ePSC_Createdate,
+	     ePSC_Updatedate
+	   from tbl_ElctrcPlScrnConfgurtn
+	   <where>
+	     <if test="pkElctrcplscrnconfgurtn != null">
+	        pk_ElctrcPlScrnConfgurtn=#{pkElctrcplscrnconfgurtn}
+	     </if>
+	     <if test="epscName != null">
+	        and ePSC_Name=#{epscName}
+	     </if>
+	     <if test="epscType != null">
+	        and ePSC_Type=#{epscType}
+	     </if>
+	     <if test="epscCreatedate != null">
+	        and ePSC_Createdate=#{epscCreatedate}
+	     </if>
+	     <if test="epscUpdatedate != null">
+	        and ePSC_Updatedate=#{epscUpdatedate}
+	     </if>
+	   </where>
+	</select>
+</mapper> 

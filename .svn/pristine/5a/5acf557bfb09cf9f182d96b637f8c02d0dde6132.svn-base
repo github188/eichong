@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dubbox.dao.TblWebReleaseMapper">
+
+	<resultMap id="tblWebReleaseMap" type="TblWebRelease">
+		<id property="id" column="pk_release" />
+		<result property="ttl" column="rele_title" />
+		<result property="txt" column="rele_content" />
+		<result property="cdate" column="rele_createdate" />
+		<result property="udate" column="rele_updatedate" />
+		<result property="upk" column="rele_usepk" />
+		<result property="type" column="rele_type" />
+		<result property="img" column="rele_img" />
+		<result property="ord" column="rele_order" />
+		<result property="flg" column="valid_flag" />
+		<result property="indct" column="brief_introduction" />
+	</resultMap>
+
+	<!-- 根据类型获取WebList -->
+	<select id="getList" parameterType="TblWebRelease" resultMap="tblWebReleaseMap">
+		select
+		${rtColumns}
+		from tbl_web_release
+		<where>
+			1=1
+			<if test="type !=null and type !=''">
+				and rele_type=#{type}
+			</if>
+		</where>
+		order by rele_img desc,rele_order asc,rele_createdate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	<select id="getCount" parameterType="TblWebRelease" resultType="int">
+		select count(1)
+		from tbl_web_release
+		<where>
+			1=1
+			<if test="type !=null and type !=''">
+				and rele_type=#{type}
+			</if>
+		</where>
+	</select>
+
+	<!-- 根据ID获取WebList -->
+	<select id="selectOne" parameterType="TblWebRelease" resultMap="tblWebReleaseMap">
+		select
+		${rtColumns},
+	    getFullPath('dynamic',pk_release) imageUrl
+		from tbl_web_release
+		where
+		pk_release=#{id}
+	</select>
+	<!-- 新增 -->
+	<insert id="insert" parameterType="TblWebRelease"
+		useGeneratedKeys="true" keyProperty="pkRelease">
+		insert into tbl_web_release (
+		rele_title,
+		rele_content,
+		rele_usepk,
+		rele_type,
+		rele_img,
+		rele_order,
+		valid_flag,
+		brief_introduction,
+		rele_createdate,
+		rele_updatedate
+		)values (
+		#{ttl},
+		#{txt},
+		#{upk},
+		#{type},
+		#{img},
+		#{ord},
+		#{flg},
+		#{indct},
+		sysdate(),
+		sysdate()
+		)
+	</insert>
+
+	<!-- 修改 -->
+	<update id="update" parameterType="TblWebRelease">
+		update tbl_web_release
+		set
+		<if test="ttl != null">
+			rele_title=#{ttl},
+		</if>
+		<if test="txt != null">
+			rele_content=#{txt},
+		</if>
+		<if test="type != null">
+			rele_type=#{type},
+		</if>
+		<if test="img != null">
+			rele_img=#{img},
+		</if>
+		<if test="ord != null">
+			rele_order=#{ord},
+		</if>
+		<if test="flg != null">
+			valid_flag= #{flg},
+		</if>
+		<if test="indct != null">
+			brief_introduction= #{indct},
+		</if>
+		rele_updatedate=sysdate()
+		where
+		pk_release=#{id}
+	</update>
+
+	<!-- 删除 -->
+	<delete id="delete" parameterType="TblWebRelease">
+		delete from
+		tbl_web_release
+		where pk_release in
+		<foreach item="item" index="index" collection="pkIds" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+
+</mapper> 

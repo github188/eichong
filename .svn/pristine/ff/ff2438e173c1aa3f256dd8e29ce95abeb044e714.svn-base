@@ -1,0 +1,35 @@
+/**     
+ * @Title:  TblUserService.java   
+ * @Package com.wanma.service   
+ * @Description:    TODO  
+ * @author: Android_Robot     
+ * @date:   2016年4月28日 下午3:59:00   
+ * @version V1.0     
+ */
+package com.wanma.service;
+
+import java.util.List;
+import java.util.Map;
+
+import com.wanma.model.TblChargingOrder;
+
+/**
+ * @author lhy
+ *
+ */
+public interface TblChargingOrderService {
+
+	public void update(TblChargingOrder model);
+	
+	public List<TblChargingOrder> getList(TblChargingOrder model);
+
+	public TblChargingOrder selectOne(TblChargingOrder model);
+
+	public TblChargingOrder getOderByOpenId(String openId);
+
+	public List<Map<String, Object>> getListGroupByPileNumByPsId(
+			TblChargingOrder odrModel);
+
+	public List<Map<String, Object>> getListGroupByHeadNoByPileNum(
+			TblChargingOrder odrModel);
+}

@@ -1,0 +1,16 @@
+package com.echong.constant;
+
+/**
+ * Created by zangyaoyi on 2016/12/30.
+ */
+public class EChongWangConsts {
+    public static final String FILE_SETTING = "thirdparty/echong.properties";
+    public static final String APP_ID = "app_id";
+    public static final String APP_KEY = "app_key";
+    public static String PILESTATE_URL = "pilestate_url";
+    public static String CALLBACK_URL = "callback_url";
+    public static String PILECHARGEREALTIME_URL = "pilechargerealtime_url";
+    public static String BILL_URL = "bill_url";
+    public static String STATUS_CHANGE_URL = "status_change_url";
+    public static String ORG = "org";
+}

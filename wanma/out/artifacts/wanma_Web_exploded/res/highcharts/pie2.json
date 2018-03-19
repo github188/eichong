@@ -1,0 +1,14 @@
+[
+	                ['Firefox',   25.0],
+	                //['IE',       26.8],
+					{name: 'IE', y: 26.8},
+	                {
+	                    name: 'Chrome',
+	                    y: 12.8,
+	                    sliced: true,
+	                    selected: true
+	                },
+	                ['Safari',    18.5],
+	                ['Opera',     1.2],
+	                ['Others',   5.7]
+	            ]

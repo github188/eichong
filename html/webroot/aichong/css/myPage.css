@@ -1,0 +1,156 @@
+@charset "utf-8";
+.headTop{
+	width: 100%;
+	min-height: 3rem;
+	background: #FF7D00;
+	overflow: hidden;
+}
+.headTop .headLeft,.headTop .headRight{
+	height: 12rem;
+}
+.headTop .headLeft{
+	/*background: #0062CC;*/
+	/*line-height: 5rem;*/
+	/*text-align: center;*/
+	padding-top: 2rem;
+	/*padding-left: 1.4rem;*/
+}
+
+.headTop .headRight{
+	/*background: #F0FF0F;*/
+	padding: 2rem 0;
+}
+.headTop .headRight .userName{
+	width: 100%;
+	height: 3rem;
+	/*background: #F0AD4E;*/
+	line-height: 3rem;
+	color: #FFFFFF;
+}
+.headTop .headRight .userName span{
+	display: inline-block;
+}
+.headTop .headRight .userName .nick{
+	width: 8rem;
+	height: 3rem;
+	/*background: #FF0000;*/
+	color: #FFFFFF;
+	font-weight: 900;
+	margin-right: 1rem;
+	white-space: nowrap;	
+	overflow: hidden;
+	text-overflow:ellipsis;
+}
+.headTop .headRight .userName .info{
+	position: relative;
+}
+/*对话泡泡==========================================*/
+#talkbubble {
+	width: 4rem;
+	height: 2rem;
+	background: #FFFFFF;
+	position: relative;
+	-moz-border-radius: 1px;
+	-webkit-border-radius: 1px;
+	border-radius: 1px;
+	color: #FF7D00;
+	line-height: 2rem;
+	/*top: -1rem;*/
+}
+#talkbubble:before {
+	content:"";
+	position: absolute;
+	right: 100%;
+	top: 5px;
+	width: 0;
+	height: 0;
+	border-top: 4px solid transparent;
+	border-right: 4px solid #FFFFFF;
+	border-bottom: 4px solid transparent;
+}
+
+.headTop .headRight .operationBtn{
+	width: 100%;
+	min-height: 3rem;
+	/*background: #FF0000;*/
+	line-height: 3rem;
+}
+.headTop .headRight .operationBtn span{
+	display: inline-block;
+	width: 5rem;
+	height: 3rem;
+	background: #FFFFFF;
+	border-radius: 0.3rem;
+	text-align: center;
+	line-height: 3rem;
+	color: #FF7D00;
+}
+.headTop .headRight .showInfo{
+	width: 100%;
+	min-height: 3rem;
+	/*background: #FF0000;*/
+	line-height: 3rem;
+}
+.headTop .headRight .showInfo span{
+	color: #FFFFFF;
+	
+}
+.myList{
+	width: 100%;
+	height: auto;
+}
+.myList .myVallet{
+	width: 100%;
+	height: 5rem;
+	border-bottom: 0.1rem solid #C0C0C0;
+}
+.myList .myVallet .icon{
+	height: 5rem;
+	text-align: center;
+	line-height: 5rem;
+}
+ .myList .myVallet .icon img{
+	width: 36%;
+	height: 60%;
+}
+.myList .myVallet .text{
+	height: 5rem;
+	line-height: 5rem;
+	font-size: 1.8rem;
+	color: #666666;
+}
+.redDot{
+	display: inline-block;
+	width: 1rem;
+	height: 1rem;
+	background: #FF0000;
+	border-radius: 1rem;
+	position: absolute;
+	top: -0.3rem;
+	right: -0.3rem;
+}
+.menuBtn a:link,
+.menuBtn a:visited,
+.menuBtn a:hover,
+.menuBtn a:visited{
+	text-decoration: none;
+}
+.mui-bar-tab .mui-tab-item .mui-icon ~ .mui-tab-label{
+	font-size:1.6rem;
+}
+/*头像大小适配=========================================================================*/
+@media only screen and (min-width: 100px) and (max-width: 480px) {
+	.headTop .headLeft .round{
+		width: 6rem;
+		height: 6rem;
+		/*border: 0.1rem solid #C0C0C0;
+		border-radius: 4rem;*/
+		margin:0 auto;
+	}
+	.headTop .headLeft .round img{
+		border-radius: 50%; 
+		border:1px solid #CCCCCC; 
+		width: 100%; 
+		height: 100%;
+	}
+}

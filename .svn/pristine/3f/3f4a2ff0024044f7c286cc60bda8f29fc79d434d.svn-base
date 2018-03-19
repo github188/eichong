@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.UserRoleMapper">
+
+	<insert id="addUserRole" parameterType="UserRoleDO"
+		keyProperty="userDept_id">
+		insert into p_m_user_role
+		(
+		user_id,
+		role_id,
+		create_user,
+		last_update_user
+		)
+		values
+		(
+		#{userId},
+		#{roleId},
+		#{createUser},
+		#{lastUpdateUser}
+		)
+	</insert>
+ 
+	<delete id="removeUserRole" parameterType="UserRoleDO">
+		delete from p_m_user_role
+		<where>
+			<if test="userId!=null"> and user_id=#{userId} </if>
+			<if test="roleId!=null"> and role_id=#{roleId}</if>
+		</where>
+	</delete>
+</mapper>

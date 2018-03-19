@@ -1,0 +1,892 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wanma.dubbox.dao.TblElectricPileMapper">
+	<resultMap id="BaseResultMap" type="com.wanma.dubbox.model.TblElectricPile">
+		<id column="pk_ElectricPile" property="id" jdbcType="INTEGER" />
+		<result column="elPi_ElectricPileName" property="name"
+			jdbcType="VARCHAR" />
+		<result column="elPi_ElectricPileCode" property="code"
+			jdbcType="VARCHAR" />
+		<result column="elPi_ElectricPileAddress" property="adr"
+			jdbcType="VARCHAR" />
+		<result column="elPi_Longitude" property="lgt" jdbcType="DECIMAL" />
+		<result column="elPi_Latitude" property="ltt" jdbcType="DECIMAL" />
+		<result column="elPi_PowerNumber" property="pwNum" jdbcType="INTEGER" />
+		<result column="elPi_State" property="ste" jdbcType="INTEGER" />
+		<result column="elPi_RejectionReason" property="reason"
+			jdbcType="VARCHAR" />
+		<result column="elPi_Type" property="type" jdbcType="INTEGER" />
+		<result column="elPi_PowerUser" property="powUser" jdbcType="INTEGER" />
+		<result column="elPi_ChargingMode" property="cgMode" jdbcType="INTEGER" />
+		<result column="elPi_PowerSize" property="powSz" jdbcType="INTEGER" />
+		<result column="elPi_PowerInterface" property="powItf"
+			jdbcType="INTEGER" />
+		<result column="elPi_Maker" property="maker" jdbcType="INTEGER" />
+		<result column="elPi_OutputVoltage" property="opV" jdbcType="DECIMAL" />
+		<result column="elPi_InputVoltage" property="inV" jdbcType="DECIMAL" />
+		<result column="elPi_OutputCurrent" property="opC" jdbcType="DECIMAL" />
+		<result column="elPi_InputCurrent" property="inC" jdbcType="DECIMAL" />
+		<result column="elPi_UserType" property="utype" jdbcType="INTEGER" />
+		<result column="elPi_UserId" property="uId" jdbcType="VARCHAR" />
+		<result column="elPi_Createdate" property="cdate" jdbcType="TIMESTAMP" />
+		<result column="elPi_Updatedate" property="udate" jdbcType="TIMESTAMP" />
+		<result column="elPi_Remark" property="remark" jdbcType="VARCHAR" />
+		<result column="elPi_Binding" property="isBd" jdbcType="INTEGER" />
+		<result column="elPi_IsAppoint" property="isApot" jdbcType="INTEGER" />
+		<result column="elPi_PayStyle" property="paySty" jdbcType="INTEGER" />
+		<result column="elPi_MaxElectricity" property="eltctyM"
+			jdbcType="DECIMAL" />
+		<result column="elPi_PowerUserName" property="powUname"
+			jdbcType="VARCHAR" />
+		<result column="elPi_ChargingModeName" property="cModeName"
+			jdbcType="VARCHAR" />
+		<result column="elPi_PowerInterfaceName" property="powInfName"
+			jdbcType="VARCHAR" />
+		<result column="elPi_RelevancePowerStation" property="powId"
+			jdbcType="INTEGER" />
+		<result column="elPi_Tell" property="tell" jdbcType="VARCHAR" />
+		<result column="elPi_RateInformationId" property="ratIfid"
+			jdbcType="INTEGER" />
+		<result column="comm_status" property="conStus" jdbcType="INTEGER" />
+		<result column="ep_num" property="num" jdbcType="INTEGER" />
+		<result column="elPi_UserName" property="uname" jdbcType="VARCHAR" />
+		<result column="elPi_OnlineTime" property="olTime" jdbcType="VARCHAR" />
+		<result column="elPi_OwnProvinceCode" property="proCd"
+			jdbcType="VARCHAR" />
+		<result column="elPi_OwnCityCode" property="cityCd" jdbcType="VARCHAR" />
+		<result column="elPi_OwnCountyCode" property="areaCd" jdbcType="VARCHAR" />
+		<result column="elPi_offlineTime" property="offlTime" jdbcType="VARCHAR" />
+		<result column="elPi_GateId" property="gateid" jdbcType="INTEGER" />
+		<result column="delete_flag" property="delFlag" jdbcType="SMALLINT" />
+		<result column="elPi_OwnerCompany" property="company" jdbcType="SMALLINT" />
+		<result column="sim_mac" property="simMac" jdbcType="VARCHAR" />
+		<result column="sim_phone_num" property="phoNum" jdbcType="VARCHAR" />
+		<result column="have_led_flash" property="ledFlash" jdbcType="SMALLINT" />
+		<result column="have_gps" property="gps" jdbcType="SMALLINT" />
+		<result column="pk_concentratorID" property="conId" jdbcType="INTEGER" />
+		<result column="concentrator_num" property="conNum" jdbcType="INTEGER" />
+		<result column="have_connect_line" property="conLine" jdbcType="SMALLINT" />
+		<result column="company_number" property="cmpNum" jdbcType="INTEGER" />
+		<result column="elpi_TypeSpanId" property="tsId" jdbcType="INTEGER" />
+		<result column="owner_ship" property="ownSp" jdbcType="VARCHAR" />
+		<result column="elPi_Parking_Fee" property="parkFee" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<delete id="delete" parameterType="TblElectricPile">
+		update tbl_electricpile set
+		delete_flag = 1,
+		elPi_Updatedate = sysdate()
+		where 1=1
+		<if test="id != null">
+			and pk_ElectricPile = #{id}
+		</if>
+		<if test="powId != null">
+			and elPi_RelevancePowerStation = #{powId,jdbcType=INTEGER}
+		</if>
+		<if test="pkIds != null">
+			and pk_ElectricPile in
+			<foreach item="item" index="index" collection="pkIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="fkIds != null">
+			and elPi_RelevancePowerStation in
+			<foreach item="item1" index="index" collection="fkIds" open="("
+				separator="," close=")">
+				#{item1}
+			</foreach>
+		</if>
+	</delete>
+
+	<update id="updateMore" parameterType="TblPowerStation">
+		update tbl_electricpile
+		<set>
+			<if test="ste != null">
+				elPi_State = #{ste,jdbcType=INTEGER},
+			</if>
+			<if test="cmpNum != null">
+				company_number = #{cmpNum,jdbcType=INTEGER},
+			</if>
+			<if test="isBd != null">
+				elPi_Binding = #{isBd,jdbcType=INTEGER},
+			</if>
+			elPi_Updatedate = sysdate()
+		</set>
+		where 1=1
+		<if test="powId != null">
+			and elPi_RelevancePowerStation = #{powId,jdbcType=INTEGER}
+		</if>
+		<if test="pkIds != null">
+			and pk_ElectricPile in
+			<foreach item="item" index="index" collection="pkIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="fkIds != null">
+			and elPi_RelevancePowerStation in
+			<foreach item="item1" index="index" collection="fkIds" open="("
+				separator="," close=")">
+				#{item1}
+			</foreach>
+		</if>
+	</update>
+
+	<insert id="insert" parameterType="TblElectricPile"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into tbl_electricpile
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				pk_ElectricPile,
+			</if>
+			<if test="name != null">
+				elPi_ElectricPileName,
+			</if>
+			<if test="code != null">
+				elPi_ElectricPileCode,
+			</if>
+			<if test="adr != null">
+				elPi_ElectricPileAddress,
+			</if>
+			<if test="lgt != null">
+				elPi_Longitude,
+			</if>
+			<if test="ltt != null">
+				elPi_Latitude,
+			</if>
+			<if test="pwNum != null">
+				elPi_PowerNumber,
+			</if>
+			<if test="ste != null">
+				elPi_State,
+			</if>
+			<if test="reason != null">
+				elPi_RejectionReason,
+			</if>
+			<if test="type != null">
+				elPi_Type,
+			</if>
+			<if test="powUser != null">
+				elPi_PowerUser,
+			</if>
+			<if test="cgMode != null">
+				elPi_ChargingMode,
+			</if>
+			<if test="powSz != null">
+				elPi_PowerSize,
+			</if>
+			<if test="powItf != null">
+				elPi_PowerInterface,
+			</if>
+			<if test="maker != null">
+				elPi_Maker,
+			</if>
+			<if test="opV != null">
+				elPi_OutputVoltage,
+			</if>
+			<if test="inV != null">
+				elPi_InputVoltage,
+			</if>
+			<if test="opC != null">
+				elPi_OutputCurrent,
+			</if>
+			<if test="inC != null">
+				elPi_InputCurrent,
+			</if>
+			<if test="utype != null">
+				elPi_UserType,
+			</if>
+			<if test="uId != null">
+				elPi_UserId,
+			</if>
+			<if test="cdate != null">
+				elPi_Createdate,
+			</if>
+			<if test="udate != null">
+				elPi_Updatedate,
+			</if>
+			<if test="remark != null">
+				elPi_Remark,
+			</if>
+			<if test="isBd != null">
+				elPi_Binding,
+			</if>
+			<if test="isApot != null">
+				elPi_IsAppoint,
+			</if>
+			<if test="paySty != null">
+				elPi_PayStyle,
+			</if>
+			<if test="eltctyM != null">
+				elPi_MaxElectricity,
+			</if>
+			<if test="powUname != null">
+				elPi_PowerUserName,
+			</if>
+			<if test="cModeName != null">
+				elPi_ChargingModeName,
+			</if>
+			<if test="powInfName != null">
+				elPi_PowerInterfaceName,
+			</if>
+			<if test="powId != null">
+				elPi_RelevancePowerStation,
+			</if>
+			<if test="tell != null">
+				elPi_Tell,
+			</if>
+			<if test="ratIfid != null">
+				elPi_RateInformationId,
+			</if>
+			<if test="conStus != null">
+				comm_status,
+			</if>
+			<if test="num != null">
+				ep_num,
+			</if>
+			<if test="uname != null">
+				elPi_UserName,
+			</if>
+			<if test="olTime != null">
+				elPi_OnlineTime,
+			</if>
+			<if test="proCd != null">
+				elPi_OwnProvinceCode,
+			</if>
+			<if test="cityCd != null">
+				elPi_OwnCityCode,
+			</if>
+			<if test="areaCd != null">
+				elPi_OwnCountyCode,
+			</if>
+			<if test="offlTime != null">
+				elPi_offlineTime,
+			</if>
+			<if test="gateid != null">
+				elPi_GateId,
+			</if>
+			<if test="delFlag != null">
+				delete_flag,
+			</if>
+			<if test="company != null">
+				elPi_OwnerCompany,
+			</if>
+			<if test="simMac != null">
+				sim_mac,
+			</if>
+			<if test="phoNum != null">
+				sim_phone_num,
+			</if>
+			<if test="ledFlash != null">
+				have_led_flash,
+			</if>
+			<if test="gps != null">
+				have_gps,
+			</if>
+			<if test="conId != null">
+				pk_concentratorID,
+			</if>
+			<if test="conNum != null">
+				concentrator_num,
+			</if>
+			<if test="conLine != null">
+				have_connect_line,
+			</if>
+			<if test="cmpNum != null">
+				company_number,
+			</if>
+			<if test="tsId != null">
+				elpi_TypeSpanId,
+			</if>
+			<if test="ownSp != null">
+				owner_ship,
+			</if>
+			<if test="cid != null">
+				elPi_Carid,
+			</if>
+			<if test="parkFee != null">
+				elPi_Parking_Fee,
+			</if>
+			elPi_Createdate
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="name != null">
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="code != null">
+				#{code,jdbcType=VARCHAR},
+			</if>
+			<if test="adr != null">
+				#{adr,jdbcType=VARCHAR},
+			</if>
+			<if test="lgt != null">
+				#{lgt,jdbcType=DECIMAL},
+			</if>
+			<if test="ltt != null">
+				#{ltt,jdbcType=DECIMAL},
+			</if>
+			<if test="pwNum != null">
+				#{pwNum,jdbcType=INTEGER},
+			</if>
+			<if test="ste != null">
+				#{ste,jdbcType=INTEGER},
+			</if>
+			<if test="reason != null">
+				#{reason,jdbcType=VARCHAR},
+			</if>
+			<if test="type != null">
+				#{type,jdbcType=INTEGER},
+			</if>
+			<if test="powUser != null">
+				#{powUser,jdbcType=INTEGER},
+			</if>
+			<if test="cgMode != null">
+				#{cgMode,jdbcType=INTEGER},
+			</if>
+			<if test="powSz != null">
+				#{powSz,jdbcType=INTEGER},
+			</if>
+			<if test="powItf != null">
+				#{powItf,jdbcType=INTEGER},
+			</if>
+			<if test="maker != null">
+				#{maker,jdbcType=INTEGER},
+			</if>
+			<if test="opV != null">
+				#{opV,jdbcType=DECIMAL},
+			</if>
+			<if test="inV != null">
+				#{inV,jdbcType=DECIMAL},
+			</if>
+			<if test="opC != null">
+				#{opC,jdbcType=DECIMAL},
+			</if>
+			<if test="inC != null">
+				#{inC,jdbcType=DECIMAL},
+			</if>
+			<if test="utype != null">
+				#{utype,jdbcType=INTEGER},
+			</if>
+			<if test="uId != null">
+				#{uId,jdbcType=VARCHAR},
+			</if>
+			<if test="cdate != null">
+				#{cdate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="udate != null">
+				#{udate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="remark != null">
+				#{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="isBd != null">
+				#{isBd,jdbcType=INTEGER},
+			</if>
+			<if test="isApot != null">
+				#{isApot,jdbcType=INTEGER},
+			</if>
+			<if test="paySty != null">
+				#{paySty,jdbcType=INTEGER},
+			</if>
+			<if test="eltctyM != null">
+				#{eltctyM,jdbcType=DECIMAL},
+			</if>
+			<if test="powUname != null">
+				#{powUname,jdbcType=VARCHAR},
+			</if>
+			<if test="cModeName != null">
+				#{cModeName,jdbcType=VARCHAR},
+			</if>
+			<if test="powInfName != null">
+				#{powInfName,jdbcType=VARCHAR},
+			</if>
+			<if test="powId != null">
+				#{powId,jdbcType=INTEGER},
+			</if>
+			<if test="tell != null">
+				#{tell,jdbcType=VARCHAR},
+			</if>
+			<if test="ratIfid != null">
+				#{ratIfid,jdbcType=INTEGER},
+			</if>
+			<if test="conStus != null">
+				#{conStus,jdbcType=INTEGER},
+			</if>
+			<if test="num != null">
+				#{num,jdbcType=INTEGER},
+			</if>
+			<if test="uname != null">
+				#{uname,jdbcType=VARCHAR},
+			</if>
+			<if test="olTime != null">
+				#{olTime,jdbcType=VARCHAR},
+			</if>
+			<if test="proCd != null">
+				#{proCd,jdbcType=VARCHAR},
+			</if>
+			<if test="cityCd != null">
+				#{cityCd,jdbcType=VARCHAR},
+			</if>
+			<if test="areaCd != null">
+				#{areaCd,jdbcType=VARCHAR},
+			</if>
+			<if test="offlTime != null">
+				#{offlTime,jdbcType=VARCHAR},
+			</if>
+			<if test="gateid != null">
+				#{gateid,jdbcType=INTEGER},
+			</if>
+			<if test="delFlag != null">
+				#{delFlag,jdbcType=SMALLINT},
+			</if>
+			<if test="company != null">
+				#{company,jdbcType=SMALLINT},
+			</if>
+			<if test="simMac != null">
+				#{simMac,jdbcType=VARCHAR},
+			</if>
+			<if test="phoNum != null">
+				#{phoNum,jdbcType=VARCHAR},
+			</if>
+			<if test="ledFlash != null">
+				#{ledFlash,jdbcType=SMALLINT},
+			</if>
+			<if test="gps != null">
+				#{gps,jdbcType=SMALLINT},
+			</if>
+			<if test="conId != null">
+				#{conId,jdbcType=INTEGER},
+			</if>
+			<if test="conNum != null">
+				#{conNum,jdbcType=INTEGER},
+			</if>
+			<if test="conLine != null">
+				#{conLine,jdbcType=SMALLINT},
+			</if>
+			<if test="cmpNum != null">
+				#{cmpNum,jdbcType=INTEGER},
+			</if>
+			<if test="tsId != null">
+				#{tsId,jdbcType=INTEGER},
+			</if>
+			<if test="ownSp != null">
+				#{ownSp,jdbcType=VARCHAR},
+			</if>
+			<if test="cid != null">
+				#{cid,jdbcType=LONGVARCHAR},
+			</if>
+			<if test="parkFee != null">
+				#{parkFee},
+			</if>
+			sysdate()
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="TblElectricPile">
+		update tbl_electricpile
+		<set>
+			<if test="name != null">
+				elPi_ElectricPileName = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="code != null">
+				elPi_ElectricPileCode = #{code,jdbcType=VARCHAR},
+			</if>
+			<if test="adr != null">
+				elPi_ElectricPileAddress = #{adr,jdbcType=VARCHAR},
+			</if>
+			<if test="lgt != null">
+				elPi_Longitude = #{lgt,jdbcType=DECIMAL},
+			</if>
+			<if test="ltt != null">
+				elPi_Latitude = #{ltt,jdbcType=DECIMAL},
+			</if>
+			<if test="pwNum != null">
+				elPi_PowerNumber = #{pwNum,jdbcType=INTEGER},
+			</if>
+			<if test="ste != null">
+				elPi_State = #{ste,jdbcType=INTEGER},
+			</if>
+			<if test="reason != null">
+				elPi_RejectionReason = #{reason,jdbcType=VARCHAR},
+			</if>
+			<if test="type != null">
+				elPi_Type = #{type,jdbcType=INTEGER},
+			</if>
+			<if test="powUser != null">
+				elPi_PowerUser = #{powUser,jdbcType=INTEGER},
+			</if>
+			<if test="cgMode != null">
+				elPi_ChargingMode = #{cgMode,jdbcType=INTEGER},
+			</if>
+			<if test="powSz != null">
+				elPi_PowerSize = #{powSz,jdbcType=INTEGER},
+			</if>
+			<if test="powItf != null">
+				elPi_PowerInterface = #{powItf,jdbcType=INTEGER},
+			</if>
+			<if test="maker != null">
+				elPi_Maker = #{maker,jdbcType=INTEGER},
+			</if>
+			<if test="opV != null">
+				elPi_OutputVoltage = #{opV,jdbcType=DECIMAL},
+			</if>
+			<if test="inV != null">
+				elPi_InputVoltage = #{inV,jdbcType=DECIMAL},
+			</if>
+			<if test="opC != null">
+				elPi_OutputCurrent = #{opC,jdbcType=DECIMAL},
+			</if>
+			<if test="inC != null">
+				elPi_InputCurrent = #{inC,jdbcType=DECIMAL},
+			</if>
+			<if test="utype != null">
+				elPi_UserType = #{utype,jdbcType=INTEGER},
+			</if>
+			<if test="uId != null">
+				elPi_UserId = #{uId,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				elPi_Remark = #{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="isBd != null">
+				elPi_Binding = #{isBd,jdbcType=INTEGER},
+			</if>
+			<if test="isApot != null">
+				elPi_IsAppoint = #{isApot,jdbcType=INTEGER},
+			</if>
+			<if test="paySty != null">
+				elPi_PayStyle = #{paySty,jdbcType=INTEGER},
+			</if>
+			<if test="eltctyM != null">
+				elPi_MaxElectricity = #{eltctyM,jdbcType=DECIMAL},
+			</if>
+			<if test="powUname != null">
+				elPi_PowerUserName = #{powUname,jdbcType=VARCHAR},
+			</if>
+			<if test="cModeName != null">
+				elPi_ChargingModeName = #{cModeName,jdbcType=VARCHAR},
+			</if>
+			<if test="powInfName != null">
+				elPi_PowerInterfaceName = #{powInfName,jdbcType=VARCHAR},
+			</if>
+			<if test="powId != null">
+				elPi_RelevancePowerStation = #{powId,jdbcType=INTEGER},
+			</if>
+			<if test="tell != null">
+				elPi_Tell = #{tell,jdbcType=VARCHAR},
+			</if>
+			<if test="ratIfid != null">
+				elPi_RateInformationId = #{ratIfid,jdbcType=INTEGER},
+			</if>
+			<if test="conStus != null">
+				comm_status = #{conStus,jdbcType=INTEGER},
+			</if>
+			<if test="num != null">
+				ep_num = #{num,jdbcType=INTEGER},
+			</if>
+			<if test="uname != null">
+				elPi_UserName = #{uname,jdbcType=VARCHAR},
+			</if>
+			<if test="olTime != null">
+				elPi_OnlineTime = #{olTime,jdbcType=VARCHAR},
+			</if>
+			<if test="proCd != null">
+				elPi_OwnProvinceCode = #{proCd,jdbcType=VARCHAR},
+			</if>
+			<if test="cityCd != null">
+				elPi_OwnCityCode = #{cityCd,jdbcType=VARCHAR},
+			</if>
+			<if test="areaCd != null">
+				elPi_OwnCountyCode = #{areaCd,jdbcType=VARCHAR},
+			</if>
+			<if test="offlTime != null">
+				elPi_offlineTime = #{offlTime,jdbcType=VARCHAR},
+			</if>
+			<if test="gateid != null">
+				elPi_GateId = #{gateid,jdbcType=INTEGER},
+			</if>
+			<if test="delFlag != null">
+				delete_flag = #{delFlag,jdbcType=SMALLINT},
+			</if>
+			<if test="company != null">
+				elPi_OwnerCompany = #{company,jdbcType=SMALLINT},
+			</if>
+			<if test="simMac != null">
+				sim_mac = #{simMac,jdbcType=VARCHAR},
+			</if>
+			<if test="phoNum != null">
+				sim_phone_num = #{phoNum,jdbcType=VARCHAR},
+			</if>
+			<if test="ledFlash != null">
+				have_led_flash = #{ledFlash,jdbcType=SMALLINT},
+			</if>
+			<if test="gps != null">
+				have_gps = #{gps,jdbcType=SMALLINT},
+			</if>
+			<if test="conId != null">
+				pk_concentratorID = #{conId,jdbcType=INTEGER},
+			</if>
+			<if test="conNum != null">
+				concentrator_num = #{conNum,jdbcType=INTEGER},
+			</if>
+			<if test="conLine != null">
+				have_connect_line = #{conLine,jdbcType=SMALLINT},
+			</if>
+			<if test="cmpNum != null">
+				company_number = #{cmpNum,jdbcType=INTEGER},
+			</if>
+			<if test="tsId != null">
+				elpi_TypeSpanId = #{tsId,jdbcType=INTEGER},
+			</if>
+			<if test="ownSp != null">
+				owner_ship = #{ownSp,jdbcType=VARCHAR},
+			</if>
+			<if test="cid != null">
+				elPi_Carid = #{cid,jdbcType=LONGVARCHAR},
+			</if>
+			<if test="parkFee != null">
+				elPi_Parking_Fee = #{parkFee},
+			</if>
+			elPi_Updatedate = sysdate()
+		</set>
+		where 1=1
+		<if test="id != null and id != ''">
+			and pk_ElectricPile = #{id}
+		</if>
+		<if test="pkIds != null">
+			and pk_ElectricPile in
+			<foreach item="item" index="index" collection="pkIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+
+	</update>
+
+	<select id="selectOne" resultMap="BaseResultMap" parameterType="TblElectricPile">
+		select ${rtColumns}
+		from tbl_electricpile
+		<where>
+			1=1
+			<if test="id != null">
+				and pk_ElectricPile = #{id}
+			</if>
+			<if test="code != null">
+				and elPi_ElectricPileCode = #{code}
+			</if>
+		</where>
+	</select>
+
+	<select id="getCount" resultType="int" parameterType="TblElectricPile">
+		select count(1) from tbl_electricpile t
+		<where>
+			delete_flag ='0'
+			<if test="search != null and search != ''">
+				and (elPi_ElectricPileName like concat('%',#{search},'%')
+				or elPi_ElectricPileCode like concat('%',#{search},'%'))
+			</if>
+			<if test="powItf != null and powItf != ''">
+				and elPi_PowerInterface = #{powItf}
+			</if>
+			<if test="cgMode != null and cgMode != ''">
+				and elPi_ChargingMode = #{cgMode}
+			</if>
+			<if test="conStus != null and conStus != ''">
+				and comm_status = #{conStus}
+			</if>
+			<if test="ste != null">
+				and elPi_State = #{ste}
+			</if>
+			<if test="uId != null">
+				and elPi_UserId = #{uId}
+			</if>
+			<if test="proCd != null and proCd != ''">
+				and elPi_OwnProvinceCode=#{proCd}
+			</if>
+			<if test="cityCd != null and cityCd != ''">
+				and elPi_OwnCityCode=#{cityCd}
+			</if>
+			<if test="areaCd != null and areaCd != ''">
+				and elPi_OwnCountyCode=#{areaCd}
+			</if>
+			<if test="udate != null and udate != ''">
+				and elPi_Updatedate &gt; #{udate}
+			</if>
+			<if test="isBd != null and isBd != ''">
+				and elPi_Binding = #{isBd}
+			</if>
+			<if test="powId != null and powId != ''">
+				and elPi_RelevancePowerStation = #{powId}
+			</if>
+			<if test="name != null and name != ''">
+				and elPi_ElectricPileName like concat('%',#{name},'%')
+			</if>
+			<if test="code != null and code != ''">
+				and elPi_ElectricPileCode like concat('%',#{code},'%')
+			</if>
+			<if test="powSz != null and powSz != ''">
+				and elPi_PowerSize = #{powSz}
+			</if>
+			<if test="type != null and type != ''">
+				and elPi_Type = #{type}
+			</if>
+			<if test="uname != null and uname != ''">
+				and elPi_UserName like concat('%',#{uname},'%')
+			</if>
+			<if test="maker != null">
+				and elPi_Maker = #{maker}
+			</if>
+			<if test="ratIfid != null">
+				and elPi_RateInformationId = #{ratIfid}
+			</if>
+			<if test="conId != null">
+				and pk_concentratorID = #{conId}
+			</if>
+			<if test="pkIds != null">
+				and pk_ElectricPile in
+				<foreach item="item" index="index" collection="pkIds" open="("
+					separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			<if test="ctIds != null">
+				and pk_concentratorID in
+				<foreach item="item0" index="index" collection="ctIds" open="("
+					separator="," close=")">
+					#{item0}
+				</foreach>
+			</if>
+			<if test="userIds != null">
+				and elPi_UserId in
+				<foreach item="item1" index="index" collection="userIds"
+					open="(" separator="," close=")">
+					#{item1}
+				</foreach>
+			</if>
+			<if test="fkIds != null">
+				and elPi_RelevancePowerStation in
+				<foreach item="item1" index="index" collection="fkIds" open="("
+					separator="," close=")">
+					#{item1}
+				</foreach>
+			</if>
+			<if test="codes != null">
+				and elPi_ElectricPileCode in
+				<foreach item="item2" index="index" collection="codes" open="("
+					separator="," close=")">
+					#{item2}
+				</foreach>
+			</if>
+		</where>
+	</select>
+
+	<select id="getList" resultMap="BaseResultMap" parameterType="TblElectricPile">
+		select ${rtColumns} from tbl_electricpile t
+		<where>
+			delete_flag = '0'
+			<if test="search != null and search != ''">
+				and (elPi_ElectricPileName like concat('%',#{search},'%')
+				or elPi_ElectricPileCode like concat('%',#{search},'%'))
+			</if>
+			<if test="powItf != null and powItf != ''">
+				and elPi_PowerInterface = #{powItf}
+			</if>
+			<if test="cgMode != null and cgMode != ''">
+				and elPi_ChargingMode = #{cgMode}
+			</if>
+			<if test="conStus != null and conStus != ''">
+				and comm_status = #{conStus}
+			</if>
+			<if test="ste != null">
+				and elPi_State = #{ste}
+			</if>
+			<if test="uId != null">
+				and elPi_UserId = #{uId}
+			</if>
+			<if test="proCd != null and proCd != ''">
+				and elPi_OwnProvinceCode=#{proCd}
+			</if>
+			<if test="cityCd != null and cityCd != ''">
+				and elPi_OwnCityCode=#{cityCd}
+			</if>
+			<if test="areaCd != null and areaCd != ''">
+				and elPi_OwnCountyCode=#{areaCd}
+			</if>
+			<if test="udate != null and udate != ''">
+				and elPi_Updatedate &gt; #{udate}
+			</if>
+			<if test="isBd != null and isBd != ''">
+				and elPi_Binding = #{isBd}
+			</if>
+			<if test="powId != null and powId != ''">
+				and elPi_RelevancePowerStation = #{powId}
+			</if>
+			<if test="name != null and name != ''">
+				and elPi_ElectricPileName like concat('%',#{name},'%')
+			</if>
+			<if test="code != null and code != ''">
+				and elPi_ElectricPileCode like concat('%',#{code},'%')
+			</if>
+			<if test="powSz != null and powSz != ''">
+				and elPi_PowerSize = #{powSz}
+			</if>
+			<if test="type != null and type != ''">
+				and elPi_Type = #{type}
+			</if>
+			<if test="uname != null and uname != ''">
+				and elPi_UserName like concat('%',#{uname},'%')
+			</if>
+			<if test="maker != null">
+				and elPi_Maker = #{maker}
+			</if>
+			<if test="ratIfid != null">
+				and elPi_RateInformationId = #{ratIfid}
+			</if>
+			<if test="conId != null">
+				and pk_concentratorID = #{conId}
+			</if>
+			<if test="pkIds != null">
+				and pk_ElectricPile in
+				<foreach item="item" index="index" collection="pkIds" open="("
+					separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			<if test="ctIds != null">
+				and pk_concentratorID in
+				<foreach item="item0" index="index" collection="ctIds" open="("
+					separator="," close=")">
+					#{item0}
+				</foreach>
+			</if>
+			<if test="userIds != null">
+				and elPi_UserId in
+				<foreach item="item1" index="index" collection="userIds"
+					open="(" separator="," close=")">
+					#{item1}
+				</foreach>
+			</if>
+			<if test="fkIds != null">
+				and elPi_RelevancePowerStation in
+				<foreach item="item1" index="index" collection="fkIds" open="("
+					separator="," close=")">
+					#{item1}
+				</foreach>
+			</if>
+			<if test="codes != null">
+				and elPi_ElectricPileCode in
+				<foreach item="item2" index="index" collection="codes" open="("
+					separator="," close=")">
+					#{item2}
+				</foreach>
+			</if>
+			order by elPi_Updatedate desc
+			<if test="pager !=null">limit #{pager.offset},#{pager.numPerPage}</if>
+		</where>
+	</select>
+
+</mapper>

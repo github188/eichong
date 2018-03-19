@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.dao.TblUserCardMapper">
+	<resultMap type="TblUserCard" id="tblUserCard">
+		<result property="pkUserCard" column="pk_UserCard" />
+		<result property="ucInternalCardNumber" column="uc_InternalCardNumber" />
+		<result property="ucExternalCardNumber" column="uc_ExternalCardNumber" />
+		<result property="ucBalance" column="uc_Balance" />
+		<result property="ucCompanyNumber" column="uc_CompanyNumber" />
+		<result property="ucUserId" column="uc_UserId" />
+		<result property="ucStatus" column="uc_Status" />
+		<result property="ucPayMode" column="uc_pay_mode" />
+		<result property="ucUpdateDate" column="uc_Updatedate" />
+	</resultMap>
+
+	<update id="bindCard" parameterType="TblUserCard">
+		update tbl_usercard set uc_UserId=#{ucUserId} where pk_UserCard=#{pkUserCard}
+	</update>
+	
+	<update id="bindCardUser" parameterType="TblCardapplicationform">
+		update tbl_user_normal set apply_card=2 where user_id=#{ucUserId}
+	</update>
+	
+	<update id="updateUserard" parameterType="TblUserCard">
+		update tbl_usercard set
+		<if test="ucStatus != null"> uc_Status=#{ucStatus},</if>
+		<if test="ucInternalCardNumber != null"> uc_InternalCardNumber=#{ucInternalCardNumber},</if>
+		<if test="ucExternalCardNumber != null"> uc_ExternalCardNumber=#{ucExternalCardNumber},</if>
+		<if test="ucBalance != null"> uc_Balance=#{ucBalance},</if>
+		<if test="ucCompanyNumber != null"> uc_CompanyNumber=#{ucCompanyNumber},</if>
+		<if test="ucUserId != null"> uc_UserId=#{ucUserId},</if>
+		uc_Updatedate=sysdate()
+		where pk_UserCard=#{pkUserCard}
+	</update>
+	
+	<select id="getUserCard" parameterType="TblUserCard" resultMap="tblUserCard">
+		SELECT * FROM tbl_usercard  where pk_UserCard=#{pkUserCard}
+	</select>
+
+	<select id="getCardList" parameterType="TblUserCard" resultMap="tblUserCard">
+		SELECT 
+		u.norm_real_name normRealName,
+		u.user_account userAccount,
+		c.cpy_CompanyName cpyCompanyname,
+		t.* FROM tbl_usercard t 
+		left join tbl_user_normal_view u on t.uc_UserId=u.user_id
+		left join tbl_company c on t.uc_CompanyNumber=c.cpy_CompanyNumber and c.cpy_CompanyNumber > 0
+		where 1=1
+		<if test="normRealName !=null and normRealName !=''">and u.norm_real_name like concat('%',#{normRealName},'%')</if>
+		<if test="userAccount !=null and userAccount !=''">and u.user_account like concat('%',#{userAccount},'%')</if>
+		<if test="ucExternalCardNumber !=null and ucExternalCardNumber !=''">and t.uc_ExternalCardNumber like concat('%',#{ucExternalCardNumber},'%')</if>
+		<if test="cpyCompanyname !=null and cpyCompanyname !=''">and c.cpy_CompanyName like concat('%',#{cpyCompanyname},'%')</if>
+		<if test="ucStatus !=null">and t.uc_Status=#{ucStatus}</if>
+		<if test="ucPayMode !=null and ucPayMode !=''">and t.uc_pay_mode = #{ucPayMode}</if>
+		<if test="bindFlag==1">and t.uc_UserId!=0</if>
+		<if test="bindFlag==2">and t.uc_UserId=0</if>
+		order by uc_UserId asc,uc_Updatedate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<select id="getCardListCount" parameterType="TblUserCard"
+		resultType="long">
+		SELECT count(1) FROM tbl_usercard t
+		left join tbl_user_normal_view u on t.uc_UserId=u.user_id
+		left join tbl_company c on t.uc_CompanyNumber=c.cpy_CompanyNumber and c.cpy_CompanyNumber > 0
+		where 1=1
+		<if test="normRealName !=null and normRealName !=''">and u.norm_real_name like concat('%',#{normRealName},'%')</if>
+		<if test="userAccount !=null and userAccount !=''">and u.user_account like concat('%',#{userAccount},'%')</if>
+		<if test="ucExternalCardNumber !=null and ucExternalCardNumber !=''">and t.uc_ExternalCardNumber like concat('%',#{ucExternalCardNumber},'%')</if>
+		<if test="cpyCompanyname !=null and cpyCompanyname !=''">and c.cpy_CompanyName like concat('%',#{cpyCompanyname},'%')</if>
+		<if test="ucPayMode !=null and ucPayMode !=''">and t.uc_pay_mode = #{ucPayMode}</if>
+		<if test="ucStatus !=null">and t.uc_Status=#{ucStatus}</if>
+		<if test="bindFlag==1">and t.uc_UserId!=0</if>
+		<if test="bindFlag==2">and t.uc_UserId=0</if>
+	</select>
+</mapper>

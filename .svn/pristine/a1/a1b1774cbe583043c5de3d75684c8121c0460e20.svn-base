@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.app.dao.AppChargingrecordMapper">
+
+	<resultMap id="tblChargingrecordResultMap" type="TblChargingrecord">
+		<id property="pkChargingrecord" column="pk_ChargingRecord" />
+		<result property="chreElectricpileid" column="chRe_ElectricPileID" />
+		<result property="chreUsingmachinecode" column="chRe_UsingMachineCode" />
+		<result property="chreTransactionnumber" column="chRe_TransactionNumber" />
+		<result property="chreReservationnumber" column="chRe_ReservationNumber" />
+		<result property="chreStartdate" column="chRe_StartDate" />
+		<result property="chreChargingnumber" column="chRe_ChargingNumber" />
+		<result property="chreChargingmethod" column="chRe_ChargingMethod" />
+		<result property="chreResttime" column="chRe_RestTime" />
+		<result property="chreEnddate" column="chRe_EndDate" />
+		<result property="chreCode" column="chRe_Code" />
+		<result property="chreBeginshowsnumber" column="chRe_BeginShowsNumber" />
+		<result property="chreEndshowsnumber" column="chRe_EndShowsNumber" />
+		<result property="userPhone" column="user_phone"/>
+	</resultMap>
+	<resultMap id="findResultMap"  type="java.util.HashMap" extends="tblChargingrecordResultMap"></resultMap>
+	<!-- 新增开始充电记录 -->
+	<insert id="insertBeginRecord" parameterType="TblChargingrecord">
+	   insert into tbl_ChargingRecord (
+	     chRe_ElectricPileID,
+	     chRe_UsingMachineCode,
+	     chRe_TransactionNumber,
+	     chRe_ReservationNumber,
+	     chRe_StartDate,
+	     chRe_ChargingNumber,
+	     chRe_ChargingMethod,
+	     chRe_RestTime,
+	     chRe_Code,
+	     chRe_BeginShowsNumber,
+	     chRe_EndShowsNumber,
+	     user_phone
+	   )values (
+	     #{chreElectricpileid},
+	     #{chreUsingmachinecode},
+	     #{chreTransactionnumber},
+	     #{chreReservationnumber},
+	     #{chreStartdate},
+	     #{chreChargingnumber},
+	     #{chreChargingmethod},
+	     #{chreResttime},
+	     #{chreCode},
+	     #{chreBeginshowsnumber},
+	     #{chreEndshowsnumber},
+	     #{userPhone}
+	   )
+	</insert>
+	<!-- 新增结束充电记录 根据流水号更新数据 -->
+	<update id="insertEndRecord" parameterType="TblChargingrecord">
+		update tbl_ChargingRecord set
+		chRe_EndDate=#{chreEnddate},
+		chRe_EndShowsNumber=#{chreEndshowsnumber}
+		where
+		chRe_TransactionNumber=#{chreTransactionnumber} 
+	</update>
+	<!-- 更新充电订单编号 -->
+	<update id="updatechReCode" parameterType="map">
+		update
+		tbl_ChargingRecord set
+		chRe_Code = #{chreCode}
+		where
+		chRe_TransactionNumber=#{chreTransactionnumber}
+	</update>
+	<!-- 根据充电订单主键获取充电记录 -->
+	<select id="selectByChreCode" parameterType="map"
+		resultMap="tblChargingrecordResultMap">
+		select
+		cr.pk_ChargingRecord,
+		cr.chRe_ElectricPileID,
+		cr.chRe_UsingMachineCode,
+		cr.chRe_TransactionNumber,
+		cr.chRe_ReservationNumber,
+		cr.chRe_StartDate,
+		cr.chRe_ChargingNumber,
+		cr.chRe_ChargingMethod,
+		cr.chRe_RestTime,
+		cr.chRe_EndDate,
+		cr.chRe_Code,
+		cr.chRe_BeginShowsNumber,
+		cr.chRe_EndShowsNumber
+		from tbl_ChargingRecord cr left join tbl_ChargingOrder co
+		on cr.chRe_Code = co.chOr_Code
+		where
+		co.pk_ChargingOrder=#{pkChargingOrder} 
+	</select>
+
+	<delete id="delete" parameterType="map">
+		delete from
+		tbl_ChargingRecord
+		where
+		pk_ChargingRecord=#{pkChargingrecord} 
+	</delete>
+	<!-- 根据流水号获取充电信息 -->
+	<select id="getByTranNumber" parameterType="map"
+		resultMap="tblChargingrecordResultMap">
+		select
+		pk_ChargingRecord,
+		chRe_ElectricPileID,
+		chRe_UsingMachineCode,
+		chRe_TransactionNumber,
+		chRe_ReservationNumber,
+		chRe_StartDate,
+		chRe_ChargingNumber,
+		chRe_ChargingMethod,
+		chRe_RestTime,
+		chRe_EndDate,
+		chRe_Code,
+		chRe_BeginShowsNumber,
+		chRe_EndShowsNumber,
+		user_phone
+		from tbl_ChargingRecord
+		where
+		chRe_TransactionNumber=#{chreTransactionnumber} 
+	</select>
+
+	<select id="findOne" parameterType="map" resultMap="findResultMap">
+		select
+		pk_ChargingRecord,
+		chRe_ElectricPileID,
+		chRe_UsingMachineCode,
+		chRe_TransactionNumber,
+		chRe_ReservationNumber,
+		chRe_StartDate,
+		chRe_ChargingNumber,
+		chRe_ChargingMethod,
+		chRe_RestTime,
+		chRe_EndDate,
+		chRe_Code,
+		chRe_BeginShowsNumber,
+		chRe_EndShowsNumber
+		from tbl_ChargingRecord
+		where
+		pk_ChargingRecord=#{pkChargingrecord} 
+	</select>
+
+	<select id="find" parameterType="map" resultMap="findResultMap">
+		select
+		pk_ChargingRecord,
+		chRe_ElectricPileID,
+		chRe_UsingMachineCode,
+		chRe_TransactionNumber,
+		chRe_ReservationNumber,
+		chRe_StartDate,
+		chRe_ChargingNumber,
+		chRe_ChargingMethod,
+		chRe_RestTime,
+		chRe_EndDate,
+		chRe_Code,
+		chRe_BeginShowsNumber,
+		chRe_EndShowsNumber
+		from tbl_ChargingRecord
+		<where>
+			<if test="pkChargingrecord != null">
+				pk_ChargingRecord=#{pkChargingrecord}
+	     </if>
+			<if test="chreElectricpileid != null">
+				and chRe_ElectricPileID=#{chreElectricpileid}
+	     </if>
+			<if test="chreUsingmachinecode != null">
+				and chRe_UsingMachineCode=#{chreUsingmachinecode}
+	     </if>
+			<if test="chreTransactionnumber != null">
+				and chRe_TransactionNumber=#{chreTransactionnumber}
+	     </if>
+			<if test="chreReservationnumber != null">
+				and chRe_ReservationNumber=#{chreReservationnumber}
+	     </if>
+			<if test="chreStartdate != null">
+				and chRe_StartDate=#{chreStartdate}
+	     </if>
+			<if test="chreChargingnumber != null">
+				and chRe_ChargingNumber=#{chreChargingnumber}
+	     </if>
+			<if test="chreChargingmethod != null">
+				and chRe_ChargingMethod=#{chreChargingmethod}
+	     </if>
+			<if test="chreResttime != null">
+				and chRe_RestTime=#{chreResttime}
+	     </if>
+			<if test="chreEnddate != null">
+				and chRe_EndDate=#{chreEnddate}
+	     </if>
+			<if test="chreCode != null">
+				and chRe_Code=#{chreCode}
+	     </if>
+			<if test="chreBeginshowsnumber != null">
+				and chRe_BeginShowsNumber=#{chreBeginshowsnumber}
+	     </if>
+			<if test="chreEndshowsnumber != null">
+				and chRe_EndShowsNumber=#{chreEndshowsnumber}
+	     </if>
+		</where>
+	</select>
+	
+	<!-- 根据实时电桩记录中的用户id来判断是否在充电 -->
+	<select id="ischarging" parameterType="int" resultType="int">
+		select sum(a)+sum(b) num from(
+		(select count(*) a from tbl_chargeinfo_ac where user_id = #{userId}) t1 ,
+		(select count(*) b from tbl_chargeinfo_dc where user_id = #{userId}) t2
+		)
+	</select>
+
+	<select id="findDetail" parameterType="int" resultType="map">
+		select
+		(select b.cp_CouponValue from tbl_coupon b where b.pk_Coupon=o.pk_Coupon) cpVal,
+		t.chRe_QuantumDate qtDate,
+		t.chRe_JPrice jp,
+		t.chRe_FPrice fp,
+		t.chRe_PPrice pp,
+		t.chRe_GPrice gp,
+		t.chRe_ServiceCharge svd,
+		o.chOr_QuantityElectricity allQlty,
+		o.chOr_ChargeMoney cgMn,
+		o.chOr_ServiceMoney svMn,
+		o.begin_charge_time st,
+		o.end_charge_time et,
+		o.chOr_ChargingStatus sts,
+		o.chOr_Code code,
+		o.chOr_tipPower jqt,
+		o.chOr_peakPower fqt,
+		o.chOr_usualPower pqt,
+		o.chOr_valleyPower gqt,
+		case e.elPi_Binding
+		 WHEN 1 THEN (select ps.powerStation_name from tbl_powerstation ps where ps.powerStation_id = e.elPi_RelevancePowerStation)
+		 WHEN 0 THEN e.elPi_ElectricPileName
+		end  as ptName,
+		e.elPi_ElectricPileAddress addr
+		from tbl_ChargingRecord t,
+		tbl_chargingorder o,
+		tbl_electricpile e
+		where
+		o.pk_ChargingOrder=#{value}
+		and t.chRe_Code = o.chOr_Code 
+		AND t.chRe_UsingMachineCode = e.elPi_ElectricPileCode
+	</select>
+	
+</mapper> 

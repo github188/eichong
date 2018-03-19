@@ -1,0 +1,33 @@
+package com.wanma.ims.service;
+
+import com.wanma.ims.common.domain.CompanyChargeRelaDO;
+import com.wanma.ims.common.domain.ElectricPileDO;
+import com.wanma.ims.common.domain.PowerStationDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.dto.BaseResultDTO;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by xyc on 2017/7/25.
+ * 充电范围逻辑处理接口
+ */
+public interface CompanyChargeRelaService {
+
+    /**
+     * 公司主页充电范围
+     */
+    List<Integer> companyIndexChargeRela(CompanyChargeRelaDO searchModel);
+
+    /**
+     * 获取充电点和电桩
+     */
+    Map<PowerStationDO, List<ElectricPileDO>> getStationAndPile(Long cpyId, String provinceCode, String cityCode, String areaCode, UserDO loginUser);
+
+    /**
+     * 设置充电范围
+     */
+    BaseResultDTO setCompanyChargeRela(Long cpyId, List<CompanyChargeRelaDO> relaList, UserDO loginUser) throws Exception;
+
+}

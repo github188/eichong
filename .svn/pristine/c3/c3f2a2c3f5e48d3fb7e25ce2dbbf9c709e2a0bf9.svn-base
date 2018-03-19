@@ -1,0 +1,369 @@
+package com.wanma.ims.service.impl;
+
+import java.util.HashMap;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.wanma.ims.common.CommonConsts;
+import com.wanma.ims.common.SessionMgr;
+import com.wanma.ims.common.WanmaConstants;
+import com.wanma.ims.mapper.MenuMapper;
+import com.wanma.ims.mapper.RoleMapper;
+import com.wanma.ims.model.MenuDO;
+import com.wanma.ims.model.NodeDO;
+import com.wanma.ims.model.RoleDO;
+import com.wanma.ims.model.UserDO;
+import com.wanma.ims.service.MenuService;
+import com.wanma.ims.util.HttpRequestUtil;
+
+/**
+ * FileName MenuServiceImpl.java
+ * 
+ * Version 1.0
+ * 
+ * Create by yangwr 2014/6/9
+ * 
+ * 菜单业务处理类
+ */
+@Service
+public class MenuServiceImpl implements MenuService {
+
+	@Autowired
+	private MenuMapper menuMapper;
+
+	@Autowired
+	RoleMapper roleMapper;
+
+	private String contextPath;
+
+	
+	@Override
+	public List<MenuDO> getMenuListByRoleIds(String roleId,int userLevel){
+		if(WanmaConstants.USER_LEVEL_SUPER == userLevel){
+			return menuMapper.getMenuListByAdmin();
+		}
+		return menuMapper.getMenuListByRoleIds(roleId);
+	}
+	
+	@Override
+	public Long countMenuList(MenuDO menuDO) {
+		return menuMapper.countMenuList(menuDO);
+	}
+
+	@Override
+	public List<MenuDO> getMenuListPage(MenuDO menuDO) {
+		return menuMapper.selectMenuListPage(menuDO);
+	}
+	
+	@Override
+	public boolean addMenu(MenuDO menuDO) {
+		return menuMapper.insertMenu(menuDO) > 0 ?true:false;
+	}
+	
+	@Override
+	public MenuDO getMenuById(String menuId) {
+		return menuMapper.selectMenuById(menuId);
+	}
+	
+	@Override
+	public List<MenuDO> getMenuByParentId(String parentMenuId) {
+		return menuMapper.selectMenuByParentId(parentMenuId);
+	}
+	
+	@Override
+	public boolean modifyMenu(MenuDO menuDO) {
+		return menuMapper.updateMenu(menuDO) > 0 ? true:false;
+	}
+	
+	@Override
+	public void removeMenu(List<String> menuIds) {
+		menuMapper.deleteMenu(menuIds);
+	}
+	
+	@Override
+	public List<MenuDO> getMenuListByRoleIdAndMenuIds(String roleId,String menuIds) {
+		HashMap<String,String> params = new HashMap<String,String>();
+		params.put("roleId", roleId);
+		params.put("menuIds", menuIds);
+		return menuMapper.selectMenuListByRoleIdAndMenuIds(params);
+	}
+	/************************************************************/
+	/**
+	 * 取得菜单信息
+	 * 
+	 * @author yangweir
+	 * @since Version 1.0
+	 * @param menuId
+	 *            菜单ID
+	 * @return MenuModel 菜单信息
+	 * @throws 无
+	 */
+	public MenuDO findMenu(String menuId,UserDO loginUser) {
+
+//		// 菜单信息
+		MenuDO menuModel;
+//
+//		// 取得菜单信息
+////		menuModel = menuMapper.findMenu(menuId);
+//
+//		// 设置菜单权限相关信息
+////		setMenuAuthInfo(menuModel,loginUser);
+//
+//		// 返回菜单信息
+		return null;
+	}
+
+	
+
+	/**
+	 * 取得菜单一览
+	 * 
+	 * @author yangweir
+	 * @since Version 1.0
+	 * @return List<MenuModel> 菜单一览
+	 * @throws 无
+	 */
+	public List<MenuDO> getMenuList() {
+		// 菜单一览
+		List<MenuDO> listMenu;
+
+		// 取得菜单一览
+		listMenu = menuMapper.getMenuList();
+
+		// 返回菜单一览
+		return listMenu;
+	}
+
+	/**
+	 * 查询菜单一览
+	 * 
+	 * @author yangweir
+	 * @since Version 1.0
+	 * @return List<MenuModel> 菜单一览
+	 * @throws 无
+	 */
+	public List<MenuDO> searchMenuList(MenuDO menu) {
+		// 菜单一览
+		List<MenuDO> listMenu;
+
+		// 取得菜单一览
+		listMenu = menuMapper.searchMenuList(menu);
+
+		// 返回菜单一览
+		return listMenu;
+
+	}
+
+	/**
+	 * 菜单唯一性检查
+	 * 
+	 * @author yangweir
+	 * @since Version 1.0
+	 * @param menuModel
+	 *            菜单信息
+	 * @return String 菜单唯一性检查结果 "true":通过 "false":不通过
+	 * @throws 无
+	 */
+	public String checkMenuUnique(String menuId) {
+
+		// 处理结果
+		String processResult = CommonConsts.CHECK_RESULT_OK;
+		// 菜单数
+		int menuCount = 0;
+
+		// 根据菜单登录ID取得菜单数
+		menuCount = menuMapper.getMenuCountById(menuId);
+
+		// 如果取得的菜单数大于0个，返回错误标识
+		if (menuCount > 0) {
+			return CommonConsts.CHECK_RESULT_NG;
+		}
+
+		// 返回处理结果标识
+		return processResult;
+	}
+
+	/**
+	 * 设置菜单权限相关信息
+	 * 
+	 * @author yangweir
+	 * @since Version 1.0
+	 * @param menuModel
+	 *            菜单信息
+	 * @return 无
+	 * @throws 无
+	 */
+	private void setMenuAuthInfo(MenuDO menuModel,UserDO loginUser) {
+		// 菜单ID
+		String menuId = "";
+		// 菜单角色权限列表
+		List<RoleDO> roleList = null;
+
+		if (menuModel == null) {
+			return;
+		}
+
+		// 取得菜单ID
+		menuId = menuModel.getMenuId();
+
+		// 取得拥有菜单权限相关列表
+		RoleDO roleModel=new RoleDO();
+		roleModel.setMenuId(menuId);
+		if (loginUser!=null){
+			if(loginUser.getUserLevel()==WanmaConstants.USER_LEVEL_BUSINESS) {// 纯商家
+				roleModel.setCreateUser(loginUser.getUserId().toString());
+			}else if(loginUser.getUserLevel()<=WanmaConstants.USER_LEVEL_ADMIN){
+				roleModel.setUserLevel(loginUser.getUserLevel()+"");
+			}
+		}	
+		roleList = roleMapper.getMenuRoleList1(roleModel);
+		menuModel.setRoleList(roleList);
+	}
+
+	
+
+
+//	@Override
+//	public String getMenuListByRoleIdAndMenuIds(String roleId,String menuIds) {
+//		List<MenuDO> menuList=menuMapper.getCheckedMenuListByRoleIdAndMenuIds(roleId,menuIds);
+//		StringBuilder sb=new StringBuilder();
+//		String iconSkin="";
+//		String pId="";
+//		for(MenuDO menu:menuList){
+//			iconSkin=menu.getMenuType().equals("2")?"icon02":"icon01";
+//			if(StringUtils.isBlank(menu.getUrl())){
+//				iconSkin="";
+//			}
+//			pId=(StringUtils.isBlank(menu.getParentMenuId())?"0":menu.getParentMenuId());
+//			sb.append("{id:'"+menu.getMenuId()+"', pId:'"+pId+"',iconSkin:'"+iconSkin
+//					+"', name:'"+menu.getContents()+"', checked:"+(menu.getIsSelected()==1?"true":"false")+"},");
+//		}
+//		return "["+sb.substring(0,sb.length()-1)+"]";
+//	}
+
+	@Override
+	public List<MenuDO> getMenuListByRoleList(List<RoleDO> roleList) {
+		String roleIds="";
+		for(RoleDO role:roleList){
+			roleIds+=role.getRoleId()+",";
+		}
+		List<MenuDO> menuList=menuMapper.getMenuListByRoleIds(StringUtils.removeEnd(roleIds, ","));
+		return menuList;
+	}
+
+	@Override
+	public String getMenuTree(List<MenuDO> menuList,boolean isLookUp) {
+		String openType=isLookUp?"collapse":"collapse";
+		StringBuilder strHtml=new StringBuilder("<ul class='tree treeFolder "+openType+"'>");
+		if(isLookUp){
+			strHtml.append("<li><a href='javascript:;' onclick=\"$.bringBack({id:'', name:'根菜单'})\">根菜单</a><ul>");
+		}
+		for(MenuDO menu:menuList){
+			//递归无父节点的根节点
+			if(StringUtils.isBlank(menu.getParentMenuId())){
+				strHtml.append("<li>"+getMenuLinkStr(menu,isLookUp));
+				writeMenuTree(menu,menuList, strHtml,isLookUp);
+				strHtml.append("</li>");
+			}
+		}
+		if(isLookUp){
+			strHtml.append("</ul></li>");
+		}
+		strHtml.append("</ul>");
+		return strHtml.toString();
+	}
+
+	private void writeMenuTree(MenuDO menu, List<MenuDO> menuList,
+			StringBuilder strHtml,boolean isLookUp) {
+		strHtml.append("<ul>");
+		for(MenuDO child:menuList){
+			if(child.getMenuType().equals("1")){//菜单权限构成树
+				if(child.getParentMenuId().equals(menu.getMenuId())){
+					strHtml.append("<li>"+getMenuLinkStr(child,isLookUp));
+					//对无URL的菜单权限，进行递归
+					if(child.getHasChild()>0){
+						writeMenuTree(child,menuList,strHtml,isLookUp);
+					}
+					strHtml.append("</li>");	
+					
+				}
+			}
+			
+		}
+		strHtml.append("</ul>");
+	}
+	
+	
+	private String getMenuLinkStr(MenuDO menu,boolean isLookUp){
+		String tempStr="";
+		if(isLookUp){
+			tempStr="href='javascript:;' onclick=\"$.bringBack({id:'"+menu.getMenuId()+"',"
+					+ " name:'"+menu.getContents()+"'})\"";
+		}else{
+			if(StringUtils.isNotBlank(menu.getUrl())){
+			tempStr=" href='"+getContextPath()+menu.getUrl()+"' target='navTab' rel='"+menu.getRel()+"'";
+			}
+		}
+		return "<a "+tempStr+">"+menu.getContents()+"</a>";
+	}
+
+	
+	public String getContextPath() {
+		if(contextPath==null){
+			contextPath=HttpRequestUtil.getHttpRequest().getContextPath();
+		}
+		return contextPath;
+	}
+
+//	@Override
+//	public List<MenuDO> getMenuList(MenuDO menu) {
+//		return menuMapper.searchMenuList(menu);
+//	}
+
+	@Override
+	public Long getMenuListCount(MenuDO menu) {
+		return menuMapper.searchMenuListCount(menu);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.bluemobi.product.service.MenuService#getMenu(java.lang.String)
+	 */
+
+
+	@Override
+	public NodeDO getChildrenMenu(HttpServletRequest request, MenuDO menu) {
+		List<MenuDO> menuList = SessionMgr.getUserMenus(request);
+		return getChildren(formartNode(menu), menuList);
+	}
+	
+	//递归添加子节点
+	private NodeDO getChildren(NodeDO node,List<MenuDO> menuList){
+		for(MenuDO menu:menuList){
+			if(menu.getParentMenuId().equals(node.getId())&&menu.getMenuType().equals("1")){
+				node.addNode(getChildren(formartNode(menu), menuList));
+			}
+		}
+		return node;
+	}
+	
+	private NodeDO formartNode(MenuDO menu){
+		NodeDO node=new NodeDO();
+		node.setId(menu.getMenuId());
+		node.setName(menu.getContents());
+		node.setTarget(menu.getUrl());
+		return node;
+	}
+
+	
+
+
+
+	
+
+	
+}

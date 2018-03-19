@@ -1,0 +1,81 @@
+.user_pic{
+	width: 172px;
+	height: 172px;
+	margin: 30px auto 0 !important;
+}
+.portrait .file_btn{
+	margin: 0 auto;
+	width: 172px;
+	height: 48px;
+	line-height: 48px;
+	color: #fff;
+	background: #f08307 url(../images/icon/file.png) 20px center no-repeat;
+	border-radius: 4px;
+	position: relative;
+}
+.file_btn .tx{
+	text-indent: 20px;
+}
+.file{
+	position: absolute;
+	opacity: 0;
+}
+.portrait .file_btn .size{
+	width: 172px;
+	height: 48px;
+	left: 0;
+	top: 0; 
+}
+.pic-left{
+	width: 45%;
+}
+.content-right{
+	width: 55%;
+}
+.login-detail{
+	width: auto;
+}
+.login-detail .title{
+	width: 70px;
+	line-height: 48px;
+	text-align: right;
+	font-size: 16px;
+	color: #999; 
+}
+.login-detail .wrap{
+	margin-top: 0;
+	margin-left: 10px;
+	width: 300px;
+}
+.login-detail input{
+	float: none;
+}
+.error{
+	left: 312px;
+}
+.content-right .login-detail .radio{
+	width: 20px;
+}
+.login-detail .sex {
+	margin-left: 20px;
+}
+.login-detail .sex .inline{
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.select{
+	border: none;
+	border-radius: 12px;
+	width: 298px;
+	height: 46px;
+}
+.select-arrow{
+	position: absolute;
+	width: 46px;
+	height: 46px;
+	top: 0px;
+	right: 0;
+	background:  url(../images/icon/select.png) center center no-repeat;
+	z-index: 1;
+}

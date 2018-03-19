@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dubbox.dao.TblCouponMapper">
+	<resultMap id="BaseResultMap" type="com.wanma.dubbox.model.TblCoupon">
+		<id column="pk_Coupon" property="id" jdbcType="INTEGER" />
+		<result column="pk_Activity" property="actId" jdbcType="INTEGER" />
+		<result column="pk_CouponVariety" property="tpId" jdbcType="INTEGER" />
+		<result column="cp_Status" property="sts" jdbcType="SMALLINT" />
+		<result column="cp_Limitation" property="elmt" jdbcType="SMALLINT" />
+		<result column="cp_CouponValue" property="val" jdbcType="INTEGER" />
+		<result column="cp_CouponCondition" property="cdt" jdbcType="INTEGER" />
+		<result column="cp_CouponCode" property="code" jdbcType="VARCHAR" />
+		<result column="cp_UserId" property="uid" jdbcType="INTEGER" />
+		<result column="cp_BeginDate" property="bgDate" jdbcType="DATE" />
+		<result column="cp_EndDate" property="edate" jdbcType="DATE" />
+		<result column="cp_Createdate" property="cdate" jdbcType="TIMESTAMP" />
+		<result column="cp_Updatedate" property="udate" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<select id="getCount" parameterType="TblCoupon" resultType="long">
+		select count(1)
+		from
+		tbl_coupon t
+		WHERE
+		1=1
+		<if test="stsTmp == 1">
+			and t.cp_userid = 0
+		</if>
+		<if test="stsTmp == 2">
+			and t.cp_status != 1 and t.cp_userid != 0 and
+			t.cp_EndDate
+			> now()
+		</if>
+		<if test="stsTmp == 3">
+			and t.cp_status = 1
+		</if>
+		<if test="stsTmp == 4">
+			and t.cp_status != 1 and t.cp_userid != 0 and
+			now() >
+			t.cp_EndDate
+		</if>
+		<if test="actId != null and actId !=''">
+			and t.pk_activity= #{actId}
+		</if>
+		<if test="tpId != null and tpId''">
+			and t.pk_CouponVariety= #{tpId}
+		</if>
+		<if test="sts != null and sts !=''">
+			and t.cp_status=#{sts}
+		</if>
+		<if test="elmt != null and elmt !=''">
+			and t.cp_Limitation=#{elmt}
+		</if>
+		<if test="code != null and code !=''">
+			and t.cp_CouponCode=#{code}
+		</if>
+		<if test="actIds != null">
+			and pk_Activity in
+			<foreach item="item" index="index" collection="actIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="tpIds != null">
+			and pk_CouponVariety in
+			<foreach item="item" index="index" collection="tpIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="pkIds != null">
+			and pk_Coupon in
+			<foreach item="item" index="index" collection="pkIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+	</select>
+
+	<select id="getList" parameterType="TblCoupon" resultMap="BaseResultMap">
+		select
+		${rtColumns}
+		from
+		tbl_coupon
+		WHERE
+		1=1
+		<if test="stsTmp == 1">
+			and t.cp_userid = 0
+		</if>
+		<if test="stsTmp == 2">
+			and t.cp_status != 1 and t.cp_userid != 0 and
+			t.cp_EndDate
+			> now()
+		</if>
+		<if test="stsTmp == 3">
+			and t.cp_status = 1
+		</if>
+		<if test="stsTmp == 4">
+			and t.cp_status != 1 and t.cp_userid != 0 and
+			now() >
+			t.cp_EndDate
+		</if>
+		<if test="actId != null and actId !=''">
+			and t.pk_activity= #{actId}
+		</if>
+		<if test="tpId != null and tpId''">
+			and t.pk_CouponVariety= #{tpId}
+		</if>
+		<if test="sts != null and sts !=''">
+			and t.cp_status=#{sts}
+		</if>
+		<if test="elmt != null and elmt !=''">
+			and t.cp_Limitation=#{elmt}
+		</if>
+		<if test="code != null and code !=''">
+			and t.cp_CouponCode=#{code}
+		</if>
+		<if test="actIds != null">
+			and pk_Activity in
+			<foreach item="item" index="index" collection="actIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="tpIds != null">
+			and pk_CouponVariety in
+			<foreach item="item" index="index" collection="tpIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="pkIds != null">
+			and pk_Coupon in
+			<foreach item="item" index="index" collection="pkIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		order by t.cp_Createdate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<select id="selectOne" parameterType="TblCoupon" resultMap="BaseResultMap">
+		select
+		${rtColumns}
+		from
+		tbl_coupon t
+		where pk_Coupon = #{id}
+	</select>
+
+	<delete id="delete" parameterType="TblCoupon">
+		delete
+		from
+		tbl_coupon where
+		and pk_Coupon in
+		<foreach item="item" index="index" collection="pkIds" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+
+</mapper>

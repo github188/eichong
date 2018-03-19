@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/style.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/userList/user_home.css"/>
+    <title>用户主页</title>
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="btnLine">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="ibox float-e-margins">
+                    <div class="">
+                        <div class="ibox-content">
+                            <div class="userBaseInfo" id="ctrUserBaseInfo" style="display: none;">
+                                <form action="" id="addForm" method="post" enctype="multipart/form-data">
+                                    <div class="headImage">
+                                        <img src="../../img/a1.jpg" id="runInputPhotoImges"/>
+                                        <span class="file">编辑
+                                            <input type="file" name="files" id="runInputPhoto">
+
+                                        </span>
+                                        <!--<input type="submit">-->
+                                    </div>
+                                </form>
+                                <div class="headTable">
+                                    <ul class="headList">
+                                        <li>
+                                            <div class="col-sm-4 borderRight tdBlockTop">
+                                                <span>账号</span>
+                                                <span id="userAccount"></span>
+                                                <span></span>
+                                            </div>
+                                            <div class="col-sm-4 borderRight tdBlockTop">
+                                                <span>余额</span>
+                                                <span><t id="userBalance" class="orange"></t>元</span>
+                                                <span></span>
+                                            </div>
+                                            <div class="col-sm-4 tdBlockTop">
+                                                <span>渠道</span>
+                                                <span class="cpyNameStyle" id="cpyName"></span>
+                                                <span> </span>
+                                            </div>
+                                            <div class="clearfix"></div>
+                                        </li>
+                                        <li>
+                                            <div class="col-sm-4 borderRight tdBlock">
+                                                <span>状态</span>
+                                                <!--<span class="cpyNameStyle">正常</span>-->
+                                                <span class="cpyNameStyle" id="userStatus"></span>
+                                                <span class="openDisable" id="statusDisableBtn"
+                                                      style="display: none">解禁</span>
+                                            </div>
+                                            <div class="col-sm-4 borderRight tdBlock">
+                                                <span>级别</span>
+                                                <span class="cpyNameStyle" id="levelName"></span>
+                                                <span class="openDisable" id="setLevelBtn_user">设置</span>
+                                            </div>
+                                            <div class="col-sm-4 tdBlock">
+                                                <span>黑白名单</span>
+                                                <span class="openDisable">设置</span>
+                                            </div>
+                                            <div class="clearfix"></div>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                            </div>
+
+                            <div class="emptyDiv"></div>
+                            <!--基本资料部分 详细-->
+                            <div class="userBaseInfoList" id="detailUserBlock" style="display: none;">
+                                <div class="baseInfoShow">
+                                    <div class="baseInfoTitle">
+                                        基本资料
+                                    </div>
+                                    <div class="baseInfoBtn" id="toEditInfo">
+                                        编辑
+                                    </div>
+                                </div>
+                                <ul class="baseInfoUl">
+                                    <li>
+                                        <span>昵称</span>
+                                        <span id="userName"></span>
+                                    </li>
+                                    <li>
+                                        <span>姓名</span>
+                                        <span id="userRealName"></span>
+                                    </li>
+                                    <li>
+                                        <span>性别</span>
+                                        <span id="userCpySex"></span>
+                                    </li>
+                                    <li>
+                                        <span>手机号</span>
+                                        <span id="userPhone"></span>
+                                    </li>
+                                    <li>
+                                        <span>身份证号码</span>
+                                        <span id="userIdCard"></span>
+                                    </li>
+                                    <li>
+                                        <span>城市</span>
+                                        <span id="userAddress"></span>
+                                    </li>
+                                    <li>
+                                        <span>车辆</span>
+                                        <span id="userCar"></span>
+                                    </li>
+                                    <li>
+                                        <span>注册时间</span>
+                                        <span id="registeredTime"></span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!--基本资料列表详细编辑部分开始-->
+                            <div class="userBaseInfoList" style="display: none;" id="editUserBaseBlock">
+                                <div class="baseInfoShow">
+                                    <div class="baseInfoTitle">
+                                        基本资料
+                                    </div>
+                                    <div class="baseInfoBtn" id="saveUserBtn">
+                                        保存
+                                    </div>
+                                </div>
+                                <ul class="baseInfoUl editUserInfo">
+                                    <li>
+                                        <span class="col-sm-6 col-xs-12">昵称</span>
+                                        <input type="" name="userName" id="" value="" autofocus="autofocus"
+                                               class="col-sm-6 col-xs-12 userName"/>
+                                    </li>
+                                    <li>
+                                        <span class="col-sm-6 col-xs-12">姓名</span>
+                                        <input type="" name="userRealName" value=""
+                                               class="col-sm-6 col-xs-12 userRealName"/>
+                                    </li>
+                                    <li>
+                                        <span class="col-sm-6 col-xs-6">性别</span>
+
+                                        <div class="col-sm-6 col-xs-6 model-select-box sexDiv">
+                                            <div class="model-select-text sexBlock" data-value="" id="userSexSelect">
+                                                请选择
+                                            </div>
+                                            <span class="downRow sexBlock"></span>
+                                            <!--<input type="text" name="userCpySex" class="userCpySex" value="" hidden="hidden"/>-->
+                                            <ul class="model-select-option sexUl">
+                                                <li data-option="0" class="seleced">请选择</li>
+                                                <li data-option="0">未知</li>
+                                                <li data-option="1">男</li>
+                                                <li data-option="2">女</li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <span class="col-sm-6 col-xs-12">手机号</span>
+                                        <input type="" name="userPhone" value=""
+                                               class="col-sm-6 col-xs-12 userPhoneTest"/>
+                                    </li>
+                                    <li>
+                                        <span class="col-sm-6 col-xs-12">身份证号码</span>
+                                        <input type="" name="userIdcard" value=""
+                                               class="col-sm-6 col-xs-12 userIdcardTest"/>
+                                    </li>
+                                    <li>
+                                        <span class="col-sm-6 col-xs-6">城市</span>
+
+                                        <div class="col-sm-6 col-xs-6" style="padding-right: 0">
+                                            <div class="model-select-box col-sm-6 col-xs-6"
+                                                 style="height: 100%;padding-left: 0;">
+                                                <div class="model-select-text provinceBlock" data-value=""
+                                                     id="provinceTitle">请选择
+                                                </div>
+                                                <span class="downRow provinceBlock"
+                                                      style="border-right: 1px solid #E7EAEC;"></span>
+                                                <input type="text" name="provinceCode" id="provinceCode" value=""
+                                                       hidden="hidden"/>
+                                                <ul class="model-select-option provinceUl">
+                                                    <!--<li data-option="" class="seleced">请选择</li>-->
+                                                    <!--<li data-option="1">浙江</li>-->
+                                                    <!--<li data-option="2">江西</li>-->
+                                                </ul>
+                                            </div>
+                                            <div class="model-select-box col-sm-6 col-xs-6" style="height: 100%;">
+                                                <div class="model-select-text cityBlock" data-value=""
+                                                     id="cityCodeTitle">请选择
+                                                </div>
+                                                <span class="downRow cityBlock"></span>
+                                                <input type="text" name="cityCode" id="cityCode" value=""
+                                                       hidden="hidden"/>
+                                                <ul class="model-select-option cityUl">
+                                                    <!--<li data-option="" class="seleced">请选择</li>-->
+                                                    <!--<li data-option="1">杭州市</li>-->
+                                                    <!--<li data-option="2">南昌市</li>-->
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <span class="col-sm-6 col-xs-12">车辆</span>
+                                        <span class="col-sm-6 col-xs-12 text-right">tesila Modle s</span>
+                                    </li>
+                                    <li>
+                                        <span class="col-sm-6 col-xs-12">注册时间</span>
+                                        <span class="col-sm-6 col-xs-12 text-right">2017-6-15 12:00</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!--结束-->
+                            <div class="emptyDiv"></div>
+                            <!--优惠券-->
+                            <div class="userBaseInfoList" id="couponBlock" style="display: none;">
+                                <div class="baseInfoShow">
+                                    <div class="baseInfoTitle">
+                                        优惠券
+                                    </div>
+                                    <div class="baseInfoBtn">
+                                        查看
+                                    </div>
+                                </div>
+                                <ul class="baseInfoUl">
+                                    <li>
+                                        <span>优惠券</span>
+                                        <span><t id="availableCoupon"></t>张</span>
+                                    </li>
+                                    <li>
+                                        <span>累计优惠</span>
+                                        <span><t id="totalDiscountAmount"></t>元</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="emptyDiv"></div>
+                            <!--优惠券结束-->
+                            <!--订单详情-->
+                            <div class="userBaseInfoList">
+                                <div class="baseInfoShow">
+                                    <div class="baseInfoTitle">
+                                        订单详情
+                                    </div>
+                                    <div class="baseInfoBtn">
+                                        查看
+                                    </div>
+                                </div>
+                                <ul class="baseInfoUl">
+                                    <li>
+                                        <span>累计充电</span>
+                                        <span>1000000度</span>
+                                    </li>
+                                    <li>
+                                        <span>累计消费</span>
+                                        <span>20000元</span>
+                                    </li>
+                                    <li>
+                                        <span>订单</span>
+                                        <span>200笔</span>
+                                    </li>
+                                    <li>
+                                        <span>今日订单</span>
+                                        <span>2</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!--订单详情结束-->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="ibox float-e-margins">
+                    <div class="">
+                        <div class="ibox-content">
+                            <!--安全管理-->
+                            <div class="userBaseInfoList">
+                                <div class="baseInfoShow">
+                                    <div class="baseInfoTitle">
+                                        安全管理
+                                    </div>
+                                    <div class=""></div>
+                                </div>
+                                <ul class="baseInfoUl">
+                                    <li>
+                                        <span>登陆密码</span>
+                                        <span class="orange" id="setLoginPassWord">重置</span>
+                                    </li>
+                                    <li>
+                                        <span>支付密码</span>
+                                        <span class="orange" id="setPayPassword">重置</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="emptyDiv"></div>
+                            <!--安全管理结束-->
+                            <!--充电卡开始-->
+                            <div class="userBaseInfoList">
+                                <div class="baseInfoShow">
+                                    <div class="baseInfoTitle">
+                                        充电卡
+                                    </div>
+                                    <div class="baseInfoBtn" id="bindCard">
+                                        新绑卡
+                                    </div>
+                                </div>
+                                <ul class="baseInfoUl userCardList">
+                                    <!--<li>-->
+                                    <!--<span>123XXXX678</span>-->
+                                    <!--<span><span>正常</span>-->
+                                    <!--<span class="leftBorder cardFrozen" data-ucId="">冻结</span>-->
+                                    <!--<span class="leftBorder relieveCardFrozen" data-ucId="">解冻</span>-->
+                                    <!--<span class="leftBorder cardLoss" data-ucId="">挂失</span>-->
+                                    <!--<span class="leftBorder relieveCardLoss" data-ucId="">解挂</span>-->
+                                    <!--<span class="leftBorder cardCancel" data-ucId="">注销</span></span>-->
+                                    <!--</li>-->
+                                </ul>
+                            </div>
+                            <div class="emptyDiv"></div>
+                            <!--充电卡结束-->
+                            <!--资金账户开始-->
+                            <div class="userBaseInfoList">
+                                <div class="baseInfoShow">
+                                    <div class="baseInfoTitle">
+                                        资金账户
+                                    </div>
+                                    <div class="baseInfoBtn">
+                                        查看
+                                    </div>
+                                </div>
+                                <ul class="baseInfoUl">
+                                    <li>
+                                        <span>资金账户号</span>
+                                        <span id="accountNO"></span>
+                                    </li>
+                                    <li>
+                                        <span>余额/额度</span>
+                                        <span id="accountBalance"></span>
+                                    </li>
+                                    <li>
+                                        <span>类型</span>
+                                        <span id="tradeType"></span>
+                                    </li>
+                                    <li>
+                                        <span>状态</span>
+                                        <span id="accountStatus"></span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="emptyDiv"></div>
+                            <!--资金账户结束-->
+                            <!--用户账单开始-->
+                            <div class="userBaseInfoList">
+                                <div class="baseInfoShow">
+                                    <div class="baseInfoTitle">
+                                        用户账单
+                                    </div>
+                                    <!--<div class="baseInfoBtn">-->
+                                        <!---->
+                                    <!--</div>-->
+                                </div>
+                                <ul class="baseInfoUl">
+                                    <li>
+                                        <span>总充值</span>
+                                        <span id="chongzhi"></span>
+                                    </li>
+                                    <li>
+                                        <span>总优惠</span>
+                                        <span id="youhui"></span>
+                                    </li>
+                                    <li>
+                                        <span>总消费</span>
+                                        <span id="xiaofei"></span>
+                                    </li>
+                                    <li>
+                                        <span>冻结</span>
+                                        <span id="dongjie"></span>
+                                    </li>
+                                    <li>
+                                        <span>余额</span>
+                                        <span id="yue"></span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="emptyDiv"></div>
+                            <!--用户账单结束-->
+                            <!--财务关系开始-->
+                            <div class="userBaseInfoList">
+                                <div class="baseInfoShow">
+                                    <div class="baseInfoTitle">
+                                        资金关系
+                                    </div>
+                                    <div class="baseInfoBtn">
+                                        查看
+                                    </div>
+                                </div>
+                                <ul class="baseInfoUl">
+                                    <li>
+                                        <span>账单科目</span>
+                                        <span id="billAccountName"></span>
+                                    </li>
+                                    <li>
+                                        <span>资金账户</span>
+                                        <span id="accountNumber"></span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="emptyDiv"></div>
+                            <!--财务关系结束-->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="setUserLevel_user" style="display: none;">
+    <select class="form-control m-b" name="levelId" id="setUserLevel_user">
+
+
+    </select>
+</div>
+<!--新绑定卡-->
+<div class="newBindCard" style="display: none;">
+    <div class="text-center">请输入外卡号</div>
+    <div class="ucCardNumber">
+        <input type="text" name="ucExternalCardNumber" value="" placeholder="请输入外卡号"/>
+    </div>
+
+</div>
+</body>
+
+
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<!--<script src="../../js/lib/" type="text/javascript" charset="utf-8"></script>-->
+<!--<script src="../../js/lib/ajaxfileupload.js" type="text/javascript" charset="utf-8"></script>-->
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<!--<script src="../js/apiAddress.js" type="text/javascript" charset="utf-8"></script>-->
+<script type="text/javascript" src="../../js/contabs.min.js"></script>
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/userList/user_home.js" type="text/javascript" charset="utf-8"></script>
+</html>

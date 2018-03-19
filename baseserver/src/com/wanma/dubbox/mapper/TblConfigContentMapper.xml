@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wanma.dubbox.dao.TblConfigContentMapper">
+	<resultMap id="BaseResultMap" type="com.wanma.dubbox.model.TblConfigContent">
+		<id column="pk_ConfigContent" property="id" jdbcType="INTEGER" />
+		<result column="coCo_ConfigParameterID" property="pramid"
+			jdbcType="INTEGER" />
+		<result column="coCo_Content" property="ctt" jdbcType="VARCHAR" />
+		<result column="coCo_ConfigPStatus" property="sts" jdbcType="INTEGER" />
+		<result column="coCo_Createdate" property="cdate" jdbcType="TIMESTAMP" />
+		<result column="coCo_Updatedate" property="udate" jdbcType="TIMESTAMP" />
+		<result column="coCo_memo" property="mem" jdbcType="VARCHAR" />
+	</resultMap>
+	<update id="delete" parameterType="TblConfigContent">
+		update tbl_configcontent
+		set coCo_ConfigPStatus = 1
+		where pk_ConfigContent =
+		#{id,jdbcType=INTEGER}
+	</update>
+	<insert id="insert" parameterType="TblConfigContent">
+		insert into tbl_configcontent
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				pk_ConfigContent,
+			</if>
+			<if test="pramid != null">
+				coCo_ConfigParameterID,
+			</if>
+			<if test="ctt != null">
+				coCo_Content,
+			</if>
+			<if test="mem != null">
+				coCo_memo,
+			</if>
+			coCo_ConfigPStatus,
+			coCo_Createdate,
+			coCo_Updatedate
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="pramid != null">
+				#{pramid,jdbcType=INTEGER},
+			</if>
+			<if test="ctt != null">
+				#{ctt,jdbcType=VARCHAR},
+			</if>
+			<if test="mem != null">
+				#{mem,jdbcType=VARCHAR},
+			</if>
+			0,
+			sysdate(),
+			sysdate()
+		</trim>
+	</insert>
+	<update id="update" parameterType="TblConfigContent">
+		update tbl_configcontent
+		<set>
+			<if test="pramid != null">
+				coCo_ConfigParameterID = #{pramid,jdbcType=INTEGER},
+			</if>
+			<if test="ctt != null">
+				coCo_Content = #{ctt,jdbcType=VARCHAR},
+			</if>
+			<if test="sts != null">
+				coCo_ConfigPStatus = #{sts,jdbcType=INTEGER},
+			</if>
+			<if test="cdate != null">
+				coCo_Createdate = #{cdate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="mem != null">
+				coCo_memo = #{mem,jdbcType=VARCHAR},
+			</if>
+			coCo_Updatedate = sysdate()
+		</set>
+		where pk_ConfigContent = #{id,jdbcType=INTEGER}
+	</update>
+
+	<select id="selectOne" resultMap="BaseResultMap" parameterType="TblConfigContent">
+		select ${rtColumns}
+		from tbl_configcontent
+		where 1=1
+		<if test="id != null">
+			and pk_ConfigContent = #{id,jdbcType=INTEGER}
+		</if>
+		<if test="pramid != null">
+			and coCo_ConfigParameterID = #{pramid,jdbcType=INTEGER}
+		</if>
+		<if test="ctt != null">
+			and coCo_Content = #{ctt,jdbcType=VARCHAR}
+		</if>
+	</select>
+
+	<select id="getCount" resultType="int" parameterType="TblConfigContent">
+		select
+		count(1)
+		from tbl_configcontent
+		where 1=1
+		<if test="pramid != null">
+			and coCo_ConfigParameterID = #{pramid}
+		</if>
+		<if test="sts != null">
+			and coCo_ConfigPStatus = #{sts}
+		</if>
+	</select>
+
+	<select id="getList" resultMap="BaseResultMap" parameterType="TblConfigContent">
+		select ${rtColumns}
+		from tbl_configcontent
+		where 1=1
+		<if test="pramid != null">
+			and coCo_ConfigParameterID = #{pramid}
+		</if>
+		<if test="sts != null">
+			and coCo_ConfigPStatus = #{sts}
+		</if>
+	</select>
+</mapper>

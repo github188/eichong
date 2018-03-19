@@ -1,0 +1,326 @@
+package com.wanma.service.impl;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSONObject;
+import com.bluemobi.product.model.echarts.EchartsParamModel;
+import com.wanma.dao.CmsStatisticMapper;
+import com.wanma.web.support.utils.JsonUtil;
+
+@Service
+public class CmsEchartPileServiceImpl extends CmsEchartsServiceImpl {
+	@Autowired
+	CmsStatisticMapper statisticsMapper;
+	
+	@Override
+	public void setData(JSONObject obj, EchartsParamModel paramsModel) {
+		setPileCountData(obj, paramsModel);
+		setPileConsumeData(obj, paramsModel);
+		setPileDistributeData(obj, paramsModel);
+		setPileFaultData(obj, paramsModel);
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private void setPileCountData(JSONObject obj, EchartsParamModel paramsModel) {
+		JSONObject jsonModel = JsonUtil.getJsonObject(path
+				+ "/json/pileCountBar.json");
+		List<Map<Object, Object>> pileCountlist=statisticsMapper.getPileCount(paramsModel);
+		String userId = paramsModel.getUserIdForShow();
+		if (pileCountlist != null &&!pileCountlist.isEmpty()){
+			List<String> areaList=new ArrayList<String>();
+			String city="";
+			String type="";
+			int count=0;
+			//得到城市分组
+			for(Map<Object, Object> tempObj:pileCountlist){
+				city=(String) tempObj.get("城市");
+				if(!areaList.contains(city)){
+					areaList.add(city);
+				}
+			}
+			int[] zsArray=new int[areaList.size()];
+			int[] fxArray=new int[areaList.size()];
+			for(Map<Object, Object> tempObj:pileCountlist){
+				city=(String) tempObj.get("城市");
+				type=(String) tempObj.get("桩体类型");
+				count=((Long) tempObj.get("数量")).intValue();
+				if("8231".equals(userId)){
+					count = count*5;
+				}
+				int indexVal = areaList.indexOf(city);
+				if(indexVal >=0){
+					if("专属".equals(type)){
+						 zsArray[areaList.indexOf(city)]=count;
+					}else if("分享".equals(type)){
+						fxArray[areaList.indexOf(city)]=count;
+					}
+				}
+			}
+			
+			//xAxis
+			Object[] areaArray = areaList.toArray();
+			Object[] outGroup =  new Object[]{"","","","","",""};
+			if(areaArray.length > 6)
+				System.arraycopy(areaArray, 0, outGroup, 0, 6);
+			else
+				outGroup = areaArray;
+			Map xAxisMap = new HashMap();
+			xAxisMap.put("type", "category");
+			xAxisMap.put("data", outGroup);
+			jsonModel.put("xAxis", xAxisMap);
+			//series
+			Map map = new HashMap();
+			map.put("name", "专属");
+			map.put("type", "bar");
+			map.put("stack", "总量");
+			map.put("data", zsArray);
+			Map map2 = new HashMap();
+			map2.put("name", "分享");
+			map2.put("type", "bar");
+			map2.put("stack", "总量");
+			map2.put("data", fxArray);
+			List list = new ArrayList();
+			list.add(map);
+			list.add(map2);
+			jsonModel.put("series", list);
+			jsonModel.put("innerMonthGroup",areaArray);
+			obj.put("data1", jsonModel);
+		}
+	}
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private void setPileConsumeData(JSONObject obj, EchartsParamModel paramsModel) {
+		JSONObject jsonModel = JsonUtil.getJsonObject(path
+				+ "/json/pileConsumeBar.json");
+		List<Map<Object, Object>> pileConsumelist=statisticsMapper.getPileConsume(paramsModel);
+		String userId = paramsModel.getUserIdForShow();
+		if (pileConsumelist != null &&!pileConsumelist.isEmpty()){
+			List<String> monthList=new ArrayList<String>();
+			String month="";
+			double earns=0;
+			double quantity=0;
+			int count=0;
+			//得到城市分组
+			for(Map<Object, Object> tempObj:pileConsumelist){
+				month=String.valueOf(tempObj.get("收益月份"));
+				if(!monthList.contains(month)){
+					monthList.add(month);
+				}else{
+					break;
+				}
+			}
+			double[] earnsArray=new double[monthList.size()];
+			double[] quantityArray=new double[monthList.size()];
+			int[] countArray=new int[monthList.size()];
+			for(Map<Object, Object> tempObj:pileConsumelist){
+				month=String.valueOf(tempObj.get("收益月份"));
+				earns=((BigDecimal) tempObj.get("充电收益")).doubleValue();
+				quantity=((BigDecimal)tempObj.get("总电量")).doubleValue();
+				count=((Long) tempObj.get("充电次数")).intValue();
+				if("8231".equals(userId)){
+					BigDecimal   e   =   new   BigDecimal(earns*5);
+					BigDecimal   q   =   new   BigDecimal(quantity*5);
+					earns = e.setScale(2,   BigDecimal.ROUND_HALF_UP).doubleValue();
+					quantity =q.setScale(2,   BigDecimal.ROUND_HALF_UP).doubleValue();
+					count = count*5;
+				}
+				earnsArray[monthList.indexOf(month)]=earns;
+				quantityArray[monthList.indexOf(month)]=quantity;
+				countArray[monthList.indexOf(month)]=count;
+			}
+			//xAxis
+			Map xAxisMap = new HashMap();
+			xAxisMap.put("type", "category");
+			xAxisMap.put("data", monthList);
+			jsonModel.put("xAxis", xAxisMap);
+			//series
+			Map map = new HashMap();
+			map.put("name", "充电收益");
+			map.put("type", "bar");
+			map.put("data", earnsArray);
+			Map map2 = new HashMap();
+			map2.put("name", "总电量");
+			map2.put("type", "line");
+			map2.put("data", quantityArray);
+			Map map3 = new HashMap();
+			map3.put("name", "充电次数");
+			map3.put("type", "bar");
+			map3.put("data", countArray);
+			List list = new ArrayList();
+			list.add(map);
+			list.add(map2);
+			list.add(map3);
+			jsonModel.put("series", list);
+			obj.put("data2", jsonModel);
+		}	
+	}
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private void setPileDistributeData(JSONObject obj, EchartsParamModel paramsModel) {
+		JSONObject jsonModel = JsonUtil.getJsonObject(path
+				+ "/json/pileDistributeBar.json");
+		List<Map<Object, Object>> pileDistributelist=statisticsMapper.getDistributePileByArea(paramsModel);
+		String userId = paramsModel.getUserIdForShow();
+		if (pileDistributelist != null &&!pileDistributelist.isEmpty()){
+			List<String> areaList=new ArrayList<String>();
+			String city="";
+			int count=0;
+			String type="";
+			//得到城市分组
+			for(Map<Object, Object> tempObj:pileDistributelist){
+				city=(String) tempObj.get("所在城市");
+				if(!areaList.contains(city)){
+					areaList.add(city);
+				}else{
+					continue;
+				}
+			}
+			int[] mcArray=new int[areaList.size()];//慢充
+			int[] kcArray=new int[areaList.size()];//快充
+			int[] qtArray=new int[areaList.size()];//其他
+			for(Map<Object, Object> tempObj:pileDistributelist){
+				city=(String) tempObj.get("所在城市");
+				type=(String) tempObj.get("充电类型");
+				count=((Long) tempObj.get("上线数量")).intValue();
+				if("8231".equals(userId)){
+					count = count*5;
+				}
+				int indexVal = areaList.indexOf(city);
+				if(indexVal >= 0){
+					if("慢充".equals(type)){
+						mcArray[areaList.indexOf(city)]=count;
+					}else if("快充".equals(type)){
+						kcArray[areaList.indexOf(city)]=count;
+					}else if("其他".equals(type)){
+						qtArray[areaList.indexOf(city)]=count;
+					}
+				}
+			}
+			//xAxis
+			Object[] areaArray = areaList.toArray();
+			Object[] outGroup =  new Object[]{"","","","","",""};
+			if(areaArray.length > 6)
+				System.arraycopy(areaArray, 0, outGroup, 0, 6);
+			else
+				outGroup = areaArray;
+			Map xAxisMap = new HashMap();
+			xAxisMap.put("type", "category");
+			xAxisMap.put("data", outGroup);
+			jsonModel.put("xAxis", xAxisMap);
+			//series
+			Map map = new HashMap();
+			map.put("name", "快充");
+			map.put("type", "bar");
+			map.put("stack", "总量");
+			map.put("data", kcArray);
+			Map map2 = new HashMap();
+			map2.put("name", "慢充");
+			map2.put("type", "bar");
+			map2.put("stack", "总量");
+			map2.put("data", mcArray);
+			
+			Map map3 = new HashMap();
+			map3.put("name", "其他");
+			map3.put("type", "bar");
+			map3.put("stack", "总量");
+			map3.put("data", qtArray);
+			
+			
+			List list = new ArrayList();
+			list.add(map);
+			list.add(map2);
+			list.add(map3);
+			jsonModel.put("series", list);
+			jsonModel.put("innerMonthGroup",areaArray);
+			obj.put("data3", jsonModel);
+		}
+	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private void setPileFaultData(JSONObject obj, EchartsParamModel paramsModel) {
+		JSONObject jsonModel = JsonUtil.getJsonObject(path
+				+ "/json/pileFaultBar.json");
+		List<Map<Object, Object>> pileFaultlist=statisticsMapper.getPileFault(paramsModel);
+		if (pileFaultlist != null &&!pileFaultlist.isEmpty()){
+			List<String> areaList=new ArrayList<String>();
+			List<String> reasonList=new ArrayList<String>();
+			String city="";
+			String type="";
+			String reason="";
+			int count=0;
+			//得到城市分组
+			for(Map<Object, Object> tempObj:pileFaultlist){
+				city=(String) tempObj.get("城市");
+				if(!areaList.contains(city)){
+					areaList.add(city);
+				}else{
+					continue;
+				}
+			}
+			//得到故障类型分组
+			for(Map<Object, Object> tempObj:pileFaultlist){
+			//	for(int i=0;i<=pileFaultlist.size();i++){
+				reason=(String) tempObj.get("故障原因");
+				
+				if (reasonList.contains(reason)==false){
+					reasonList.add(reason);
+				}
+				else continue;
+				
+				
+			}
+			Map reasonMap = new HashMap();
+			reasonMap.put("data", reasonList);
+			jsonModel.put("legend", reasonMap);
+			
+			//xAxis
+			Map xAxisMap = new HashMap();
+			xAxisMap.put("type", "category");
+			xAxisMap.put("data", areaList);
+			jsonModel.put("xAxis", xAxisMap);
+			//series
+			List list = new ArrayList();
+			Map<String,Map> tempMap=new HashMap<String,Map>();
+			Map dataMap =null;
+			int[] errorDataArray=null;
+		//	for(int i=0;i<=reasonList.size();i++){
+			for(Map<Object, Object> tempObj:pileFaultlist){
+				city=(String) tempObj.get("城市");
+				type=(String) tempObj.get("故障原因");
+				count=((Long) tempObj.get("故障次数")).intValue();
+				int indexVal = areaList.indexOf(city);
+				
+					
+				
+				if(tempMap.get(type)==null){
+					dataMap = new HashMap();
+					errorDataArray=new int[areaList.size()];
+					dataMap.put("name", type);
+					dataMap.put("type", "bar");
+					dataMap.put("stack", "总量");
+				}else{
+					dataMap=tempMap.get(type);
+					errorDataArray=(int[]) dataMap.get("data");
+				}
+				errorDataArray[indexVal]=count;				
+				dataMap.put("data", errorDataArray);
+				tempMap.put(type, dataMap);
+				
+			}
+			for (String key : tempMap.keySet()) {
+				System.out.println(key);
+				errorDataArray=(int[]) tempMap.get(key).get("data");
+				System.out.println(errorDataArray[0]+"::"+errorDataArray[1]);
+				list.add(tempMap.get(key));
+			  }
+			
+			jsonModel.put("series", list);
+			obj.put("data4", jsonModel);
+		}	
+	}
+}

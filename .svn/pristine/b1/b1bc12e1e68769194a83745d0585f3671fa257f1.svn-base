@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.web.dao.WebApplyPartnerMapper">
+	<resultMap id="listResultMap" type="TblApplyPartner">
+		<id property="pkApplyPartner" column="id" />
+		<result property="apPaServiceQQ" column="service_qq" />
+		<result property="apPaUserPhone" column="user_phone" />
+		<result property="apPaUserName" column="point_name" />
+		<result property="apPaCreatedate" column="create_time" />
+		<result property="apPaUpdatedate" column="update_time" />
+		<result property="apPaDealReason" column="partner_reason" />
+		<result property="apPaProcessState" column="status" />
+		<result property="apPaUserName" column="user_name" />
+		<result property="apPaStationAddr" column="station_addr" />
+		<result property="apPaStationType" column="station_type" />
+		<result property="apPaInstallation" column="installation" />
+		<result property="apPaPileNum" column="pile_num" />
+		<result property="apPaOpenTime" column="open_time" />
+		<result property="apPaChargingCost" column="charging_cost" />
+		<result property="apPaCarTypeMatch" column="car_type_match" />
+		<result property="apPaUserEmail" column="user_email" />
+		<result property="apPaCooperationMode" column="cooperation_mode" />
+		<result property="apPaPartnerType" column="partner_type" />
+		<result property="apPaStationTypeText" column="station_type_text" />	
+		<result property="apPaAcPileNum" column="pile_num_ac" />	
+		<result property="apPaDcPileNum" column="pile_num_dc" />	
+		<result property="apPaOpenTimeWorkDay" column="open_time_work" />	
+		<result property="apPaOpenTimeHoliday" column="open_time_holiday" />	
+		<result property="apPaChargingFee" column="charging_fee" />	
+		<result property="apPaServiceFee" column="service_fee" />	
+		<result property="apPaParkingFee" column="parking_fee" />
+		<result property="apPaCompanyName" column="company_name" />				
+	</resultMap>
+			
+	<insert id="insertWebApplyPartner" parameterType="TblApplyPartner" useGeneratedKeys="true" keyProperty="pkApplyPartner">
+    insert into tbl_partner_access
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="apPaServiceQQ != null" >
+        service_qq,
+      </if>
+      <if test="apPaUserPhone != null" >
+        user_phone,
+      </if>
+      <if test="apPaUserName != null" >
+        user_name,
+      </if>
+  		create_time, 
+        update_time,               
+      <if test="apPaDealReason != null" >
+        partner_reason,
+      </if>
+      <if test="apPaProcessState != null" >
+        status,
+      </if>
+      <if test="apPaStationAddr != null" >
+        station_addr,
+      </if>     
+      <if test="apPaPointName != null" >
+        point_name,
+      </if>
+      <if test="apPaStationType != null" >
+        station_type,
+      </if>
+      <if test="apPaInstallation != null" >
+        installation,
+      </if>
+      <if test="apPaPileNum != null" >
+        pile_num,
+      </if>
+      <if test="apPaOpenTime != null" >
+        open_time,
+      </if>
+      <if test="apPaChargingCost != null" >
+        charging_cost,
+      </if>
+      <if test="apPaCarTypeMatch != null" >
+        car_type_match,
+      </if>
+      <if test="apPaUserEmail != null" >
+        user_email,
+      </if>
+      <if test="apPaCooperationMode != null" >
+        cooperation_mode,
+      </if>
+      <if test="apPaPartnerType != null" >
+        partner_type,
+      </if>
+      
+            <if test="apPaStationTypeText != null" >
+        station_type_text,
+      </if>
+            <if test="apPaAcPileNum != null and apPaAcPileNum != ''" >
+        pile_num_ac,
+      </if>
+            <if test="apPaDcPileNum != null and apPaDcPileNum != ''" >
+        pile_num_dc,
+      </if>
+            <if test="apPaOpenTimeWorkDay != null" >
+        open_time_work,
+      </if>
+            <if test="apPaOpenTimeHoliday != null" >
+        open_time_holiday,
+      </if>
+            <if test="apPaChargingFee != null" >
+        charging_fee,
+      </if>
+            <if test="apPaServiceFee != null" >
+        service_fee,
+      </if>
+            <if test="apPaParkingFee != null" >
+        parking_fee,
+      </if>      
+            <if test="apPaCompanyName != null" >
+        company_name,
+      </if>
+      
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="apPaServiceQQ != null" >
+        #{apPaServiceQQ},
+      </if>
+      <if test="apPaUserPhone != null" >
+        #{apPaUserPhone},
+      </if>
+      <if test="apPaUserName != null" >
+        #{apPaUserName},
+      </if>
+		now(),
+		now(),     
+      <if test="apPaDealReason != null" >
+        #{apPaDealReason},
+      </if>
+      <if test="apPaProcessState != null" >
+        #{apPaProcessState},
+      </if>
+      <if test="apPaStationAddr != null" >
+        #{apPaStationAddr},
+      </if>
+      <if test="apPaPointName != null" >
+        #{apPaPointName},
+      </if>
+      <if test="apPaStationType != null" >
+        #{apPaStationType},
+      </if>
+      <if test="apPaInstallation != null" >
+        #{apPaInstallation},
+      </if>
+      <if test="apPaPileNum != null" >
+        #{apPaPileNum},
+      </if>
+      <if test="apPaOpenTime != null" >
+        #{apPaOpenTime},
+      </if>
+      <if test="apPaChargingCost != null" >
+        #{apPaChargingCost},
+      </if>
+      <if test="apPaCarTypeMatch != null" >
+        #{apPaCarTypeMatch},
+      </if>
+      <if test="apPaUserEmail != null" >
+        #{apPaUserEmail},
+      </if>
+      <if test="apPaCooperationMode != null" >
+        #{apPaCooperationMode},
+      </if>
+      <if test="apPaPartnerType != null" >
+        #{apPaPartnerType},
+      </if>
+      
+        <if test="apPaStationTypeText != null" >
+        #{apPaStationTypeText},
+      </if>
+        <if test="apPaAcPileNum != null and apPaAcPileNum != ''" >
+        #{apPaAcPileNum},
+      </if>
+        <if test="apPaDcPileNum != null and  apPaDcPileNum !=''" >
+        #{apPaDcPileNum},
+      </if>
+        <if test="apPaOpenTimeWorkDay != null" >
+        #{apPaOpenTimeWorkDay},
+      </if>
+        <if test="apPaOpenTimeHoliday != null" >
+        #{apPaOpenTimeHoliday},
+      </if>
+        <if test="apPaChargingFee != null" >
+        #{apPaChargingFee},
+      </if>
+        <if test="apPaServiceFee != null" >
+        #{apPaServiceFee},
+      </if>
+        <if test="apPaParkingFee != null" >
+        #{apPaParkingFee},
+      </if>
+      <if test="apPaCompanyName != null" >
+        #{apPaCompanyName},
+      </if>
+    </trim>
+  </insert>
+	
+	
+	
+	
+</mapper> 

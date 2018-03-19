@@ -1,0 +1,22 @@
+package com.wanma.ims.controller.company;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.wanma.ims.controller.sys.MenuController;
+import com.wanma.ims.service.LevelService;
+
+/**
+ * 公司管理-等级管理
+ */
+@Controller
+@RequestMapping("/company")
+public class LevelController {
+	private static Logger log = Logger.getLogger(MenuController.class);
+	@Autowired
+	private LevelService levelService;
+	
+	
+}

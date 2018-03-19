@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.dubbox.dao.TblMenuRoleMapper">
+	<resultMap type="TblMenuRole" id="result_menuRole">
+		<result property="mid" column="menu_id" />
+		<result property="rid" column="role_id" />
+		<result property="cdate" column="create_date" />
+		<result property="creUs" column="create_user" />
+		<result property="udate" column="last_update_date" />
+		<result property="udtUs" column="last_update_user" />
+	</resultMap>
+
+	<insert id="insert" parameterType="TblMenuRole"
+		useGeneratedKeys="true" keyProperty="mid">
+		insert into p_m_menu_role
+		(
+		menu_id,
+		role_id,
+		create_user,
+		last_update_user,
+		createDate,
+		lastUpdateDate
+		)
+		values
+		(
+		#{mid},
+		#{rid},
+		#{creUs},
+		#{udtUs},
+		sysdate(),
+		sysdate()
+		)
+	</insert>
+
+	<delete id="delete" parameterType="TblMenuRole">
+		delete from p_m_menu_role
+		<where>
+			1=1
+			<if test="mid !=null and mid !=''"> and menu_id=#{mid} </if>
+			<if test="rid !=null and rid !=''"> and role_id=#{rid} </if>
+		</where>
+	</delete>
+
+	<select id="getList" parameterType="TblMenuRole" resultMap="result_menuRole">
+		select ${rtColumns}
+		from
+		p_m_menu_role t
+		<where>
+			1=1
+			<if test="rolIds != null">
+				and role_id in
+				<foreach item="item" index="index" collection="rolIds"
+					open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+		</where>
+	</select>
+</mapper>

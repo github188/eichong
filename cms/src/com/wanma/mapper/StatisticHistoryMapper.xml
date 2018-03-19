@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.dao.StatisticHistoryMapper">
+
+	<select id="historyData" parameterType="Entity" resultType="hashmap">
+		SELECT
+		sum(if(b.puHi_Type=4,b.puHi_Monetary,0)) AS 'v1',
+		sum(if(b.puHi_Type=4,1,0)) AS 'v2',
+		sum(if(b.puHi_Type=1,b.puHi_Monetary,0)) AS 'v3',
+		sum(if(b.puHi_Type=1,1,0)) AS 'v4'
+		FROM
+		tbl_user a,
+		tbl_purchasehistory b
+		WHERE
+		a.user_id=b.puHi_UserId
+		AND a.user_leval=6
+		<if test="startDate !=null and startDate !=''">
+			AND DATE_FORMAT(b.puHi_Createdate, '%Y-%m-%d')
+			>=#{startDate}
+		</if>
+		<if test="endDate !=null and endDate !=''">
+			<![CDATA[AND DATE_FORMAT(b. puHi_Createdate, '%Y-%m-%d')<=#{endDate}]]>
+		</if>
+		AND b.puHi_Type in('1', '4')
+		AND b.puHi_ChargeType in ('0','1','2','3')
+	</select>
+
+
+	<select id="historyChargeDataForDay" parameterType="Entity"
+		resultType="hashmap">
+		SELECT
+		DATE_FORMAT(b.puHi_Createdate, '%Y-%m-%d') as 'date',
+		sum(if(b.puHi_Type=4,1,0)) AS 'num1',
+		sum(if(b.puHi_Type=4,b.puHi_Monetary,0)) AS 'money1',
+		sum(if(b.puHi_Type=1,1,0)) AS 'num2',
+		sum(if(b.puHi_Type=1,b.puHi_Monetary,0)) AS 'money2'
+		FROM
+		tbl_user a,
+		tbl_purchasehistory b
+		WHERE
+		a.user_id=b.puHi_UserId
+		<if test="startDate !=null and startDate !=''">
+			AND DATE_FORMAT(b.puHi_Createdate, '%Y-%m-%d')
+			>=#{startDate}
+		</if>
+		<if test="endDate !=null and endDate !=''">
+			<![CDATA[AND DATE_FORMAT(b. puHi_Createdate, '%Y-%m-%d')<=#{endDate}]]>
+		</if>
+		AND b.puHi_Type in('1','4')
+		AND b.puHi_ChargeType in ('0','1','2','3')
+		GROUP BY
+		DATE_FORMAT(b.puHi_Createdate, '%Y-%m-%d')
+	</select>
+
+
+
+	<select id="historyDataForDay" parameterType="Entity"
+		resultType="map">
+		SELECT
+		DATE_FORMAT(b.puHi_Createdate,'%H:00') AS 'v1',
+		sum(if(b.puHi_Type=4,1,0)) AS 'v2',
+		sum(if(b.puHi_Type=4,b.puHi_Monetary,0)) AS 'v3',
+		sum(if(b.puHi_Type=1,1,0)) AS 'v4',
+		sum(if(b.puHi_Type=1,b.puHi_Monetary,0)) AS 'v5'
+		FROM
+		tbl_user a,
+		tbl_purchasehistory b
+		WHERE
+		a.user_id=b.puHi_UserId
+		AND a.user_leval=6
+		AND DATE_FORMAT(b.puHi_Createdate, '%Y%m%d')=CURRENT_DATE
+		AND
+		b.puHi_Type in('1', '4')
+		AND b.puHi_ChargeType in ('0','1','2','3')
+		GROUP BY
+		DATE_FORMAT(b.puHi_Createdate,'%H')
+	</select>
+
+	<select id="historyDataList" parameterType="Entity" resultType="map">
+		select * from (SELECT
+		DATE_FORMAT(b.puHi_Createdate, '%Y-%m-%d') as 'v1',
+		sum(if(b.puHi_ChargeType=2,b.puHi_Monetary,0)) AS 'v2',
+		sum(if(b.puHi_ChargeType=2,1,0)) AS 'v3',
+		sum(if(b.puHi_ChargeType=1,b.puHi_Monetary,0)) AS 'v4',
+		sum(if(b.puHi_ChargeType=1,1,0)) AS 'v5',
+		sum(if(b.puHi_Type=1,b.puHi_Monetary,0)) AS 'v6',
+		sum(if(b.puHi_Type=1,1,0)) AS 'v7'
+		FROM
+		tbl_user a,
+		tbl_purchasehistory b
+		WHERE
+		a.user_id=b.puHi_UserId
+		AND a.user_leval=6
+		<if test="startDate !=null and startDate !=''">
+			AND DATE_FORMAT(b.puHi_Createdate, '%Y-%m-%d')
+			>=#{startDate}
+		</if>
+		<if test="endDate !=null and endDate !=''">
+			<![CDATA[AND DATE_FORMAT(b. puHi_Createdate, '%Y-%m-%d')<=#{endDate}]]>
+		</if>
+		AND b.puHi_Type in('1', '4')
+		GROUP BY
+		DATE_FORMAT(b.puHi_Createdate, '%Y-%m-%d')) t
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+	
+	<select id="historyDataListCount" parameterType="Entity" resultType="long">
+		select count(1) from (SELECT
+		DATE_FORMAT(b.puHi_Createdate, '%Y-%m-%d') as '日期',
+		sum(if(b.puHi_ChargeType=2,1,0)) AS '微信充值次数',
+		sum(if(b.puHi_ChargeType=2,b.puHi_Monetary,0)) AS '微信充值金额',
+		sum(if(b.puHi_ChargeType=1,1,0)) AS '支付宝充值次数',
+		sum(if(b.puHi_ChargeType=1,b.puHi_Monetary,0)) AS '支付宝充值金额',
+		sum(if(b.puHi_ChargeType=3,1,0)) AS '银联充值次数',
+		sum(if(b.puHi_ChargeType=3,b.puHi_Monetary,0)) AS '银联充值金额',
+
+		sum(if(b.puHi_Type=1,1,0)) AS '充电次数',
+		sum(if(b.puHi_Type=1,b.puHi_Monetary,0)) AS '充电金额'
+		FROM
+		tbl_user a,
+		tbl_purchasehistory b
+		WHERE
+		a.user_id=b.puHi_UserId
+		AND a.user_leval=6
+		<if test="startDate !=null and startDate !=''">
+			AND DATE_FORMAT(b.puHi_Createdate, '%Y-%m-%d')
+			>=#{startDate}
+		</if>
+		<if test="endDate !=null and endDate !=''">
+			<![CDATA[AND DATE_FORMAT(b. puHi_Createdate, '%Y-%m-%d')<=#{endDate}]]>
+		</if>
+		AND b.puHi_Type in('1', '4')
+		GROUP BY
+		DATE_FORMAT(b.puHi_Createdate, '%Y-%m-%d')) t
+		
+	</select>
+
+</mapper>

@@ -1,0 +1,408 @@
+var userId = getUrlParam('userId');
+//获取管理员主页的menuId
+var getMenuMap = window.localStorage.getItem('menuMap');
+var getCurruntMap = JSON.parse(getMenuMap);
+var menuId = getCurruntMap['管理员主页'];
+$(function () {
+    ctrlMenu(menuId);
+    setTimeout("loadAdminIndex()", 100);
+})
+function ctrlMenu(menuId) {
+    $.ajax({
+        type: "post",
+        url: basePath + getSelfButtonTreeUrl,
+        async: true,
+        data: {
+            menuId: menuId
+        },
+        success: function (req) {
+            var data = req.dataObject;
+            //console.log(data);
+            if (data.length == 0) {
+                return;
+            } else {
+                for (var i = 0; i < data.length; i++) {
+                    var contents = data[i].contents;
+                    if (contents.indexOf('概览管理') > -1) {
+                        $('#scanManageMent').show();
+                    }
+                    if (contents.indexOf('电桩管理') > -1) {
+                        $('#adminManagementBlock').show();
+                    }
+
+                }
+            }
+
+
+        }
+    });
+}
+function loadAdminIndex() {
+    $.ajax({
+        type: "post",
+        url: basePath + adminHomeUrl,
+        async: true,
+        data: {
+            adminId: userId
+        },
+        success: function (data) {
+            var data = data.dataObject;
+            //账号
+            var userAccount = data.userAccount;
+            $('#userAccount').html(userAccount);
+            //状态
+            var userStatus = data.userStatus;
+            if (userStatus == '禁用') {
+                $('#disableBtn').show();
+            }
+            $('#userStatus').html(userStatus);
+            //角色名称
+            var roleName = data.roleName;
+            $('#roleName').html(roleName);
+            //渠道名称
+            var cpyName = data.cpyName;
+            $('#cpyName').html(cpyName);
+            //类型
+            var adminTypStr = data.userLevalStr;
+            $('#adminType').html(adminTypStr);
+            var userLeval = data.userLeval;
+            if (userLeval == 1) {
+                $('#adminManagementBlock').hide();
+            }
+            if (userLeval == 2) {
+                $('#adminManagementBlock').hide();
+            } else {
+                //去加载表格的数据  接口未测试
+                adminHomeSearch();
+                $('#adminManagementBlock').show();
+            }
+        }
+    });
+}
+//解禁按钮的操作
+$('#disableBtn').on("click", function () {
+    layer.closeAll();
+    layer.open({
+        type: 1,
+        offset: '100px',
+        title: ["提示", "font-size:12px;text-align:center"],
+        shadeClose: false,
+        closeBtn: 2,
+        area: ['310px', '160px'],//宽高
+        content: '管理员解禁后，可以正常登陆系统，并使用',
+        btn: ["确定", "取消"],
+        yes: function (index, layero) {
+            layer.closeAll();
+            toUnfreezeAdmin();
+        },
+        cancel: function (index, layero) {
+            layer.closeAll();
+        }
+    });
+})
+//去解禁用户
+function toUnfreezeAdmin() {
+    $.ajax({
+        type: "post",
+        url: basePath + unfreezeUserUrl,
+        async: true,
+        data: {
+            userIds: userId
+        },
+        success: function (data) {
+            if (data.success == true) {
+                layer.closeAll();
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:center"],
+                    shadeClose: false,
+                    closeBtn: 2,
+                    area: ['310px', '160px'],//宽高
+                    content: '解禁成功',
+                    time: 2000,
+                    btn: ["确定"]
+                });
+                $('#userStatus').html('正常');
+                $('#disableBtn').hide();
+                //loadAdminIndex();
+
+            } else if (data.success == false) {
+                layer.closeAll();
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:center"],
+                    shadeClose: false,
+                    closeBtn: 2,
+                    area: ['310px', '160px'],//宽高
+                    content: data.msg,
+                    time: 2000,
+                    btn: ["确定"]
+                });
+            }
+        }
+    });
+}
+//角色修改
+$('#modifyRole').on('click', function () {
+    toModifyRoleList();
+    layer.closeAll();
+    layer.open({
+        type: 1,
+        offset: '100px',
+        title: ["修改角色", "font-size:12px;text-align:center"],
+        shadeClose: false,
+        closeBtn: 2,
+        area: ['310px', '180px'],//宽高
+        content: $('.setAdminRole'),
+        btn: ["确定", "取消"],
+        yes: function (index, layero) {
+            layer.closeAll();
+            toSetAdminRole();
+        },
+        cancel: function (index, layero) {
+            layer.closeAll();
+        }
+    });
+});
+function toModifyRoleList() {
+    $.ajax({
+        type: "post",
+        url: basePath + initRoleListUrl,
+        async: true,
+        success: function (data) {
+            if (data.success == true) {
+                var dataModule = data.dataObject;
+                var roleIdLi = '<option data-option="">请选择</option>';
+                for (var i = 0; i < dataModule.length; i++) {
+                    roleIdLi += '<option value="' + dataModule[i].roleId + '">' + dataModule[i].roleName + '</option>';
+                }
+                $('#setRoleId').html(roleIdLi);
+            }
+        }
+
+    })
+}
+//修改保存角色设置
+function toSetAdminRole() {
+    var roleId = $('#setRoleId').val();
+    if (roleId == "") {
+        layer.closeAll();
+        return;
+    }
+    $.ajax({
+        type: "post",
+        url: basePath + modifyAdminRoleUrl,
+        async: true,
+        data: {
+            roleId: roleId,
+            adminId: userId
+        },
+        success: function (data) {
+            if (data.success == true) {
+                layer.closeAll();
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:center"],
+                    shadeClose: false,
+                    closeBtn: 2,
+                    area: ['310px', '160px'],//宽高
+                    content: data.msg,
+                    time: 2000,
+                    btn: ["确定"]
+                });
+                loadAdminIndex();
+            } else {
+                layer.closeAll();
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:center"],
+                    shadeClose: false,
+                    closeBtn: 2,
+                    area: ['310px', '160px'],//宽高
+                    content: data.msg,
+                    time: 2000,
+                    btn: ["确定"]
+                });
+            }
+        }
+
+    })
+}
+//管理员主页进来的时候判断管理员类型，确定桩信息模块时候显示
+
+//adminHomeSearch();
+//电桩block--------------------------------------
+function adminHomeSearch() {
+    initTable("adminHomeForm", "adminHomePage", adminPileListUrl + '?userId=' + userId, adminHomePileListCallback);
+}
+function adminHomePileListCallback(req) {
+    var data = req.dataObject;
+    var listTr = "";
+    for (var i = 0; i < data.length; i++) {
+        listTr += '<tr><td><input type="checkbox" name="ids" class="selectedBox" value="' + data[i].electricPileId + '"/></td><td>' + data[i].electricPileCode
+        + '</td><td>' + data[i].electricPileName
+        + '</td></tr>';
+    }
+    $("#myTbody").html(listTr);
+}
+
+//添加电桩按钮  接口未测试
+$('#addPileBtn').on("click", function () {
+    layer.closeAll();
+    layer.open({
+        type: 1,
+        offset: '100px',
+        title: ["添加电桩", "font-size:12px;text-align:center"],
+        shadeClose: false,
+        closeBtn: 2,
+        area: ['310px', '180px'],//宽高
+        content: $('.addElectricPile'),
+        btn: ["确定", "取消"],
+        yes: function (index, layero) {
+            layer.closeAll();
+            addElectricPile();
+        },
+        cancel: function (index, layero) {
+            layer.closeAll();
+        }
+    });
+})
+function addElectricPile() {
+    $.ajax({
+        type: "post",
+        url: basePath + addCountAdminEPUrl,
+        async: true,
+        data: {
+            userId: userId,
+            electricPileCode: $('input[name=electricPileCode1]').val()
+        },
+        success: function (data) {
+            if (data.success == true) {
+                layer.closeAll();
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ['添加电桩', "font-size:12px;text-align:center"],
+                    shadeClose: false,
+                    closeBtn: 2,
+                    area: ['310px', '160px'],//宽高
+                    content: '添加电桩成功',
+                    time: 2000,
+                    btn: ["确定"],
+                    yes: function (index, layero) {
+                        layer.closeAll();
+                    }
+                });
+                adminHomeSearch();
+                $('input[name=electricPileCode1]').val('');
+            } else if (data.success == false) {
+                layer.closeAll();
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:center"],
+                    shadeClose: false,
+                    closeBtn: 2,
+                    area: ['310px', '160px'],//宽高
+                    content: data.msg,
+                    time: 2000,
+                    btn: ["确定"]
+                });
+                $('input[name=electricPileCode1]').val('');
+            }
+        }
+    });
+}
+//删除电桩按钮  接口未写，参数未确定
+$("body").off("click", "#deletePileBtn").on("click", "#deletePileBtn", function () {
+    layer.closeAll();
+    layer.open({
+        type: 1,
+        offset: '100px',
+        title: ["提示", "font-size:12px;text-align:center"],
+        shadeClose: false,
+        closeBtn: 2,
+        area: ['310px', '180px'],//宽高
+        content: $('.deleteContent'),
+        btn: ["确定", "取消"],
+        yes: function (index, layero) {
+            layer.closeAll();
+            toSubmitDelete();
+        },
+        cancel: function (index, layero) {
+            layer.closeAll();
+        }
+    });
+});
+function toSubmitDelete() {
+    var epIds = '';
+    $('input[name=ids]').each(function () {
+        var flag = $(this).prop('checked');
+        if (flag == true) {
+            epIds += $(this).attr('value') + ',';
+        }
+    });
+    if (!epIds) {
+        layer.open({
+            type: 1,
+            offset: '100px',
+            title: ["提示", "font-size:12px;text-align:center"],
+            shadeClose: false,
+            closeBtn: 2,
+            area: ['310px', '160px'],//宽高
+            content: '请指定表单元素',
+            time: 3000,
+            btn: ["确定", "取消"]
+        });
+    } else {
+        $.ajax({
+            type: "get",
+            url: basePath + removeCountAdminEPUrl,
+            async: true,
+            data: {
+                userId: userId,
+                epIds: epIds
+            },
+            success: function (data) {
+                if (data.success == true) {
+                    layer.closeAll();
+                    layer.open({
+                        type: 1,
+                        offset: '100px',
+                        title: ["提示", "font-size:12px;text-align:center"],
+                        shadeClose: false,
+                        closeBtn: 2,
+                        area: ['310px', '160px'],//宽高
+                        content: '删除成功',
+                        btn: ["确定", "取消"],
+                        yes: function (index, layero) {
+                            layer.closeAll();
+                            //window.location.reload();
+                            adminHomeSearch();
+                        },
+                        cancel: function (index, layero) {
+                            layer.closeAll();
+                        }
+                    });
+
+                } else {
+                    layer.open({
+                        type: 1,
+                        offset: '100px',
+                        title: ["提示", "font-size:12px;text-align:center"],
+                        shadeClose: false,
+                        closeBtn: 2,
+                        area: ['310px', '160px'],//宽高
+                        content: data.msg,
+                        time: 3000,
+                        btn: ["确定", "取消"]
+                    });
+                }
+            }
+        });
+    }
+}

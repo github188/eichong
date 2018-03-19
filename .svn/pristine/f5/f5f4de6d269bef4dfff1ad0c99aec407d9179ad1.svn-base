@@ -1,0 +1,49 @@
+package com.wanma.ims.service;
+
+import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
+
+import com.wanma.ims.common.domain.CarVinRelaDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.dto.BaseResultDTO;
+
+/**
+ * VIN码鉴权表
+ */
+public interface CarVinRelaService {
+
+	/**
+	 * VIN码鉴权表-新增
+	 * @param
+	 * */
+	public BaseResultDTO addCarVinRela(CarVinRelaDO carVinRelaDO) throws Exception;
+	
+	/**
+	* <p>Description: 取得VIN码鉴权表的数量</p>
+	* @param
+	* @author bingo
+	* @date 2017-7-5
+	 */
+	public Long getCarVinRelaCount(CarVinRelaDO carVinRelaDO) throws Exception;
+	
+	/**
+	 * VIN码鉴权表-查询
+	 * @param
+	 * */
+	public List<CarVinRelaDO> getCarVinRelaList(CarVinRelaDO carVinRelaDO);
+	
+	/**
+	 * 删除VIN码鉴权表
+	 * @param
+	 * */
+	public Integer removeCarVinRela(CarVinRelaDO carVinRelaDO) throws Exception;
+	
+	/**
+	* <p>Description: 导入VIN码</p>
+	* @param
+	* @author bingo
+	* @date 2017-7-6
+	 */
+	public BaseResultDTO importCarVinRela(MultipartFile file, CarVinRelaDO carVinRelaDO, UserDO loginUser) throws Exception;
+}

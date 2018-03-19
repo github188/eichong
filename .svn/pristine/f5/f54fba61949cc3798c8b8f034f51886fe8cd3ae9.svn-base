@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+					
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.SimpleOrderInfoMapper">
+	<resultMap type="SimpleChargeOrder" id="result_SimpleOrder">
+		<result property="pkChargingorder" column="pk_ChargingOrder" />
+		<result property="chorCode" column="chOr_Code" />
+		<result property="chorAppointmencode" column="chOr_AppointmenCode" />
+		<result property="chorPilenumber" column="chOr_PileNumber" />
+		<result property="chorUserid" column="chOr_UserId" />
+		<result property="chorType" column="chOr_Type" />
+		<result property="chorMoeny" column="chOr_Moeny" />
+		<result property="chorQuantityelectricity" column="chOr_QuantityElectricity" />
+		<result property="chorTimequantum" column="chOr_TimeQuantum" />
+		<result property="chorMuzzle" column="chOr_Muzzle" />
+		<result property="chorChargingstatus" column="chOr_ChargingStatus" />
+		<result property="chorTranstype" column="chOr_TransType" />
+		<result property="chorCreatedate" column="chOr_Createdate" />
+		<result property="chorUpdatedate" column="chOr_Updatedate" />
+		<result property="chorUsername" column="chOr_UserName" />
+		<result property="chorTransactionnumber" column="chOr_TransactionNumber" />
+		<result property="chorOrdertype" column="chOr_OrderType" />
+		<result property="chorParterUserLogo" column="chor_parter_user_logo" />
+		<result property="chorParterExtradata" column="chor_parter_extradata" />
+		<result property="beginChargetime" column="begin_charge_time" />
+		<result property="endChargetime" column="end_charge_time" />
+		<result property="chorServicemoney" column="chOr_ServiceMoney" />
+		<result property="chorChargemoney" column="chOr_ChargeMoney" />
+		<result property="startSoc" column="start_soc" />
+		<result property="endSoc" column="end_soc" />
+	</resultMap>
+	
+	<select id="getSimpleOrderList" parameterType="SimpleChargeOrder" resultMap="result_SimpleOrder">
+	    SELECT
+			a.pk_ChargingOrder,
+			a.chOr_Code,
+			a.begin_charge_time,
+			a.end_charge_time,
+			CONVERT(a.chOr_QuantityElectricity * 1000,DECIMAL (20, 2)) chOr_QuantityElectricity,
+			a.end_soc * 100 AS end_soc,
+			CONVERT (a.chOr_Moeny, DECIMAL(20, 2)) chOr_Moeny,
+			a.chOr_ChargingStatus,
+		  	CONVERT (b.chRe_FrozenAmt-a.chOr_Moeny, DECIMAL(20, 2)) chargeBalance
+		FROM
+			tbl_chargingorder a
+		LEFT JOIN tbl_chargingrecord b ON a.chOr_Code=b.chRe_Code
+		WHERE a.chOr_Code=#{chorCode} 
+	   
+	</select>	
+</mapper>

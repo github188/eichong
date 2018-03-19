@@ -1,0 +1,329 @@
+var cpyId = getUrlParam('cpyId');
+//点击取消返回公司主页
+$('#goCancel').on('click', function () {
+    window.location.href = 'company_home.html?cpyId=' + cpyId;
+})
+//页面加载进来，获取公司名称，加载等级列表
+$(document).ready(function () {
+    //获取公司名称,加载等级列表
+    var setChargeInfo = window.localStorage;
+    var companyName = setChargeInfo.getItem("remCompanyName");
+    $('#companyNameInfo').html(companyName);
+    getLevelInfo();
+})
+function getLevelInfo() {
+    $.ajax({
+        type: "post",
+        url: basePath + getRateUniqueRelaGroupUrl,
+        async: true,
+        data: {
+            cpyId: cpyId
+        },
+        success: function (req) {
+            if (req.success == true) {
+                var data = req.dataObject;
+                var listLi = "";
+                for (var i = 0; i < data.length; i++) {
+                    listLi += '<li class="col-sm-12 chargeLevelLi"><span class="col-sm-2" style="padding: 0">' + data[i].levelName
+                    + '</span><span class="col-sm-2" style="padding: 0"><input type="text" class="rateInput" name="" id="" value="' + data[i].rateinfoId
+                    + '" disabled="disabled" /></span><span class="rateBtn changePile">修改费率和电桩</span><span class="rateBtn savePile" style="display: none;">保存费率和电桩</span>'
+                    + '<span class="levelIdInput" style="display:none;"><input type="text" value="' + data[i].levelId + '" /></span>'
+                    + '<span class="storeInput" style="display: none;"><input type="text" value="' + data[i].pkId + '"/></span></li>';
+                }
+                $("#levelUl").html(listLi);
+            } else if (req.status == 9001) {
+                layer.closeAll();
+                layer.open({
+                    type: 1,
+                    offset: '100px',
+                    title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+                    shadeClose: false,
+                    closeBtn: 1,
+                    area: ['310px', '160px'],//宽高
+                    content: '会话超时，请重新登陆！',
+                    btn: ["确定"],
+                    yes: function (index, layero) {
+                        layer.closeAll();
+                        window.top.location.href = basePath + toLoginUrl;
+                    },
+                    cancel: function (index, layero) {
+                        layer.closeAll();
+                        window.top.location.href = basePath + toLoginUrl;
+                    }
+                });
+
+            }
+        }
+    });
+}
+//点击修改费率
+/*$("body").off("click", ".modifyRate").on("click", ".modifyRate", function () {
+ var that = this;
+ $(that).css("display", "none");
+ $(that).prev().children("input").removeAttr("disabled");
+ $(that).next().css("display", "inline-block");
+ })
+ //点击保存费率
+ $("body").off("click", ".saveRate").on("click", ".saveRate", function () {
+ var that = this;
+ layer.closeAll();
+ layer.open({
+ type: 1,
+ offset: '100px',
+ title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+ shadeClose: false,
+ closeBtn: 1,
+ area: ['310px', '180px'],//宽高
+ content: $(".setChargeLayer"),
+ btn: ["确定", "取消"],
+ yes: function () {
+ layer.closeAll();
+ setRate(that);
+ },
+ cancel: function () {
+ layer.closeAll();
+ }
+ });
+ })
+ function setRate(that) {
+ $(that).css("display", "none");
+ $(that).prev().prev().children("input").attr("disabled", "disabled");
+ var pkIdValue = $(that).next().next().next().children("input").val();
+ var objInput = $(that).prev().prev().children("input");
+ $(that).prev().css("display", "inline-block");
+ var rateinfoIdValue = $(objInput).val();
+ var reg = /^[0-9][\d]*$/;
+ if (!rateinfoIdValue) {
+ $(objInput).focus();
+ return false;
+ } else if (!reg.test(rateinfoIdValue)) {
+ $(objInput).focus();
+ return false;
+ }
+ $.ajax({
+ type: "post",
+ url: basePath + modifyRateUniqueRelaRateinfoIdUrl,
+ async: true,
+ data: {
+ rateinfoId: rateinfoIdValue,
+ pkId: pkIdValue
+ },
+ success: function (req) {
+ if (req.success == true) {
+ layer.closeAll();
+ layer.open({
+ type: 1,
+ offset: '100px',
+ title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+ shadeClose: false,
+ closeBtn: 1,
+ area: ['310px', '180px'],//宽高
+ content: "保存成功",
+ time: 2000,
+ btn: ["确定"]
+ });
+ } else {
+ layer.open({
+ type: 1,
+ offset: '100px',
+ title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+ shadeClose: false,
+ closeBtn: 1,
+ area: ['310px', '160px'],//宽高
+ content: req.msg,
+ time: 2000,
+ btn: ["确定"]
+ });
+ }
+ }
+ });
+ }*/
+//ztree电桩数据,需要修改参数
+var setting = {
+    check: {
+        enable: true,
+        chkboxType: {"Y": "ps", "N": "ps"}
+    },
+    data: {
+        simpleData: {
+            enable: true
+        },
+        key: {
+            checked: "isSelected",
+            children: "list",
+            name: "name"
+        }
+    }
+};
+
+$("body").off("click", ".changePile").on("click", ".changePile", function () {
+    var aaa = $(this).parent();
+    var index = aaa.index();
+    var that = this;
+    $(that).css("display", "none");
+    $(that).prev().children("input").removeAttr("disabled");
+    $(that).next().css("display", "inline-block");
+    var levelIdValue = $(that).next().next().children("input").val();
+    var rateinfoIdValue = $(that).prev().children("input").val();
+    var setRateInfo = window.localStorage;
+    setRateInfo.setItem("levelIdValue", levelIdValue);
+    setRateInfo.setItem("indexValue", index);
+    setRateInfo.setItem("oldRateinfoIdValue", rateinfoIdValue);
+    var zNodes = "";
+    getZNodes();
+    function getZNodes() {
+        $.ajax({
+            type: "post",
+            url: basePath + getRateStationAndPileUrl,
+            async: true,
+            data: {
+                cpyId: cpyId,
+                levelId: levelIdValue,
+                rateinfoId: rateinfoIdValue
+            },
+            success: function (req) {
+                if (req.success == true) {
+                    zNodes = req.dataObject;
+                    $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+                }
+            }
+        });
+    }
+})
+$(document).ready(function () {
+//点击保存上传数据
+    $("body").off("click", ".savePile").on("click", ".savePile", function () {
+        var that = this;
+        var rateinfoIdValue = $(that).prev().prev().children("input").val();
+        var levelIdValue = $(that).next().children("input").val();
+        var reg = /^[0-9][\d]*$/;
+        if (!rateinfoIdValue) {
+            layer.closeAll();
+            layer.open({
+                type: 1,
+                offset: '100px',
+                title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+                shadeClose: false,
+                closeBtn: 1,
+                area: ['310px', '180px'],//宽高
+                content: "请输入费率",
+                btn: ["确定"]
+            });
+            return false;
+        } else if (!reg.test(rateinfoIdValue)) {
+            layer.closeAll();
+            layer.open({
+                type: 1,
+                offset: '100px',
+                title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+                shadeClose: false,
+                closeBtn: 1,
+                area: ['310px', '180px'],//宽高
+                content: "输入费率有误，请重新输入费率",
+                btn: ["确定"]
+            });
+            return false;
+        }
+        $(that).css("display", "none");
+        $(that).prev().prev().children("input").attr("disabled", "disabled");
+        $(that).prev().css("display", "inline-block");
+
+        var setRateInfo = window.localStorage;
+        setRateInfo.setItem("rateinfoIdValue", rateinfoIdValue);
+        setChargePiles();
+    })
+    function setChargePiles() {
+        var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+        var nodes = treeObj.getCheckedNodes(true);
+        var idsArr = [];
+        var ids = '';
+        for (var i = 0; i < nodes.length; i++) {
+            var PileIds = nodes[i].id;
+            idsArr.push(PileIds);
+        }
+        for (var j = 0; j < idsArr.length; j++) {
+            if (idsArr[j]) {
+                ids += idsArr[j] + ',';
+            }
+        }
+        if (!ids) {
+            //layer.closeAll();
+            layer.open({
+                type: 1,
+                offset: '100px',
+                title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+                shadeClose: false,
+                closeBtn: 1,
+                area: ['310px', '180px'],//宽高
+                content: "您选择的充电桩为空，请重新选择充电桩",
+                btn: ["确定"]
+            });
+        } else {
+            var setRateInfo = window.localStorage;
+            var rateinfoId = setRateInfo.getItem("rateinfoIdValue");
+            var oldRateinfoIdValue = setRateInfo.getItem("oldRateinfoIdValue");
+            var levelId = setRateInfo.getItem("levelIdValue");
+            var obj = {
+                cpyId: cpyId,
+                rateinfoId: rateinfoId,
+                oldRateinfoId: oldRateinfoIdValue,
+                levelId: levelId,
+                electricpileIds: ids
+            };
+            $.ajax({
+                type: "post",
+                url: basePath + addRateUniqueRelaUrl,
+                async: true,
+                data: obj,
+                success: function (req) {
+                    if (req.success == true) {
+                        layer.closeAll();
+                        layer.open({
+                            type: 1,
+                            offset: '100px',
+                            title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+                            shadeClose: false,
+                            closeBtn: 1,
+                            area: ['310px', '180px'],//宽高
+                            content: "保存成功",
+                            btn: ["确定"],
+                            yes: function (index, layero) {
+                                window.location.href = 'company_home.html?cpyId=' + cpyId;
+                            },
+                            cancel: function (index, layero) {
+                                layer.closeAll();
+                                window.location.href = 'company_home.html?cpyId=' + cpyId;
+                            }
+                        });
+                    } else {
+                        layer.open({
+                            type: 1,
+                            offset: '100px',
+                            title: ["提示", "font-size:12px;text-align:left;padding-left:20px;"],
+                            shadeClose: false,
+                            closeBtn: 1,
+                            area: ['310px', '160px'],//宽高
+                            content: req.msg,
+                            btn: ["确定"],
+                            yes: function (index, layero) {
+                                var setRateInfo = window.localStorage;
+                                var oldRateinfoIdValue = setRateInfo.getItem("oldRateinfoIdValue");
+                                var index = setRateInfo.getItem("indexValue");
+                                $('#levelUl li').eq(index).find('span').eq(1).find('input').val(oldRateinfoIdValue);
+                                layer.closeAll();
+                            },
+                            cancel: function (index, layero) {
+                                var setRateInfo = window.localStorage;
+                                var oldRateinfoIdValue = setRateInfo.getItem("oldRateinfoIdValue");
+                                var index = setRateInfo.getItem("indexValue");
+                                $('#levelUl li').eq(index).find('span').eq(1).find('input').val(oldRateinfoIdValue);
+                                layer.closeAll();
+                            }
+                        });
+                    }
+
+                }
+            });
+        }
+    }
+});

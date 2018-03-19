@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.IntegralRulesExtensionsMapper">
+	<resultMap type="IntegralRulesExtensionsDO" id="integralRulesExtensions">
+		<result property="pkId" column="pk_id" />
+		<result property="integralRulesId" column="integral_rules_id" />
+		<result property="provinceId" column="province_id" />
+		<result property="cityId" column="city_id" />
+		<result property="powerStationId" column="powerStation_id" />
+		<result property="electricPileId" column="electricPile_id" />
+		<result property="couponVarietyId" column="coupon_variety_id" />
+		<result property="integralValue" column="integral_value" />
+	</resultMap>
+	
+	<select id="getIntegralRulesExtensionsCount" parameterType="IntegralRulesExtensionsDO" resultType="long">
+		SELECT
+			 COUNT(1)
+		FROM 
+			 tbl_integral_rules_extensions b
+		where 1=1
+		<if test="pkId != null">
+		  and b.pk_id = #{pkId}
+		</if>
+		<if test="integralRulesId != null">
+		  and b.integral_rules_id = #{integralRulesId}
+		</if>
+		<if test="provinceId != null">
+			and b.province_id = #{provinceId}
+		</if>
+		<if test="cityId != null">
+			and b.city_id = #{cityId}
+		</if>
+		<if test="powerStationId != null">
+			and b.powerStation_id = #{powerStationId}
+		</if>
+		<if test="electricPileId != null">
+		  and b.electricPile_id = #{electricPileId}
+		</if>
+		<if test="couponVarietyId != null">
+		  and b.coupon_variety_id = #{couponVarietyId}
+		</if>
+	</select>
+	
+	<select id="getIntegralRulesExtensionsList" parameterType="IntegralRulesExtensionsDO" resultMap="integralRulesExtensions">
+		SELECT
+			 pk_id,
+			 integral_rules_id,
+			 province_id,
+			 city_id,
+			 powerStation_id
+			 electricPile_id,
+			 coupon_variety_id,
+			 integral_value
+		FROM
+			tbl_integral_rules_extensions b
+		where 1=1
+		<if test="pkId != null">
+		  and b.pk_id = #{pkId}
+		</if>
+		<if test="integralRulesId != null">
+		  and b.integral_rules_id = #{integralRulesId}
+		</if>
+		<if test="provinceId != null">
+			and b.province_id = #{provinceId}
+		</if>
+		<if test="cityId != null">
+			and b.city_id = #{cityId}
+		</if>
+		<if test="powerStationId != null">
+			and b.powerStation_id = #{powerStationId}
+		</if>
+		<if test="electricPileId != null">
+		  and b.electricPile_id = #{electricPileId}
+		</if>
+		<if test="couponVarietyId != null">
+		  and b.coupon_variety_id = #{couponVarietyId}
+		</if>
+        <if test="pager!=null">limit #{pager.offset},#{pager.pageSize}</if>
+	</select>
+
+	<!-- 添加积分规则扩展表 -->
+	<insert id="addIntegralRulesExtensions" useGeneratedKeys="true" parameterType="IntegralRulesExtensionsDO" keyProperty="pkId">
+		INSERT INTO tbl_integral_rules_extensions
+		(pk_id,integral_rules_id,province_id, city_id, powerStation_id,electricPile_id,coupon_variety_id,integral_value)
+		VALUES
+		(null,#{integralRulesId},#{provinceId},#{cityId},#{powerStationId},#{electricPileId},#{couponVarietyId},#{integralValue})
+	</insert>
+	
+	<!-- 批量添加积分规则扩展表 -->
+	<insert id="batchAddIntegralRulesExtensions" parameterType="java.util.List">
+		insert into tbl_integral_rules_extensions values
+		<foreach collection="list" item="item" index="index" separator="," >
+			(null,#{item.integralRulesId},#{item.provinceId},#{item.cityId},#{item.powerStationId},#{item.electricPileId},#{item.couponVarietyId},#{item.integralValue})
+		</foreach>
+	</insert>
+	
+	<!-- 修改积分规则扩展表 -->
+	<update id="modifyIntegralRulesExtensions" parameterType="IntegralRulesExtensionsDO" >
+		UPDATE tbl_integral_rules_extensions
+		SET integral_rules_id = #{integralRulesId},
+		province_id = #{provinceId},
+		city_id = #{cityId},
+		powerStation_id = #{powerStationId},
+		electricPile_id = #{electricPileId},
+		coupon_variety_id = #{couponVarietyId},
+		integral_value = #{integralValue}
+		WHERE pk_id = #{pkId}
+	</update>
+
+	<!-- 删除积分规则扩展表 -->
+	<delete id="removeIntegralRulesExtensions" parameterType="Long">
+		DELETE FROM tbl_integral_rules_extensions WHERE integral_rules_id = #{integralRulesId}
+	</delete>
+
+	<select id="getIntegralListByIntegralIds" resultType="IntegralRulesExtensionsDO" parameterType="java.util.List">
+		select
+			pk_id,
+			integral_rules_id,
+			province_id,
+			city_id,
+			powerStation_id
+			electricPile_id,
+			coupon_variety_id,
+			integral_value
+		from tbl_integral_rules_extensions
+		<where>
+			<if test="list != null and list.size() > 0">
+				and integral_rules_id in
+				<foreach collection="list" item="id" open="(" close=")" separator=",">
+					#{id}
+				</foreach>
+			</if>
+		</where>
+	</select>
+</mapper>

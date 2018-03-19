@@ -1,0 +1,180 @@
+*{
+    margin:0;
+    padding:0;
+}
+body,html{
+    height:100%;
+}
+i{
+    font-style:normal;
+}
+li{
+    list-style: none;
+}
+.amap-logo{
+    display: none;
+}
+.amap-copyright{
+    display: none;!important;
+    opacity: 0;
+}
+.box{
+    width:200px;
+    height:150px;
+    position: absolute;
+    top:100px;
+    right:100px;
+    z-index:1000;
+}
+.model-select-box{
+    width:200px;
+    height:35px;
+    line-height:35px;
+    background:#fff;
+    border:1px solid #DCDCDC;
+    margin-bottom:10px;
+    text-indent:13px;
+    cursor:pointer;
+    position: relative;
+    font-size:14px;
+    color:#333;
+}
+.downRow{
+    display: inline-block;
+    width:32px;
+    height:35px;
+    border-left:1px solid #DCDCDC;
+    position: absolute;
+    top:0;
+    right:0;
+}
+.channel{
+    width:120px;
+    height:35px;
+    text-indent:15px;
+    color:#333;
+    font-size:14px;
+    border:1px solid #DCDCDC;
+    outline:none;
+    box-sizing: border-box;
+}
+.channel:focus{
+    border:1px solid #ff7d00;
+}
+.showBtn{
+    width:50px;
+    height:35px;
+    background:#ff7d00;
+    color:#fff;
+    text-align:center;
+    line-height:35px;
+    border:none;
+    outline:none;
+    border-radius:4px;
+    margin-left:5px;
+}
+.showBtn:hover{
+    background:#cc6400;
+}
+.historicalData{
+    min-width:200px;
+    margin-top:50px;
+    top:18%;
+    right:100px;
+    z-index:100;
+}
+.historicalData li, .realTimeData li,.chargiePoint li{
+    width:100%;
+    height:50px;
+    line-height:50px;
+    color:#fff;
+    font-size:14px;
+    border-bottom:1px dashed #fff;
+}
+.table_header{
+    width:100%;
+    height:50px;
+    line-height:50px;
+    color:#fff;
+    font-size:14px;
+    border-bottom:1px dashed #fff;
+    font-weight:700;
+}
+.realTimeData{
+    min-width:200px;
+    margin-top:40px;
+    top:50%;
+    right:100px;
+    z-index:100;
+}
+.chargiePoint{
+    min-width: 200px;
+    margin-top:40px;
+    top: 18%;
+    right: 100px;
+    z-index: 100;
+}
+.yes{
+    display:block;
+}
+.no{
+    display:none;
+}
+.chargeAmountOne{
+    width:100%;
+    height:200px;
+    margin-top:40px;
+    z-index:10;
+    color:#fff;
+}
+.chargeAmountTwo{
+    padding:10px;
+    margin-top:40px;
+    font-size:12px;
+    color:#fff;
+    height:184px;
+    background:rgb(56, 56, 56);
+    overflow:hidden;
+}
+#queryBtn{
+    width: 80px;
+    height: 30px;
+    text-align: center;
+    line-height: 8px;
+    border-radius: 4px;
+    color: #fff;
+    background: #ff7d00;
+    float: right;
+    font-size: 15px;
+    border:none;
+    position: absolute;
+    top:50px;
+    right:0px;
+    z-index:1000;
+    outline:none;
+}
+#queryBtn:hover{
+    background: #c76303;
+    cursor: pointer;
+}
+.beginData{
+    width:100%;
+    height:100%;
+    background:#383838;
+}
+.beginData li{
+    width:100%;
+    height:20px;
+    line-height:20px;
+    text-align:center;
+    font-size:12px;
+}
+.beginData1 li i{
+    padding:5px 3px;
+}
+.beginData1 li{
+    padding:10px 0 10px 0;
+}
+#chargeAmountOne{
+    background:#383838;
+}

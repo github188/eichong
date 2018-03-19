@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.web.dao.WebFavoriteMapper">
+
+	<resultMap id="tblFavoriteResultMap" type="TblFavorite">
+		<id property="pkFavorite" column="pk_Favorite" />
+		<result property="favoProductid" column="favo_ProductId" />
+		<result property="favoUserid" column="favo_UserId" />
+		<result property="favoCreatetime" column="favo_CreateTime" />
+		<result property="favoCreatedate" column="favo_Createdate" />
+		<result property="favoUpdatedate" column="favo_Updatedate" />
+	</resultMap>
+	<resultMap id="pageResultMap" type="java.util.HashMap"
+		extends="tblFavoriteResultMap"></resultMap>
+	<resultMap id="findResultMap" type="java.util.HashMap"
+		extends="tblFavoriteResultMap"></resultMap>
+
+	<insert id="insert" parameterType="TblFavorite">
+		insert into tbl_Favorite (
+		pk_Favorite,
+		favo_ProductId,
+		favo_UserId,
+		favo_CreateTime,
+		favo_Createdate,
+		favo_Updatedate
+		)values (
+		#{pkFavorite},
+		#{favoProductid},
+		#{favoUserid},
+		#{favoCreatetime},
+		#{favoCreatedate},
+		#{favoUpdatedate}
+		)
+	</insert>
+
+	<update id="update" parameterType="TblFavorite">
+		update tbl_Favorite set
+		pk_Favorite=#{pkFavorite},
+		favo_ProductId=#{favoProductid},
+		favo_UserId=#{favoUserid},
+		favo_CreateTime=#{favoCreatetime},
+		favo_Createdate=#{favoCreatedate},
+		favo_Updatedate=#{favoUpdatedate}
+		where
+		pk_Favorite=#{pkFavorite} 
+	</update>
+
+	<delete id="delete" parameterType="map">
+		delete from
+		tbl_Favorite
+		where
+		pk_Favorite=#{pkFavorite} 
+	</delete>
+
+	<select id="get" parameterType="map" resultMap="tblFavoriteResultMap">
+		select
+		pk_Favorite,
+		favo_ProductId,
+		favo_UserId,
+		favo_CreateTime,
+		favo_Createdate,
+		favo_Updatedate
+		from tbl_Favorite
+		where
+		pk_Favorite=#{pkFavorite} 
+	</select>
+
+	<select id="findOne" parameterType="map" resultMap="findResultMap">
+		select
+		pk_Favorite,
+		favo_ProductId,
+		favo_UserId,
+		favo_CreateTime,
+		favo_Createdate,
+		favo_Updatedate
+		from tbl_Favorite
+		where
+		pk_Favorite=#{pkFavorite} 
+	</select>
+
+	<select id="find" parameterType="map" resultMap="findResultMap">
+		select
+		pk_Favorite,
+		favo_ProductId,
+		favo_UserId,
+		favo_CreateTime,
+		favo_Createdate,
+		favo_Updatedate
+		from tbl_Favorite
+		<where>
+			<if test="pkFavorite != null">
+				pk_Favorite=#{pkFavorite}
+	     </if>
+			<if test="favoProductid != null">
+				and favo_ProductId=#{favoProductid}
+	     </if>
+			<if test="favoUserid != null">
+				and favo_UserId=#{favoUserid}
+	     </if>
+			<if test="favoCreatetime != null">
+				and favo_CreateTime=#{favoCreatetime}
+	     </if>
+			<if test="favoCreatedate != null">
+				and favo_Createdate=#{favoCreatedate}
+	     </if>
+			<if test="favoUpdatedate != null">
+				and favo_Updatedate=#{favoUpdatedate}
+	     </if>
+		</where>
+	</select>
+
+	<select id="findFavoriteByUserId" parameterType="map" resultType="java.util.HashMap">
+		SELECT 
+		fte.pk_Favorite favoriteId,
+		pdt.pk_Product productId,
+		pdt.prod_ProductImage favoriteImage,
+		pdt.prod_ProductName favoriteName,
+		pdt.prod_ProductPrice favoriteProductPrice,
+		pdt.prod_MarketPrice favoriteMarketPrice,
+		pdt.prod_StockQuantity favoriteStockQuantity,
+		pdt.prod_ProductTag favoriteProductTag
+		from 
+		tbl_Favorite fte, tbl_Product pdt
+		<where>
+			fte.favo_ProductId=pdt.pk_Product
+			<if test="userId != null">
+				and fte.favo_UserId=#{userId}
+	     	</if>
+		</where>
+		order by
+		fte.favo_CreateTime desc
+		limit #{pageNumber},#{pageNum}
+	</select>
+	<select id="countFavorite" parameterType="map" resultType="long">
+		SELECT count(*) from tbl_Favorite fte, tbl_Product pdt
+		<where>
+			fte.favo_ProductId=pdt.pk_Product
+			<if test="userId != null">
+				and fte.favo_UserId=#{userId}
+	     	</if>
+		</where>
+	</select>
+	
+	<select id="page" parameterType="map" resultMap="pageResultMap">
+		select
+		pk_Favorite,
+		favo_ProductId,
+		favo_UserId,
+		favo_CreateTime,
+		favo_Createdate,
+		favo_Updatedate
+		from tbl_Favorite
+		<where>
+			<if test="pkFavorite != null">
+				pk_Favorite=#{pkFavorite}
+	     </if>
+			<if test="favoProductid != null">
+				and favo_ProductId=#{favoProductid}
+	     </if>
+			<if test="favoUserid != null">
+				and favo_UserId=#{favoUserid}
+	     </if>
+			<if test="favoCreatetime != null">
+				and favo_CreateTime=#{favoCreatetime}
+	     </if>
+			<if test="favoCreatedate != null">
+				and favo_Createdate=#{favoCreatedate}
+	     </if>
+			<if test="favoUpdatedate != null">
+				and favo_Updatedate=#{favoUpdatedate}
+	     </if>
+		</where>
+	</select>
+</mapper> 

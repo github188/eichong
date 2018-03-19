@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.InitialMapper">
+   
+   <!-- 省 -->
+   <select id="selectProvinceList" parameterType="map" resultType="ProvinceDO">
+		select
+			province_id provinceId,
+			province_name provinceName,
+			tip_electricity tipElectricity,
+			peak_electricity peakElectricity,
+			flat_electricity flatElectricity,
+			valley_electricity vallyElectricity
+		from tb_m_province
+		<where>
+			<if test="provinceId!=null and provinceId !=''">
+				and province_id=#{provinceId}
+			</if>
+		</where>
+		order by last_update_date desc
+	</select>
+	<!-- 市 -->
+	<select id="selectCityList" parameterType="map" resultType="cityDO">
+		select
+			province_id provinceId,
+			city_id cityId,
+			city_name cityName,
+			hot_flag hotFlag,
+			serviceLimit
+		from tb_m_city
+		<where>
+			<if test="provinceId!=null and provinceId !=''">
+				and province_id=#{provinceId}
+			</if>
+			<if test="cityId!=null and cityId !=''">
+				and city_id=#{cityId}
+			</if>
+		</where>
+	</select>
+	<!-- 区 -->
+	<select id="selectAreaList" parameterType="map" resultType="AreaDO">
+		select
+			province_id provinceId,
+			city_id cityId,
+			area_id areaId,
+			area_name areaName,
+			hot_flag hotFlag,
+			delete_flag deleteFlag
+		from tb_m_area
+		<where>
+			<if test="provinceId!=null and provinceId !=''">
+				and PROVINCE_ID=#{provinceId}
+			</if>
+			<if test="cityId!=null and cityId !=''">
+				and CITY_ID=#{cityId}
+			</if>
+			<if test="areaId!=null and areaId !=''">
+				and area_id=#{areaId}
+			</if>
+		</where>
+	</select>
+</mapper>

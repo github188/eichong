@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.web.dao.WebUserinfoMapper">
+
+	<resultMap id="tblUserinfoResultMap" type="TblUserinfo">
+		<id property="pkUserinfo" column="pk_UserInfo" />
+		<result property="usinGroupid" column="usIn_GroupID" />
+		<result property="usinUsername" column="usIn_UserName" />
+		<result property="usinPhone" column="usIn_Phone" />
+		<result property="usinFacticityname" column="usIn_FacticityName" />
+		<result property="usinSex" column="usIn_Sex" />
+		<result property="usinIccode" column="usIn_ICcode" />
+		<result property="usinAccountbalance" column="usIn_AccountBalance" />
+		<result property="usinBirthdate" column="usIn_Birthdate" />
+		<result property="usinEmail" column="usIn_Email" />
+		<result property="usinDrivinglicense" column="usIn_DrivingLicense" />
+		<result property="usinAcura" column="usIn_Acura" />
+		<result property="usinIntegrate" column="usIn_Integrate" />
+		<result property="usinHeadimage" column="usIn_HeadImage" />
+		<result property="usinMembercode" column="usIn_MemberCode" />
+		<result property="usinUseraddress" column="usIn_UserAddress" />
+		<result property="usinUserstatus" column="usIn_UserStatus" />
+		<result property="usinPassword" column="usIn_Password" />
+		<result property="usinCreatedate" column="usIn_Createdate" />
+		<result property="usinUpdatedate" column="usIn_Updatedate" />
+		<result property="usinPlatenumber" column="usIn_PlateNumber" />
+		<result property="usinVehiclenumbe" column="usIn_VehicleNumbe" />
+		<result property="usinRegistetype" column="usIn_RegisteType" />
+		<result property="usInCarCompanyId" column="usIn_carCompany_id" />
+		<result property="usinCarinfoId" column="usIn_carinfo_id" />
+	</resultMap>
+	<resultMap id="pageResultMap" type="java.util.HashMap"
+		extends="tblUserinfoResultMap"></resultMap>
+	<resultMap id="findResultMap" type="java.util.HashMap"
+		extends="tblUserinfoResultMap"></resultMap>
+
+	<insert id="insert" parameterType="TblUserinfo"
+		useGeneratedKeys="true" keyProperty="pkUserinfo">
+		insert into tbl_UserInfo (
+		pk_UserInfo,
+		usIn_GroupID,
+		usIn_UserName,
+		usIn_Phone,
+		usIn_FacticityName,
+		usIn_UserStatus,
+		usIn_Password,
+		usIn_Createdate,
+		usIn_Updatedate,
+		usIn_RegisteType,
+		usIn_carCompany_id,
+		usIn_carinfo_id
+		)values (
+		#{pkUserinfo},
+		#{usinGroupid},
+		#{usinUsername},
+		#{usinPhone},
+		#{usinFacticityname},
+		#{usinUserstatus},
+		#{usinPassword},
+		#{usinCreatedate},
+		#{usinUpdatedate},
+		#{usinRegistetype},
+		#{usInCarCompanyId},
+		#{usinCarinfoId}
+		)
+	</insert>
+
+	<update id="update" parameterType="TblUserinfo">
+		update tbl_UserInfo set
+		pk_UserInfo=#{pkUserinfo},
+		<!--usIn_GroupID=#{usinGroupid},拜托用不到的别乱改-->
+		<!--usIn_UserName=#{usinUsername},-->
+		usIn_FacticityName=#{usinFacticityname},
+		usIn_Sex=#{usinSex},
+		usIn_ICcode=#{usinIccode},
+		usIn_Birthdate=#{usinBirthdate},
+		usIn_Email=#{usinEmail},
+		usIn_DrivingLicense=#{usinDrivinglicense},
+		usIn_Acura=#{usinAcura},
+		<!--usIn_HeadImage=#{usinHeadimage},-->
+		usIn_MemberCode=#{usinMembercode},
+		usIn_UserAddress=#{usinUseraddress},
+		usIn_PlateNumber=#{usinPlatenumber},
+		usIn_VehicleNumbe=#{usinVehiclenumbe},
+		usIn_carCompany_id=#{usInCarCompanyId},
+		usIn_carinfo_id=#{usinCarinfoId}
+		where
+		pk_UserInfo=#{pkUserinfo}
+	</update>
+ <update id="upgradeoUser" parameterType="TblUserinfo">
+		update tbl_UserInfo set
+		usIn_UserStatus=#{usinUserstatus}
+		where
+		pk_UserInfo=#{pkUserinfo}
+	</update>
+	<delete id="delete" parameterType="map">
+		delete from
+		tbl_UserInfo
+		where
+		pk_UserInfo=#{pkUserinfo} 
+	</delete>
+
+	<!-- 根据id获取用户信息 -->
+	<select id="get" parameterType="map" resultMap="tblUserinfoResultMap">
+		select
+		pk_UserInfo,
+		usIn_GroupID,
+		usIn_UserName,
+		usIn_Phone,
+		usIn_FacticityName,
+		usIn_Sex,
+		usIn_ICcode,
+		usIn_AccountBalance,
+		usIn_Birthdate,
+		usIn_Email,
+		usIn_DrivingLicense,
+		usIn_Acura,
+		usIn_Integrate,
+		getFullPath('userAvatar',pk_UserInfo) usIn_HeadImage,
+		usIn_MemberCode,
+		usIn_UserAddress,
+		usIn_UserStatus,
+		usIn_Password,
+		usIn_Createdate,
+		usIn_Updatedate,
+		usIn_PlateNumber,
+		usIn_VehicleNumbe,
+		usIn_RegisteType,
+		usIn_carCompany_id,
+		usIn_carinfo_id
+		from tbl_UserInfo
+		where
+		pk_UserInfo=#{pkUserinfo} 
+	</select>
+
+	<select id="findOne" parameterType="map" resultMap="findResultMap">
+		select
+		pk_UserInfo,
+		usIn_GroupID,
+		usIn_UserName,
+		usIn_Phone,
+		usIn_FacticityName,
+		usIn_Sex,
+		usIn_ICcode,
+		usIn_AccountBalance,
+		usIn_Birthdate,
+		usIn_Email,
+		usIn_DrivingLicense,
+		usIn_Acura,
+		usIn_Integrate,
+		usIn_HeadImage,
+		usIn_MemberCode,
+		usIn_UserAddress,
+		usIn_UserStatus,
+		usIn_Password,
+		usIn_Createdate,
+		usIn_Updatedate,
+		usIn_PlateNumber,
+		usIn_VehicleNumbe,
+		usIn_RegisteType,
+		usIn_carCompany_id,
+		usIn_carinfo_id
+		from tbl_UserInfo
+		where
+		pk_UserInfo=#{pkUserinfo} 
+	</select>
+
+	<select id="find" parameterType="map" resultMap="findResultMap">
+		select
+		pk_UserInfo,
+		usIn_GroupID,
+		usIn_UserName,
+		usIn_Phone,
+		usIn_FacticityName,
+		usIn_Sex,
+		usIn_ICcode,
+		usIn_AccountBalance,
+		usIn_Birthdate,
+		usIn_Email,
+		usIn_DrivingLicense,
+		usIn_Acura,
+		usIn_Integrate,
+		usIn_HeadImage,
+		usIn_MemberCode,
+		usIn_UserAddress,
+		usIn_UserStatus,
+		usIn_Password,
+		usIn_Createdate,
+		usIn_Updatedate,
+		usIn_PlateNumber,
+		usIn_VehicleNumbe,
+		usIn_RegisteType,
+		usIn_carCompany_id,
+		usIn_carinfo_id
+		from tbl_UserInfo
+		<where>
+			<if test="pkUserinfo != null">
+				pk_UserInfo=#{pkUserinfo}
+	     </if>
+			<if test="usinGroupid != null">
+				and usIn_GroupID=#{usinGroupid}
+	     </if>
+			<if test="usinUsername != null">
+				and usIn_UserName=#{usinUsername}
+	     </if>
+			<if test="usinPhone != null">
+				and usIn_Phone=#{usinPhone}
+	     </if>
+			<if test="usinFacticityname != null">
+				and usIn_FacticityName=#{usinFacticityname}
+	     </if>
+			<if test="usinSex != null">
+				and usIn_Sex=#{usinSex}
+	     </if>
+			<if test="usinIccode != null">
+				and usIn_ICcode=#{usinIccode}
+	     </if>
+			<if test="usinAccountbalance != null">
+				and usIn_AccountBalance=#{usinAccountbalance}
+	     </if>
+			<if test="usinBirthdate != null">
+				and usIn_Birthdate=#{usinBirthdate}
+	     </if>
+			<if test="usinEmail != null">
+				and usIn_Email=#{usinEmail}
+	     </if>
+			<if test="usinDrivinglicense != null">
+				and usIn_DrivingLicense=#{usinDrivinglicense}
+	     </if>
+			<if test="usinAcura != null">
+				and usIn_Acura=#{usinAcura}
+	     </if>
+			<if test="usinIntegrate != null">
+				and usIn_Integrate=#{usinIntegrate}
+	     </if>
+			<if test="usinHeadimage != null">
+				and usIn_HeadImage=#{usinHeadimage}
+	     </if>
+			<if test="usinMembercode != null">
+				and usIn_MemberCode=#{usinMembercode}
+	     </if>
+			<if test="usinUseraddress != null">
+				and usIn_UserAddress=#{usinUseraddress}
+	     </if>
+			<if test="usinUserstatus != null">
+				and usIn_UserStatus=#{usinUserstatus}
+	     </if>
+			<if test="usinPassword != null">
+				and usIn_Password=#{usinPassword}
+	     </if>
+			<if test="usinCreatedate != null">
+				and usIn_Createdate=#{usinCreatedate}
+	     </if>
+			<if test="usinUpdatedate != null">
+				and usIn_Updatedate=#{usinUpdatedate}
+	     </if>
+			<if test="usinPlatenumber != null">
+				and usIn_PlateNumber=#{usinPlatenumber}
+	     </if>
+			<if test="usinVehiclenumbe != null">
+				and usIn_VehicleNumbe=#{usinVehiclenumbe}
+	     </if>
+	     <if test="usinRegistetype != null">
+				and usIn_RegisteType=#{usinRegistetype}
+	     </if>
+		</where>
+	</select>
+
+	<select id="page" parameterType="map" resultMap="pageResultMap">
+		select
+		pk_UserInfo,
+		usIn_GroupID,
+		usIn_UserName,
+		usIn_Phone,
+		usIn_FacticityName,
+		usIn_Sex,
+		usIn_ICcode,
+		usIn_AccountBalance,
+		usIn_Birthdate,
+		usIn_Email,
+		usIn_DrivingLicense,
+		usIn_Acura,
+		usIn_Integrate,
+		usIn_HeadImage,
+		usIn_MemberCode,
+		usIn_UserAddress,
+		usIn_UserStatus,
+		usIn_Password,
+		usIn_Createdate,
+		usIn_Updatedate,
+		usIn_PlateNumber,
+		usIn_VehicleNumbe,
+		usIn_RegisteType,
+		usIn_carCompany_id,
+		usIn_carinfo_id
+		from tbl_UserInfo
+		<where>
+			<if test="pkUserinfo != null">
+				pk_UserInfo=#{pkUserinfo}
+	     </if>
+			<if test="usinGroupid != null">
+				and usIn_GroupID=#{usinGroupid}
+	     </if>
+			<if test="usinUsername != null">
+				and usIn_UserName=#{usinUsername}
+	     </if>
+			<if test="usinPhone != null">
+				and usIn_Phone=#{usinPhone}
+	     </if>
+			<if test="usinFacticityname != null">
+				and usIn_FacticityName=#{usinFacticityname}
+	     </if>
+			<if test="usinSex != null">
+				and usIn_Sex=#{usinSex}
+	     </if>
+			<if test="usinIccode != null">
+				and usIn_ICcode=#{usinIccode}
+	     </if>
+			<if test="usinAccountbalance != null">
+				and usIn_AccountBalance=#{usinAccountbalance}
+	     </if>
+			<if test="usinBirthdate != null">
+				and usIn_Birthdate=#{usinBirthdate}
+	     </if>
+			<if test="usinEmail != null">
+				and usIn_Email=#{usinEmail}
+	     </if>
+			<if test="usinDrivinglicense != null">
+				and usIn_DrivingLicense=#{usinDrivinglicense}
+	     </if>
+			<if test="usinAcura != null">
+				and usIn_Acura=#{usinAcura}
+	     </if>
+			<if test="usinIntegrate != null">
+				and usIn_Integrate=#{usinIntegrate}
+	     </if>
+			<if test="usinHeadimage != null">
+				and usIn_HeadImage=#{usinHeadimage}
+	     </if>
+			<if test="usinMembercode != null">
+				and usIn_MemberCode=#{usinMembercode}
+	     </if>
+			<if test="usinUseraddress != null">
+				and usIn_UserAddress=#{usinUseraddress}
+	     </if>
+			<if test="usinUserstatus != null">
+				and usIn_UserStatus=#{usinUserstatus}
+	     </if>
+			<if test="usinPassword != null">
+				and usIn_Password=#{usinPassword}
+	     </if>
+			<if test="usinCreatedate != null">
+				and usIn_Createdate=#{usinCreatedate}
+	     </if>
+			<if test="usinUpdatedate != null">
+				and usIn_Updatedate=#{usinUpdatedate}
+	     </if>
+			<if test="usinPlatenumber != null">
+				and usIn_PlateNumber=#{usinPlatenumber}
+	     </if>
+			<if test="usinVehiclenumbe != null">
+				and usIn_VehicleNumbe=#{usinVehiclenumbe}
+	     </if>
+	       <if test="usinRegistetype != null">
+				and usIn_RegisteType=#{usinRegistetype}
+	     </if> 
+		</where>
+	</select>
+
+	<!-- 根据手机号码取得用户ID -->
+	<select id="getUserByMobile" parameterType="String" resultType="String">
+		select pk_UserInfo from tbl_UserInfo where usIn_UserStatus!=2 and
+		usIn_Phone=#{usinPhone}
+	</select>
+	<!-- 根据userName获取用户信息 -->
+	<select id="getUserByPhone" parameterType="map" resultMap="tblUserinfoResultMap">
+		select
+		pk_UserInfo,
+		usIn_GroupID,
+		usIn_UserName,
+		usIn_Phone,
+		usIn_FacticityName,
+		usIn_Sex,
+		usIn_ICcode,
+		usIn_AccountBalance,
+		usIn_Birthdate,
+		usIn_Email,
+		usIn_DrivingLicense,
+		usIn_Acura,
+		usIn_Integrate,
+		getFullPath('userAvatar',pk_UserInfo) usIn_HeadImage,		
+		usIn_MemberCode,
+		usIn_UserAddress,
+		usIn_UserStatus,
+		usIn_Password,
+		usIn_Createdate,
+		usIn_Updatedate,
+		usIn_PlateNumber,
+		usIn_VehicleNumbe,
+		usIn_RegisteType,
+		usIn_carCompany_id,
+		usIn_carinfo_id
+		from tbl_UserInfo
+		where
+		usIn_Phone=#{usinPhone} 
+	</select>
+
+	<!-- 取得用户 记录数 -->
+	<select id="getUserCountByPassword" parameterType="map"
+		resultType="int">
+		select count(pk_UserInfo) from tbl_UserInfo where
+		usIn_UserStatus !=2 and usIn_Phone=#{usinPhone} and usIn_Password =
+		#{usinPassword}
+	</select>
+
+	<!-- 判断用户是否存在 -->
+	<select id="userIsExist" parameterType="String" resultType="int">
+		select count(pk_UserInfo) from tbl_UserInfo where
+		usIn_Phone=#{usinPhone}
+	</select>
+	<!-- 重置密码 -->
+	<update id="resetPasswrod" parameterType="map">
+		update tbl_UserInfo set
+		usIn_Password = #{usinPassword} where usIn_Phone=#{usinPhone}
+	</update>
+
+	<update id="userRecharge" parameterType="TblUserinfo">
+		update tbl_UserInfo set
+		usIn_AccountBalance=#{usinAccountbalance}
+		where
+		pk_UserInfo=#{pkUserinfo}
+	</update>
+	<update id="updateDeviceId" parameterType="TblUserinfo">
+		update tbl_UserInfo set
+		usIn_Device_Id=#{usInDeviceId}
+		where
+		pk_UserInfo=#{pkUserinfo}
+	</update>
+</mapper> 

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.PowerStationStatisticMapper">
+
+    <!-- 实时监控 -->
+    <!-- 充电点地图 -->
+    <select id="selectElectricPileMap" resultType="java.util.Map">
+        SELECT
+            pile.elPi_OwnCityCode cityCode,
+            city.CITY_NAME cityName,
+            COUNT(DISTINCT pile.elPi_RelevancePowerStation) powerStationNum,
+            COUNT(1) electricPileNum
+        FROM tbl_electricpile pile INNER JOIN tb_m_city city ON pile.elPi_OwnCityCode = city.CITY_ID
+        GROUP BY pile.elPi_OwnCityCode
+    </select>
+
+    <sql id="condition">
+        <where>
+            <if test="powerStationName != null and powerStationName != ''">
+                and power.powerStation_name like "%"#{powerStationName}"%"
+            </if>
+            <if test="provinceCode != null and provinceCode != ''">
+                and power.elPi_OwnProvinceCode = #{provinceCode}
+            </if>
+            <if test="cityCode != null and cityCode != ''">
+                and power.city_code = #{cityCode}
+            </if>
+            <if test="areaCode != null and areaCode != ''">
+                and power.area_code = #{areaCode}
+            </if>
+        </where>
+    </sql>
+
+    <select id="selectPowerStationMap" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+        power.powerStation_id powerStationId,
+        power.powerStation_name powerStationName,
+        power.address address,
+        power.longitude longitude,
+        power.latitude latitude,
+        a.communicationNum communicationNum,
+        b.directNum directNum
+        FROM tbl_powerstation POWER
+        LEFT JOIN tbl_electricpile pile ON power.powerStation_id = pile.elPi_RelevancePowerStation
+        LEFT JOIN (SELECT elPi_RelevancePowerStation,COUNT(pk_ElectricPile) communicationNum FROM tbl_electricpile
+        WHERE elPi_ChargingMode = 5 GROUP BY elPi_RelevancePowerStation) a
+        ON a.elPi_RelevancePowerStation = power.powerStation_id
+        LEFT JOIN (SELECT elPi_RelevancePowerStation,COUNT(pk_ElectricPile) directNum FROM tbl_electricpile WHERE
+        elPi_ChargingMode = 14 GROUP BY elPi_RelevancePowerStation) b
+        ON b.elPi_RelevancePowerStation = power.powerStation_id
+        <include refid="condition"/>
+        GROUP BY powerStationId
+        <if test="pager!=null">
+            limit #{pager.offset},#{pager.pageSize}
+        </if>
+    </select>
+
+    <select id="countPowerStationMap" parameterType="java.util.Map" resultType="long">
+        SELECT COUNT(1) FROM tbl_powerstation power
+        <include refid="condition"/>
+    </select>
+
+    <select id="selectPowerStationPileHeadDetail" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+        power.powerStation_name powerStationName,
+        power.address address,
+        power.phone phone,
+        pileHead.pk_ElectricpileHead headId,
+        pileHead.ePHe_ElectricpileHeadState headStatus,
+        pileHead.ePHe_ElectricpileHeadId headNum,
+        pileHead.ep_num pileNum,
+        pileHead.elPi_ChargingMode chargingMode,
+        pileHead.coCo_Content powerSize,
+        pileHead.elPi_ElectricPileCode epCode
+        FROM tbl_powerstation POWER
+        LEFT JOIN (SELECT
+        pile.ep_num,pile.elPi_ChargingMode,pile.elPi_RelevancePowerStation,pile.elPi_PowerSize,head.*,config.coCo_Content,pile.elPi_ElectricPileCode
+        FROM tbl_electricpile pile,tbl_electricpilehead head,tbl_configcontent config
+        WHERE pile.pk_ElectricPile = head.pk_ElectricPile AND pile.elPi_PowerSize = config.pk_ConfigContent) pileHead ON
+        power.powerStation_id = pileHead.elPi_RelevancePowerStation
+        WHERE power.powerStation_id = #{powerStationId}
+        <if test="pager!=null">
+            limit #{pager.offset},#{pager.pageSize}
+        </if>
+    </select>
+
+    <select id="countPowerStationPileHeadDetail" parameterType="java.util.Map" resultType="long">
+        SELECT count(1)
+        FROM tbl_electricpilehead head
+        INNER JOIN tbl_electricpile pile ON pile.pk_ElectricPile = head.pk_ElectricPile
+        WHERE pile.elPi_RelevancePowerStation = #{powerStationId}
+    </select>
+
+    <select id="selectPowerStationPileHeadNum" parameterType="long" resultType="java.util.Map">
+        SELECT ePHe_ElectricpileHeadState headNumStatus, COUNT(1) num
+        FROM tbl_electricpilehead head
+            INNER JOIN tbl_electricpile pile ON pile.pk_ElectricPile = head.pk_ElectricPile
+        WHERE pile.elPi_RelevancePowerStation = #{powerStationId}
+        GROUP BY ePHe_ElectricpileHeadState
+    </select>
+
+    <select id="selectPowerStationCityMap" resultType="java.util.Map">
+        SELECT
+        power.latitude lat,
+        power.longitude lng,
+        IFNULL (pile.pileNum, 0) 'value',
+        1 'type'
+        FROM tbl_powerstation POWER
+        LEFT JOIN (SELECT pile.elPi_RelevancePowerStation ,COUNT(1) pileNum FROM tbl_electricpile pile GROUP BY pile.elPi_RelevancePowerStation) pile
+        ON power.powerStation_id = pile.elPi_RelevancePowerStation
+    </select>
+</mapper>

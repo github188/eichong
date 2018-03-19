@@ -1,0 +1,134 @@
+*{
+    margin:0;
+    padding:0;
+}
+html,body{
+    background:#f3f3f4;
+}
+li{
+    list-style: none;
+}
+i{
+    font-style:normal;
+}
+.container {
+    width: 98%;
+    padding: 24px 20px 20px 20px;
+}
+
+.formBlock {
+    width: 100%;
+    min-height: 90px;
+    height: auto !important;
+    /*overflow: hidden;*/
+    background: #FFFFFF;
+    padding: 35px 20px 20px 35px;
+}
+.contain{
+    width:285px;
+    height:auto;
+    background:#fff;
+    padding:0 20px 50px 20px;
+    margin:0;
+}
+.list{
+    width:100%;
+    height:58px;
+    line-height:58px;
+    border-bottom:1px solid #c9c9c9;
+}
+.list:first-child{
+    border-top:1px solid #c9c9c9;
+}
+.list .span{
+    display:inline-block;
+    width:95px;
+    margin-left:0;
+    font-size:14px;
+    color:#666;
+}
+.span2{
+    text-align:center;
+}
+.span3{
+    text-align:right;
+}
+.realTimeList{
+    float:left;
+    width:285px;
+    height:auto;
+    padding:0 20px;
+}
+.realTimeList .title{
+    width:285px;
+    height:70px;
+    border-top:4px solid #c9c9c9;
+    font-size:18px;
+    line-height:70px;
+    color:#ff7d00;
+    font-weight:900;
+    background: #fff;
+    padding:0 20px;
+}
+.stateList{
+    float:right;
+    width:81%;
+    height:auto;
+}
+.electricOnline{
+    width:100%;
+    height:152px;
+    background:#fff;
+    border-top:4px solid #c9c9c9;
+}
+.electricOnline .electricTop{
+    height:60px;
+    line-height:60px;
+    padding-left:20px;
+}
+.onlinesState{
+    font-size:15px;
+    font-weight:900;
+    color:#666;
+}
+.electric{
+    margin-left:20px;
+}
+.electricPile{
+    font-size:12px;
+    color:#ff7d00;
+}
+.line{
+    display:inline-block;
+    width:2px;
+    height:14px;
+    background:#808080;
+    position: absolute;
+    top:48px;
+}
+.muzzle{
+    font-size:12px;
+    color:#666;
+    margin-left:5px;
+}
+.electricPileDisplay{
+    padding-left:20px;
+    height:72px;
+
+}
+.electricFrame{
+    border:1px solid #DCDCDC;
+    height:100%;
+    display: flex;
+    margin:0;
+}
+.electricFrame li{
+    flex:1;
+    line-height:72px;
+    text-align:center;
+    font-size:14px;
+    font-weight:900;
+}
+.active{
+    color:#ff7d00;
+}

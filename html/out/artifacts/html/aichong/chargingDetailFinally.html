@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+			
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="blank" />
+		<meta name="format-detection" content="telephone=no" />
+		<title>充电结算</title>
+		<!--<link rel="stylesheet" type="text/css" href="dist/css/bootstrap.min.css"/>-->
+		<link rel="stylesheet" type="text/css" href="dist/css/bootstrap.css"/>
+		<link rel="stylesheet" type="text/css" href="css/base.css"/>
+		<link rel="stylesheet" type="text/css" href="css/chargingDetailFinally.css"/>
+		<!--[if lt IE 9]>
+			<script src="dist/js/html5shiv.min.js"></script>
+			<script src="dist/js/respond.min.js"></script>
+		<![endif]-->
+	</head>
+	<body>
+<!--第一块头部=======================================================-->
+<header class="navbar-fixed-top">
+	<div class="col-xs-2 headLeft" >
+		
+	</div>
+	<div class="col-xs-8 headCenter">
+		充电结束
+	</div>
+	<div class="col-xs-2 headRight">
+	</div>
+</header>
+<!--占位部分===================================================================-->
+<div class="occupied"></div>	
+<!--消费金额提示模块============================================================-->
+<div class="customerTip">
+	<div class="customerBlock" >
+		<span class="f28">实付金额（元）</span><br />
+		<span id="costPrice" class="costPrice">00.00</span>
+	</div>
+	<div class="customerBlockTip customerBlock" id="customerBlockTip" style="display: none;">
+		<!--<span class="f28">实付金额（元）</span><br />-->
+		<span id="" class="costPriceTip" style="color: #EC6941;font-size: 2.0rem;">本次消费已免单</span><br />
+	</div>
+</div>
+<!--充电订单详情=================================================================-->
+<div class="detailInfo">
+	<!--充电电费-->
+	<div class="baseHeight">
+		<div class="commentLeft">
+			充电电费
+		</div>
+		<div class="commentRight">
+			<span id="chorChargemoney"></span>元
+		</div>
+	</div>
+	<!--服务费-->
+	<div class="baseHeight">
+		<div class="commentLeft">
+			服务费
+		</div>
+		<div class="commentRight">
+			<span id="chorServicemoney"></span>元
+		</div>
+	</div>
+	<!--优惠券-->
+	<div class="baseHeight" style="border: 0;">
+		<div class="commentLeft">
+			优惠券
+		</div>
+		<div class="commentRight">
+			-<span id="couMoney"></span>元
+		</div>
+	</div>
+</div>
+<!--第二块-->
+<div class="detailInfo" style="margin-top: 1.2rem;">
+	<!--充电时长-->
+	<div class="baseHeight">
+		<div class="commentLeft">
+			充电时长
+		</div>
+		<div class="commentRight">
+			<span id="chargeTime"></span>
+			
+		</div>
+	 </div>
+	<!--充电电量-->
+	<div class="baseHeight">
+		<div class="commentLeft">
+			充电电量
+		</div>
+		<div class="commentRight">
+			<span id="chorQuantityelectricity"></span>kWh
+		</div>
+	</div>
+	<!--开始时间-->
+	<div class="baseHeight">
+		<div class="commentLeft">
+			开始时间
+		</div>
+		<div class="commentRight">
+			<span id="startDate"></span>
+		</div>
+	</div>
+	<!--结束时间-->
+	<div class="baseHeight" style="border: 0;">
+		<div class="commentLeft">
+			结束时间
+		</div>
+		<div class="commentRight">
+			<span id="endDate"></span>
+		</div>
+	</div>
+</div>
+<!--操作按钮================================================================-->
+<div class="lastBtn">
+	<a class="btn finishedBtn" id="finishedBtn">完成</a>
+	<a class="btn evaluateBtn" id="evaluateBtn">去评价</a>
+</div>
+	</body>
+	<script type="text/javascript" src="dist/js/jquery-1.11.0.js" ></script>
+	<script type="text/javascript">
+		$(function() {
+		    FastClick.attach(document.body);
+		});
+	</script>
+	<!--<script src="dist/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>-->
+	<script src="js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript" src="dist/js/bootstrap.js" ></script>
+	<script src="js/userinfo.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/url.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/chargingDetailFinally.js" type="text/javascript" charset="utf-8"></script>
+</html>

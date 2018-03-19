@@ -1,0 +1,45 @@
+package com.wanma.service.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.wanma.dao.TblChargOrderMapper;
+import com.wanma.model.TblChargingOrder;
+import com.wanma.service.TblChargingOrderService;
+
+@Service
+public class TblChargingOrderServiceImpl implements TblChargingOrderService{
+
+	@Autowired
+	private TblChargOrderMapper chargOrderMapper;
+	@Override
+	public void update(TblChargingOrder model){
+		chargOrderMapper.update(model);
+	}
+	@Override
+	public List<TblChargingOrder> getList(TblChargingOrder model) {
+		return chargOrderMapper.getList(model);
+	}
+	@Override
+	public TblChargingOrder selectOne(TblChargingOrder model) {
+		return chargOrderMapper.selectOne(model);
+	}
+	@Override
+	public TblChargingOrder getOderByOpenId(String openId) {
+		// TODO Auto-generated method stub
+		return chargOrderMapper.getOderByOpenId(openId);
+	}
+	@Override
+	public List<Map<String, Object>> getListGroupByPileNumByPsId(
+			TblChargingOrder odrModel) {
+		return chargOrderMapper.getListGroupByPileNumByPsId(odrModel);
+	}
+	@Override
+	public List<Map<String, Object>> getListGroupByHeadNoByPileNum(
+			TblChargingOrder odrModel) {
+		return chargOrderMapper.getListGroupByHeadNoByPileNum(odrModel);
+	}
+}

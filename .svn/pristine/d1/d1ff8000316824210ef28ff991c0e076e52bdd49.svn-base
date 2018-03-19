@@ -1,0 +1,106 @@
+var setting = {
+    check: {
+        enable: true,
+        chkboxType: {"Y": "s", "N": "s"}
+    },
+    data: {
+        simpleData: {
+            enable: true
+        },
+        key: {
+            checked: "isSelected",
+            children: "menuList",
+            name: "contents",
+            url: "imageUrl"
+        }
+    }
+};
+
+$(document).ready(function () {
+    var zNodes = "";
+    getZNodes();
+    function getZNodes() {
+        $.ajax({
+            type: "post",
+            url: basePath + getMeunTreeUrl,
+            async: true,
+            success: function (req) {
+                if (req.success == true) {
+                    zNodes = req.dataObject;
+                    zNodes.open = true;
+                    $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+                }
+            }
+        });
+    }
+
+    $('#submit').click(function () {
+        var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+        var nodes = treeObj.getCheckedNodes(true);
+        var menuIds = "";
+        for (var i = 0; i < nodes.length; i++) {
+            if (nodes[i].menuId != '') {
+                menuIds += nodes[i].menuId + ",";
+            }
+        }
+        menuIds = menuIds.substring(0, menuIds.length - 1);
+        addRole(menuIds);
+    });
+
+    //角色添加
+    function addRole(menuIds) {
+        var roleNameValue = $('input[name=roleName]').val();
+        if (roleNameValue == "") {
+            $('input[name=roleName]').focus();
+            $('input[name=roleName]').attr('placeholder', '请填写角色名称');
+            return;
+        }
+        $.ajax({
+            type: "post",
+            url: basePath + addRoleUrl,
+            async: true,
+            data: {
+                roleName: roleNameValue,
+                ids: menuIds
+            },
+            success: function (req) {
+                if (req.success == true) {
+                    layer.open({
+                        type: 1,
+                        offset: '100px',
+                        title: ["提示", "font-size:12px;text-align:center"],
+                        shadeClose: false,
+                        closeBtn: 2,
+                        area: ['310px', '160px'],//宽高
+                        content: req.msg,
+                        btn: ["确定", "取消"],
+                        yes: function (index, layero) {
+                            layer.closeAll();
+                            window.location.href = 'role_list.html';
+                        },
+                        cancel: function (index, layero) {
+                            layer.closeAll();
+                        }
+                    });
+                } else {
+                    layer.open({
+                        type: 1,
+                        offset: '100px',
+                        title: ["提示", "font-size:12px;text-align:center"],
+                        shadeClose: false,
+                        closeBtn: 2,
+                        area: ['310px', '160px'],//宽高
+                        content: req.msg,
+                        time: 3000,
+                        btn: ["确定", "取消"]
+                    });
+                }
+            }
+        });
+    }
+});
+$('#goback').click(function () {
+    window.location.href = 'role_list.html';
+});
+
+

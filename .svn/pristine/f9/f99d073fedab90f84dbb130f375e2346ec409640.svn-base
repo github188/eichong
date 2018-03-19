@@ -1,0 +1,113 @@
+package com.wanma.support.utils;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
+
+public class AesCBC {
+	/*
+	 * 加密用的Key 可以用26个字母和数字组成 此处使用AES-128-CBC加密模式，key需要为16位。
+	 */
+	private static String sKey = "sklhdflsjfsdgdeg";
+	private static String ivParameter = "cfbsdfgsdfxccvd1";
+	private static AesCBC instance = null;
+
+	private AesCBC() {
+
+	}
+
+	public static AesCBC getInstance() {
+		if (instance == null)
+			instance = new AesCBC();
+		return instance;
+	}
+
+	// 加密
+	public String encrypt(String sSrc, String encodingFormat, String sKey,
+			String ivParameter) throws Exception {
+		Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+		byte[] raw = sKey.getBytes();
+		SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
+		IvParameterSpec iv = new IvParameterSpec(ivParameter.getBytes());// 使用CBC模式，需要一个向量iv，可增加加密算法的强度
+		cipher.init(Cipher.ENCRYPT_MODE, skeySpec, iv);
+		byte[] encrypted = cipher.doFinal(sSrc.getBytes(encodingFormat));
+		return new BASE64Encoder().encode(encrypted);// 此处使用BASE64做转码。
+	}
+
+	// 解密
+	public String decrypt(String sSrc, String encodingFormat, String sKey,
+			String ivParameter) throws Exception {
+		try {
+			byte[] raw = sKey.getBytes("ASCII");
+			SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
+			Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+			IvParameterSpec iv = new IvParameterSpec(ivParameter.getBytes());
+			cipher.init(Cipher.DECRYPT_MODE, skeySpec, iv);
+			byte[] encrypted1 = new BASE64Decoder().decodeBuffer(sSrc);// 先用base64解密
+			byte[] original = cipher.doFinal(encrypted1);
+			String originalString = new String(original, encodingFormat);
+			return originalString;
+		} catch (Exception ex) {
+			return null;
+		}
+	}
+
+	public static void main(String[] args) throws Exception {
+
+		 System.out.println("加密后的字串是：" +
+		 AesCBC.getInstance().encrypt("{\"OperatorID\":\"425010765\",\"OperatorSecret\":\"38814A95B1EDDC8ADDA5B2BFA47C6481\"}",
+		 "utf-8", "1234567890abcdef", "1234567890abcdef"));
+		// System.out.println("加密后的字串是：" +
+		// AesCBC.getInstance().encrypt("{\"LastQueryTime\":\"2017-05-11 08:08:01\",\"PageNo\":\"1\",\"PageSize\":\"1\"}",
+		// "utf-8", "1234567890abcdef", "1234567890abcdef"));
+		// System.out.println("加密后的字串是：" +
+		// AesCBC.getInstance().encrypt("{\"StationIDs\":[\"252\",\"292\"]}",
+		// "utf-8", "1234567890abcdef", "1234567890abcdef"));
+		// System.out.println("加密后的字串是：" +
+		// AesCBC.getInstance().encrypt("{\"LastQueryTime\":\"\",\"PageNo\":\"1\",\"PageSize\":\"1\"}",
+		// "utf-8", "1234567890abcdef", "1234567890abcdef"));
+		// 解密
+		 String DeString =
+		 AesCBC.getInstance().decrypt("P1/F/NR6fTmwF0jBZ5zzSvSApYhm7LU9dE6Ejvd00zbRmeGnbgzzD0gwhLmDWRMbItxuJW9ChQUo\nRWzJpaEKqTclu+mByFcDyF+hrbEMH5YxQQr03iXSlrNdio2LkobgMLlqZYCEG8C0E6vhlDx0FSS7\no5lf4foaWI/NlJYj58O25MM540EvFPF3w4MB8gSn","utf-8","1234567890abcdef","1234567890abcdef");
+		// JSONObject jsonData =
+		// JSON.parseObject(AesCBC.getInstance().decrypt(params.get("Data"),"utf-8","1234567890abcdef","1234567890abcdef"));
+		 System.out.println("解密后的字串是：" + DeString);
+		// String a= "{\"StationIDs\":[\"252\",\"292\"]}";
+		/*
+		 * String[] b={"252","292"}; HashMap map =new HashMap();
+		 * map.put("StationIDs", b.toString()); System.out.println("解密后的字串是：" +
+		 * map); // System.out.println(JSON.parseObject(a)); String[] stationIDs
+		 * = (String[]) JSON.parseObject(map.toString()).get("StationIDs");
+		 * for(String psId:stationIDs){ System.out.println(psId);
+		 */
+		/*
+		 * String jiami=AesCBC.getInstance().encrypt("{StationIDs:\"252,253\"}",
+		 * "utf-8", "1234567890abcdef", "1234567890abcdef");
+		 * System.out.println("加密后的字串是：" +jiami );
+		 * 
+		 * 
+		 */
+		String jiemi = AesCBC
+				.getInstance()
+				.decrypt(
+						"sgYPmPZSC8FJcQf4ydWvCM+11AckuOprnDRdPt8IHriZkiGcBWvxB0DT6xFpBK1qovTf99TRXUXi\nVDTGE6RrChTmqsw/BFREFMlVnmOWH8Xg/DQx9Epbhzs3jE+OJ+QN",
+						"utf-8", "1234567890abcdeA", "1234567890abcdeB");
+		System.out.println("解密后的字串是：" + jiemi);
+		/*
+		 * JSONObject jsonData = JSON.parseObject(jiemi);
+		 * System.out.println(jsonData.get("StationIDs").toString());
+		 * 
+		 * 
+		 * String[] b=jsonData.get("StationIDs").toString().split(",");
+		 * for(String i:b){ System.out.println(i);
+		 * 
+		 * 
+		 * 
+		 * }
+		 */
+	}
+	
+}

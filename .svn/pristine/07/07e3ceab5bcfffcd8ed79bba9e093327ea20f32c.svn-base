@@ -1,0 +1,109 @@
+package com.wanma.service.impl;
+
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSONObject;
+import com.bluemobi.product.model.echarts.EchartsParamModel;
+import com.wanma.dao.CmsStatisticMapper;
+import com.wanma.web.support.utils.JsonUtil;
+
+@Service
+public class CmsEchartPeopleFromServiceImpl extends CmsEchartsServiceImpl {
+	@Autowired
+	private CmsStatisticMapper cmsStatisticMapper;
+
+	@Override
+	public void setData(JSONObject obj, EchartsParamModel paramsModel) {
+		setDate(obj, paramsModel);
+	}
+
+	private void setDate(JSONObject obj, EchartsParamModel paramsModel) {
+		List<Map<String, Object>> beanList = cmsStatisticMapper
+				.queryZcFromPeopleCountList(paramsModel);
+		String userId = paramsModel.getUserId();
+		// 报表样式JSON格式
+		if (beanList != null && beanList.size() > 0) {
+			JSONObject jsonModel = JsonUtil.getJsonObject(path
+					+ "/json/zcFromPeopleBar.json");
+			int initMonthLength = 12;
+			List<Object> monthList = new ArrayList<Object>();
+			List<Object> typeList = new ArrayList<Object>();
+			Map<String, Double> dataMap = new HashMap<String, Double>();
+			for (Map<String, Object> beanMap : beanList) {
+				monthList.add(beanMap.get("month"));
+				typeList.add(beanMap.get("zcfrom"));
+				dataMap.put(beanMap.get("month") + "" + beanMap.get("zcfrom"),
+						Double.valueOf(beanMap.get("count").toString()));
+
+			}
+			// X轴月份序列
+			Object[] monthGroup = makeBeginMonthGroup(monthList);
+			
+			Object[] monthGroupInner = makeGroup(monthList, initMonthLength);
+				
+			// 种类去重
+			
+			Set<Object> typeSet = new HashSet<Object>();
+			typeSet.addAll(typeList);
+			Object[] typeGroup = typeSet.toArray();
+			// Y轴数据
+			List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
+			List<Map<String, Object>> dataListTemp = new ArrayList<Map<String, Object>>();
+			for (Object type : typeGroup) {
+				makeData((String) type, monthGroup, dataMap, dataListTemp,userId);
+				makeData((String) type, monthGroupInner, dataMap, dataList,userId);
+			}
+			//分隔年月
+			//obj.put("year", remakeDate(monthGroup));
+			Map<String, Object> monthMap = new HashMap<String, Object>();
+			monthMap.put("type", "category");
+			monthMap.put("data", monthGroup);
+			jsonModel.put("innerMonthGroup",monthGroupInner);
+			jsonModel.put("xAxis", monthMap);
+			jsonModel.put("series", dataListTemp);
+			jsonModel.put("tempDataList",dataList);
+			obj.put("data1", jsonModel);
+		}
+	}
+	
+	/**
+	 * 组装消费数据，Y轴左轴为充值次数，右轴为充值金额
+	 * @param userId 
+	 * 
+	 * @param list
+	 * @param initLength
+	 * @return
+	 */
+	private void makeData(String type, Object[] monthGroup,
+			Map<String, Double> dataMap, List<Map<String, Object>> dataList, String userId) {
+		double[] dataGroupCount = new double[monthGroup.length];
+		DecimalFormat df = new DecimalFormat("#.00");
+		for (int i = 0; i < monthGroup.length; i++) {
+			Double dataCount = dataMap.get(monthGroup[i] + type);
+			
+			if (dataCount != null) {
+				dataGroupCount[i] = dataCount;
+			} else {
+				dataGroupCount[i] = 0;
+			}
+			if("8231".equals(userId)){//如果是演示账号
+				dataGroupCount[i] = Double.parseDouble(df.format(dataGroupCount[i]*5));
+			}
+		}
+		Map<String, Object> dataMapEachYleft = new HashMap<String, Object>();
+		dataMapEachYleft.put("name", type);
+		dataMapEachYleft.put("type", "bar");
+		dataMapEachYleft.put("data", dataGroupCount);
+		dataList.add(dataMapEachYleft);
+	}
+
+}

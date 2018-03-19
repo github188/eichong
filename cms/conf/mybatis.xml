@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<properties resource="jdbc.properties"/>
+	
+	<settings>
+		<setting name="useGeneratedKeys" value="true"/>
+		<setting name="mapUnderscoreToCamelCase" value="true"/>
+		<setting name="logImpl" value="LOG4J"/>
+		<setting name="mapUnderscoreToCamelCase" value="false"/>
+		<!-- 
+		<setting name="cacheEnabled" value="true"/>
+		<setting name="lazyLoadingEnabled" value="true"/>
+		<setting name="multipleResultSetsEnabled" value="true"/>
+		<setting name="useColumnLabel" value="true"/>
+		<setting name="useGeneratedKeys" value="false"/>
+		<setting name="autoMappingBehavior" value="PARTIAL"/>
+		<setting name="defaultExecutorType" value="SIMPLE"/>
+		<setting name="defaultStatementTimeout" value="25"/>
+		<setting name="safeRowBoundsEnabled" value="false"/>
+		<setting name="mapUnderscoreToCamelCase" value="false"/>
+		<setting name="localCacheScope" value="SESSION"/>
+		<setting name="jdbcTypeForNull" value="OTHER"/>
+		<setting name="lazyLoadTriggerMethods" value="equals,clone,hashCode,toString"/>
+		 -->
+	</settings>
+	
+	<typeAliases>
+		 <!-- 需要在实体类添加@Alias("别名") -->
+		<!-- <package name="com.bluemobi.product.model"/>
+		<package name="com.bluemobi.product.oauth.domain.user"/>
+		<package name="com.wanma.bean"/>-->
+		<package name="com.wanma.model"/>
+		<package name="com.pub.model"/>
+	</typeAliases>
+	
+	<plugins>
+		
+		<plugin interceptor="com.base.common.BaseMybatisInterceptor">
+			<property name="" value=""/>
+		</plugin>
+		 
+	</plugins> 
+	
+	<!-- 
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">
+				<property name="driver" value="${driver}" />
+				<property name="url" value="${url}" />
+				<property name="username" value="${username}" />
+				<property name="password" value="${password}" />
+			</dataSource>
+		</environment>
+		<environment id="production">
+			<transactionManager type="MANAGED">
+				<property name="closeConnection" value="false"/>
+			</transactionManager>
+			<dataSource type="POOLED">
+				<property name="driver" value="${driver}" />
+				<property name="url" value="${url}" />
+				<property name="username" value="${username}" />
+				<property name="password" value="${password}" />
+			</dataSource>
+		</environment>
+	</environments>
+	-->
+	<mappers>
+		<package name="com.gen.dao"/>
+		<package name="com.wbc.mapper"/>
+		<package name="com.bluemobi.product.oauth.dao"/>
+		<!-- <mapper class="com.mybatisstore.mapper.ProductMapper"/> -->
+	</mappers>
+</configuration>

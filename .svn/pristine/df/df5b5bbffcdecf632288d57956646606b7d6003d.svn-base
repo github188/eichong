@@ -1,0 +1,153 @@
+//获取电桩列表的menuId
+var getMenuMap = window.localStorage.getItem('menuMap');
+var getCurruntMap = JSON.parse(getMenuMap);
+var menuId = getCurruntMap['电桩参数设置列表'];
+$(function () {
+//    ctrlMenu(menuId);
+    //去加载表格的数据
+    //setTimeout("getElectricParamList()", 100);
+    //加载省市
+    setTimeout("toLoadProvince('', '#provinceCodeHtml', '.cpyProvinceUl', 'toUnbindEvent')", 200);
+})
+function ctrlMenu(menuId) {
+    $.ajax({
+        type: "post",
+        url: basePath + getSelfButtonTreeUrl,
+        async: true,
+        data: {
+            menuId: menuId
+        },
+        success: function (req) {
+            var data = req.dataObject;
+            if (data.length == 0) {
+                return;
+            } else {
+                for (var i = 0; i < data.length; i++) {
+                    var contents = data[i].contents;
+                    if (contents.indexOf('设置') > -1) {
+                        $('#setBtn').show();
+                    }
+                }
+            }
+
+
+        }
+    });
+}
+
+
+function toUnbindEvent() {
+    $('.cpyProvinceBlock').unbind();
+    $('.cypCityBlock').unbind();
+    $('.cpyAreaBlock').unbind();
+    selectModel();
+}
+//toUnbindEvent();
+
+function getElectricParamList() {
+    toGiveHiddenInput();
+    initTable("electricParamListForm", "electricParamPage", electricParamListUrl, electricParamListCallback);
+}
+function electricParamListCallback(req) {
+    var data = req.dataObject;
+    var listTr = "";
+    for (var i = 0; i < data.length; i++) {
+    	var dateTime = data[i].chargeTime;
+    		//dateTime = new Date(dateTime).format("yyyy-MM-dd");
+        listTr += '<tr><td><input type="checkbox" name="ids" class="selectedBox" value="' + data[i].id + '"/>'
+        + '</td><td>' + data[i].electricPileCode
+        + '</td><td>' + data[i].epNum
+        + '</td><td>' + data[i].powerStationName
+        + '</td><td>' + data[i].chargeMode
+        + '</td><td>' + data[i].commonStatus
+        + '</td><td>' + data[i].offlineNum
+        + '</td><td>' + new Date(dateTime).format("yyyy-MM-dd")
+        + '</td><td>' + data[i].socValue
+        + '</td><td>' + data[i].issuedStatus
+        + '</td><td>' + data[i].gmtModified
+        + '</td></tr>';
+    }
+    $("#myTbogy").html(listTr);
+}
+//查询条件部分=========================
+function toGiveHiddenInput() {
+    var provinceCodeHtmlValue = $('#provinceCodeHtml').attr('data-value');
+    var cityCodeHtmlValue = $('#cityCodeHtml').attr('data-value');
+    var areaCodeHtmlValue = $('#areaCodeHtml').attr('data-value');
+
+    var electricPileCodeValue = $('input[name=electricPileCode]').val();
+    var powerStationNameValue = $('input[name=powerStationName]').val();
+    if (provinceCodeHtmlValue == '') {
+        $('input[name=provinceCode]').val('');
+    } else {
+        $('input[name=provinceCode]').val(provinceCodeHtmlValue);
+    }
+    if (cityCodeHtmlValue == '') {
+        $('input[name=cityCode]').val('');
+    } else {
+        $('input[name=cityCode]').val(cityCodeHtmlValue);
+    }
+    if (areaCodeHtmlValue == '') {
+        $('input[name=areaCode]').val('');
+    } else {
+        $('input[name=areaCode]').val(areaCodeHtmlValue);
+    }
+    if (electricPileCodeValue == "") {
+        $('input[name=electricPileCode]').val('');
+    } else {
+        $('input[name=electricPileCode]').val(electricPileCodeValue);
+    }
+    if (powerStationNameValue == "") {
+        $('input[name=powerStationName]').val('');
+    } else {
+        $('input[name=powerStationName]').val(powerStationNameValue);
+    }
+}
+
+
+//点击省加载市
+$('.cpyProvinceUl').on("click", "li", function () {
+    $('#cityCodeHtml').html('请选择');
+    $('.cypCityUl').html('');
+    $('#cityCodeHtml').attr('data-value', '');
+    $('#areaCodeHtml').html('请选择');
+    $('.areaUl').html('');
+    $('#areaCodeHtml').attr('data-value', '');
+    var provinceCodeId = $(this).attr('data-option');
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+    var flag = $(this).attr('data-option');
+    if (flag == "") {
+        $('#cityCodeHtml').html('请选择');
+        $('.cypCityUl').html('');
+        $('#cityCodeHtml').attr('data-value', '');
+        $('#areaCodeHtml').html('请选择');
+        $('.areaUl').html('');
+        $('#areaCodeHtml').attr('data-value', '');
+    } else {
+        toLoadCity(provinceCodeId, '', '#cityCodeHtml', '.cypCityUl', 'toUnbindEvent');
+    }
+})
+//点击市加载区
+$('.cypCityUl').on("click", "li", function () {
+    $('#areaCodeHtml').html('请选择');
+    $('.areaUl').html('');
+    $('#areaCodeHtml').attr('data-value', '');
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+    var flag = $(this).attr('data-option');
+    var cityCodeId = $(this).attr('data-option');
+    if (flag == "") {
+        $('#areaCodeHtml').html('请选择');
+        $('.areaUl').html('');
+        $('#areaCodeHtml').attr('data-value', '');
+    } else {
+        toLoadArea(cityCodeId, '', '#areaCodeHtml', '.areaUl', 'toUnbindEvent');
+
+    }
+})
+//点击区获取值
+$('.areaUl').on("click", "li", function () {
+    $(this).parent().siblings('div.model-select-text').text($(this).text())
+        .attr('data-value', $(this).attr('data-option'));
+})

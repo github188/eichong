@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.RoleMapper">
+	<resultMap type="RoleDO" id="resultRole">
+		<result property="roleId" column="role_id" />
+		<result property="roleName" column="role_name" />
+		<result property="category" column="category" />
+		<result property="notes" column="notes" />
+		<result property="gmtCreate" column="create_date" />
+		<result property="creator" column="create_user" />
+		<result property="gmtModified" column="last_update_date" />
+		<result property="modifier" column="last_update_user" />
+		<result property="menuId" column="menuId" />
+	</resultMap>
+	
+	<sql id="query-columns">
+		role_id, role_name,category,notes,create_date,create_user,last_update_date,last_update_user
+	</sql>
+	<sql id="where-columns">
+	    1 = 1
+        <if test="roleId!=null"> 
+		   and role_id=#{roleId}
+	    </if>
+		<if test="roleName!=null and roleName!=''">
+		   and role_name=#{roleName}
+		 </if>
+		<if test="category!=null and category!=''">
+		   and category = #{category}
+		</if>
+		<if test="notes!=null and notes!=''">
+		   and notes like concat('%',#{notes},'%')
+		</if>
+	</sql>
+	
+	<!-- 根据userId获取Role -->
+	<select id="selectRoleListByUserId" parameterType="Long"  resultMap="resultRole">
+		select
+		r.role_id,
+		r.role_name,
+		r.category,
+		r.notes,
+		r.create_date,
+		r.create_user,
+		r.last_update_date,
+		r.last_update_user
+		from
+		p_m_role r,p_m_user_role ur where r.role_id=ur.role_id and ur.user_id=#{userId}
+		 GROUP BY r.ROLE_ID
+	</select>
+	
+	<select id="selectRoleIdsByUserId" parameterType="Long"  resultType="string">
+	   select r.role_id from p_m_role r,p_m_user_role ur
+	     where r.role_id=ur.role_id 
+	        and ur.user_id=#{userId}
+		 GROUP BY r.ROLE_ID
+	</select>
+	
+	<!-- 统计-超级管理员角色列表 -->
+	<select id="countRoleListByAdmin" parameterType="RoleDO" resultType="Long">
+		select count(1) from p_m_role where <include refid="where-columns"/>
+	</select>
+	
+	<!-- 查询-超级管理员角色列表 -->
+	<select id="selectRoleListByAdmin" parameterType="RoleDO" resultMap="resultRole">
+		select <include refid="query-columns"/> from p_m_role 
+		where <include refid="where-columns"/> order by create_date
+		<if test="pager!=null">limit #{pager.offset},#{pager.pageSize}</if>
+	</select>
+	
+	<!-- 统计-合作商角色列表 -->
+	<select id="countRoleListByOperatorId" parameterType="RoleDO" resultType="Long">
+      select count(1) from p_m_role left join tbl_user u ON CREATE_USER_ID = u.user_id  
+      where <include refid="where-columns"/> order by create_date
+	</select>
+	
+	<!-- 查询-合作商角色列表 -->
+	<select id="selectRoleListByOperatorId" parameterType="RoleDO" resultMap="resultRole">
+		 select <include refid="query-columns"/> from p_m_role left join tbl_user u ON CREATE_USER_ID=u.user_id 
+		    where <include refid="where-columns"/>  order by create_date
+		  <if test="pager!=null">limit #{pager.offset},#{pager.pageSize}</if>
+	</select>
+	
+	<!-- 统计-自己创建角色列表 -->
+	<select id="countRoleListByCreateUserId" parameterType="RoleDO" resultType="Long">
+      select count(1) from p_m_role where left join tbl_user u ON CREATE_USER_ID=u.user_id 
+         where <include refid="where-columns"/> and create_user_ID=#{userId} order by create_date
+	</select>
+	
+	<!-- 查询-自己创建角色列表 -->
+	<select id="selectSubRoleListByCreateUserId" parameterType="RoleDO" resultMap="resultRole">
+		 select <include refid="query-columns"/> from p_m_role left join tbl_user u ON CREATE_USER_ID=u.user_id 
+		    where create_user_ID=#{userId} order by create_date
+	     <if test="pager!=null">limit #{pager.offset},#{pager.pageSize}</if>
+	</select>
+	
+	<!-- 根据role_id查询role -->
+	<select id="selectRoleById" parameterType="String" resultMap="resultRole">
+		select <include refid="query-columns"/>from p_m_role
+		where role_id = #{roleId}
+	</select>
+	
+	<!-- 初始化所有角色 -->
+	<select id="selectAllRoleList" resultMap="resultRole">
+	   select <include refid="query-columns"/> from p_m_role 
+	</select>
+	
+	<!-- 添加-角色 -->
+	<insert id="insertRole" parameterType="RoleDO" keyProperty="role_id">
+		insert into p_m_role
+		(role_id, role_name,category,notes,create_date,create_user,last_update_date,last_update_user)
+		values
+		(#{roleId},#{roleName},#{category},#{notes},NOW(),#{creator},NOW(),#{modifier})
+	</insert>
+	
+	<!-- 修改-角色菜单权限 -->
+	<update id="updateRoleMenuRela">
+	   { call role_menu_func(#{0},#{1})}   
+	</update>
+	
+	<!-- 修改-角色 -->
+	<update id="updateRole" parameterType="RoleDO">
+		update p_m_role set
+			<if test="roleName!=null"> role_name=#{roleName}, </if>
+			<if test="category!=null"> category=#{category}, </if>
+			<if test="notes!=null"> notes=#{notes}, </if>
+			<if test="modifier!=null"> last_update_user=#{modifier}, </if>
+			last_update_date=NOW()
+		where role_id=#{roleId}
+	</update>
+	
+	<delete id="deleteRoleById" parameterType="String">
+		delete from p_m_role where role_id=#{roleId}
+	</delete>
+	
+	<delete id="deleteRoleMenuByRoleId" parameterType="String">
+	   delete from p_m_menu_role where role_id = #{roleId}
+	</delete>
+	
+</mapper>

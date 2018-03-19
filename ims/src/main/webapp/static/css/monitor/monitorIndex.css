@@ -1,0 +1,624 @@
+@charset "utf-8";
+* {
+    padding: 0;
+    margin: 0;
+}
+.col-sm-1,.col-sm-2,.col-sm-3,.col-sm-4,.col-sm-5,.col-sm-6,.col-sm-7,.col-sm-8,.col-sm-9,.col-sm-10,.col-sm-11,.col-sm-12{
+    padding: 0;
+}
+body {
+    background: #F3F3F4;
+    font-family: "微软雅黑";
+    font-size: 12px;
+}
+
+.companyContent{
+    /*padding-left: 5%;*/
+}
+.companyLogosInput{
+    display: inline;
+    width: 100%;
+    height: 30px;
+    border: 1px solid #DCDCDC;
+    outline: none;
+    color: #666666;
+}
+.companyNameInput{
+    display: inline;
+    width: 100%;
+    height: 30px;
+    border: 1px solid #DCDCDC;
+    outline: none;
+    color: #666666;
+}
+
+.container {
+    width: 98%;
+    padding: 24px 24px 20px 20px;
+}
+
+.formBlock {
+    width: 100%;
+    min-height: 138px;
+    height: auto !important;
+    /*overflow: hidden;*/
+    background: #FFFFFF;
+    border-top: 3px solid #E5E5E5;
+    /*padding: 26px 18px 20px 20px;*/
+}
+.clearfix{
+    　　zoom:1;
+}
+
+.clearfix:after{
+    content:"";
+    display:block;
+    clear:both;
+}
+.btnBlock{
+    width: 100%;
+    /*min-height: 54px;*/
+    padding: 10px 0 10px 20px;
+    background: #F3F3F4;
+    /*overflow: hidden;*/
+    position: relative;
+    margin-top: 4px;
+}
+.btnBlock .btnStyle{
+    background: #ff7d00;
+    color: #ffffff;
+    border-radius: 4px;
+    text-align: center;
+    height: 28px;
+    line-height: 28px;
+}
+.btnBlock .btnStyle:hover{
+    cursor: pointer;
+    background: #FF7D00;
+    color: #FFFFFF;
+}
+.companyLogo{
+    /*border: 1px solid #DCDCDC;*/
+    height: 32px;
+}
+.companyLogos .companyLogosInput:focus{
+    display: inline;
+    width: 100%;
+    height: 30px;
+    border: 1px solid #ff7d00;
+    color: #666666;
+}
+.companyName .companyNameInput:focus{
+    display: inline;
+    width: 100%;
+    height: 30px;
+    border: 1px solid #ff7d00;
+    color: #666666;
+}
+.queryParam{
+    line-height: 32px;
+    font-size: 14px;
+    text-align: center;
+}
+.queryBtn{
+    width: 76px;
+    height: 26px;
+    text-align: center;
+    line-height: 26px;
+    border: 1px solid #DCDCDC;
+    border-radius: 4px;
+    color: #666666;
+    margin: 10px auto;
+    margin-top: 0;
+}
+.queryBtn:hover{
+    width: 76px;
+    height: 26px;
+    text-align: center;
+    line-height: 26px;
+    background: #FF7D00;
+    border: 1px solid #FF7D00;
+    border-radius: 4px;
+    color: #FFFFFF;
+    cursor: pointer;
+}
+/*下拉框样式===========*/
+
+ul {
+    list-style: none;
+}
+
+p {
+    margin-bottom: 20px;
+}
+
+.model-select-box {
+    height: 32px;
+    line-height: 32px;
+    border: 1px solid #E7EAEC;
+    float: left;
+    text-indent: 5px;
+    position: relative;
+}
+
+.downRow {
+    width: 32px;
+    height: 31px;
+    background: url(../../img/downR.png) no-repeat center;
+    position: absolute;
+    right: 0;
+    top: 0;
+    border-bottom: 1px solid #DCDCDC;
+    border-left: 1px solid #DCDCDC;
+    cursor: pointer;
+    z-index: 0;
+    transform: rotate(0deg);
+}
+.downRowClick{
+    width: 32px;
+    height: 30px;
+    background: url(../../img/downR.png) no-repeat center;
+    position: absolute;
+    right: 0;
+    top: 0;
+    border-right: 1px solid #DCDCDC;
+    cursor: pointer;
+    z-index: 0;
+    transform: rotate(-180deg);
+}
+
+.model-select-text {
+    height: 32px;
+    cursor: pointer;
+    color: #666666;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.model-select-option {
+    display: none;
+    position: absolute;
+    background: #fff;
+    width: 100%;
+    left: -1px;
+    border: 1px solid #aaa;
+    z-index: 5000;
+    max-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.model-select-option li {
+    min-height: 22px;
+    line-height: 22px;
+    color: #666666;
+    cursor: pointer;
+}
+
+.model-select-option li.seleced {
+    background: #ff7d00;
+    color: #fff;
+}
+/*结束下拉框*/
+.checkList {
+    list-style: none;
+    min-height: 30px;
+    position: absolute;
+    left: 0;
+    top: 30px;
+    z-index: 10000;
+    background: #FFFFFF;
+    color: #000000;
+    padding: 10px 20px 10px 40px;
+}
+@media only screen and (max-width:890px) {
+    .checkList {
+        list-style: none;
+        min-height: 30px;
+        position: absolute;
+        left: 0;
+        top: 30px;
+        z-index: 10000;
+        background: #FFFFFF;
+        color: #000000;
+        padding: 10px;
+    }
+    .checkList li {
+        height: 24px;
+        line-height: 24px;
+        width: 100% !important;
+        clear: left;
+    }
+
+}
+.checkList li {
+    height: 24px;
+    line-height: 24px;
+    width: 50%;
+    float: left;
+}
+
+.checkList li input {
+    opacity: 0;
+    filter: alpha(opacity=0);
+    width: 12px;
+    height: 12px;
+    cursor: pointer;
+    position: relative;
+    top: -3px;
+}
+
+.checkbox li label {
+    height: 30px;
+    line-height: 30px;
+    float: right;
+}
+
+.checkboxActiveStyle {
+    width: 12px;
+    height: 12px;
+    background: #ff9d00;
+    float: left;
+    margin-top: 5px;
+    margin-right: 4px;
+}
+
+.checkboxStyle {
+    width: 12px;
+    height: 12px;
+    background: #DCDCDC;
+    float: left;
+    margin-top: 5px;
+    margin-right: 4px;
+}
+.showSet{
+    max-width: 100%;
+    min-height: 138px;
+    height: auto !important;
+    overflow: hidden;
+    background: #FFFFFF;
+    border-top: 4px solid #E7EAEC;
+    padding: 26px 18px 20px 20px;
+    margin-top: 30px;
+    overflow-x: scroll;
+}
+/*分页部分开始*/
+.pagination {
+    width: 100%;
+    height: 50px;
+    margin: 0;
+    padding: 0 6px;
+    background: #FFFFFF;
+    padding-top:16px ;
+}
+.pagination ul li{
+    float: left;
+    margin-right: 10px;
+}
+.pagination ul li:last-Child{
+    list-style: none;
+    float: left;
+    margin-left: 0;
+}
+.pagination ul li:nth-last-child(2){
+    margin-right: 0;
+    font-size: 12px;
+    color: #333333 !important;
+    text-decoration: none !important;
+}
+.pagination ul li:last-Child a{
+    pointer-events: none;
+    font-size: 12px;
+    color: #333333 !important;
+    text-decoration: none !important;
+    cursor: pointer;
+}
+.pagination ul li:nth-last-child(2) a{
+    pointer-events: none;
+    font-size: 12px;
+    color: #333333 !important;
+    text-decoration: none !important;
+    cursor: pointer;
+}
+.pagination ul li:last-Child a:hover{
+    color: #666666;
+    text-decoration: none;
+}
+.pagination ul li:nth-last-child(2) a:hover{
+    color: #666666;
+    text-decoration: none;
+}
+.pagination ul .jump{
+    margin-top: -4px;
+}
+.pagination ul li a{
+    font-size: 12px;
+    color: #333333;
+    text-decoration: underline;
+    cursor: pointer;
+}
+.pagination ul li a:hover{
+    font-size: 12px;
+    color: #FF9900 !important;
+    text-decoration: none;
+}
+.pagination ul li a:active{
+    font-size: 12px;
+    color: #ff6600 !important;
+    text-decoration: none;
+}
+.newactive a{
+    font-size: 12px;
+    color: #ff7d00 !important;
+    text-decoration: none !important;
+}
+
+.stationBox{
+    padding:0px 20px 30px 20px;
+    min-height: 100px;
+    clear: both;
+    overflow: hidden;
+}
+.newsTit{
+    height:36px;
+    color:#ff7d00;
+    text-align: center;
+    line-height: 36px;
+    font-size: 12px;
+}
+.searchList{
+    background:#bfbfbf;
+    padding:10px;
+    margin-right: 20px;
+}
+.searchList .backBtn{
+    font-size: 12px;
+    color:#ffffff;
+    width:100%;
+    height:36px;
+    line-height: 36px;
+}
+.map{
+    max-width: 100%;
+    min-height: 700px;
+    height: auto !important;
+    overflow: hidden;
+    background: #FFFFFF;
+    /*border-top: 4px solid #E7EAEC;*/
+    overflow-x: scroll;
+}
+.button-group {
+    position: relative;
+    top: 0px;
+    left: 0px;
+    font-size: 12px;
+    height:32px;
+}
+.button-group .stationInput{
+    height: 32px;
+    outline: none;
+    border: 0;
+    border: 1px solid #FFFFFF;
+    padding: 0 4px;
+    font-size: 12px;
+    margin: 0;
+}
+.button-group .searchButton{
+    height:32px;
+    border:1px solid #FF7D00;
+    background-color: #FF7D00;
+    color:#FFFFFF;
+    font-size: 12px;
+    margin: 0;
+}
+.area{
+    position: relative;
+    top: 10px;
+}
+.seleckBlock{
+    background: #fff;
+    width:49%;
+}
+.citySeleckBlock{
+    float: left;
+}
+.areaSeleckBlock{
+    float: right;
+}
+.stationListBlock{
+    /*border: 1px solid #CCCCCC;*/
+    width:100%;
+    height:506px;
+    margin-top: 20px;
+    left:0;
+    background: #fff;
+}
+.stationListUl{
+    height:506px;
+    overflow:auto;
+}
+.stationListUl .stationLi{
+    height:auto!important;
+    border-bottom: 1px solid #ccc;
+    padding:0 6px;
+}
+.stationName{
+    font-size: 12px;
+    line-height: 24px;
+    padding: 3px 0;
+    color:#000;
+    font-weight: 900;
+    margin: 0;
+    cursor: pointer;
+    text-decoration: underline;
+}
+.stationAddress{
+    font-size: 12px;
+    padding:2px 0;
+    color:#666;
+    font-weight: 100;
+    margin: 0;
+    /*clear: both;*/
+    /*overflow: hidden;*/
+}
+.stationNum{
+    font-size: 12px;
+    color:#ff7d00;
+    width:68px;
+    padding-right: 10px;
+    height:24px;
+    line-height: 24px;
+}
+.addressHtml{
+    width:15%;
+    padding:0 2px;
+    max-width: 60px;
+}
+.addressCon{
+    padding:0 3px;
+    width: 85%;
+}
+.amap-logo {
+    display: none!important;
+}
+
+.amap-copyright {
+    display: none!important;
+}
+.backBtn{
+    cursor: pointer;
+}
+@media (max-width: 1023px) {
+    .addressHtml{
+        width:25%;
+    }
+    .addressCon{
+        width: 75%;
+    }
+    .citySeleckBlock{
+        width:100%;
+    }
+    .areaSeleckBlock{
+        width:100%;
+    }
+}
+@media (max-width: 899px) {
+    .addressHtml{
+        width:30%;
+    }
+    .addressCon{
+        width: 70%;
+    }
+    .stationNum{
+        width:50px;
+    }
+}
+@media (max-width: 768px) {
+    .searchList{
+        margin-right: 0;
+    }
+}
+.searchStationList{
+    padding: 0 10px;
+    margin-right: 20px;
+    position: relative;
+    height: 700px;
+}
+.stationInfo{
+    background: #eee;
+}
+.stationHeadInfo{
+    background: #eee;
+    margin-top: 12px;
+}
+.stationDetailBlock{
+    width:100%;
+    /*height:506px;*/
+    left:0;
+    background: #fff;
+}
+.stationNameTitle{
+    font-size: 14px;
+    line-height: 28px;
+    color:#000;
+    padding: 3px 6px;
+    font-weight: 900;
+}
+.stationDetailAddress{
+    font-size: 12px;
+    line-height: 24px;
+    color:#666;
+    padding: 0 6px;
+}
+.phoneNum{
+    font-size: 12px;
+    line-height: 24px;
+    color:#666;
+    padding: 0 6px;
+}
+.title{
+    border-bottom: 1px solid #fff;
+    border-top: 1px solid #fff;
+    height:40px;
+    padding: 8px 0;
+}
+.title span{
+    text-align: center;
+    font-size: 12px;
+    line-height: 24px;
+    font-weight: 600;
+    color: #000;
+}
+.stationHeadLi{
+    border-bottom: 1px solid #fff;
+    min-height:42px;
+    padding: 9px 0;
+    cursor: pointer;
+}
+.stationHeadLi span{
+    text-align: center;
+    font-size: 12px;
+    line-height: 24px;
+}
+.backListBtn{
+    font-size: 12px;
+    color:#000;
+    font-weight: 900;
+    padding-bottom: 10px;
+}
+.stationHeadUl{
+    overflow:auto;
+    max-height: 455px;
+}
+.stationHeadPage{
+    width: 100%;
+    padding:0 10px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+#stationDetailPage{
+    width: 100%;
+    height: 50px;
+    margin: 0;
+    padding: 0 6px;
+    background: #eee;
+    padding-top: 16px;
+}
+.powerStationNameHtml{
+    font-size: 14px;
+}
+.faultNum{
+    color:#ff7d00;
+}
+.faultTips{
+    color:#ff7d00;
+}
+.errorLi{
+    width:330px;
+    display: inline-block;
+}
+.hiddenLi{
+    display: none;
+}

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/order/order_list.css"/>
+    <title>订单列表</title>
+</head>
+<body>
+<div class="container animated fadeInRight">
+    <div class="row">
+        <div class="formBlock clearfix">
+            <form id="orderListForm">
+                <div class="col-xs-12 col-sm-11 col-md-11 col-lg-11">
+                    <div class="userListSelect row">
+                        <div class="col-sm-3 col-xs-12">
+                            <div class="col-sm-3 queryParam">
+                                订单号
+                            </div>
+                            <div class="col-sm-9 userAccount">
+                                <input type="text" name="orderCode" value="" class="userAccountInput"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-sm-offset-1 col-xs-12">
+                            <div class="col-sm-4 queryParam">
+                                电桩编号
+                            </div>
+                            <div class="col-sm-8 userAccount">
+                                <input type="text" name="electricPileCode" value="" class="userAccountInput"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-sm-offset-1 col-xs-12">
+                            <div class="col-sm-4 queryParam">
+                                用户账号
+                            </div>
+                            <div class="col-sm-8 userAccount">
+                                <input type="text" name="userAccount" value="" id="userAccount" class="userAccountInput"/>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="col-sm-12" style="background: #FFFFFF;height: 20px;"></div>
+                    <div class="userListSelect row">
+
+                        <div class="col-sm-3 col-xs-12">
+                            <div class="col-sm-3 queryParam">
+                                卡号
+                            </div>
+                            <div class="col-sm-9 userAccount">
+                                <input type="text" name="cardNum" value="" class="userAccountInput"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-sm-offset-1 col-xs-12">
+                            <div class="col-sm-4 queryParam">
+                                时间选择
+                            </div>
+                            <div class="col-sm-8 userAccount">
+                                <input type="text" name="" value="" class="userAccountInput" id="datePicker"/>
+                                <input type="text" name="startGmtCreate" value="" class="userAccountInput" hidden="hidden" style="display: none;"/>
+                                <input type="text" name="endGmtCreate" value="" class="userAccountInput" hidden="hidden" style="display: none;"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-sm-offset-1 col-xs-12">
+                            <div class="col-sm-4 queryParam">
+                                订单状态
+                            </div>
+                                <div class="col-sm-8  col-xs-12 model-select-box">
+                                    <div class="model-select-text orderStatusBlock" data-value="" id="orderStatus">请选择</div>
+                                    <span class="downRow orderStatusBlock"></span>
+                                    <input type="text" name="orderStatus" value="" hidden="hidden"/>
+                                    <ul class="model-select-option orderStatusUl">
+                                        <li data-option="" class="seleced">请选择</li>
+                                        <li data-option="1">待支付</li>
+                                        <li data-option="2">支付成功</li>
+                                        <li data-option="3">完成操作</li>
+                                    </ul>
+                                </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12" style="background: #FFFFFF;height: 20px;"></div>
+                    <div class="userListSelect row">
+                        <div class="col-sm-1 queryParam">
+                            渠道
+                        </div>
+                        <div class=" col-xs-12 col-sm-2 model-select-box">
+                            <div class="model-select-text cpyProvinceBlock" data-value="" id="cpyProvinceCode">请选择
+                            </div>
+                            <span class="downRow cpyProvinceBlock"></span>
+                            <ul class="model-select-option cpyProvinceUl">
+
+                            </ul>
+                        </div>
+                        <div class=" col-sm-2 col-xs-6  model-select-box">
+                            <div class="model-select-text cypCityBlock" data-value="" id="cypCityCode">请选择</div>
+                            <span class="downRow cypCityBlock"></span>
+                            <ul class="model-select-option cypCityUl">
+                            </ul>
+                        </div>
+                        <div class="col-xs-6 col-sm-3 model-select-box">
+                            <div class="model-select-text cpyCompanyBlock" data-value="" id="cpyCompanyName">请选择
+                            </div>
+                            <span class="downRow cpyCompanyBlock"></span>
+                            <input type="text" name="cpyNumber" id="" value="" hidden="hidden"/>
+                            <ul class="model-select-option cpyCompanyUl">
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-1 col-md-1 col-lg-1" style="position: relative;">
+                    <div class="queryBtn" onclick="orderListSearch()">
+                        查询
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!--按钮部分开始==========================================================-->
+        <div class="btnBlock">
+            <div class="col-sm-10 col-xs-12 col-md-10" style="">
+                <div class="col-sm-2 col-xs-2 btnStyle showBtn" id="showSet" style="display: none;">
+                    显示
+                </div>
+                <ul class="checkList animated fadeInDown col-sm-5 col-xs-5" style="display: none;">
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name="" data-state="0" value="" disabled="disabled"
+                                   checked="checked" data-flag="orderList_orderCode"/>
+                        </div>
+                        <label>订单号</label>
+                    </li>
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name="" data-state="0" value="" disabled="disabled"
+                                   checked="checked" data-flag="orderList_electricPileCode"/>
+                        </div>
+                        <label>电桩编号</label>
+
+                    </li>
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name="" data-state="0" value="" disabled="disabled"
+                                   checked="checked" data-flag="orderList_totalElectricMoney"/>
+                        </div>
+                        <label>电费</label>
+
+                    </li>
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name="" data-state="0" value="" disabled="disabled"
+                                   checked="checked" data-flag="orderList_totalServiceMoney"/>
+                        </div>
+                        <label>服务费</label>
+                    </li>
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name="" data-state="0" value="" disabled="disabled"
+                                   checked="checked" data-flag="orderList_totalfavMoney"/>
+                        </div>
+                        <label>优惠</label>
+                    </li>
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name="" data-state="0" value="" disabled="disabled"
+                                   checked="checked" data-flag="orderList_totalElectricCharge"/>
+                        </div>
+                        <label>电量</label>
+                    </li>
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name="" data-state="0" value="" disabled="disabled"
+                                   checked="checked" data-flag="orderList_orderStatus"/>
+                        </div>
+                        <label>状态</label>
+                    </li>
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name="" data-state="0" value="" disabled="disabled"
+                                   checked="checked" data-flag="orderList_powerstationName"/>
+                        </div>
+                        <label>充电点</label>
+                    </li>
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name="" data-state="0" value="" disabled="disabled"
+                                   checked="checked" data-flag="orderList_userAccount"/>
+                        </div>
+                        <label>用户账号</label>
+                    </li>
+                    <li>
+                        <div class="checkboxActiveStyle">
+                            <input type="checkbox" name="" data-state="0" value="" disabled="disabled"
+                                   checked="checked" data-flag="orderList_invoiceStatus"/>
+                        </div>
+                        <label>是否开票</label>
+                    </li>
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name="" data-state="0" value=""
+                                   data-flag="orderList_soc"/>
+                        </div>
+                        <label>启至SOC值</label>
+                    </li>
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name="" data-state="0" value=""
+                                   data-flag="orderList_carNum"/>
+                        </div>
+                        <label>车牌号</label>
+                    </li>
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name="" data-state="0" value=""
+                                   data-flag="orderList_TIME"/>
+                        </div>
+                        <label>充电时长</label>
+                    </li>
+
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name="" data-state="0" value=""
+                                   data-flag="orderList_accountNO"/>
+                        </div>
+                        <label>资金账号</label>
+                    </li>
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name="" data-state="0" value=""
+                                   data-flag="orderList_VIN"/>
+                        </div>
+                        <label>VIN码</label>
+                    </li>
+
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name="" data-state="0" value=""
+                                   data-flag="orderList_timeQuantum"/>
+                        </div>
+                        <label>充电时间段</label>
+                    </li>
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name="" data-state="0" value=""
+                                   data-flag="orderList_cardNum"/>
+                        </div>
+                        <label>卡号</label>
+                    </li>
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name="" data-state="0" value=""
+                                   data-flag="orderList_eMoney"/>
+                        </div>
+                        <label>电费按尖峰平谷拆分</label>
+                    </li>
+                    <li>
+                        <div class="checkboxStyle">
+                            <input type="checkbox" name="" data-state="0" value=""
+                                   data-flag="orderList_sMoney"/>
+                        </div>
+                        <label>服务费按尖峰平谷拆分</label>
+                    </li>
+
+                </ul>
+                <div class="col-sm-2 col-xs-2 col-sm-offset-1 col-xs-offset-1 btnStyle" id="dataExport" style="display: none;">
+                    导出
+                </div>
+            </div>
+            <div class="col-sm-2 col-md-2"></div>
+        </div>
+        <!--表格部分开始==========================================================-->
+        <div class="showSet">
+            <table class=" table table-bordered text-center" style="border: 1px solid #DCDCDC; overflow-x: scroll;" >
+                <thead>
+                <tr>
+                    <th style="min-width: 60px;" class="">选择</th>
+                    <th style="min-width: 60px;" class="orderList_orderCode">订单号</th>
+                    <th style="min-width: 80px;" class="orderList_electricPileCode">电桩编号</th>
+                    <th style="min-width: 60px;" class="orderList_totalElectricMoney">电费</th>
+                    <th style="min-width: 60px;" class="orderList_totalServiceMoney">服务费</th>
+                    <th style="min-width: 60px;" class="orderList_totalfavMoney">优惠</th>
+                    <th style="min-width: 60px;" class="orderList_totalElectricCharge">电量</th>
+                    <th style="min-width: 60px;" class="orderList_orderStatus">状态</th>
+                    <th style="min-width: 190px;" class="orderList_powerstationName">充电点</th>
+                    <th style="min-width: 190px;" class="orderList_userAccount">用户账号</th>
+                    <th style="min-width: 80px;" class="orderList_invoiceStatus">是否开票</th>
+                    <th style="min-width: 80px;" class="orderList_soc">启SOC</th>
+                    <th style="min-width: 80px;" class="orderList_soc">末SOC</th>
+                    <!--未返回字段-->
+                    <th style="min-width: 60px;" class="orderList_carNum">车牌号</th>
+                    <th style="min-width: 80px;" class="orderList_TIME">充电时长</th>
+                    <th style="min-width: 80px;" class="orderList_accountNO">资金账号</th>
+                    <th style="min-width: 60px;" class="orderList_VIN">VIN码</th>
+
+                    <th style="min-width: 90px;" class="orderList_timeQuantum">充电时间段</th>
+                    <th style="min-width: 60px;" class="orderList_cardNum">卡号</th>
+                    <th style="min-width: 80px;" class="orderList_eMoney">电费(尖)</th>
+                    <th style="min-width: 80px;" class="orderList_eMoney">电费(峰)</th>
+                    <th style="min-width: 80px;" class="orderList_eMoney">电费(平)</th>
+                    <th style="min-width: 80px;" class="orderList_eMoney">电费(谷)</th>
+                    <th style="min-width: 100px;" class="orderList_sMoney">服务费(尖)</th>
+                    <th style="min-width: 100px;" class="orderList_sMoney">服务费(峰)</th>
+                    <th style="min-width: 100px;" class="orderList_sMoney">服务费(平)</th>
+                    <th style="min-width: 100px;" class="orderList_sMoney">服务费(谷)</th>
+                </tr>
+                </thead>
+                <tbody id="myTbogy">
+
+                </tbody>
+            </table>
+
+            <div id="orderListPage" class="pagination">
+            </div>
+        </div>
+    </div>
+</div>
+<input type="text" hidden="hidden" id="returnJsonData" value=""/>
+</body>
+<script src="../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/layDate-v5.0.4/laydate/laydate.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="../../js/contabs.min.js"></script>
+<script src="../../js/order/order_list.js" type="text/javascript" charset="utf-8"></script>
+</html>

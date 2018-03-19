@@ -1,0 +1,592 @@
+package com.wanma.ims.service.impl;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.google.common.collect.Lists;
+import com.wanma.ims.common.domain.CompanyDO;
+import com.wanma.ims.common.domain.FinAccountConfigRelaDO;
+import com.wanma.ims.common.domain.FinAccountDO;
+import com.wanma.ims.common.domain.FinAccountRelationDO;
+import com.wanma.ims.common.domain.PurchaseHistoryDO;
+import com.wanma.ims.common.domain.UserCardDO;
+import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.domain.base.BasicModel;
+import com.wanma.ims.common.domain.bo.AccountBalanceBO;
+import com.wanma.ims.common.dto.BaseResultDTO;
+import com.wanma.ims.constants.DownFileConstants;
+import com.wanma.ims.constants.ResultCodeConstants;
+import com.wanma.ims.constants.WanmaConstants;
+import com.wanma.ims.mapper.CompanyMapper;
+import com.wanma.ims.mapper.FinAccountConfigRelaMapper;
+import com.wanma.ims.mapper.FinAccountMapper;
+import com.wanma.ims.mapper.FinAccountRelationMapper;
+import com.wanma.ims.mapper.PurchaseHistoryMapper;
+import com.wanma.ims.mapper.UserCardMapper;
+import com.wanma.ims.mapper.UserMapper;
+import com.wanma.ims.service.FinAccountService;
+import com.wanma.ims.util.DateUtil;
+import com.wanma.ims.util.ExcelExporterUtil;
+import com.wanma.ims.util.MD5Util;
+import com.wanma.ims.util.PKUtil;
+
+@Service("finAccountService")
+public class FinAccountServiceImpl implements FinAccountService {
+
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	@Autowired
+	private FinAccountMapper finAccountMapper;
+	
+	@Autowired
+	private FinAccountRelationMapper finAccountRelationMapper;
+	
+	@Autowired
+	private FinAccountConfigRelaMapper finAccountConfigRelaMapper;
+	
+	@Autowired
+    private UserMapper userMapper;
+	
+	@Autowired
+    private UserCardMapper userCardMapper;
+	
+	@Autowired
+    private CompanyMapper companyMapper;
+	
+	@Autowired
+    private PurchaseHistoryMapper purchaseHistoryMapper;
+	
+	@Override
+	public Long getFinAccountCount(FinAccountDO finAccount) {
+		return finAccountMapper.getFinAccountCount(finAccount);
+	}
+	
+	@Override
+	public List<FinAccountDO> getFinAccountList(FinAccountDO finAccount) {
+		return finAccountMapper.getFinAccountList(finAccount);
+	}
+	
+	@Override
+	public Long addFinAccount(BasicModel object) throws Exception{
+		if (object == null) {
+			log.error(this.getClass() + ".addFinAccount() error : 参数不能为空！");
+			return -1L;
+		}
+		
+		FinAccountDO finAccount = new FinAccountDO();
+		Long accountId = 0l;
+		//1.用户  2.公司 3.卡
+		Integer sysType = object.getSysType();
+		if (sysType.intValue() == 1) {
+			UserDO user = (UserDO)object;
+
+			//验证用户信息
+			if (user == null || user.getUserId() == 0l) {
+				log.error(this.getClass() + ".addFinAccount() error : 用户信息不能为空！");
+				return -2L;
+			}
+			Long userId = user.getUserId();
+			UserDO result = userMapper.selectUserByUserId(userId);
+			if (result == null) {
+				log.error(this.getClass() + ".addFinAccount() error : " + userId + "用户信息不存在！");
+				return -3L;
+			}
+			
+			//取得是大账户的账务配置
+			FinAccountConfigRelaDO finAccountConfigRela = new FinAccountConfigRelaDO();
+			finAccountConfigRela.setCpyId(user.getCpyId());
+			finAccountConfigRela.setBillAccountId(1L);
+			finAccountConfigRela.setPaymentRule(1);
+			Long count = finAccountConfigRelaMapper.getFinAccountConfigRelaCount(finAccountConfigRela);
+			if (count != null && count.intValue() > 0) {
+				CompanyDO resultCompany = companyMapper.selectCpyListById(user.getCpyId());
+				if (resultCompany == null) {
+					log.error(this.getClass() + ".addFinAccount() error : " + user.getCpyId() + "找不到对应的渠道数据！");
+					return -4L;
+				}
+				accountId = resultCompany.getAccountId();
+			}else{
+				finAccount.setAccountNO(PKUtil.generateAccountNo(userId, sysType));
+				finAccount.setAccountPwd(MD5Util.Md5(WanmaConstants.DEFAULT_LOGIN_PASSWORD));
+				finAccount.setAccountBalance(Double.valueOf(0));		
+//				finAccount.setTradeType(resultCompany.getTradeType());
+				finAccount.setTradeType(user.getTradeType());
+				finAccount.setAccountWarn(0d);
+				finAccount.setAccountStatus(1);
+				finAccount.setIsDel(0);
+				finAccount.setCreator(user.getCreator());
+				finAccount.setModifier(user.getCreator());
+				// 取系统当前时间
+				Date now = DateUtil.parse(DateUtil.getNow(DateUtil.TYPE_COM_YMDHMS));
+				finAccount.setGmtCreate(now);
+				finAccount.setGmtModified(now);
+				
+				finAccountMapper.addFinAccount(finAccount);
+				accountId = finAccount.getAccountId();
+			}
+			
+			FinAccountRelationDO finAccountRelation = new FinAccountRelationDO();
+			finAccountRelation.setUserId(userId);
+			finAccountRelation.setBillAccountId(1L);
+			finAccountRelation.setAccountId(accountId);
+			finAccountRelation.setPriority(1);
+			finAccountRelation.setIsDel(0);
+			finAccountRelation.setCreator("");
+			finAccountRelation.setModifier("");
+			finAccountRelation.setGmtCreate(new Date());
+			finAccountRelation.setGmtModified(new Date());
+			int addResult = finAccountRelationMapper.addFinAccountRelation(finAccountRelation);
+			if (addResult < 1) {
+				log.error(this.getClass() + ".addFinAccount() error : " + accountId + "新增账务关系失败！");
+				return -4L;
+			}
+		}else if (sysType.intValue() == 2) {
+			CompanyDO company = (CompanyDO)object;
+			
+			//验证公司信息
+			if (company == null || company.getCpyId() == 0l) {
+				log.error(this.getClass() + ".addFinAccount() error : 公司信息不能为空！");
+				return -5L;
+			}
+			Long cypId = company.getCpyId();
+			CompanyDO resultCompany = companyMapper.selectCpyListById(cypId);
+			if (resultCompany == null) {
+				log.error(this.getClass() + ".addFinAccount() error : 找不到" + cypId + "的渠道数据！");
+				return -4L;
+			}
+
+			finAccount.setAccountNO(PKUtil.generateAccountNo(Long.valueOf(company.getCpyNumber()), sysType));
+			finAccount.setAccountPwd(MD5Util.Md5(WanmaConstants.DEFAULT_LOGIN_PASSWORD));
+			finAccount.setAccountBalance(0d);		
+			finAccount.setTradeType(resultCompany.getTradeType());
+			finAccount.setAccountWarn(0d);
+			finAccount.setAccountStatus(1);
+			finAccount.setIsDel(0);
+			finAccount.setCreator(company.getCreator());
+			finAccount.setModifier(company.getCreator());
+			// 取系统当前时间
+			Date now = DateUtil.parse(DateUtil.getNow(DateUtil.TYPE_COM_YMDHMS));
+			finAccount.setGmtCreate(now);
+			finAccount.setGmtModified(now);
+			
+			finAccountMapper.addFinAccount(finAccount);
+			accountId = finAccount.getAccountId();
+		}else if(sysType.intValue() == 3){
+			UserCardDO userCard = (UserCardDO)object;
+
+			//验证卡信息
+			if (userCard == null || userCard.getUcUserId() == 0l) {
+				log.error(this.getClass() + ".addFinAccount() error : 卡信息不能为空！");
+				return -2L;
+			}
+			Long cardId = userCard.getUcId();
+			UserCardDO result = userCardMapper.getCardBasicInfo(userCard);
+			if (result == null) {
+				log.error(this.getClass() + ".addFinAccount() error : " + cardId + "卡信息不存在！");
+				return -6L;
+			}
+			
+			//验证渠道信息
+			Integer cypId = userCard.getUcCpyId();
+			CompanyDO resultCompany = companyMapper.selectCpyListById(Long.valueOf(cypId));
+			if (resultCompany == null) {
+				log.error(this.getClass() + ".addFinAccount() error : " + cypId + "找不到对应的渠道数据！");
+				return -4L;
+			}
+			if (resultCompany.getTradeType() == null || resultCompany.getTradeType().intValue() == 0) {
+				log.error(this.getClass() + ".addFinAccount() error : " + cypId + "请先维护渠道的付费策略！");
+				return -7L;
+			}
+			
+			UserDO user = userMapper.selectUserByUserId(result.getUcUserId());
+			if (user == null) {
+				log.error(this.getClass() + ".addFinAccount() error : " + result.getUcUserId() + "用户信息不存在！");
+				return -3L;
+			}
+			
+			//取得是大账户的账务配置
+			FinAccountConfigRelaDO finAccountConfigRela = new FinAccountConfigRelaDO();
+			finAccountConfigRela.setCpyId(Long.valueOf(cypId));
+			finAccountConfigRela.setBillAccountId(1L);
+			finAccountConfigRela.setPaymentRule(1);
+			Long count = finAccountConfigRelaMapper.getFinAccountConfigRelaCount(finAccountConfigRela);
+			if (count != null && count > 0) {
+				accountId = resultCompany.getAccountId();
+			}else{
+				finAccount.setAccountNO(PKUtil.generateAccountNo(result.getUcUserId(), sysType));
+				finAccount.setAccountPwd(MD5Util.Md5(WanmaConstants.DEFAULT_LOGIN_PASSWORD));
+				finAccount.setAccountBalance(0d);		
+				finAccount.setTradeType(userCard.getTradeType());
+				finAccount.setAccountWarn(0d);
+				finAccount.setAccountStatus(1);
+				finAccount.setIsDel(0);
+				finAccount.setCreator(userCard.getCreator());
+				finAccount.setModifier(userCard.getCreator());
+				// 取系统当前时间
+				Date now = DateUtil.parse(DateUtil.getNow(DateUtil.TYPE_COM_YMDHMS));
+				finAccount.setGmtCreate(now);
+				finAccount.setGmtModified(now);
+				
+				finAccountMapper.addFinAccount(finAccount);
+				accountId = finAccount.getAccountId();
+			}
+			
+			FinAccountRelationDO finAccountRelation = new FinAccountRelationDO();
+			finAccountRelation.setUserId(result.getUcUserId());
+			finAccountRelation.setBillAccountId(1L);
+			finAccountRelation.setAccountId(accountId);
+			finAccountRelation.setPriority(1);
+			finAccountRelation.setIsDel(0);
+			finAccountRelation.setCreator("");
+			finAccountRelation.setModifier("");
+			finAccountRelation.setGmtCreate(new Date());
+			finAccountRelation.setGmtModified(new Date());
+			int addResult = finAccountRelationMapper.addFinAccountRelation(finAccountRelation);
+			if (addResult < 1) {
+				log.error(this.getClass() + ".addFinAccount() error : " + accountId + "新增账务关系失败！");
+				return -4L;
+			}
+		}else{
+			return 0l;
+		}
+		return accountId;
+	}
+	
+	
+	@Override
+	public int modifyFinAccount(FinAccountDO finAccount, UserDO user) throws Exception{
+		FinAccountDO qryfinAccount = new FinAccountDO();
+		qryfinAccount.setAccountId(finAccount.getAccountId());
+		Long qryResult = finAccountMapper.getFinAccountCount(qryfinAccount);
+		if (qryResult < 1) {
+			return 2;
+		}
+
+		finAccount.setModifier(user.getUserAccount());
+		finAccount.setGmtModified(DateUtil.parse(DateUtil.getNow(DateUtil.TYPE_COM_YMDHMS)));
+
+		return finAccountMapper.modifyFinAccount(finAccount);
+	}
+	
+	@Override
+	public int removeFinAccount(FinAccountDO finAccount) throws Exception{
+
+		return finAccountMapper.removeFinAccount(finAccount);
+	}
+
+	@Override
+	public List<FinAccountDO> getFinAccount4User(AccountBalanceBO accountBalance) {
+		if (accountBalance == null || accountBalance.getUserId() == null) {
+			log.error(this.getClass() + ".getFinAccount4User() error : 用户信息不允许为空！");
+			return null;
+		}
+		
+		if (accountBalance.getCpyType() == null) {
+			log.error(this.getClass() + ".getFinAccount4User() error : 用户渠道信息不允许为空！");
+			return null;
+		}
+		Map<String, Object> map = setParams(accountBalance);
+		
+		return finAccountMapper.getFinAccount4User(map);
+	}
+
+	@Override
+	public Long getFinAccountBalance4User(AccountBalanceBO accountBalance) {
+		if (accountBalance == null || accountBalance.getUserId() == null) {
+			log.error(this.getClass() + ".getFinAccountBalance4User() error : 用户信息不允许为空！");
+			return 0L;
+		}
+		
+		if (accountBalance.getCpyType() == null) {
+			log.error(this.getClass() + ".getFinAccountBalance4User() error : 用户渠道信息不允许为空！");
+			return 0L;
+		}
+		Map<String, Object> map = setParams(accountBalance);
+		
+		return finAccountMapper.getFinAccountBalance4User(map);
+	}
+
+	private Map<String, Object> setParams(AccountBalanceBO accountBalance) {
+		UserCardDO userCard = new UserCardDO();
+		userCard.setNewUserId(accountBalance.getUserId());
+		List<UserCardDO> userRelaList = userCardMapper.getCardInfoByUserId(userCard);
+		List<Long> userDefaultCardIdList = new ArrayList<Long>();
+		for (UserCardDO userCardDO : userRelaList) {
+			userDefaultCardIdList.add(userCardDO.getUcUserId());
+		}
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("userId", accountBalance.getUserId());
+		map.put("cpyType", accountBalance.getCpyType());
+		map.put("userDefaultIds", userDefaultCardIdList);
+		return map;
+	}
+	
+	@Override
+	public List<FinAccountDO> getFinAccount4Card(UserCardDO userCard) {
+		if (userCard == null || userCard.getUcId() == null) {
+			log.error(this.getClass() + ".getFinAccount4Card() error : 卡信息不允许为空！");
+			return null;
+		}
+		
+		return finAccountMapper.getFinAccount4Card(userCard);
+	}
+
+	@Override
+	public int modifyFinAccountPwd(Long accountId, UserDO loginUser) throws Exception {
+		if (accountId == null) {
+			log.error(this.getClass() + ".modifyFinAccountPwd() error : 资金账户信息不允许为空！");
+			return 2;
+		}
+		if (loginUser == null || loginUser.getUserAccount() == null || "".equals(loginUser.getUserAccount())) {
+			log.error(this.getClass() + ".modifyFinAccountPwd() error : 修改人帐号信息不允许为空！");
+			return 3;
+		}
+		
+		FinAccountDO finAccount = new FinAccountDO();
+		finAccount.setAccountId(accountId);
+		finAccount.setAccountPwd(MD5Util.Md5(WanmaConstants.DEFAULT_LOGIN_PASSWORD));
+		finAccount.setModifier(loginUser.getUserAccount());
+		finAccount.setGmtModified(DateUtil.parse(DateUtil.getNow(DateUtil.TYPE_COM_YMDHMS)));
+		
+		return finAccountMapper.modifyFinAccountPwd(finAccount);
+	}
+	
+	/**
+	* <p>Description: 获取公司首页中的余额和状态</p>
+	* @param
+	* @author bingo
+	* @date 2017-7-10
+	 */
+	public FinAccountDO getFinAccountBalance4Cpy(String accountId) throws Exception{
+		if (accountId == null || "".equals(accountId)) {
+			log.error(this.getClass() + ".getFinAccountBalance4Cpy() error : 公司的资金账户信息不允许为空！");
+			return null;
+		}
+		
+		return finAccountMapper.getFinAccountBalance4Cpy(accountId);
+	}
+
+	@Override
+	public BaseResultDTO exportFinAccount(HttpServletResponse response,
+			FinAccountDO finAccount, UserDO loginUser) throws Exception {
+		BaseResultDTO result = new BaseResultDTO();
+
+		Long count = finAccountMapper.getFinAccountCount(finAccount);
+		if (count > 50000L) {
+			log.warn(this.getClass() + ".exportPurchaseHistory is too long|finAccount={}|loginUser={}", finAccount, loginUser);
+            return new BaseResultDTO(false, ResultCodeConstants.FAILED, "导出的数据量超过5万！");
+		}
+		
+        List<FinAccountDO> finAccountList = getExportFinAccountList(finAccount);
+        if (CollectionUtils.isEmpty(finAccountList)) {
+            log.warn(this.getClass() + ".exportFinAccount is empty|finAccount={}|loginUser={}", finAccount, loginUser);
+            return new BaseResultDTO(false, ResultCodeConstants.FAILED, "您导出的数据不存在，请修改正确的查询条件后再导出！");
+        }
+        List<String> attrList = Lists.newArrayList("accountNO", "accountBalance", "accountWarn", "accountStatusName", "tradeTypeName");
+        List<String> header = Lists.newArrayList("资金账户号", "余额", "预警金额",  "状态", "类型");
+        ExcelExporterUtil.exportExcel(response, attrList, header, finAccountList, FinAccountDO.class, DownFileConstants.FILE_FIN_ACCOUNT_EXPORT, DownFileConstants.FILE_FIN_ACCOUNT_EXPORT_SHEET);
+
+        return result;
+	}
+	
+	private List<FinAccountDO> getExportFinAccountList(FinAccountDO qryFinAccount) {
+        List<FinAccountDO> finAccountList = finAccountMapper.getFinAccountList(qryFinAccount);
+        Map<Integer, String> tradeTypeMap = new HashMap<>();
+        tradeTypeMap.put(0, "未明");
+        tradeTypeMap.put(1, "信用账号");
+        tradeTypeMap.put(2, "储值账号");
+
+        Map<Integer, String> accountStatusMap = new HashMap<>();
+        accountStatusMap.put(1, "正常");
+        accountStatusMap.put(2, "冻结");
+        accountStatusMap.put(3, "删除");
+
+        for (FinAccountDO finAccount : finAccountList) {
+        	finAccount.setTradeTypeName(tradeTypeMap.get(finAccount.getTradeType()));
+        	finAccount.setAccountStatusName(accountStatusMap.get(finAccount.getAccountStatus()));
+        }
+
+        return finAccountList;
+    }
+
+	@Override
+	public BaseResultDTO equalAllocation(CompanyDO company, FinAccountDO finAccount, UserDO loginUser) {
+		BaseResultDTO result = new BaseResultDTO();
+		 List<UserDO> cpyUserList = userMapper.getUserListByCpyId(company.getCpyId());
+		 int num = cpyUserList.size();
+		 Double allocationAmount = Double.parseDouble(finAccount.getAllocationAmount());//分配的资金
+		 finAccount = finAccountMapper.getFinAccountBalance4Cpy(company.getAccountId().toString());
+		 finAccount.setAccountId(company.getAccountId());
+		 finAccount.setModifier(loginUser.getUserAccount());
+		 if(num*allocationAmount>finAccount.getAccountBalance()){
+			 return new BaseResultDTO(false, ResultCodeConstants.FAILED, "资金不够分配");
+		 }else{
+			 for(UserDO user : cpyUserList){
+				 FinAccountDO userFinAccount = new FinAccountDO();
+				 userFinAccount.setAllocationAmount(allocationAmount.toString());
+				 userFinAccount.setAccountId(user.getAccountId());
+				 userFinAccount.setModifier(loginUser.getUserAccount());
+				 finAccountMapper.modifyFinAccountBalance(userFinAccount);
+				 PurchaseHistoryDO userPurchaseHistory = new PurchaseHistoryDO();
+					 userPurchaseHistory.setPuHiType(7);//对于用户是资金划入
+					 userPurchaseHistory.setPuHiPurchaseHistoryTime(new Date());
+					 userPurchaseHistory.setPuHiMonetary(allocationAmount);
+					 userPurchaseHistory.setPuHiUserId(user.getUserId());
+					 userPurchaseHistory.setPuHiConsumerRemark("大账户为小账户等额配资 ");
+					 userPurchaseHistory.setPuHiChargeType(0);
+					 userPurchaseHistory.setPuHiUserOrigin(0);
+					 userPurchaseHistory.setPuHiElectricPileCode("");
+					 userPurchaseHistory.setPuHiExternalCardNumber("");
+					 userPurchaseHistory.setPuHiTransactionNumber(PKUtil.generatePhNo());
+					 userPurchaseHistory.setPuHiPaymentNumber("");
+					 userPurchaseHistory.setPuhiInvoiceStatus(0);
+					 userPurchaseHistory.setPkInvoice(new Long(0));
+				 purchaseHistoryMapper.addPurchaseHistory(userPurchaseHistory);
+			 }
+			 finAccount.setAllocationAmount("-"+allocationAmount*num);
+			 finAccountMapper.modifyFinAccountBalance(finAccount);
+			 PurchaseHistoryDO cpyPurchaseHistory = new PurchaseHistoryDO();
+				 cpyPurchaseHistory.setPuHiType(17);//对于卡是资金划出
+				 cpyPurchaseHistory.setPuHiPurchaseHistoryTime(new Date());
+				 cpyPurchaseHistory.setPuHiMonetary(allocationAmount);
+				 cpyPurchaseHistory.setPuHiUserId(company.getCpyId());
+				 cpyPurchaseHistory.setPuHiConsumerRemark("大账户为小账户等额配资 ");
+				 cpyPurchaseHistory.setPuHiChargeType(0);
+				 cpyPurchaseHistory.setPuHiUserOrigin(0);
+				 cpyPurchaseHistory.setPuHiElectricPileCode("");
+				 cpyPurchaseHistory.setPuHiExternalCardNumber("");
+				 cpyPurchaseHistory.setPuHiTransactionNumber(PKUtil.generatePhNo());
+				 cpyPurchaseHistory.setPuHiPaymentNumber("");
+				 cpyPurchaseHistory.setPuhiInvoiceStatus(0);
+				 cpyPurchaseHistory.setPkInvoice(new Long(0));
+			     purchaseHistoryMapper.addPurchaseHistory(cpyPurchaseHistory);
+		 }
+		return result;
+	}
+
+	@Override
+	public BaseResultDTO separateAllocation(CompanyDO company,
+			FinAccountDO userfinAccount, UserDO loginUser) throws Exception{
+		BaseResultDTO result = new BaseResultDTO();
+		Double allocationAmount = Double.parseDouble(userfinAccount.getAllocationAmount());//分配的资金
+		Long userId;
+		userfinAccount = finAccountMapper.getFinAccountByAccountNO(userfinAccount.getAccountNO());
+		if(null == userfinAccount){
+			 return new BaseResultDTO(false, ResultCodeConstants.FAILED, "资金账户不存在");
+		}
+		if(userfinAccount.getAccountStatus()!=1){
+			 return new BaseResultDTO(false, ResultCodeConstants.FAILED, "资金账户状态不正常");
+		}
+		UserDO userDO = userMapper.getCpyUserByAccountId(userfinAccount.getAccountId());//根据资金账户查渠道用户
+		if(userDO!=null){
+			if(!userDO.getCpyId().toString().equals(company.getCpyId().toString())){
+				 return new BaseResultDTO(false, ResultCodeConstants.FAILED, "该资金账户不是此公司用户");
+			}
+			userId = userDO.getUserId();
+		}else {
+			UserCardDO userCardDO = userCardMapper.getUserCardByAccountId(userfinAccount.getAccountId());
+			if(userCardDO==null){
+				 return new BaseResultDTO(false, ResultCodeConstants.FAILED, "资金账号不是渠道用户或者卡");
+			}else if(!userCardDO.getUcCpyId().toString().equals(company.getCpyId().toString())){
+				 return new BaseResultDTO(false, ResultCodeConstants.FAILED, "该资金账户不是此公司用户");
+			}
+			userId = userCardDO.getUcUserId();
+		}
+		
+		//修改公司资金账户余额
+		 FinAccountDO cpyfinAccount = finAccountMapper.getFinAccountBalance4Cpy(company.getAccountId().toString());
+		 if(cpyfinAccount.getAccountBalance()<allocationAmount){
+			 return new BaseResultDTO(false, ResultCodeConstants.FAILED, "资金账户资金不够分配");
+		 }
+		 cpyfinAccount.setAccountId(company.getAccountId());
+		 cpyfinAccount.setModifier(loginUser.getUserAccount());
+		 cpyfinAccount.setAllocationAmount("-"+allocationAmount);
+		 finAccountMapper.modifyFinAccountBalance(cpyfinAccount);
+		 PurchaseHistoryDO cpyPurchaseHistory = new PurchaseHistoryDO();
+			 cpyPurchaseHistory.setPuHiType(17);//对于卡是资金划出
+			 cpyPurchaseHistory.setPuHiPurchaseHistoryTime(new Date());
+			 cpyPurchaseHistory.setPuHiMonetary(allocationAmount);
+			 cpyPurchaseHistory.setPuHiUserId(company.getCpyId());
+			 cpyPurchaseHistory.setPuHiConsumerRemark("");
+			 cpyPurchaseHistory.setPuHiPurchaseContent("大账户为小账户单独配资");
+			 cpyPurchaseHistory.setPuHiChargeType(0);
+			 cpyPurchaseHistory.setPuHiUserOrigin(0);
+			 cpyPurchaseHistory.setPuHiElectricPileCode("");
+			 cpyPurchaseHistory.setAccountId(company.getAccountId());
+			 cpyPurchaseHistory.setPuHiExternalCardNumber("");
+			 cpyPurchaseHistory.setPuHiTransactionNumber(PKUtil.generatePhNo());
+			 cpyPurchaseHistory.setPuHiPaymentNumber("");
+			 cpyPurchaseHistory.setPuhiInvoiceStatus(0);
+			 cpyPurchaseHistory.setPkInvoice(new Long(0));
+		 purchaseHistoryMapper.addPurchaseHistory(cpyPurchaseHistory);
+		 //修改用户资金账户余额
+		 userfinAccount.setModifier(loginUser.getUserAccount());
+		 userfinAccount.setAllocationAmount(allocationAmount.toString());
+		 userfinAccount.setAccountId(userfinAccount.getAccountId());
+		 finAccountMapper.modifyFinAccountBalance(userfinAccount);
+		 PurchaseHistoryDO userPurchaseHistory = new PurchaseHistoryDO();
+			 userPurchaseHistory.setPuHiType(7);//对于用户是资金划入
+			 userPurchaseHistory.setPuHiPurchaseHistoryTime(new Date());
+			 userPurchaseHistory.setPuHiMonetary(allocationAmount);
+			 userPurchaseHistory.setPuHiUserId(userId);
+			 userPurchaseHistory.setPuHiConsumerRemark("");
+			 userPurchaseHistory.setPuHiPurchaseContent("大账户为小账户单独配资");
+			 userPurchaseHistory.setPuHiChargeType(0);
+			 userPurchaseHistory.setPuHiUserOrigin(0);
+			 userPurchaseHistory.setPuHiElectricPileCode("");
+			 userPurchaseHistory.setPuHiExternalCardNumber("");
+			 userPurchaseHistory.setAccountId(userfinAccount.getAccountId());
+			 userPurchaseHistory.setPuHiTransactionNumber(PKUtil.generatePhNo());
+			 userPurchaseHistory.setPuHiPaymentNumber("");
+			 userPurchaseHistory.setPuhiInvoiceStatus(0);
+			 userPurchaseHistory.setPkInvoice(new Long(0));
+		 purchaseHistoryMapper.addPurchaseHistory(userPurchaseHistory);
+		return result;
+	}
+	
+	/**
+	* <p>Description: 修改大账户预警金额</p>
+	* @param
+	* @author bingo
+	* @date 2017-8-25
+	*/
+	public BaseResultDTO modifyFinAccountWarn(FinAccountDO finAccount, UserDO user) throws Exception{
+		BaseResultDTO baseResultDTO = new BaseResultDTO();
+		if (finAccount == null || finAccount.getAccountId() == null) {
+			log.error(this.getClass() + ".modifyFinAccountWarn() error : 资金账户数据不能为空！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("资金账户数据不能为空！");
+			return baseResultDTO;
+		}
+		
+		if (finAccount.getAccountWarn() == null) {
+			log.error(this.getClass() + ".modifyFinAccountWarn() error : 预警金额不能为空！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("预警金额不能为空！");
+			return baseResultDTO;
+		}
+		
+		finAccount.setModifier(user.getUserId().toString());
+		finAccount.setGmtModified(new Date());
+		
+		int count = finAccountMapper.modifyFinAccountWarn(finAccount);
+		if (count < 1) {
+			log.error(this.getClass() + ".modifyFinAccountWarn() error : 更新失败！");
+			baseResultDTO.setSuccess(false);
+			baseResultDTO.setErrorDetail("更新失败！");
+			return baseResultDTO;
+		}
+		return baseResultDTO;
+	}
+}

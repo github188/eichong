@@ -1,0 +1,30 @@
+package com.cn.wanma.utils;
+
+
+
+/**
+ * MD5加密
+ */
+public class CommonUtil {
+	
+	
+/*	private static boolean checkUnique(String tName,String name_1,String value_1,String name_2,String value_2) {
+    	Map<String,String> map=new HashMap<String, String>();
+		map.put("tName",tName);
+		map.put("tProperty",name_1);
+		map.put("value",value_1);
+		map.put("pkTProperty",name_2);
+		map.put("pkTValue",value_2);
+	
+		
+    	commonService.checkCommonUnique(map);
+    	
+    	
+    	
+    	return true;
+       
+    }
+*/
+
+    
+}

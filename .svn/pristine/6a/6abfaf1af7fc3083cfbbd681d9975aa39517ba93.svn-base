@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/style.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/electric/concentrator/concentrator_detail.css"/>
+    <title>集中器详情</title>
+</head>
+<body>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="container-fluid">
+        <div class="row btnBlock">
+            <!--按钮组合-->
+            <div class="editBtn cursor" id="editBtn">编辑</div>
+            <div class="goBack cursor" id="toPileList">返回</div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 ">
+                <div class="ibox float-e-margins" style="margin: 0">
+                    <div class="">
+                        <div class="ibox-content clearfix">
+                            <div class="userBaseInfo col-sm-12 ">
+                                <div class="col-sm-6" style="padding: 0">
+                                    <ul class="baseInfoLeft">
+                                        <li>
+                                            <span class="infoTip">集中器名称</span>
+                                            <span class="infoValue" id="concentratorName">萍乡公交北站11</span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">SIM卡编码</span>
+                                            <span class="infoValue" id="simCode">898600会111571020773</span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">状态</span>
+                                            <span class="infoValue" id="state">在线</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-sm-6" style="padding: 0">
+                                    <ul class="baseInfoRight">
+                                        <li>
+                                            <span class="infoTip">SIM卡卡号</span>
+                                            <span class="infoValue" id="simMac">1234567898</span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">SIM卡运营商</span>
+                                            <span class="infoValue" id="simType">移动</span>
+                                        </li>
+                                        <li>
+                                            <span class="infoTip">资产归属</span>
+                                            <span class="infoValue" id="creator">萍乡市公共交通总公司</span>
+                                        </li>
+
+                                    </ul>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-sm-12 ">
+                <div class="ibox float-e-margins" style="margin: 0">
+                    <div class="">
+                        <div class="ibox-content clearfix">
+
+                            <div class="userBaseInfo col-sm-12 table-responsive">
+                                <div class="col-sm-12 titleTip">
+                                    <span>绑定电桩列表</span>
+                                </div>
+                                <table class=" table table-bordered text-center" style="border: 1px solid #DCDCDC;">
+                                    <thead>
+                                    <tr>
+                                        <th>序号</th>
+                                        <th>桩体编码</th>
+                                        <th>编号</th>
+                                        <th>电桩状态</th>
+                                        <th>充电方式</th>
+                                        <th>功率</th>
+                                        <th>类型</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="myTbogy">
+                                    <!--<tr>-->
+                                        <!--<td>11111</td>-->
+                                        <!--<td>11111</td>-->
+                                        <!--<td>11111</td>-->
+                                        <!--<td>11111</td>-->
+                                        <!--<td>11111</td>-->
+                                        <!--<td>11111</td>-->
+                                        <!--<td>11111</td>-->
+                                    <!--</tr>-->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+<script src="../../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="../../../js/contabs.min.js"></script>
+<script src="../../../js/electric/concentrator/concentrator_detail.js" type="text/javascript" charset="utf-8"></script>
+</html>

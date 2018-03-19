@@ -1,0 +1,587 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<json-publish-config>
+	<controll-classes>
+		<!-- 公共CODE数据 -->
+		<class>
+			<class-name>com.bluemobi.product.model.CodeDetail</class-name>
+			<codeId>1</codeId>
+			<codeName>1</codeName>
+		</class>
+
+		<!-- 省份数据 -->
+		<class>
+			<class-name>com.wanma.model.Province</class-name>
+			<provinceId>1</provinceId>
+			<provinceName>1</provinceName>
+		</class>
+
+		<!-- 城市数据 -->
+		<class>
+			<class-name>com.wanma.model.TblCity</class-name>
+			<cityCode>1</cityCode>
+			<cityName>1</cityName>
+			<cityLongitude>1</cityLongitude>
+			<cityLatitude>1</cityLatitude>
+		</class>
+
+		<!-- 城市分组数据 -->
+		<class>
+			<class-name>com.bluemobi.product.utils.CityGroupObject</class-name>
+			<keyWord>1</keyWord>
+			<cityList>1</cityList>
+		</class>
+
+		<!-- 社区数据 -->
+		<class>
+			<class-name>com.wanma.model.Community</class-name>
+			<communityId>1</communityId>
+			<provinceId>1</provinceId>
+			<cityId>1</cityId>
+			<cityName>1</cityName>
+			<communityName>1</communityName>
+			<address>1</address>
+		</class>
+
+		<!-- 热门功能数据 -->
+		<class>
+			<class-name>com.wanma.model.PopularFunction</class-name>
+			<functionId>1</functionId>
+			<functionName>1</functionName>
+			<url>1</url>
+			<notes>1</notes>
+			<titleMultiUrl>1</titleMultiUrl>
+			<isAdded>1</isAdded>
+			<serviceType>1</serviceType>
+			<urlParameter>1</urlParameter>
+			<androidPackageName>1</androidPackageName>
+			<androidPackageVersion>1</androidPackageVersion>
+			<androidAddress>1</androidAddress>
+			<androidStartCommand>1</androidStartCommand>
+			<iosPackageName>1</iosPackageName>
+			<iosStartCommand>1</iosStartCommand>
+			<iosStartVersion>1</iosStartVersion>
+			<iosStartParameter>1</iosStartParameter>
+		</class>
+
+		<!-- 用户数据 -->
+		<class>
+			<class-name>com.bluemobi.product.model.UserModel</class-name>
+			<userId>1</userId>
+			<userName>1</userName>
+			<userLevel>1</userLevel>
+			<titleMultiUrl>1</titleMultiUrl>
+			<mobileNumber>1</mobileNumber>
+		</class>
+
+		<!-- 乐居用户数据 -->
+		<class>
+			<class-name>com.wanma.model.PeaceLiveUser</class-name>
+			<userId>1</userId>
+			<userName>1</userName>
+			<userLevel>1</userLevel>
+			<titleMultiUrl>1</titleMultiUrl>
+			<mobileNumber>1</mobileNumber>
+			<defaultComm>1</defaultComm>
+			<continuousCount>1</continuousCount>
+			<defaultAddr>1</defaultAddr>
+			<defaultArayacak>1</defaultArayacak>
+			<birthdate>1</birthdate>
+			<sex>1</sex>
+			<profession>1</profession>
+			<constellation>1</constellation>
+			<sign>1</sign>
+			<hobbies>1</hobbies>
+			<image>1</image>
+			<vipCard>1</vipCard>
+		</class>
+
+		<!-- 版本数据 -->
+		<class>
+			<class-name>com.wanma.model.VersionInfo</class-name>
+			<versionId>1</versionId>
+			<versionName>1</versionName>
+			<iosUrl>1</iosUrl>
+			<androidUrl>1</androidUrl>
+			<notes>1</notes>
+		</class>
+
+		<!-- 商家数据 -->
+		<class>
+			<class-name>com.wanma.model.MerchantEx</class-name>
+			<merchantId>1</merchantId>
+			<merchantName>1</merchantName>
+			<workAddress>1</workAddress>
+			<mobileNumber>1</mobileNumber>
+			<commentStart>1</commentStart>
+			<distance>1</distance>
+			<titleMultiUrl>1</titleMultiUrl>
+			<allMultiUrl>1</allMultiUrl>
+			<phoneNumber>1</phoneNumber>
+			<latestSignIn>1</latestSignIn>
+			<signInCount>1</signInCount>
+			<avgStar>1</avgStar>
+			<avgExpense>1</avgExpense>
+			<companyComment>1</companyComment>
+			<longitude>1</longitude>
+			<latitude>1</latitude>
+			<latestEticket>1</latestEticket>
+			<isAttened>1</isAttened>
+			<ticketTotal>1</ticketTotal>
+		</class>
+
+		<!-- 捡便宜数据 -->
+		<class>
+			<class-name>com.wanma.model.Reduced</class-name>
+			<reducedId>1</reducedId>
+			<reducedName>1</reducedName>
+			<comment>1</comment>
+			<detail>1</detail>
+			<titleMultiUrl>1</titleMultiUrl>
+			<allMultiUrl>1</allMultiUrl>
+			<merchantId>1</merchantId>
+			<merchantName>1</merchantName>
+			<workAddress>1</workAddress>
+			<commentStart>1</commentStart>
+			<longitude>1</longitude>
+			<latitude>1</latitude>
+			<distance>1</distance>
+			<latestSignIn>1</latestSignIn>
+			<signInCount>1</signInCount>
+			<phoneNumber>1</phoneNumber>
+			<isAttened>1</isAttened>
+		</class>
+
+		<!-- 签到数据 -->
+		<class>
+			<class-name>com.wanma.model.SignIn</class-name>
+			<signInId>1</signInId>
+			<merchantId>1</merchantId>
+			<userId>1</userId>
+			<userName>1</userName>
+			<userImg>1</userImg>
+			<comment>1</comment>
+			<commentStart>1</commentStart>
+			<titleMultiUrl>1</titleMultiUrl>
+			<allMultiUrl>1</allMultiUrl>
+			<lastUpdateDate>1</lastUpdateDate>
+		</class>
+
+		<!-- 评价数据 -->
+		<class>
+			<class-name>com.wanma.model.CommodityComment</class-name>
+			<commentId>1</commentId>
+			<bookId>1</bookId>
+			<userId>1</userId>
+			<userName>1</userName>
+			<userImg>1</userImg>
+			<commentContent>1</commentContent>
+			<commentStart>1</commentStart>
+			<lastUpdateDate>1</lastUpdateDate>
+		</class>
+
+		<!-- 商品分类数据 -->
+		<class>
+			<class-name>com.wanma.model.ProductType</class-name>
+			<typeId>1</typeId>
+			<typeName>1</typeName>
+		</class>
+
+		<!-- 商品数据 -->
+		<class>
+			<class-name>com.wanma.model.Product</class-name>
+			<productId>1</productId>
+			<productName>1</productName>
+			<productTitle>1</productTitle>
+			<businessType>1</businessType>
+			<sellStartDate>1</sellStartDate>
+			<sellEndDate>1</sellEndDate>
+			<typeId>1</typeId>
+			<originalCost>1</originalCost>
+			<presentCost>1</presentCost>
+			<servicePhone>1</servicePhone>
+			<productUnit>1</productUnit>
+			<serialNumber>1</serialNumber>
+			<productInventory>1</productInventory>
+			<comment>1</comment>
+			<titleMultiUrl>1</titleMultiUrl>
+			<allMultiUrl>1</allMultiUrl>
+			<latestComment>1</latestComment>
+			<commentCount>1</commentCount>
+			<avgStar>1</avgStar>
+			<distance>1</distance>
+			<sysDateTime>1</sysDateTime>
+			<bookedTotal>1</bookedTotal>
+			<isCollected>1</isCollected>
+			<merchantInfo>1</merchantInfo>
+			<restriction>1</restriction>
+			<restrictionLeft>1</restrictionLeft>
+			<prepareDays>1</prepareDays>
+			<propertyList>1</propertyList>
+			<detail>1</detail>
+			<linkUrl>1</linkUrl>
+			<activityType>1</activityType>
+			<minBuy>1</minBuy>
+			<propertyInventory>1</propertyInventory>
+		</class>
+
+		<!-- 公告数据 -->
+		<class>
+			<class-name>com.wanma.model.ContentmentAlert</class-name>
+			<alertId>1</alertId>
+			<alertType>1</alertType>
+			<communityId>1</communityId>
+			<title>1</title>
+			<subTitle>1</subTitle>
+			<lastUpdateDate>1</lastUpdateDate>
+			<titleMultiUrl>1</titleMultiUrl>
+			<comment>1</comment>
+			<detail>1</detail>
+			<allMultiUrl>1</allMultiUrl>
+			<readFlag>1</readFlag>
+		</class>
+
+		<!-- 订购省分批发货数据 -->
+		<class>
+			<class-name>com.wanma.model.ProductBatchDeliver</class-name>
+			<batchId>1</batchId>
+			<productId>1</productId>
+			<batchCount>1</batchCount>
+		</class>
+
+		<!-- 收货地址数据 -->
+		<class>
+			<class-name>com.wanma.model.ConsigneeAddr</class-name>
+			<addressId>1</addressId>
+			<userId>1</userId>
+			<userName>1</userName>
+			<phoneNumber>1</phoneNumber>
+			<zipCode>1</zipCode>
+			<addressDetail>1</addressDetail>
+			<defaultFlg>1</defaultFlg>
+		</class>
+
+		<!-- 操作记录数据 -->
+		<class>
+			<class-name>com.wanma.model.ActionHistory</class-name>
+			<actionType>1</actionType>
+			<userId>1</userId>
+			<actionContent>1</actionContent>
+			<lastUpdateDate>1</lastUpdateDate>
+		</class>
+
+		<!-- 乐居券数据 -->
+		<class>
+			<class-name>com.wanma.model.ContentmentTicket</class-name>
+			<eticketId>1</eticketId>
+			<eticketName>1</eticketName>
+			<amount>1</amount>
+			<useRuleAmount>1</useRuleAmount>
+			<usePerAmount>1</usePerAmount>
+			<comment>1</comment>
+			<startDate>1</startDate>
+			<endDate>1</endDate>
+			<ticketUserId>1</ticketUserId>
+		</class>
+
+		<!-- 电子券数据 -->
+		<class>
+			<class-name>com.wanma.model.Eticket</class-name>
+			<eticketId>1</eticketId>
+			<eticketName>1</eticketName>
+			<eticketTitle>1</eticketTitle>
+			<typeId>1</typeId>
+			<startDate>1</startDate>
+			<endDate>1</endDate>
+			<tenantId>1</tenantId>
+			<mobileNumber>1</mobileNumber>
+			<amount>1</amount>
+			<useRuleAmount>1</useRuleAmount>
+			<comment>1</comment>
+			<downloadCount>1</downloadCount>
+			<eticketCount>1</eticketCount>
+			<isPastDue>1</isPastDue>
+			<titleMultiUrl>1</titleMultiUrl>
+			<allMultiUrl>1</allMultiUrl>
+			<latestComment>1</latestComment>
+			<commentCount>1</commentCount>
+			<avgStar>1</avgStar>
+			<distance>1</distance>
+			<sysDateTime>1</sysDateTime>
+			<isCollected>1</isCollected>
+			<merchantInfo>1</merchantInfo>
+			<detail>1</detail>
+			<cost>1</cost>
+			<eticketType>1</eticketType>
+			<lastUpdateDate>1</lastUpdateDate>		
+		</class>
+
+		<!-- 订单数据 -->
+		<class>
+			<class-name>com.wanma.model.Book</class-name>
+			<bookId>1</bookId>
+			<userId>1</userId>
+			<amount>1</amount>
+			<bookStatus>1</bookStatus>
+			<commentAble>1</commentAble>
+			<isCommented>1</isCommented>
+			<payDate>1</payDate>
+			<productList>1</productList>
+			<tradeCode>1</tradeCode>
+			<arayacakPosition>1</arayacakPosition>
+			<pickupDate>1</pickupDate>
+			<pickupDayType>1</pickupDayType>
+			<cardId>1</cardId>
+			<createDate>1</createDate>
+			<lastUpdateDate>1</lastUpdateDate>
+			<bookTotal>1</bookTotal>
+			<refundStatus>1</refundStatus>
+		</class>
+
+		<!-- 订单商品数据 -->
+		<class>
+			<class-name>com.wanma.model.BookProduct</class-name>
+			<bookId>1</bookId>
+			<referenceId>1</referenceId>
+			<productType>1</productType>
+			<bookTotal>1</bookTotal>
+			<deliverStatus>1</deliverStatus>
+			<businessType>1</businessType>
+			<productName>1</productName>
+			<productTitle>1</productTitle>
+			<titleMultiUrl>1</titleMultiUrl>
+			<comment>1</comment>
+			<batchCount>1</batchCount>
+			<payDate>1</payDate>
+			<amount>1</amount>
+			<batchList>1</batchList>
+			<propertyId01>1</propertyId01>
+			<propertyId02>1</propertyId02>
+			<propertyId03>1</propertyId03>
+			<propertyName01>1</propertyName01>
+			<propertyName02>1</propertyName02>
+			<propertyName03>1</propertyName03>
+		</class>
+
+		<!-- 订单商品分批数据 -->
+		<class>
+			<class-name>com.wanma.model.BookBatchDeliver</class-name>
+			<bookId>1</bookId>
+			<batchSort>1</batchSort>
+			<deliverStatus>1</deliverStatus>
+			<tradeCode>1</tradeCode>
+			<amount>1</amount>
+		</class>
+
+		<!-- 购物车数据 -->
+		<class>
+			<class-name>com.wanma.model.ShoppingCart</class-name>
+			<userId>1</userId>
+			<productType>1</productType>
+			<referenceId>1</referenceId>
+			<total>1</total>
+			<businessType>1</businessType>
+			<productName>1</productName>
+			<productTitle>1</productTitle>
+			<presentCost>1</presentCost>
+			<originalCost>1</originalCost>
+			<titleMultiUrl>1</titleMultiUrl>
+			<prepareDays>1</prepareDays>
+			<propertyId01>1</propertyId01>
+			<propertyId02>1</propertyId02>
+			<propertyId03>1</propertyId03>
+			<propertyName01>1</propertyName01>
+			<propertyName02>1</propertyName02>
+			<propertyName03>1</propertyName03>
+		</class>
+
+		<!-- 自提点数据 -->
+		<class>
+			<class-name>com.wanma.model.ArayacakPosition</class-name>
+			<positionId>1</positionId>
+			<positionName>1</positionName>
+			<address>1</address>
+			<phoneNumber>1</phoneNumber>
+			<distance>1</distance>
+			<defaultFlg>1</defaultFlg>
+		</class>
+
+		<!-- 商家端用户数据 -->
+		<class>
+			<class-name>com.wanma.model.MerchantClient</class-name>
+			<merchantId>1</merchantId>
+			<merchantName>1</merchantName>
+			<dayPayTotal>1</dayPayTotal>
+			<dayPayAmount>1</dayPayAmount>
+			<monthPayTotal>1</monthPayTotal>
+			<monthPayAmount>1</monthPayAmount>
+			<payTotal>1</payTotal>
+			<payAmount>1</payAmount>
+		</class>
+
+		<!-- 扫码管理订单数据 -->
+		<class>
+			<class-name>com.wanma.model.ScanTradeBook</class-name>
+			<orderId>1</orderId>
+			<mobileNumber>1</mobileNumber>
+			<userId>1</userId>
+			<userName>1</userName>
+			<vipCard>1</vipCard>
+			<amount>1</amount>
+			<tradeDate>1</tradeDate>
+			<bookStatus>1</bookStatus>
+			<merchantName>1</merchantName>
+			<eticket>1</eticket>
+			<tradeType>1</tradeType>
+		</class>
+
+		<!-- 扫码交易码数据 -->
+		<class>
+			<class-name>com.wanma.model.ScanTrade</class-name>
+			<tradeId>1</tradeId>
+			<qrCodeMultiUrl>1</qrCodeMultiUrl>
+			<barCodeMultiUrl>1</barCodeMultiUrl>
+		</class>
+
+		<!-- 聊天主数据 -->
+		<class>
+			<class-name>com.wanma.model.ChartMain</class-name>
+			<fromUser>1</fromUser>
+			<toUser>1</toUser>
+			<detail>1</detail>
+			<fromUserImg>1</fromUserImg>
+			<toUserImg>1</toUserImg>
+			<titleMultiUrl>1</titleMultiUrl>
+			<createDate>1</createDate>
+		</class>
+
+		<!-- 聊天历史数据 -->
+		<class>
+			<class-name>com.wanma.model.ChartHistory</class-name>
+			<fromUser>1</fromUser>
+			<toUser>1</toUser>
+			<detail>1</detail>
+			<fromUserImg>1</fromUserImg>
+			<toUserImg>1</toUserImg>
+			<titleMultiUrl>1</titleMultiUrl>
+			<createDate>1</createDate>
+		</class>
+
+		<!-- 乐居卡数据 -->
+		<class>
+			<class-name>com.wanma.model.VipCard</class-name>
+			<cardId>1</cardId>
+			<mobileNumber>1</mobileNumber>
+			<userName>1</userName>
+			<amount>1</amount>
+			<microPay>1</microPay>
+			<augmentedPay>1</augmentedPay>
+		</class>
+
+		<!-- 订单或者券数据 -->
+		<class>
+			<class-name>com.wanma.model.BookOrTicket</class-name>
+			<type>1</type>
+			<bookData>1</bookData>
+			<eticketData>1</eticketData>
+			<userId>1</userId>
+			<userName>1</userName>
+			<userId>1</userId>
+			<mobileNumber>1</mobileNumber>
+			<communityName>1</communityName>
+		</class>
+
+		<!-- 商品属性设定数据 -->
+		<class>
+			<class-name>com.wanma.model.ProductPropertySet</class-name>
+			<propertyId>1</propertyId>
+			<propertyName>1</propertyName>
+			<childPropertyList>1</childPropertyList>
+		</class>
+
+		<!-- 商品详细库存数据 -->
+		<class>
+			<class-name>com.wanma.model.ProductInventory</class-name>
+			<propertyId>1</propertyId>
+			<productInventory>1</productInventory>
+		</class>
+
+		<!-- 公司数据 -->
+		<class>
+			<class-name>com.bluemobi.product.model.CompanyModel</class-name>
+			<companyId>1</companyId>
+			<companyName>1</companyName>
+			<serviceRule>1</serviceRule>
+			<serviceComment>1</serviceComment>
+			<detail>1</detail>
+			<titleMultiUrl>1</titleMultiUrl>
+			<allMultiUrl>1</allMultiUrl>
+			<serviceUserId>1</serviceUserId>
+			<comUserId>1</comUserId>
+		</class>
+		
+		<!-- app用户数据 -->
+		<class>
+			<class-name>com.wanma.model.TblUser</class-name>
+			<pkUserinfo>1</pkUserinfo>
+			<usinPhone>1</usinPhone>
+			<usinUsername>1</usinUsername>
+			<usinFacticityname>1</usinFacticityname>
+			<usinSex>1</usinSex>
+			<usinAccountbalance>1</usinAccountbalance>
+			<usinBirthdate>1</usinBirthdate>
+			<usinUserstatus>1</usinUserstatus>
+			<usinHeadimage>1</usinHeadimage>
+			<usinIntegrate>1</usinIntegrate>
+		</class>
+		
+		<!-- app其他配置参数 -->
+		<class>
+			<class-name>com.wanma.model.TblParaconfig</class-name>
+			<pkParaconfig>1</pkParaconfig>
+			<paraName>1</paraName>
+		</class>
+		
+		<!-- app车型数据 -->
+		<class>
+			<class-name>com.wanma.model.TblCarinfo</class-name>
+			<pkCarinfo>1</pkCarinfo>
+			<carinfoStylename>1</carinfoStylename>
+		</class>
+		
+		<!-- app评论数据 -->
+		<class>
+			<class-name>com.wanma.model.TblProductcategory</class-name>
+			<pkProductcategory>1</pkProductcategory>
+			<prcaName>1</prcaName>
+			<prcaImage>1</prcaImage>
+		</class>
+		<!-- 新商品 热门推荐商品分类-->
+		<class>
+			<class-name>com.wanma.model.TblProduct</class-name>
+			<pkProduct>1</pkProduct>
+			<prodProductname>1</prodProductname>
+			<prodProductimage>1</prodProductimage>
+			<prodProducttag>1</prodProducttag>
+			<prodProductprice>1</prodProductprice>
+			<prodSoldquantity>1</prodSoldquantity>
+			<prodChargingMode>1</prodChargingMode>
+			<prodStockquantity>1</prodStockquantity>
+			<prodFeature>1</prodFeature>
+			<prodMarketprice>1</prodMarketprice>
+			<prodDiscountprice>1</prodDiscountprice>
+		</class>
+				<!-- 充电展示-->
+		<class>
+			<class-name>com.wanma.model.TblChargeinfo</class-name>
+			<chinUsingmachinecode>1</chinUsingmachinecode>
+			<chinOutputcurrent>1</chinOutputcurrent>
+			<chinTotaltime>1</chinTotaltime>
+			<chinTotalactive>1</chinTotalactive>
+			<chinLinkedstatus>1</chinLinkedstatus>
+			<chinWorkingstatus>1</chinWorkingstatus>
+			<chinInterfaceidentification>1</chinInterfaceidentification>
+			<pkElectricPile>1</pkElectricPile>
+			<chinType>1</chinType>
+		</class>
+	</controll-classes>
+</json-publish-config>
