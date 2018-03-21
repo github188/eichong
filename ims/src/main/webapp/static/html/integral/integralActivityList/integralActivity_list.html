@@ -15,9 +15,10 @@
     <div class="row">
         <div class="formBlock clearfix">
             <form id="intergralActivityListForm">
-                <input type="text" name="isWhole" hidden="hidden" value="">
+                <!--<input type="text" name="isWhole" hidden="hidden" value="">-->
                 <div class="col-xs-12 col-sm-10 col-md-10 col-lg-10">
                     <div class="userListSelect row">
+                        <!--
                         <div class="col-xs-6 col-sm-2 col-md-2 col-lg-2" style="position: relative;">
                             <div class="isWholeBtn" onclick="integralActivityListWholeCountry();">
                                 全国
@@ -41,6 +42,42 @@
                                 <input type="text" name="cityId" hidden="hidden" value=""/>
                                 <ul class="model-select-option cityUl">
 
+                                </ul>
+                            </div>
+                        </div>-->
+                        <div class="col-sm-6 col-xs-12" style="position: relative;">
+                            <div class="col-sm-2 queryParam">
+                                活动类型
+                            </div>
+                            <div class=" col-sm-4 col-xs-6 model-select-box">
+                                <div class="model-select-text provinceBlock" data-value="" id="pkId">请选择</div>
+                                <span class="downRow provinceBlock clickRotateSpan"></span>
+                                <input type="text" name="pkId" hidden="hidden" value=""/>
+                                <ul class="model-select-option pkIdUl">
+                                    <li data-option="" class="seleced">全部活动类型</li>
+                                    <li data-option="1">充值赠送</li>
+                                    <li data-option="2">消费赠送</li>
+                                    <li data-option="3">每日领取</li>
+                                    <li data-option="4">修改资料赠送</li>
+                                    <li data-option="5">分享赠送</li>
+                                    <li data-option="6">积分兑换</li>
+                                    <li data-option="8">节假日</li>
+                                    <li data-option="9">生日赠送</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-xs-12">
+                            <div class="col-sm-2 queryParam">
+                                活动状态
+                            </div>
+                            <div class="col-sm-offset-1 col-xs-6 col-sm-4  model-select-box">
+                                <div class="model-select-text cityBlock" data-value="" id="activityStatus">请选择</div>
+                                <span class="downRow cityBlock clickRotateSpan"></span>
+                                <input type="text" name="activityStatus" hidden="hidden" value=""/>
+                                <ul class="model-select-option activityStatusUl">
+                                    <li data-option="" class="seleced">全部活动状态</li>
+                                    <li data-option="0">开启</li>
+                                    <li data-option="1">关闭</li>
                                 </ul>
                             </div>
                         </div>

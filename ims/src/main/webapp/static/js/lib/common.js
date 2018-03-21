@@ -13,8 +13,12 @@ function iframeClose(){
     var originalEle = window.parent.document.getElementById('side-menu').children;
     for(var i=0;i<originalEle.length;i++){
         if((originalEle[i].children)[0].innerText == '活动管理'){
-          clsoeEle.click();
-          (((originalEle[i].children)[1].children)[1].children)[0].click();
+            for(var j=0;j<originalEle[i].children[1].children[1].children.length;j++){
+                if(originalEle[i].children[1].children[1].children[j].innerText=='积分活动列表'){
+                    clsoeEle.click();
+                    (((originalEle[i].children)[1].children)[1].children)[j].click();
+                }
+            }
         }
     }
 }

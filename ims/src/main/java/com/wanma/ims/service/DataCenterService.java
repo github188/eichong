@@ -1,7 +1,7 @@
 package com.wanma.ims.service;
 
+import com.wanma.ims.common.domain.ElectricPileDO;
 import com.wanma.ims.common.domain.UserDO;
-import net.sf.json.JSONObject;
 
 import java.util.List;
 import java.util.Map;
@@ -52,9 +52,10 @@ public interface DataCenterService {
 	/**
 	 * 充电实时信息 转义
 	 * @param returnJson
+	 * @param electricPileDO
 	 * @return
 	 */
-	Map<String,Object> getHeadRealTimeInfo(JSONObject returnJson);
+	Map<String,Object> getHeadRealTimeInfo(Map<String, Object> returnJson, ElectricPileDO electricPileDO);
 
 	/**
 	 * 获取电站中 电桩/枪头在线状态

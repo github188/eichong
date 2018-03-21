@@ -60,13 +60,13 @@ public class TblPowerstationServiceImpl implements  TblPowerstationService{
 	}
 
 	@Override
-	public int getPowerStationCount(TblPowerstation model) {
-		return tblPowerstationMapper.getPowerStationCount(model);
+	public int getPowerStationCount(Map<String, Object> param) {
+		return tblPowerstationMapper.getPowerStationCount(param);
 	}
 
 	@Override
-	public List<TblPowerstation> getPowerStationList(TblPowerstation model) {
-		return tblPowerstationMapper.getPowerStationList(model);
+	public List<TblPowerstation> getPowerStationList(Map<String, Object> param) {
+		return tblPowerstationMapper.getPowerStationList(param);
 	}
 
 	@Override

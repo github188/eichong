@@ -423,5 +423,4 @@ public class UserDO extends BasicModel {
 	public void setNormPlateNum(String normPlateNum) {
 		this.normPlateNum = normPlateNum;
 	}
-
 }

@@ -84,7 +84,7 @@ public class RateinformationUtil {
 					rate2.put("SevicePrice", String.valueOf(model.getRaInServiceCharge()));
 				}
 				String aa="00";
-				rate2.put("StartTime",timeStart + ":" + (stMin.length() == 1 ? "0" + stMin : stMin )+":"+aa);
+				rate2.put("StartTime",timeStart + (stMin.length() == 1 ? "0" + stMin : stMin )+aa);
 				rateMapList.add(rate2);
 			}
 			return rateMapList;
@@ -116,7 +116,7 @@ public class RateinformationUtil {
 					rate2.put("SevicePrice", String.valueOf(model.getRaInValleyTimeMoney()));
 				}
 				String aa="00";
-				rate2.put("StartTime",timeStart + ":" + (stMin.length() == 1 ? "0" + stMin : stMin )+":"+aa);
+				rate2.put("StartTime",timeStart + (stMin.length() == 1 ? "0" + stMin : stMin )+aa);
 				rateMapList.add(rate2);
 			}
 		}

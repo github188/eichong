@@ -6,9 +6,9 @@ $(function(){
         function loadshishiData(){
             realData();
             clearInterval(intervalIdloadRunTime);
-            intervalIdloadRunTime=setInterval('realData()',2000*60);
+            intervalIdloadRunTime=setInterval('realData()',1000*60);
         }
-    },2000*60);
+    },1000*60);
     map.setFeatures(['bg','road','building']);//去掉地图默认标注
 });
 function realData(){
@@ -36,8 +36,6 @@ var markers = [];
 //请求所有省级数据获取到所有返回城市到经纬度(第一级)
 function getElectricPileMap(provinceCode,cityCode,cpyId,type) {
     if(map.getZoom() < 12){
-        //console.log(2);
-        //toLoadPointData(provinceCode,cityCode,cpyId,type);
         toLoadPoint(provinceCode,cityCode,cpyId,type);
     }else if(map.getZoom() >= 12){
         toLoadPointRepeat(provinceCode,cityCode,cpyId,type);
@@ -88,22 +86,29 @@ function drawMap(place){
         var div = document.createElement('div');
         div.className = 'circle';
         //根据电量的大小画不同大小的圆
-        if(data.chargeCount >0 && data.chargeCount <= 10000){
-            var size = 16;
+        if(data.chargeCount >0 && data.chargeCount <= 50000){
+            var size = 10;
             div.style.backgroundColor = '#ff7d00';
             div.style.width = size + 'px';
             div.style.height = size + 'px';
             div.style.borderRadius = size/2 + 'px';
             div.style.opacity = 0.8;
-        }else if(data.chargeCount > 10000 && data.chargeCount < 30000){
-            var size = 26;
+        }else if(data.chargeCount > 50000 && data.chargeCount < 500000){
+            var size = 20;
             div.style.backgroundColor = '#ff7d00';
             div.style.width = size + 'px';
             div.style.height = size + 'px';
             div.style.borderRadius = size/2 + 'px';
             div.style.opacity = 0.8;
-        }else if(data.chargeCount >= 30000){
-            var size = 36;
+        }else if(data.chargeCount > 500000 && data.chargeCount < 5000000){
+            var size = 30;
+            div.style.backgroundColor = '#ff7d00';
+            div.style.width = size + 'px';
+            div.style.height = size + 'px';
+            div.style.borderRadius = size/2 + 'px';
+            div.style.opacity = 0.8;
+        }else {
+            var size = 40;
             div.style.backgroundColor = '#ff7d00';
             div.style.width = size + 'px';
             div.style.height = size + 'px';
@@ -113,7 +118,7 @@ function drawMap(place){
         var marker = new AMap.Marker({
             content: div,
             animation:'',
-            title: data.name + '  充电总数量:'+data.chargeCount,
+            title: data.name + '  充电电量:'+data.chargeCount,
             position:data.value,
             offset: new AMap.Pixel(-24, -35),
             extData:{
@@ -125,15 +130,15 @@ function drawMap(place){
                 cpyId:window.localStorage.getItem('cpyId') || ''
             }
         });
-        marker.content = data.name + '<br/>' + '充电数量：'+data.chargeCount;
-        marker.on('click', markerClick);
+        marker.content = data.name + '<br/>' + '充电电量：'+data.chargeCount;
+        marker.on('mouseover', markerClick);
         marker.emit('mouseout', {target: marker});
         marker.setMap(map);
         function markerClick(e) {
             infoWindow.setContent(e.target.content);
             infoWindow.open(map, e.target.getPosition());
         }
-        marker.off('dblclick').on('dblclick',markerdblClick);
+        marker.off('click').on('click',markerdblClick);
         //双击进入下一层
         function markerdblClick(e){//鼠标双击事件
             var provinceCode = e.target.G.extData.provinceCode;
@@ -177,12 +182,11 @@ function drawMap(place){
 function toLoadPoint(provinceCode,cityCode,cpyId,type){
     map.clearMap();
     $('.chargiePoint').hide();
-    $('.chargeAmountOne').hide();
-    $('.chargeAmountTwo').hide();
+    $('#chargieCurve').hide();
+    $('#chargeFiveDays').hide();
     $('.historicalData').show();
     $('.realTimeData').show();
     toLoadPointData(provinceCode,cityCode,cpyId,type);
-    //console.log(4);
 }
 //加载第三级
 function toLoadPointRepeat(provinceCode,cityCode,cpyId,type){
@@ -190,16 +194,15 @@ function toLoadPointRepeat(provinceCode,cityCode,cpyId,type){
     $('.historicalData').hide();
     $('.realTimeData').hide();
     $('.chargiePoint').show();
-    $('.chargeAmountOne').show();
-    $('.chargeAmountTwo').show();
+    $('#chargieCurve').show();
+    $('#chargeFiveDays').show();
     toLoadPointData(provinceCode,cityCode,cpyId,type);
     getChargePowerCurve(provinceCode,cityCode,cpyId,type);
     getChargeCount5DaysData(provinceCode,cityCode,cpyId,type);
 }
 //输入地点名返回数据
 function toLoadPointData(provinceCode,cityCode,cpyId,type){
-    //console.log(cpyId);
-    var index=layer.load(1);
+    //console.log(cpyId)
     $.ajax({
         type: "post",
         url: basePath + getMapDataUrl,
@@ -211,8 +214,8 @@ function toLoadPointData(provinceCode,cityCode,cpyId,type){
             type:type
         },
         success: function (req) {
-            layer.close(index);
             mapData = req.dataObject;
+            exceptionHandle(mapData);
             for (var i = 0; i < mapData.length; i++) {
                 var place = mapData[i].provinceName || mapData[i].cityName || mapData[i].powerstationName;
                 var provinceCode = mapData[i].provinceCode;
@@ -253,7 +256,6 @@ function toLoadPointData(provinceCode,cityCode,cpyId,type){
                         })
                     }(place, provinceCode,cityCode,powerstationId, chargeCount));
                 }
-
             }
 
         }
@@ -276,10 +278,13 @@ function toLoadHistoryData(provinceCode,cityCode,cpyId,type){
         success: function (req) {
             layer.close(index);
             var data = req.dataObject;
+            //console.log(data);
+            exceptionHandle(data);
             $('.chargeCount1').html(data.chargeCount);
             $('.chargeTime1').html(data.chargeTime);
             $('.orderCount1').html(data.orderCount);
             $('#cityChargeCount').html(data.chargeCount);
+
         }
     });
     toLoadRealTimeData(provinceCode,cityCode,cpyId,type);
@@ -287,11 +292,11 @@ function toLoadHistoryData(provinceCode,cityCode,cpyId,type){
 
 //加载实时数据
 function toLoadRealTimeData(provinceCode,cityCode,cpyId,type){
-    var index=layer.load(1);
+    //var index=layer.load(1);
     $.ajax({
         type: "post",
         url: basePath + getChargeRealTimeDateUrl,
-        async: false,
+        async: true,
         data: {
             type:type,
             provinceCode:provinceCode,
@@ -299,14 +304,19 @@ function toLoadRealTimeData(provinceCode,cityCode,cpyId,type){
             cpyId:cpyId
         },
         success: function (req) {
-            layer.close(index);
-            var data = req.dataObject;
-            $('.chargeCount').html(data.chargeCount);
-            $('.orderCount').html(data.orderCount);
-            $('.errorCount').html(data.errorCount);
-            $('#newChargeCount').html(data.chargeCount);
-            $('#chargeMoney').html(data.chargeMoney);
-
+            //layer.close(index);
+            removeLoading();
+            //var data = req.dataObject;
+            exceptionHandle(req);
+            $('.chargeCount').html(req.chargeCount);
+            $('.orderCount').html(req.orderCount);
+            $('.errorCount').html(req.errorCount);
+            $('#newChargeCount').html(req.chargeCount);
+            if(req.chargeMoney){
+                $('#chargeMoney').html(req.chargeMoney);
+            }else{
+                $('#chargeMoney').html("未知");
+            }
         }
     });
 }

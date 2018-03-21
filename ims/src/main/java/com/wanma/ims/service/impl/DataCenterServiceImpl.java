@@ -4,11 +4,9 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-import com.google.common.base.Strings;
-import com.wanma.ims.common.domain.ElectricPileDO;
-import com.wanma.ims.common.domain.RateInfoDO;
-import com.wanma.ims.common.domain.UserDO;
+import com.wanma.ims.common.domain.*;
 import com.wanma.ims.constants.WanmaConstants;
+import com.wanma.ims.mapper.OrderMapper;
 import com.wanma.ims.mapper.RateInfoMapper;
 import com.wanma.ims.mapper.UserMapper;
 import com.wanma.ims.redis.RedisDataCenter;
@@ -37,7 +35,7 @@ public class DataCenterServiceImpl implements DataCenterService {
 	private MultipartFileService multipartFileService;
 	@Override
 	public Map<String, Object> getHistoryDataForOrder(Map<String, String> params) {
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map;
 		String key = "ims:history_data_order:"+"cpyId_"+params.get("cpyId")+":provinceCode_"+params.get("provinceCode")+":cityCode_"+params.get("cityCode");
 		if (redisDataCenter.strGet(key)==null){
 			map = dataCenterMapper.getHistoryDataForOrder(params);
@@ -49,11 +47,11 @@ public class DataCenterServiceImpl implements DataCenterService {
 	}
 	@Override
 	public Map<String, Object> getHistoryDataForElectric(Map<String, String> params) {
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map;
 		String key = "ims:history_data_electric:"+"cpyId_"+params.get("cpyId")+":provinceCode_"+params.get("provinceCode")+":cityCode_"+params.get("cityCode");
 		if (redisDataCenter.strGet(key)==null){
 			map = getHistoryDataForElectricMap(params);
-			redisDataCenter.strSetWithTime(key,map,new Long(6), TimeUnit.HOURS);
+			redisDataCenter.strSetWithTime(key,map, (long) 6, TimeUnit.HOURS);
 			return map;
 		}else {
 			return (Map<String, Object>) redisDataCenter.strGet(key);
@@ -73,7 +71,7 @@ public class DataCenterServiceImpl implements DataCenterService {
 	}
 	@Override
 	public List<Map<String, Object>> getSelectScope() {
-		List<Map<String, Object>> returnList = new ArrayList<Map<String, Object>>();
+		List<Map<String, Object>> returnList = new ArrayList<>();
 		String key = "ims:dataCenter:selectScope:";
 		if (redisDataCenter.strGet(key)==null){
 			List<Map<String, String>> provinceScopeList = dataCenterMapper.getProvinceScope();
@@ -98,7 +96,7 @@ public class DataCenterServiceImpl implements DataCenterService {
 				}
 				returnList.get(i).put("children", cpyChildren);
 			}
-			redisDataCenter.strSetWithTime(key,returnList,new Long(6), TimeUnit.HOURS);
+			redisDataCenter.strSetWithTime(key,returnList, (long) 6, TimeUnit.HOURS);
 			return returnList;
 		}else {
 			return (List<Map<String, Object>>) redisDataCenter.strGet(key);
@@ -106,7 +104,7 @@ public class DataCenterServiceImpl implements DataCenterService {
 	}
 	@Override
 	public Map<String, Object> getHistoryDataForUser(Map<String, String> params) {
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map;
 		String key = "ims:history_data_User:"+"cpyId_"+params.get("cpyId")+":provinceCode_"+params.get("provinceCode")+":cityCode_"+params.get("cityCode");
 		if (redisDataCenter.strGet(key)==null){
 			map = getHistoryDataForUserMap(params);
@@ -128,11 +126,11 @@ public class DataCenterServiceImpl implements DataCenterService {
 	}
 	@Override
 	public List<Map<String, Object>> getMapDataForOrder(Map<String, Object> params) {
-		List<Map<String, Object>> list = new ArrayList<>();
+		List<Map<String, Object>> list;
 		String key = "ims:map_data_order:"+"cpyId_"+params.get("cpyId")+":provinceCode_"+params.get("provinceCode")+":cityCode_"+params.get("cityCode");
 		if (redisDataCenter.strGet(key)==null){
 			list = dataCenterMapper.getMapDataForOrder(params);
-			redisDataCenter.strSetWithTime(key,list,new Long(1), TimeUnit.MINUTES);
+			redisDataCenter.strSetWithTime(key,list, (long) 1, TimeUnit.MINUTES);
 			return list;
 		}else {
 			return (List<Map<String, Object>>) redisDataCenter.strGet(key);
@@ -141,7 +139,7 @@ public class DataCenterServiceImpl implements DataCenterService {
 
 	@Override
 	public List<Map<String, Object>> getMapDataForElectric(Map<String, Object> params) {
-		List<Map<String, Object>> list = new ArrayList<>();
+		List<Map<String, Object>> list;
 		String key = "ims:map_data_electric:"+"cpyId_"+params.get("cpyId")+":provinceCode_"+params.get("provinceCode")+":cityCode_"+params.get("cityCode");
 		if (redisDataCenter.strGet(key)==null){
 			list = dataCenterMapper.getMapDataForElectric(params);
@@ -154,7 +152,7 @@ public class DataCenterServiceImpl implements DataCenterService {
 
 	@Override
 	public List<Map<String, Object>> getMapDataForUser(Map<String, Object> params) {
-		List<Map<String, Object>> List = new ArrayList<>();
+		List<Map<String, Object>> List;
 		if ("".equals(params.get("provinceCode")) ||"".equals(params.get("cityCode"))){
 			List = dataCenterMapper.getMapDataForUser(params);
 		}else {
@@ -164,61 +162,56 @@ public class DataCenterServiceImpl implements DataCenterService {
 	}
 
 	@Override
-	public Map<String, Object> getHeadRealTimeInfo(JSONObject myJsonObject) {
-		Map<String, Object> params = new HashMap<String, Object>();
-			params.put("vin",myJsonObject.get("4_1")==null?"":myJsonObject.get("4_1"));
-		//电池类型
-		if(myJsonObject.get("3_17")==null||myJsonObject.get("3_17")==""){
-			params.put("batteryType", "未知");
-		}else{
-			Map<String, String> map = WanmaConstants.getBattBeryType();
-			params.put("batteryType",map.get(myJsonObject.get("3_17")));
+	public Map<String, Object> getHeadRealTimeInfo(Map<String, Object> myJsonObject, ElectricPileDO electricPileDO) {
+		Map<String, Object> params = new HashMap<>();
+		Map<String,String> order = new HashMap<>();
+		if("3".equals(getStringValue("3_1",myJsonObject))){
+			 order = dataCenterMapper.getOrderByPileId(electricPileDO.getId());
 		}
+			params.put("vin",getStringValue("4_1",myJsonObject));
+		//电池类型
+		Map<String, String> map = WanmaConstants.getBattBeryType();
+		params.put("batteryType",myJsonObject.get("3_17")==null?"未知":map.get(myJsonObject.get("3_17")));
 		//电池容量
-		params.put("batterycapacity",myJsonObject.get("3_18")==null?"未知":myJsonObject.get("3_18"));
+		params.put("batterycapacity",getStringValue("3_18",myJsonObject));
 		//订单编号
-		params.put("chargeCode",myJsonObject.get("chargeCode"));
+		params.put("chargeCode",order.get("code")==null?"":order.get("code"));
 		//用户信息
-		String userId = myJsonObject.get("userId").toString();
-		if (!Strings.isNullOrEmpty(userId)&&!"0".equals(userId)){
-			params= getUserInfo(params,userId);
+		if (order.get("userId")!=null){
+			params= getUserInfo(params, Long.valueOf(order.get("userId")));
 		}
 		//开始充电时间
-		params.put("beginChargeTime",myJsonObject.get("beginChargeTime")==null?"":myJsonObject.get("beginChargeTime"));
+		params.put("beginChargeTime",order.get("startTime")==null?"":order.get("startTime"));
 		//预冻金额
-		params.put("chargeFrozenAmt",myJsonObject.get("chargeFrozenAmt")==null?"":myJsonObject.get("chargeFrozenAmt"));
+		params.put("chargeFrozenAmt",order.get("frozenAmt")==null?"":order.get("frozenAmt"));
 		//费率
-		if (myJsonObject.get("rateInfoId")!=null&&myJsonObject.get("rateInfoId")!=""){
-			params.put("rateInfoId", myJsonObject.get("rateInfoId"));
+		if (order.get("rateId")!=null){
 			RateInfoDO rateInfoDO = new RateInfoDO();
-			rateInfoDO.setPk_RateInformation(new Long(myJsonObject.get("rateInfoId").toString()));
+			rateInfoDO.setPk_RateInformation(Long.valueOf(order.get("rateId")));
 			rateInfoDO = rateInfoMapper.getRateInfoById(rateInfoDO);
 			params.put("rateInfo",rateInfoDO);
+			params.put("rateInfoId",order.get("rateId"));
 		}else {
-			params.put("rateInfoId","");
 			params.put("rateInfo","");
+			params.put("rateInfoId","");
 		}
+
 		//电桩部分
-		params.put("powerHighestTemperature",myJsonObject.get("3_26")==null?"":myJsonObject.get("3_26"));
-		params.put("chargeTime",myJsonObject.get("chargeTime")==null?"":myJsonObject.get("chargeTime"));
-		params.put("restTime",myJsonObject.get("restTime")==null?"":myJsonObject.get("restTime"));
-		if(myJsonObject.get("errorList")==null||myJsonObject.get("errorList")==""){
-			params.put("isError", "无");
-			params.put("errorType", "无");
-		}else{
-			List<String> errorList = (List<String>) myJsonObject.get("errorList");
-			params= getErrorInfo(params,errorList);
-		}
+		params.put("powerHighestTemperature",getDoubleValue("3_26", myJsonObject, 10));
+		params.put("chargeTime",getStringValue("3_6",myJsonObject));
+		params.put("restTime",getStringValue("3_7",myJsonObject));
+		//错误类型
+		params= getErrorInfo(params,myJsonObject);
 		//车辆部分
-		params.put("soc",myJsonObject.get("3_5")==null?"":myJsonObject.get("3_5"));
-		params.put("carTotalVoltage",myJsonObject.get("3_36")==null?"":myJsonObject.get("3_36"));
-		params.put("bpHighestVoltage",myJsonObject.get("3_33")==null?"":myJsonObject.get("3_33"));
-		params.put("bpHighestTemperature",myJsonObject.get("3_34")==null?"":myJsonObject.get("3_34"));
-		params.put("bpLowestTemperature",myJsonObject.get("3_35")==null?"":myJsonObject.get("3_35"));
+		params.put("soc",getStringValue("3_5", myJsonObject));
+		params.put("carTotalVoltage",getDoubleValue("3_36",myJsonObject,10));
+		params.put("bpHighestVoltage",getDoubleValue("3_33",myJsonObject,10));
+		params.put("bpHighestTemperature",getDoubleValue("3_34",myJsonObject,10));
+		params.put("bpLowestTemperature",getDoubleValue("3_35",myJsonObject,10));
 		//电压表 电流表 电量表
-		params.put("voltageValue",myJsonObject.get("3_3")==null?"":myJsonObject.get("3_3"));
-		params.put("currentValue", myJsonObject.get("3_4") == null ? "" : myJsonObject.get("3_4"));
-		params.put("presentChargeValue", myJsonObject.get("presentChargeValue") == null ? "" : myJsonObject.get("presentChargeValue"));
+		params.put("voltageValue",getDoubleValue("3_3",myJsonObject,10));
+		params.put("currentValue",getDoubleValue("3_4",myJsonObject,10));
+		params.put("presentChargeValue",getDoubleValue("4_1",myJsonObject,1000));
 		//曲线图
 		params.put("threePhaseVoltage", myJsonObject.get("threePhaseVoltage") == null ? "" :
 				echarsFormat((List<Map<String, Object>>) myJsonObject.get("threePhaseVoltage"),"三项电压"));
@@ -307,7 +300,7 @@ public class DataCenterServiceImpl implements DataCenterService {
 			UserDO userDO =userMapper.selectUserByUserId(new Long(userId));
 			String powerStationName = dataCenterMapper.getPowerStationNameByEpCode(record.get(i).get("epCode").toString());
 			record.get(i).put("userAccount",userDO ==null?"":userDO.getUserAccount());
-			record.get(i).put("powerStationName",powerStationName);
+			record.get(i).put("powerStationName", powerStationName);
 		}
 		return record;
 	}
@@ -477,7 +470,7 @@ public class DataCenterServiceImpl implements DataCenterService {
 		return map;
 	}
 
-	public Map<String, Object> getUserInfo(Map<String, Object> params,String userId){
+	public Map<String, Object> getUserInfo(Map<String, Object> params,Long userId){
 		Map<String,Object> userInfoMap = dataCenterMapper.getUserInfoForRealTimeById(userId);
 		params.put("userAccount",userInfoMap.get("userAccount"));
 		Map<String,String> user = new HashMap<>();
@@ -499,51 +492,70 @@ public class DataCenterServiceImpl implements DataCenterService {
 		return params;
 	}
 
-	public Map<String, Object> getErrorInfo(Map<String, Object> params,List<String> errorList){
+	public Map<String, Object> getErrorInfo(Map<String, Object> params,Map<String, Object> myJsonObject){
 		String errorType = "";
-		for(int i=0;i<errorList.size();i++){
-			switch (errorList.get(i)) {
-				case "9":errorType+="急停 ";
-					break;
-				case "5":errorType+="防雷器故障 ";
-					break;
-				case "2":errorType+="输入欠压 ";
-					break;
-				case "3":errorType+="输入过压 ";
-					break;
-				case "10":errorType+="读卡器故障 ";
-					break;
-				case "8":errorType+="绝缘检查故障 ";
-					break;
-				case "4":errorType+="过流 ";
-					break;
-				case "6":errorType+="电度表故障 ";
-					break;
-				case "11":errorType+="过温 ";
-					break;
-				case "7":errorType+="接触器故障 ";
-					break;
-				case "12":errorType+="输出过流 ";
-					break;
-				case "13":errorType+="输出过压;";
-					break;
-				case "15":errorType+="BMS欠压;";
-					break;
-				case "14":errorType+="BMS过压;";
-					break;
-				case "16":errorType+="BMS通信异常;";
-					break;
-				case "17":errorType+="蓄电池过温告警;";
-					break;
-				case "18":errorType+="蓄电池过流告警;";
-					break;
-				default:
-					break;
-			}
+		errorType += "1".equals(myJsonObject.get("1_6"))?"读卡器通讯故障 ":"";
+		errorType += "1".equals(myJsonObject.get("1_7"))?"急停按钮动作故障 ":"";
+		errorType += "1".equals(myJsonObject.get("1_8"))?"避雷器故障 ":"";
+		errorType += "1".equals(myJsonObject.get("1_9"))?"绝缘检测故障 ":"";
+		errorType += "1".equals(myJsonObject.get("1_12"))?"电度表异常 ":"";
+		errorType += "1".equals(myJsonObject.get("1_17"))?"电池反接故障 ":"";
+		errorType += "1".equals(myJsonObject.get("1_18"))?"烟雾报警故障 ":"";
+		errorType += "1".equals(myJsonObject.get("1_19"))?"BMS通信异常 ":"";
+		errorType += "1".equals(myJsonObject.get("1_20"))?"直流电度表异常故障 ":"";
+		errorType += "1".equals(myJsonObject.get("1_21"))?"直流输出过流告警 ":"";
+		errorType += "1".equals(myJsonObject.get("2_1"))?"交流输入电压过压 ":"";
+		errorType += "2".equals(myJsonObject.get("2_1"))?"交流输入电压欠压 ":"";
+		errorType += "1".equals(myJsonObject.get("2_2"))?"充电机过温故障 ":"";
+		errorType += "1".equals(myJsonObject.get("2_3"))?"交流电流过负荷告警 ":"";
+		errorType += "1".equals(myJsonObject.get("2_12"))?"输出连接器过温 ":"";
+		errorType += "1".equals(myJsonObject.get("2_14"))?"整车蓄电池充电过流告警 ":"";
+		switch (getStringValue("3_1",myJsonObject)){
+			case "31":
+				errorType +="欠压故障 ";
+			case "32":
+				errorType +="过压故障 ";
+			case "33":
+				errorType +="过电流故障 ";
+			case "34":
+				errorType +="防雷器故障 ";
+			case "35":
+				errorType +="电表故障 ";
+			case "36":
+				errorType +="接触器故障 ";
+			case "37":
+				errorType +="绝缘检查 ";
+			case "38":
+				errorType +="急停 ";
+			default:break;
+		}
+		if ("1".equals(getStringValue("2_15", myJsonObject))){
+			errorType += "直流母线输出过压";
+		}else if ("2".equals(getStringValue("2_15",myJsonObject))){
+			errorType += "直流母线输出欠压";
+		}
+		if ("1".equals(getStringValue("2_16",myJsonObject))){
+			errorType += "BMS过压告警";
+		}else if ("2".equals(getStringValue("2_16",myJsonObject))){
+			errorType += "BMS欠压告警";
 		}
 		params.put("isError","有");
 		params.put("errorType",errorType);
 		return params;
 	}
+ 	private String  getStringValue(String key, Map<String, Object> myJsonObject){
+		return myJsonObject.get(key)==null?"":myJsonObject.get(key).toString();
+	}
+	private String  getDoubleValue(String key, Map<String, Object> myJsonObject,int size){
+		if (myJsonObject.get(key)!=null){
+			int value = Integer.valueOf(myJsonObject.get(key).toString()) ;
+			Double dd;
+			dd = (double) (value / size);
+			return dd.toString();
+		}else {
+			return "";
+		}
+	}
+
 
 }

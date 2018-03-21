@@ -332,7 +332,7 @@
 	GROUP BY e.elPi_RelevancePowerStation
    </select>
    
-   <select id="getUserInfoForRealTimeById" parameterType="String" resultType="Map">
+   <select id="getUserInfoForRealTimeById" parameterType="Long" resultType="Map">
 		select
 		user_id userId,
 		user_account userAccount,
@@ -341,7 +341,7 @@
 	from tbl_user_view uv where uv.user_id = #{userId}
    </select>
    
-	<select id="getNomalUserInfoById" parameterType="String" resultType="Map">
+	<select id="getNomalUserInfoById" parameterType="Long" resultType="Map">
 	SELECT
 		user_id userId,
 		f.trade_type tradeType,
@@ -353,7 +353,7 @@
 		u.account_id = f.account_id
 		AND  u.user_id = #{userId}
 	</select>
-	<select id="getCpyUserInfoById" parameterType="String" resultType="Map">
+	<select id="getCpyUserInfoById" parameterType="Long" resultType="Map">
 		SELECT
 			user_id userId,
 			f.trade_type tradeType,
@@ -365,7 +365,7 @@
 	u.account_id = f.account_id
 	AND  u.user_id = #{userId}
 	</select>
-	<select id="getCardUserInfoById" parameterType="String" resultType="Map">
+	<select id="getCardUserInfoById" parameterType="Long" resultType="Map">
 		SELECT
 		user_id userId,
 		f.trade_type tradeType,
@@ -645,5 +645,21 @@
 	WHERE
 		e.elPi_RelevancePowerStation = p.powerStation_id
 	AND e.elPi_ElectricPileCode = #{epCode}
+	</select>
+	<select id="getOrderByPileId" parameterType="Long" resultType="Map">
+		SELECT
+		CAST(user_id AS CHAR) userId,
+		r.chRe_Code code,
+		chRe_StartDate startTime,
+		chRe_FrozenAmt frozenAmt,
+		CAST(custom_rate_id AS CHAR) rateId
+		FROM
+		tbl_chargingrecord r,
+		tbl_chargingorder c
+		WHERE
+		r.chRe_Code = c.chOr_Code
+		AND chRe_ElectricPileID = #{id}
+		ORDER BY pk_ChargingRecord DESC
+		LIMIT 1
 	</select>
 </mapper>

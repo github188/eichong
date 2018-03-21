@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/integral/integralActivityList/integralActivity_RechargeGift_ed.css"/>
+    <title>充值赠送-编辑</title>
+</head>
+<body>
+<div class="col-sm-12">
+    <div class="ibox float-e-margins" style="margin: 0">
+        <div class="userBaseInfo col-sm-12 clearfix">
+            <div class="form-group col-xs-10">
+                <div class="col-sm-2 queryParam">状态：</div>
+                <label class="radio-inline log" state="1">
+                    <input type="radio" name="state" value="0" checked="checked"> 开启
+                </label>
+                <label class="radio-inline" state="2">
+                    <input type="radio" name="state" value="1"> 关闭
+                </label>
+            </div>
+            <div class="form-group col-xs-10">
+                <div class="col-sm-2 queryParam">
+                    城市：
+                </div>
+                <div class=" col-sm-2 col-xs-6 model-select-box">
+                    <div class="model-select-text wholeCountry" data-value="0">全国</div>
+                </div>
+                <div class=" col-sm-2 col-xs-6 model-select-box">
+                    <div class="model-select-text provinceBlock" data-value="" id="provinceCode">请选择</div>
+                    <span class="downRow provinceBlock clickRotateSpan"></span>
+                    <input type="text" name="provinceCode" hidden="hidden" value=""/>
+                    <ul class="model-select-option provinceUl">
+
+                    </ul>
+                </div>
+                <div class="col-sm-offset-1 col-xs-6 col-sm-2  model-select-box">
+                    <div class="model-select-text cityBlock" data-value="" id="cityCode">请选择</div>
+                    <span class="downRow cityBlock clickRotateSpan"></span>
+                    <input type="text" name="cityCode" hidden="hidden" id="" value=""/>
+                    <ul class="model-select-option cityUl">
+
+                    </ul>
+                </div>
+            </div>
+            <div class="form-group col-xs-10">
+                <div class="col-sm-2 queryParam">规则权重：</div>
+                <div class="col-sm-6">
+                    <label class="radio-inline">
+                        <input type="radio" name="weight" value="0"> 本条规则权重最高
+                    </label>
+                </div>
+                <div class="col-sm-8 col-sm-offset-2">
+                    <ch>选中的话，本条规则将优先执行。<br/>
+                        如果没有选中，且存在多条规则的话，系统将按照 最新创建 的顺序执行规则。</ch>
+                </div>
+            </div>
+            <div class="form-group col-xs-10">
+                <div class="col-sm-2 queryParam">活动名称：</div>
+                <div class="col-sm-3 userAccount">
+                    <input type="text" name="orderCode" class="userAccountInput"  value="充值赠送" disabled>
+                </div>
+            </div>
+            <div class="form-group col-xs-10">
+                <div class="col-sm-2 queryParam">积分方法：</div>
+                <div class="col-sm-3">
+                    获取
+                </div>
+            </div>
+            <div class="form-group col-xs-10">
+                <div class="col-sm-2 queryParam">
+                    时间选择：
+                </div>
+                <div class="col-sm-3 userAccount">
+                    <input type="text" name="" value="" class="userAccountInput" id="datePicker"/>
+                    <input type="text" name="startGmtCreate" value="" class="userAccountInput" hidden="hidden" style="display: none;"/>
+                    <input type="text" name="endGmtCreate" value="" class="userAccountInput" hidden="hidden" style="display: none;"/>
+                </div>
+            </div>
+            <div class="form-group col-xs-10">
+                <div class="col-sm-2 queryParam">分值/比例：</div>
+                <div class="col-sm-10">
+                    <label class="radio-inline left-label">
+                        <input type="radio" name="RechargeChoice" value="1">固定分值
+                    </label>
+                    <div class="col-sm-2 userAccount">
+                        <input type="text" name="fixed-score" class="userAccountInput" value="">
+                    </div>
+                    <div class="col-sm-6" style="line-height: 40px;"><ch>请输入正整数，不包含小数。</ch></div>
+                </div>
+            </div>
+            <div class="form-group col-xs-10">
+                <div class="col-sm-2 queryParam"></div>
+                <div class="col-sm-10">
+                    <label class="radio-inline left-label">
+                        <input type="radio" name="RechargeChoice" value="2" checked>按比例
+                    </label>
+                    <div class="col-sm-2 userAccount">
+                        <input type="text" name="proportion" onkeyup="num(this)" onblur="advice(this)" class="userAccountInput" value="1">
+                    </div>
+                    <div class="col-sm-1" style="line-height: 40px;padding-left: 1px;padding: 0px;margin: 0px;width: 1.5%;">:1</div>
+                    <div class="col-sm-6" style="line-height: 40px;"><ch>人民币 ： 积分。</ch></div>
+                </div>
+            </div>
+            <div class="form-group col-xs-10">
+                <div class="col-sm-2 queryParam"></div>
+                <div class="col-sm-10">
+                    <label class="col-sm-4 radio-inline left-label rechargeAmount">
+                        <input type="checkbox" name="rechargeAmount" value="1"/>按照充值金额赠送抽奖机会
+                    </label>
+                    <div class="col-sm-5" style="line-height: 40px;"><ch>勾选即赠送，否则不会赠送。</ch></div>
+                </div>
+            </div>
+            <div class="form-group col-xs-10">
+                <div class="col-sm-2 queryParam"></div>
+                <div class="col-sm-10">
+                    <div class="col-sm-1" style="line-height:40px;">每</div>
+                    <div class="col-sm-2 userAccount">
+                        <input type="text" class="userAccountInput" name="money" value="200" disabled/>
+                    </div>
+                    <div class="col-sm-5" style="line-height:40px;">元，赠送一次抽奖机会</div>
+                </div>
+            </div>
+            <div class="form-group col-xs-10">
+                <div class="col-sm-2 queryParam">解释：</div>
+                <div class="col-sm-6 userAccount">
+                    <textarea class="userAccountInput" cols="50" rows="3" id="textareaid" value=""></textarea>
+                </div>
+            </div>
+            <div class="form-group col-xs-10">
+                <div class="col-sm-2 queryParam"></div>
+                <div class="col-sm-6 userAccount" style="margin-top: 15px;">
+                    <span style="color: #CC3300;">如果配置满金额赠送抽奖机会，务必填写该解释条文</span><br/>
+                    <ch>显示在app前端充值界面的提示，尽量简短</ch>
+                </div>
+            </div>
+            <div class="col-xs-10 saveBtn form-group" id="saveBtn" >
+                确定
+            </div>
+            <div class="col-xs-10 goBack form-group" id="toPowerStationList">
+                返回
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="../../../js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/selectUtil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/bootstrap-paginator.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/layDate-v5.0.4/laydate/laydate.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/lib/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/apiAddress-web.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/contabs.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/integral/integralActivityList/integralActivity_RechargeGift_ed.js" type="text/javascript" charset="utf-8"></script>
+</html>

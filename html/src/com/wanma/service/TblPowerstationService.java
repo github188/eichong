@@ -19,70 +19,71 @@ import com.wanma.model.TblPowerstation;
  *
  */
 public interface TblPowerstationService {
-	public int getCount(TblPowerstation model);
+	 int getCount(TblPowerstation model);
 	
-	public List<TblPowerstation> getList(TblPowerstation model);
+	 List<TblPowerstation> getList(TblPowerstation model);
 
-	public int getNewlyUpdatedCount(Map<String, Object> param);
+	 int getNewlyUpdatedCount(Map<String, Object> param);
 	
-	public List<TblPowerstation> getNewlyUpdatedList(Map<String, Object> param);
+	 List<TblPowerstation> getNewlyUpdatedList(Map<String, Object> param);
 	
 	/**
 	 * 根据城市编号查询充电点信息
-	 * @param TblPowerstation
+	 * @param model
 	 * @return
 	 */
-	public List<Map<String,String>> getPointsInfoByCityCode(TblPowerstation model);
+	 List<Map<String,String>> getPointsInfoByCityCode(TblPowerstation model);
 
 	
 	/**
 	 * 查询站点详情
-	 * @param TblPowerstation
+	 * @param model
 	 * @return
 	 */
-	public Map<String,Object> selectDetail(TblPowerstation model);
-	
-	
+	 Map<String,Object> selectDetail(TblPowerstation model);
+
+
 	/**
 	 * 查询全部电站数量
-	 * @param model
+	 * @param param
 	 * @return
 	 */
-    public int getPowerStationCount(TblPowerstation model);
+     int getPowerStationCount(Map<String, Object> param);
+
 	/**
 	 * 查询全部电站
-	 * @param model
+	 * @param param
 	 * @return
 	 */
-	public List<TblPowerstation> getPowerStationList(TblPowerstation model);
+	 List<TblPowerstation> getPowerStationList(Map<String, Object> param);
 	/**
 	 * 查询最近更新电站数量
 	 * @param param
 	 * @return
 	 */
-	public int getUpdatedCount(Map<String, Object> param);
+	 int getUpdatedCount(Map<String, Object> param);
 	/**
 	 * 查询最近更新的电站
 	 * @param param
 	 * @return
 	 */
-	public List<TblPowerstation> getUpdatedList(Map<String, Object> param);
-	
+	 List<TblPowerstation> getUpdatedList(Map<String, Object> param);
+
 	/**
 	 * 通过组织机构编号查询密钥签名信息
-	 * @param params
+	 * @param map
 	 * @return
 	 */
-	public Map<String, Object> getPartnerKeyList(Map<String, Object> map);
-	
+	 Map<String, Object> getPartnerKeyList(Map<String, Object> map);
+
 	/**
 	 * 通过公司标识查询相关信息
-	 * @param params
+	 * @param map
 	 * @return
 	 */
-	public Map<String,String > getcpyNumberById(Map<String, String> map);
+	 Map<String,String > getcpyNumberById(Map<String, String> map);
 
-	public TblPartner getPartnerList(String operatorID);
+	 TblPartner getPartnerList(String operatorID);
 	
 	
 }

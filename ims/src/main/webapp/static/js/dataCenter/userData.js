@@ -12,13 +12,21 @@ $(function(){
       disabled:''
     },
     methods: {
+      mongoliaLayer: function(event){
+        $('#mongoliaLayer').css('display','block');
+      },
       handleChange: function(event){
         this.companyArray = event;
+
         this.cpyId = this.companyArray[2];
         if(this.cpyId == undefined){
           window.localStorage.setItem("cpyId","");
         }else{
           window.localStorage.setItem("cpyId",this.cpyId);
+        }
+
+        if(this.cpyId){
+          $('#mongoliaLayer').css('display','none');
         }
       },
       clearLocalStorage:function(){
@@ -31,6 +39,7 @@ $(function(){
         //地图层级判断
         map.setZoom(5);
         map.clearMap();
+        this.cpyId = window.localStorage.getItem('cpyId');
         getElectricPileMap(this.provinceCode,this.cityCode,this.cpyId,3);
       },
       getData:function(event){//下拉框接口
@@ -70,8 +79,12 @@ $(function(){
         if(!selectCode){
           this.selectObject=[];
           this.disabled=false;
+          $('#queryBtn').removeAttr("disabled");
           getElectricPileMap('','',this.cpyId,3);
         }else{
+          $('#queryBtn').attr("disabled",true).css({
+            'background':'#ccc'
+          });
           reArray=selectCode.split(':');
           for(var i=0;i<reArray.length;i++){
             newArray.push(reArray[i]);
@@ -80,13 +93,18 @@ $(function(){
           this.disabled=true;
           getElectricPileMap('','',this.selectObject[2],3);
         }
+      },
+      dropdownBox:function(){//蒙层消失
+        $('#mongoliaLayer').on('click',function(){
+          $('#mongoliaLayer').css('display','none');
+        })
       }
     },
     mounted: function(){
       this.clearLocalStorage();
       this.getDataObject();
       this.getCookie();
-
+      this.dropdownBox();
     }
   })
 });

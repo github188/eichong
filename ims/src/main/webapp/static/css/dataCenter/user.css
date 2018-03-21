@@ -19,6 +19,9 @@ i{
     display: none;!important;
     opacity: 0;
 }
+.el-input__inner{
+    border-radius:0 !important;
+}
 .box{
     width:200px;
     height:150px;
@@ -77,9 +80,17 @@ i{
 .showBtn:hover{
     background:#cc6400;
 }
+#bottomBox{
+    position: absolute;
+    top:50px;
+    right:50px;
+    z-index:100;
+    padding:15px;
+    background:#0c2a3c;
+}
 .historicalData{
     min-width:200px;
-    margin-top:50px;
+    margin-top:60px;
     z-index:100;
 }
 .historicalData li, .realTimeData li,.chargiePoint li{
@@ -95,18 +106,42 @@ i{
     height:50px;
     line-height:50px;
     color:#fff;
-    font-size:14px;
+    font-size:20px;
     border-bottom:1px dashed #fff;
     font-weight:700;
+    position: relative;
+    cursor: pointer;
+}
+#dataShow .table_header i.fa {
+    position: absolute;
+    top: 16px;
+    right: 12px;
+    font-size: 16px;
+    color: #fff;
+    -webkit-transition: all 0.4s ease;
+    -o-transition: all 0.4s ease;
+    transition: all 0.4s ease;
+
+}
+#dataShow i.fa-chevron-down{
+    right: 12px;
+    left: auto;
+    font-size: 16px;
+}
+
+#dataShow .open i.el-icon-arrow-down {
+    -webkit-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    transform: rotate(180deg);
 }
 .realTimeData{
     min-width:200px;
-    margin-top:40px;
     z-index:100;
 }
 .chargiePoint{
-    min-width:200px;
-    margin-top:40px;
+    min-width:275px;
+    margin-top:60px;
     z-index:100;
 }
 .yes{
@@ -116,9 +151,8 @@ i{
     display:none;
 }
 .chargeAmountOne{
-
     padding:10px;
-    margin-top:40px;
+    margin-top:20px;
     color:#fff;
     background: rgb(56, 56, 56);
 }
@@ -154,7 +188,7 @@ table tbody tr td{
 }
 .chargeAmountTwo{
     padding:10px;
-    margin-top:40px;
+    margin-top:20px;
     height:182px;
     z-index:10;
     color:#fff;
@@ -174,8 +208,8 @@ table tbody tr td{
     font-size: 15px;
     border:none;
     position: absolute;
-    top:50px;
-    right:0px;
+    top:70px;
+    right:15px;
     z-index:1000;
     outline:none;
 }
@@ -204,4 +238,13 @@ table tbody tr td{
 }
 .beginData1 li{
     padding:10px 0 10px 0;
+}
+#mongoliaLayer{
+    width:100%;
+    height:100%;
+    position:absolute;
+    top:0;
+    left:0;
+    z-index:100;
+    display: none;
 }

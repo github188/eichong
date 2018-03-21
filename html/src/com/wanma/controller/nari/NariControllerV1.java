@@ -252,31 +252,30 @@ public class NariControllerV1 {
 		String lastQueryTime = jsonData.getString("LastQueryTime");
 		String pageNo = jsonData.get("PageNo").toString();
 		String pageSize = jsonData.get("PageSize").toString();
-		if (StringUtils.isBlank(pageNo))
+		if (StringUtils.isBlank(pageNo)){
 			pageNo = "1";
-		if (StringUtils.isBlank(pageSize))
+		}
+		if (StringUtils.isBlank(pageSize)){
 			pageSize = "10";
+		}
 		List<TblPowerstation> psList = null;
 		Map<String, Object> data = new HashMap<String, Object>();
 		int count = 0;
+		Map<String, Object> Map = new HashMap<String, Object>();
+		Map.put("pageNo", Integer.parseInt(pageNo) - 1);
+		Map.put("pageSize", Integer.parseInt(pageSize));
+		Map.put("cpyId", tblPartner.getCpyId());
 		if (lastQueryTime != null && !lastQueryTime.isEmpty()) {
-			LOGGER.info("获取最近更新站点信息开始，上次查询时间：" + lastQueryTime + "开始页" + pageNo
-					+ "；每页显示数量：" + pageSize);
+			LOGGER.info("获取最近更新站点信息开始，上次查询时间：" + lastQueryTime + "开始页" + pageNo + "；每页显示数量：" + pageSize);
 			Date queryTime = fmt.parse(lastQueryTime);
-			Map<String, Object> dataMap = new HashMap<String, Object>();
-			dataMap.put("queryTime", queryTime);
-			dataMap.put("pageNo", Integer.parseInt(pageNo) - 1);
-			dataMap.put("pageSize", Integer.parseInt(pageSize));
-			dataMap.put("cpyId", tblPartner.getCpyId());
-			count = psService.getUpdatedCount(dataMap);
-			psList = psService.getUpdatedList(dataMap);
+			Map.put("queryTime", queryTime);
+			count = psService.getUpdatedCount(Map);
+			psList = psService.getUpdatedList(Map);
 			LOGGER.info("获取最近更新站点信息结束");
 		} else {
 			LOGGER.info("获取全部站点信息开始");
-			TblPowerstation powerstation = new TblPowerstation();
-			powerstation.setCpyId(tblPartner.getCpyId());
-			count = psService.getPowerStationCount(powerstation);
-			psList = psService.getPowerStationList(powerstation);
+			count = psService.getPowerStationCount(Map);
+			psList = psService.getPowerStationList(Map);
 			LOGGER.info("获取全部站点信息结束");
 		}
 		data.put("ItemSize", count);
@@ -382,7 +381,7 @@ public class NariControllerV1 {
 			List<TcbElectric> elcList = elcService.getElectricList(test);
 			List<Map<String, Object>> elcDataList = new ArrayList<Map<String, Object>>();
 			for (TcbElectric e : elcList) {
-				elcData = new HashMap<String, Object>();
+				elcData = new HashMap<>();
 				elcData.put("EquipmentID", e.getEquipNo());
 				elcData.put("ManufacturerID", "");
 				elcData.put("ManufacturerName","");
@@ -394,7 +393,7 @@ public class NariControllerV1 {
 				}else if ("5".equals(e.getEquipType())){
 					elcData.put("EquipmentType", 1);
 				}else{
-					elcData.put("EquipmentType", 3);
+					elcData.put("EquipmentType", 5);
 				}
 				if("0".equals(e.getEquipStatus()))
 				    elcData.put("EquipmentStatus", 5);

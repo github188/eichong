@@ -6,9 +6,9 @@ $(function(){
 //去加载表格的数据
 
 function integralActivityListSearch(obj) {
-    if(obj != 1&&obj != 0&&obj != 2){
-        $('.isWholeBtn').css({'background-color':'#fff','color':'#666666'});
-    }
+    //if(obj != 1&&obj != 0&&obj != 2){
+    //    $('.isWholeBtn').css({'background-color':'#fff','color':'#666666'});
+    //}
     toGiveHiddenInput();
     initTable("intergralActivityListForm", "integralActivityPage", getIntegralActivityListUrl, intergralActivityList);
 }
@@ -54,31 +54,43 @@ function intergralActivityList(req) {
 //查询条件部分=========================
 
 function toGiveHiddenInput() {
-    var provinceCodeValue = $('#provinceCode').attr('data-value');
-    var cityCodeValue = $('#cityCode').attr('data-value');
-    var isWhole = $('input[name=isWhole]').val();
-    if (provinceCodeValue == "") {
-        $('input[name=provinceId]').val('');
+    //var provinceCodeValue = $('#provinceCode').attr('data-value');
+    //var cityCodeValue = $('#cityCode').attr('data-value');
+    var activityStatusValue = $('#activityStatus').attr('data-value');
+    var pkIdValue = $('#pkId').attr('data-value');
+    if (pkIdValue == "") {
+        $('input[name=pkId]').val('');
     } else {
-        $('input[name=provinceId]').val(provinceCodeValue);
+        $('input[name=pkId]').val(pkIdValue);
     }
-    if (cityCodeValue == "") {
-        $('input[name=cityId]').val('');
+    if (activityStatusValue == "") {
+        $('input[name=activityStatus]').val('');
     } else {
-        $('input[name=cityId]').val(cityCodeValue);
+        $('input[name=activityStatus]').val(activityStatusValue);
     }
-    if(isWhole == ''){
-        $('input[name=isWhole]').val('');
-    }else if(provinceCodeValue != '' || cityCodeValue != ''){
-        $('input[name=isWhole]').val('0');
-    }else if(provinceCodeValue == '' && cityCodeValue == ''){
-        $('input[name=isWhole]').val('1');
-    }
+   // var isWhole = $('input[name=isWhole]').val();
+   // if (provinceCodeValue == "") {
+   //     $('input[name=provinceId]').val('');
+   // } else {
+   //     $('input[name=provinceId]').val(provinceCodeValue);
+   // }
+   // if (cityCodeValue == "") {
+   //     $('input[name=cityId]').val('');
+   // } else {
+   //     $('input[name=cityId]').val(cityCodeValue);
+   // }
+   // if(isWhole == ''){
+   //     $('input[name=isWhole]').val('');
+   // }else if(provinceCodeValue != '' || cityCodeValue != ''){
+   //     $('input[name=isWhole]').val('0');
+   // }else if(provinceCodeValue == '' && cityCodeValue == ''){
+   //     $('input[name=isWhole]').val('1');
+   // }
 }
 
 //---------------------地区查询------------------------------
-toLoadProvince('', '#provinceCode', '.provinceUl', 'toUnbindEvent'); //key
-
+//toLoadProvince('', '#provinceCode', '.provinceUl', 'toUnbindEvent'); //key
+toUnbindEvent()
 function toUnbindEvent() {
     $('.provinceBlock').unbind();
     $('.cityBlock').unbind();
@@ -89,57 +101,64 @@ function toUnbindEvent() {
     $('.cpyCompanyBlock').unbind();
     $('.levelBlock').unbind();
     $('.tagBlock').unbind();
+    $('.activityStatusUl').unbind();
+    $('.pkIdUl').unbind();
     selectModel();
 }
 //抓取省
-$('.provinceUl').on("click", "li", function() {
-    $('#cityCode').html('请选择');
-    $('#cityCode').attr('data-value', '');
-    $('.cityUl').html('');
-    $('input[name=cityCode]').val('');
-    var provinceCodeId = $(this).attr('data-option');
-    $(this).parent().siblings('div.model-select-text').text($(this).text()).attr('data-value', $(this).attr('data-option'));
-    var flag = $(this).attr('data-option');
-    if (flag == "") {
-        $('#cityCode').html('请选择');
-        $('#cityCode').attr('data-value', '');
-        $('.cityUl').html('');
-        $('input[name=cityCode]').val('');
-    } else {
-        toLoadCity(provinceCodeId, '', '#cityCode', '.cityUl', 'toUnbindEvent');
-    }
-});
-//抓取市
-$('.cityUl').on("click", "li", function() {
-    $(this).parent().siblings('div.model-select-text').text($(this).text()).attr('data-value', $(this).attr('data-option'));
-});
+//$('.provinceUl').on("click", "li", function() {
+//    $('#cityCode').html('请选择');
+//    $('#cityCode').attr('data-value', '');
+//    $('.cityUl').html('');
+//    $('input[name=cityCode]').val('');
+//    var provinceCodeId = $(this).attr('data-option');
+//    $(this).parent().siblings('div.model-select-text').text($(this).text()).attr('data-value', $(this).attr('data-option'));
+//    var flag = $(this).attr('data-option');
+//    if (flag == "") {
+//        $('#cityCode').html('请选择');
+//        $('#cityCode').attr('data-value', '');
+//        $('.cityUl').html('');
+//        $('input[name=cityCode]').val('');
+//    } else {
+//        toLoadCity(provinceCodeId, '', '#cityCode', '.cityUl', 'toUnbindEvent');
+//    }
+//});
+////抓取市
+//$('.cityUl').on("click", "li", function() {
+//    $(this).parent().siblings('div.model-select-text').text($(this).text()).attr('data-value', $(this).attr('data-option'));
+//});
 //-----------------------------------------------------------------------
-
+$('.activityStatusUl').on("click", "li", function() {
+    $(this).parent().siblings('div.model-select-text').text($(this).text()).attr('data-value', $(this).attr('data-option'));
+});
+$('.pkIdUl').on("click", "li", function() {
+    $(this).parent().siblings('div.model-select-text').text($(this).text()).attr('data-value', $(this).attr('data-option'));
+});
 //全国按钮
 
-function integralActivityListWholeCountry(){
-    $('#provinceCode').attr('data-value','');
-    $('#cityCode').attr('data-value','');
-    $('#cityCode').text('请选择');
-    $('.cityUl li').remove();
-    var isWholeData = $('input[name="isWhole"]').val();
-    if(isWholeData == ''){
-        $('input[name="isWhole"]').val('1');
-        $('.isWholeBtn').css({'background-color':'#FF7D00','color':'#fff'});
-        $('#provinceCode').text('全国');
-        integralActivityListSearch(1);
-    }else if(isWholeData == '1'){
-        $('input[name="isWhole"]').val('');
-        $('.isWholeBtn').css({'background-color':'#fff','color':'#666666'});
-        $('#provinceCode').text('请选择');
-        integralActivityListSearch(0);
-    }else if(isWholeData == '0'){
-        $('input[name="isWhole"]').val('0');
-        $('.isWholeBtn').css({'background-color':'#FF7D00','color':'#fff'});
-        $('#provinceCode').text('全国');
-        integralActivityListSearch(2);
-    }
-}
+//function integralActivityListWholeCountry(){
+//    $('#provinceCode').attr('data-value','');
+//    $('#cityCode').attr('data-value','');
+//    $('#cityCode').text('请选择');
+//    $('.cityUl li').remove();
+//    var isWholeData = $('input[name="isWhole"]').val();
+//    if(isWholeData == ''){
+//        $('input[name="isWhole"]').val('1');
+//        $('.isWholeBtn').css({'background-color':'#FF7D00','color':'#fff'});
+//        $('#provinceCode').text('全国');
+//        integralActivityListSearch(1);
+//    }else if(isWholeData == '1'){
+//        $('input[name="isWhole"]').val('');
+//        $('.isWholeBtn').css({'background-color':'#fff','color':'#666666'});
+//        $('#provinceCode').text('请选择');
+//        integralActivityListSearch(0);
+//    }else if(isWholeData == '0'){
+//        $('input[name="isWhole"]').val('0');
+//        $('.isWholeBtn').css({'background-color':'#FF7D00','color':'#fff'});
+//        $('#provinceCode').text('全国');
+//        integralActivityListSearch(2);
+//    }
+//}
 
 //按钮跳转
 $(function() {

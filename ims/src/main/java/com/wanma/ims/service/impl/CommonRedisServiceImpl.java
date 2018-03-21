@@ -1,9 +1,11 @@
 package com.wanma.ims.service.impl;
 
 import com.wanma.ims.common.domain.CompanyDO;
+import com.wanma.ims.common.domain.UserAdminDO;
 import com.wanma.ims.common.domain.UserDO;
 import com.wanma.ims.common.dto.BatchResultDTO;
 import com.wanma.ims.constants.WanmaConstants;
+import com.wanma.ims.mapper.UserAdminMapper;
 import com.wanma.ims.redis.RedisUtil;
 import com.wanma.ims.service.CommonRedisService;
 import com.wanma.ims.service.CompanyService;
@@ -27,6 +29,8 @@ public class CommonRedisServiceImpl implements CommonRedisService {
     private CompanyService companyService;
     @Autowired
     private RedisUtil redisService;
+    @Autowired
+    private UserAdminMapper userAdminMapper;
 
     @Override
     public void initCurrentLogin(UserDO loginUser) {

@@ -1,7 +1,7 @@
 package com.wanma.ims.mapper;
 
 import com.wanma.ims.common.domain.ElectricPileDO;
-import com.wanma.ims.common.domain.UserCardDO;
+import com.wanma.ims.common.domain.OrderDO;
 
 import java.util.List;
 import java.util.Map;
@@ -38,13 +38,13 @@ public interface DataCenterMapper {
 
 	List<Map<String,Object>> getMapDataForUserLevel3(Map<String, Object> params);
 
-	Map<String, Object> getUserInfoForRealTimeById(String userId);
+	Map<String, Object> getUserInfoForRealTimeById(Long userId);
 
-	Map<String,String> getNomalUserInfoById(String userId);
+	Map<String,String> getNomalUserInfoById(Long userId);
 
-	Map<String,String> getCpyUserInfoById(String userId);
+	Map<String,String> getCpyUserInfoById(Long userId);
 
-	Map<String,String> getCardUserInfoById(String userId);
+	Map<String,String> getCardUserInfoById(Long userId);
 
 	List<Map<String, String>> getUserCardForRealTime(Map<String, String> map);
 
@@ -75,4 +75,6 @@ public interface DataCenterMapper {
 	Map<String, Object> getDetailStaticData(String epCode);
 
 	String getPowerStationNameByEpCode(String epCode);
+
+	Map<String,String> getOrderByPileId(Long id);
 }

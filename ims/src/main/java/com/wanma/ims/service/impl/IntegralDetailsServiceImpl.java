@@ -4,30 +4,19 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.wanma.ims.common.domain.*;
+import com.wanma.ims.mapper.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.wanma.ims.common.domain.ElectricPileDO;
-import com.wanma.ims.common.domain.FavCouponDO;
-import com.wanma.ims.common.domain.IntegralActivityDO;
-import com.wanma.ims.common.domain.IntegralDO;
-import com.wanma.ims.common.domain.IntegralDetailsDO;
-import com.wanma.ims.common.domain.OrderDO;
-import com.wanma.ims.common.domain.UserNormalDO;
 import com.wanma.ims.common.domain.bo.IntegralActivityAndRulesBO;
 import com.wanma.ims.common.domain.bo.IntegralBO;
 import com.wanma.ims.common.domain.bo.IntegralResultBO;
 import com.wanma.ims.common.dto.BaseResultDTO;
 import com.wanma.ims.constants.WanmaConstants;
-import com.wanma.ims.mapper.ElectricPileMapper;
-import com.wanma.ims.mapper.FavCouponMapper;
-import com.wanma.ims.mapper.IntegralActivityMapper;
-import com.wanma.ims.mapper.IntegralDetailsMapper;
-import com.wanma.ims.mapper.IntegralMapper;
-import com.wanma.ims.mapper.UserNormalMapper;
 import com.wanma.ims.service.IntegralDetailsService;
 import com.wanma.ims.util.DateUtil;
 
@@ -49,6 +38,9 @@ public class IntegralDetailsServiceImpl implements IntegralDetailsService {
 	
 	@Autowired
     private FavCouponMapper favCouponMapper;
+
+	@Autowired
+	private FavCouponVarietyMapper favCouponVarietyMapper;
 
 	@Autowired
 	private ElectricPileMapper electricPileMapper;
@@ -378,12 +370,25 @@ public class IntegralDetailsServiceImpl implements IntegralDetailsService {
 			
 			integralValue = integralBO.getIntegralValue();
 			if (integralActivityIdToInt == WanmaConstants.INTEGRAL_CHANGE) {
+				int couponVarietyId = integralBO.getCouponVarietyId();
+				FavCouponVarietyDO favCouponVarietyDO = favCouponVarietyMapper.getCouponVarietyById(couponVarietyId);
+				if(favCouponVarietyDO == null){
+					log.error(this.getClass() + ".addIntegralDetails() error : 优惠券品种" + couponVarietyId + "不存在");
+					baseResultDTO.setSuccess(false);
+					baseResultDTO.setErrorDetail("优惠券品种" + couponVarietyId + "不存在");
+					return baseResultDTO;
+				}
 				//积分兑换
 				FavCouponDO favCouponDO = new FavCouponDO();
 				favCouponDO.setCpUserid(integralBO.getUserId().intValue());
-				favCouponDO.setCpCouponcode(integralBO.getCpCouponcode());
-				favCouponDO.setCpUpdatedate(DateUtil.getNow());
-				int result = favCouponMapper.modifyCoupon(favCouponDO);
+				favCouponDO.setPkActivity(WanmaConstants.INTEGRAL_CHANGE);
+				favCouponDO.setPkCouponvariety(couponVarietyId);
+				favCouponDO.setCpLimitation(favCouponVarietyDO.getCovaLimitation().shortValue());
+				favCouponDO.setCpCouponvalue(Integer.parseInt(favCouponVarietyDO.getCovaCouponValue()));
+				favCouponDO.setCpCouponcondition(Integer.parseInt(favCouponVarietyDO.getCovaCouponCondition()));
+				favCouponDO.setCpBegindate(DateUtil.getNow());
+				favCouponDO.setCpEnddate(DateUtil.addYear(DateUtil.getNow(), 1));
+				int result = favCouponMapper.addCoupon(favCouponDO);
 				if (result == 0) {
 					log.error(this.getClass() + ".addIntegralDetails() error : 用户绑定积分兑换的优惠券失败");
 					baseResultDTO.setSuccess(false);

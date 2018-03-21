@@ -6,7 +6,7 @@ $(function(){
         getParkingLockState();
         getPowerStationSwiper();
         getPowerStationHistoryData();
-    },2000*60);
+    },1000*60);
 
     selectModel();
     toLoadStationInfo();

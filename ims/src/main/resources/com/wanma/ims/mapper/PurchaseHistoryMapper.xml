@@ -137,15 +137,15 @@
 			(<!-- 充值 -->
 			select SUM(p.puHi_Monetary) as chongzhi, 0 as tuikuan
 			from tbl_purchasehistory p
-			INNER JOIN fin_account_relation e on e.account_id = p.account_id
-			AND e.user_id = p.puHi_UserId AND priority =1 AND bill_account_id = 4
+-- 			INNER JOIN fin_account_relation e on e.account_id = p.account_id
+-- 			AND e.user_id = p.puHi_UserId AND priority =1 AND bill_account_id = 4
 			where p.puHi_Type = 4 and p.puHi_UserId = #{userId}
 			union 
 			<!-- 充值退款 -->
 			select 0, SUM(p.puHi_Monetary)
 			from tbl_purchasehistory p
-			INNER JOIN fin_account_relation e on e.account_id = p.account_id
-			AND e.user_id = p.puHi_UserId AND priority =1 AND bill_account_id = 14
+-- 			INNER JOIN fin_account_relation e on e.account_id = p.account_id
+-- 			AND e.user_id = p.puHi_UserId AND priority =1 AND bill_account_id = 14
 			where p.puHi_Type = 14 and p.puHi_UserId = #{userId}) s
 			UNION
 			<!-- 总消费 -->

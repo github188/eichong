@@ -406,4 +406,15 @@
 			now(), now(), #{item.chargingOrderId})
 		</foreach>
 	</insert>
+
+	<!-- 添加优惠券 -->
+	<insert id="addCoupon" useGeneratedKeys="true" parameterType="FavCouponDO">
+		insert into tbl_coupon
+		(pk_Coupon, pk_Activity, pk_CouponVariety, cp_Status, cp_Limitation, cp_CouponValue, cp_CouponCondition,
+		cp_UserId, cp_BeginDate, cp_EndDate, cp_Createdate, cp_Updatedate, charging_order_id)
+		values
+		(null,#{pkActivity},#{pkCouponvariety},0,#{cpLimitation},#{cpCouponvalue},
+			#{cpCouponcondition}, #{cpUserid}, #{cpBegindate}, #{cpEnddate},
+			now(), now(), null)
+	</insert>
 </mapper>

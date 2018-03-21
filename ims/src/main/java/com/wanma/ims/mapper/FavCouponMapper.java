@@ -38,4 +38,6 @@ public interface FavCouponMapper {
 	public void deleteCouponForBatch(FavCouponDO favCouponDO);
 
 	public int batchAddCoupon(List<FavCouponDO> couponDOList);
+
+	public int addCoupon(FavCouponDO favCouponDO);
 }

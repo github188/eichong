@@ -267,6 +267,38 @@ public class TcbElectric {
 		this.headInfo = headInfo;
 	}
 
+	@Override
+	public String toString() {
+		return "TcbElectric{" +
+				"operatorId='" + operatorId + '\'' +
+				", pkElc=" + pkElc +
+				", operType='" + operType + '\'' +
+				", equipNo='" + equipNo + '\'' +
+				", equipName='" + equipName + '\'' +
+				", equipAddr='" + equipAddr + '\'' +
+				", stationNo='" + stationNo + '\'' +
+				", equipType='" + equipType + '\'' +
+				", madeDate='" + madeDate + '\'' +
+				", elcLng='" + elcLng + '\'' +
+				", elcLat='" + elcLat + '\'' +
+				", runDate='" + runDate + '\'' +
+				", powerRating='" + powerRating + '\'' +
+				", currentRated='" + currentRated + '\'' +
+				", voltageRated='" + voltageRated + '\'' +
+				", autoMaxVolt='" + autoMaxVolt + '\'' +
+				", equipStatus='" + equipStatus + '\'' +
+				", gunNum='" + gunNum + '\'' +
+				", haveConnectLine='" + haveConnectLine + '\'' +
+				", deleteFlag='" + deleteFlag + '\'' +
+				", headInfo='" + headInfo + '\'' +
+				", guns=" + guns +
+				", rateInfoId='" + rateInfoId + '\'' +
+				", equipmentModel='" + equipmentModel + '\'' +
+				", manufacturerName='" + manufacturerName + '\'' +
+				", cityCode='" + cityCode + '\'' +
+				'}';
+	}
+
 	public List<ElectricHead> getGuns(String headInfo) {
 		if(StringUtils.isBlank(headInfo))return null;
 		// 格式1:1号枪头,2:2号枪头,3:3号枪头,4:4号枪头

@@ -10,7 +10,7 @@ $(function(){
         var epCode = window.localStorage.getItem('epCode');
         toLoadReadTime(headId,epCode);
         getDetailStaticData(epCode);
-    },2000*60);
+    },1000*60);
 
     //枪口输出
     var volOption = {

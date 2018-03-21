@@ -4,13 +4,13 @@ package com.wanma.ims.controller.statistics.monitor;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import com.google.gson.Gson;
+import com.wanma.ims.common.domain.ElectricPileDO;
 import com.wanma.ims.common.domain.base.Pager;
+import com.wanma.ims.mapper.ElectricPileMapper;
 import com.wanma.ims.service.MultipartFileService;
 import com.wanma.ims.service.PowerStationStatisticService;
-import net.sf.json.JSONObject;
 import javax.servlet.http.HttpServletRequest;
-import com.google.common.base.Strings;
-import com.wanma.ims.common.domain.ElectricHeadInfo;
 import com.wanma.ims.redis.RedisDataCenter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +23,7 @@ import com.wanma.ims.constants.WanmaConstants;
 import com.wanma.ims.controller.BaseController;
 import com.wanma.ims.controller.result.JsonResult;
 import com.wanma.ims.service.DataCenterService;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 
 /**
@@ -44,6 +45,8 @@ public class DataCenterController extends BaseController{
 	private PowerStationStatisticService powerStationStatisticService;
 	@Autowired
 	private MultipartFileService multipartFileService;
+	@Autowired
+	private ElectricPileMapper electricPileMapper;
 	/**
 	 * 历史数据
 	 */
@@ -120,14 +123,16 @@ public class DataCenterController extends BaseController{
 		public void getHeadRealTimeInfo(String epCode,String headId){
 		JsonResult result = new JsonResult();
 		try {
-			ElectricHeadInfo headInfo = new ElectricHeadInfo();
-			JSONObject jsonObject = JSONObject.fromObject(headInfo);
+			ElectricPileDO electricPileDO =electricPileMapper.selectByElectricPileCode(epCode);
 			String key = "epdata:current_status:" + epCode + "_" + headId;
-			JSONObject returnJson = (JSONObject) redisDataCenter.strGet(key);
-			LOGGER.info("getHeadRealTimeInfo::" + returnJson);
+			String redisHeadInfo = (String) redisDataCenter.strGet(key);
+			Gson gson = new Gson();
+			Map<String, Object> map = new HashMap<String, Object>();
+			map = gson.fromJson(redisHeadInfo, map.getClass());
+			LOGGER.info("getHeadRealTimeInfo::" + map);
 			Map<String,Object> resultMap =new HashMap<>();
-			if (returnJson!=null){
-				resultMap = dataCenterService.getHeadRealTimeInfo(returnJson);
+			if (map!=null){
+				resultMap = dataCenterService.getHeadRealTimeInfo(map,electricPileDO);
 			}
 			result.setDataObject(resultMap);
 			responseJson(result);
@@ -241,7 +246,8 @@ public class DataCenterController extends BaseController{
 	 * 充电实时数据
 	 */
 	@RequestMapping("/getChargeRealTimeDate")
-	public void getChargeRealTimeDate(String cpyId,String provinceCode,String cityCode,int type) {
+	@ResponseBody
+	public Map<String,Object> getChargeRealTimeDate(String cpyId,String provinceCode,String cityCode,int type) {
 		JsonResult result = new JsonResult();
 		Map<String,String> params=new HashMap<>();
 		params.put("cpyId", cpyId);
@@ -255,8 +261,7 @@ public class DataCenterController extends BaseController{
 		}else if (type==WanmaConstants.USER_DIMENSION) {
 			map = dataCenterService.getRealTimeDateForUser(params);
 		}
-		result.setDataObject(map);
-		responseJson(result);
+		return  map;
 	}
 	/**
 	 * 用户充电排行榜
@@ -294,4 +299,6 @@ public class DataCenterController extends BaseController{
 		result.setDataObject(map);
 		responseJson(result);
 	}
+
+
 }

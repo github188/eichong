@@ -134,7 +134,7 @@
 		AND a.cpy_id = b.cpy_id
 	</select>
 	<!-- 查询全部电站数量 -->
-	<select id="getPowerStationCount" parameterType="TblPowerStation"
+	<select id="getPowerStationCount" parameterType="hashMap"
 		resultType="int">
 		SELECT
 		count(1)
@@ -155,7 +155,7 @@
 	</select>
 
 	<!-- 查询全部电站 -->
-	<select id="getPowerStationList" parameterType="TblPowerstation"
+	<select id="getPowerStationList" parameterType="hashMap"
 		resultMap="tblPowerstationResultMap">
 		SELECT
 		a.powerStation_id,
@@ -188,7 +188,7 @@
 		b.pk_cpy_operate_id = c.cpy_id
 		AND a.powerStation_id = b.pk_PowerStation
 		)
-		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+		<if test="pageNo !=null">limit #{pageNo},#{pageSize}</if>
 	</select>
 
 	<!-- 查询最近更新电站数量 -->

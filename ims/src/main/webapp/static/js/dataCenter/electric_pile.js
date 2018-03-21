@@ -1,15 +1,14 @@
 
 $(function(){
-
     setTimeout(function(){
         loadshishiData();
         var intervalIdloadRunTime;
         function loadshishiData(){
             realData();
             clearInterval(intervalIdloadRunTime);
-            intervalIdloadRunTime=setInterval('realData()',2000*60);
+            intervalIdloadRunTime=setInterval('realData()',1000*60);
         }
-    },2000*60);
+    },1000*60);
 
     map.setFeatures(['bg','road','building']);//去掉地图默认标注
 })
@@ -82,32 +81,80 @@ function drawMap(place){
         var div = document.createElement('div');
         div.className = 'circle';
         //根据电量的大小画不同大小的圆
-        if(data.electricCount >0 && data.electricCount <= 10000){
-            var size = 16;
-            div.style.backgroundColor = '#ff7d00';
-            div.style.width = size + 'px';
-            div.style.height = size + 'px';
-            div.style.borderRadius = size/2 + 'px';
-            div.style.opacity = 0.8;
-        }else if(data.electricCount > 10000 && data.electricCount < 30000){
-            var size = 26;
-            div.style.backgroundColor = '#ff7d00';
-            div.style.width = size + 'px';
-            div.style.height = size + 'px';
-            div.style.borderRadius = size/2 + 'px';
-            div.style.opacity = 0.8;
-        }else if(data.electricCount >= 30000){
-            var size = 36;
-            div.style.backgroundColor = '#ff7d00';
-            div.style.width = size + 'px';
-            div.style.height = size + 'px';
-            div.style.borderRadius = size/2 + 'px';
-            div.style.opacity = 0.8;
+        if(map.getZoom()>=5 && map.getZoom()<9){
+            if(data.electricCount >0 && data.electricCount <= 100){
+                var size = 16;
+                div.style.backgroundColor = '#ff7d00';
+                div.style.width = size + 'px';
+                div.style.height = size + 'px';
+                div.style.borderRadius = size/2 + 'px';
+                div.style.opacity = 0.8;
+            }else if(data.electricCount > 100 && data.electricCount <= 1000){
+                var size = 26;
+                div.style.backgroundColor = '#ff7d00';
+                div.style.width = size + 'px';
+                div.style.height = size + 'px';
+                div.style.borderRadius = size/2 + 'px';
+                div.style.opacity = 0.8;
+            }else if(data.electricCount > 1000){
+                var size = 36;
+                div.style.backgroundColor = '#ff7d00';
+                div.style.width = size + 'px';
+                div.style.height = size + 'px';
+                div.style.borderRadius = size/2 + 'px';
+                div.style.opacity = 0.8;
+            }
+        }else if(map.getZoom()>=9 && map.getZoom()<11){
+            if(data.electricCount >0 && data.electricCount <= 50){
+                var size = 16;
+                div.style.backgroundColor = '#ff7d00';
+                div.style.width = size + 'px';
+                div.style.height = size + 'px';
+                div.style.borderRadius = size/2 + 'px';
+                div.style.opacity = 0.8;
+            }else if(data.electricCount > 50 && data.electricCount <= 200){
+                var size = 26;
+                div.style.backgroundColor = '#ff7d00';
+                div.style.width = size + 'px';
+                div.style.height = size + 'px';
+                div.style.borderRadius = size/2 + 'px';
+                div.style.opacity = 0.8;
+            }else if(data.electricCount > 200){
+                var size = 36;
+                div.style.backgroundColor = '#ff7d00';
+                div.style.width = size + 'px';
+                div.style.height = size + 'px';
+                div.style.borderRadius = size/2 + 'px';
+                div.style.opacity = 0.8;
+            }
+        }else{
+            if(data.electricCount >0 && data.electricCount <= 5){
+                var size = 16;
+                div.style.backgroundColor = '#ff7d00';
+                div.style.width = size + 'px';
+                div.style.height = size + 'px';
+                div.style.borderRadius = size/2 + 'px';
+                div.style.opacity = 0.8;
+            }else if(data.electricCount > 5 && data.electricCount <= 20){
+                var size = 26;
+                div.style.backgroundColor = '#ff7d00';
+                div.style.width = size + 'px';
+                div.style.height = size + 'px';
+                div.style.borderRadius = size/2 + 'px';
+                div.style.opacity = 0.8;
+            }else if(data.electricCount > 20){
+                var size = 36;
+                div.style.backgroundColor = '#ff7d00';
+                div.style.width = size + 'px';
+                div.style.height = size + 'px';
+                div.style.borderRadius = size/2 + 'px';
+                div.style.opacity = 0.8;
+            }
         }
         var marker = new AMap.Marker({
             content: div,
             animation:'',
-            title: data.name + '  充电总数量:'+data.electricCount,
+            title: data.name + '  电桩数量:'+data.electricCount,
             position:data.value,
             offset: new AMap.Pixel(-24, -35),
             extData:{
@@ -119,15 +166,15 @@ function drawMap(place){
                 cpyId:window.localStorage.getItem('cpyId') || ''
             }
         });
-        marker.content = data.name + '<br/>' + '充电数量：'+data.electricCount;
-        marker.on('click', markerClick);
+        marker.content = data.name + '<br/>' + '电桩数量：'+data.electricCount;
+        marker.on('mouseover', markerClick);
         marker.emit('mouseout', {target: marker});
         marker.setMap(map);
         function markerClick(e) {
             infoWindow.setContent(e.target.content);
             infoWindow.open(map, e.target.getPosition());
         }
-        marker.off('dblclick').on('dblclick',markerdblClick);
+        marker.off('click').on('click',markerdblClick);
         //点击进入下一层
         function markerdblClick(e){
             var provinceCode = e.target.G.extData.provinceCode;
@@ -174,21 +221,20 @@ function drawMap(place){
 function toLoadPoint(provinceCode,cityCode,cpyId,type){
     map.clearMap();
     $('.chargiePoint').hide();
-    $('.chargeAmountOne').hide();
-    $('.chargeAmountTwo').hide();
-    $('.historicalData').show();
-    $('.realTimeData').show();
+    $('#chargieCurve').hide();
+    $('#chargeRecord').hide()
+    $('#historicalDataDiv').show();
+    $('#realTimeDataDiv').show();
     toLoadPointData(provinceCode,cityCode,cpyId,type);
 }
 //加载第三级
 function toLoadPointRepeat(provinceCode,cityCode,cpyId,type){
     map.clearMap();
-    $('.historicalData').hide();
-    $('.realTimeData').hide();
+    $('#historicalDataDiv').hide();
+    $('#realTimeDataDiv').hide();
     $('.chargiePoint').show();
-    $('.chargeAmountOne').show();
-    $('.chargeAmountTwo').show();
-    //toLoadPointData(provinceCode,cityCode,cpyId,type);
+    $('#chargieCurve').show();
+    $('#chargeRecord').show();
     getChargePowerCurve(provinceCode,cityCode,cpyId,type);
     getEpStartChargeRecord(provinceCode,cityCode,cpyId,type);
     toLoadPointData(provinceCode,cityCode,cpyId,type);
@@ -196,8 +242,6 @@ function toLoadPointRepeat(provinceCode,cityCode,cpyId,type){
 }
 //输入地点名返回数据
 function toLoadPointData(provinceCode,cityCode,cpyId,type){
-    var index=layer.load(1);
-    //console.log(cpyId);
     $.ajax({
         type: "post",
         url: basePath + getMapDataUrl,
@@ -209,8 +253,8 @@ function toLoadPointData(provinceCode,cityCode,cpyId,type){
             type:type
         },
         success: function (req) {
-            layer.close(index);
             mapData = req.dataObject;
+            exceptionHandle(mapData);
             //判断data参数是否为空，三种情况
             for (var i = 0; i < mapData.length; i++) {
                 var place = mapData[i].provinceName || mapData[i].cityName || mapData[i].powerstationName;
@@ -275,6 +319,7 @@ function toLoadHistoryData(provinceCode,cityCode,cpyId,type){
         success: function (req) {
             layer.close(index);
             var data = req.dataObject;
+            exceptionHandle(data);
             $('.powerStationCount').html(data.powerStationCount);
             $('.electircHeadCount').html(data.electircHeadCount);
             $('.electircCount').html(data.electircCount);
@@ -289,7 +334,7 @@ function toLoadHistoryData(provinceCode,cityCode,cpyId,type){
 
 //加载实时数据
 function toLoadRealTimeData(provinceCode,cityCode,cpyId,type){
-    var index=layer.load(1);
+    //var index=layer.load(1);
     $.ajax({
         type: "post",
         url: basePath + getChargeRealTimeDateUrl,
@@ -301,12 +346,13 @@ function toLoadRealTimeData(provinceCode,cityCode,cpyId,type){
             cpyId:cpyId
         },
         success: function (req) {
-            layer.close(index);
-            var data = req.dataObject;
-            $('.chargeCount').html(data.chargeCount);
-            $('.errorCount').html(data.errorCount);
-            $('.realTimeChargeHead').html(data.realTimeChargeHead);
-            $('#newChargeCount').html(data.chargeCount);
+            //layer.close(index);
+            removeLoading();
+            exceptionHandle(req);
+            $('.chargeCount').html(req.chargeCount);
+            $('.errorCount').html(req.errorCount);
+            $('.realTimeChargeHead').html(req.realTimeChargeHead);
+            $('#newChargeCount').html(req.chargeCount);
         }
     });
 }
@@ -415,7 +461,13 @@ function getChargePowerCurve(provinceCode,cityCode,cpyId,type){//实时充电电
             for(var i = 0; i < chargeAmountOne.series.length; i ++){
                 chargeAmountOne.series[i].data = data.value;
             }
+            $("#chargeAmountOne").css( 'width', $("#chargeAmountOne").width() );
             myChartTwo.setOption(chargeAmountOne);
+            myChartTwo.resize();
+            $(window).resize(function() {
+                //重置容器高宽
+                myChartTwo.resize();
+            });
         }
     });
 }
@@ -435,6 +487,7 @@ function timestampToTime(timestamp) {//时间戳转化
 //电桩维度开始充电记录列表
 function getEpStartChargeRecord(provinceCode,cityCode,cpyId,type){
     var cpyId = window.localStorage.getItem('cpyId');
+    var index=layer.load(1);
     $.ajax({
         type: "post",
         url: basePath + getEpStartChargeRecordUrl,
@@ -444,7 +497,9 @@ function getEpStartChargeRecord(provinceCode,cityCode,cpyId,type){
             cpyId:cpyId//253
         },
         success: function (req) {
+            layer.close(index);
             var data = req.dataObject;
+            exceptionHandle(data);
             var beginLi = '';
             for(var i = 0; i < data.length; i ++ ){
                 timestampToTime(data[i].time);

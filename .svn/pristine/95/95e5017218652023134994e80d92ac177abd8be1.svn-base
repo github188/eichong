@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanma.ims.mapper.FavCouponMapper">
+    <resultMap type="FavCouponDO" id="resultCoupon">
+        <result property="pkCoupon" column="pk_Coupon"/>
+        <result property="pkActivity" column="pk_Activity"/>
+        <result property="pkCouponvariety" column="pk_CouponVariety"/>
+        <result property="cpStatus" column="cp_Status"/>
+        <result property="cpLimitation" column="cp_Limitation"/>
+        <result property="cpCouponvalue" column="cp_CouponValue"/>
+        <result property="cpCouponcondition" column="cp_CouponCondition"/>
+        <result property="cpCouponcode" column="cp_CouponCode"/>
+        <result property="cpUserid" column="cp_UserId"/>
+        <result property="cpBegindate" column="cp_BeginDate"/>
+        <result property="cpEnddate" column="cp_EndDate"/>
+         <result property="cpCreatedate" column="cp_Createdate"/>
+          <result property="cpUpdatedate" column="cp_Updatedate"/>
+    </resultMap>
+
+	<resultMap type="FavCouponDO" id="coupon" extends="resultCoupon">
+		<result property="cpyId" column="act_ChannelType"/>
+		<result property="accountId" column="saving_account_id"/>
+	</resultMap>
+
+	<select id="getUserAvailableCoupon"  parameterType="FavCouponDO" resultType="int">
+		select count(*) from tbl_coupon 
+		where cp_UserId = #{cpUserid} 
+		and cp_Status != 1 and cp_EndDate &gt;  now()
+	</select>
+    <select id="getUserDiscountAmount" parameterType="FavCouponDO" resultType="string">
+    	SELECT SUM(p.puHi_Monetary) from 
+    	tbl_purchasehistory p 
+    	where p.puHi_UserId = #{cpUserid} and p.puHi_Type = 6 
+    </select>
+    <update id="removeCouponByCouponVarietyId" parameterType="FavCouponVarietyDO">
+		update tbl_coupon
+		set 
+		cp_EndDate = CURDATE()-1
+		where pk_CouponVariety =  #{pkCouponVariety} and cp_UserId = 0
+	</update>
+	<select id="getCouponCount" parameterType="FavCouponDO" resultType="long">
+	select count(1) from (
+		select
+		1
+		from
+		tbl_coupon
+		t,tbl_activity b,
+		tbl_couponvariety c,
+		tbl_company co
+		WHERE
+		t.pk_Activity=b.pk_Activity
+		AND co.cpy_id = b.act_ChannelType
+		AND t.pk_CouponVariety = c.pk_CouponVariety
+		<!-- 1、未兑换未过期(未兑换：cp_userId未绑定用户;未过期：结束时间在当前时间之后) -->
+		<if test="cpstates ==1 ">
+			and t.cp_userid=0 and t.cp_EndDate>#{currentDate}
+		</if>
+		<!-- 2、未兑换已过期(未兑换：cp_userId未绑定用户;已过期：结束时间在当前时间之前) -->
+		<if test="cpstates ==2 ">
+			and t.cp_userid=0 and #{currentDate}>t.cp_EndDate
+		</if>
+		<!-- 3、已兑换已使用(已兑换：cp_userId绑定用户;已使用：cp_Status为1) -->
+		<if test="cpstates ==3 ">
+			and t.cp_userid!=0 and t.cp_status=1
+		</if>
+		<!-- 4、已兑换未使用未过期(已兑换：cp_userId绑定用户;未使用：cp_Status不为1;未过期：结束时间在当前时间之后) -->
+		<if test="cpstates ==4 ">
+		    and t.cp_userid!=0 and t.cp_status!=1 and
+			t.cp_EndDate>#{currentDate}
+		</if>
+		<!-- 5、已兑换未使用已过期(已兑换：cp_userId绑定用户;未使用：cp_Status不为1;已过期：结束时间在当前时间之前) -->
+		<if test="cpstates ==5 ">
+			  and t.cp_userid!=0 and t.cp_status!=1 and
+			#{currentDate}>t.cp_EndDate
+		</if>
+		<if test="userPhone != null and userPhone !=''">
+		and t.cp_UserId = (SELECT u.user_id from tbl_user u where u.user_account = #{userPhone})
+		</if>
+		<if test="pkActivity != null and pkActivity !=''">
+			and t.pk_activity= #{pkActivity}
+		</if>
+		<if test="pkCouponvariety != null and pkCouponvariety!=''">
+			and t.pk_CouponVariety= #{pkCouponvariety}
+		</if>
+		<if test="cpLimitation != null and cpLimitation!=''">
+			and t.cp_Limitation=#{cpLimitation}
+		</if>
+		<if test="cpActivitytype != null and cpActivitytype!='' and cpActivitytype!=3">
+			and b.act_Type=#{cpActivitytype}
+		</if>
+		<if test="cpCouponcode != null and cpCouponcode!=''">
+			and t.cp_CouponCode=#{cpCouponcode}
+		</if>
+		<if test="covaScope != null ">
+			and c.cova_Scope= #{covaScope}
+		</if>
+		<if test="cityCode != null and cityCode!=''">
+			and c.city_code= #{cityCode}
+		</if>
+		<if test="cpyId != null and cpyId !=''">
+			and b.act_ChannelType= #{cpyId}
+		</if>
+		) aa
+	
+	</select>
+	<select id="getCouponList" parameterType="FavCouponDO" resultMap="resultCoupon">
+	select
+		t.pk_Coupon,
+		t.pk_Activity,
+		(select act_ActivityName from tbl_activity where
+		pk_Activity=t.pk_Activity ) actActivityname,
+		t.pk_CouponVariety,
+		(select cova_ActivityName from tbl_couponvariety where
+		pk_CouponVariety=t.pk_CouponVariety ) covaActivityname,
+		t.cp_Status,
+		t.cp_Limitation,
+		t.cp_CouponValue,
+		t.cp_CouponCondition,
+		t.cp_CouponCode,
+		t.cp_UserId,
+		c.city_code,
+		c.cova_Scope,
+		co.cpy_name cpyName, 
+		(select user_account from tbl_user usr where usr.user_id=t.cp_UserId) userPhone,
+		date_format(t.cp_BeginDate,'%Y-%m-%d %T')
+		cpBeginDate,
+		date_format(t.cp_EndDate,'%Y-%m-%d %T') cpEndDate,
+		date_format(t.cp_Createdate,'%Y-%m-%d %T') cpCreatedate,
+		date_format(t.cp_Updatedate,'%Y-%m-%d %T') cpUpdatedate
+		from
+		tbl_coupon
+		t,tbl_activity b,
+		tbl_couponvariety c,
+		tbl_company co
+		WHERE
+		t.pk_Activity=b.pk_Activity
+		AND co.cpy_id = b.act_ChannelType
+		AND t.pk_CouponVariety = c.pk_CouponVariety
+		<!-- 1、未兑换未过期(未兑换：cp_userId未绑定用户;未过期：结束时间在当前时间之后) -->
+		<if test="cpstates ==1 ">
+			and t.cp_userid=0 and t.cp_EndDate>#{currentDate}
+		</if>
+		<!-- 2、未兑换已过期(未兑换：cp_userId未绑定用户;已过期：结束时间在当前时间之前) -->
+		<if test="cpstates ==2 ">
+			and t.cp_userid=0 and #{currentDate}>t.cp_EndDate
+		</if>
+		<!-- 3、已兑换已使用(已兑换：cp_userId绑定用户;已使用：cp_Status为1) -->
+		<if test="cpstates ==3 ">
+			and t.cp_userid!=0 and t.cp_status=1
+		</if>
+		<!-- 4、已兑换未使用未过期(已兑换：cp_userId绑定用户;未使用：cp_Status不为1;未过期：结束时间在当前时间之后) -->
+		<if test="cpstates ==4 ">
+		    and t.cp_userid!=0 and t.cp_status!=1 and
+			t.cp_EndDate>#{currentDate}
+		</if>
+		<!-- 5、已兑换未使用已过期(已兑换：cp_userId绑定用户;未使用：cp_Status不为1;已过期：结束时间在当前时间之前) -->
+		<if test="cpstates ==5 ">
+			  and t.cp_userid!=0 and t.cp_status!=1 and
+			#{currentDate}>t.cp_EndDate
+		</if>
+		<if test="userPhone != null and userPhone !=''">
+		and t.cp_UserId = (SELECT u.user_id from tbl_user u where u.user_account = #{userPhone})
+		</if>
+		<if test="pkActivity != null and pkActivity !=''">
+			and t.pk_activity= #{pkActivity}
+		</if>
+		<if test="pkCouponvariety != null and pkCouponvariety!=''">
+			and t.pk_CouponVariety= #{pkCouponvariety}
+		</if>
+		<if test="cpLimitation != null and cpLimitation!=''">
+			and t.cp_Limitation=#{cpLimitation}
+		</if>
+		<if test="cpActivitytype != null and cpActivitytype!='' and cpActivitytype!=3">
+			and b.act_Type=#{cpActivitytype}
+		</if>
+		<if test="cpCouponcode != null and cpCouponcode!=''">
+			and t.cp_CouponCode=#{cpCouponcode}
+		</if>
+		<if test="cpCouponcode != null and cpCouponcode!=''">
+			and t.cp_CouponCode=#{cpCouponcode}
+		</if>
+		<if test="covaScope != null ">
+			and c.cova_Scope= #{covaScope}
+		</if>
+		<if test="cityCode != null and cityCode!=''">
+			and c.city_code= #{cityCode}
+		</if>
+		<if test="cpyId != null and cpyId !=''">
+			and b.act_ChannelType= #{cpyId}
+		</if>
+		order by t.cp_Createdate desc
+		<if test="pager!=null">limit #{pager.offset},#{pager.pageSize}</if>
+	
+	</select>
+	<select id="getCouponStatus" parameterType="String" resultType="int">
+	select cp_Status from tbl_coupon where pk_Coupon=#{pkCoupon}
+	</select>
+	<delete id="deleteCoupon" parameterType="String">
+		delete
+		from tbl_coupon where pk_Coupon=#{pkCoupon}
+	</delete>
+	<select id="getExportCouponList" parameterType="FavCouponDO" resultMap="resultCoupon">
+	select
+		t.pk_Coupon,
+		t.pk_Activity,
+		(select act_ActivityName from tbl_activity where
+		pk_Activity=t.pk_Activity ) actActivityname,
+		t.pk_CouponVariety,
+		(select cova_ActivityName from tbl_couponvariety where
+		pk_CouponVariety=t.pk_CouponVariety ) covaActivityname,
+		t.cp_Status,
+		t.cp_Limitation,
+		t.cp_CouponValue,
+		t.cp_CouponCondition,
+		t.cp_CouponCode,
+		t.cp_UserId,
+		c.city_code,
+		c.cova_Scope,
+		co.cpy_name cpyName, 
+		(select user_account from tbl_user usr where usr.user_id=t.cp_UserId) userPhone,
+		date_format(t.cp_BeginDate,'%Y-%m-%d %T')
+		cpBeginDate,
+		date_format(t.cp_EndDate,'%Y-%m-%d %T') cpEndDate,
+		date_format(t.cp_Createdate,'%Y-%m-%d %T') cpCreatedate,
+		date_format(t.cp_Updatedate,'%Y-%m-%d %T') cpUpdatedate
+		from
+		tbl_coupon
+		t,tbl_activity b,
+		tbl_couponvariety c,
+		tbl_company co
+		WHERE
+		t.pk_Activity=b.pk_Activity
+		AND co.cpy_id = b.act_ChannelType
+		AND t.pk_CouponVariety = c.pk_CouponVariety
+		<!-- 1、未兑换未过期(未兑换：cp_userId未绑定用户;未过期：结束时间在当前时间之后) -->
+		<if test="cpstates ==1 ">
+			and t.cp_userid=0 and t.cp_EndDate>#{currentDate}
+		</if>
+		<!-- 2、未兑换已过期(未兑换：cp_userId未绑定用户;已过期：结束时间在当前时间之前) -->
+		<if test="cpstates ==2 ">
+			and t.cp_userid=0 and #{currentDate}>t.cp_EndDate
+		</if>
+		<!-- 3、已兑换已使用(已兑换：cp_userId绑定用户;已使用：cp_Status为1) -->
+		<if test="cpstates ==3 ">
+			and t.cp_userid!=0 and t.cp_status=1
+		</if>
+		<!-- 4、已兑换未使用未过期(已兑换：cp_userId绑定用户;未使用：cp_Status不为1;未过期：结束时间在当前时间之后) -->
+		<if test="cpstates ==4 ">
+		    and t.cp_userid!=0 and t.cp_status!=1 and
+			t.cp_EndDate>#{currentDate}
+		</if>
+		<!-- 5、已兑换未使用已过期(已兑换：cp_userId绑定用户;未使用：cp_Status不为1;已过期：结束时间在当前时间之前) -->
+		<if test="cpstates ==5 ">
+			  and t.cp_userid!=0 and t.cp_status!=1 and
+			#{currentDate}>t.cp_EndDate
+		</if>
+		<if test="userPhone != null and userPhone !=''">
+		and t.cp_UserId = (SELECT u.user_id from tbl_user u where u.user_account = #{userPhone})
+		</if>
+		<if test="pkActivity != null and pkActivity !=''">
+			and t.pk_activity= #{pkActivity}
+		</if>
+		<if test="pkCouponvariety != null and pkCouponvariety!=''">
+			and t.pk_CouponVariety= #{pkCouponvariety}
+		</if>
+		<if test="cpLimitation != null and cpLimitation!=''">
+			and t.cp_Limitation=#{cpLimitation}
+		</if>
+		<if test="cpActivitytype != null and cpActivitytype!='' and cpActivitytype!=3">
+			and b.act_Type=#{cpActivitytype}
+		</if>
+		<if test="cpCouponcode != null and cpCouponcode!=''">
+			and t.cp_CouponCode=#{cpCouponcode}
+		</if>
+		<if test="cpCouponcode != null and cpCouponcode!=''">
+			and t.cp_CouponCode=#{cpCouponcode}
+		</if>
+		<if test="covaScope != null ">
+			and c.cova_Scope= #{covaScope}
+		</if>
+		<if test="cityCode != null and cityCode!=''">
+			and c.city_code= #{cityCode}
+		</if>
+		<if test="cpyId != null and cpyId !=''">
+			and b.act_ChannelType= #{cpyId}
+		</if>
+		order by t.cp_Createdate desc
+	</select>
+	<!-- 获取用户优惠券列表  -->
+	<select id="getUserCouponList" parameterType="FavCouponDO" resultMap="resultCoupon">
+		SELECT
+			co.cp_Status cpStatus,
+			co.cp_CouponCode cpCouponcode,
+			date_format(co.cp_BeginDate,'%Y-%m-%d %T') cpBeginDate,
+			date_format(co.cp_EndDate,'%Y-%m-%d %T') cpEndDate,
+			date_format(co.cp_Updatedate,'%Y-%m-%d %T') cpUpdatedate,
+			SUBSTRING(u.user_account, 1,11) userPhone,
+			un.norm_real_name userName,
+			a.act_ActivityName actActivityname,
+			a.act_Type cpActivitytype,
+			co.pk_Activity pkActivity,
+			co.cp_UserId cpUserid
+			FROM
+				tbl_coupon co
+			LEFT JOIN tbl_activity a ON a.pk_Activity = co.pk_Activity
+			LEFT JOIN tbl_user u ON u.user_id = co.cp_UserId
+			LEFT JOIN tbl_user_normal un ON u.user_id = un.user_id
+			<where>
+				co.cp_UserId !=0
+				<if test="cpActivitytype!=null and cpActivitytype!=''">and a.act_Type = #{cpActivitytype}</if>
+				 <if test="cpStatus == 1">
+				 and co.cp_Status = 0 and co.cp_UserId=0
+				 </if>
+				 <if test=" cpStatus==2" >
+				 and co.cp_Status = 0 and co.cp_UserId !=0  and co.cp_EndDate>NOW()
+				 </if>
+				 <if test=" cpStatus==3" >
+				 and co.cp_Status = 1 
+				 </if>
+				 <if test=" cpStatus==4" >
+				  <![CDATA[and co.cp_Status = 0 and co.cp_EndDate < NOW()]]>
+				 </if>
+				 <if test="pkActivity!=null and pkActivity!=''">and co.pk_Activity = #{pkActivity}</if>
+				 <if test="userPhone!=null and userPhone!=''">and u.user_account like concat('%',#{userPhone},'%')</if>
+				 <if test="cpCouponcode!=null and cpCouponcode!=''">and co.cp_CouponCode like concat('%',#{cpCouponcode},'%')</if>
+			</where>
+			ORDER BY co.cp_BeginDate DESC
+		<if test="pager!=null">limit #{pager.offset},#{pager.pageSize}</if>	
+	</select>
+	<select id="getUserCouponCount" parameterType="FavCouponDO"  resultType="long">
+		SELECT
+			count(*)
+			FROM
+				tbl_coupon co
+			LEFT JOIN tbl_activity a ON a.pk_Activity = co.pk_Activity
+			LEFT JOIN tbl_user u ON u.user_id = co.cp_UserId AND u.user_leval = 6
+			LEFT JOIN tbl_user_normal un ON u.user_id = un.user_id
+			WHERE
+			co.cp_UserId !=0
+				<if test="cpActivitytype!=null and cpActivitytype!=''">and a.act_Type = #{cpActivitytype}</if>
+				 <if test="cpStatus == 1">
+				 and co.cp_Status = 0 and co.cp_UserId=0
+				 </if>
+				 <if test=" cpStatus==2" >
+				 and co.cp_Status = 0 and co.cp_UserId !=0  and co.cp_EndDate>NOW()
+				 </if>
+				 <if test=" cpStatus==3" >
+				 and co.cp_Status = 1 
+				 </if>
+				 <if test=" cpStatus==4" >
+				  <![CDATA[and co.cp_Status = 0 and co.cp_EndDate < NOW()]]>
+				 </if>
+				 <if test="pkActivity!=null and pkActivity!=''">and co.pk_Activity = #{pkActivity}</if>
+				 <if test="userPhone!=null and userPhone!=''">and u.user_account like concat('%',#{userPhone},'%')</if>
+				 <if test="cpCouponcode!=null and cpCouponcode!=''">and co.cp_CouponCode like concat('%',#{cpCouponcode},'%')</if>
+	</select>
+	<update id="changeEndDate" parameterType="ActivityDO">
+		update tbl_coupon t
+		set
+		cp_EndDate=date_sub(CURDATE(),INTERVAL 1 DAY)
+		where 1=1 
+		<if test="actType == 1">
+		and pk_Activity=#{pkActivity} and t.cp_status!=1
+		</if>
+		<if test="actType == 2">
+		and pk_Activity=#{pkActivity} and t.cp_status!=1 and t.cp_UserId = 0
+		</if>
+	</update>
+	
+	<update id="modifyCoupon" parameterType="FavCouponDO">
+		update tbl_coupon
+		set
+		cp_UserId = #{cpUserid}, cp_Updatedate = #{cpUpdatedate}
+		where
+		cp_CouponCode=#{cpCouponCode}
+	</update>
+
+	<select id="getDataForAccountSplitDetailsBatch" parameterType="FavCouponDO" resultMap="coupon">
+		SELECT cp.pk_Coupon, act.act_ChannelType, cpy.saving_account_id
+		FROM tbl_coupon cp
+		INNER JOIN tbl_activity act on act.pk_Activity = cp.pk_Activity
+		INNER JOIN tbl_company cpy on act.act_ChannelType = cpy.cpy_id
+		WHERE cp.pk_Coupon = #{pkCoupon}
+	</select>
+
+	<select id="getDataForCouponBatch" parameterType="FavCouponDO" resultType="Long">
+		SELECT count(*)
+		FROM tbl_coupon
+		WHERE charging_order_id = #{chargingOrderId}
+	</select>
+
+	<delete id="deleteCouponForBatch" parameterType="FavCouponDO">
+		DELETE FROM tbl_coupon WHERE charging_order_id = #{chargingOrderId}
+	</delete>
+
+	<!-- 批量添加优惠券 -->
+	<insert id="batchAddCoupon" useGeneratedKeys="true" parameterType="java.util.List">
+		insert into tbl_coupon
+		(pk_Coupon, pk_Activity, pk_CouponVariety, cp_Status, cp_Limitation, cp_CouponValue, cp_CouponCondition,
+			cp_UserId, cp_BeginDate, cp_EndDate, cp_Createdate, cp_Updatedate, charging_order_id)
+		values
+		<foreach collection="list" item="item" index="index" separator="," >
+			(null,#{item.pkActivity},#{item.pkCouponvariety},#{item.cpStatus},#{item.cpLimitation},#{item.cpCouponvalue},
+			#{item.cpCouponcondition}, #{item.cpUserid}, #{item.cpBegindate}, #{item.cpEnddate},
+			now(), now(), #{item.chargingOrderId})
+		</foreach>
+	</insert>
+
+	<!-- 添加优惠券 -->
+	<insert id="addCoupon" useGeneratedKeys="true" parameterType="FavCouponDO">
+		insert into tbl_coupon
+		(pk_Coupon, pk_Activity, pk_CouponVariety, cp_Status, cp_Limitation, cp_CouponValue, cp_CouponCondition,
+		cp_UserId, cp_BeginDate, cp_EndDate, cp_Createdate, cp_Updatedate, charging_order_id)
+		values
+		(null,#{pkActivity},#{pkCouponvariety},0,#{cpLimitation},#{cpCouponvalue},
+			#{cpCouponcondition}, #{cpUserid}, #{cpBegindate}, #{cpEnddate},
+			now(), now(), null)
+	</insert>
+</mapper>

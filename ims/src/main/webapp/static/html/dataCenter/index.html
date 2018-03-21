@@ -4,12 +4,18 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <!--<link rel="stylesheet" href="../../css/dataCenter/normalize.min.css"/>-->
+    <!--<link rel="stylesheet" href="../../css/dataCenter/loading.css"/>-->
     <title></title>
     <style>
     	*{
     		margin:0;
     		padding:0;
     	}
+        html,body{
+            width:100%;
+            height:100%;
+        }
     	li{
     		list-style: none;
     	}
@@ -50,25 +56,48 @@
 
 </head>
 <body>
-<div id="container2222">
+<div id="container2222" style="width:100%;height: 100%;">
     <ul class="wrap" id="navRouter">
         <li class="electricity active common" data-target="electricity.html" data-id="1">看电量</li>
         <li class="electric_pile common" data-target="electric_pile.html" data-id="2">看电桩</li>
         <li class="user common" data-target="user.html" data-id="3">看用户</li>
     </ul>
-    <iframe src="electricity.html" name="frames" frameborder="0" id="test" allowtransparency="true" style="background-color: transparent"></iframe>
+    <iframe name="frames" frameborder="0" id="test" allowtransparency="true" style="background-color: transparent"></iframe>
 
 </div>
 <script src="../../js/jquery-2.1.0.js"></script>
+<!--<script src="../../js/dataCenter/prefixfree.min.js"></script>-->
+<!--<script src="../../js/dataCenter/loading.js"></script>-->
+
 <script>
 $(function(){
+
+
     $(document).on('click','.common',function(){
         $(this).addClass('active').siblings().removeClass('active')
-    })
+    });
+    loadRouter("electricity.html");
     function loadRouter(target){
         $('#test').attr('src',target);
     }
+//    !(function(target){
+//        var oFrm = document.getElementById('test');
+//        oFrm.onload = oFrm.onreadystatechange = function() {
+//            onLoading();
+//            console.log(1111);
+//            if (this.readyState && this.readyState != 'complete') {
+//                onLoading();
+//            } else {
+////            onComplete();
+//                removeLoading();
+//                $('#test').attr('src',target);
+//                console.log(2222);
+//
+//            }
+//        }
+//    })()
     $('body').off('click','#navRouter li').on('click','#navRouter li',function(){
+
         var target=$(this).attr('data-target');
         setTimeout(function(){
             loadRouter(target);
@@ -76,7 +105,6 @@ $(function(){
 
     })
 })
-
 </script>
 </body>
 </html>

@@ -1,0 +1,592 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.wanma.dao.TblPowerstationMapper">
+
+	<resultMap id="tblPowerstationResultMap" type="TblPowerstation">
+		<id property="pkPowerstation" column="powerStation_id" />
+		<result property="postName" column="powerStation_name" />
+		<result property="postAddress" column="address" />
+		<result property="postLongitude" column="longitude" />
+		<result property="postLatitude" column="latitude" />
+		<result property="postPhone" column="phone" />
+		<!-- <result property="postEleids" column="poSt_Eleids" /> -->
+		<result property="postStatus" column="status" />
+		<result property="postCreatedate" column="gmt_create" />
+		<result property="postUpdatedate" column="gmt_modified" />
+		<result property="postRemark" column="remark" />
+		<result property="postPoweruser" column="powerUser" />
+		<!-- <result property="postIsappoint" column="poSt_IsAppoint" /> -->
+		<!-- <result property="rejectionReason" column="poSt_RejectionReason" /> -->
+		<result property="poStOnlineTime" column="onlineTime" />
+		<result property="poStUserName" column="creator" />
+		<result property="postOwnProvinceCode" column="province_code" />
+		<result property="postOwnCityCode" column="city_code" />
+		<result property="postOwnCountyCode" column="area_code" />
+	</resultMap>
+
+	<resultMap id="BaseResultMap" type="com.wanma.model.ElectricMap">
+		<id column="pk_PowerStation" property="pkPowerStation" jdbcType="INTEGER" />
+		<result column="poSt_Address" property="poStAddress" jdbcType="VARCHAR" />
+		<result column="poSt_Latitude" property="poStLatitude"
+			jdbcType="VARCHAR" />
+		<result column="poSt_Longitude" property="poStLongitude"
+			jdbcType="VARCHAR" />
+		<result column="poSt_Name" property="poStName" jdbcType="VARCHAR" />
+		<result column="dc" property="dc" jdbcType="VARCHAR" />
+		<result column="ac" property="ac" jdbcType="VARCHAR" />
+		<result column="freeHeadNum" property="freeHeadNum" jdbcType="VARCHAR" />
+		<result column="distance" property="distance" jdbcType="VARCHAR" />
+		<result column="rateId" property="rateId" jdbcType="INTEGER" />
+
+	</resultMap>
+
+
+	<resultMap id="RateResultMap" type="com.wanma.model.RateInfo">
+		<id column="pk_RateInformation" property="rateId" jdbcType="INTEGER" />
+		<result column="raIn_QuantumDate" property="raInQuantumDate"
+			jdbcType="VARCHAR" />
+		<result column="raIn_TipTimeTariff" property="raInTipTimeTariff"
+			jdbcType="VARCHAR" />
+		<result column="raIn_PeakElectricityPrice" property="raInPeakElectricityPrice"
+			jdbcType="VARCHAR" />
+		<result column="raIn_UsualPrice" property="raInUsualPrice"
+			jdbcType="VARCHAR" />
+		<result column="raIn_ValleyTimePrice" property="raInValleyTimePrice"
+			jdbcType="VARCHAR" />
+		<result column="raIn_ServiceCharge" property="raInServiceCharge"
+			jdbcType="VARCHAR" />
+	</resultMap>
+
+	<resultMap id="PartnerMap" type="com.wanma.model.TblPartner">
+		<result column="partnerKey" property="operatorID" jdbcType="VARCHAR" />
+		<result column="orgNo" property="orgNo" jdbcType="VARCHAR" />
+		<result column="Secret" property="secret" jdbcType="VARCHAR" />
+		<result column="cpyId" property="cpyId" jdbcType="VARCHAR" />
+		<result column="partnerToken" property="wmTokenSecret"
+			jdbcType="VARCHAR" />
+		<result column="valid" property="valid" jdbcType="VARCHAR" />
+		<result column="tokenUrl" property="thirdTokenUrl" jdbcType="VARCHAR" />
+		<result column="pushOrderUrl" property="pushOrderUrl" jdbcType="VARCHAR" />
+		<result column="tokenSecret" property="thirdTokenSecret"
+			jdbcType="VARCHAR" />
+		<result column="pushOrderCheckUrl" property="pushOrderCheckUrl"
+			jdbcType="VARCHAR" />
+		<result column="time_interval" property="timeInterval"
+			jdbcType="VARCHAR" />
+	</resultMap>
+	<!-- 通过公司标识查询相关信息 -->
+	<select id="getcpyNumberById" parameterType="map" resultType="hashMap">
+		SELECT
+		a.partnerKey,
+		b.cpy_number AS orgNo,
+		a.Secret,
+		a.compatible,
+		b.cpy_id AS cpyId,
+		a.partnerToken,
+		a.valid,
+		a.tokenUrl,
+		a.tokenSecret,
+		a.pushOrderCheckUrl,
+		a.time_interval
+		FROM
+		tbl_partner a,
+		tbl_company b
+		WHERE
+		b.cpy_number=#{cpyNumber}
+		AND a.cpy_id = b.cpy_id
+	</select>
+
+	<!-- 通过合作商组织机构代码查询相关信息 -->
+	<select id="getPartnerKeyList" parameterType="map" resultType="hashMap">
+		SELECT
+		a.valid AS valId,
+		a.partnerKey,
+		a.Secret,
+		a.cpy_id AS cpyId,
+		a.partnerToken AS partnerToken,
+		b.cpy_number AS cpyNumber
+		FROM
+		tbl_partner a,
+		tbl_company b
+		WHERE
+		a.partnerKey =#{OperatorID}
+		AND a.cpy_id = b.cpy_id
+	</select>
+	<select id="getPartnerList" resultType="hashMap" resultMap="PartnerMap">
+		SELECT
+			a.valid ,
+			a.partnerKey,
+			a.Secret,
+			a.cpy_id AS cpyId,
+			a.partnerToken AS partnerToken,
+			b.cpy_number AS orgNo,
+			a.tokenUrl,
+			a.pushOrderUrl,
+			a.tokenSecret,
+			a.pushOrderCheckUrl,
+			a.time_interval
+		FROM
+			tbl_partner a,
+			tbl_company b
+		WHERE a.partnerKey = #{OperatorID}
+		AND a.cpy_id = b.cpy_id
+	</select>
+	<!-- 查询全部电站数量 -->
+	<select id="getPowerStationCount" parameterType="hashMap"
+		resultType="int">
+		SELECT
+		count(1)
+		FROM
+		tbl_PowerStation a,
+		tbl_company c
+		WHERE
+		c.cpy_id = #{cpyId}
+		AND EXISTS (
+		SELECT
+		1
+		FROM
+		tbl_company_rela b
+		WHERE
+		b.pk_cpy_operate_id = c.cpy_id
+		AND a.powerStation_id = b.pk_PowerStation
+		)
+	</select>
+
+	<!-- 查询全部电站 -->
+	<select id="getPowerStationList" parameterType="hashMap"
+		resultMap="tblPowerstationResultMap">
+		SELECT
+		a.powerStation_id,
+		getFullPath('powerListImage',a.powerStation_id) AS postPic,
+		powerStation_name,
+		address,
+		longitude,
+		latitude,
+		phone,
+		status,
+		a.gmt_create,
+		a.gmt_modified,
+		remark,
+		powerUser,
+		onlineTime,
+		province_code,
+		city_code,
+		area_code
+		FROM
+		tbl_PowerStation a,
+		tbl_company c
+		WHERE
+		c.cpy_id = #{cpyId}
+		AND EXISTS (
+		SELECT
+		2
+		FROM
+		tbl_company_rela b
+		WHERE
+		b.pk_cpy_operate_id = c.cpy_id
+		AND a.powerStation_id = b.pk_PowerStation
+		)
+		<if test="pageNo !=null">limit #{pageNo},#{pageSize}</if>
+	</select>
+
+	<!-- 查询最近更新电站数量 -->
+	<select id="getUpdatedCount" parameterType="hashMap" resultType="int">
+		SELECT count(1)
+		FROM (
+		select * from tbl_powerstation t where t.gmt_modified >= #{queryTime}
+		union
+		select * from tbl_powerstation t where exists
+		(select 1 from tbl_electricpile e where e.elPi_Updatedate >= #{queryTime}
+		))a,
+		tbl_company c
+		WHERE
+		c.cpy_id =#{cpyId}
+		AND EXISTS (
+		SELECT 2 FROM
+		tbl_company_rela b
+		WHERE
+		b.pk_cpy_operate_id = c.cpy_id
+		AND a.powerStation_id = b.pk_PowerStation
+		)
+	</select>
+
+	<!-- 查询最近更新的电站 -->
+	<select id="getUpdatedList" parameterType="hashMap"
+		resultMap="tblPowerstationResultMap">
+		select * from
+		(select * from tbl_powerstation t where t.gmt_modified
+		>=
+		#{queryTime}
+		union
+		select * from tbl_powerstation t where exists
+		(select
+		1 from tbl_electricpile e where e.elPi_Updatedate >=
+		#{queryTime}))a,
+		tbl_company c
+		WHERE
+		c.cpy_id=#{cpyId}
+		AND EXISTS (
+		SELECT 2
+		FROM
+		tbl_company_rela b
+		WHERE
+		b.pk_cpy_operate_id = c.cpy_id
+		AND a.powerStation_id = b.pk_PowerStation
+		)
+		<if test="pageNo !=null">limit #{pageNo},#{pageSize}</if>
+	</select>
+
+
+
+
+	<select id="getCount" parameterType="TblPowerStation"
+		resultType="int">
+		select count(1) from tbl_powerstation
+		where 1=1
+		<if test="postOwnProvinceCode !=null  ">
+			and province_code = #{postOwnProvinceCode}
+		</if>
+	</select>
+
+	<select id="getList" parameterType="TblPowerstation" resultMap="tblPowerstationResultMap">
+		select
+		powerStation_id,
+		getFullPath('powerListImage',powerStation_id) as postPic,
+		powerStation_name,
+		address,
+		longitude,
+		latitude,
+		phone,
+		status,
+		gmt_create,
+		gmt_modified,
+		remark,
+		powerUser,
+		onlineTime,
+		province_code,
+		city_code,
+		area_code 
+		from
+		tbl_PowerStation
+		where 1=1
+		<if test="postOwnProvinceCode !=null  ">
+			and province_code = #{postOwnProvinceCode}
+		</if>
+		<if test="pager!=null">limit #{pager.offset},#{pager.numPerPage}</if>
+	</select>
+
+	<select id="getNewlyUpdatedCount" parameterType="hashMap"
+		resultType="int">
+		select count(1) from
+		(select * from tbl_powerstation t where
+		t.gmt_modified >= #{queryTime}
+		union
+		select * from tbl_powerstation t
+		where exists (select 1 from tbl_electricpile e where e.elPi_Updatedate
+		>= #{queryTime})) a
+		where 1=1
+		<if test="poSt_OwnProvinceCode !=null  ">
+			and province_code = #{poSt_OwnProvinceCode}
+		</if>
+	</select>
+
+	<select id="getNewlyUpdatedList" parameterType="hashMap"
+		resultMap="tblPowerstationResultMap">
+		SELECT
+		*
+		FROM
+		(
+		SELECT
+		t.powerStation_id ,
+		t.powerStation_name ,
+		t.address ,
+		t.longitude ,
+		t.latitude ,
+		t.phone ,
+		t.status ,
+		t.remark ,
+		t.powerUser ,
+		t.onlineTime ,
+		t.province_code ,
+		t.city_code ,
+		t.area_code ,
+		t.creator_id ,
+		t.creator ,
+		t.gmt_create ,
+		t.gmt_modified 
+		FROM
+		tbl_powerstation
+		t
+		WHERE
+		t.gmt_modified >=#{queryTime}
+		UNION
+		SELECT
+		t.powerStation_id,
+		t.powerStation_name ,
+		t.address ,
+		t.longitude ,
+		t.latitude ,
+		t.phone,
+		t.status,
+		t.remark ,
+		t.powerUser ,
+		t.onlineTime,
+		t.province_code ,
+		t.city_code ,
+		t.area_code ,
+		t.creator_id ,
+		t.creator,
+		t.gmt_create,
+		t.gmt_modified 
+		FROM
+		tbl_powerstation
+		t
+		WHERE
+		EXISTS (
+		SELECT
+		1
+		FROM
+		tbl_electricpile e
+		WHERE
+		e.elPi_Updatedate >=
+		#{queryTime}
+		))a
+		where 1=1
+		<if test="poSt_OwnProvinceCode !=null  ">
+			and a.province_code = #{poSt_OwnProvinceCode}
+		</if>
+		<if test="pageNo !=null">limit #{pageNo},#{pageSize}</if>
+	</select>
+
+
+	<select id="getPointsInfoByCityCode" parameterType="TblPowerstation"
+		resultType="hashMap">
+
+		SELECT
+		a.powerStation_id id,
+		a.powerStation_name
+		stubGroupName,
+		0 stubGroupType,
+		ifnull(getFullPath('powerListImage',a.powerStation_id),' ') as imgUrl,
+		sum(if (c.elPi_ChargingMode =14 , 1,0)) as stubAcCnt,
+		sum(if
+		(c.elPi_ChargingMode =5 , 1,0)) as stubDcCnt,
+		a.address address,
+		a.longitude lng,
+		a.latitude lat,
+		a.onlineTime serviceTime,
+		a.city_code
+		cityCode,
+		a.area_code districtCode,
+		(SELECT b.area_name FROM tb_m_area b
+		WHERE b.area_id = a.area_code) district,
+		"" parkingFeeInfo
+		FROM
+		tbl_PowerStation a,
+		tbl_company_rela b,
+		tbl_electricpile c
+		where
+		a.city_code=#{postOwnCityCode}
+		AND
+		a.powerStation_id = b.pk_PowerStation
+		AND
+		b.pk_cpy_operate_id = (SELECT cpy_id FROM tbl_company WHERE
+		cpy_number=#{org})
+		AND
+		c.pk_ElectricPile =b.pk_ElectricPile
+		GROUP BY
+		b.pk_PowerStation
+
+	</select>
+	<select id="selectDetail" parameterType="map" resultType="hashMap">
+		SELECT
+		a.powerstation_id stubGroupId,
+		IFNULL(sum(if(c.elPi_ChargingMode=5,1,0)),0) AS stubDcIdleCnt,
+		IFNULL(sum(if(c.elPi_ChargingMode=14,1,0)),0) AS stubAcIdleCnt
+		FROM tbl_PowerStation a,
+		tbl_company_rela b,
+		tbl_electricpile c
+		WHERE
+		a.powerstation_id = #{pkPowerstation}
+		AND
+		a.powerstation_id=b.pk_PowerStation
+		AND b.pk_cpy_operate_id = (SELECT
+		cpy_id FROM tbl_company WHERE
+		cpy_number = #{org})
+		AND
+		b.pk_ElectricPile=c.pk_ElectricPile
+		AND
+		c.comm_status = 1
+		AND EXISTS
+		(
+		SELECT 1 FROM
+		tbl_electricpilehead d
+		WHERE d.pk_ElectricPile = c.pk_ElectricPile
+		AND
+		d.delete_flag = '0'
+		AND d.ePHe_ElectricpileHeadState = 0)
+
+	</select>
+
+	<!-- 高德对接充电桩信息展示 -->
+	<select id="getAmapChargePowerstation" parameterType="map"
+		resultType="hashMap">
+		SELECT
+		CASE a.status
+		WHEN '10' THEN
+		'2'
+		WHEN '15' THEN
+		'1'
+		END
+		cscf,
+		a.onlineTime AS opentime2,
+		sum(
+		IF (b.elPi_ChargingMode =
+		5, 1, 0)
+		)
+		AS num_fast,
+		sum(
+		IF (b.elPi_ChargingMode = 14, 1, 0)
+		) AS
+		num_slow,
+		ifnull( getFullPath (
+		'powerListImage', a.powerStation_id ), '
+		' ) AS
+		url,
+		a.powerStation_id AS pkPowerstation
+		FROM tbl_powerstation a,
+		tbl_electricpile b
+		WHERE
+		a.powerStation_id = #{pkPowerstation}
+		AND
+		b.elPi_RelevancePowerStation =
+		a.powerStation_id
+	</select>
+
+	<!-- 根据电站id查询电桩枪口以及电压信息 -->
+	<select id="getElecticByPonitId" parameterType="map" resultType="hashMap">
+		SELECT
+		count(b.ePHe_ElectricpileHeadId) as plugstype,
+		IF (
+		a.elPi_ChargingMode = 5,
+		a.elPi_OutputVoltage,
+		0
+		) AS fastvol,
+		IF (
+		a.elPi_ChargingMode = 14,
+		a.elPi_OutputVoltage,
+		0
+		) AS convol
+		FROM
+		tbl_electricpile a,
+		tbl_electricpilehead b
+		WHERE
+		a.elPi_RelevancePowerStation = #{pkPowerstation}
+		AND b.pk_ElectricPile
+		= a.pk_ElectricPile group by
+		a.pk_ElectricPile
+	</select>
+	<!-- 高德对接充电站信息展示 -->
+	<select id="getChargePowerstationList" parameterType="map"
+		resultType="hashMap">
+		SELECT
+		a.powerStation_name AS name,
+		a.address AS address,
+		c.PROVINCE_NAME AS adm1_chn,
+		d.CITY_NAME AS adm2_chn,
+		f.area_name AS
+		adm3_chn,
+		a.longitude AS x,
+		a.latitude AS y,
+		a.phone AS telephone,
+		a.powerStation_id AS src_id
+		FROM
+		tbl_powerstation a,
+		tbl_electricpile b,
+		tb_m_province c,
+		tb_m_city d,
+		tb_m_area f
+		WHERE
+		a.powerStation_id
+		=#{pkPowerstation}
+		AND
+		b.elPi_RelevancePowerStation =a.powerStation_id
+		AND c.PROVINCE_ID =
+		a.province_code
+		AND d.CITY_ID = a.city_code
+		AND
+		f.area_id = a.area_code
+		GROUP BY
+		a.powerStation_id
+	</select>
+
+
+	<select id="getRateInfo" resultMap="RateResultMap">
+		SELECT
+		t.pk_RateInformation,
+		t.raIn_QuantumDate,
+		t.raIn_TipTimeTariffPrice as raIn_TipTimeTariff,
+		t.raIn_ValleyTimePrice,
+		t.raIn_PeakElectricityPrice,
+		t.raIn_UsualPrice,
+		t.raIn_ServiceCharge
+		FROM
+		tbl_rateinformation t
+		where
+		pk_RateInformation=#{rateId}
+	</select>
+
+	<!-- 查询全国范围下充电站 -->
+	<select id="getPowerstationMapBysearch" resultMap="BaseResultMap">
+		SELECT
+		(
+		SELECT
+		count(1)
+		FROM
+		tbl_electricpilehead a,
+		tbl_electricpile c
+		where
+		c.elPi_ChargingMode = 14
+		and c.elPi_State=1
+		and
+		c.elPi_RelevancePowerStation = t.powerStation_id
+		AND
+		a.ePHe_ElectricpileHeadState = 0
+		AND a.pk_ElectricPile =
+		c.pk_ElectricPile
+		) AS ac,
+		(
+		SELECT
+		count(1)
+		FROM
+		tbl_electricpilehead a,
+		tbl_electricpile c
+		WHERE
+		c.elPi_State=1
+		AND c.elPi_ChargingMode = 5
+		AND
+		a.ePHe_ElectricpileHeadState = 0
+		and
+		c.elPi_RelevancePowerStation =
+		t.powerStation_id
+		AND a.pk_ElectricPile
+		= c.pk_ElectricPile
+		) AS dc,
+		t.powerStation_id pk_PowerStation,
+		t.powerStation_name poSt_Name,
+		t.address poSt_Address,
+		t.latitude poSt_Latitude,
+		t.longitude
+		poSt_Longitude
+		FROM
+		tbl_powerstation t
+		WHERE
+		t.status=15
+		<if test="pageNo !=null  and pageNo !='' ">
+			limit ${(pageNo-1)*pageSize},#{pageSize}
+		</if>
+	</select>
+
+</mapper> 

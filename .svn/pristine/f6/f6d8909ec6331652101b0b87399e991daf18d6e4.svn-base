@@ -1,0 +1,131 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <link rel="stylesheet" href="../../css/dataCenter/normalize.min.css">
+    <link rel="stylesheet" href="../../css/dataCenter/loading.css"/>
+    <link rel="stylesheet" href="../../css/dataCenter/electricity.css"/>
+    <link rel="stylesheet" href="../../css/dataCenter/chargingPoint/elementUi.css"/>
+    <link rel="stylesheet" href="../../css/font-awesome.min93e3.css"/>
+    <link rel="stylesheet" href="../../css/dataCenter/map.css"/>
+    <title>电量展示</title>
+
+</head>
+<body style="width:100%;height:100%;background-color:transparent;">
+<div  id="loading">
+    <ol>
+        <li id='a'></li>
+        <li id='b'></li>
+        <li id='c'></li>
+        <li id='d'></li>
+        <li id='e'></li>
+        <li id='f'></li>
+        <li id='g'></li>
+        <li id='h'></li>
+        <li id='i'></li>
+    </ol>
+</div>
+    <div id="mongoliaLayer"></div>
+    <div id="container">
+        <div id="bottomBox">
+            <div id="app">
+                <div class="block" style="position: relative;" @click="mongoliaLayer">
+                    <el-cascader style="width:100%;" :disabled="disabled" :show-all-levels="false"  placeholder="请选择" :options="dataObject" :props="{value: 'value'}" v-model="selectObject" filterable=""  @change="handleChange" change-on-select separator="-"></el-cascader>
+                </div>
+                <button id="queryBtn" @click="getChangeValue">显示</button>
+            </div>
+            <div id="dataShow">
+                <div class="historicalData open">
+                    <div class="table_header">历史数据
+                        <i class="el-icon-arrow-down fa"></i>
+                    </div>
+                    <ul class="historicalDataUl submenu" style="display: block;">
+                        <li>
+                            <span>累计充电电量 : </span>
+                            <span class="chargeCount1"></span>
+                        </li>
+                        <li>
+                            <span>累计充电订单 :</span>
+                            <span class="orderCount1"></span>
+                        </li>
+                        <li>
+                            <span>累计充电时长 :</span>
+                            <span class="chargeTime1"></span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="realTimeData">
+                    <div class="table_header">实时数据
+                        <i class="el-icon-arrow-down fa"></i>
+                    </div>
+                    <ul class="realTimeDataUl submenu" style="display: none;">
+                        <li>
+                            <span>充电电量 :</span>
+                            <span class="chargeCount"></span>
+                        </li>
+                        <li>
+                            <span>充电订单 :</span>
+                            <span class="orderCount"></span>
+                        </li>
+                        <li>
+                            <span>异常订单 :</span>
+                            <span class="errorCount"></span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="chargiePoint no open">
+                    <div class="table_header">统计数据
+                        <i class="el-icon-arrow-down fa"></i>
+                    </div>
+                    <ul class="chargiePointUl submenu" style="display: block;">
+                        <li>
+                            <span>该城市累计充电电量 :</span>
+                            <span id="cityChargeCount"></span>
+                        </li>
+                        <li>
+                            <span>实时充电电量 :</span>
+                            <span id="newChargeCount"></span>
+                        </li>
+                        <li>
+                            <span>实时充电金额 :</span>
+                            <span id="chargeMoney"></span>
+                        </li>
+                    </ul>
+                </div>
+                <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+                <div id="chargieCurve">
+                    <div class="table_header">实时充电曲线
+                        <i class="el-icon-arrow-down fa"></i>
+                    </div>
+                    <div id="chargeAmountOne" class="chargeAmountOne no submenu"></div>
+                </div>
+                <div id="chargeFiveDays">
+                    <div class="table_header">近五日电量
+                        <i class="el-icon-arrow-down fa"></i>
+                    </div>
+                    <div id="chargeAmountTwo" class="chargeAmountTwo no submenu"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+<script src="../../js/jquery-2.1.0.js"></script>
+<script src="../../js/dataCenter/prefixfree.min.js"></script>
+<script src="../../js/dataCenter/loading.js"></script>
+<script src="../../js/lib/layer/layer.js"></script>
+<script src="../../js/dataCenter/maps.js"></script>
+<script src="../../js/apiAddress-web.js"></script>
+<script src="../../js/dataCenter/echarts.js"></script>
+<script src="../../js/dataCenter/foldFrame.js"></script>
+<script src="../../js/lib/layer/layer.js"></script>
+<!--引入vue组件库-->
+<script src="../../js/vue.min.js"></script>
+<script src="../../js/dataCenter/elementUi2.1.0.js"></script>
+<!--<script src="../../js/lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>-->
+
+<script src="../../js/dataCenter/electricity.js"></script>
+<script type="text/javascript" src="../../js/dataCenter/electricityData.js"></script>
+</html>

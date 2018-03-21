@@ -1,4 +1,3 @@
-
 $(function(){
     setTimeout(function(){
         loadshishiData();
@@ -6,9 +5,9 @@ $(function(){
         function loadshishiData(){
             realData();
             clearInterval(intervalIdloadRunTime);
-            intervalIdloadRunTime=setInterval('realData()',2000*60);
+            intervalIdloadRunTime=setInterval('realData()',1000*60);
         }
-    },2000*60);
+    },1000*60);
     map.setFeatures(['bg','road','building']);//去掉地图默认标注
 })
 
@@ -81,32 +80,81 @@ function drawMap(place){
         var div = document.createElement('div');
         div.className = 'circle';
         //根据电量的大小画不同大小的圆
-        if(data.userCount >0 && data.userCount <= 10000){
-            var size = 16;
-            div.style.backgroundColor = '#ff7d00';
-            div.style.width = size + 'px';
-            div.style.height = size + 'px';
-            div.style.borderRadius = size/2 + 'px';
-            div.style.opacity = 0.8;
-        }else if(data.userCount > 10000 && data.userCount < 30000){
-            var size = 26;
-            div.style.backgroundColor = '#ff7d00';
-            div.style.width = size + 'px';
-            div.style.height = size + 'px';
-            div.style.borderRadius = size/2 + 'px';
-            div.style.opacity = 0.8;
-        }else if(data.userCount >= 30000){
-            var size = 36;
-            div.style.backgroundColor = '#ff7d00';
-            div.style.width = size + 'px';
-            div.style.height = size + 'px';
-            div.style.borderRadius = size/2 + 'px';
-            div.style.opacity = 0.8;
+        if(map.getZoom() >=5 && map.getZoom() < 9){
+            if(data.userCount >0 && data.userCount <= 50){
+                var size = 16;
+                div.style.backgroundColor = '#ff7d00';
+                div.style.width = size + 'px';
+                div.style.height = size + 'px';
+                div.style.borderRadius = size/2 + 'px';
+                div.style.opacity = 0.8;
+            }else if(data.userCount > 50 && data.userCount <= 200){
+                var size = 26;
+                div.style.backgroundColor = '#ff7d00';
+                div.style.width = size + 'px';
+                div.style.height = size + 'px';
+                div.style.borderRadius = size/2 + 'px';
+                div.style.opacity = 0.8;
+            }else if(data.userCount > 200){
+                var size = 36;
+                div.style.backgroundColor = '#ff7d00';
+                div.style.width = size + 'px';
+                div.style.height = size + 'px';
+                div.style.borderRadius = size/2 + 'px';
+                div.style.opacity = 0.8;
+            }
+        }else if(map.getZoom() >=9 && map.getZoom() < 12){
+            if(data.userCount >0 && data.userCount <= 20){
+                var size = 16;
+                div.style.backgroundColor = '#ff7d00';
+                div.style.width = size + 'px';
+                div.style.height = size + 'px';
+                div.style.borderRadius = size/2 + 'px';
+                div.style.opacity = 0.8;
+            }else if(data.userCount > 20 && data.userCount <= 100){
+                var size = 26;
+                div.style.backgroundColor = '#ff7d00';
+                div.style.width = size + 'px';
+                div.style.height = size + 'px';
+                div.style.borderRadius = size/2 + 'px';
+                div.style.opacity = 0.8;
+            }else if(data.userCount > 100){
+                var size = 36;
+                div.style.backgroundColor = '#ff7d00';
+                div.style.width = size + 'px';
+                div.style.height = size + 'px';
+                div.style.borderRadius = size/2 + 'px';
+                div.style.opacity = 0.8;
+            }
+        }else{
+            if(data.userCount >0 && data.userCount <= 20){
+                var size = 16;
+                div.style.backgroundColor = '#ff7d00';
+                div.style.width = size + 'px';
+                div.style.height = size + 'px';
+                div.style.borderRadius = size/2 + 'px';
+                div.style.opacity = 0.8;
+            }else if(data.userCount > 20 && data.userCount <= 100){
+                var size = 26;
+                div.style.backgroundColor = '#ff7d00';
+                div.style.width = size + 'px';
+                div.style.height = size + 'px';
+                div.style.borderRadius = size/2 + 'px';
+                div.style.opacity = 0.8;
+            }else if(data.userCount > 100){
+                var size = 36;
+                div.style.backgroundColor = '#ff7d00';
+                div.style.width = size + 'px';
+                div.style.height = size + 'px';
+                div.style.borderRadius = size/2 + 'px';
+                div.style.opacity = 0.8;
+            }
         }
+
         var marker = new AMap.Marker({
             content: div,
             animation:'',
-            title: data.name + '  充电总数量:'+data.userCount,
+            title: data.name + '  用户数量:'+data.userCount,
             position:data.value,
             offset: new AMap.Pixel(-24, -35),
             extData:{
@@ -118,15 +166,15 @@ function drawMap(place){
                 cpyId:window.localStorage.getItem('cpyId') || ''
             }
         });
-        marker.content = data.name + '<br/>' + '充电数量：'+data.userCount;
-        marker.on('click', markerClick);
+        marker.content = data.name + '<br/>' + '用户数量：'+data.userCount;
+        marker.on('mouseover', markerClick);
         marker.emit('mouseout', {target: marker});
         marker.setMap(map);
         function markerClick(e) {
             infoWindow.setContent(e.target.content);
             infoWindow.open(map, e.target.getPosition());
         }
-        marker.on('dblclick',markerdblClick);
+        marker.off('click').on('click',markerdblClick);
         //点击进入下一层
         function markerdblClick(e){
             var provinceCode = e.target.G.extData.provinceCode;
@@ -169,8 +217,8 @@ function drawMap(place){
 function toLoadPoint(provinceCode,cityCode,cpyId,type){
     map.clearMap();
     $('.chargiePoint').hide();
-    $('.chargeAmountOne').hide();
-    $('.chargeAmountTwo').hide();
+    $('#chargeRecord').hide();
+    $('#userRank').hide();
     $('.historicalData').show();
     $('.realTimeData').show();
     toLoadPointData(provinceCode,cityCode,cpyId,type);
@@ -181,16 +229,14 @@ function toLoadPointRepeat(provinceCode,cityCode,cpyId,type){
     $('.historicalData').hide();
     $('.realTimeData').hide();
     $('.chargiePoint').show();
-    $('.chargeAmountOne').show();
-    $('.chargeAmountTwo').show();
+    $('#userRank').show();
+    $('#chargeRecord').show();
     toLoadPointData(provinceCode,cityCode,cpyId,type);
     getUserStartChargeRecord(provinceCode,cityCode,cpyId,type);
     getUserChargeRank(provinceCode,cityCode,cpyId,type);
 }
 //输入地点名返回数据
 function toLoadPointData(provinceCode,cityCode,cpyId,type){
-    //console.log(cpyId)
-    var index=layer.load(1);
     $.ajax({
         type: "post",
         url: basePath + getMapDataUrl,
@@ -202,8 +248,8 @@ function toLoadPointData(provinceCode,cityCode,cpyId,type){
             type:type
         },
         success: function (req) {
-            layer.close(index);
             mapData = req.dataObject;
+            exceptionHandle(mapData);
             //判断data参数是否为空，三种情况
             for (var i = 0; i < mapData.length; i++) {
                 var place = mapData[i].provinceName || mapData[i].cityName || mapData[i].powerstationName;
@@ -265,6 +311,7 @@ function toLoadHistoryData(provinceCode,cityCode,cpyId,type){
         success: function (req) {
             layer.close(index);
             var data = req.dataObject;
+            exceptionHandle(data);
             $('.userNomalCount').html(data.userNomalCount);
             $('.consumAmount').html(data.consumAmount);
             $('.accumulativeCharge').html(data.chargeCount);
@@ -276,7 +323,7 @@ function toLoadHistoryData(provinceCode,cityCode,cpyId,type){
 
 //加载实时数据
 function toLoadRealTimeData(provinceCode,cityCode,cpyId,type){
-    var index=layer.load(1);
+    //var index=layer.load(1);
     $.ajax({
         type: "post",
         url: basePath + getChargeRealTimeDateUrl,
@@ -288,12 +335,14 @@ function toLoadRealTimeData(provinceCode,cityCode,cpyId,type){
             cpyId:cpyId
         },
         success: function (req) {
-            layer.close(index);
-            var data = req.dataObject;
-            $('.chargeCount').html(data.chargeCount);
-            $('.chargeUser').html(data.chargeUser);
-            $('.newUser').html(data.newUser);
-            $('#newChargeCount').html(data.chargeCount);
+            //layer.close(index);
+            removeLoading();
+            //var data = req.dataObject;
+            exceptionHandle(req);
+            $('.chargeCount').html(req.chargeCount);
+            $('.chargeUser').html(req.chargeUser);
+            $('.newUser').html(req.newUser);
+            $('#newChargeCount').html(req.chargeCount);
         }
     });
 }
@@ -323,6 +372,7 @@ function getUserStartChargeRecord(provinceCode,cityCode,cpyId,type){
         success: function (req) {
             layer.close(index);
             var data = req.dataObject;
+            exceptionHandle(data);
             var beginLi = '';
             for(var i = 0; i < data.length; i ++ ){
                 timestampToTime(data[i].time);
@@ -362,6 +412,7 @@ function getUserChargeRank(provinceCode,cityCode,cpyId,type){
         success: function (req) {
             layer.close(index);
             var data = req.dataObject;
+            exceptionHandle(data);
             var rankLi = '';
             for(var i = 0; i < data.length; i ++ ){
                 //console.log(i);

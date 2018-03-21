@@ -166,10 +166,10 @@ public class CecControllerV1 {
             resultRespone.setMsg("数组长度超长！");
             return resultRespone.toString();
         }
-        List<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> data = new ArrayList<>();
         Map<String, Object> psData = null;
         for (String psId : stationIDs) {
-            psData = new HashMap<String, Object>();
+            psData = new HashMap<>();
             psData.put("StationID", psId);
             TblElectricpilehead hModel = new TblElectricpilehead();
             hModel.setPsId(Integer.parseInt(psId));
@@ -193,7 +193,7 @@ public class CecControllerV1 {
             psData.put("ConnectorStatusInfos", mapList);
             data.add(psData);
         }
-        Map<String, Object> returnMap = new HashMap<String, Object>();
+        Map<String, Object> returnMap = new HashMap<>();
         returnMap.put("Total", stationIDs.size());
         returnMap.put("StationStatusInfos", data);
         LOGGER.info("================查询设备状态end==================");
@@ -218,45 +218,52 @@ public class CecControllerV1 {
         JSONObject jsonData = JSON.parseObject(AesCBC.getInstance().decrypt(
                 params.get("Data"), "utf-8", tblPartner.getAesSecret(), tblPartner.getAesIv()));
         String lastQueryTime = jsonData.getString("LastQueryTime");
-        String pageNo = jsonData.get("PageNo").toString();
-        String pageSize = jsonData.get("PageSize").toString();
-        if (StringUtils.isBlank(pageNo))
+        String pageNo = jsonData.getString("PageNo");
+        String pageSize = jsonData.getString("PageSize");
+        if (StringUtils.isBlank(pageNo)){
             pageNo = "1";
-        if (StringUtils.isBlank(pageSize))
+        }
+        if (StringUtils.isBlank(pageSize)){
             pageSize = "10";
-        List<TblPowerstation> psList = null;
-        Map<String, Object> data = new HashMap<String, Object>();
+        }
+        List<TblPowerstation> psList ;
+        Map<String, Object> data = new HashMap<>();
         int count = 0;
+        Map<String, Object> dataMap = new HashMap<>();
+        dataMap.put("cpyId", tblPartner.getCpyId());
+        dataMap.put("pageNo", Integer.parseInt(pageNo) - 1);
+        dataMap.put("pageSize", Integer.parseInt(pageSize));
         if (lastQueryTime != null && !lastQueryTime.isEmpty()) {
             LOGGER.info("获取最近更新站点信息开始，上次查询时间：" + lastQueryTime + "开始页" + pageNo
                     + "；每页显示数量：" + pageSize);
             Date queryTime = fmt.parse(lastQueryTime);
-            Map<String, Object> dataMap = new HashMap<String, Object>();
             dataMap.put("queryTime", queryTime);
-            dataMap.put("pageNo", Integer.parseInt(pageNo) - 1);
-            dataMap.put("pageSize", Integer.parseInt(pageSize));
-            dataMap.put("cpyId", tblPartner.getCpyId());
             count = psService.getUpdatedCount(dataMap);
             psList = psService.getUpdatedList(dataMap);
             LOGGER.info("获取最近更新站点信息结束");
-        } else {
+        } else if ((pageNo !=null && !pageNo.isEmpty())||(pageSize!=null && pageSize.isEmpty()) ){
+            LOGGER.info("分页获取全部站点信息开始");
+            count = psService.getPowerStationCount(dataMap);
+            psList = psService.getPowerStationList(dataMap);
+            LOGGER.info("分页获取全部站点信息结束");
+        }else {
             LOGGER.info("获取全部站点信息开始");
-            TblPowerstation powerstation = new TblPowerstation();
-            powerstation.setCpyId(tblPartner.getCpyId());
-            count = psService.getPowerStationCount(powerstation);
-            psList = psService.getPowerStationList(powerstation);
+            Map<String, Object> Maps = new HashMap<>();
+            Maps.put("cpyId",tblPartner.getCpyId());
+            count = psService.getPowerStationCount(Maps);
+            psList = psService.getPowerStationList(Maps);
             LOGGER.info("获取全部站点信息结束");
         }
         data.put("ItemSize", count);
-        data.put("PageCount", count / Integer.parseInt(pageSize) + 1);
+        data.put("PageCount", count / Integer.parseInt(pageSize) +1);
         data.put("PageNo", pageNo);
-        List<Map<String, Object>> psDataList = new ArrayList<Map<String, Object>>();
-        Map<String, Object> psData = null;
-        Map<String, Object> elcData = null;
-        Map<String, Object> hData = null;
+        List<Map<String, Object>> psDataList = new ArrayList<>();
+        Map<String, Object> psData ;
+        Map<String, Object> elcData ;
+        Map<String, Object> hData ;
         TblElectricpile pile = new TblElectricpile();
         for (TblPowerstation psModel : psList) {
-            psData = new HashMap<String, Object>();
+            psData = new HashMap<>();
             psData.put("StationID", String.valueOf(psModel.getPkPowerstation()));
             psData.put("OperatorID", "321895837");
             psData.put("EquipmentOwnerID", "321895837");
@@ -290,10 +297,10 @@ public class CecControllerV1 {
             pile.setElpiRelevancepowerstation(psModel.getPkPowerstation());
             List<TblElectricpile> pList = elcService.getElectricPileByPowerStationId(pile);
             pile = pList.get(0);
-            Map<String, Object> rateParm = new HashMap<String, Object>();
+            Map<String, Object> rateParm = new HashMap<>();
             rateParm.put("pkRateinformation", pile.getElpiRateinformationid());
             TblRateInformation rate = rateService.getPriceById(rateParm);
-            if (rate.getRaInServiceCharge() != null || !rate.getRaInServiceCharge().equals(0)) {
+            if (!rate.getRaInType().equals("3")) {
                 String mark = RateinformationUtil.getCurrentPowerRateMark(JudgeNullUtils.nvlStr(rate.getRaInQuantumDate()));
                 switch (mark) {
                     case "1":
@@ -340,25 +347,26 @@ public class CecControllerV1 {
                 }
             }
             psData.put("ParkFee", "");
-            Map<String, Object> test = new HashMap<String, Object>();
+            Map<String, Object> test = new HashMap<>();
             test.put("cpyId", tblPartner.getCpyId());
             test.put("stationNo", psModel.getPkPowerstation());
             List<TcbElectric> elcList = elcService.getElectricList(test);
-            List<Map<String, Object>> elcDataList = new ArrayList<Map<String, Object>>();
+            List<Map<String, Object>> elcDataList = new ArrayList<>();
             for (TcbElectric e : elcList) {
-                elcData = new HashMap<String, Object>();
+                elcData = new HashMap<>();
                 elcData.put("EquipmentID", e.getEquipNo());
                 elcData.put("ManufacturerID", "");
                 elcData.put("ManufacturerName", "");
                 elcData.put("EquipmentModel", e.getEquipmentModel());
                 elcData.put("EquipmentName", e.getEquipName());
                 elcData.put("ProductionDate", "");
-                if ("14".equals(e.getEquipType()))
+                if (e.getEquipType().equals("14")) {
                     elcData.put("EquipmentType", 2);
-                if ("5".equals(e.getEquipType()))
+                }else if (e.getEquipType().equals("5")){
                     elcData.put("EquipmentType", 1);
-                else
-                    elcData.put("EquipmentType", 3);
+                }else {
+                    elcData.put("EquipmentType", 5);
+                }
                 String powerRating = e.getPowerRating();
                 String substring = powerRating.substring(0, powerRating.length() - 2);
                 BigDecimal power = new BigDecimal(substring);
@@ -368,9 +376,9 @@ public class CecControllerV1 {
                 TblElectricpilehead hModel = new TblElectricpilehead();
                 hModel.setPkElectricpile(e.getPkElc());
                 List<TblElectricpilehead> headList = hService.getList(hModel);
-                List<Map<String, Object>> headDataList = new ArrayList<Map<String, Object>>();
+                List<Map<String, Object>> headDataList = new ArrayList<>();
                 for (TblElectricpilehead h : headList) {
-                    hData = new HashMap<String, Object>();
+                    hData = new HashMap<>();
                     hData.put("ConnectorID", String.format("%s%02d", e.getEquipNo(), h.getEpheElectricpileHeadId()));
                     hData.put("ConnectorName", h.getEpheElectricpileheadname());
                     if ("14".equals(e.getEquipType()))
@@ -532,7 +540,7 @@ public class CecControllerV1 {
         int rtCode = WanmaConstants.cs.stopChange(model.getChorPilenumber(),
                 model.getChorMuzzle(), Integer.parseInt(tblPartner.getOrgNo()), driverId, "");
         LOGGER.info("下发停止充电命令结束！");
-        Map<String, Object> data = new HashMap<String, Object>();
+        Map<String, Object> data = new HashMap<>();
         if (rtCode > 0) {
             if (rtCode == 6000) {
                 data.put("StartChargeSeq", StartChargeSeq);
@@ -595,13 +603,13 @@ public class CecControllerV1 {
         cld.add(Calendar.DATE, 1);
         String endTimes = sdf.format(cld.getTime());
         //获取充电站统计信息
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         model.put("stationId", stationId);
         model.put("startTime", startTime);
         model.put("endTime", endTimes);
         //电站累计电量
         String stationEle;
-        List<Map<String, Object>> eleList = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> eleList ;
         try {
             stationEle = elcService.getStationMeterNum(model);
             eleList = elcService.getEleMeterNum(model);
@@ -611,13 +619,13 @@ public class CecControllerV1 {
         //查询结果为空
         if (StringUtils.isBlank(stationEle) || eleList.size() == 0) {
             LOGGER.info("...........该电站在该时期内没有相应数据...................");
-            Map<String, Object> stationInfo = new HashMap<String, Object>();
+            Map<String, Object> stationInfo = new HashMap<>();
             stationInfo.put("StationID", stationId);
             stationInfo.put("StartTime", startTime);
             stationInfo.put("EndTime", endTime);
             stationInfo.put("StationElectricity", 0);
             stationInfo.put("EquipmentStatsInfos", null);
-            Map<String, Object> data = new HashMap<String, Object>();
+            Map<String, Object> data = new HashMap<>();
             data.put("StationStats", stationInfo);
             LOGGER.info("..................查询统计信息-end...................");
             //数据加密
@@ -628,30 +636,30 @@ public class CecControllerV1 {
         //查询结果不为空
         BigDecimal stationElectricity = new BigDecimal(stationEle);
         //充电站统计信息
-        Map<String, Object> stationInfo = new HashMap<String, Object>();
+        Map<String, Object> stationInfo = new HashMap<>();
         stationInfo.put("StationID", stationId);
         stationInfo.put("StartTime", startTime);
         stationInfo.put("EndTime", endTime);
         stationInfo.put("StationElectricity", stationElectricity.setScale(1, BigDecimal.ROUND_HALF_UP));
         //充电设备统计信息
-        List<Map<String, Object>> eleInfo = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> eleInfo = new ArrayList<>();
         for (int i = 0; i < eleList.size(); i++) {
             Map<String, Object> eleMap = eleList.get(i);
             String epCode = eleMap.get("epCode").toString();
             String eleMeter = eleMap.get("eleMeter").toString();
             BigDecimal eqElectricity = new BigDecimal(eleMeter);
-            Map<String, Object> eleData = new HashMap<String, Object>();
+            Map<String, Object> eleData = new HashMap<>();
             eleData.put("EquipmentID", epCode);
             eleData.put("EquipmentElectricity", eqElectricity.setScale(1, BigDecimal.ROUND_HALF_UP));
-            List<Map<String, Object>> headList = new ArrayList<Map<String, Object>>();
-            Map<String, Object> hmap = new HashMap<String, Object>();
+            List<Map<String, Object>> headList ;
+            Map<String, Object> hmap = new HashMap<>();
             hmap.put("epCode", epCode);
             hmap.put("startTime", startTime);
             hmap.put("endTime", endTimes);
             headList = elcService.getHeadMeterNum(hmap);
             //充电设备接口统计信息
-            Map<String, Object> ehData = new HashMap<String, Object>();
-            List<Map<String, Object>> ehInfo = new ArrayList<Map<String, Object>>();
+            Map<String, Object> ehData = new HashMap<>();
+            List<Map<String, Object>> ehInfo = new ArrayList<>();
             for (int j = 0; j < headList.size(); j++) {
                 Map<String, Object> headMap = headList.get(j);
                 int headId = Integer.parseInt(headMap.get("headId").toString());
@@ -671,7 +679,7 @@ public class CecControllerV1 {
             eleInfo.add(eleData);
         }
         stationInfo.put("EquipmentStatsInfos", eleInfo);
-        Map<String, Object> data = new HashMap<String, Object>();
+        Map<String, Object> data = new HashMap<>();
         data.put("StationStats", stationInfo);
         LOGGER.info("..................查询统计信息-end...................");
         //数据加密
@@ -743,7 +751,7 @@ public class CecControllerV1 {
         BigDecimal totalMoney = new BigDecimal(tm);
         String chargeMode = map.get("chargeMode").toString();
         //响应数据
-        Map<String, Object> data = new HashMap<String, Object>();
+        Map<String, Object> data = new HashMap<>();
         if (orderStatus == 2 || orderStatus == 3) {
             LOGGER.info("....................查询充电状态-历史订单信息.......................");
             data.put("StartChargeSeq", StartChargeSeq);
@@ -867,7 +875,7 @@ public class CecControllerV1 {
         String eleHead = StringUtils.substring(epheElectricpileHeadId, 0, 16);
         String headId = StringUtils.substring(epheElectricpileHeadId, 16, 18);
         LOGGER.info(".................检验是否是白名单-begin.......................");
-        Map<String, Object> mapl = new HashMap<String, Object>();
+        Map<String, Object> mapl = new HashMap<>();
         mapl.put("OperatorID", OperatorID);
         mapl.put("epCode", eleHead);
         int count = hService.checkEquipIsRela(mapl);
@@ -877,14 +885,14 @@ public class CecControllerV1 {
         LOGGER.info(".................检验是否是白名单-end.......................");
         int num = 0;
         try {
-            Map<String, Object> maph = new HashMap<String, Object>();
+            Map<String, Object> maph = new HashMap<>();
             maph.put("headId", headId);
             maph.put("epCode", eleHead);
             num = hService.getEquipAuthByEleHead(maph);
         } catch (Exception e) {
             return JsonResult.handleResult(JsonResult.RESULT_Data_Error, JsonResult.MSG_No_ConnectorID, "", "", "").toString();
         }
-        Map<String, Object> data = new HashMap<String, Object>();
+        Map<String, Object> data = new HashMap<>();
         data.put("EquipAuthSeq", equipAuthSeq);
         data.put("ConnectorID", epheElectricpileHeadId);
         if (num == 0) {
@@ -957,7 +965,7 @@ public class CecControllerV1 {
         LOGGER.info("...............校验订单格式-end........................");
         int count = ordService.checkChargeOrderIsExist(StartChargeSeq);
         if (count == 0) {
-            Map<String, Object> result = new HashMap<String, Object>();
+            Map<String, Object> result = new HashMap<>();
             result.put("SuccStat", 1);
             String datas = AesCBC.getInstance().encrypt(new JSONObject(result).toString(), "utf-8", tblPartner.getAesSecret(), tblPartner.getAesIv());
             String key = JsonResult.RESULT_OK + JsonResult.MSG_Ok + datas;
@@ -1049,7 +1057,7 @@ public class CecControllerV1 {
         date.put("OperatorID", OperatorID);
         date.put("epCode", ePCode);
         TblRateInformation rate = rateService.queryByRateInfo(date);
-        List<Map<String, Object>> rateMapList = new ArrayList<>();
+        List<Map<String, Object>> rateMapList ;
         // 个性化费率
         if (rate != null) {
             rateMapList = RateinformationUtil.getPowerRateMarks(rate);

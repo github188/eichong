@@ -187,7 +187,7 @@ public class IntegralActivityServiceImpl implements IntegralActivityService {
 			return baseResultDTO;
 		}
 		Date startDate = DateUtil.parse(integralActivityAndRulesBO.getStrStartDate(), DateUtil.TYPE_COM_YMD);
-		Date endDate = DateUtil.parse(integralActivityAndRulesBO.getStrEndDate(), DateUtil.TYPE_COM_YMD);
+		Date endDate = DateUtil.parse(integralActivityAndRulesBO.getStrEndDate() + " 23:59:59", DateUtil.TYPE_COM_YMDHMS);
 
 		//节假日和积分兑换优惠券，需要验证活动时间是否有重叠
 		if(integralActivityAndRulesBO.getPkId().intValue() == 3
@@ -347,7 +347,7 @@ public class IntegralActivityServiceImpl implements IntegralActivityService {
 			return baseResultDTO;
 		}
 		Date startDate = DateUtil.parse(integralActivityAndRulesBO.getStrStartDate(), DateUtil.TYPE_COM_YMD);
-		Date endDate = DateUtil.parse(integralActivityAndRulesBO.getStrEndDate(), DateUtil.TYPE_COM_YMD);
+		Date endDate = DateUtil.parse(integralActivityAndRulesBO.getStrEndDate() + " 23:59:59", DateUtil.TYPE_COM_YMDHMS);
 
 		//节假日和积分兑换优惠券，需要验证活动时间是否有重叠
 		if(pkId.intValue() == 3 || pkId.intValue() == 4  || pkId.intValue() == 5
